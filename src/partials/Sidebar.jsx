@@ -12,6 +12,9 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 import { RiAccountPinCircleFill } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import { TbPasswordFingerprint } from "react-icons/tb";
+import { TbLogout2 } from "react-icons/tb";
+import { MdOutlineCalendarMonth } from "react-icons/md";
+
 
 function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const location = useLocation();
@@ -78,13 +81,45 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Parks",
-          icon: MdOutlineForest,
+          icon: null,
+          // icon: MdOutlineForest,
           path: "/park-management",
         },
         {
           title: "Users",
-          icon: FaUsers,
+          // icon: FaUsers,
+          icon: null,
           path: "/user-management",
+        },
+        {
+          title: "facilites",
+          // icon: FaUsers,
+          icon: null,
+          path: "/facilites",
+        },
+        {
+          title: "service ",
+          // icon: FaUsers,
+          icon: null,
+          path: "/service",
+        },
+        {
+          title: "service varient ",
+          // icon: FaUsers,
+          icon: null,
+          path: "/service-varient",
+        },
+        {
+          title: "entry scan users ",
+          // icon: FaUsers,
+          icon: null,
+          path: "/entry-scan-users",
+        },
+        {
+          title: "payments",
+          // icon: FaUsers,
+          icon: null,
+          path: "/payments",
         },
       ],
     },
@@ -97,13 +132,36 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Bookings",
-          icon: IoTicketOutline,
+          // icon: IoTicketOutline,
+          icon: null,
           path: "/bookings",
         },
         {
           title: "User Wise",
-          icon: FaChalkboardUser,
+          // icon: FaChalkboardUser,
+          icon: null,
           path: "/user-wise",
+        },
+      ],
+    },
+    {
+      title: "Dates",
+      icon: MdOutlineCalendarMonth,
+      path: "",
+      gradientClass:
+        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [
+        {
+          title: "days",
+          // icon: CgProfile,
+          icon: null,
+          path: "/days",
+        },
+        {
+          title: "Holydays",
+          // icon: TbPasswordFingerprint,
+          icon: null,
+          path: "/holydays",
         },
       ],
     },
@@ -116,12 +174,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Profile",
-          icon: CgProfile,
+          // icon: CgProfile,
+          icon: null,
           path: "/my-profile",
         },
         {
           title: "Change Password",
-          icon: TbPasswordFingerprint,
+          // icon: TbPasswordFingerprint,
+          icon: null,
           path: "/change-password",
         },
       ],
@@ -142,7 +202,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-blue-v1 dark:bg-gray-800 p-4 transition-all duration-200 ease-in-out ${
+        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         } ${
           variant === "v2"
@@ -151,11 +211,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         }`}
       >
         {/* Sidebar header */}
-        <div className="flex justify-between mb-5 pr-3 sm:px-2">
+        <div className="flex justify-center my-3 pr-3 sm:px-2">
           {/* Close button */}
           <button
+            type="button"
             ref={trigger}
-            className="lg:hidden text-gray-500 hover:text-gray-400 outline-none"
+            className="lg:hidden text-gray-500 hover:text-gray-400 outline-none "
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}
@@ -171,7 +232,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           </button>
           {/* Logo */}
           <NavLink end to="/" className="block">
-            <img src={logoIcon} width={80} height={80} />
+            <img alt="site-logo" src={logoIcon} width={80} height={80} />
           </NavLink>
         </div>
 
@@ -191,7 +252,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
               {sidebarItems.map((item, index) => (
                 <li
                   key={index}
-                  className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 ${
+                  className={`rounded-lg mb-0.5 pb-2 last:mb-0 ${
                     item.subItems.some((subItem) =>
                       pathname.startsWith(subItem.path)
                     )
@@ -209,7 +270,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                         <>
                           <a
                             href="#0"
-                            className="block text-gray-200 dark:text-gray-100 truncate transition duration-150  dark:hover:text-white"
+                            className="px-3 py-2 block text-gray-300 truncate transition duration-150  dark:hover:text-white"
                             onClick={(e) => {
                               e.preventDefault();
                               handleClick();
@@ -238,31 +299,31 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                           <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
                             {/*  Divider */}
                             <ul className={`mt-1 ${!open && "hidden"}`}>
-                              <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" />
+                              {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
                               {item.subItems.map((subItem, subIndex) => (
-                                <li
-                                  key={subIndex}
-                                  className="pr-3 py-2 mb-1 last:mb-0"
-                                >
+                                <li key={subIndex} className=" mb-1 last:mb-0">
                                   <NavLink
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      "block transition duration-150 truncate " +
-                                      (isActive
-                                        ? "text-violet-500 "
-                                        : "text-gray-400 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
+                                      `block truncate transition duration-150 ease-in-out rounded-l-lg ml-8 px-3 py-2 font-medium text-sm ${
+                                        isActive
+                                          ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
+                                          : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
+                                      }`
                                     }
                                   >
                                     <div className="flex items-center">
-                                      <subItem.icon
-                                        className={`shrink-0 text-[22px] ${
-                                          pathname.includes(subItem.path)
-                                            ? "text-violet-500"
-                                            : "text-gray-400 dark:text-gray-500"
-                                        }`}
-                                      />
-                                      <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                      {subItem.icon && (
+                                        <subItem.icon
+                                          className={`shrink-0 text-[22px] ${
+                                            pathname.includes(subItem.path)
+                                              ? "text-violet-500"
+                                              : "text-gray-400 dark:text-gray-500"
+                                          }`}
+                                        />
+                                      )}
+                                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                         {subItem.title}
                                       </span>
                                     </div>
@@ -278,10 +339,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                     <NavLink
                       end
                       to={item.path}
-                      className={`block dark:text-gray-200 truncate transition duration-150 ${
+                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150 ${
                         pathname.includes(item.path)
-                          ? "text-gray-100"
-                          : " text-gray-200 dark:hover:text-white"
+                          ? "text-gray-100 "
+                          : " text-gray-300 dark:hover:text-white"
                       }`}
                     >
                       <div className="flex items-center">
@@ -301,6 +362,19 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+          <div className="pl-4 pr-3 py-2">
+            <button
+              className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+              onClick={() => setSidebarExpanded(!sidebarExpanded)}
+            >
+              <span className="sr-only">Expand / collapse sidebar</span>
+              <TbLogout2 className="shrink-0 text-[22px]" />
+              <span className="">Log out</span>
+            </button>
           </div>
         </div>
       </div>
