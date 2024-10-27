@@ -84,7 +84,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         {
           title: "Users",
           icon: FaUsers,
-          path: "/user-management",
+          path: "/user-management/view",
         },
       ],
     },
