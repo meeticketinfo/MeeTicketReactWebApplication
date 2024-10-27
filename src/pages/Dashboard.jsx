@@ -11,6 +11,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { FaChildren } from "react-icons/fa6";
 import { HiCurrencyRupee } from "react-icons/hi";
 import AgGridTable from "../components/tables/AgGridTable";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,9 +39,78 @@ function Dashboard() {
       lableName: "Total Income",
       count: 82478,
       percentageChange: 49,
-      icon: HiCurrencyRupee,
+      icon: FaIndianRupeeSign,
     },
   ];
+  const [rowData] = useState([
+    {
+      date: "2024-10-27",
+      bookings: 15,
+      Adults: 25,
+      children: 10,
+      totalAmount: 1500,
+    },
+    {
+      date: "2024-10-26",
+      bookings: 20,
+      Adults: 35,
+      children: 12,
+      totalAmount: 2000,
+    },
+    {
+      date: "2024-10-25",
+      bookings: 10,
+      Adults: 18,
+      children: 5,
+      totalAmount: 1200,
+    },
+    // Add more rows as needed
+  ]);
+
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      sortable: false,
+      filter: false,
+      width: 100,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      sortable: true,
+      filter: true,
+      flex: 1,
+    },
+    {
+      field: "bookings",
+      headerName: "Total Bookings",
+      sortable: true,
+      filter: true,
+      flex: 1,
+    },
+    {
+      field: "Adults",
+      headerName: "Adults",
+      sortable: true,
+      filter: true,
+      flex: 1,
+    },
+    {
+      field: "children",
+      headerName: "Children",
+      sortable: true,
+      filter: true,
+      flex: 1,
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+      sortable: true,
+      filter: true,
+      flex: 1,
+    },
+  ]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -82,8 +152,8 @@ function Dashboard() {
                     icon={card.icon}
                   />
                 ))}
-              <DashboardCard07 >
-                <AgGridTable  />
+              <DashboardCard07>
+                <AgGridTable rowData={rowData} columnDefs={columnDefs} />
               </DashboardCard07>
             </div>
           </div>
