@@ -1,6 +1,5 @@
-import React from "react";
+import PropTypes from "prop-types";
 import { AgGridReact } from "ag-grid-react";
-
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./AgGridTable.css";
@@ -25,5 +24,8 @@ const AgGridTable = ({ rowData, columnDefs }) => {
     </div>
   );
 };
-
+AgGridTable.propTypes = {
+  rowData: PropTypes.array.isRequired,
+  columnDefs: PropTypes.array.isRequired,
+};
 export default AgGridTable;
