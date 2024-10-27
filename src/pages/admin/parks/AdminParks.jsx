@@ -2,7 +2,7 @@ import UserCreate from "../../../components/user_management/UserCreate";
 import UserList from "../../../components/user_management/UserList";
 import AdminLayout from "../../../layouts/AdminLayout";
 
-export default function AdminUsers() {
+export default function AdminParks() {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -11,14 +11,14 @@ export default function AdminUsers() {
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold">
-              Users
+              Parks  
             </h1>
           </div>
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
-              <span className="max-xs:sr-only">Add User</span>
+              <span className="max-xs:sr-only">Add Park</span>
             </button>
           </div>
         </div>
