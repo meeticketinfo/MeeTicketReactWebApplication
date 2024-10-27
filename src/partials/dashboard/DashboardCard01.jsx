@@ -4,37 +4,24 @@ import CountUp from "react-countup";
 
 function DashboardCard01({ lableName, count, percentageChange, icon: Icon }) {
   return (
-    <div className="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
-      <div className="px-5 py-5">
-        <header className="flex justify-between items-start mb-2">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
-            {lableName}
-          </h2>
-        </header>
-        <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">
-          {/* Sales */}
-        </div>
-        <div className="flex items-start ">
-          <div>
-            <Icon className="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2" />
+    <>
+      <div className="flex flex-col col-span-full sm:col-span-3 xl:col-span-3 bg-white shadow-lg shadow-gray-200 rounded-2xl p-4">
+        <div className="flex items-center">
+          <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gradient-to-br from-blue-v1 to-voilet-500 rounded-lg shadow-md shadow-gray-300">
+            <Icon className="text-3xl font-bold text-white dark:text-gray-100" />
           </div>
-          <div className="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
-            <CountUp end={count} duration={2} prefix="" separator="," />
+          <div className="flex-shrink-0 ml-3">
+            <span className="text-2xl font-bold leading-none text-gray-900">
+              <CountUp end={count} duration={2} prefix="" separator="," />
+            </span>
+            <h3 className="text-base font-normal text-gray-500">{lableName}</h3>
           </div>
-          <div
-            className={`text-sm font-medium px-1.5 rounded-full ${
-              percentageChange >= 0
-                ? "text-green-700 bg-green-500/20"
-                : "text-red-700 bg-red-500/20"
-            }`}
-          >
-            {/* {percentageChange >= 0
-              ? `+${percentageChange}%`
-              : `${percentageChange}%`} */}
-          </div>
+          {/* <div className="flex flex-1 justify-end items-center ml-5 w-0 text-base font-bold text-green-500">
+            +16%
+          </div> */}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

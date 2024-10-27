@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import AgGridTable from "../../../components/tables/AgGridTable";
+// import AgGridTable from "../../../components/tables/AgGridTable";
 
 // import { Formik, Form, Field, ErrorMessage } from "formik";
 // import * as Yup from "yup";
@@ -37,7 +37,7 @@ export default function AdminUsersTable() {
             <button className="bg-blue-600 text-white rounded px-4 py-1 hover:bg-blue-700" onClick={addNewUser}>Add New</button>
           </div>
 
-         <AgGridTable/>
+         {/* <AgGridTable/> */}
         </div>
       </div>
     </AdminLayout>
