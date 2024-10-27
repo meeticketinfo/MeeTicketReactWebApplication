@@ -72,42 +72,60 @@ function Dashboard() {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       sortable: false,
-      filter: false,
+      // filter: false,
       width: 100,
+      headerClass: "bg-gray-50 text-gray-400",
     },
     {
       field: "date",
       headerName: "Date",
       sortable: true,
-      filter: true,
+      // filter: true,
       flex: 1,
+      headerClass: "bg-gray-50 text-gray-400",
     },
     {
       field: "bookings",
       headerName: "Total Bookings",
       sortable: true,
-      filter: true,
+      // filter: true,
       flex: 1,
+      headerClass: "bg-gray-50 text-gray-400",
     },
     {
       field: "Adults",
       headerName: "Adults",
       sortable: true,
-      filter: true,
+      // filter: true,
       flex: 1,
+      headerClass: "bg-gray-50 text-gray-400",
     },
     {
       field: "children",
       headerName: "Children",
       sortable: true,
-      filter: true,
+      // filter: true,
       flex: 1,
+      headerClass: "bg-gray-50 text-gray-400",
     },
     {
       field: "totalAmount",
       headerName: "Total Amount",
       sortable: true,
-      filter: true,
+      // filter: true,
+      flex: 1,
+      headerClass: "bg-gray-50 text-gray-400",
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <span className="total-value-renderer">
+          <span></span>
+          <button type="button" className="">view</button>
+        </span>
+      ),
+      headerClass: "bg-gray-50 text-gray-400",
       flex: 1,
     },
   ]);
