@@ -40,7 +40,7 @@ export default function FacilityCreate() {
 
   return (
     <div className="container mx-auto mt-10">
-      <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2>
+      {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
       
       <div className="bg-white shadow-md rounded-lg mb-6">
         <div className="flex justify-between mb-6 bg-[#f8f9fa] p-2 border-b-2">

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logoIcon from "../images/Meesava-icon1.png";
 import { RiDashboard3Fill } from "react-icons/ri";
@@ -14,7 +15,8 @@ import { CgProfile } from "react-icons/cg";
 import { TbPasswordFingerprint } from "react-icons/tb";
 import { TbLogout2 } from "react-icons/tb";
 import { MdOutlineCalendarMonth } from "react-icons/md";
-
+import { MdOutlineWorkOff } from "react-icons/md";
+import { MdOutlineWorkHistory } from "react-icons/md";
 
 function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const location = useLocation();
@@ -81,44 +83,37 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Parks",
-          icon: null,
-          // icon: MdOutlineForest,
+          icon: MdOutlineForest,
           path: "/park-management",
         },
         {
           title: "Users",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/user-management",
         },
         {
           title: "facilites",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/facilites",
         },
         {
           title: "service ",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/service",
         },
         {
           title: "service varient ",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/service-varient",
         },
         {
           title: "entry scan users ",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/entry-scan-users",
         },
         {
           title: "payments",
-          // icon: FaUsers,
-          icon: null,
+          icon: FaUsers,
           path: "/payments",
         },
       ],
@@ -132,14 +127,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Bookings",
-          // icon: IoTicketOutline,
-          icon: null,
+          icon: IoTicketOutline,
           path: "/bookings",
         },
         {
           title: "User Wise",
-          // icon: FaChalkboardUser,
-          icon: null,
+          icon: FaChalkboardUser,
           path: "/user-wise",
         },
       ],
@@ -153,15 +146,13 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "days",
-          // icon: CgProfile,
-          icon: null,
-          path: "/days",
+          icon: MdOutlineWorkHistory,
+          path: "/working-days",
         },
         {
           title: "Holydays",
-          // icon: TbPasswordFingerprint,
-          icon: null,
-          path: "/holydays",
+          icon: MdOutlineWorkOff,
+          path: "/holidays",
         },
       ],
     },
@@ -174,14 +165,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       subItems: [
         {
           title: "Profile",
-          // icon: CgProfile,
-          icon: null,
+          icon: CgProfile,
           path: "/my-profile",
         },
         {
           title: "Change Password",
-          // icon: TbPasswordFingerprint,
-          icon: null,
+          icon: TbPasswordFingerprint,
           path: "/change-password",
         },
       ],
@@ -232,7 +221,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           </button>
           {/* Logo */}
           <NavLink end to="/" className="block">
-            <img alt="site-logo" src={logoIcon} width={80} height={80} />
+            <img alt="site-logo" src={logoIcon} width={60} height={60} />
           </NavLink>
         </div>
 
@@ -316,7 +305,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                                     <div className="flex items-center">
                                       {subItem.icon && (
                                         <subItem.icon
-                                          className={`shrink-0 text-[22px] ${
+                                          className={`shrink-0 text-[14px] ${
                                             pathname.includes(subItem.path)
                                               ? "text-violet-500"
                                               : "text-gray-400 dark:text-gray-500"
@@ -341,7 +330,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                       to={item.path}
                       className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150 ${
                         pathname.includes(item.path)
-                          ? "text-gray-100 "
+                          ? "text-gray-200 bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] "
                           : " text-gray-300 dark:hover:text-white"
                       }`}
                     >
