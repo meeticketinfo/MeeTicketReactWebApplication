@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import AdminUsers from "./pages/admin/users/AdminUsers";
 import AdminParks from "./pages/admin/parks/AdminParks";
 import AdminFacilities from "./pages/admin/facilities/AdminFacilities";
+import WorkingDays from "./pages/admin/working_days/WorkingDays";
+import Holidays from "./pages/admin/holidays/Holidays";
 
 function App() {
   const location = useLocation();
@@ -30,6 +32,9 @@ function App() {
         <Route exact path="service-varient" element={<AdminParks />} />
         <Route exact path="entry-scan-users" element={<AdminParks />} />
         <Route exact path="payments" element={<AdminParks />} />
+        {/* working days */}
+        <Route exact path="/working-days" element={<WorkingDays />} />
+        <Route exact path="/holidays" element={<Holidays />} />
       </Routes>
     </>
   );
