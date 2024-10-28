@@ -24,7 +24,7 @@ export default function AdminFacilities() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid-cols-12 gap-6">
           <FacilityCreate />
           <FacilityList />
         </div>
