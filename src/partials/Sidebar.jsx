@@ -1,32 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logoIcon from "../images/Meesava-icon1.png";
-import { RiDashboard3Fill } from "react-icons/ri";
-import { CgDatabase } from "react-icons/cg";
-import { MdOutlineForest } from "react-icons/md";
-import { FaUsers } from "react-icons/fa6";
-import { IoTicketOutline } from "react-icons/io5";
-import SidebarLinkGroup from "./SidebarLinkGroup";
-import { FaChalkboardUser } from "react-icons/fa6";
-import { HiOutlineDocumentReport } from "react-icons/hi";
-import { RiAccountPinCircleFill } from "react-icons/ri";
-import { CgProfile } from "react-icons/cg";
-import { TbPasswordFingerprint } from "react-icons/tb";
-import { TbLogout2 } from "react-icons/tb";
-import { MdOutlineCalendarMonth } from "react-icons/md";
-import { MdOutlineWorkOff } from "react-icons/md";
-import { MdOutlineWorkHistory } from "react-icons/md";
 
-function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
+import SidebarLinkGroup from "./SidebarLinkGroup";
+
+import { TbLogout2 } from "react-icons/tb";
+
+import useSidebarStore from "../store/sidebarStore";
+import sidebarItems from "./sidebarItems";
+
+function Sidebar({ variant = "default" }) {
   const location = useLocation();
   const { pathname } = location;
 
   const trigger = useRef(null);
   const sidebar = useRef(null);
 
-  const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
+  const sidebarOpen = useSidebarStore((state) => state.sidebarOpen);
+  const setSidebarOpen = useSidebarStore((state) => state.setSidebarOpen);
+  const sidebarExpanded = useSidebarStore((state) => state.sidebarExpanded);
+  const setSidebarExpanded = useSidebarStore(
+    (state) => state.setSidebarExpanded
   );
 
   // close on click outside
@@ -43,7 +37,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
     };
     document.addEventListener("click", clickHandler);
     return () => document.removeEventListener("click", clickHandler);
-  });
+  }, [sidebarOpen, setSidebarOpen]);
 
   // close if the esc key is pressed
   useEffect(() => {
@@ -53,128 +47,15 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
     };
     document.addEventListener("keydown", keyHandler);
     return () => document.removeEventListener("keydown", keyHandler);
-  });
+  }, [sidebarOpen, setSidebarOpen]);
 
   useEffect(() => {
-    localStorage.setItem("sidebar-expanded", sidebarExpanded);
     if (sidebarExpanded) {
       document.querySelector("body").classList.add("sidebar-expanded");
     } else {
       document.querySelector("body").classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
-
-  const sidebarItems = [
-    {
-      title: "Dashboard",
-      icon: RiDashboard3Fill,
-      path: "/dashboard",
-      gradientClass:
-        "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-      subItems: [],
-    },
-    {
-      title: "Masters",
-      icon: CgDatabase,
-      path: "",
-      gradientClass:
-        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-      subItems: [
-        {
-          title: "Parks",
-          icon: MdOutlineForest,
-          path: "/park-management",
-        },
-        {
-          title: "Users",
-          icon: FaUsers,
-          path: "/user-management",
-        },
-        {
-          title: "facilites",
-          icon: FaUsers,
-          path: "/facilites",
-        },
-        {
-          title: "service ",
-          icon: FaUsers,
-          path: "/service",
-        },
-        {
-          title: "service varient ",
-          icon: FaUsers,
-          path: "/service-varient",
-        },
-        {
-          title: "entry scan users ",
-          icon: FaUsers,
-          path: "/entry-scan-users",
-        },
-        {
-          title: "payments",
-          icon: FaUsers,
-          path: "/payments",
-        },
-      ],
-    },
-    {
-      title: "Reports",
-      icon: HiOutlineDocumentReport,
-      path: "",
-      gradientClass:
-        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-      subItems: [
-        {
-          title: "Bookings",
-          icon: IoTicketOutline,
-          path: "/bookings",
-        },
-        {
-          title: "User Wise",
-          icon: FaChalkboardUser,
-          path: "/user-wise",
-        },
-      ],
-    },
-    {
-      title: "Dates",
-      icon: MdOutlineCalendarMonth,
-      path: "",
-      gradientClass:
-        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-      subItems: [
-        {
-          title: "days",
-          icon: MdOutlineWorkHistory,
-          path: "/working-days",
-        },
-        {
-          title: "Holydays",
-          icon: MdOutlineWorkOff,
-          path: "/holidays",
-        },
-      ],
-    },
-    {
-      title: "My Account",
-      icon: RiAccountPinCircleFill,
-      path: "",
-      gradientClass:
-        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-      subItems: [
-        {
-          title: "Profile",
-          icon: CgProfile,
-          path: "/my-profile",
-        },
-        {
-          title: "Change Password",
-          icon: TbPasswordFingerprint,
-          path: "/change-password",
-        },
-      ],
-    },
-  ];
 
   return (
     <div className="min-w-fit">
@@ -233,7 +114,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
                 className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6"
                 aria-hidden="true"
               >
-                •••
+                {/* ••• */}
               </span>
             </h3>
             <ul className="mt-3">
@@ -353,18 +234,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           </div>
         </div>
 
-        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+        {/* <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
           <div className="pl-4 pr-3 py-2">
-            <button
-              className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
-              onClick={() => setSidebarExpanded(!sidebarExpanded)}
-            >
-              <span className="sr-only">Expand / collapse sidebar</span>
+            <button className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
               <TbLogout2 className="shrink-0 text-[22px]" />
-              <span className="">Log out</span>
+              {!sidebarOpen && <span className="">Log out</span>}
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

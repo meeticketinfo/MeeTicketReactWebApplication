@@ -8,7 +8,10 @@ const AgGridTable = ({ rowData, columnDefs }) => {
   const isPaginationEnabled = rowData.length > 10;
 
   const gridHeight = isPaginationEnabled ? 400 : 300;
-
+  const gridOptions = {
+    paginationPageSize: 10,
+    paginationPageSizeOptions: [10, 20, 50, 100],
+  };
   return (
     <div
       className="ag-theme-alpine bg-blue-v1"
@@ -18,14 +21,15 @@ const AgGridTable = ({ rowData, columnDefs }) => {
         rowData={rowData}
         columnDefs={columnDefs}
         pagination={isPaginationEnabled}
-        paginationPageSize={10}
-        paginationPageSizeOptions={[5, 10, 20, 50, 100]}
+        gridOptions={gridOptions}
       />
     </div>
   );
 };
+
 AgGridTable.propTypes = {
   rowData: PropTypes.array.isRequired,
   columnDefs: PropTypes.array.isRequired,
 };
+
 export default AgGridTable;
