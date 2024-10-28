@@ -16,7 +16,7 @@ const Login = () => {
     setTimeout(() => {
       setLoading(false);
       navigate("/dashboard"); // Navigate to dashboard after 2 seconds
-    }, 2000);
+    }, 1000);
   };
 
   return (

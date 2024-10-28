@@ -1,4 +1,4 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import "./css/style.css";
 import "./charts/ChartjsConfig";
@@ -29,7 +29,7 @@ function App() {
         <Route exact path="/user-management/add" element={<AdminUsers />} />
         <Route exact path="/bookings" element={<AdminUsers />} />
         <Route exact path="/user-wise" element={<AdminUsers />} />
-        <Route exact path="/user-management" element={<AdminUsersTable />} />
+        <Route exact path="/user-management" element={<AdminUsers />} />
         <Route exact path="facilites" element={<AdminFacilities />} />
         <Route exact path="service" element={<AdminParks />} />
         <Route exact path="service-varient" element={<AdminParks />} />
