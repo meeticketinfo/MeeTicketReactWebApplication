@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logoIcon from "../images/Meesava-icon1.png";
 import { RiDashboard3Fill } from "react-icons/ri";
