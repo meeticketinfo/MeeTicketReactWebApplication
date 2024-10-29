@@ -1,8 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logoIcon from "../images/Meesava-icon1.png";
-
+import { RiDashboard3Fill } from "react-icons/ri";
+import { CgDatabase } from "react-icons/cg";
+import { MdOutlineForest } from "react-icons/md";
+import { FaUsers } from "react-icons/fa6";
+import { IoTicketOutline } from "react-icons/io5";
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import { FaChalkboardUser } from "react-icons/fa6";
+import { HiOutlineDocumentReport } from "react-icons/hi";
+import { RiAccountPinCircleFill } from "react-icons/ri";
+import { CgProfile } from "react-icons/cg";
+import { TbPasswordFingerprint } from "react-icons/tb";
+import { TbLogout2 } from "react-icons/tb";
+import { MdOutlineCalendarMonth } from "react-icons/md";
+import { MdOutlineWorkOff } from "react-icons/md";
+import { MdOutlineWorkHistory } from "react-icons/md";
 
 function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
   const location = useLocation();
@@ -51,8 +65,120 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
     }
   }, [sidebarExpanded]);
 
+  const sidebarItems = [
+    {
+      title: "Dashboard",
+      icon: RiDashboard3Fill,
+      path: "/dashboard",
+      gradientClass:
+        "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [],
+    },
+    {
+      title: "Masters",
+      icon: CgDatabase,
+      path: "",
+      gradientClass:
+        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [
+        {
+          title: "Parks",
+          icon: MdOutlineForest,
+          path: "/park-management",
+        },
+        {
+          title: "Users",
+          icon: FaUsers,
+          path: "/user-management",
+        },
+        {
+          title: "facilites",
+          icon: FaUsers,
+          path: "/facilites",
+        },
+        {
+          title: "service ",
+          icon: FaUsers,
+          path: "/service",
+        },
+        {
+          title: "service varient ",
+          icon: FaUsers,
+          path: "/service-varient",
+        },
+        {
+          title: "entry scan users ",
+          icon: FaUsers,
+          path: "/entry-scan-users",
+        },
+        {
+          title: "payments",
+          icon: FaUsers,
+          path: "/payments",
+        },
+      ],
+    },
+    {
+      title: "Reports",
+      icon: HiOutlineDocumentReport,
+      path: "",
+      gradientClass:
+        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [
+        {
+          title: "Bookings",
+          icon: IoTicketOutline,
+          path: "/bookings",
+        },
+        {
+          title: "User Wise",
+          icon: FaChalkboardUser,
+          path: "/user-wise",
+        },
+      ],
+    },
+    {
+      title: "Dates",
+      icon: MdOutlineCalendarMonth,
+      path: "",
+      gradientClass:
+        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [
+        {
+          title: "days",
+          icon: MdOutlineWorkHistory,
+          path: "/working-days",
+        },
+        {
+          title: "Holydays",
+          icon: MdOutlineWorkOff,
+          path: "/holidays",
+        },
+      ],
+    },
+    {
+      title: "My Account",
+      icon: RiAccountPinCircleFill,
+      path: "",
+      gradientClass:
+        "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+      subItems: [
+        {
+          title: "Profile",
+          icon: CgProfile,
+          path: "/my-profile",
+        },
+        {
+          title: "Change Password",
+          icon: TbPasswordFingerprint,
+          path: "/change-password",
+        },
+      ],
+    },
+  ];
+
   return (
-    <div className="min-w-fit ">
+    <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}
       <div
         className={`fixed inset-0 bg-gray-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
@@ -65,7 +191,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-blue-v1 dark:bg-gray-800 p-4 transition-all duration-200 ease-in-out ${
+        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         } ${
           variant === "v2"
@@ -74,11 +200,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         }`}
       >
         {/* Sidebar header */}
-        <div className="flex justify-between mb-10 pr-3 sm:px-2">
+        <div className="flex justify-center my-3 pr-3 sm:px-2">
           {/* Close button */}
           <button
+            type="button"
             ref={trigger}
-            className="lg:hidden text-gray-500 hover:text-gray-400"
+            className="lg:hidden text-gray-500 hover:text-gray-400 outline-none "
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}
@@ -94,7 +221,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
           </button>
           {/* Logo */}
           <NavLink end to="/" className="block">
-            <img src={logoIcon} width={80} height={80} />
+            <img alt="site-logo" src={logoIcon} width={60} height={60} />
           </NavLink>
         </div>
 
@@ -102,139 +229,141 @@ function Sidebar({ sidebarOpen, setSidebarOpen, variant = "default" }) {
         <div className="space-y-8">
           {/* Pages group */}
           <div>
-            <h3 className="text-xs uppercase text-gray-400 dark:text-gray-500 font-semibold pl-3">
+            <h3 className="text-xs uppercase text-gray-200 dark:text-gray-500 font-semibold pl-3">
               <span
                 className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6"
                 aria-hidden="true"
               >
                 •••
               </span>
-              <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                Pages
-              </span>
             </h3>
             <ul className="mt-3">
-              {/* Dashboard */}
-              <li
-                className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0 bg-[linear-gradient(135deg,var(--tw-gradient-stops))] ${
-                  pathname.includes("dashboard") &&
-                    "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]"
-                }`}
-              >
-                <NavLink
-                  end
-                  to="/dashboard"
-                  className={`block dark:text-gray-100 truncate transition duration-150 ${
-                    pathname.includes("dashboard")
-                      ? "text-white"
-                      : "hover:text-gray-900 dark:hover:text-white"
+              {sidebarItems.map((item, index) => (
+                <li
+                  key={index}
+                  className={`rounded-lg mb-0.5 pb-2 last:mb-0 ${
+                    item.subItems.some((subItem) =>
+                      pathname.startsWith(subItem.path)
+                    )
+                      ? "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]"
+                      : ""
                   }`}
                 >
-                  <div className="flex items-center">
-                    <svg
-                      className={`shrink-0 fill-current ${
-                        pathname.includes("dashboard")
-                          ? "text-violet-500"
-                          : "text-gray-400 dark:text-gray-500"
-                      }`}
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
+                  {item.subItems.length > 0 ? (
+                    <SidebarLinkGroup
+                      activecondition={item.subItems.some((subItem) =>
+                        pathname.startsWith(subItem.path)
+                      )}
                     >
-                      <path d="M6.649 1.018a1 1 0 0 1 .793 1.171L6.997 4.5h3.464l.517-2.689a1 1 0 1 1 1.964.378L12.498 4.5h2.422a1 1 0 0 1 0 2h-2.807l-.77 4h2.117a1 1 0 1 1 0 2h-2.501l-.517 2.689a1 1 0 1 1-1.964-.378l.444-2.311H5.46l-.517 2.689a1 1 0 1 1-1.964-.378l.444-2.311H1a1 1 0 1 1 0-2h2.807l.77-4H2.46a1 1 0 0 1 0-2h2.5l.518-2.689a1 1 0 0 1 1.17-.793ZM9.307 10.5l.77-4H6.612l-.77 4h3.464Z" />
-                    </svg>
-                    <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                      Dashboard
-                    </span>
-                  </div>
-                </NavLink>
-              </li>
-              {/* Masters */}
-              <SidebarLinkGroup
-                activecondition={
-                  pathname.includes("park-management") ||
-                  pathname.includes("user-management")
-                }
-              >
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <a
-                        href="#0"
-                        className={`block text-gray-400 dark:text-gray-100 truncate transition duration-150 ${
-                          pathname.includes("park-management") ||
-                          pathname.includes("user-management")
-                            ? "text-white"
-                            : "hover:text-gray-600 dark:hover:text-white"
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleClick();
-                          setSidebarExpanded(true);
-                        }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                              Masters
-                            </span>
+                      {(handleClick, open) => (
+                        <>
+                          <a
+                            href="#0"
+                            className="px-3 py-2 block text-gray-300 truncate transition duration-150  dark:hover:text-white"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleClick();
+                              setSidebarExpanded(true);
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <item.icon className="shrink-0 text-[22px]" />
+                                <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                  {item.title}
+                                </span>
+                              </div>
+                              <div className="flex shrink-0 ml-2">
+                                <svg
+                                  className={`w-3 h-3 ml-1 fill-current text-gray-400 dark:text-gray-500 ${
+                                    open && "rotate-180"
+                                  }`}
+                                  viewBox="0 0 12 12"
+                                >
+                                  <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                                </svg>
+                              </div>
+                            </div>
+                          </a>
+                          <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                            {/*  Divider */}
+                            <ul className={`mt-1 ${!open && "hidden"}`}>
+                              {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
+                              {item.subItems.map((subItem, subIndex) => (
+                                <li key={subIndex} className=" mb-1 last:mb-0">
+                                  <NavLink
+                                    end
+                                    to={subItem.path}
+                                    className={({ isActive }) =>
+                                      `block truncate transition duration-150 ease-in-out rounded-l-lg ml-8 px-3 py-2 font-medium text-sm ${
+                                        isActive
+                                          ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
+                                          : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
+                                      }`
+                                    }
+                                  >
+                                    <div className="flex items-center">
+                                      {subItem.icon && (
+                                        <subItem.icon
+                                          className={`shrink-0 text-[14px] ${
+                                            pathname.includes(subItem.path)
+                                              ? "text-violet-500"
+                                              : "text-gray-400 dark:text-gray-500"
+                                          }`}
+                                        />
+                                      )}
+                                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                        {subItem.title}
+                                      </span>
+                                    </div>
+                                  </NavLink>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          {/* Icon */}
-                          <div className="flex shrink-0 ml-2">
-                            <svg
-                              className={`w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500 ${
-                                open && "rotate-180"
-                              }`}
-                              viewBox="0 0 12 12"
-                            >
-                              <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </a>
-                      <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                        <ul className={`pl-8 mt-1 ${!open && "hidden"}`}>
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/park-management"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-violet-500"
-                                  : "text-gray-400 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Parks
-                              </span>
-                            </NavLink>
-                          </li>
-
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/user-management"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-violet-500"
-                                  : "text-gray-400 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Users
-                              </span>
-                            </NavLink>
-                          </li>
-                        </ul>
+                        </>
+                      )}
+                    </SidebarLinkGroup>
+                  ) : (
+                    <NavLink
+                      end
+                      to={item.path}
+                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150 ${
+                        pathname.includes(item.path)
+                          ? "text-gray-200 bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] "
+                          : " text-gray-300 dark:hover:text-white"
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <item.icon
+                          className={`shrink-0 text-[22px] ${
+                            pathname.includes(item.path)
+                              ? "text-violet-500"
+                              : "text-gray-400 dark:text-gray-500"
+                          }`}
+                        />
+                        <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                          {item.title}
+                        </span>
                       </div>
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>
+                    </NavLink>
+                  )}
+                </li>
+              ))}
             </ul>
+          </div>
+        </div>
+
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+          <div className="pl-4 pr-3 py-2">
+            <button
+              className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
+              onClick={() => setSidebarExpanded(!sidebarExpanded)}
+            >
+              <span className="sr-only">Expand / collapse sidebar</span>
+              <TbLogout2 className="shrink-0 text-[22px]" />
+              <span className="">Log out</span>
+            </button>
           </div>
         </div>
       </div>
