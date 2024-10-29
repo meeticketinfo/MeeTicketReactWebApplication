@@ -5,98 +5,142 @@ import AgGridTable from "../tables/AgGridTable";
 const FacilityList = () => {
   const [rowData] = useState([
     {
-      date: "2024-10-27",
-      bookings: 15,
-      Adults: 25,
-      children: 10,
-      totalAmount: 1500,
+      facilityName: "Community Park",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
     },
     {
-      date: "2024-10-26",
-      bookings: 20,
-      Adults: 35,
-      children: 12,
-      totalAmount: 2000,
+      facilityName: "City Library",
+      type: "Indoor",
+      status: "Closed",
+      availability: "N/A",
     },
     {
-      date: "2024-10-25",
-      bookings: 10,
-      Adults: 18,
-      children: 5,
-      totalAmount: 1200,
+      facilityName: "Swimming Pool",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
     },
-    // Add more rows as needed
+    {
+      facilityName: "Fitness Center",
+      type: "Indoor",
+      status: "Open",
+      availability: "Limited",
+    },
+    {
+      facilityName: "Basketball Court",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Art Gallery",
+      type: "Indoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Soccer Field",
+      type: "Outdoor",
+      status: "Closed",
+      availability: "N/A",
+    },
+    {
+      facilityName: "Dance Studio",
+      type: "Indoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Tennis Court",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Music Room",
+      type: "Indoor",
+      status: "Closed",
+      availability: "N/A",
+    },
+    {
+      facilityName: "Skate Park",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Convention Center",
+      type: "Indoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Playground",
+      type: "Outdoor",
+      status: "Open",
+      availability: "Available",
+    },
+    {
+      facilityName: "Gymnasium",
+      type: "Indoor",
+      status: "Open",
+      availability: "Limited",
+    },
+    {
+      facilityName: "Botanical Garden",
+      type: "Outdoor",
+      status: "Closed",
+      availability: "N/A",
+    },
+    {
+      facilityName: "Meeting Room",
+      type: "Indoor",
+      status: "Open",
+      availability: "Available",
+    },
   ]);
 
   const [columnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      sortable: false,
-      // filter: false,
       width: 100,
-      headerClass: "bg-gray-50 text-gray-400",
+      headerClass: "text-blue-v2",
     },
     {
-      field: "date",
-      headerName: "Date",
-      sortable: true,
-      // filter: true,
+      field: "facilityName",
+      headerName: "Facility Name",
       flex: 1,
-      headerClass: "bg-gray-50 text-gray-400",
+      headerClass: "text-blue-v2",
+    },
+    { field: "type", headerName: "Type", flex: 1, headerClass: "text-blue-v2" },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      headerClass: "text-blue-v2",
     },
     {
-      field: "bookings",
-      headerName: "Total Bookings",
-      sortable: true,
-      // filter: true,
+      field: "availability",
+      headerName: "Availability",
       flex: 1,
-      headerClass: "bg-gray-50 text-gray-400",
-    },
-    {
-      field: "Adults",
-      headerName: "Adults",
-      sortable: true,
-      // filter: true,
-      flex: 1,
-      headerClass: "bg-gray-50 text-gray-400",
-    },
-    {
-      field: "children",
-      headerName: "Children",
-      sortable: true,
-      // filter: true,
-      flex: 1,
-      headerClass: "bg-gray-50 text-gray-400",
-    },
-    {
-      field: "totalAmount",
-      headerName: "Total Amount",
-      sortable: true,
-      // filter: true,
-      flex: 1,
-      headerClass: "bg-gray-50 text-gray-400",
+      headerClass: "text-blue-v2",
     },
     {
       headerName: "Actions",
       field: "actions",
-      cellRenderer: (params) => (
-        <span className="total-value-renderer">
-          <span></span>
-          <button type="button" className="">
-            view
-          </button>
-        </span>
-      ),
-      headerClass: "bg-gray-50 text-gray-400",
+      cellRenderer: () => <button>View</button>,
       flex: 1,
+      headerClass: "text-blue-v2",
     },
   ]);
   return (
     <>
-      <DashboardCard07>
+      {/* <DashboardCard07> */}
         <AgGridTable rowData={rowData} columnDefs={columnDefs} />
-      </DashboardCard07>
+      {/* </DashboardCard07> */}
     </>
   );
 };
