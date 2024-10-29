@@ -12,14 +12,14 @@ function SidebarLinkGroup({
   }
 
   return (
-    <ul
-      className={` rounded-lg mb-0.5 last:mb-0 transition duration-150 ease-in-out ${
+    <li
+      className={`pl-4 pr-3 py-2 rounded-lg mb-0.5 last:mb-0  ${
         activecondition &&
         "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]"
       }`}
     >
       {children(handleClick, open)}
-    </ul>
+    </li>
   );
 }
 
