@@ -10,6 +10,10 @@ import AdminUsersTable from "./pages/admin/users/AdminUserTable";
 import WorkingDays from "./pages/admin/working_days/WorkingDays";
 import Holidays from "./pages/admin/holidays/Holidays";
 import Login from "./auth/login/Login";
+import ServiceVariant from "./pages/admin/service_varient/serviceVarient";
+import EntryScanUsers from "./pages/admin/entry_Scan_users/EntryScanUsers";
+import Payments from "./pages/admin/payments/Payments";
+import Services from "./pages/admin/services/services";
 
 function App() {
   const location = useLocation();
@@ -31,10 +35,10 @@ function App() {
         <Route exact path="/user-wise" element={<AdminUsers />} />
         <Route exact path="/user-management" element={<AdminUsers />} />
         <Route exact path="facilites" element={<AdminFacilities />} />
-        <Route exact path="service" element={<AdminParks />} />
-        <Route exact path="service-varient" element={<AdminParks />} />
-        <Route exact path="entry-scan-users" element={<AdminParks />} />
-        <Route exact path="payments" element={<AdminParks />} />
+        <Route exact path="/service" element={<Services />} />
+        <Route exact path="/service-varient" element={<ServiceVariant />} />
+        <Route exact path="/entry-scan-users" element={<EntryScanUsers />} />
+        <Route exact path="/payments" element={<Payments />} />
         {/* working days */}
         <Route exact path="/working-days" element={<WorkingDays />} />
         <Route exact path="/holidays" element={<Holidays />} />
