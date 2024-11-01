@@ -32,7 +32,7 @@ export const API_ENDPOINTS = {
     USER: {
       GET_USERS: `Master/GetAllAdminUser`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
-      ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
+      ADD_NEW_USER: `${API_BASE_URL}Master/AddNewAdminUser`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },

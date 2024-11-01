@@ -4,6 +4,7 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
 export const useUsersStore = create((set) => ({
   allUsers: [],
+  isSaveUserDetailsLoading: false,
   isFetchAllUsersLoading: false,
   allScannedUsers: [],
   isFetchAllScannedUsersLoading: false,
@@ -53,4 +54,30 @@ export const useUsersStore = create((set) => ({
       set({ error: error.message, isFetchAllScannedUsersLoading: false });
     }
   },
+
+  saveUserDetails: async (UserData, isUpdate = false) => {
+    set({ isSaveUserDetailsLoading: true });
+    try {
+      const url = isUpdate
+        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+        : API_ENDPOINTS.MASTERS.USER.ADD_NEW_USER;
+      const method = isUpdate ? "put" : "post";
+
+      const response = await apiService[method](url, UserData);
+
+      set({
+        UserDetails: response.data,
+        isSaveUserDetailsLoading: false,
+        success: "User saved successfully.",
+      });
+      return { success: true, data: response.data };
+    } catch (error) {
+      set({ error: error.message, isSaveUserDetailsLoading: false });
+      throw error;
+    }
+  },
+
 }));
+
+
+
