@@ -57,5 +57,12 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
+    PAYMENT: {
+      GET_PAYMENTS: `Master/GetAllServiceVarients`,
+      UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
+      ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
+      DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
+      GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+    },
   },
 };

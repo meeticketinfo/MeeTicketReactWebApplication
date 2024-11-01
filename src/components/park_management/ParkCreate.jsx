@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useParkStore } from "../../store/masters/parksStore";
+import axios from "axios";
 
 const ParkCreate = () => {
   const { saveParkDetails, isSaveParkDetailsLoading } = useParkStore();
@@ -19,9 +20,11 @@ const ParkCreate = () => {
     longitude: "",
     latitude: "",
     parkSize: "",
-    active: "0",
+    isActive: null,
     description: "",
+    imageId: null,
     // file1: null,
+    imageUrl: null,
   };
 
   // Validation schema for the form
@@ -51,14 +54,16 @@ const ParkCreate = () => {
     saveParkDetails
   ) => {
     try {
-      // Call the saveParkDetails function from the store
-      const result = await saveParkDetails(values, false);
-      if (result.success) {
-        resetForm();
-        alert("Park created successfully!");
-      }
+      // Convert form values to URL parameters
+      const params = new URLSearchParams(values).toString();
+      // Make the Axios POST request with parameters in the URL
+      const response = await axios.post(
+        `https://meeticketservice-dev-dotnet.azurewebsites.net/api/Master/AddNewPark`,values
+      );
+      console.log("Park created successfully:", response.data);
+      resetForm(); // Reset form after successful submission
     } catch (error) {
-      alert("Error creating park. Please try again.");
+      console.error("Error creating park:", error);
     } finally {
       setSubmitting(false);
     }
@@ -341,7 +346,7 @@ const ParkCreate = () => {
                   <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
-                    name="active"
+                    name="isActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
@@ -349,8 +354,8 @@ const ParkCreate = () => {
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                   </Field>
                   <ErrorMessage
                     name="active"
