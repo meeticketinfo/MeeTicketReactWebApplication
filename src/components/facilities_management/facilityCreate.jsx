@@ -1,42 +1,59 @@
-// import React from "react";
 
-// const FacilityCreate = () => {
-//   return <> create</>;
-// };
-// export default FacilityCreate;
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "tailwindcss/tailwind.css"; // Ensure Tailwind is imported
 import { useNavigate } from "react-router-dom";
+import { useFacilityStore } from "../../store/masters/facilitiesStore";
 
 // Validation schema using Yup
-const validationSchema = Yup.object({
-  facilityName: Yup.string().required("Please enter facility name."),
-  displayName: Yup.string().required("Please enter display name."),
-  contactName: Yup.string().required("Please enter contact name."),
-  contactEmail: Yup.string()
-    .email("Invalid email format")
-    .required("Please enter contact email."),
-  contactNumber: Yup.string()
-    .matches(/^\d+$/, "Contact number must be numeric")
-    .required("Contact number is required"),
-  capacity: Yup.number()
-    .positive("Capacity must be a positive number")
-    .required("Please enter capacity."),
-  lastMaintenanceDate: Yup.date().required(
-    "Please select last maintenance date."
-  ),
-  installationDate: Yup.date().required("Please select installation date."),
-  availabilityStatus: Yup.string().required(
-    "Please select availability status."
-  ),
-  facilityCondition: Yup.string().required("Please enter facility condition."),
-  openTime: Yup.string().required("Please select open time."),
-  closeTime: Yup.string().required("Please select close time."),
-});
 
-export default function FacilityCreate() {
+
+const FacilityCreate = () => {
+  const { saveFacilityDetails, isSaveFacilityDetailsLoading } = useFacilityStore();
+
+  const onSubmit = async (
+    values,
+    { setSubmitting, resetForm },
+    saveFacilityDetails
+  ) => {
+    try {
+      // Call the saveParkDetails function from the store
+      const result = await saveFacilityDetails(values, false);
+      if (result.success) {
+        resetForm();
+        alert("facility created successfully!");
+      }
+    } catch (error) {
+      alert("Error creating Facility. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  const validationSchema = Yup.object({
+    // facilityName: Yup.string().required("Please enter facility name."),
+    // displayName: Yup.string().required("Please enter display name."),
+    // contactName: Yup.string().required("Please enter contact name."),
+    // contactEmail: Yup.string()
+    //   .email("Invalid email format")
+    //   .required("Please enter contact email."),
+    // contactNumber: Yup.string()
+    //   .matches(/^\d+$/, "Contact number must be numeric")
+    //   .required("Contact number is required"),
+    // capacity: Yup.number()
+    //   .positive("Capacity must be a positive number")
+    //   .required("Please enter capacity."),
+    // lastMaintenanceDate: Yup.date().required(
+    //   "Please select last maintenance date."
+    // ),
+    // installationDate: Yup.date().required("Please select installation date."),
+    // availabilityStatus: Yup.string().required(
+    //   "Please select availability status."
+    // ),
+    // facilityCondition: Yup.string().required("Please enter facility condition."),
+    // openTime: Yup.string().required("Please select open time."),
+    // closeTime: Yup.string().required("Please select close time."),
+  });
   return (
     <div className="container mx-auto mt-10">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
@@ -44,23 +61,26 @@ export default function FacilityCreate() {
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
         <Formik
           initialValues={{
-            facilityName: "",
+            name: "",
             displayName: "",
             contactName: "",
-            contactEmail: "",
             contactNumber: "",
+            contactEmail: "",
             capacity: "",
-            lastMaintenanceDate: "",
-            installationDate: "",
             availabilityStatus: "",
+            lastMaintenanceDate: "",
             facilityCondition: "",
+            installationDate: "",
             openTime: "",
             closeTime: "",
+            description: "",
+            isActive: "0",
+            parkId: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log("Form data:", values);
-          }}
+          onSubmit={(values, actions) =>
+            onSubmit(values, actions, saveFacilityDetails)
+          }
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
@@ -68,23 +88,22 @@ export default function FacilityCreate() {
                 {/* Facility Name */}
                 <div className="">
                   <label
-                    htmlFor="facilityName"
+                    htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
                     Facility Name
                   </label>
                   <Field
                     type="text"
-                    name="facilityName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Facility Name"
+                    name="name"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Facility Name"
                   />
                   <ErrorMessage
-                    name="facilityName"
+                    name="name"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -101,12 +120,11 @@ export default function FacilityCreate() {
                   <Field
                     type="text"
                     name="displayName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Display Name"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.displayName && touched.displayName
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
                     name="displayName"
@@ -126,40 +144,14 @@ export default function FacilityCreate() {
                   <Field
                     type="text"
                     name="contactName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Contact Name"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactName && touched.contactName
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter Contact Name"
                   />
                   <ErrorMessage
                     name="contactName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Contact Email */}
-                <div className="">
-                  <label
-                    htmlFor="contactEmail"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Contact Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="contactEmail"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Contact Email"
-                  />
-                  <ErrorMessage
-                    name="contactEmail"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -174,17 +166,39 @@ export default function FacilityCreate() {
                     Contact Number
                   </label>
                   <Field
-                    type="text"
+                    type="number"
                     name="contactNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Contact Number"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactNumber && touched.contactNumber
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter Contact Number"
                   />
                   <ErrorMessage
                     name="contactNumber"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+                {/* Contact Email */}
+                <div className="">
+                  <label
+                    htmlFor="contactEmail"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Contact Email
+                  </label>
+                  <Field
+                    type="email"
+                    name="contactEmail"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactEmail && touched.contactEmail
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Contact Email"
+                  />
+                  <ErrorMessage
+                    name="contactEmail"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -201,63 +215,14 @@ export default function FacilityCreate() {
                   <Field
                     type="number"
                     name="capacity"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Capacity"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.capacity && touched.capacity
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter Capacity"
                   />
                   <ErrorMessage
                     name="capacity"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Last Maintenance Date */}
-                <div className="">
-                  <label
-                    htmlFor="lastMaintenanceDate"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Last Maintenance Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="lastMaintenanceDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  />
-                  <ErrorMessage
-                    name="lastMaintenanceDate"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Installation Date */}
-                <div className="">
-                  <label
-                    htmlFor="installationDate"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Installation Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  />
-                  <ErrorMessage
-                    name="installationDate"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -274,11 +239,10 @@ export default function FacilityCreate() {
                   <Field
                     as="select"
                     name="availabilityStatus"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.availabilityStatus && touched.availabilityStatus
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value="available">Available</option>
@@ -286,6 +250,30 @@ export default function FacilityCreate() {
                   </Field>
                   <ErrorMessage
                     name="availabilityStatus"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* Last Maintenance Date */}
+                <div className="">
+                  <label
+                    htmlFor="lastMaintenanceDate"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Last Maintenance Date
+                  </label>
+                  <Field
+                    type="date"
+                    name="lastMaintenanceDate"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.lastMaintenanceDate && touched.lastMaintenanceDate
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter LastMaintenance Date"
+                  />
+                  <ErrorMessage
+                    name="lastMaintenanceDate"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -302,15 +290,38 @@ export default function FacilityCreate() {
                   <Field
                     type="text"
                     name="facilityCondition"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Facility Condition"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.facilityCondition && touched.facilityCondition
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder=" Enter Facility Condition"
                   />
                   <ErrorMessage
                     name="facilityCondition"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* Installation Date */}
+                <div className="">
+                  <label
+                    htmlFor="installationDate"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Installation Date
+                  </label>
+                  <Field
+                    type="date"
+                    name="installationDate"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.installationDate && touched.installationDate
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Installation Date"
+                  />
+                  <ErrorMessage
+                    name="installationDate"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -327,11 +338,11 @@ export default function FacilityCreate() {
                   <Field
                     type="time"
                     name="openTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.openTime && touched.openTime
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Open Time"
                   />
                   <ErrorMessage
                     name="openTime"
@@ -351,16 +362,60 @@ export default function FacilityCreate() {
                   <Field
                     type="time"
                     name="closeTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.closeTime && touched.closeTime
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Close Time"
                   />
                   <ErrorMessage
                     name="closeTime"
                     component="div"
                     className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="col-span-3">
+                  <label className="block text-sm font-medium">
+                    Description
+                  </label>
+                  <Field
+                    as="textarea"
+                    name="description"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.description && touched.description
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter description"
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+
+                  {/* Status */}
+                  <div>
+                  <label className="block text-sm font-medium">Status</label>
+                  <Field
+                    as="select"
+                    name="isActive"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.isActive && touched.isActive
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value="0">Active</option>
+                    <option value="1">Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="isActive"
+                    component="div"
+                    className="text-red-500 text-xs"
                   />
                 </div>
               </div>
@@ -369,9 +424,9 @@ export default function FacilityCreate() {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-300 ease-in-out focus:ring-4 focus:ring-blue-500 focus:outline-none"
-                  disabled={isSubmitting}
+                  disabled={isSaveFacilityDetailsLoading}
                 >
-                  Submit
+                  {isSaveFacilityDetailsLoading ? "Saving..." : "Create Facility"}
                 </button>
               </div>
             </Form>
@@ -381,3 +436,4 @@ export default function FacilityCreate() {
     </div>
   );
 }
+export default FacilityCreate;

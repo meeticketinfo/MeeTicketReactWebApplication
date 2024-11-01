@@ -67,7 +67,7 @@ export const useFacilityStore = create((set) => ({
     try {
       const url = isUpdate
         ? API_ENDPOINTS.MASTERS.Facility.UPDATE_Facility_DETAILS
-        : API_ENDPOINTS.MASTERS.Facility.ADD_NEW_Facility;
+        : API_ENDPOINTS.MASTERS.FACILITY.ADD_NEW_FACILITY;
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, FacilityData);

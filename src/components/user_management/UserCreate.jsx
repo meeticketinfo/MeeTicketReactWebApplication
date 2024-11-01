@@ -9,12 +9,12 @@ const UserCreate = () => {
     firstName: "",
     middleName: "",
     lastName: "",
-    dob: "",
+    dateOfBirth: "",
     emailId: "",
     phoneNumber: "",
     password: "",
-    RoleId: "",
-    isConfirmed: null,
+    roleId: "901a561a-2c54-4f1f-9a40-5aa8b71e2e71",
+    isConfirmed: true,
   };
   const validationSchema = Yup.object({
     
@@ -126,22 +126,22 @@ const UserCreate = () => {
                 {/* DOB Number */}
                 <div>
                   <label
-                    htmlFor="dob"
+                    htmlFor="dateOfBirth"
                     className="block text-xs font-medium text-gray-700"
                   >
                     DOB
                   </label>
                   <Field
                     type="date"
-                    name="dob"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.dob && touched.dob
+                    name="dateOfBirth"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.dateOfBirth && touched.dateOfBirth
                         ? "border-red-500"
                         : "border-gray-300"
                       } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter date of birth"
                   />
                   <ErrorMessage
-                    name="dob"
+                    name="dateOfBirth"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -149,7 +149,7 @@ const UserCreate = () => {
                 {/* Email Id */}
                 <div>
                   <label
-                    htmlFor="dob"
+                    htmlFor="emailId"
                     className="block text-xs font-medium text-gray-700"
                   >
                     Email Id
@@ -178,7 +178,7 @@ const UserCreate = () => {
                     Phone Number
                   </label>
                   <Field
-                    type="number"
+                    type="text"
                     name="phoneNumber"
                     className={`mt-1 block w-full px-2 py-1 border ${errors.phoneNumber && touched.phoneNumber
                         ? "border-red-500"
@@ -222,9 +222,9 @@ const UserCreate = () => {
                   <label className="block text-sm font-medium"> Is Confirmed</label>
                   <Field
                     as="select"
-                    name="active"
+                    name="isConfirmed"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.isConfirmed && touched.isConfirmed
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -234,7 +234,7 @@ const UserCreate = () => {
                     <option value={false}>False</option>
                   </Field>
                   <ErrorMessage
-                    name="active"
+                    name="isConfirmed"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -248,7 +248,7 @@ const UserCreate = () => {
                   className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
                   disabled={isSaveUserDetailsLoading}
                 >
-                  {isSaveUserDetailsLoading ? "Saving..." : "Create Park"}
+                  {isSaveUserDetailsLoading ? "Saving..." : "Create User"}
                 </button>
               </div>
             </Form>
