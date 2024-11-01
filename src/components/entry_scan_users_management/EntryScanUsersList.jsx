@@ -1,70 +1,88 @@
-import React, { useState } from "react"
-import AgGridTable from "../tables/AgGridTable"
+import React, { useEffect, useState } from "react";
+import AgGridTable from "../tables/AgGridTable";
+import { useUsersStore } from "../../store/masters/usersStore";
 
 const EntryScanUserList = () => {
-    const [rowData] = useState([
-        { name: "John Doe", entryTime: "09:00 AM", exitTime: "05:00 PM", status: "Checked Out" },
-        { name: "Jane Smith", entryTime: "09:15 AM", exitTime: "05:10 PM", status: "Checked Out" },
-        { name: "Alice Johnson", entryTime: "08:50 AM", exitTime: "05:00 PM", status: "Checked Out" },
-        { name: "Robert Brown", entryTime: "09:30 AM", exitTime: "04:45 PM", status: "Checked Out" },
-        { name: "Emily White", entryTime: "09:05 AM", exitTime: "05:15 PM", status: "Checked Out" },
-        { name: "Michael Green", entryTime: "09:20 AM", exitTime: "05:05 PM", status: "Checked Out" },
-        { name: "Laura Black", entryTime: "09:00 AM", exitTime: "05:20 PM", status: "Checked Out" },
-        { name: "James Wilson", entryTime: "08:45 AM", exitTime: "04:50 PM", status: "Checked Out" },
-        { name: "Sophia Taylor", entryTime: "09:25 AM", exitTime: "05:00 PM", status: "Checked Out" },
-        { name: "Liam Martinez", entryTime: "09:10 AM", exitTime: "04:55 PM", status: "Checked Out" },
-        { name: "Olivia Thomas", entryTime: "09:00 AM", exitTime: "05:10 PM", status: "Checked Out" },
-        { name: "William Scott", entryTime: "09:35 AM", exitTime: "04:40 PM", status: "Checked Out" },
-        { name: "Ava Moore", entryTime: "09:15 AM", exitTime: "05:05 PM", status: "Checked Out" },
-        { name: "Noah Lee", entryTime: "08:50 AM", exitTime: "04:55 PM", status: "Checked Out" },
-        { name: "Emma Harris", entryTime: "09:05 AM", exitTime: "05:20 PM", status: "Checked Out" }
-      ]
-    )
-    const [columnDefs] = useState([
-        {
-          headerName: "S.No",
-          valueGetter: "node.rowIndex + 1",
-          width: 100,
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "name",
-          headerName: "Name",
-          flex: 1,
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "entryTime",
-          headerName: "Entry Time",
-          flex: 1,
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "exitTime",
-          headerName: "Exit Time",
-          flex: 1,
-          headerClass: "text-blue-v2",
-        },
-        {
-            field: "status",
-            headerName: "Status",
-            flex: 1,
-            headerClass: "text-blue-v2",
-          },
-        {
-          headerName: "Actions",
-          field: "actions",
-          cellRenderer: () => <button>View</button>,
-          flex: 1,
-          headerClass: "text-blue-v2",
-        },
-      ]);
-      return (
-        <>
-          {/* <DashboardCard07> */}
-            <AgGridTable rowData={rowData} columnDefs={columnDefs} />
-          {/* </DashboardCard07> */}    
-        </>
-      );
-    };
-    export default EntryScanUserList;
+  const {
+    allScannedUsers,
+    isFetchAllScannedUsersLoading,
+    fetchAllScannedUsers,
+  } = useUsersStore();
+  useEffect(() => {
+    fetchAllScannedUsers();
+  }, []);
+  //  "id": "5f46e0e1-d3bf-4e67-a60b-56c5313ce467",
+  //     "phoneNumber": "1234567891",
+  //     "firstName": null,
+  //     "middleName": null,
+  //     "lastName": null,
+  //     "isActive": false,
+  //     "parkName": "A"
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      width: 100,
+      headerClass: "text-blue-v2",
+    },
+    {
+      field: "phoneNumber",
+      headerName: "Phone Number",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "firstName",
+      headerName: "First Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "lastName",
+      headerName: "Last Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "parkName",
+      headerName: "Park Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+    {
+      field: "isActive",
+      headerName: "Status",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <span
+            className={`${
+              params.value
+                ? "bg-blue-100 text-blue-800"
+                : "bg-red-100 text-red-800"
+            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+          >
+            {" "}
+            {params.value ? "Active" : "Inactive"}
+          </span>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+  ]);
+  return (
+    <>
+      {/* <DashboardCard07> */}
+      <AgGridTable
+        isFetchLoading={isFetchAllScannedUsersLoading}
+        rowData={allScannedUsers}
+        columnDefs={columnDefs}
+      />
+      {/* </DashboardCard07> */}
+    </>
+  );
+};
+export default EntryScanUserList;

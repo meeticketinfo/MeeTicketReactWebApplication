@@ -14,6 +14,7 @@ import ServiceVariant from "./pages/admin/service_varient/serviceVarient";
 import EntryScanUsers from "./pages/admin/entry_Scan_users/EntryScanUsers";
 import Payments from "./pages/admin/payments/Payments";
 import Services from "./pages/admin/services/services";
+import AdminBookings from "./pages/admin/bookings/Bookings";
 
 function App() {
   const location = useLocation();
@@ -31,10 +32,10 @@ function App() {
         <Route exact path="/dashboard" element={<Dashboard />} />
         <Route exact path="/park-management" element={<AdminParks />} />
         <Route exact path="/user-management/add" element={<AdminUsers />} />
-        <Route exact path="/bookings" element={<AdminUsers />} />
+        <Route exact path="/bookings" element={<AdminBookings />} />
         <Route exact path="/user-wise" element={<AdminUsers />} />
         <Route exact path="/user-management" element={<AdminUsers />} />
-        <Route exact path="facilites" element={<AdminFacilities />} />
+        <Route exact path="/facilites" element={<AdminFacilities />} />
         <Route exact path="/service" element={<Services />} />
         <Route exact path="/service-varient" element={<ServiceVariant />} />
         <Route exact path="/entry-scan-users" element={<EntryScanUsers />} />

@@ -24,6 +24,7 @@ const sidebarItems = [
     gradientClass:
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
+    roles: ["Admin", "Super Admin"],
   },
   {
     title: "Masters",
@@ -36,11 +37,13 @@ const sidebarItems = [
         title: "Parks",
         icon: MdOutlineForest,
         path: "/park-management",
+        roles: ["Admin", "Super Admin"],
       },
       {
         title: "Users",
         icon: FaUsers,
         path: "/user-management",
+        roles: ["Admin", ""],
       },
       {
         title: "Facilites",
