@@ -1,114 +1,193 @@
 // import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useUsersStore } from "../../store/masters/usersStore";
 
 const UserCreate = () => {
+  const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
+  const initialValues = {
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    dob: "",
+    emailId: "",
+    phoneNumber: "",
+    password: "",
+    RoleId: "",
+    isConfirmed: null,
+  };
   const validationSchema = Yup.object({
-    park: Yup.string().required("Please enter facility name."),
-    name: Yup.string().required("Please enter facility name."),
-    mobileNumber: Yup.string()
-      .required("Mobile number is required")
-      .matches(/^\d+$/, "Mobile number must be numeric"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Please enter Confirm password."),
+    
   });
+
+  // onSubmit function to handle form submission
+  const onSubmit = async (
+    values,
+    { setSubmitting, resetForm },
+    saveUserDetails
+  ) => {
+    try {
+      // Call the saveUserDetails function from the store
+      const result = await saveUserDetails(values, false);
+      if (result.success) {
+        resetForm();
+        alert("User created successfully!");
+      }
+    } catch (error) {
+      alert("Error creating park. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return (
     <>
       {" "}
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
         <Formik
-          initialValues={{
-            park: "",
-            name: "",
-            mobileNumber: "",
-            password: "",
-            confirmPassword: "",
-          }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log("Form data:", values);
-          }}
+          onSubmit={(values, actions) =>
+            onSubmit(values, actions, saveUserDetails)
+          }
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
-                {/* Park Select */}
+                {/* User Select */}
                 <div>
                   <label
-                    htmlFor="park"
-                    className="block text-xs font-medium text-gray-700"
+                    htmlFor="User"
+                    className="block text-xs font-medium"
                   >
-                    Park
+                    First Name
                   </label>
                   <Field
-                    as="select"
-                    name="park"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.park && touched.park
+                    name="firstName"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.firstName && touched.firstName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Park</option>
-                    <option value="park1">Park 1</option>
-                    <option value="park2">Park 2</option>
-                  </Field>
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter first name"
+                  />
                   <ErrorMessage
-                    name="park"
+                    name="firstName"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+
+                {/*Middle Name */}
+                <div>
+                  <label
+                    htmlFor="User"
+                    className="block text-xs font-medium"
+                  >
+                    Middle Name
+                  </label>
+                  <Field
+                    name="middleName"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.middleName && touched.middleName
+                        ? "border-red-500"
+                        : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter middle name"
+                  />
+                  <ErrorMessage
+                    name="middleName"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                {/*Last Name */}
+                <div>
+                  <label
+                    htmlFor="User"
+                    className="block text-xs font-medium"
+                  >
+                    Last Name
+                  </label>
+                  <Field
+                    name="lastName"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.lastName && touched.lastName
+                        ? "border-red-500"
+                        : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter last name"
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                {/* DOB Number */}
+                <div>
+                  <label
+                    htmlFor="dob"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    DOB
+                  </label>
+                  <Field
+                    type="date"
+                    name="dob"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.dob && touched.dob
+                        ? "border-red-500"
+                        : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    placeholder="Enter date of birth"
+                  />
+                  <ErrorMessage
+                    name="dob"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-
-                {/* Name */}
+                {/* Email Id */}
                 <div>
                   <label
-                    htmlFor="name"
+                    htmlFor="dob"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Name
+                    Email Id
                   </label>
                   <Field
-                    type="text"
-                    name="name"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                    type="email"
+                    name="emailId"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.emailId && touched.emailId
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter name"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    placeholder="Enter emailId"
                   />
                   <ErrorMessage
-                    name="name"
+                    name="emailId"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-
-                {/* Mobile Number */}
+                  {/* Phone Number */}
                 <div>
                   <label
-                    htmlFor="mobileNumber"
+                    htmlFor="dob"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Mobile Number
+                    Phone Number
                   </label>
                   <Field
-                    type="text"
-                    name="mobileNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.mobileNumber && touched.mobileNumber
+                    type="number"
+                    name="phoneNumber"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.phoneNumber && touched.phoneNumber
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter mobile number"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    placeholder="Enter phone number"
                   />
                   <ErrorMessage
-                    name="mobileNumber"
+                    name="phoneNumber"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -125,11 +204,10 @@ const UserCreate = () => {
                   <Field
                     type="password"
                     name="password"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.password && touched.password
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.password && touched.password
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter password"
                   />
                   <ErrorMessage
@@ -141,26 +219,24 @@ const UserCreate = () => {
 
                 {/* Confirm Password */}
                 <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Confirm Password
-                  </label>
+                  <label className="block text-sm font-medium"> Is Confirmed</label>
                   <Field
-                    type="password"
-                    name="confirmPassword"
+                    as="select"
+                    name="active"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.confirmPassword && touched.confirmPassword
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Confirm password"
-                  />
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select </option>
+                    <option value={true}>True</option>
+                    <option value={false}>False</option>
+                  </Field>
                   <ErrorMessage
-                    name="confirmPassword"
+                    name="active"
                     component="div"
-                    className="text-red-500 text-xs mt-1"
+                    className="text-red-500 text-xs"
                   />
                 </div>
               </div>
@@ -170,9 +246,9 @@ const UserCreate = () => {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
-                  disabled={isSubmitting}
+                  disabled={isSaveUserDetailsLoading}
                 >
-                  Submit
+                  {isSaveUserDetailsLoading ? "Saving..." : "Create Park"}
                 </button>
               </div>
             </Form>
