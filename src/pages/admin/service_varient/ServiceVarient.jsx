@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
-import ServiceVarientList from "../../../components/service_varient_management/serviceVarientList";
+import ServiceVariantList from "../../../components/service_variant_management/serviceVariantList";
 
 export default function ServiceVariant() {
     const [isServiceVarientCreateVisible, setIsServiceVarientCreateVisible] = useState(true);
@@ -33,7 +33,7 @@ export default function ServiceVariant() {
                     </div>
                     {/* Cards */}
                     {/* <div className="grid grid-cols-12 gap-6"> */}
-                    {!isServiceVarientCreateVisible ? <ServiceVarientCreate /> : <ServiceVarientList />}
+                    {!isServiceVarientCreateVisible ? <ServiceVarientCreate /> : <ServiceVariantList />}
                     {/* </div> */}
                 </div>
             </AdminLayout>

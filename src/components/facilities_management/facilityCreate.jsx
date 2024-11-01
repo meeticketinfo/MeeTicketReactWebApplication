@@ -37,17 +37,11 @@ const validationSchema = Yup.object({
 });
 
 export default function FacilityCreate() {
-  const navigate = useNavigate();
-
-  const handleView = () => {
-    navigate("/facilities/view");
-  };
-
   return (
     <div className="container mx-auto mt-10">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
 
-      <div className="bg-white shadow-md rounded-lg mb-6">
+      <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
         <Formik
           initialValues={{
             facilityName: "",

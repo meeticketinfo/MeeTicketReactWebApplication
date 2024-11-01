@@ -58,6 +58,8 @@ function Sidebar({ variant = "default" }) {
     }
   }, [sidebarExpanded]);
 
+  
+
   return (
     <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}

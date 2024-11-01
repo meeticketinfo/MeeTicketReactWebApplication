@@ -19,7 +19,7 @@ const UserCreate = () => {
   return (
     <>
       {" "}
-      <div className="bg-white  shadow-lg">
+      <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
         <Formik
           initialValues={{
             park: "",
