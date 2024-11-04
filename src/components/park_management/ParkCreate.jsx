@@ -3,6 +3,8 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useParkStore } from "../../store/masters/parksStore";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ParkCreate = () => {
   const { saveParkDetails, isSaveParkDetailsLoading } = useParkStore();
@@ -17,10 +19,10 @@ const ParkCreate = () => {
     state: "",
     country: "",
     zipCode: "",
-    longitude: "",
-    latitude: "",
-    parkSize: "",
-    isActive: null,
+    longitude: 0,
+    latitude: 0,
+    parkSize: "0",
+    isActive: true,
     description: "",
     imageId: null,
     // file1: null,
@@ -29,7 +31,8 @@ const ParkCreate = () => {
 
   // Validation schema for the form
   const validationSchema = Yup.object({
-    // displayName: Yup.string().required("Park Name is required"),
+    name: Yup.string().required("Park Name is required"),
+    displayName: Yup.string().required("Park Display Name is required"),
     // street1: Yup.string().required("Street 1 is required"),
     // street2: Yup.string().required("Street 2 is required"),
     // street3: Yup.string().required("Street 3 is required"),
@@ -53,24 +56,45 @@ const ParkCreate = () => {
     { setSubmitting, resetForm },
     saveParkDetails
   ) => {
+    const data = {
+      name: values.name,
+      displayName: values.displayName,
+      street1: values.street1,
+      street2: values.street2,
+      street3: values.street3,
+      landmark: values.landmark,
+      city: values.city,
+      state: values.state,
+      country: values.country,
+      zipCode: values.zipcode,
+      longitude: values.longitude,
+      latitude: values.latitude,
+      description: values.description,
+      parkSize: values.parkSize,
+      isActive: values.isActive,
+    };
     try {
-      // Convert form values to URL parameters
-      const params = new URLSearchParams(values).toString();
-      // Make the Axios POST request with parameters in the URL
       const response = await axios.post(
-        `https://meeticketservice-dev-dotnet.azurewebsites.net/api/Master/AddNewPark`,values
+        "https://meeticketservice-dev-dotnet.azurewebsites.net/api/Master/AddNewPark",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+        }
       );
+      toast.success("Park created successfully!");
       console.log("Park created successfully:", response.data);
-      resetForm(); // Reset form after successful submission
     } catch (error) {
+      toast.success("Error creating park!");
       console.error("Error creating park:", error);
-    } finally {
-      setSubmitting(false);
     }
   };
   return (
     <>
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
+        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
