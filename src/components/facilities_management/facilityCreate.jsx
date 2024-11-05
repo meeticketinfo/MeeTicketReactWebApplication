@@ -1,16 +1,20 @@
-
-
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "tailwindcss/tailwind.css"; // Ensure Tailwind is imported
 import { useNavigate } from "react-router-dom";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useAuthStore from "../../store/authStore";
 // Validation schema using Yup
 
-
 const FacilityCreate = () => {
-  const { saveFacilityDetails, isSaveFacilityDetailsLoading } = useFacilityStore();
+  const { saveFacilityDetails, isSaveFacilityDetailsLoading } =
+    useFacilityStore();
+  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
+    useAuthStore();
+  const parkId = decodedTokenData.data.ParkId;
+
   const initialValues = {
     name: "",
     displayName: "",
@@ -22,11 +26,11 @@ const FacilityCreate = () => {
     lastMaintenanceDate: "",
     facilityCondition: "",
     installationDate: "",
-    openTime: "",
-    closeTime: "",
+    openTime: "00:00:00",
+    closeTime: "00:00:00",
     description: "",
-    isActive: "0",
-    parkId: "005b7209-e456-4511-8665-6466689112f21",
+    isActive: true,
+    parkId: parkId,
   };
 
   const onSubmit = async (
@@ -34,13 +38,27 @@ const FacilityCreate = () => {
     { setSubmitting, resetForm },
     saveFacilityDetails
   ) => {
+    const formattedValues = {
+      ...values,
+      openTime:
+        values.openTime.length === 5
+          ? `${values.openTime}:00`
+          : values.openTime,
+      closeTime:
+        values.closeTime.length === 5
+          ? `${values.closeTime}:00`
+          : values.closeTime,
+      installationDate: new Date(values.installationDate).toISOString(),
+      lastMaintenanceDate: new Date(values.lastMaintenanceDate).toISOString(),
+    };
     try {
       // Call the saveParkDetails function from the store
-      const result = await saveFacilityDetails(values, false);
-      if (result.success) {
-        resetForm();
-        alert("facility created successfully!");
-      }
+      const result = await saveFacilityDetails(formattedValues, false);
+      toast.success("Park created successfully!");
+      // if (result.success) {
+      //   resetForm();
+      //   alert("facility created successfully!");
+      // }
     } catch (error) {
       alert("Error creating Facility. Please try again.");
     } finally {
@@ -76,6 +94,7 @@ const FacilityCreate = () => {
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
 
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
+        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -97,10 +116,11 @@ const FacilityCreate = () => {
                   <Field
                     type="text"
                     name="name"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.name && touched.name
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Facility Name"
                   />
                   <ErrorMessage
@@ -121,10 +141,11 @@ const FacilityCreate = () => {
                   <Field
                     type="text"
                     name="displayName"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.displayName && touched.displayName
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.displayName && touched.displayName
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
@@ -145,10 +166,11 @@ const FacilityCreate = () => {
                   <Field
                     type="text"
                     name="contactName"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactName && touched.contactName
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.contactName && touched.contactName
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Contact Name"
                   />
                   <ErrorMessage
@@ -169,10 +191,11 @@ const FacilityCreate = () => {
                   <Field
                     type="text"
                     name="contactNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactNumber && touched.contactNumber
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.contactNumber && touched.contactNumber
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Contact Number"
                   />
                   <ErrorMessage
@@ -192,10 +215,11 @@ const FacilityCreate = () => {
                   <Field
                     type="email"
                     name="contactEmail"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.contactEmail && touched.contactEmail
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.contactEmail && touched.contactEmail
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Contact Email"
                   />
                   <ErrorMessage
@@ -216,10 +240,11 @@ const FacilityCreate = () => {
                   <Field
                     type="number"
                     name="capacity"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.capacity && touched.capacity
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.capacity && touched.capacity
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Capacity"
                   />
                   <ErrorMessage
@@ -240,10 +265,11 @@ const FacilityCreate = () => {
                   <Field
                     as="select"
                     name="availabilityStatus"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.availabilityStatus && touched.availabilityStatus
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.availabilityStatus && touched.availabilityStatus
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value="available">Available</option>
@@ -267,10 +293,11 @@ const FacilityCreate = () => {
                   <Field
                     type="date"
                     name="lastMaintenanceDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.lastMaintenanceDate && touched.lastMaintenanceDate
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.lastMaintenanceDate && touched.lastMaintenanceDate
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter LastMaintenance Date"
                   />
                   <ErrorMessage
@@ -291,10 +318,11 @@ const FacilityCreate = () => {
                   <Field
                     type="text"
                     name="facilityCondition"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.facilityCondition && touched.facilityCondition
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.facilityCondition && touched.facilityCondition
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Facility Condition"
                   />
                   <ErrorMessage
@@ -315,10 +343,11 @@ const FacilityCreate = () => {
                   <Field
                     type="date"
                     name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.installationDate && touched.installationDate
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.installationDate && touched.installationDate
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Installation Date"
                   />
                   <ErrorMessage
@@ -339,10 +368,11 @@ const FacilityCreate = () => {
                   <Field
                     type="time"
                     name="openTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.openTime && touched.openTime
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.openTime && touched.openTime
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Open Time"
                   />
                   <ErrorMessage
@@ -363,10 +393,11 @@ const FacilityCreate = () => {
                   <Field
                     type="time"
                     name="closeTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.closeTime && touched.closeTime
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.closeTime && touched.closeTime
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Close Time"
                   />
                   <ErrorMessage
@@ -384,10 +415,11 @@ const FacilityCreate = () => {
                   <Field
                     as="textarea"
                     name="description"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.description && touched.description
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.description && touched.description
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
@@ -397,8 +429,8 @@ const FacilityCreate = () => {
                   />
                 </div>
 
-                  {/* Status */}
-                  <div>
+                {/* Status */}
+                <div>
                   <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
@@ -410,8 +442,8 @@ const FacilityCreate = () => {
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
-                    <option value="0">Active</option>
-                    <option value="1">Inactive</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                   </Field>
                   <ErrorMessage
                     name="isActive"
@@ -427,7 +459,9 @@ const FacilityCreate = () => {
                   className="bg-blue-v1 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-300 ease-in-out focus:ring-4 focus:ring-blue-500 focus:outline-none"
                   disabled={isSaveFacilityDetailsLoading}
                 >
-                  {isSaveFacilityDetailsLoading ? "Saving..." : "Create Facility"}
+                  {isSaveFacilityDetailsLoading
+                    ? "Saving..."
+                    : "Create Facility"}
                 </button>
               </div>
             </Form>
@@ -436,5 +470,5 @@ const FacilityCreate = () => {
       </div>
     </div>
   );
-}
+};
 export default FacilityCreate;
