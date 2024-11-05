@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
     FACILITY: {
       GET_FACILITIES: `Master/GetAllFacilities`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
-      ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
+      ADD_NEW_FACILITY: `${API_BASE_URL}Master/AddNewFacility`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
