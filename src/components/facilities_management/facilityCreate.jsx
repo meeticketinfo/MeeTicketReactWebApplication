@@ -13,7 +13,7 @@ const FacilityCreate = () => {
     useFacilityStore();
   const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
     useAuthStore();
-  const parkId = decodedTokenData.data.ParkId;
+  const parkId = decodedTokenData?.data?.ParkId;
 
   const initialValues = {
     name: "",
@@ -21,7 +21,7 @@ const FacilityCreate = () => {
     contactName: "",
     contactNumber: "",
     contactEmail: "",
-    capacity: "",
+    capacity: 0,
     availabilityStatus: "",
     lastMaintenanceDate: "",
     facilityCondition: "",
