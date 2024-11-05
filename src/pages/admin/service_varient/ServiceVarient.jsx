@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import ServiceVariantList from "../../../components/service_variant_management/serviceVariantList";
+import ServiceVarientCreate from "../../../components/service_variant_management/serviceVarientCreate";
 
 export default function ServiceVariant() {
     const [isServiceVarientCreateVisible, setIsServiceVarientCreateVisible] = useState(true);
