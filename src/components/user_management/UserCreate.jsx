@@ -2,12 +2,21 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useUsersStore } from "../../store/masters/usersStore";
+import { useParkStore } from "../../store/masters/parksStore";
+import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserCreate = () => {
   const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
+  const { allParks, fetchAllParks } = useParkStore();
+  useEffect(() => {
+    fetchAllParks();
+  }, []);
   const initialValues = {
     firstName: "",
     middleName: "",
+    parkId: "",
     lastName: "",
     dateOfBirth: "",
     emailId: "",
@@ -16,9 +25,7 @@ const UserCreate = () => {
     roleId: "901a561a-2c54-4f1f-9a40-5aa8b71e2e71",
     isConfirmed: true,
   };
-  const validationSchema = Yup.object({
-    
-  });
+  const validationSchema = Yup.object({});
 
   // onSubmit function to handle form submission
   const onSubmit = async (
@@ -29,12 +36,13 @@ const UserCreate = () => {
     try {
       // Call the saveUserDetails function from the store
       const result = await saveUserDetails(values, false);
-      if (result.success) {
-        resetForm();
-        alert("User created successfully!");
-      }
+      toast.success("User created successfully!");
+      // if (result.success) {
+      //   resetForm();
+      //   alert("User created successfully!");
+      // }
     } catch (error) {
-      alert("Error creating park. Please try again.");
+      toast.error("Error creating park. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -43,6 +51,7 @@ const UserCreate = () => {
     <>
       {" "}
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
+        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -53,21 +62,43 @@ const UserCreate = () => {
           {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+                <div>
+                  <label className="block text-sm font-medium"> Park</label>
+                  <Field
+                    as="select"
+                    name="parkId"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.parkId && touched.parkId
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select </option>
+                    {allParks.map((park) => (
+                      <option key={park.id} value={park.id}>
+                        {park.name}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="parkId"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
                 {/* User Select */}
                 <div>
-                  <label
-                    htmlFor="User"
-                    className="block text-xs font-medium"
-                  >
+                  <label htmlFor="User" className="block text-xs font-medium">
                     First Name
                   </label>
                   <Field
                     name="firstName"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.firstName && touched.firstName
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.firstName && touched.firstName
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter first name"
                   />
                   <ErrorMessage
@@ -79,19 +110,17 @@ const UserCreate = () => {
 
                 {/*Middle Name */}
                 <div>
-                  <label
-                    htmlFor="User"
-                    className="block text-xs font-medium"
-                  >
+                  <label htmlFor="User" className="block text-xs font-medium">
                     Middle Name
                   </label>
                   <Field
                     name="middleName"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.middleName && touched.middleName
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.middleName && touched.middleName
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter middle name"
                   />
                   <ErrorMessage
@@ -102,19 +131,17 @@ const UserCreate = () => {
                 </div>
                 {/*Last Name */}
                 <div>
-                  <label
-                    htmlFor="User"
-                    className="block text-xs font-medium"
-                  >
+                  <label htmlFor="User" className="block text-xs font-medium">
                     Last Name
                   </label>
                   <Field
                     name="lastName"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.lastName && touched.lastName
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.lastName && touched.lastName
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter last name"
                   />
                   <ErrorMessage
@@ -134,10 +161,11 @@ const UserCreate = () => {
                   <Field
                     type="date"
                     name="dateOfBirth"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.dateOfBirth && touched.dateOfBirth
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.dateOfBirth && touched.dateOfBirth
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter date of birth"
                   />
                   <ErrorMessage
@@ -157,10 +185,11 @@ const UserCreate = () => {
                   <Field
                     type="email"
                     name="emailId"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.emailId && touched.emailId
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.emailId && touched.emailId
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter emailId"
                   />
                   <ErrorMessage
@@ -169,7 +198,7 @@ const UserCreate = () => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                  {/* Phone Number */}
+                {/* Phone Number */}
                 <div>
                   <label
                     htmlFor="dob"
@@ -180,10 +209,11 @@ const UserCreate = () => {
                   <Field
                     type="text"
                     name="phoneNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.phoneNumber && touched.phoneNumber
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.phoneNumber && touched.phoneNumber
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter phone number"
                   />
                   <ErrorMessage
@@ -204,10 +234,11 @@ const UserCreate = () => {
                   <Field
                     type="password"
                     name="password"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.password && touched.password
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.password && touched.password
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter password"
                   />
                   <ErrorMessage
@@ -219,7 +250,10 @@ const UserCreate = () => {
 
                 {/* Confirm Password */}
                 <div>
-                  <label className="block text-sm font-medium"> Is Confirmed</label>
+                  <label className="block text-sm font-medium">
+                    {" "}
+                    Is Confirmed
+                  </label>
                   <Field
                     as="select"
                     name="isConfirmed"

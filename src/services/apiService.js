@@ -1,5 +1,5 @@
 import axios from "axios";
-// import { API_BASE_URL } from "../constants/apiEndpoints";
+import useAuthStore from "../store/authStore";
 
 const API_BASE_URL =
   "https://meeticketservice-dev-dotnet.azurewebsites.net/api/";
@@ -10,9 +10,10 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to attach token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = useAuthStore.getState().token; // Get the token from Zustand store
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -21,9 +22,17 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Response interceptor to handle responses and errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Optional: Handle specific error responses
+    if (error.response && error.response.status === 401) {
+      // Handle unauthorized access
+      // For example, you might want to logout the user or redirect to login
+      useAuthStore.getState().logout(); // Logging out the user
+      // Optionally, you could redirect to login or show a message
+    }
     return Promise.reject(error);
   }
 );
@@ -54,6 +63,8 @@ const apiService = {
   },
 };
 
+export default apiService;
+
 // // GET example with params
 // apiService.get(API_ENDPOINTS.MASTERS.PARK.GET_PARKS, { location: 'downtown' })
 //   .then(response => console.log(response.data))
@@ -69,5 +80,3 @@ const apiService = {
 // apiService.uploadFile(API_ENDPOINTS.MASTERS.PARK.CREATE_PARK, file, { parkId: 123 })
 //   .then(response => console.log(response.data))
 //   .catch(error => console.error(error));
-
-export default apiService;

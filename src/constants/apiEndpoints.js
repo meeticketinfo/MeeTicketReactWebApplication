@@ -64,5 +64,8 @@ export const API_ENDPOINTS = {
       DELETE_PAYMENTS: `${API_BASE_URL}Master/DeletePark`,
       GET_PAYMENTS_DETAILS: `${API_BASE_URL}Master/`,
     },
+    HOLIDAY: {
+      ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
+    }
   },
 };

@@ -2,12 +2,15 @@ import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useParkStore } from "../../store/masters/parksStore";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ParkCreate = () => {
   const { saveParkDetails, isSaveParkDetailsLoading } = useParkStore();
   const initialValues = {
-    name: "",
-    displayName: "",
+    Name: "",
+    DisplayName: "",
     street1: "",
     street2: "",
     street3: "",
@@ -16,17 +19,20 @@ const ParkCreate = () => {
     state: "",
     country: "",
     zipCode: "",
-    longitude: "",
-    latitude: "",
-    parkSize: "",
-    active: "0",
+    longitude: 0,
+    latitude: 0,
+    parkSize: "0",
+    isActive: true,
     description: "",
+    imageId: null,
     // file1: null,
+    imageUrl: null,
   };
 
   // Validation schema for the form
   const validationSchema = Yup.object({
-    // displayName: Yup.string().required("Park Name is required"),
+    Name: Yup.string().required("Park Name is required"),
+    DisplayName: Yup.string().required("Park Display Name is required"),
     // street1: Yup.string().required("Street 1 is required"),
     // street2: Yup.string().required("Street 2 is required"),
     // street3: Yup.string().required("Street 3 is required"),
@@ -50,22 +56,37 @@ const ParkCreate = () => {
     { setSubmitting, resetForm },
     saveParkDetails
   ) => {
+    const data = {
+      Name: values.Name,
+      DisplayName: values.DisplayName,
+      street1: values.street1,
+      street2: values.street2,
+      street3: values.street3,
+      landmark: values.landmark,
+      city: values.city,
+      state: values.state,
+      country: values.country,
+      zipCode: values.zipcode,
+      longitude: values.longitude,
+      latitude: values.latitude,
+      description: values.description,
+      parkSize: values.parkSize,
+      isActive: values.isActive,
+    };
+
     try {
-      // Call the saveParkDetails function from the store
-      const result = await saveParkDetails(values, false);
-      if (result.success) {
-        resetForm();
-        alert("Park created successfully!");
-      }
+      const response = saveParkDetails(data, false);
+      toast.success("Park created successfully!");
+      // console.log("Park created successfully:", response.data);
     } catch (error) {
-      alert("Error creating park. Please try again.");
-    } finally {
-      setSubmitting(false);
+      toast.error("Error creating park!");
+      // console.error("Error creating park:", error);
     }
   };
   return (
     <>
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
+        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -80,17 +101,17 @@ const ParkCreate = () => {
                 <div>
                   <label className="block text-sm font-medium">Park Name</label>
                   <Field
-                    name="name"
+                    name="Name"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.Name && touched.Name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
-                    name="name"
+                    name="Name"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -101,17 +122,17 @@ const ParkCreate = () => {
                     Display Name
                   </label>
                   <Field
-                    name="displayName"
+                    name="DisplayName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.DisplayName && touched.DisplayName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
-                    name="displayName"
+                    name="DisplayName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -341,7 +362,7 @@ const ParkCreate = () => {
                   <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
-                    name="active"
+                    name="isActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
@@ -349,8 +370,8 @@ const ParkCreate = () => {
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                   </Field>
                   <ErrorMessage
                     name="active"
