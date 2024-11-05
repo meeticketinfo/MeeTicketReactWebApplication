@@ -1,27 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import headerLogo from "../../images/Telangana-logo.png";
 import cmImg from "../../images/chief_minister.png";
 import ITMinisterImg from "../../images/it_minister.png";
 import meetickesTelanganaImg from "../../images/meetickets-telangana.png";
-import { Link, Navigate } from "react-router-dom";
 import Loader from "../../web_app_loaders/Loader";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../store/authStore";
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
+    useAuthStore();
 
-  const handleLoginClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/dashboard"); // Navigate to dashboard after 2 seconds
-    }, 1000);
+  // Formik initial values
+  const initialValues = {
+    EmailId: "Testing1@gmail.com",
+    password: "Test@123",
+  };
+
+  // Validation schema
+  const validationSchema = Yup.object({
+    EmailId: Yup.string().required("EmailId is required"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  // Formik submit handler
+  const handleSubmit = async (values, { setSubmitting }) => {
+    const success = await login(values);
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+    // if (success) navigate("/dashboard"); // Navigate to dashboard on successful login
+    setSubmitting(false);
   };
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <div className="main-container h-screen bg-blue-v2 p-4">
@@ -90,109 +107,80 @@ const Login = () => {
             </div>
 
             {/* Right side - Login Section */}
-            <div className="right-section flex justify-center  items-center md:w-1/2 flex-grow">
+            <div className="right-section flex justify-center items-center md:w-1/2 flex-grow">
               <div className="card border-stone-100 p-4 rounded-lg shadow-lg max-w-md w-full border border-neutral-300">
-                <h3 className="text-center mt-3 text-lg  text-gray-200 font-semibold">
+                <h3 className="text-center mt-3 text-lg text-gray-200 font-semibold">
                   Welcome to MeeTicket
                 </h3>
-                <form
-                  id="loginForm"
-                  noValidate
-                  className="needs-validation "
-                  action="/v1/login/loginaction"
-                  method="post"
-                  encType="multipart/form-data"
-                  autoComplete="off"
+
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={validationSchema}
+                  onSubmit={handleSubmit}
                 >
-                  <div className="mb-4">
-                    <label
-                      htmlFor="userName"
-                      className="form-label block text-gray-200 text-sm"
-                    >
-                      User Name
-                    </label>
-                    <input
-                      id="userName"
-                      name="userName"
-                      placeholder="User Name"
-                      className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
-                      required
-                      type="text"
-                      maxLength="255"
-                      autoComplete="off"
-                    />
-                  </div>
+                  {({ isSubmitting }) => (
+                    <Form className="needs-validation">
+                      <div className="mb-4">
+                        <label
+                          htmlFor="EmailId"
+                          className="form-label block text-gray-200 text-sm"
+                        >
+                          User Name
+                        </label>
+                        <Field
+                          id="EmailId"
+                          name="EmailId"
+                          placeholder="User Name"
+                          className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
+                          autoComplete="off"
+                          maxLength="255"
+                        />
+                        <ErrorMessage
+                          name="EmailId"
+                          component="div"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
 
-                  <div className="mb-4 relative">
-                    <label
-                      htmlFor="password"
-                      className="form-label block text-gray-200 text-sm"
-                    >
-                      Password
-                    </label>
-                    <input
-                      id="password"
-                      name="password"
-                      placeholder="Password"
-                      className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
-                      required
-                      type="password"
-                      maxLength="49"
-                      autoComplete="off"
-                    />
-                    <i
-                      className="fa-solid fa-eye toggle-password absolute top-3 right-3 cursor-pointer"
-                      id="togglePassword"
-                    ></i>
-                  </div>
+                      <div className="mb-4 relative">
+                        <label
+                          htmlFor="password"
+                          className="form-label block text-gray-200 text-sm"
+                        >
+                          Password
+                        </label>
+                        <Field
+                          id="password"
+                          name="password"
+                          placeholder="Password"
+                          className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
+                          type="password"
+                          autoComplete="off"
+                          maxLength="49"
+                        />
+                        <ErrorMessage
+                          name="password"
+                          component="div"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </div>
 
-                  <div className="mb-4">
-                    <div className="captcha-container mb-1 flex items-center">
-                      <img
-                        src="/captcha"
-                        id="imageId"
-                        alt="CAPTCHA Image"
-                        className="h-20 w-72"
-                      />
+                      {error && (
+                        <div className="text-red-500 text-center mb-4">
+                          {error}
+                        </div>
+                      )}
+
                       <button
-                        type="button"
-                        className="text-blue-500 ml-2 text-sm"
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="btn btn-primary w-full bg-blue-v1 text-white rounded-md p-2"
                       >
-                        <i className="fa-solid fa-repeat"></i>
+                        Sign in
                       </button>
-                    </div>
-                    <label
-                      htmlFor="captchaInput"
-                      className="form-label block text-gray-200 text-sm"
-                    >
-                      Enter above Letters
-                    </label>
-                    <input
-                      id="captchaInput"
-                      name="captchatext"
-                      type="text"
-                      className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
-                      required
-                      autoComplete="off"
-                    />
-                  </div>
-
-                  <div className="mb-4"></div>
-
-                  <div className="social-auth-links text-center mb-3">
-                    <button
-                      to="/dashboard" // This will not work until you implement the routing logic after 2 seconds
-                      onClick={handleLoginClick}
-                      className="btn btn-primary w-full bg-blue-v1 text-white rounded-md p-2"
-                    >
-                      Sign in
-                    </button>
-                  </div>
-                </form>
-
-                <hr />
-                {/* Optional Sign Up Button */}
-                {/* <button className="signup-btn">New To MeeTicket? Sign Up</button> */}
+                    </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>

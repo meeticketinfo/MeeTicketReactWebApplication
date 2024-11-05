@@ -37,28 +37,6 @@ export const useParkStore = create((set) => ({
     }
   },
 
-  // Fetch park details
-  fetchParkDetails: async (pageIndex = 1, pageSize = 10, filters = {}) => {
-    set({ isFetchParkDetailsLoading: true });
-    try {
-      const filterString = useParkStore.getState().serializeFilters(filters);
-      const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.PARK.GET_PARK_DETAILS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-      );
-
-      set({
-        ParkDetails: response.data,
-        isFetchParkDetailsLoading: false,
-        success: "Park details fetched successfully.",
-      });
-    } catch (error) {
-      set({
-        fetchParkDetailsError: error.message,
-        isFetchParkDetailsLoading: false,
-      });
-    }
-  },
-
   // Save park details
   saveParkDetails: async (ParkData, isUpdate = false) => {
     set({ isSaveParkDetailsLoading: true });
@@ -66,15 +44,40 @@ export const useParkStore = create((set) => ({
       const url = isUpdate
         ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
         : API_ENDPOINTS.MASTERS.PARK.ADD_NEW_PARK;
-      const method = isUpdate ? "put" : "post";
 
-      const response = await apiService[method](url, ParkData);
+      // Prepare form data
+      const formData = {
+        Name: ParkData.Name,
+        DisplayName: ParkData.DisplayName,
+        street1: ParkData.street1,
+        street2: ParkData.street2,
+        street3: ParkData.street3,
+        landmark: ParkData.landmark,
+        city: ParkData.city,
+        state: ParkData.state,
+        country: ParkData.country,
+        zipCode: ParkData.zipCode,
+        longitude: ParkData.longitude,
+        latitude: ParkData.latitude,
+        description: ParkData.description,
+        parkSize: ParkData.parkSize,
+        isActive: ParkData.isActive,
+        ImageUrl: ParkData.imageUrl, // Add image URL or any other file here
+      };
+
+      // Use uploadFile for multipart/form-data with any additional data
+      const response = await apiService.uploadFile(
+        url,
+        ParkData.file,
+        formData
+      );
 
       set({
         ParkDetails: response.data,
         isSaveParkDetailsLoading: false,
         success: "Park saved successfully.",
       });
+
       return { success: true, data: response.data };
     } catch (error) {
       set({ error: error.message, isSaveParkDetailsLoading: false });

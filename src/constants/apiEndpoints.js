@@ -64,5 +64,8 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
+    HOLIDAY: {
+      ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
+    },
   },
 };

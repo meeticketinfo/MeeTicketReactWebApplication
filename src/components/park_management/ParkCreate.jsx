@@ -9,8 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 const ParkCreate = () => {
   const { saveParkDetails, isSaveParkDetailsLoading } = useParkStore();
   const initialValues = {
-    name: "",
-    displayName: "",
+    Name: "",
+    DisplayName: "",
     street1: "",
     street2: "",
     street3: "",
@@ -31,8 +31,8 @@ const ParkCreate = () => {
 
   // Validation schema for the form
   const validationSchema = Yup.object({
-    name: Yup.string().required("Park Name is required"),
-    displayName: Yup.string().required("Park Display Name is required"),
+    Name: Yup.string().required("Park Name is required"),
+    DisplayName: Yup.string().required("Park Display Name is required"),
     // street1: Yup.string().required("Street 1 is required"),
     // street2: Yup.string().required("Street 2 is required"),
     // street3: Yup.string().required("Street 3 is required"),
@@ -57,8 +57,8 @@ const ParkCreate = () => {
     saveParkDetails
   ) => {
     const data = {
-      name: values.name,
-      displayName: values.displayName,
+      Name: values.Name,
+      DisplayName: values.DisplayName,
       street1: values.street1,
       street2: values.street2,
       street3: values.street3,
@@ -73,22 +73,14 @@ const ParkCreate = () => {
       parkSize: values.parkSize,
       isActive: values.isActive,
     };
+
     try {
-      const response = await axios.post(
-        "https://meeticketservice-dev-dotnet.azurewebsites.net/api/Master/AddNewPark",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "*/*",
-          },
-        }
-      );
+      const response = saveParkDetails(data, false);
       toast.success("Park created successfully!");
-      console.log("Park created successfully:", response.data);
+      // console.log("Park created successfully:", response.data);
     } catch (error) {
-      toast.success("Error creating park!");
-      console.error("Error creating park:", error);
+      toast.error("Error creating park!");
+      // console.error("Error creating park:", error);
     }
   };
   return (
@@ -109,17 +101,17 @@ const ParkCreate = () => {
                 <div>
                   <label className="block text-sm font-medium">Park Name</label>
                   <Field
-                    name="name"
+                    name="Name"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.Name && touched.Name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
-                    name="name"
+                    name="Name"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -130,17 +122,17 @@ const ParkCreate = () => {
                     Display Name
                   </label>
                   <Field
-                    name="displayName"
+                    name="DisplayName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.DisplayName && touched.DisplayName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
-                    name="displayName"
+                    name="DisplayName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
