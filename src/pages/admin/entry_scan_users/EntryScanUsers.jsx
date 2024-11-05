@@ -1,8 +1,14 @@
 import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import EntryScanUserList from "../../../components/entry_scan_users_management/entryScanUsersList";
+import EntryScanUsersCreate from "../../../components/entry_scan_users_management/EntryScanUsersCreate";
 
 export default function EntryScanUsers() {
+  const [isEntryUserScanCreateVisible, setIsEntryScanUserCreateVisible] = useState(false);
+
+  const toggleEntryScanUserCreate = () => {
+    setIsEntryScanUserCreateVisible((prev) => !prev);
+  };
 
   return (
     <>
@@ -19,12 +25,17 @@ export default function EntryScanUsers() {
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
-             
+              <button
+              onClick={toggleEntryScanUserCreate}
+              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+            >
+              <span className="max-xs:sr-only">{!isEntryUserScanCreateVisible ? "Add Facility" : "Back"}</span>
+            </button>
             </div>
           </div>
           {/* Cards */}
           {/* <div className="grid grid-cols-12 gap-6"> */}
-          <EntryScanUserList />
+          {!isEntryUserScanCreateVisible ? <EntryScanUserList /> : <EntryScanUsersCreate />} 
           {/* </div> */}
         </div>
       </AdminLayout>

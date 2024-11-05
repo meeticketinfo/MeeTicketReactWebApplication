@@ -11,6 +11,23 @@ import { useFacilityStore } from "../../store/masters/facilitiesStore";
 
 const FacilityCreate = () => {
   const { saveFacilityDetails, isSaveFacilityDetailsLoading } = useFacilityStore();
+  const initialValues = {
+    name: "",
+    displayName: "",
+    contactName: "",
+    contactNumber: "",
+    contactEmail: "",
+    capacity: "",
+    availabilityStatus: "",
+    lastMaintenanceDate: "",
+    facilityCondition: "",
+    installationDate: "",
+    openTime: "",
+    closeTime: "",
+    description: "",
+    isActive: "0",
+    parkId: "005b7209-e456-4511-8665-6466689112f21",
+  };
 
   const onSubmit = async (
     values,
@@ -60,23 +77,7 @@ const FacilityCreate = () => {
 
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
         <Formik
-          initialValues={{
-            name: "",
-            displayName: "",
-            contactName: "",
-            contactNumber: "",
-            contactEmail: "",
-            capacity: "",
-            availabilityStatus: "",
-            lastMaintenanceDate: "",
-            facilityCondition: "",
-            installationDate: "",
-            openTime: "",
-            closeTime: "",
-            description: "",
-            isActive: "0",
-            parkId: "",
-          }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values, actions) =>
             onSubmit(values, actions, saveFacilityDetails)
@@ -166,7 +167,7 @@ const FacilityCreate = () => {
                     Contact Number
                   </label>
                   <Field
-                    type="number"
+                    type="text"
                     name="contactNumber"
                     className={`mt-1 block w-full px-2 py-1 border ${errors.contactNumber && touched.contactNumber
                       ? "border-red-500"

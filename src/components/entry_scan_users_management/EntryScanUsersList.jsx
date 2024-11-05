@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { useUsersStore } from "../../store/masters/usersStore";
+import { LuClipboardEdit } from "react-icons/lu";
+import { BsTrash } from "react-icons/bs";
 
 const EntryScanUserList = () => {
   const {
@@ -72,6 +74,29 @@ const EntryScanUserList = () => {
       flex: 1,
       headerClass: "text-blue-v2",
     },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <button className="btn-edit" onClick={() => handleEdit(params.data)}>
+              <span className="">
+                <LuClipboardEdit className="text-[24px] " />
+              </span>
+            </button>
+            <button
+              className="btn-delete"
+              onClick={() => handleDelete(params.data)}
+            >
+              <span>
+                <BsTrash className="text-[24px]" />
+              </span>
+            </button>
+          </div>
+        ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+  },
   ]);
   return (
     <>
