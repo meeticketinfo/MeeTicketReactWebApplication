@@ -64,12 +64,12 @@ export const useServiceVariantStore = create((set) => ({
   },
 
   // Save Service details
-  saveServiceDetails: async (ServiceData, isUpdate = false) => {
+  saveServiceVarientDetails: async (ServiceData, isUpdate = false) => {
     set({ isSaveServiceDetailsLoading: true });
     try {
       const url = isUpdate
         ? API_ENDPOINTS.MASTERS.Service.UPDATE_Service_DETAILS
-        : API_ENDPOINTS.MASTERS.Service.ADD_NEW_Service;
+        : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.ADD_NEW_SERVICE_VARIENT;
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, ServiceData);
@@ -77,7 +77,7 @@ export const useServiceVariantStore = create((set) => ({
       set({
         ServiceDetails: response.data,
         isSaveServiceDetailsLoading: false,
-        success: "Service saved successfully.",
+        success: "Service Varient saved successfully.",
       });
       return { success: true, data: response.data };
     } catch (error) {

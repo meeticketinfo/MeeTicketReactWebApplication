@@ -65,7 +65,7 @@ export const useServiceStore = create((set) => ({
     try {
       const url = isUpdate
         ? API_ENDPOINTS.MASTERS.Service.UPDATE_Service_DETAILS
-        : API_ENDPOINTS.MASTERS.Service.ADD_NEW_Service;
+        : API_ENDPOINTS.MASTERS.SERVICE.ADD_NEW_SERVICE;
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, ServiceData);
