@@ -15,6 +15,8 @@ import { CgDatabase } from "react-icons/cg";
 import { MdOutlineForest } from "react-icons/md";
 import { FaUsers } from "react-icons/fa6";
 import { IoTicketOutline } from "react-icons/io5";
+import useAuthStore from "../store/authStore";
+
 
 const sidebarItems = [
   {

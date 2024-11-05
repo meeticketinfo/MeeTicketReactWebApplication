@@ -18,7 +18,7 @@ import ProtectedRoute from "./ProtectedRoute";
 export const routes = [
   {
     path: "/",
-    element: <ProtectedRoute element={<Login />} />,
+    element: <Login />,
   },
   { path: "/dashboard", element: <Dashboard /> },
   { path: "/park-management", element: <AdminParks /> },
