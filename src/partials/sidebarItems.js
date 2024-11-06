@@ -17,7 +17,6 @@ import { FaUsers } from "react-icons/fa6";
 import { IoTicketOutline } from "react-icons/io5";
 import useAuthStore from "../store/authStore";
 
-
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -26,7 +25,6 @@ const sidebarItems = [
     gradientClass:
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
-    roles: ["Admin", "Super Admin"],
   },
   {
     title: "Masters",
@@ -39,13 +37,11 @@ const sidebarItems = [
         title: "Parks",
         icon: MdOutlineForest,
         path: "/park-management",
-        roles: ["Admin", "Super Admin"],
       },
       {
-        title: "Users",
+        title: "Park Admins",
         icon: FaUsers,
-        path: "/user-management",
-        roles: ["Admin", ""],
+        path: "/park-admin-management",
       },
       {
         title: "Facilites",

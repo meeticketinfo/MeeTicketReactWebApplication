@@ -18,14 +18,14 @@ import ProtectedRoute from "./ProtectedRoute";
 export const routes = [
   {
     path: "/",
-    element: <Login />,
+    element: <ProtectedRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <Dashboard /> },
   { path: "/park-management", element: <AdminParks /> },
   { path: "/user-management/add", element: <AdminUsers /> },
   { path: "/bookings", element: <AdminBookings /> },
   { path: "/user-wise", element: <AdminUsers /> },
-  { path: "/user-management", element: <AdminUsers /> },
+  { path: "/park-admin-management", element: <AdminUsers /> },
   { path: "/facilites", element: <AdminFacilities /> },
   { path: "/service", element: <Services /> },
   { path: "/service-varient", element: <ServiceVariant /> },

@@ -37,10 +37,6 @@ const ServiceCreate = () => {
       // Call the saveUserDetails function from the store
       const result = await saveUserDetails(values, false);
       toast.success("User created successfully!");
-      // if (result.success) {
-      //   resetForm();
-      //   alert("User created successfully!");
-      // }
     } catch (error) {
       toast.error("Error creating park. Please try again.");
     } finally {

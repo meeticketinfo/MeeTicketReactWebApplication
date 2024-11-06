@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logoIcon from "../images/Meesava-icon1.png";
 
@@ -9,6 +9,11 @@ import { TbLogout2 } from "react-icons/tb";
 
 import useSidebarStore from "../store/sidebarStore";
 import sidebarItems from "./sidebarItems";
+import useAuthStore from "../store/authStore";
+import {
+  parkAdminPermissions,
+  superAdminPermissions,
+} from "../constants/permissions";
 
 function Sidebar({ variant = "default" }) {
   const location = useLocation();
@@ -23,7 +28,8 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-
+  const { sidebarMenuItems, roleDetails } = useAuthStore();
+  console.log("sidebarMenuItems", sidebarMenuItems);
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -58,7 +64,31 @@ function Sidebar({ variant = "default" }) {
     }
   }, [sidebarExpanded]);
 
-  
+  const role = roleDetails?.name;
+  const rolePermissions = useMemo(() => {
+    if (role === "ROLE_SUPERADMIN") {
+      return superAdminPermissions;
+    } else if (role === "ROLE_ADMIN") {
+      return parkAdminPermissions;
+    }
+    return [];
+  }, [role]);
+
+  const filteredSidebarItems = useMemo(() => {
+    return sidebarItems
+      .map((item) => {
+        if (item.subItems.length > 0) {
+          const filteredSubItems = item.subItems.filter((subItem) =>
+            rolePermissions.includes(subItem.path.substring(1))
+          );
+          return filteredSubItems.length > 0
+            ? { ...item, subItems: filteredSubItems }
+            : null;
+        }
+        return rolePermissions.includes(item.path.substring(1)) ? item : null;
+      })
+      .filter(Boolean); // Remove null entries
+  }, [rolePermissions]);
 
   return (
     <div className="min-w-fit">
@@ -121,7 +151,7 @@ function Sidebar({ variant = "default" }) {
               </span>
             </h3>
             <ul className="mt-3">
-              {sidebarItems.map((item, index) => (
+              {filteredSidebarItems.map((item, index) => (
                 <li
                   key={index}
                   className={`rounded-lg mb-0.5 pb-2 last:mb-0 ${
