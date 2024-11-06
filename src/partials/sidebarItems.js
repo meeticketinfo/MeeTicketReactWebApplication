@@ -108,6 +108,15 @@ const sidebarItems = [
       },
     ],
   },
+   {
+    title: "Book Tickets",
+    icon: RiDashboard3Fill,
+    path: "/booktickets",
+    gradientClass:
+      "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [],
+    roles: ["Admin", "Super Admin"],
+  },
   {
     title: "My Account",
     icon: RiAccountPinCircleFill,
