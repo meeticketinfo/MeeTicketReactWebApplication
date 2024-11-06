@@ -8,9 +8,13 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 // Validation schema using Yup
 
-const FacilityCreate = () => {
-  const { saveFacilityDetails, isSaveFacilityDetailsLoading } =
-    useFacilityStore();
+const FacilityCreate = ({setIsFacilityCreateVisible}) => {
+  const {
+    saveFacilityDetails,
+    isSaveFacilityDetailsLoading,
+    facilityCreateResponse,
+    FacilityDetails,
+  } = useFacilityStore();
   const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
     useAuthStore();
   const parkId = decodedTokenData?.data?.ParkId;
@@ -21,7 +25,7 @@ const FacilityCreate = () => {
     contactName: "",
     contactNumber: "",
     contactEmail: "",
-    capacity: 0,
+    capacity: null,
     availabilityStatus: "",
     lastMaintenanceDate: "",
     facilityCondition: "",
@@ -48,38 +52,74 @@ const FacilityCreate = () => {
         values.closeTime.length === 5
           ? `${values.closeTime}:00`
           : values.closeTime,
-      installationDate: new Date(values.installationDate).toISOString(),
-      lastMaintenanceDate: new Date(values.lastMaintenanceDate).toISOString(),
+      capacity: values.capacity == null ? 0 : values.capacity,
+      installationDate: values.installationDate
+        ? new Date(values.installationDate).toISOString()
+        : null,
+      lastMaintenanceDate: values.lastMaintenanceDate
+        ? new Date(values.lastMaintenanceDate).toISOString()
+        : null,
     };
+
     try {
-      // Call the saveParkDetails function from the store
+      // Call the saveFacilityDetails function from the store
       const result = await saveFacilityDetails(formattedValues, false);
-      if (isSaveFacilityDetailsLoading) {
-        toast.success("Park created successfully!");
+
+      if (result.data.status === 200) {
+        toast.success("Facility created successfully!");
+        setTimeout(()=>{
+          setIsFacilityCreateVisible(false)
+        },3000)
+        resetForm();
       }
-      // if (result.success) {
-      resetForm();
-      //   alert("facility created successfully!");
-      // }
-    } catch (error) {
-      alert("Error creating Facility. Please try again.");
+     
+      
+    } catch (xhr) {
+      console.log("xhr.errors:", xhr);
+      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response.data);
+      }
     } finally {
       setSubmitting(false);
     }
   };
+
   const validationSchema = Yup.object({
-    // facilityName: Yup.string().required("Please enter facility name."),
-    // displayName: Yup.string().required("Please enter display name."),
-    // contactName: Yup.string().required("Please enter contact name."),
-    // contactEmail: Yup.string()
-    //   .email("Invalid email format")
-    //   .required("Please enter contact email."),
-    // contactNumber: Yup.string()
-    //   .matches(/^\d+$/, "Contact number must be numeric")
-    //   .required("Contact number is required"),
-    // capacity: Yup.number()
-    //   .positive("Capacity must be a positive number")
-    //   .required("Please enter capacity."),
+    name: Yup.string()
+      .required("Please enter facility name.")
+      .max(50, "facility name should be less than 50 characters"),
+    displayName: Yup.string()
+      .required("Please enter display name.")
+      .max(50, "display name should be less than 50 characters"),
+    contactName: Yup.string().max(
+      50,
+      "contact name should be less than 50 characters"
+    ),
+    contactEmail: Yup.string().email("Invalid email format"),
+    contactNumber: Yup.string()
+      .matches(/^\d+$/, "Contact number must be numeric")
+      .max(10, "contact name should be 10 numbers"),
+
+    capacity: Yup.number()
+      .nullable()
+      .test(
+        "is-positive",
+        "Capacity must be a positive number",
+        (value) => value == null || value >= 0
+      ),
+
     // lastMaintenanceDate: Yup.date().required(
     //   "Please select last maintenance date."
     // ),
@@ -87,7 +127,10 @@ const FacilityCreate = () => {
     // availabilityStatus: Yup.string().required(
     //   "Please select availability status."
     // ),
-    // facilityCondition: Yup.string().required("Please enter facility condition."),
+    facilityCondition: Yup.string().max(
+      50,
+      "contact name should be less than 50 characters"
+    ),
     // openTime: Yup.string().required("Please select open time."),
     // closeTime: Yup.string().required("Please select close time."),
   });
@@ -455,10 +498,10 @@ const FacilityCreate = () => {
                 </div>
               </div>
 
-              <div className="flex justify-start p-5">
+              <div className="flex justify-center p-5">
                 <button
                   type="submit"
-                  className="bg-blue-v1 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-300 ease-in-out focus:ring-4 focus:ring-blue-500 focus:outline-none"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveFacilityDetailsLoading}
                 >
                   {isSaveFacilityDetailsLoading
