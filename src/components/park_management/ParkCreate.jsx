@@ -5,9 +5,15 @@ import { useParkStore } from "../../store/masters/parksStore";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import BaseVariant from "../utils/file_privew/baseVariant";
 
-const ParkCreate = () => {
-  const { saveParkDetails, isSaveParkDetailsLoading } = useParkStore();
+const ParkCreate = ({ setIsParkCreateVisible }) => {
+  const {
+    saveParkDetails,
+    isSaveParkDetailsLoading,
+    handleFileChange,
+    filePreviews,
+  } = useParkStore();
   const initialValues = {
     Name: "",
     DisplayName: "",
@@ -24,30 +30,65 @@ const ParkCreate = () => {
     parkSize: "0",
     isActive: true,
     description: "",
-    imageId: null,
-    // file1: null,
     imageUrl: null,
   };
+  const FILE_SIZE = 10 * 1024 * 1024;
 
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/png",
+    "application/pdf",
+  ];
   // Validation schema for the form
   const validationSchema = Yup.object({
     Name: Yup.string().required("Park Name is required"),
     DisplayName: Yup.string().required("Park Display Name is required"),
-    // street1: Yup.string().required("Street 1 is required"),
-    // street2: Yup.string().required("Street 2 is required"),
-    // street3: Yup.string().required("Street 3 is required"),
-    // landmark: Yup.string().required("Landmark is required"),
-    // city: Yup.string().required("City is required"),
-    // state: Yup.string().required("State is required"),
-    // country: Yup.string().required("Country is required"),
-    // zipCode: Yup.string()
-    //   .required("Zip Code is required")
-    //   .matches(/^\d+$/, "Zip Code must be a number"),
-    // longitude: Yup.string().required("Longitude is required"),
-    // latitude: Yup.string().required("Latitude is required"),
-    // active: Yup.string().required("Status is required"),
-    // description: Yup.string().required("Description is required"),
-    // file1: Yup.mixed().required("Park image is required"),
+    street1: Yup.string()
+      .min(3, "Street 1 must be at least 3 characters long")
+      .max(50, "Street 1 cannot be more than 50 characters"),
+    street2: Yup.string()
+      .min(3, "Street 2 must be at least 3 characters long")
+      .max(50, "Street 2 cannot be more than 50 characters"),
+
+    street3: Yup.string()
+      .min(3, "Street 3 must be at least 3 characters long")
+      .max(50, "Street 3 cannot be more than 50 characters"),
+
+    landmark: Yup.string()
+      .min(3, "Landmark must be at least 3 characters long")
+      .max(50, "Landmark cannot be more than 50 characters"),
+    city: Yup.string()
+      .min(2, "City must be at least 2 characters long")
+      .max(50, "City cannot be more than 50 characters"),
+    state: Yup.string()
+      .min(2, "State must be at least 2 characters long")
+      .max(50, "State cannot be more than 50 characters"),
+    country: Yup.string()
+      .min(2, "Country must be at least 2 characters long")
+      .max(50, "Country cannot be more than 50 characters"),
+    zipCode: Yup.string()
+      .matches(/^\d+$/, "Zip Code must be a number")
+      .length(5, "Zip Code must be exactly 5 digits"),
+    longitude: Yup.number()
+      .min(-180, "Longitude must be between -180 and 180")
+      .max(180, "Longitude must be between -180 and 180"),
+    latitude: Yup.number()
+      .min(-90, "Latitude must be between -90 and 90")
+      .max(90, "Latitude must be between -90 and 90"),
+    active: Yup.boolean(),
+
+    description: Yup.string()
+      .min(10, "Description must be at least 10 characters long")
+      .max(500, "Description cannot be more than 500 characters"),
+    ImageUrl: Yup.mixed()
+      .nullable()
+      .test("fileSize", "File too large", (value) => {
+        return !value || (value && value.size <= FILE_SIZE);
+      })
+      .test("fileType", "Unsupported file format", (value) => {
+        return !value || (value && SUPPORTED_FORMATS.includes(value.type));
+      }),
   });
 
   // onSubmit function to handle form submission
@@ -72,15 +113,19 @@ const ParkCreate = () => {
       description: values.description,
       parkSize: values.parkSize,
       isActive: values.isActive,
+      ImageUrl: values.ImageUrl, // Add image URL or any other file here
     };
 
     try {
-      const response = saveParkDetails(data, false);
-      toast.success("Park created successfully!");
-      // console.log("Park created successfully:", response.data);
+      const response = await saveParkDetails(data, false);
+      if (response?.data?.status === 200) {
+        toast.success("Park created successfully!");
+        setTimeout(() => {
+          setIsParkCreateVisible(false);
+        }, 3000);
+      }
     } catch (error) {
       toast.error("Error creating park!");
-      // console.error("Error creating park:", error);
     }
   };
   return (
@@ -407,23 +452,34 @@ const ParkCreate = () => {
                   <label className="block text-sm font-medium">
                     Park Image
                   </label>
-                  {/* <input
-                    name="file1"
+                  <input
+                    name="ImageUrl"
                     type="file"
-                    onChange={(event) =>
-                      setFieldValue("file1", event.currentTarget.files[0])
-                    }
+                    // onChange={(event) =>
+                    //   setFieldValue("file1", event.currentTarget.files[0])
+                    // }
+                    onChange={(e) => {
+                      handleFileChange(e, "ImageUrl");
+                      setFieldValue("ImageUrl", e.currentTarget.files[0]);
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  /> */}
-                  {/* <ErrorMessage
-                    name="file1"
+                  />
+                  <ErrorMessage
+                    name="ImageUrl"
                     component="div"
                     className="text-red-500 text-xs"
-                  /> */}
+                  />
+                  {filePreviews.ImageUrl?.fileUrl && (
+                    <BaseVariant
+                      file={filePreviews.ImageUrl.file}
+                      fileType={filePreviews.ImageUrl.fileType}
+                      fileUrl={filePreviews.ImageUrl.fileUrl}
+                    />
+                  )}
                 </div>
               </div>
               {/* Submit Button */}

@@ -7,12 +7,16 @@ import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const UserCreate = () => {
-  const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
+const UserCreate = ({ roleName }) => {
+  const { saveUserDetails, isSaveUserDetailsLoading, userRoles } =
+    useUsersStore();
   const { allParks, fetchAllParks } = useParkStore();
+
   useEffect(() => {
     fetchAllParks();
   }, []);
+  const roleId = userRoles?.filter((role) => role.name === roleName);
+
   const initialValues = {
     firstName: "",
     middleName: "",
@@ -22,10 +26,27 @@ const UserCreate = () => {
     emailId: "",
     phoneNumber: "",
     password: "",
-    roleId: "901a561a-2c54-4f1f-9a40-5aa8b71e2e71",
+    roleId: roleId,
     isConfirmed: true,
   };
-  const validationSchema = Yup.object({});
+
+  const validationSchema = Yup.object({
+    firstName: Yup.string()
+      .required("First Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    lastName: Yup.string()
+      .required("Last Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    emailId: Yup.string().required("EmailId is required"),
+    parkId: Yup.string().required("Park is required"),
+    phoneNumber: Yup.number()
+      .required("Phone Number is required"),
+      // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password cannot be less than 6 characters")
+      .max(20, "Password cannot be more than 30 characters"),
+  });
 
   // onSubmit function to handle form submission
   const onSubmit = async (
@@ -208,6 +229,7 @@ const UserCreate = () => {
                   </label>
                   <Field
                     type="text"
+                    maxLength="10"
                     name="phoneNumber"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.phoneNumber && touched.phoneNumber
@@ -245,32 +267,6 @@ const UserCreate = () => {
                     name="password"
                     component="div"
                     className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    {" "}
-                    Is Confirmed
-                  </label>
-                  <Field
-                    as="select"
-                    name="isConfirmed"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.isConfirmed && touched.isConfirmed
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select </option>
-                    <option value={true}>True</option>
-                    <option value={false}>False</option>
-                  </Field>
-                  <ErrorMessage
-                    name="isConfirmed"
-                    component="div"
-                    className="text-red-500 text-xs"
                   />
                 </div>
               </div>

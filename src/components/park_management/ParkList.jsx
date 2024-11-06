@@ -3,19 +3,21 @@ import AgGridTable from "../tables/AgGridTable";
 import { useParkStore } from "../../store/masters/parksStore";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
+import { PiPark } from "react-icons/pi";
+
 const ParkList = () => {
   const { allParks, fetchAllParks, isFetchAllParksLoading } = useParkStore();
   useEffect(() => {
     fetchAllParks();
   }, []);
+  const [isImageLoaded, setIsImageLoaded] = useState(true);
 
-  const handleEdit = (data) => {
-
+  const handleImageError = () => {
+    setIsImageLoaded(false);
   };
+  const handleEdit = (data) => {};
 
-  const handleDelete = (data) => {
-
-  };
+  const handleDelete = (data) => {};
 
   const columnDefs = [
     {
@@ -62,6 +64,24 @@ const ParkList = () => {
         return latitude && longitude ? `${latitude}, ${longitude}` : "N/A";
       },
     },
+    // {
+    //   headerName: "Image",
+    //   flex: 1,
+    //   field: "ImageUrl",
+    //   headerClass: "text-blue-v2",
+    //   cellRenderer: (params) => (
+    //     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    //       <img
+    //         src={params.value}
+    //         alt="Park"
+    //         style={{ width: "50px", height: "50px", objectFit: "cover" }}
+    //         onError={(e) => {
+    //           e.target.src = "";
+    //         }}
+    //       />
+    //     </div>
+    //   ),
+    // },
     {
       headerName: "Actions",
       field: "actions",
