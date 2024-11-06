@@ -14,6 +14,7 @@ import Payments from "../pages/admin/payments/Payments";
 import Services from "../pages/admin/services/services";
 import AdminBookings from "../pages/admin/bookings/Bookings";
 import ProtectedRoute from "./ProtectedRoute";
+import BookTickets from "../pages/admin/BookTickets/BookTickets";
 
 export const routes = [
   {
@@ -33,4 +34,5 @@ export const routes = [
   { path: "/payments", element: <Payments /> },
   { path: "/working-days", element: <WorkingDays /> },
   { path: "/holidays", element: <Holidays /> },
+  { path: "/booktickets", element: <BookTickets /> },
 ];
