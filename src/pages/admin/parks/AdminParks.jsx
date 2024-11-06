@@ -5,7 +5,7 @@ import AdminLayout from "../../../layouts/AdminLayout";
 
 export default function AdminParks() {
   // State to toggle the FacilityCreate component
-  const [isParkCreateVisible, setIsParkCreateVisible] = useState(true);
+  const [isParkCreateVisible, setIsParkCreateVisible] = useState(false);
 
   // Function to toggle the visibility of ParkCreate
   const toggleParkCreate = () => {
@@ -25,9 +25,12 @@ export default function AdminParks() {
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
-            <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
-              <span className="max-xs:sr-only" onClick={toggleParkCreate}>
-                {isParkCreateVisible ? "Add Park" : "Back"}
+            <button
+              onClick={toggleParkCreate}
+              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+            >
+              <span className="max-xs:sr-only">
+                {!isParkCreateVisible ? "Add Park" : "Back"}
               </span>
             </button>
           </div>
@@ -35,7 +38,11 @@ export default function AdminParks() {
 
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
-        {!isParkCreateVisible ? <ParkCreate /> : <ParkList />}
+        {isParkCreateVisible ? (
+          <ParkCreate setIsParkCreateVisible={setIsParkCreateVisible} />
+        ) : (
+          <ParkList />
+        )}
         {/* </div> */}
       </div>
     </AdminLayout>

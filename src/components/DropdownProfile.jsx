@@ -11,11 +11,11 @@ function DropdownProfile({ align }) {
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
-  const logout = useAuthStore((state) => state.logout);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { logout, isAuthenticated, roleDetails, decodedTokenData } =
+    useAuthStore();
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/"); // Navigate to home page if logged out
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
   // close on click outside
@@ -62,7 +62,7 @@ function DropdownProfile({ align }) {
         />
         <div className="flex items-center truncate">
           <span className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">
-            Admin
+            {decodedTokenData.data.email || "Name"}
           </span>
           <svg
             className="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500"
@@ -92,14 +92,14 @@ function DropdownProfile({ align }) {
         >
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
             <div className="font-medium text-gray-800 dark:text-gray-100">
-              Admin Name
+              {decodedTokenData.data.email || "Name"}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400 italic">
-              Administrator
+              {roleDetails?.displayName || "User Designation"}
             </div>
           </div>
           <ul>
-            <li>
+            {/* <li>
               <Link
                 className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"
                 to="/settings"
@@ -107,7 +107,7 @@ function DropdownProfile({ align }) {
               >
                 Settings
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"

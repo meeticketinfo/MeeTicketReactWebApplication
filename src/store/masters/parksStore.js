@@ -11,6 +11,12 @@ export const useParkStore = create((set) => ({
   fetchParkDetailsError: null,
   error: null,
   success: null,
+  fileInputs: {
+    ImageUrl: null,
+  },
+  filePreviews: {
+    ImageUrl: null,
+  },
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -62,7 +68,7 @@ export const useParkStore = create((set) => ({
         description: ParkData.description,
         parkSize: ParkData.parkSize,
         isActive: ParkData.isActive,
-        ImageUrl: ParkData.imageUrl, // Add image URL or any other file here
+        ImageUrl: ParkData.ImageUrl, // Add image URL or any other file here
       };
 
       // Use uploadFile for multipart/form-data with any additional data
@@ -78,10 +84,26 @@ export const useParkStore = create((set) => ({
         success: "Park saved successfully.",
       });
 
-      return { success: true, data: response.data };
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveParkDetailsLoading: false });
       throw error;
+    }
+  },
+  handleFileChange: (e, fieldName) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      const fileType = file.type;
+
+      // Set both file and preview
+      set((state) => ({
+        fileInputs: { ...state.fileInputs, [fieldName]: file },
+        filePreviews: {
+          ...state.filePreviews,
+          [fieldName]: { file, fileType, fileUrl },
+        },
+      }));
     }
   },
 }));

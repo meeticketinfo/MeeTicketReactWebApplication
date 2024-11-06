@@ -2,13 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import UserMenu from "../components/DropdownProfile";
 import useSidebarStore from "../store/sidebarStore";
 import headerLogo from "../images/Telangana-logo.png";
+import useAuthStore from "../store/authStore";
+import { toTitleCase } from "../utils/TypographyHelper";
+import { RiMenuUnfold2Line } from "react-icons/ri";
+import { RiMenuFold2Line } from "react-icons/ri";
 
 function Header({ variant = "default" }) {
   const { sidebarOpen, sidebarExpanded, setSidebarOpen, setSidebarExpanded } =
     useSidebarStore();
-
+  const { logout, isAuthenticated, roleDetails, decodedTokenData } =
+    useAuthStore();
   useEffect(() => {
-    // Sync sidebar expanded state with localStorage and body class
     localStorage.setItem("sidebar-expanded", sidebarExpanded);
     if (sidebarExpanded) {
       document.querySelector("body").classList.add("sidebar-expanded");
@@ -61,38 +65,48 @@ function Header({ variant = "default" }) {
 
             {/* toggle sidebar icon */}
             <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
-              <div className="w-12 h-full pl-4 pr-3 py-2">
+              <div className="flex justify-center items-center px-3">
                 <button
                   className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
                   onClick={() => setSidebarExpanded(!sidebarExpanded)}
                 >
                   <span className="sr-only">Expand / collapse sidebar</span>
-                  <svg
-                    className="shrink-0 fill-current text-gray-400 dark:text-gray-500 sidebar-expanded:rotate-180"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M15 16a1 1 0 0 1-1-1V1a1 1 0 1 1 2 0v14a1 1 0 0 1-1 1ZM8.586 7H1a1 1 0 1 0 0 2h7.586l-2.793 2.793a1 1 0 1 0 1.414 1.414l4.5-4.5A.997.997 0 0 0 12 8.01M11.924 7.617a.997.997 0 0 0-.217-.324l-4.5-4.5a1 1 0 0 0-1.414 1.414L8.586 7M12 7.99a.996.996 0 0 0-.076-.373Z" />
-                  </svg>
+                  {sidebarExpanded ? (
+                    <RiMenuUnfold2Line className="text-[28px] text-blue-v1" />
+                  ) : (
+                    <RiMenuFold2Line className="text-[28px] text-blue-v1" />
+                  )}
                 </button>
+              </div>
+              <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
+                <div className="flex justify-center items-center">
+                  <img
+                    alt="site-logo"
+                    src={headerLogo}
+                    width={30}
+                    height={30}
+                  />
+                </div>
+                <div className="pl-2 flex flex-col text-black">
+                  <p>Government of Telangana</p>
+                  <small className="text-[10px] pl-1">ITE&C Department</small>
+                </div>
               </div>
             </div>
           </div>
           <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
-            <div className="flex justify-center items-center">
-              <img alt="site-logo" src={headerLogo} width={30} height={30} />
-            </div>
             <div className="pl-2 flex flex-col text-black">
-              <p>Government of Telangana</p>
-              <small className="text-[10px] pl-1">ITE&C Department</small>
+              <p>
+                {(decodedTokenData?.data?.ParkName &&
+                  toTitleCase(decodedTokenData?.data?.ParkName)) ||
+                  "Park Name"}
+              </p>
+              {/* <small className="text-[10px] pl-1">ITE&C Department</small> */}
             </div>
           </div>
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
-            {/*  Divider */}
             <hr className="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />
             <UserMenu align="right" />
           </div>

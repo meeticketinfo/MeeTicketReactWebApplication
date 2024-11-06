@@ -22,15 +22,18 @@ export default function AdminUsers() {
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Users
+              Park Admin
             </h1>
           </div>
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
-            <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
-              <span className="max-xs:sr-only" onClick={toggleUserCreate}>
-                {isUserCreateVisible ? "Add User" : "Back"}
+            <button
+              onClick={toggleUserCreate}
+              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+            >
+              <span className="max-xs:sr-only">
+                {isUserCreateVisible ? "Create Park Admin" : "Back"}
               </span>
             </button>
           </div>
@@ -38,7 +41,11 @@ export default function AdminUsers() {
 
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
-        {!isUserCreateVisible ? <UserCreate /> : <UserList />}
+        {!isUserCreateVisible ? (
+          <UserCreate roleName={"ROLE_ADMIN"} />
+        ) : (
+          <UserList />
+        )}
         {/* </div> */}
       </div>
     </AdminLayout>
