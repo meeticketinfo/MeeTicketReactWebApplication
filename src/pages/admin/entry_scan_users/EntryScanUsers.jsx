@@ -4,7 +4,8 @@ import EntryScanUserList from "../../../components/entry_scan_users_management/e
 import EntryScanUsersCreate from "../../../components/entry_scan_users_management/EntryScanUsersCreate";
 
 export default function EntryScanUsers() {
-  const [isEntryUserScanCreateVisible, setIsEntryScanUserCreateVisible] = useState(false);
+  const [isEntryUserScanCreateVisible, setIsEntryScanUserCreateVisible] =
+    useState(false);
 
   const toggleEntryScanUserCreate = () => {
     setIsEntryScanUserCreateVisible((prev) => !prev);
@@ -19,23 +20,29 @@ export default function EntryScanUsers() {
             {/* Left: Title */}
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-                Entry Scan Users
+                Gate Keeper
               </h1>
             </div>
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
               <button
-              onClick={toggleEntryScanUserCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-            >
-              <span className="max-xs:sr-only">{!isEntryUserScanCreateVisible ? "Add Facility" : "Back"}</span>
-            </button>
+                onClick={toggleEntryScanUserCreate}
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              >
+                <span className="max-xs:sr-only">
+                  {!isEntryUserScanCreateVisible ? "Add Gate Keeper" : "Back"}
+                </span>
+              </button>
             </div>
           </div>
           {/* Cards */}
           {/* <div className="grid grid-cols-12 gap-6"> */}
-          {!isEntryUserScanCreateVisible ? <EntryScanUserList /> : <EntryScanUsersCreate />} 
+          {!isEntryUserScanCreateVisible ? (
+            <EntryScanUserList />
+          ) : (
+            <EntryScanUsersCreate />
+          )}
           {/* </div> */}
         </div>
       </AdminLayout>

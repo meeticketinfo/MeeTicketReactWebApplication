@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
 
-const ServiceCreate = () => {
+const ServiceCreate = ({ setIsServiceCreateVisible }) => {
   const { saveServiceDetails, isSaveServiceDetailsLoading } = useServiceStore();
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
   useEffect(() => {
@@ -25,24 +25,52 @@ const ServiceCreate = () => {
     isActive: true,
     facilityId: "",
   };
-  const validationSchema = Yup.object({});
+  const validationSchema = Yup.object({
+    facilityId: Yup.string().required("Please enter display name."),
+    name: Yup.string().required("Please enter display name."),
+    displayName: Yup.string()
+      .required("Please enter display name.")
+      .max(50, "display name should be less than 50 characters"),
+  });
 
   // onSubmit function to handle form submission
   const onSubmit = async (
     values,
+
     { setSubmitting, resetForm },
     saveServiceDetails
   ) => {
+    values.installationDate = values.installationDate
+      ? values.installationDate
+      : null;
     try {
       // Call the saveUserDetails function from the store
       const result = await saveServiceDetails(values, false);
-      toast.success("Service created successfully!");
-      // if (result.success) {
-      //   resetForm();
-      //   alert("User created successfully!");
-      // }
-    } catch (error) {
-      toast.error("Error creating service. Please try again.");
+
+      if (result.data.status === 200) {
+        toast.success("Service created successfully!");
+        setTimeout(() => {
+          setIsServiceCreateVisible(false);
+        }, 3000);
+        resetForm();
+      }
+    } catch (xhr) {
+      console.log("xhr.errors:", xhr);
+      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response.data);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -95,6 +123,7 @@ const ServiceCreate = () => {
                   <Field
                     name="name"
                     type="text"
+                    maxlength={50}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
@@ -115,6 +144,7 @@ const ServiceCreate = () => {
                   </label>
                   <Field
                     name="displayName"
+                    maxlength={50}
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.displayName && touched.displayName
@@ -141,6 +171,7 @@ const ServiceCreate = () => {
                   <Field
                     type="text"
                     name="duration"
+                    maxlength={50}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.duration && touched.duration
                         ? "border-red-500"
@@ -186,7 +217,7 @@ const ServiceCreate = () => {
                     as="select"
                     name="isActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                      errors.isActive && touched.isActive
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -229,6 +260,28 @@ const ServiceCreate = () => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
+                {/* Service type */}
+                <div>
+                  <label className="block text-sm font-medium">
+                    Service Type
+                  </label>
+                  <Field
+                    name="serviceType"
+                    type="text"
+                    maxlength={50}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.serviceType && touched.serviceType
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Service Type"
+                  />
+                  <ErrorMessage
+                    name="serviceType"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
 
                 {/* Description */}
                 <div className="col-span-3">
@@ -238,6 +291,7 @@ const ServiceCreate = () => {
                   <Field
                     as="textarea"
                     name="description"
+                    maxlength={255}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.description && touched.description
                         ? "border-red-500"
@@ -254,10 +308,10 @@ const ServiceCreate = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-start p-2">
+              <div className="flex justify-center p-2">
                 <button
                   type="submit"
-                  className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveServiceDetailsLoading}
                 >
                   {isSaveServiceDetailsLoading ? "Saving..." : "Create Service"}

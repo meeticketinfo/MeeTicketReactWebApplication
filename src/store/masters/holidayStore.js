@@ -71,7 +71,7 @@ export const useHolidayStore = create((set, get) => ({
         isSaveHolidayDetailsLoading: false,
         success: "Holiday saved successfully.",
       });
-      return { success: true, data: response.data };
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveHolidayDetailsLoading: false });
       throw error;
