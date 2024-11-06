@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import headerLogo from "../../images/Telangana-logo.png";
@@ -8,122 +8,129 @@ import meetickesTelanganaImg from "../../images/meetickets-telangana.png";
 import Loader from "../../web_app_loaders/Loader";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import useCaptchaStore from "../../store/useCaptchaStore";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
-    useAuthStore();
+  const { isLoading, isAuthenticated, error, login } = useAuthStore();
 
-  // Formik initial values
+  const {
+    captchaInput,
+    captchaError,
+    loadCaptcha,
+    updateCaptchaInput,
+    validateCaptchaInput,
+  } = useCaptchaStore();
+
   const initialValues = {
     EmailId: "Testing1@gmail.com",
     password: "Test@123",
   };
 
-  // Validation schema
   const validationSchema = Yup.object({
     EmailId: Yup.string().required("EmailId is required"),
     password: Yup.string().required("Password is required"),
   });
 
-  // Formik submit handler
+  useEffect(() => {
+    loadCaptcha();
+  }, [loadCaptcha]);
+
   const handleSubmit = async (values, { setSubmitting }) => {
-    const success = await login(values);
-    if (isAuthenticated) {
+    const isCaptchaValid = validateCaptchaInput();
+    if (!isCaptchaValid) {
+      setSubmitting(false);
+      return;
+    }
+    const response = await login(values);
+    if (response.success) {
       navigate("/dashboard");
     }
-    // if (success) navigate("/dashboard"); // Navigate to dashboard on successful login
     setSubmitting(false);
   };
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div className="main-container h-screen bg-blue-v2 p-4">
-          {/* Header Section */}
-          <div className="container-fluid p-3 text-white bg-blue-v1 rounded-lg">
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end">
-                <div className="flex justify-center items-center">
-                  <img
-                    alt="site-logo"
-                    src={headerLogo}
-                    width={40}
-                    height={40}
-                  />
+      <div className="h-screen bg-blue-v2 flex flex-col">
+        {/* Header Section */}
+        <div className="container-fluid p-3 text-white bg-blue-v1 rounded-lg">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end">
+              <div className="flex justify-center items-center">
+                <img alt="site-logo" src={headerLogo} width={40} height={40} />
+              </div>
+              <div className="pl-2 flex flex-col">
+                <p className="text-lg">Government of Telangana</p>
+                <small className="text-[10px] pl-1">ITE&C Department</small>
+              </div>
+            </div>
+
+            {/* Second Column */}
+            <div className="flex justify-end items-center pr-20">
+              <div className="flex items-center mr-4">
+                <div className="mr-2 text-right">
+                  <p className="text-sm font-semibold">
+                    Sri A. Revanth Reddy
+                    <span className="block text-xs">
+                      Hon'ble Chief Minister <br />
+                      Government of Telangana
+                    </span>
+                  </p>
                 </div>
-                <div className="pl-2 flex flex-col">
-                  <p className="text-lg">Government of Telangana</p>
-                  <small className="text-[10px] pl-1">ITE&C Department</small>
-                </div>
+                <img src={cmImg} alt="CM" className="w-16 h-20" />
               </div>
 
-              {/* Second Column */}
-              <div className="flex justify-end items-center pr-20">
-                <div className="flex items-center mr-4">
-                  <div className="mr-2 text-right">
-                    <p className="text-sm font-semibold">
-                      Sri A. Revanth Reddy
-                      <span className="block text-xs">
-                        Hon'ble Chief Minister <br />
-                        Government of Telangana
-                      </span>
-                    </p>
-                  </div>
-                  <img src={cmImg} alt="CM" className="w-16 h-20" />
+              <div className="flex items-center">
+                <div className="mr-2 text-right">
+                  <p className="text-sm font-semibold">
+                    Sri D. Sridhar Babu
+                    <span className="block text-xs">
+                      Hon'ble Minister for IT
+                      <br />
+                      Government of Telangana
+                    </span>
+                  </p>
                 </div>
-
-                <div className="flex items-center">
-                  <div className="mr-2 text-right">
-                    <p className="text-sm font-semibold">
-                      Sri D. Sridhar Babu
-                      <span className="block text-xs">
-                        Hon'ble Minister for IT
-                        <br />
-                        Government of Telangana
-                      </span>
-                    </p>
-                  </div>
-                  <img
-                    src={ITMinisterImg}
-                    alt="Minister"
-                    className="w-16 h-20"
-                  />
-                </div>
+                <img src={ITMinisterImg} alt="Minister" className="w-16 h-20" />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="container-fluid main-section mt-2 flex flex-col md:flex-row">
+        {/* Main Content */}
+        <div className="flex flex-grow justify-center items-center px-4">
+          <div className="flex flex-col md:flex-row items-center w-full max-w-6xl space-y-6 md:space-y-0 md:space-x-10">
             {/* Left side - MeeTicket Logo */}
-            <div className="left-section flex justify-center items-center md:w-1/2">
+            <div className="flex justify-center items-center md:w-1/2">
               <img
                 src={meetickesTelanganaImg}
                 alt="MeeTicket Logo"
-                className="h-[40vh] md:max-h-[100%] object-contain"
+                className="h-[300px] md:max-h-full object-contain"
               />
             </div>
 
             {/* Right side - Login Section */}
-            <div className="right-section flex justify-center items-center md:w-1/2 flex-grow">
-              <div className="card border-stone-100 p-4 rounded-lg shadow-lg max-w-md w-full border border-neutral-300">
-                <h3 className="text-center mt-3 text-lg text-gray-200 font-semibold">
+            <div className="flex justify-center items-center md:w-1/2">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+                <h3 className="text-center mb-4 text-lg font-semibold text-gray-700">
                   Welcome to MeeTicket
                 </h3>
-
                 <Formik
                   initialValues={initialValues}
                   validationSchema={validationSchema}
                   onSubmit={handleSubmit}
                 >
                   {({ isSubmitting }) => (
-                    <Form className="needs-validation">
+                    <Form>
                       <div className="mb-4">
                         <label
                           htmlFor="EmailId"
-                          className="form-label block text-gray-200 text-sm"
+                          className="form-label text-sm font-medium text-gray-700"
                         >
                           User Name
                         </label>
@@ -142,10 +149,10 @@ const Login = () => {
                         />
                       </div>
 
-                      <div className="mb-4 relative">
+                      <div className="mb-4">
                         <label
                           htmlFor="password"
-                          className="form-label block text-gray-200 text-sm"
+                          className="form-label text-sm font-medium text-gray-700"
                         >
                           Password
                         </label>
@@ -171,6 +178,23 @@ const Login = () => {
                         </div>
                       )}
 
+                      <div className="flex items-center mb-4">
+                        <LoadCanvasTemplate reloadText="Reload" />
+                        <input
+                          type="text"
+                          placeholder="Enter Captcha"
+                          value={captchaInput}
+                          onChange={(e) => updateCaptchaInput(e.target.value)}
+                          className="form-control ml-2 border rounded-md p-2 text-sm"
+                        />
+                      </div>
+
+                      {captchaError && (
+                        <div className="text-red-500 text-center mb-4">
+                          {captchaError}
+                        </div>
+                      )}
+
                       <button
                         type="submit"
                         disabled={isSubmitting}
@@ -185,7 +209,7 @@ const Login = () => {
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

@@ -12,7 +12,12 @@ function DropdownProfile({ align }) {
   const trigger = useRef(null);
   const dropdown = useRef(null);
   const logout = useAuthStore((state) => state.logout);
-
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/"); // Navigate to home page if logged out
+    }
+  }, [isAuthenticated, navigate]);
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -107,10 +112,7 @@ function DropdownProfile({ align }) {
               <Link
                 className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"
                 // to="/signin"
-                onClick={() => {
-                  logout(); // Call the logout function
-                  navigate("/");
-                }}
+                onClick={() => logout()}
               >
                 Sign Out
               </Link>

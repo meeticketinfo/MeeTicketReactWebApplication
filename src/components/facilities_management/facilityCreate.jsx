@@ -54,9 +54,11 @@ const FacilityCreate = () => {
     try {
       // Call the saveParkDetails function from the store
       const result = await saveFacilityDetails(formattedValues, false);
-      toast.success("Park created successfully!");
+      if (isSaveFacilityDetailsLoading) {
+        toast.success("Park created successfully!");
+      }
       // if (result.success) {
-      //   resetForm();
+      resetForm();
       //   alert("facility created successfully!");
       // }
     } catch (error) {

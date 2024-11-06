@@ -67,10 +67,11 @@ const ServiceCreate = () => {
                   <Field
                     as="select"
                     name="facilityId"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.facilityId && touched.facilityId
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.facilityId && touched.facilityId
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
                     {allFacilities.map((facility) => (
@@ -87,14 +88,18 @@ const ServiceCreate = () => {
                 </div>
                 {/* Service Name */}
                 <div>
-                  <label className="block text-sm font-medium"> Service Name</label>
+                  <label className="block text-sm font-medium">
+                    {" "}
+                    Service Name
+                  </label>
                   <Field
                     name="name"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter service name"
                   />
                   <ErrorMessage
@@ -111,10 +116,11 @@ const ServiceCreate = () => {
                   <Field
                     name="displayName"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.displayName && touched.displayName
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.displayName && touched.displayName
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
@@ -135,10 +141,11 @@ const ServiceCreate = () => {
                   <Field
                     type="text"
                     name="duration"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.duration && touched.duration
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.duration && touched.duration
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter Duration"
                   />
                   <ErrorMessage
@@ -158,10 +165,11 @@ const ServiceCreate = () => {
                   <Field
                     type="date"
                     name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.installationDate && touched.installationDate
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.installationDate && touched.installationDate
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter date of birth"
                   />
                   <ErrorMessage
@@ -177,10 +185,11 @@ const ServiceCreate = () => {
                   <Field
                     as="select"
                     name="isActive"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value={true}>Active</option>
@@ -204,10 +213,11 @@ const ServiceCreate = () => {
                   <Field
                     as="select"
                     name="availabilityStatus"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.availabilityStatus && touched.availabilityStatus
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.availabilityStatus && touched.availabilityStatus
                         ? "border-red-500"
                         : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value="available">Available</option>
@@ -228,10 +238,11 @@ const ServiceCreate = () => {
                   <Field
                     as="textarea"
                     name="description"
-                    className={`mt-1 block w-full px-2 py-1 border ${errors.description && touched.description
-                      ? "border-red-500"
-                      : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.description && touched.description
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
@@ -240,7 +251,6 @@ const ServiceCreate = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-
               </div>
 
               {/* Submit Button */}
