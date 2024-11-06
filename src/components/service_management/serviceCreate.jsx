@@ -6,24 +6,24 @@ import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useServiceStore } from "../../store/masters/servicesStore";
 
 const ServiceCreate = () => {
-  const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
+  const { saveServiceDetails, isSaveServiceDetailsLoading } = useServiceStore();
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
   useEffect(() => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
-    firstName: "",
-    middleName: "",
-    parkId: "",
-    lastName: "",
-    dateOfBirth: "",
-    emailId: "",
-    phoneNumber: "",
-    password: "",
-    roleId: "901a561a-2c54-4f1f-9a40-5aa8b71e2e71",
-    isConfirmed: true,
+    name: "",
+    displayName: "",
+    serviceType: "",
+    duration: "",
+    availability: "",
+    installationDate: "",
+    description: "",
+    isActive: true,
+    facilityId: "",
   };
   const validationSchema = Yup.object({});
 
@@ -31,14 +31,18 @@ const ServiceCreate = () => {
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
-    saveUserDetails
+    saveServiceDetails
   ) => {
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveUserDetails(values, false);
-      toast.success("User created successfully!");
+      const result = await saveServiceDetails(values, false);
+      toast.success("Service created successfully!");
+      // if (result.success) {
+      //   resetForm();
+      //   alert("User created successfully!");
+      // }
     } catch (error) {
-      toast.error("Error creating park. Please try again.");
+      toast.error("Error creating service. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -52,14 +56,14 @@ const ServiceCreate = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveUserDetails)
+            onSubmit(values, actions, saveServiceDetails)
           }
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium"> Park</label>
+                  <label className="block text-sm font-medium">Facility</label>
                   <Field
                     as="select"
                     name="facilityId"
@@ -82,185 +86,167 @@ const ServiceCreate = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
+                {/* Service Name */}
                 <div>
-                  <label className="block text-sm font-medium"> Name</label>
+                  <label className="block text-sm font-medium">
+                    {" "}
+                    Service Name
+                  </label>
                   <Field
-                    name="Name"
+                    name="name"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.Name && touched.Name
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter park name"
+                    placeholder="Enter service name"
                   />
                   <ErrorMessage
-                    name="Name"
+                    name="name"
                     component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* Park Name */}
+                {/* Display Name */}
                 <div>
                   <label className="block text-sm font-medium">
                     Display Name
                   </label>
                   <Field
-                    name="DisplayName"
+                    name="displayName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.DisplayName && touched.DisplayName
+                      errors.displayName && touched.displayName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter park name"
                   />
                   <ErrorMessage
-                    name="DisplayName"
+                    name="displayName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/*Last Name */}
+
+                {/* Description */}
                 <div>
-                  <label htmlFor="User" className="block text-xs font-medium">
-                    Last Name
+                  <label
+                    htmlFor="duration"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Duration
                   </label>
                   <Field
-                    name="lastName"
                     type="text"
+                    name="duration"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.lastName && touched.lastName
+                      errors.duration && touched.duration
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter last name"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    placeholder="Enter Duration"
                   />
                   <ErrorMessage
-                    name="lastName"
+                    name="duration"
                     component="div"
-                    className="text-red-500 text-xs"
+                    className="text-red-500 text-xs mt-1"
                   />
                 </div>
                 {/* DOB Number */}
                 <div>
                   <label
-                    htmlFor="dateOfBirth"
+                    htmlFor="installationDate"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    DOB
+                    Installation Date
                   </label>
                   <Field
                     type="date"
-                    name="dateOfBirth"
+                    name="installationDate"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.dateOfBirth && touched.dateOfBirth
+                      errors.installationDate && touched.installationDate
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter date of birth"
                   />
                   <ErrorMessage
-                    name="dateOfBirth"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* Email Id */}
-                <div>
-                  <label
-                    htmlFor="emailId"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Email Id
-                  </label>
-                  <Field
-                    type="email"
-                    name="emailId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.emailId && touched.emailId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter emailId"
-                  />
-                  <ErrorMessage
-                    name="emailId"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* Phone Number */}
-                <div>
-                  <label
-                    htmlFor="dob"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Phone Number
-                  </label>
-                  <Field
-                    type="text"
-                    name="phoneNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.phoneNumber && touched.phoneNumber
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter phone number"
-                  />
-                  <ErrorMessage
-                    name="phoneNumber"
+                    name="installationDate"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
 
-                {/* Password */}
+                {/* Status */}
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Password
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.password && touched.password
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter password"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    {" "}
-                    Is Confirmed
-                  </label>
+                  <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
-                    name="isConfirmed"
+                    name="isActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.isConfirmed && touched.isConfirmed
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    <option value={true}>True</option>
-                    <option value={false}>False</option>
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
                   </Field>
                   <ErrorMessage
-                    name="isConfirmed"
+                    name="active"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+
+                {/* Availability Status */}
+                <div className="">
+                  <label
+                    htmlFor="availabilityStatus"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Availability Status
+                  </label>
+                  <Field
+                    as="select"
+                    name="availabilityStatus"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.availabilityStatus && touched.availabilityStatus
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value="available">Available</option>
+                    <option value="unavailable">Unavailable</option>
+                  </Field>
+                  <ErrorMessage
+                    name="availabilityStatus"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="col-span-3">
+                  <label className="block text-sm font-medium">
+                    Description
+                  </label>
+                  <Field
+                    as="textarea"
+                    name="description"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.description && touched.description
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter description"
+                  />
+                  <ErrorMessage
+                    name="description"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -272,9 +258,9 @@ const ServiceCreate = () => {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
-                  disabled={isSaveUserDetailsLoading}
+                  disabled={isSaveServiceDetailsLoading}
                 >
-                  {isSaveUserDetailsLoading ? "Saving..." : "Create User"}
+                  {isSaveServiceDetailsLoading ? "Saving..." : "Create Service"}
                 </button>
               </div>
             </Form>

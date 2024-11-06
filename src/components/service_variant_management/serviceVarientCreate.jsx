@@ -7,12 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { useServiceStore } from "../../store/masters/servicesStore";
 import { useEffect } from "react";
+import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
+import { toast } from "react-toastify";
 
 // Validation schema using Yup
 
 
 const ServiceVarientCreate = () => {
-    const { saveFacilityDetails, isSaveFacilityDetailsLoading } = useFacilityStore();
+    const { saveServiceVarientDetails, isSaveServiceVarientDetailsLoading } = useServiceVariantStore();
     const { allServices, fetchAllServices } = useServiceStore();
 
     useEffect(() => {
@@ -22,24 +24,31 @@ const ServiceVarientCreate = () => {
         name: "",
         serviceId: "",
         displayName: "",
-        amount: "",
+        amount: 0,
         description: "",
     };
 
     const onSubmit = async (
         values,
         { setSubmitting, resetForm },
-        saveFacilityDetails
+        saveServiceVarientDetails
     ) => {
         try {
             // Call the saveParkDetails function from the store
-            const result = await saveFacilityDetails(values, false);
+            const result = await saveServiceVarientDetails(values, false);
+            console.log(result);
+            // if (result.success) {
+            //     toast.success("Service Varient created successfully!");
+            //     resetForm(); // Optionally reset the form if needed
+            // } else {
+            //     toast.error("Failed to create Service Varient.");
+            // }
             if (result.success) {
                 resetForm();
-                alert("facility created successfully!");
+                toast.success("service varient created successfully!");
             }
         } catch (error) {
-            alert("Error creating Facility. Please try again.");
+            toast("Error creating service varient. Please try again.");
         } finally {
             setSubmitting(false);
         }
@@ -56,12 +65,38 @@ const ServiceVarientCreate = () => {
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={(values, actions) =>
-                        onSubmit(values, actions, saveFacilityDetails)
+                        onSubmit(values, actions, saveServiceVarientDetails)
                     }
                 >
                     {({ errors, touched, isSubmitting }) => (
                         <Form>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+
+                                 {/* Service */}
+                                 <div>
+                                    <label className="block text-sm font-medium"> Service</label>
+                                    <Field
+                                        as="select"
+                                        name="serviceId"
+                                        className={`mt-1 block w-full px-2 py-1 border ${errors.serviceId && touched.serviceId
+                                            ? "border-red-500"
+                                            : "border-gray-300"
+                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    >
+                                        <option value="">Select </option>
+                                        {allServices.map((service) => (
+                                            <option key={service.id } value={service.id}>
+                                                {service.name}
+                                            </option>
+                                        ))}
+                                    </Field>
+                                    <ErrorMessage
+                                        name="serviceId"
+                                        component="div"
+                                        className="text-red-500 text-xs"
+                                    />
+                                </div>
+
                                 {/* Varient Name */}
                                 <div className="">
                                     <label
@@ -77,7 +112,7 @@ const ServiceVarientCreate = () => {
                                             ? "border-red-500"
                                             : "border-gray-300"
                                             } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                                        placeholder="Enter Facility Name"
+                                        placeholder="Enter Varient Name"
                                     />
                                     <ErrorMessage
                                         name="name"
@@ -86,42 +121,18 @@ const ServiceVarientCreate = () => {
                                     />
                                 </div>
 
-                                {/* Service */}
-                                <div>
-                                    <label className="block text-sm font-medium"> Service</label>
-                                    <Field
-                                        as="select"
-                                        name="serviceId"
-                                        className={`mt-1 block w-full px-2 py-1 border ${errors.serviceId && touched.serviceId
-                                            ? "border-red-500"
-                                            : "border-gray-300"
-                                            } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                                    >
-                                        <option value="">Select </option>
-                                        {allServices.map((service) => (
-                                            <option key={service.serviceId} value={service.serviceId}>
-                                                {service.displayName}
-                                            </option>
-                                        ))}
-                                    </Field>
-                                    <ErrorMessage
-                                        name="parkId"
-                                        component="div"
-                                        className="text-red-500 text-xs"
-                                    />
-                                </div>
-
+                               
                                 {/* Amount */}
                                 <div className="">
                                     <label
-                                        htmlFor="displayName"
+                                        htmlFor="amount"
                                         className="block text-sm font-semibold text-gray-700"
                                     >
                                         Amount
                                     </label>
                                     <Field
-                                        type="text"
-                                        name="displayName"
+                                        type="number"
+                                        name="amount"
                                         className={`mt-1 block w-full px-2 py-1 border ${errors.amount && touched.amount
                                             ? "border-red-500"
                                             : "border-gray-300"
@@ -129,7 +140,7 @@ const ServiceVarientCreate = () => {
                                         placeholder=" Enter Display Name"
                                     />
                                     <ErrorMessage
-                                        name="displayName"
+                                        name="amount"
                                         component="div"
                                         className="text-red-500 text-xs mt-1"
                                     />
@@ -146,7 +157,7 @@ const ServiceVarientCreate = () => {
                                     </label>
                                     <Field
                                         type="text"
-                                        name="amount"
+                                        name="displayName"
                                         className={`mt-1 block w-full px-2 py-1 border ${errors.displayName && touched.displayName
                                             ? "border-red-500"
                                             : "border-gray-300"
@@ -154,7 +165,7 @@ const ServiceVarientCreate = () => {
                                         placeholder=" Enter Display Name"
                                     />
                                     <ErrorMessage
-                                        name="amount"
+                                        name="displayName"
                                         component="div"
                                         className="text-red-500 text-xs mt-1"
                                     />
@@ -187,9 +198,9 @@ const ServiceVarientCreate = () => {
                                 <button
                                     type="submit"
                                     className="bg-blue-v1 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-300 ease-in-out focus:ring-4 focus:ring-blue-500 focus:outline-none"
-                                    disabled={isSaveFacilityDetailsLoading}
+                                    disabled={isSaveServiceVarientDetailsLoading}
                                 >
-                                    {isSaveFacilityDetailsLoading ? "Saving..." : "Create Service Varient"}
+                                    {isSaveServiceVarientDetailsLoading ? "Saving..." : "Create Service Varient"}
                                 </button>
                             </div>
                         </Form>
