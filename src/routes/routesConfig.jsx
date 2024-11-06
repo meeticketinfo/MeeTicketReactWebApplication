@@ -18,19 +18,43 @@ import ProtectedRoute from "./ProtectedRoute";
 export const routes = [
   {
     path: "/",
-    element: <ProtectedRoute element={<Login />} />,
+    element: <Login />,
   },
-  { path: "/dashboard", element: <Dashboard /> },
-  { path: "/park-management", element: <AdminParks /> },
-  { path: "/user-management/add", element: <AdminUsers /> },
-  { path: "/bookings", element: <AdminBookings /> },
-  { path: "/user-wise", element: <AdminUsers /> },
-  { path: "/park-admin-management", element: <AdminUsers /> },
-  { path: "/facilites", element: <AdminFacilities /> },
-  { path: "/service", element: <Services /> },
-  { path: "/service-varient", element: <ServiceVariant /> },
-  { path: "/entry-scan-users", element: <EntryScanUsers /> },
-  { path: "/payments", element: <Payments /> },
-  { path: "/working-days", element: <WorkingDays /> },
-  { path: "/holidays", element: <Holidays /> },
+  { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+  {
+    path: "/park-management",
+    element: <ProtectedRoute element={<AdminParks />} />,
+  },
+  {
+    path: "/user-management/add",
+    element: <ProtectedRoute element={<AdminUsers />} />,
+  },
+  {
+    path: "/bookings",
+    element: <ProtectedRoute element={<AdminBookings />} />,
+  },
+  { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
+  {
+    path: "/park-admin-management",
+    element: <ProtectedRoute element={<AdminUsers />} />,
+  },
+  {
+    path: "/facilites",
+    element: <ProtectedRoute element={<AdminFacilities />} />,
+  },
+  { path: "/service", element: <ProtectedRoute element={<Services />} /> },
+  {
+    path: "/service-varient",
+    element: <ProtectedRoute element={<ServiceVariant />} />,
+  },
+  {
+    path: "/entry-scan-users",
+    element: <ProtectedRoute element={<EntryScanUsers />} />,
+  },
+  { path: "/payments", element: <ProtectedRoute element={<Payments />} /> },
+  {
+    path: "/working-days",
+    element: <ProtectedRoute element={<WorkingDays />} />,
+  },
+  { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
 ];
