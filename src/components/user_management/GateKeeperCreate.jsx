@@ -6,17 +6,16 @@ import { useParkStore } from "../../store/masters/parksStore";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useAuthStore from "../../store/authStore";
+import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 
-const UserCreate = ({ roleName }) => {
-  const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
-  const { userRoles } = useAuthStore();
+const GateKeeperCreate = ({ roleName }) => {
+  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading, userRoles } =
+    gateKeepersStore();
   const { allParks, fetchAllParks } = useParkStore();
 
   useEffect(() => {
     fetchAllParks();
   }, []);
-
   const roleId = userRoles?.filter((role) => role.name === roleName);
 
   const initialValues = {
@@ -41,8 +40,9 @@ const UserCreate = ({ roleName }) => {
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
     parkId: Yup.string().required("Park is required"),
-    phoneNumber: Yup.number().required("Phone Number is required"),
-    // .max(10, "Phone Number Must contain 10 digits"),
+    phoneNumber: Yup.number()
+      .required("Phone Number is required"),
+      // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
       .min(6, "Password cannot be less than 6 characters")
@@ -53,11 +53,11 @@ const UserCreate = ({ roleName }) => {
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
-    saveUserDetails
+    saveGateKeeperDetails
   ) => {
     try {
-      // Call the saveUserDetails function from the store
-      const result = await saveUserDetails(values, false);
+      // Call the saveGateKeeperDetails function from the store
+      const result = await saveGateKeeperDetails(values, false);
       toast.success("User created successfully!");
       // if (result.success) {
       //   resetForm();
@@ -78,7 +78,7 @@ const UserCreate = ({ roleName }) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveUserDetails)
+            onSubmit(values, actions, saveGateKeeperDetails)
           }
         >
           {({ errors, touched, isSubmitting }) => (
@@ -289,4 +289,4 @@ const UserCreate = ({ roleName }) => {
     </>
   );
 };
-export default UserCreate;
+export default GateKeeperCreate;

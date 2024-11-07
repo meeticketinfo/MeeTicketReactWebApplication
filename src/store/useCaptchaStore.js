@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import { loadCaptchaEnginge, validateCaptcha } from "react-simple-captcha";
 
 const useCaptchaStore = create((set) => ({
@@ -7,7 +7,7 @@ const useCaptchaStore = create((set) => ({
   captchaLoaded: false,
 
   loadCaptcha: () => {
-    loadCaptchaEnginge(6, "#0c3771", "#fff");
+    loadCaptchaEnginge(6, "rgb(107 114 128 / 1)", "#fff");
     set({ captchaLoaded: true, captchaError: "" });
   },
 

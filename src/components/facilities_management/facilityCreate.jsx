@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 // Validation schema using Yup
 
-const FacilityCreate = ({setIsFacilityCreateVisible}) => {
+const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
   const {
     saveFacilityDetails,
     isSaveFacilityDetailsLoading,
@@ -67,13 +67,11 @@ const FacilityCreate = ({setIsFacilityCreateVisible}) => {
 
       if (result.data.status === 200) {
         toast.success("Facility created successfully!");
-        setTimeout(()=>{
-          setIsFacilityCreateVisible(false)
-        },3000)
+        setTimeout(() => {
+          setIsFacilityCreateVisible(false);
+        }, 3000);
         resetForm();
       }
-     
-      
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
       if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
@@ -103,12 +101,12 @@ const FacilityCreate = ({setIsFacilityCreateVisible}) => {
     displayName: Yup.string()
       .required("Please enter display name.")
       .max(50, "display name should be less than 50 characters"),
-    contactName: Yup.string().max(
-      50,
-      "contact name should be less than 50 characters"
-    ),
+    contactName: Yup.string()
+      .required("Please enter Contact Name.")
+      .max(50, "contact name should be less than 50 characters"),
     contactEmail: Yup.string().email("Invalid email format"),
     contactNumber: Yup.string()
+      .required("Please enter Contact Number.")
       .matches(/^\d+$/, "Contact number must be numeric")
       .max(10, "contact name should be 10 numbers"),
 

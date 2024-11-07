@@ -36,6 +36,9 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
+    GATE_KEEPER: {
+      ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`,
+    },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
@@ -66,6 +69,6 @@ export const API_ENDPOINTS = {
     },
     HOLIDAY: {
       ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
-    }
+    },
   },
 };
