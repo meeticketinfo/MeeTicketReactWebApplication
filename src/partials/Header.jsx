@@ -96,7 +96,7 @@ function Header({ variant = "default" }) {
           </div>
           {roleDetails?.name == "ROLE_ADMIN" &&
           <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
-            <div className="pl-2 flex flex-col text-black">
+            <div className="pl-2 text-blue-v1 text-xl tracking-widest font-medium flex flex-col ">
               <p>
                 {(decodedTokenData?.data?.ParkName &&
                   toTitleCase(decodedTokenData?.data?.ParkName)) ||
