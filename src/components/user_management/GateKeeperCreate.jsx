@@ -9,14 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 
 const GateKeeperCreate = ({ roleName }) => {
-  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading, userRoles } =
+  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading } =
     gateKeepersStore();
   const { allParks, fetchAllParks } = useParkStore();
 
   useEffect(() => {
     fetchAllParks();
   }, []);
-  const roleId = userRoles?.filter((role) => role.name === roleName);
 
   const initialValues = {
     firstName: "",
@@ -27,7 +26,7 @@ const GateKeeperCreate = ({ roleName }) => {
     emailId: "",
     phoneNumber: "",
     password: "",
-    roleId: roleId,
+    roleId: "",
     isConfirmed: true,
   };
 
@@ -40,9 +39,8 @@ const GateKeeperCreate = ({ roleName }) => {
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
     parkId: Yup.string().required("Park is required"),
-    phoneNumber: Yup.number()
-      .required("Phone Number is required"),
-      // .max(10, "Phone Number Must contain 10 digits"),
+    phoneNumber: Yup.number().required("Phone Number is required"),
+    // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
       .min(6, "Password cannot be less than 6 characters")
@@ -277,9 +275,9 @@ const GateKeeperCreate = ({ roleName }) => {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
-                  disabled={isSaveUserDetailsLoading}
+                  disabled={isSaveGateKeeperDetailsLoading}
                 >
-                  {isSaveUserDetailsLoading ? "Saving..." : "Create User"}
+                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create User"}
                 </button>
               </div>
             </Form>
