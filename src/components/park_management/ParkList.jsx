@@ -5,8 +5,17 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { PiPark } from "react-icons/pi";
 
-const ParkList = () => {
-  const { allParks, fetchAllParks, isFetchAllParksLoading } = useParkStore();
+const ParkList = ({
+  setIsParkCreateVisible,
+  isParkEditVisible,
+  setIsParkEditVisible,
+}) => {
+  const {
+    allParks,
+    fetchAllParks,
+    isFetchAllParksLoading,
+    setCurrentParkEditDetails,
+  } = useParkStore();
   useEffect(() => {
     fetchAllParks();
   }, []);
@@ -15,9 +24,6 @@ const ParkList = () => {
   const handleImageError = () => {
     setIsImageLoaded(false);
   };
-  const handleEdit = (data) => {};
-
-  const handleDelete = (data) => {};
 
   const columnDefs = [
     {
@@ -87,17 +93,16 @@ const ParkList = () => {
       field: "actions",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <button className="btn-edit" onClick={() => handleEdit(params.data)}>
-            <span className="">
-              <LuClipboardEdit className="text-[24px] " />
-            </span>
-          </button>
           <button
-            className="btn-delete"
-            onClick={() => handleDelete(params.data)}
+            className="btn-edit"
+            onClick={() => {
+              setCurrentParkEditDetails(params.data);
+              setIsParkCreateVisible(true);
+              setIsParkEditVisible(true);
+            }}
           >
-            <span>
-              <BsTrash className="text-[24px]" />
+            <span className="">
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
             </span>
           </button>
         </div>

@@ -61,6 +61,20 @@ const apiService = {
       },
     });
   },
+
+  uploadFileWithPut: (url, file, additionalData = {}, headers = {}) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    Object.keys(additionalData).forEach((key) =>
+      formData.append(key, additionalData[key])
+    );
+    return api.put(url, formData, {
+      headers: {
+        ...headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 export default apiService;
