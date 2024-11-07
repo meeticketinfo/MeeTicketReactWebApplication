@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Transition from "../utils/Transition";
 
-import UserAvatar from "../images/user-avatar-32.png";
+import UserAvatar from "../images/userimg.svg";
+
 import useAuthStore from "../store/authStore";
 
 function DropdownProfile({ align }) {
@@ -54,10 +55,10 @@ function DropdownProfile({ align }) {
         aria-expanded={dropdownOpen}
       >
         <img
-          className="w-8 h-8 rounded-full"
+          className="w-8 h-8 rounded-full  "
           src={UserAvatar}
-          width="32"
-          height="32"
+          width="42"
+          height="42"
           alt="User"
         />
         <div className="flex items-center truncate">
