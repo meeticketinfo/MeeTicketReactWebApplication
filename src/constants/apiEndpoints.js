@@ -69,6 +69,7 @@ export const API_ENDPOINTS = {
     },
     HOLIDAY: {
       ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
+      GET_HOLIDAYS: `Master/GetAllHolidays`,
     },
   },
 };

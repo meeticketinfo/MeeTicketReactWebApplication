@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
-import { useFacilityStore } from "../../store/masters/facilitiesStore";
+import { useHolidayStore } from "../../store/masters/holidayStore";
+import { formatToStandardDate, formatToStandardTime } from "../../utils/TypographyHelper";
 
 const HolidayList = () => {
-  const { allFacilities, fetchAllFacilities } = useFacilityStore();
+  const { allHolidays, fetchAllHolidays } = useHolidayStore();
 
   useEffect(() => {
-    fetchAllFacilities();
+    fetchAllHolidays();
   }, []);
-  
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -19,59 +20,33 @@ const HolidayList = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "name",
-      headerName: "Facility Name",
+      field: "holidayName",
+      headerName: "Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "parkName",
-      headerName: "Park Name",
+      field: "fromDate",
+      headerName: "From Date",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) =>
+        params.value ? formatToStandardDate(params.value) : "N/A",
     },
     {
-      field: "openTime",
-      headerName: "Open Time",
+      field: "toDate",
+      headerName: "To Date",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
-    },
-    {
-      field: "closeTime",
-      headerName: "Close Time",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
-    },
-    {
-      headerName: "Status",
-      field: "isActive",
-      flex: 1,
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <span
-            className={`${
-              params.value
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
-            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-          >
-            {" "}
-            {params.value ? "Active" : "Inactive"}
-          </span>
-        </div>
-      ),
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) =>
+        params.value ? formatToStandardDate(params.value) : "N/A",
     },
   ]);
   return (
     <>
       {/* <DashboardCard07> */}
-      <AgGridTable rowData={allFacilities} columnDefs={columnDefs} />
+      <AgGridTable rowData={allHolidays} columnDefs={columnDefs} />
       {/* </DashboardCard07> */}
     </>
   );

@@ -7,14 +7,19 @@ import { useHolidayStore } from "../../store/masters/holidayStore";
 import { toast, ToastContainer } from "react-toastify";
 // Validation schema using Yup
 const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-//   description: Yup.string().required("Description is required"),
+  name: Yup.string()
+    .required("Name is required")
+    .max(50, "Description cannot be more than 50 characters"),
+  description: Yup.string().max(
+    300,
+    "Description cannot be more than 300 characters"
+  ),
   fromDate: Yup.date().required("Start date is required"),
   toDate: Yup.date().required("End date is required"),
 });
 
 export default function HolidayCreate() {
-  const { saveHolidayDetails,isSaveHolidayDetailsLoading } = useHolidayStore();
+  const { saveHolidayDetails, isSaveHolidayDetailsLoading } = useHolidayStore();
   const handleSubmit = async (values, { resetForm }, saveHolidayDetails) => {
     // Format date fields to ISO strings
     const formattedValues = {
@@ -32,7 +37,6 @@ export default function HolidayCreate() {
         }, 3000);
         resetForm();
       }
-     
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
       if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
@@ -58,7 +62,7 @@ export default function HolidayCreate() {
       <Formik
         initialValues={{
           name: "",
-          //   description: "",
+          description: "",
           fromDate: "",
           toDate: "",
         }}

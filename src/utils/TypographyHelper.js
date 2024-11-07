@@ -13,3 +13,46 @@ export const toUpperCase = (text) => {
 export const toLowerCase = (text) => {
   return text.toLowerCase();
 };
+
+export const formatToStandardTime = (dateInput) => {
+  let date;
+
+  // Try parsing the date input
+  if (dateInput instanceof Date) {
+    date = dateInput;
+  } else {
+    date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date input");
+    }
+  }
+
+  // Format date to HH:MM:SS
+  const options = {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  };
+
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+};
+
+export const formatToStandardDate = (dateInput) => {
+  let date;
+
+  if (dateInput instanceof Date) {
+    date = dateInput;
+  } else {
+    date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date input");
+    }
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
