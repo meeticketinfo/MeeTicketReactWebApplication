@@ -2,12 +2,14 @@ import React, { useState } from "react";
 
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
+import { ToastContainer } from "react-toastify";
 
 function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden">
+       <ToastContainer position="top-right" autoClose={3000} />
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} role={"Admin"} variant = "default" />
 

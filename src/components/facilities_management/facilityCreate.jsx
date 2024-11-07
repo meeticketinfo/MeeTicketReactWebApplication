@@ -590,7 +590,7 @@ const FacilityCreate = ({
                 >
                   {isSaveFacilityDetailsLoading
                     ? "Saving..."
-                    : "Create Facility"}
+                    : isFacilityEditVisible?"Update Facility":"Create Facility"}
                 </button>
               </div>
             </Form>

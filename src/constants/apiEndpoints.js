@@ -55,7 +55,7 @@ export const API_ENDPOINTS = {
     },
     SERVICE_VARIANT: {
       GET_SERVICE_VARIANTS: `Master/GetAllServiceVarients`,
-      UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
+      UPDATE_SERVICE_VARIENT_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
       ADD_NEW_SERVICE_VARIENT: `${API_BASE_URL}Master/AddNewServiceVarient`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
