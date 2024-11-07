@@ -70,5 +70,8 @@ export const API_ENDPOINTS = {
     HOLIDAY: {
       ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
     },
+    MY_PROFILE :{
+      GET_PROFILES:`${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
+    }
   },
 };
