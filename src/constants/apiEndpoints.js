@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
       ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+      GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
     },
     USER: {
       GET_USERS: `Master/GetAllAdminUser`,

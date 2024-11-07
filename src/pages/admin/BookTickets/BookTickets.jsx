@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
+import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
 
 export default function AdminBookings() {
     const { allBookings, fetchAllBookings } = useBookingsStore();
@@ -114,7 +115,7 @@ export default function AdminBookings() {
                         )}
                     </div>
                 </div>
-
+                {/* <FacilityServices /> */}
                 {/* Booking Form Section */}
                 {isBookingFormVisible && (
                     <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
