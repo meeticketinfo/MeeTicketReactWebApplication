@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { useServiceStore } from "../../store/masters/servicesStore";
 import { LuClipboardEdit } from "react-icons/lu";
+import Tippy from "@tippyjs/react";
 
 const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
   const { allServices, isFetchAllServicesLoading, fetchAllServices,setCurrentServiceEditDetails } =
@@ -60,6 +61,7 @@ const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
       field: "actions",
       cellRenderer: (params) => (
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+             <Tippy content="Edit" placement="right" className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg">
             <button className="btn-edit" onClick={() => {
              
               setCurrentServiceEditDetails(params.data);
@@ -67,9 +69,10 @@ const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
               setIsServiceEditVisible(true)
               }}>
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
               </span>
             </button>
+            </Tippy>
             {/* <button
               className="btn-delete"
               onClick={() => handleDelete(params.data)}

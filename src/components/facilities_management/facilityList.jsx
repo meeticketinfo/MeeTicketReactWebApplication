@@ -3,6 +3,7 @@ import AgGridTable from "../tables/AgGridTable";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
+import Tippy from '@tippyjs/react';
 
 const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => {
   const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } = useFacilityStore();
@@ -54,8 +55,8 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
           <span
             className={`${
               params.value
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
+                ? "bg-green-400 text-white shadow-md "
+                : "bg-red-400 text-white shadow-md "
             } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
           >
             {" "}
@@ -71,16 +72,18 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
       field: "actions",
       cellRenderer: (params) => (
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-            <button className="btn-edit" onClick={() => {
+             <Tippy content="Edit" placement="right" className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg">
+            <button  className="btn-edit" onClick={() => {
              
               setCurrentFacilityEditDetails(params.data);
               setIsFacilityCreateVisible(true)
               setIsFacilityEditVisible(true)
               }}>
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
               </span>
             </button>
+            </Tippy>
             {/* <button
               className="btn-delete"
               onClick={() => handleDelete(params.data)}
@@ -100,6 +103,7 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
       {/* <DashboardCard07> */}
       <AgGridTable rowData={allFacilities} columnDefs={columnDefs} />
       {/* </DashboardCard07> */}
+      
     </>
   );
 };

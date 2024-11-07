@@ -6,6 +6,7 @@ import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
+import { formatToStandardDate } from "../../utils/TypographyHelper";
 // Validation schema using Yup
 
 const FacilityCreate = ({
@@ -39,11 +40,11 @@ const FacilityCreate = ({
     availabilityStatus:
       (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
     lastMaintenanceDate:
-      (isFacilityEditVisible && FacilityEditDetails.lastMaintenanceDate) || "",
+      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.lastMaintenanceDate): "",
     facilityCondition:
       isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
     installationDate:
-      isFacilityEditVisible ? FacilityEditDetails.installationDate : "",
+      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.installationDate) : "",
     openTime:
       (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
     closeTime:
@@ -242,11 +243,11 @@ const FacilityCreate = ({
                   <Field
                     type="text"
                     name="name"
-                    className={`mt-1 block w-full px-2 py-1 border ${
+                    className={`mt-1 block w-full text-gray-700 px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        : ""
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Facility Name"
                   />
                   <ErrorMessage
@@ -271,7 +272,7 @@ const FacilityCreate = ({
                       errors.displayName && touched.displayName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
@@ -296,7 +297,7 @@ const FacilityCreate = ({
                       errors.contactName && touched.contactName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Contact Name"
                   />
                   <ErrorMessage
@@ -321,7 +322,7 @@ const FacilityCreate = ({
                       errors.contactNumber && touched.contactNumber
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Contact Number"
                   />
                   <ErrorMessage
@@ -345,7 +346,7 @@ const FacilityCreate = ({
                       errors.contactEmail && touched.contactEmail
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Contact Email"
                   />
                   <ErrorMessage
@@ -370,7 +371,7 @@ const FacilityCreate = ({
                       errors.capacity && touched.capacity
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Capacity"
                   />
                   <ErrorMessage
@@ -395,7 +396,7 @@ const FacilityCreate = ({
                       errors.availabilityStatus && touched.availabilityStatus
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value="available">Available</option>
@@ -423,7 +424,7 @@ const FacilityCreate = ({
                       errors.lastMaintenanceDate && touched.lastMaintenanceDate
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                     placeholder=" Enter LastMaintenance Date"
                   />
                   <ErrorMessage
@@ -448,7 +449,7 @@ const FacilityCreate = ({
                       errors.facilityCondition && touched.facilityCondition
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                     placeholder=" Enter Facility Condition"
                   />
                   <ErrorMessage
@@ -498,7 +499,7 @@ const FacilityCreate = ({
                       errors.openTime && touched.openTime
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Open Time"
                   />
                   <ErrorMessage
@@ -545,7 +546,7 @@ const FacilityCreate = ({
                       errors.description && touched.description
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
