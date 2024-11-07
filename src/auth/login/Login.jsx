@@ -14,8 +14,12 @@ import {
   validateCaptcha,
 } from "react-simple-captcha";
 import useCaptchaStore from "../../store/useCaptchaStore";
+import { FaRedo } from "react-icons/fa";
+import "./Login.css";
+import { bouncy } from 'ldrs'
 
 const Login = () => {
+  bouncy.register();
   const navigate = useNavigate();
   const { isLoading, isAuthenticated, error, login } = useAuthStore();
 
@@ -103,7 +107,7 @@ const Login = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-grow justify-center items-center px-4">
+        <div className="flex flex-grow items-center justify-center px-4">
           <div className="flex flex-col md:flex-row items-center w-full max-w-6xl space-y-6 md:space-y-0 md:space-x-10">
             {/* Left side - MeeTicket Logo */}
             <div className="flex justify-center items-center md:w-1/2">
@@ -115,8 +119,8 @@ const Login = () => {
             </div>
 
             {/* Right side - Login Section */}
-            <div className="flex justify-center items-center md:w-1/2">
-              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <div className="flex justify-center items-center md:w-1/2 h-full">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg flex-grow flex flex-col justify-center">
                 <h3 className="text-center mb-4 text-lg font-semibold text-gray-700">
                   Welcome to MeeTicket
                 </h3>
@@ -178,8 +182,23 @@ const Login = () => {
                         </div>
                       )}
 
-                      <div className="flex items-center mb-4">
-                        <LoadCanvasTemplate reloadText="Reload" />
+                      <div className="flex items-center mb-4 bg-gray-500 rounded ">
+                        <div className="relative flex items-center flex-row-reverse lg:w-3/4">
+                          <button
+                            type="button"
+                            className="absolute left-0 bg-gray-500 p-2 outline-none text-blue-v1"
+                            onClick={() =>
+                              loadCaptchaEnginge(
+                                6,
+                                "rgb(107 114 128 / 1)",
+                                "#fff"
+                              )
+                            }
+                          >
+                            <FaRedo size={16} />{" "}
+                          </button>
+                          <LoadCanvasTemplate reloadText="" />
+                        </div>
                         <input
                           type="text"
                           placeholder="Enter Captcha"
@@ -188,19 +207,22 @@ const Login = () => {
                           className="form-control ml-2 border rounded-md p-2 text-sm"
                         />
                       </div>
-
-                      {captchaError && (
-                        <div className="text-red-500 text-center mb-4">
-                          {captchaError}
-                        </div>
-                      )}
+                      <div className="text-center">
+                        {captchaError && (
+                          <small className="text-red-500 text-center mb-4">
+                            {captchaError}
+                          </small>
+                        )}
+                      </div>
 
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="btn btn-primary w-full bg-blue-v1 text-white rounded-md p-2"
+                        className={`relative w-full p-2 rounded-md text-white overflow-hidden flex justify-center items-center bg-gradient-to-r ${ isSubmitting ? "from-blue-v2 via-blue-300 to-blue-v2 bg-[length:200%_100%] animate-fill-right-to-left" : "bg-blue-v1"}`}
                       >
-                        Sign in
+                        <span >
+                          Sign in
+                        </span>
                       </button>
                     </Form>
                   )}

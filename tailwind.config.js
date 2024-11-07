@@ -6,6 +6,19 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      keyframes: {
+        "fill-right-to-left": {
+          "0%": {
+            backgroundPosition: "100% 0",
+          },
+          "100%": {
+            backgroundPosition: "-100% 0",
+          },
+        },
+      },
+      animation: {
+        "fill-right-to-left": "fill-right-to-left 1.5s ease-out infinite",
+      },
       colors: {
         blue: {
           v1: "#002352",

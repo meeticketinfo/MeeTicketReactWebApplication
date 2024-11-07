@@ -94,6 +94,7 @@ function Header({ variant = "default" }) {
               </div>
             </div>
           </div>
+          {roleDetails?.name == "ROLE_ADMIN" &&
           <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
             <div className="pl-2 flex flex-col text-black">
               <p>
@@ -103,7 +104,7 @@ function Header({ variant = "default" }) {
               </p>
               {/* <small className="text-[10px] pl-1">ITE&C Department</small> */}
             </div>
-          </div>
+          </div>}
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
