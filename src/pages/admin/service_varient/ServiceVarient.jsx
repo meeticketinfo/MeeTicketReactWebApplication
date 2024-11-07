@@ -4,7 +4,7 @@ import ServiceVariantList from "../../../components/service_variant_management/s
 import ServiceVarientCreate from "../../../components/service_variant_management/serviceVarientCreate";
 
 export default function ServiceVariant() {
-    const [isServiceVarientCreateVisible, setIsServiceVarientCreateVisible] = useState(true);
+    const [isServiceVarientCreateVisible, setIsServiceVarientCreateVisible] = useState(false);
 
     // Function to toggle the visibility of serviceVarientCreate
     const toggleServiceVarientCreate = () => {
@@ -27,14 +27,14 @@ export default function ServiceVariant() {
                             {/* Add view button */}
                             <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
                                 <span className="max-xs:sr-only" onClick={toggleServiceVarientCreate}>
-                                    {isServiceVarientCreateVisible ? "Add Service Varient" : "Back"}
+                                    {!isServiceVarientCreateVisible ? "Add Service Varient" : "Back"}
                                 </span>
                             </button>
                         </div>
                     </div>
                     {/* Cards */}
                     {/* <div className="grid grid-cols-12 gap-6"> */}
-                    {!isServiceVarientCreateVisible ? <ServiceVarientCreate /> : <ServiceVariantList />}
+                    {isServiceVarientCreateVisible ? <ServiceVarientCreate setIsServiceVarientCreateVisible={setIsServiceVarientCreateVisible} /> : <ServiceVariantList />}
                     {/* </div> */}
                 </div>
             </AdminLayout>

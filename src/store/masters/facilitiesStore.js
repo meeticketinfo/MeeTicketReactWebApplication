@@ -11,6 +11,8 @@ export const useFacilityStore = create((set) => ({
   fetchFacilityDetailsError: null,
   error: null,
   success: null,
+  facilityCreateResponse:{},
+  
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -45,10 +47,11 @@ export const useFacilityStore = create((set) => ({
         .getState()
         .serializeFilters(filters);
       const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.Facility.GET_Facility_DETAILS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.FACILITY.GET_Facility_DETAILS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
       );
 
       set({
+        
         FacilityDetails: response.data,
         isFetchFacilityDetailsLoading: false,
         success: "Facility details fetched successfully.",
@@ -71,13 +74,14 @@ export const useFacilityStore = create((set) => ({
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, FacilityData);
-
+      // console.log("response istunnava :", response)
       set({
+        facilityCreateResponse:{response},
         FacilityDetails: response.data,
         isSaveFacilityDetailsLoading: false,
         success: "Facility saved successfully.",
       });
-      return { success: true, data: response.data };
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveFacilityDetailsLoading: false });
       throw error;

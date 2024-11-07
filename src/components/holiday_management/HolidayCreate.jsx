@@ -4,6 +4,7 @@ import "tailwindcss/tailwind.css";
 import { useState } from "react";
 import FormWrapperCard from "../FormWrapperCard";
 import { useHolidayStore } from "../../store/masters/holidayStore";
+import { toast, ToastContainer } from "react-toastify";
 // Validation schema using Yup
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -13,7 +14,7 @@ const validationSchema = Yup.object({
 });
 
 export default function HolidayCreate() {
-  const { saveHolidayDetails } = useHolidayStore();
+  const { saveHolidayDetails,isSaveHolidayDetailsLoading } = useHolidayStore();
   const handleSubmit = async (values, { resetForm }, saveHolidayDetails) => {
     // Format date fields to ISO strings
     const formattedValues = {
@@ -23,15 +24,37 @@ export default function HolidayCreate() {
     };
 
     try {
-      await saveHolidayDetails(formattedValues, false);
-      // setFormStatus("Holiday saved successfully.");
-      resetForm(); // Reset form on successful submission
-    } catch (err) {
-      // setFormStatus("Failed to save holiday. Please try again.");
+      const result =await saveHolidayDetails(formattedValues, false);
+      if (result.data.status === 200) {
+        toast.success("Service Variant created successfully!");
+        setTimeout(() => {
+          // setIsServiceVarientCreateVisible(false);
+        }, 3000);
+        resetForm();
+      }
+     
+    } catch (xhr) {
+      console.log("xhr.errors:", xhr);
+      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response.data);
+      }
     }
   };
   return (
     <FormWrapperCard>
+      <ToastContainer position="top-right" autoClose={3000} />
       <Formik
         initialValues={{
           name: "",
@@ -52,7 +75,9 @@ export default function HolidayCreate() {
                 <label className="text-gray-700 dark:text-gray-300">Name</label>
                 <Field
                   name="name"
+                  maxLength={55}
                   type="text"
+                  placeholder="Holiday Name"
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 focus:ring focus:ring-blue-300"
                 />
                 <ErrorMessage
@@ -102,6 +127,8 @@ export default function HolidayCreate() {
                 </label>
                 <Field
                   name="description"
+                   placeholder="Give discription"
+                   maxLength={255}
                   as="textarea"
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 focus:ring focus:ring-blue-300"
                 />
@@ -114,13 +141,15 @@ export default function HolidayCreate() {
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-start p-5">
+            <div className="flex justify-center p-5">
               <button
                 type="submit"
-                className="bg-blue-v1 text-white rounded-lg px-6 py-3 hover:bg-blue-700 transition duration-300 ease-in-out focus:ring-4 focus:ring-blue-500 focus:outline-none"
-                disabled={isSubmitting}
+                className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                disabled={isSaveHolidayDetailsLoading}
               >
-                Submit
+                 {isSaveHolidayDetailsLoading
+                    ? "Submiting..."
+                    : "Submit"}
               </button>
             </div>
           </Form>

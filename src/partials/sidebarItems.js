@@ -59,7 +59,7 @@ const sidebarItems = [
         path: "/service-varient",
       },
       {
-        title: "Entry Scan Users ",
+        title: "Gate Keeper ",
         icon: RiBodyScanLine,
         path: "/entry-scan-users",
       },

@@ -28,16 +28,16 @@ export default function AdminFacilities() {
             {/* Add view button */}
             <button
               onClick={toggleFacilityCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
             >
-              <span className="max-xs:sr-only">{!isFacilityCreateVisible ? "Add Facility" : "Back"}</span>
+              <span className="max-xs:sr-only ">{!isFacilityCreateVisible ? "Add Facility" : "Back"}</span>
             </button>
           </div>
         </div>
 
         {/* Cards */}
        
-          {isFacilityCreateVisible ? <FacilityCreate /> : <FacilityList />}
+          {isFacilityCreateVisible ? <FacilityCreate setIsFacilityCreateVisible={setIsFacilityCreateVisible} /> : <FacilityList />}
         
       </div>
     </AdminLayout>
