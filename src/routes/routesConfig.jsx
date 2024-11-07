@@ -15,6 +15,7 @@ import Services from "../pages/admin/services/services";
 import AdminBookings from "../pages/admin/bookings/Bookings";
 import ProtectedRoute from "./ProtectedRoute";
 import BookTickets from "../pages/admin/BookTickets/BookTickets";
+import GateKeepers from "../pages/park_admin/users/GateKeepers";
 
 export const routes = [
   {
@@ -49,8 +50,8 @@ export const routes = [
     element: <ProtectedRoute element={<ServiceVariant />} />,
   },
   {
-    path: "/entry-scan-users",
-    element: <ProtectedRoute element={<EntryScanUsers />} />,
+    path: "/gate-keepers",
+    element: <ProtectedRoute element={<GateKeepers />} />,
   },
   { path: "/payments", element: <ProtectedRoute element={<Payments />} /> },
   {

@@ -61,7 +61,7 @@ const sidebarItems = [
       {
         title: "Gate Keeper ",
         icon: RiBodyScanLine,
-        path: "/entry-scan-users",
+        path: "/gate-keepers",
       },
       {
         title: "Payments",
@@ -108,7 +108,7 @@ const sidebarItems = [
       },
     ],
   },
-   {
+  {
     title: "Book Tickets",
     icon: RiDashboard3Fill,
     path: "/booktickets",
