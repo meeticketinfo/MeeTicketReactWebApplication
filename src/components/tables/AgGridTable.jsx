@@ -13,11 +13,6 @@ const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
       className="ag-theme-alpine bg-blue-v1"
       style={{ height: gridHeight, width: "100%", position: "relative" }}
     >
-      {isFetchLoading && (
-        <div className="loader-overlay">
-          <div className="loader">Loading...</div>
-        </div>
-      )}
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefs}
@@ -27,6 +22,12 @@ const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
           paginationPageSizeOptions: [10, 20, 50, 100],
         }}
       />
+      {/* Loader overlay within the table body */}
+      {isFetchLoading && (
+        <div className="ag-table-body-loader">
+          <div className="loader"></div>
+        </div>
+      )}
     </div>
   );
 };
