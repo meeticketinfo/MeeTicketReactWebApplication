@@ -19,12 +19,12 @@ const ParkCreate = ({
     filePreviews,
     parkEditDetails,
   } = useParkStore();
-console.log("editparkEditDetails",parkEditDetails)
+  console.log("editparkEditDetails", parkEditDetails);
   const initialValues = {
     Id: isParkEditVisible ? parkEditDetails.id : "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
     DisplayName: isParkEditVisible ? parkEditDetails.displayName : "",
-    Street1: isParkEditVisible ? parkEditDetails.street1: " ",
+    Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
     Street3: isParkEditVisible ? parkEditDetails.street3 : "",
     Landmark: isParkEditVisible ? parkEditDetails.landmark : "",
@@ -59,17 +59,17 @@ console.log("editparkEditDetails",parkEditDetails)
       .nullable()
       .min(3, "Street 1 must be at least 3 characters long")
       .max(50, "Street 1 cannot be more than 50 characters"),
-      Street2: Yup.string()
+    Street2: Yup.string()
       .nullable()
       .min(3, "Street 2 must be at least 3 characters long")
       .max(50, "Street 2 cannot be more than 50 characters"),
 
-      Street3: Yup.string()
+    Street3: Yup.string()
       .nullable()
       .min(3, "Street 3 must be at least 3 characters long")
       .max(50, "Street 3 cannot be more than 50 characters"),
 
-      Landmark: Yup.string()
+    Landmark: Yup.string()
       .nullable()
       .min(3, "Landmark must be at least 3 characters long")
       .max(50, "Landmark cannot be more than 50 characters"),
@@ -85,10 +85,10 @@ console.log("editparkEditDetails",parkEditDetails)
       .nullable()
       .min(2, "Country must be at least 2 characters long")
       .max(50, "Country cannot be more than 50 characters"),
-      ZipCode: Yup.string()
+    ZipCode: Yup.string()
       .nullable()
       .matches(/^\d+$/, "Zip Code must be a number")
-      .length(5, "Zip Code must be exactly 5 digits"),
+      .length(6, "Zip Code must be exactly 5 digits"),
     longitude: Yup.number()
       .min(-180, "Longitude must be between -180 and 180")
       .max(180, "Longitude must be between -180 and 180"),
@@ -112,7 +112,7 @@ console.log("editparkEditDetails",parkEditDetails)
     Ifsc: Yup.string()
       .required("IFSC code is required")
       .matches(/^[A-Za-z]{4}\d{7}$/, "Invalid IFSC code format"),
-      BankName: Yup.string()
+    BankName: Yup.string()
       .required("Bank name is required")
       .max(100, "Bank name cannot be more than 100 characters"),
     BankBranch: Yup.string()
@@ -161,7 +161,11 @@ console.log("editparkEditDetails",parkEditDetails)
         isParkEditVisible ? true : false
       );
       if (result && result.data && result.data.status === 200) {
-        toast.success(isParkEditVisible?"Park Updated Successfully!":"Park Created Successfully!");
+        toast.success(
+          isParkEditVisible
+            ? "Park Updated Successfully!"
+            : "Park Created Successfully!"
+        );
         setTimeout(() => {
           setIsParkCreateVisible(false);
           setIsParkEditVisible(false);
@@ -609,7 +613,11 @@ console.log("editparkEditDetails",parkEditDetails)
                     className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                     disabled={isSaveParkDetailsLoading}
                   >
-                    {isSaveParkDetailsLoading ? "Saving..." : isParkEditVisible?"Update Park":"Create Park"}
+                    {isSaveParkDetailsLoading
+                      ? "Saving..."
+                      : isParkEditVisible
+                      ? "Update Park"
+                      : "Create Park"}
                   </button>
                 </div>
               </div>

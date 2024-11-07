@@ -4,13 +4,14 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
+import { useParkAdminStore } from "../../store/masters/parkAdminStore";
 
 const ParkAdminList = () => {
-  const { allGateKeepers, isFetchAllGateKeepersLoading, fetchAllGateKeepers } =
-    gateKeepersStore();
+  const { allParkAdmins, isFetchAllParkAdminsLoading, fetchAllParkAdmins } =
+    useParkAdminStore();
 
   useEffect(() => {
-    fetchAllGateKeepers();
+    fetchAllParkAdmins();
   }, []);
 
   const columnDefs = [
@@ -60,8 +61,8 @@ const ParkAdminList = () => {
   return (
     <>
       <AgGridTable
-        isFetchLoading={isFetchAllGateKeepersLoading}
-        rowData={allGateKeepers}
+        isFetchLoading={isFetchAllParkAdminsLoading}
+        rowData={allParkAdmins}
         columnDefs={columnDefs}
       />
     </>

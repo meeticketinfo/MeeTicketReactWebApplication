@@ -16,7 +16,7 @@ import {
 import useCaptchaStore from "../../store/useCaptchaStore";
 import { FaRedo } from "react-icons/fa";
 import "./Login.css";
-import { bouncy } from 'ldrs'
+import { bouncy } from "ldrs";
 
 const Login = () => {
   bouncy.register();
@@ -32,8 +32,8 @@ const Login = () => {
   } = useCaptchaStore();
 
   const initialValues = {
-    EmailId: "Testing1@gmail.com",
-    password: "Test@123",
+    EmailId: "",
+    password: "",
   };
 
   const validationSchema = Yup.object({
@@ -45,7 +45,7 @@ const Login = () => {
     loadCaptcha();
   }, [loadCaptcha]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const isCaptchaValid = validateCaptchaInput();
     if (!isCaptchaValid) {
       setSubmitting(false);
@@ -53,6 +53,7 @@ const Login = () => {
     }
     const response = await login(values);
     if (response.success) {
+      resetForm();
       navigate("/dashboard");
     }
     setSubmitting(false);
@@ -218,11 +219,13 @@ const Login = () => {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`relative w-full p-2 rounded-md text-white overflow-hidden flex justify-center items-center bg-gradient-to-r ${ isSubmitting ? "from-blue-v2 via-blue-300 to-blue-v2 bg-[length:200%_100%] animate-fill-right-to-left" : "bg-blue-v1"}`}
+                        className={`relative w-full p-2 rounded-md text-white overflow-hidden flex justify-center items-center bg-gradient-to-r ${
+                          isSubmitting
+                            ? "from-blue-v2 via-blue-300 to-blue-v2 bg-[length:200%_100%] animate-fill-right-to-left"
+                            : "bg-blue-v1"
+                        }`}
                       >
-                        <span >
-                          Sign in
-                        </span>
+                        <span>Sign in</span>
                       </button>
                     </Form>
                   )}
