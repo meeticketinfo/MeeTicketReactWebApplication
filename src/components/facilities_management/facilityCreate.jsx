@@ -44,6 +44,7 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
   ) => {
     const formattedValues = {
       ...values,
+      isActive: values.isActive === "true" || values.isActive === true,
       openTime:
         values.openTime.length === 5
           ? `${values.openTime}:00`
@@ -145,7 +146,7 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
             onSubmit(values, actions, saveFacilityDetails)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Facility Name */}
@@ -478,6 +479,10 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
                   <Field
                     as="select"
                     name="isActive"
+                    onchange={(e) => {
+                      const { value } = e.target;
+                      setFieldValue("isActive", value === "true");
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.isActive && touched.isActive
                         ? "border-red-500"

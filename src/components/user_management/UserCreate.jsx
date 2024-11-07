@@ -10,14 +10,11 @@ import useAuthStore from "../../store/authStore";
 
 const UserCreate = ({ roleName }) => {
   const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
-  const { userRoles } = useAuthStore();
   const { allParks, fetchAllParks } = useParkStore();
 
   useEffect(() => {
     fetchAllParks();
   }, []);
-
-  const roleId = userRoles?.filter((role) => role.name === roleName);
 
   const initialValues = {
     firstName: "",
@@ -28,7 +25,7 @@ const UserCreate = ({ roleName }) => {
     emailId: "",
     phoneNumber: "",
     password: "",
-    roleId: roleId,
+    roleId: "",
     isConfirmed: true,
   };
 
@@ -49,20 +46,14 @@ const UserCreate = ({ roleName }) => {
       .max(20, "Password cannot be more than 30 characters"),
   });
 
-  // onSubmit function to handle form submission
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
     saveUserDetails
   ) => {
     try {
-      // Call the saveUserDetails function from the store
       const result = await saveUserDetails(values, false);
       toast.success("User created successfully!");
-      // if (result.success) {
-      //   resetForm();
-      //   alert("User created successfully!");
-      // }
     } catch (error) {
       toast.error("Error creating park. Please try again.");
     } finally {

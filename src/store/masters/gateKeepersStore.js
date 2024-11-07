@@ -36,7 +36,11 @@ export const gateKeepersStore = create((set) => ({
     }
   },
   // Fetch all Bookings
-  fetchAllScannedGateKeepers: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllScannedGateKeepers: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {}
+  ) => {
     set({ isFetchAllScannedGateKeepersLoading: true });
     try {
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
@@ -60,7 +64,7 @@ export const gateKeepersStore = create((set) => ({
     try {
       const url = isUpdate
         ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
-        : API_ENDPOINTS.MASTERS.GateKeeper.ADD_NEW_GateKeeper;
+        : API_ENDPOINTS.MASTERS.GATE_KEEPER.ADD_NEW_GATE_KEEPER;
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, GateKeeperData);
@@ -70,14 +74,11 @@ export const gateKeepersStore = create((set) => ({
         isSaveGateKeeperDetailsLoading: false,
         success: "GateKeeper saved successfully.",
       });
-      return { success: true, data: response.data };
+
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveGateKeeperDetailsLoading: false });
       throw error;
     }
   },
-
 }));
-
-
-
