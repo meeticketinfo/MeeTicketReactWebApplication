@@ -9,6 +9,7 @@ export default function Services() {
   // Function to toggle the visibility of ParkCreate
   const toggleServiceCreate = () => {
     setIsServiceCreateVisible((prev) => !prev);
+    setIsServiceEditVisible(false)
   };
 
   return (

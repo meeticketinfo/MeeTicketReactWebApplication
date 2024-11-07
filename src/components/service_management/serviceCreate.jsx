@@ -319,7 +319,7 @@ const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsSer
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveServiceDetailsLoading}
                 >
-                  {isSaveServiceDetailsLoading ? "Saving..." : "Create Service"}
+                  {isSaveServiceDetailsLoading ? "Saving..." : isServiceEditVisible?"Update Service":"Create Service"}
                 </button>
               </div>
             </Form>
