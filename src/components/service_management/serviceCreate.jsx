@@ -8,23 +8,32 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
 
-const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsServiceEditVisible }) => {
-  const { saveServiceDetails, isSaveServiceDetailsLoading,ServiceEditDetails } = useServiceStore();
+const ServiceCreate = ({
+  setIsServiceCreateVisible,
+  isServiceEditVisible,
+  setIsServiceEditVisible,
+}) => {
+  const {
+    saveServiceDetails,
+    isSaveServiceDetailsLoading,
+    ServiceEditDetails,
+  } = useServiceStore();
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
   useEffect(() => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
-    id: isServiceEditVisible&&ServiceEditDetails.id||"",
-    name: isServiceEditVisible&&ServiceEditDetails.name||"",
-    displayName:isServiceEditVisible&&ServiceEditDetails.displayName|| "",
-    serviceType: isServiceEditVisible&&ServiceEditDetails.serviceType||"",
-    duration: isServiceEditVisible&&ServiceEditDetails.duration||"",
-    availability: isServiceEditVisible?ServiceEditDetails.availability:"",
-    installationDate:isServiceEditVisible&&ServiceEditDetails.installationDate|| "",
-    description:isServiceEditVisible&&ServiceEditDetails.description|| "",
-    isActive: isServiceEditVisible?ServiceEditDetails.isActive:true,
-    facilityId: isServiceEditVisible&&ServiceEditDetails.facilityId||"",
+    id: (isServiceEditVisible && ServiceEditDetails.id) || "",
+    name: (isServiceEditVisible && ServiceEditDetails.name) || "",
+    displayName: (isServiceEditVisible && ServiceEditDetails.displayName) || "",
+    serviceType: (isServiceEditVisible && ServiceEditDetails.serviceType) || "",
+    duration: (isServiceEditVisible && ServiceEditDetails.duration) || "",
+    availability: isServiceEditVisible ? ServiceEditDetails.availability : "",
+    installationDate:
+      (isServiceEditVisible && ServiceEditDetails.installationDate) || "",
+    description: (isServiceEditVisible && ServiceEditDetails.description) || "",
+    isActive: isServiceEditVisible ? ServiceEditDetails.isActive : true,
+    facilityId: (isServiceEditVisible && ServiceEditDetails.facilityId) || "",
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter display name."),
@@ -44,17 +53,24 @@ const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsSer
     values.installationDate = values.installationDate
       ? values.installationDate
       : null;
-      values.isActive= values.isActive === "true" || values.isActive === true;
+    values.isActive = values.isActive === "true" || values.isActive === true;
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveServiceDetails(values,  isServiceEditVisible ? true : false);
+      const result = await saveServiceDetails(
+        values,
+        isServiceEditVisible ? true : false
+      );
 
       if (result.data.status === 200) {
-        toast.success("Service created successfully!");
-       
+        toast.success(
+          isServiceEditVisible
+            ? "Service Updated successfully!"
+            : "Service created successfully!"
+        );
+
         setTimeout(() => {
           setIsServiceCreateVisible(false);
-          setIsServiceEditVisible(false)
+          setIsServiceEditVisible(false);
         }, 3000);
 
         resetForm();
@@ -250,7 +266,7 @@ const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsSer
                     as="select"
                     name="availability"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.availabilityStatus && touched.availabilityStatus
+                      errors.availability && touched.availability
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -319,7 +335,11 @@ const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsSer
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveServiceDetailsLoading}
                 >
-                  {isSaveServiceDetailsLoading ? "Saving..." : isServiceEditVisible?"Update Service":"Create Service"}
+                  {isSaveServiceDetailsLoading
+                    ? "Saving..."
+                    : isServiceEditVisible
+                    ? "Update Service"
+                    : "Create Service"}
                 </button>
               </div>
             </Form>

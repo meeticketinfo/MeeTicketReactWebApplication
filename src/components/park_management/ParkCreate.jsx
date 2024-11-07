@@ -161,7 +161,7 @@ console.log("editparkEditDetails",parkEditDetails)
         isParkEditVisible ? true : false
       );
       if (result && result.data && result.data.status === 200) {
-        toast.success("Facility created successfully!");
+        toast.success(isParkEditVisible?"Park Updated Successfully!":"Park Created Successfully!");
         setTimeout(() => {
           setIsParkCreateVisible(false);
           setIsParkEditVisible(false);

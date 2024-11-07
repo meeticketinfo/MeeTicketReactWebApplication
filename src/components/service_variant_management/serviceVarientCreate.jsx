@@ -68,7 +68,7 @@ const ServiceVarientCreate = ({
       );
       console.log(result);
       if (result.data.status === 200) {
-        toast.success("Service Variant created successfully!");
+        toast.success(isServiceVarientEditVisible?"Service Variant Updated successfully!":"Service Variant created successfully!");
         setTimeout(() => {
           setIsServiceVarientCreateVisible(false);
           setIsServiceVarientEditVisible(false);

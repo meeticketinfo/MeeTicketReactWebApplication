@@ -3,16 +3,18 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import "tailwindcss/tailwind.css";
 import UserCreate from "../../../components/user_management/UserCreate";
 import UserList from "../../../components/user_management/UserList";
+import ParkAdminList from "../../../components/user_management/ParkAdminList";
 
 // Validation schema using Yup
 
 export default function AdminUsers() {
   // State to toggle the FacilityCreate component
-  const [isUserCreateVisible, setIsUserCreateVisible] = useState(true);
+  const [isUserCreateVisible, setIsUserCreateVisible] = useState(false);
 
   // Function to toggle the visibility of UserCreate
   const toggleUserCreate = () => {
     setIsUserCreateVisible((prev) => !prev);
+    
   };
   return (
     <AdminLayout>
@@ -33,7 +35,7 @@ export default function AdminUsers() {
               className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
             >
               <span className="max-xs:sr-only">
-                {isUserCreateVisible ? "Create Park Admin" : "Back"}
+                {!isUserCreateVisible ? "Create Park Admin" : "Back"}
               </span>
             </button>
           </div>
@@ -41,10 +43,10 @@ export default function AdminUsers() {
 
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
-        {!isUserCreateVisible ? (
-          <UserCreate roleName={"ROLE_ADMIN"} />
+        {isUserCreateVisible ? (
+          <UserCreate roleName={"ROLE_ADMIN"} setIsUserCreateVisible={setIsUserCreateVisible} />
         ) : (
-          <UserList />
+          <ParkAdminList />
         )}
         {/* </div> */}
       </div>

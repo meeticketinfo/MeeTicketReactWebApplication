@@ -85,7 +85,7 @@ const FacilityCreate = ({
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
-        toast.success("Facility created successfully!");
+        toast.success(isFacilityEditVisible?"Facility Updated successfully!":"Facility created successfully!");
         setTimeout(() => {
           setIsFacilityCreateVisible(false);
           setIsFacilityEditVisible(false);
