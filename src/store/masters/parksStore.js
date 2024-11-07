@@ -9,6 +9,7 @@ export const useParkStore = create((set) => ({
   isFetchParkDetailsLoading: false,
   isFetchAllParksLoading: false,
   fetchParkDetailsError: null,
+  parkEditDetails: {},
   error: null,
   success: null,
   fileInputs: {
@@ -52,31 +53,17 @@ export const useParkStore = create((set) => ({
         : API_ENDPOINTS.MASTERS.PARK.ADD_NEW_PARK;
 
       // Prepare form data
-      const formData = {
-        Name: ParkData.Name,
-        DisplayName: ParkData.DisplayName,
-        street1: ParkData.street1,
-        street2: ParkData.street2,
-        street3: ParkData.street3,
-        landmark: ParkData.landmark,
-        city: ParkData.city,
-        state: ParkData.state,
-        country: ParkData.country,
-        zipCode: ParkData.zipCode,
-        longitude: ParkData.longitude,
-        latitude: ParkData.latitude,
-        description: ParkData.description,
-        parkSize: ParkData.parkSize,
-        isActive: ParkData.isActive,
-        ImageUrl: ParkData.ImageUrl, // Add image URL or any other file here
-      };
 
-      // Use uploadFile for multipart/form-data with any additional data
-      const response = await apiService.uploadFile(
-        url,
-        ParkData.file,
-        formData
-      );
+      let response;
+      if (isUpdate) {
+        response = await apiService.uploadFileWithPut(
+          url,
+          ParkData.file,
+          ParkData
+        );
+      } else {
+        response = await apiService.uploadFile(url, ParkData.file, ParkData);
+      }
 
       set({
         ParkDetails: response.data,
@@ -90,6 +77,14 @@ export const useParkStore = create((set) => ({
       throw error;
     }
   },
+
+  setCurrentParkEditDetails: (parkEditDetails) => {
+    console.log("parkEditDetails", parkEditDetails);
+    set({
+      parkEditDetails,
+    });
+  },
+
   handleFileChange: (e, fieldName) => {
     const file = e.target.files[0];
     if (file) {

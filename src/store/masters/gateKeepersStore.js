@@ -23,10 +23,8 @@ export const gateKeepersStore = create((set) => ({
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.GateKeeper.GET_GateKeeperS}`
+        `${API_ENDPOINTS.MASTERS.GATE_KEEPER.GET_GATE_KEEPERS}`
       );
-      console.log(response);
-
       set({
         allGateKeepers: response.data,
         isFetchAllGateKeepersLoading: false,

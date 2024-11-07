@@ -3,11 +3,15 @@ import AgGridTable from "../tables/AgGridTable";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
-import Tippy from '@tippyjs/react';
+import Tippy from "@tippyjs/react";
 
-const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => {
-  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } = useFacilityStore();
-  
+const FacilityList = ({
+  setIsFacilityCreateVisible,
+  setIsFacilityEditVisible,
+}) => {
+  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } =
+    useFacilityStore();
+
   useEffect(() => {
     fetchAllFacilities();
   }, []);
@@ -71,20 +75,26 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
-          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-             <Tippy content="Edit" placement="right" className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg">
-            <button  className="btn-edit" onClick={() => {
-             
-              setCurrentFacilityEditDetails(params.data);
-              setIsFacilityCreateVisible(true)
-              setIsFacilityEditVisible(true)
-              }}>
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <Tippy
+            content="Edit"
+            placement="right"
+            className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg"
+          >
+            <button
+              className="btn-edit"
+              onClick={() => {
+                setCurrentFacilityEditDetails(params.data);
+                setIsFacilityCreateVisible(true);
+                setIsFacilityEditVisible(true);
+              }}
+            >
               <span className="">
                 <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
               </span>
             </button>
-            </Tippy>
-            {/* <button
+          </Tippy>
+          {/* <button
               className="btn-delete"
               onClick={() => handleDelete(params.data)}
             >
@@ -92,18 +102,17 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
                 <BsTrash className="text-[24px]" />
               </span>
             </button> */}
-          </div>
-        ),
+        </div>
+      ),
       flex: 1,
       headerClass: "text-blue-v2",
-  },
+    },
   ]);
   return (
     <>
       {/* <DashboardCard07> */}
       <AgGridTable rowData={allFacilities} columnDefs={columnDefs} />
       {/* </DashboardCard07> */}
-      
     </>
   );
 };

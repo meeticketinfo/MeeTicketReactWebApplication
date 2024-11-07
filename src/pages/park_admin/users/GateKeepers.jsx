@@ -3,16 +3,18 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import "tailwindcss/tailwind.css";
 import UserList from "../../../components/user_management/UserList";
 import GateKeeperCreate from "../../../components/user_management/GateKeeperCreate";
+import GateKeeperList from "../../../components/user_management/GateKeeperList";
 
 // Validation schema using Yup
 
 export default function GateKeepers() {
   // State to toggle the FacilityCreate component
-  const [isUserCreateVisible, setIsUserCreateVisible] = useState(true);
+  const [isGateKeeperCreateVisible, setIsGateKeeperCreateVisible] =
+    useState(false);
 
-  // Function to toggle the visibility of UserCreate
-  const toggleUserCreate = () => {
-    setIsUserCreateVisible((prev) => !prev);
+  // Function to toggle the visibility of GateKeeperCreate
+  const toggleGateKeeperCreate = () => {
+    setIsGateKeeperCreateVisible((prev) => !prev);
   };
 
   return (
@@ -30,11 +32,11 @@ export default function GateKeepers() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             <button
-              onClick={toggleUserCreate}
+              onClick={toggleGateKeeperCreate}
               className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
             >
               <span className="max-xs:sr-only">
-                {isUserCreateVisible ? "Create Gate Keeper" : "Back"}
+                {!isGateKeeperCreateVisible ? "Create Gate Keeper" : "Back"}
               </span>
             </button>
           </div>
@@ -42,10 +44,12 @@ export default function GateKeepers() {
 
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
-        {!isUserCreateVisible ? (
-          <GateKeeperCreate roleName={"ROLE_GATEKEEPER"} />
+        {isGateKeeperCreateVisible ? (
+          <GateKeeperCreate
+            setIsGateKeeperCreateVisible={setIsGateKeeperCreateVisible}
+          />
         ) : (
-          <UserList />
+          <GateKeeperList />
         )}
         {/* </div> */}
       </div>
