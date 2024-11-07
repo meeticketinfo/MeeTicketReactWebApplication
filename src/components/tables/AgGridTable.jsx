@@ -17,10 +17,8 @@ const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
         rowData={rowData}
         columnDefs={columnDefs}
         pagination={isPaginationEnabled}
-        gridOptions={{
-          paginationPageSize: 10,
-          paginationPageSizeOptions: [10, 20, 50, 100],
-        }}
+        paginationPageSize={10}
+        paginationPageSizeSelector={[10, 20, 50, 100]}
       />
       {/* Loader overlay within the table body */}
       {isFetchLoading && (

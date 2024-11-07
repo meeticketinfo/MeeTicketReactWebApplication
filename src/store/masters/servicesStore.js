@@ -11,6 +11,14 @@ export const useServiceStore = create((set) => ({
   fetchServiceDetailsError: null,
   error: null,
   success: null,
+  ServiceEditDetails: {},
+
+  setCurrentServiceEditDetails: (ServiceEditDetails) => {
+    console.log("serviceEditDetails",ServiceEditDetails)
+    set({
+      ServiceEditDetails,
+    });
+  },
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -64,7 +72,7 @@ export const useServiceStore = create((set) => ({
     set({ isSaveServiceDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.Service.UPDATE_Service_DETAILS
+        ? API_ENDPOINTS.MASTERS.SERVICE.UPDATE_SERVICE_DETAILS
         : API_ENDPOINTS.MASTERS.SERVICE.ADD_NEW_SERVICE;
       const method = isUpdate ? "put" : "post";
 

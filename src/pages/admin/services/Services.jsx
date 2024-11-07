@@ -5,7 +5,7 @@ import ServiceCreate from "../../../components/service_management/serviceCreate"
 
 export default function Services() {
   const [isServiceCreateVisible, setIsServiceCreateVisible] = useState(false);
-
+  const [isServiceEditVisible, setIsServiceEditVisible] = useState(false);
   // Function to toggle the visibility of ParkCreate
   const toggleServiceCreate = () => {
     setIsServiceCreateVisible((prev) => !prev);
@@ -39,10 +39,10 @@ export default function Services() {
           {/* <div className="grid grid-cols-12 gap-6"> */}
           {isServiceCreateVisible ? (
             <ServiceCreate
-              setIsServiceCreateVisible={setIsServiceCreateVisible}
+              setIsServiceCreateVisible={setIsServiceCreateVisible} isServiceEditVisible={isServiceEditVisible} setIsServiceEditVisible={setIsServiceEditVisible}
             />
           ) : (
-            <ServiceList />
+            <ServiceList setIsServiceCreateVisible={setIsServiceCreateVisible} setIsServiceEditVisible={setIsServiceEditVisible} />
           )}
           {/* </div> */}
         </div>
