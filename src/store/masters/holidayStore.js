@@ -12,19 +12,17 @@ export const useHolidayStore = create((set, get) => ({
   error: null,
   success: null,
 
-  // Helper to convert filters object to query string
   serializeFilters: (filters) =>
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&"),
 
-  // Fetch all holidays with optional pagination and filters
   fetchAllHolidays: async (pageIndex = 1, pageSize = 10, filters = {}) => {
     set({ isFetchAllHolidaysLoading: true });
     try {
       const filterString = get().serializeFilters(filters);
       const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.Holiday.GET_HOLIDAYS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.HOLIDAY.GET_HOLIDAYS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
       );
       set({
         allHolidays: response.data,
@@ -32,27 +30,6 @@ export const useHolidayStore = create((set, get) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchAllHolidaysLoading: false });
-    }
-  },
-
-  // Fetch specific holiday details with pagination and filters
-  fetchHolidayDetails: async (pageIndex = 1, pageSize = 10, filters = {}) => {
-    set({ isFetchHolidayDetailsLoading: true });
-    try {
-      const filterString = get().serializeFilters(filters);
-      const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.Holiday.GET_HOLIDAY_DETAILS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-      );
-      set({
-        HolidayDetails: response.data,
-        isFetchHolidayDetailsLoading: false,
-        success: "Holiday details fetched successfully.",
-      });
-    } catch (error) {
-      set({
-        fetchHolidayDetailsError: error.message,
-        isFetchHolidayDetailsLoading: false,
-      });
     }
   },
 
