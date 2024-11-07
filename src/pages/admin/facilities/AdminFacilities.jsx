@@ -6,6 +6,7 @@ import AdminLayout from "../../../layouts/AdminLayout";
 export default function AdminFacilities() {
   // State to toggle the FacilityCreate component
   const [isFacilityCreateVisible, setIsFacilityCreateVisible] = useState(false);
+  const [isFacilityEditVisible, setIsFacilityEditVisible] = useState(false);
 
   // Function to toggle the visibility of FacilityCreate
   const toggleFacilityCreate = () => {
@@ -37,7 +38,7 @@ export default function AdminFacilities() {
 
         {/* Cards */}
        
-          {isFacilityCreateVisible ? <FacilityCreate setIsFacilityCreateVisible={setIsFacilityCreateVisible} /> : <FacilityList />}
+          {isFacilityCreateVisible ? <FacilityCreate setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible} setIsFacilityEditVisible={setIsFacilityEditVisible}  /> : <FacilityList setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible} />}
         
       </div>
     </AdminLayout>

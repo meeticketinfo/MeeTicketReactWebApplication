@@ -4,8 +4,9 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
 
-const FacilityList = () => {
-  const { allFacilities, fetchAllFacilities } = useFacilityStore();
+const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => {
+  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } = useFacilityStore();
+  
   useEffect(() => {
     fetchAllFacilities();
   }, []);
@@ -65,6 +66,34 @@ const FacilityList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <button className="btn-edit" onClick={() => {
+             
+              setCurrentFacilityEditDetails(params.data);
+              setIsFacilityCreateVisible(true)
+              setIsFacilityEditVisible(true)
+              }}>
+              <span className="">
+                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              </span>
+            </button>
+            {/* <button
+              className="btn-delete"
+              onClick={() => handleDelete(params.data)}
+            >
+              <span>
+                <BsTrash className="text-[24px]" />
+              </span>
+            </button> */}
+          </div>
+        ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+  },
   ]);
   return (
     <>

@@ -11,8 +11,8 @@ export const useFacilityStore = create((set) => ({
   fetchFacilityDetailsError: null,
   error: null,
   success: null,
-  facilityCreateResponse:{},
-  
+  facilityCreateResponse: {},
+  FacilityEditDetails: {},
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -51,7 +51,6 @@ export const useFacilityStore = create((set) => ({
       );
 
       set({
-        
         FacilityDetails: response.data,
         isFetchFacilityDetailsLoading: false,
         success: "Facility details fetched successfully.",
@@ -64,19 +63,26 @@ export const useFacilityStore = create((set) => ({
     }
   },
 
+  setCurrentFacilityEditDetails: (FacilityEditDetails) => {
+    console.log("FacilityEditDetails",FacilityEditDetails)
+    set({
+      FacilityEditDetails,
+    });
+  },
+
   // Save Facility details
   saveFacilityDetails: async (FacilityData, isUpdate = false) => {
     set({ isSaveFacilityDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.Facility.UPDATE_Facility_DETAILS
+        ? API_ENDPOINTS.MASTERS.FACILITY.UPDATE_FACILITY_DETAILS
         : API_ENDPOINTS.MASTERS.FACILITY.ADD_NEW_FACILITY;
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, FacilityData);
       // console.log("response istunnava :", response)
       set({
-        facilityCreateResponse:{response},
+        facilityCreateResponse: { response },
         FacilityDetails: response.data,
         isSaveFacilityDetailsLoading: false,
         success: "Facility saved successfully.",
