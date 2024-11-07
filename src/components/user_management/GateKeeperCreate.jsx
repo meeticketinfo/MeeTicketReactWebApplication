@@ -7,12 +7,15 @@ import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
+import useAuthStore from "../../store/authStore";
 
 const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
   const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading } =
     gateKeepersStore();
   const { allParks, fetchAllParks } = useParkStore();
-
+  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
+    useAuthStore();
+  const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllParks();
   }, []);
@@ -20,7 +23,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
   const initialValues = {
     firstName: "",
     middleName: "",
-    parkId: "",
+    parkId: parkId,
     lastName: "",
     dateOfBirth: "",
     emailId: "",
@@ -38,7 +41,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-    parkId: Yup.string().required("Park is required"),
+
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
@@ -114,30 +117,6 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
           {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
-                <div>
-                  <label className="block text-sm font-medium"> Park</label>
-                  <Field
-                    as="select"
-                    name="parkId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.parkId && touched.parkId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select </option>
-                    {allParks.map((park) => (
-                      <option key={park.id} value={park.id}>
-                        {park.name}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="parkId"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">

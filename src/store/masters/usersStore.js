@@ -70,7 +70,7 @@ export const useUsersStore = create((set) => ({
         isSaveUserDetailsLoading: false,
         success: "User saved successfully.",
       });
-      return { success: true, data: response.data };
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveUserDetailsLoading: false });
       throw error;

@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 
-const UserCreate = ({ roleName }) => {
+const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
   const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
   const { allParks, fetchAllParks } = useParkStore();
 
@@ -53,8 +53,32 @@ const UserCreate = ({ roleName }) => {
   ) => {
     try {
       const result = await saveUserDetails(values, false);
-      toast.success("User created successfully!");
-    } catch (error) {
+      if (result.data.status === 200) {
+        toast.success("User created successfully!");
+       
+        setTimeout(() => {
+          setIsUserCreateVisible(false);
+         
+        }, 3000);
+
+        resetForm();
+      }
+    } catch (xhr) {
+      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response.data);
+      }
       toast.error("Error creating park. Please try again.");
     } finally {
       setSubmitting(false);
@@ -264,10 +288,10 @@ const UserCreate = ({ roleName }) => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-start p-2">
+              <div className="flex justify-center p-2">
                 <button
                   type="submit"
-                  className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveUserDetailsLoading}
                 >
                   {isSaveUserDetailsLoading ? "Saving..." : "Create User"}

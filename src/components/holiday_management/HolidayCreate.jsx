@@ -15,8 +15,8 @@ const validationSchema = Yup.object({
     "Description cannot be more than 300 characters"
   ),
   fromDate: Yup.date()
-    .required("Start date is required")
-    .max(new Date(), "Start date cannot be in the future"), // No future dates
+    .required("Start date is required"),
+    
   toDate: Yup.date().required("End date is required").min(
     Yup.ref("fromDate"),
     "End date cannot be before the start date" // Must be after fromDate
@@ -113,7 +113,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                   name="fromDate"
                   type="date"
                   className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.name && touched.name
+                    errors.fromDate && touched.fromDate
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -134,7 +134,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                   name="toDate"
                   type="date"
                   className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.name && touched.name
+                    errors.fromDate && touched.fromDate
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
