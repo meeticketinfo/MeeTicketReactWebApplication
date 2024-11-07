@@ -4,9 +4,13 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
 
-const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => {
-  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } = useFacilityStore();
-  
+const FacilityList = ({
+  setIsFacilityCreateVisible,
+  setIsFacilityEditVisible,
+}) => {
+  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } =
+    useFacilityStore();
+
   useEffect(() => {
     fetchAllFacilities();
   }, []);
@@ -70,18 +74,21 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
-          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-            <button className="btn-edit" onClick={() => {
-             
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <button
+            className="btn-edit"
+            onClick={() => {
+              alert()
               setCurrentFacilityEditDetails(params.data);
-              setIsFacilityCreateVisible(true)
-              setIsFacilityEditVisible(true)
-              }}>
-              <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600 " />
-              </span>
-            </button>
-            {/* <button
+              setIsFacilityCreateVisible(true);
+              setIsFacilityEditVisible(true);
+            }}
+          >
+            <span className="">
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            </span>
+          </button>
+          {/* <button
               className="btn-delete"
               onClick={() => handleDelete(params.data)}
             >
@@ -89,11 +96,11 @@ const FacilityList = ({setIsFacilityCreateVisible,setIsFacilityEditVisible}) => 
                 <BsTrash className="text-[24px]" />
               </span>
             </button> */}
-          </div>
-        ),
+        </div>
+      ),
       flex: 1,
       headerClass: "text-blue-v2",
-  },
+    },
   ]);
   return (
     <>

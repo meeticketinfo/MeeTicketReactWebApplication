@@ -40,10 +40,12 @@ const FacilityCreate = ({
       (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
     lastMaintenanceDate:
       (isFacilityEditVisible && FacilityEditDetails.lastMaintenanceDate) || "",
-    facilityCondition:
-      isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
-    installationDate:
-      isFacilityEditVisible ? FacilityEditDetails.installationDate : "",
+    facilityCondition: isFacilityEditVisible
+      ? FacilityEditDetails.facilityCondition
+      : "",
+    installationDate: isFacilityEditVisible
+      ? FacilityEditDetails.installationDate
+      : "",
     openTime:
       (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
     closeTime:
@@ -53,64 +55,6 @@ const FacilityCreate = ({
     isActive: isFacilityEditVisible ? FacilityEditDetails.isActive : true,
     parkId: (isFacilityEditVisible && FacilityEditDetails.parkId) || parkId,
   };
-
-  // const onSubmit = async (
-  //   values,
-  //   { setSubmitting, resetForm },
-  //   saveFacilityDetails
-  // ) => {
-  //   const formattedValues = {
-  //     ...values,
-  //     openTime:
-  //       values.openTime.length === 5
-  //         ? `${values.openTime}:00`
-  //         : values.openTime,
-  //     closeTime:
-  //       values.closeTime.length === 5
-  //         ? `${values.closeTime}:00`
-  //         : values.closeTime,
-  //     capacity: values.capacity == null ? 0 : values.capacity,
-  //     installationDate: values.installationDate
-  //       ? new Date(values.installationDate).toISOString()
-  //       : null,
-  //     lastMaintenanceDate: values.lastMaintenanceDate
-  //       ? new Date(values.lastMaintenanceDate).toISOString()
-  //       : null,
-  //   };
-
-  //   try {
-  //     // Call the saveFacilityDetails function from the store
-  //     const result = await saveFacilityDetails(formattedValues, isFacilityEditVisible?true:false);
-
-  //     if (result.data.status === 200) {
-  //       toast.success("Facility created successfully!");
-  //       setTimeout(() => {
-  //         setIsFacilityCreateVisible(false);
-  //         setIsFacilityEditVisible(false)
-  //       }, 3000);
-  //       resetForm();
-  //     }
-  //   } catch (xhr) {
-  //     // console.log("xhr.errors:", xhr);
-  //     if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
-  //       const formErrors = {};
-  //       Object.keys(xhr.response.data.errors).forEach((key) => {
-  //         if (
-  //           Array.isArray(xhr.response.data.errors[key]) &&
-  //           xhr.response.data.errors[key].length > 0
-  //         ) {
-  //           formErrors[key] = xhr.response.data.errors[key][0];
-  //           console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
-  //           toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
-  //         }
-  //       });
-  //     } else {
-  //       toast.error(xhr.response.data);
-  //     }
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     const formattedValues = {
@@ -591,7 +535,9 @@ const FacilityCreate = ({
                 >
                   {isSaveFacilityDetailsLoading
                     ? "Saving..."
-                    : isFacilityEditVisible?"Update Facility":"Create Facility"}
+                    : isFacilityEditVisible
+                    ? "Update Facility"
+                    : "Create Facility"}
                 </button>
               </div>
             </Form>

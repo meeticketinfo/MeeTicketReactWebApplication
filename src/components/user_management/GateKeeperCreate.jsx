@@ -8,7 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 
-const GateKeeperCreate = ({ roleName }) => {
+const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
   const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading } =
     gateKeepersStore();
   const { allParks, fetchAllParks } = useParkStore();
@@ -45,24 +45,56 @@ const GateKeeperCreate = ({ roleName }) => {
       .required("Password is required")
       .min(6, "Password cannot be less than 6 characters")
       .max(20, "Password cannot be more than 30 characters"),
+    dateOfBirth: Yup.date()
+      .required("Date of Birth is required")
+      .test("age", "You must be at least 18 years old", (value) => {
+        const today = new Date();
+        const age = today.getFullYear() - value.getFullYear();
+        const month = today.getMonth() - value.getMonth();
+        // If birth month is later in the year, subtract one year
+        if (month < 0 || (month === 0 && today.getDate() < value.getDate())) {
+          return age - 1 >= 18;
+        }
+        return age >= 18;
+      }),
   });
 
-  // onSubmit function to handle form submission
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
     saveGateKeeperDetails
   ) => {
     try {
-      // Call the saveGateKeeperDetails function from the store
       const result = await saveGateKeeperDetails(values, false);
-      toast.success("User created successfully!");
-      // if (result.success) {
-      //   resetForm();
-      //   alert("User created successfully!");
-      // }
-    } catch (error) {
-      toast.error("Error creating park. Please try again.");
+      if (result && result.data && result.data.status === 200) {
+        toast.success("Gate Keeper created successfully!");
+        setTimeout(() => {
+          setIsGateKeeperCreateVisible(false);
+        }, 3000);
+        resetForm();
+      } else {
+        toast.error("Unexpected response from the server.");
+      }
+    } catch (xhr) {
+      if (
+        xhr &&
+        xhr.response &&
+        xhr.response.data &&
+        xhr.response.data.errors
+      ) {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response?.data || "An unknown error occurred.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -221,7 +253,7 @@ const GateKeeperCreate = ({ roleName }) => {
                 {/* Phone Number */}
                 <div>
                   <label
-                    htmlFor="dob"
+                    htmlFor="phoneNumber"
                     className="block text-xs font-medium text-gray-700"
                   >
                     Phone Number
@@ -271,10 +303,10 @@ const GateKeeperCreate = ({ roleName }) => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-start p-2">
+              <div className="flex justify-center p-2">
                 <button
                   type="submit"
-                  className="bg-blue-v1 text-white rounded px-3 py-1 hover:bg-blue-700 text-sm mt-3"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveGateKeeperDetailsLoading}
                 >
                   {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create User"}

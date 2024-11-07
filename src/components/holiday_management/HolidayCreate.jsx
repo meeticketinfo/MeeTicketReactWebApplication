@@ -14,11 +14,16 @@ const validationSchema = Yup.object({
     300,
     "Description cannot be more than 300 characters"
   ),
-  fromDate: Yup.date().required("Start date is required"),
-  toDate: Yup.date().required("End date is required"),
+  fromDate: Yup.date()
+    .required("Start date is required")
+    .max(new Date(), "Start date cannot be in the future"), // No future dates
+  toDate: Yup.date().required("End date is required").min(
+    Yup.ref("fromDate"),
+    "End date cannot be before the start date" // Must be after fromDate
+  ),
 });
 
-export default function HolidayCreate() {
+export default function HolidayCreate({ setIsHolidayCreateVisible }) {
   const { saveHolidayDetails, isSaveHolidayDetailsLoading } = useHolidayStore();
   const handleSubmit = async (values, { resetForm }, saveHolidayDetails) => {
     // Format date fields to ISO strings
@@ -30,12 +35,14 @@ export default function HolidayCreate() {
 
     try {
       const result = await saveHolidayDetails(formattedValues, false);
-      if (result.data.status === 200) {
-        toast.success("Service Variant created successfully!");
+      if (result && result.data && result.data.status === 200) {
+        toast.success("Holiday created successfully!");
         setTimeout(() => {
-          // setIsServiceVarientCreateVisible(false);
+          setIsHolidayCreateVisible(false);
         }, 3000);
         resetForm();
+      } else {
+        toast.error("Unexpected response from the server.");
       }
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
