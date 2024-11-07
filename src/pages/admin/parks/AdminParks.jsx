@@ -11,7 +11,7 @@ export default function AdminParks() {
   // Function to toggle the visibility of ParkCreate
   const toggleParkCreate = () => {
     setIsParkCreateVisible((prev) => !prev);
-    setIsParkEditVisible;
+    setIsParkEditVisible(false);
     false;
   };
   return (
