@@ -116,6 +116,7 @@ export default function AdminBookings() {
             )}
           </div>
         </div>
+        <FacilityServices />
 
         {/* Booking Form Section */}
         {isBookingFormVisible && (
@@ -148,178 +149,21 @@ export default function AdminBookings() {
                   {/* Displaying cost beside Adult */}
                   <span className="ml-2">₹50.0</span>
                 </div>
-                {/* <FacilityServices /> */}
-                {/* Booking Form Section */}
-                {isBookingFormVisible && (
-                    <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                        <h2 className="text-2xl font-semibold mb-4 text-gray-700 dark:text-gray-200">
-                            Book Tickets
-                        </h2>
-
-                        {/* Entry Ticket Section */}
-                        <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                            <h3 className="font-semibold text-lg mb-2">Entry Ticket</h3>
-
-                            {/* Adult Quantity with Cost */}
-                            <div className="flex justify-between items-center mb-2">
-                                <span>Adult</span>
-                                <div className="flex items-center">
-                                    <button
-                                        onClick={() => handleQuantityChange(setAdultEntry, -1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="mx-2">{adultEntry}</span>
-                                    <button
-                                        onClick={() => handleQuantityChange(setAdultEntry, 1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        +
-                                    </button>
-                                    {/* Displaying cost beside Adult */}
-                                    <span className="ml-2">
-                                        ₹50.0
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Children Quantity with Cost */}
-                            <div className="flex justify-between items-center">
-                                <span>Children</span>
-                                <div className="flex items-center">
-                                    <button
-                                        onClick={() => handleQuantityChange(setChildrenEntry, -1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="mx-2">{childrenEntry}</span>
-                                    <button
-                                        onClick={() => handleQuantityChange(setChildrenEntry, 1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        +
-                                    </button>
-                                    {/* Displaying cost beside Children */}
-                                    <span className="ml-2">
-                                        ₹30.0
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Kids Playground Section */}
-                        <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                            <h3 className="font-semibold text-lg mb-2">Kids Playground</h3>
-
-                            {/* Playground Type Selection */}
-                            <div className="flex mb-4">
-                                <label className="flex items-center mr-4">
-                                    <input
-                                        type="radio"
-                                        name="playgroundType"
-                                        value="AC"
-                                        checked={playgroundType === "AC"}
-                                        onChange={() => setPlaygroundType("AC")}
-                                        className="mr-2"
-                                    />
-                                    AC
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="playgroundType"
-                                        value="Non-AC"
-                                        checked={playgroundType === "Non-AC"}
-                                        onChange={() => setPlaygroundType("Non-AC")}
-                                        className="mr-2"
-                                    />
-                                    Non-AC
-                                </label>
-                            </div>
-
-                            {/* Adult Playground Quantity with Cost */}
-                            <div className="flex justify-between items-center mb-2">
-                                <span>Adult</span>
-                                <div className="flex items-center">
-                                    <button
-                                        onClick={() => handleQuantityChange(setAdultPlayground, -1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="mx-2">{adultPlayground}</span>
-                                    <button
-                                        onClick={() => handleQuantityChange(setAdultPlayground, 1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        +
-                                    </button>
-                                    {/* Displaying cost beside Adult */}
-                                    <span className="ml-2">
-                                        {playgroundType === "AC" ? "₹30.0" : "₹20.0"}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Children Playground Quantity with Cost */}
-                            <div className="flex justify-between items-center">
-                                <span>Children</span>
-                                <div className="flex items-center">
-                                    <button
-                                        onClick={() => handleQuantityChange(setChildrenPlayground, -1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="mx-2">{childrenPlayground}</span>
-                                    <button
-                                        onClick={() => handleQuantityChange(setChildrenPlayground, 1)}
-                                        className="px-2 text-lg"
-                                    >
-                                        +
-                                    </button>
-                                    {/* Displaying cost beside Children */}
-                                    <span className="ml-2">
-                                        {playgroundType === "AC" ? "₹15.0" : "₹10.0"}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Total Summary */}
-                        <div className="text-right mt-4">
-                            <div className="font-semibold text-xl">
-                                Total Tickets: {calculateTotalTickets()}
-                            </div>
-                            <div className="font-semibold text-lg">
-                                Total Amount: ₹{calculateTotalAmount()}
-                            </div>
-                            <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" 
-                             onClick={() => setIsBookingFormVisible(false)} 
-                             >
-                                
-                                Book Ticket
-                            </button>
-                        </div>
-                    </div>
-                )}
 
                 {/* Table Section - Show only if form is not visible */}
                 {!isBookingFormVisible && (
-                    <div className="mb-8">
-                        <AgGridTable
-                            columnDefs={columnDefs}
-                            rowData={allBookings || []}
-                            defaultColDef={{
-                                sortable: true,
-                                filter: true,
-                                resizable: true,
-                            }}
-                            pagination={true}
-                        />
-                    </div>
+                  <div className="mb-8">
+                    <AgGridTable
+                      columnDefs={columnDefs}
+                      rowData={allBookings || []}
+                      defaultColDef={{
+                        sortable: true,
+                        filter: true,
+                        resizable: true,
+                      }}
+                      pagination={true}
+                    />
+                  </div>
                 )}
               </div>
 
