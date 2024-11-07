@@ -248,7 +248,7 @@ const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsSer
                   </label>
                   <Field
                     as="select"
-                    name="availabilityStatus"
+                    name="availability"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.availabilityStatus && touched.availabilityStatus
                         ? "border-red-500"
