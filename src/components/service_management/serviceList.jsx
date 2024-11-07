@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { useServiceStore } from "../../store/masters/servicesStore";
+import { LuClipboardEdit } from "react-icons/lu";
 
-const ServiceList = () => {
-  const { allServices, isFetchAllServicesLoading, fetchAllServices } =
+const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
+  const { allServices, isFetchAllServicesLoading, fetchAllServices,setCurrentServiceEditDetails } =
     useServiceStore();
   useEffect(() => {
     fetchAllServices();
@@ -57,10 +58,31 @@ const ServiceList = () => {
     {
       headerName: "Actions",
       field: "actions",
-      cellRenderer: () => <button>View</button>,
+      cellRenderer: (params) => (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <button className="btn-edit" onClick={() => {
+             
+              setCurrentServiceEditDetails(params.data);
+              setIsServiceCreateVisible(true)
+              setIsServiceEditVisible(true)
+              }}>
+              <span className="">
+                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              </span>
+            </button>
+            {/* <button
+              className="btn-delete"
+              onClick={() => handleDelete(params.data)}
+            >
+              <span>
+                <BsTrash className="text-[24px]" />
+              </span>
+            </button> */}
+          </div>
+        ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+  },
   ]);
   return (
     <>

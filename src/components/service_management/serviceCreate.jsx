@@ -8,22 +8,23 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
 
-const ServiceCreate = ({ setIsServiceCreateVisible }) => {
-  const { saveServiceDetails, isSaveServiceDetailsLoading } = useServiceStore();
+const ServiceCreate = ({ setIsServiceCreateVisible,isServiceEditVisible,setIsServiceEditVisible }) => {
+  const { saveServiceDetails, isSaveServiceDetailsLoading,ServiceEditDetails } = useServiceStore();
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
   useEffect(() => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
-    name: "",
-    displayName: "",
-    serviceType: "",
-    duration: "",
-    availability: "",
-    installationDate: "",
-    description: "",
-    isActive: true,
-    facilityId: "",
+    id: isServiceEditVisible&&ServiceEditDetails.id||"",
+    name: isServiceEditVisible&&ServiceEditDetails.name||"",
+    displayName:isServiceEditVisible&&ServiceEditDetails.displayName|| "",
+    serviceType: isServiceEditVisible&&ServiceEditDetails.serviceType||"",
+    duration: isServiceEditVisible&&ServiceEditDetails.duration||"",
+    availability: isServiceEditVisible?ServiceEditDetails.availability:"",
+    installationDate:isServiceEditVisible&&ServiceEditDetails.installationDate|| "",
+    description:isServiceEditVisible&&ServiceEditDetails.description|| "",
+    isActive: isServiceEditVisible?ServiceEditDetails.isActive:true,
+    facilityId: isServiceEditVisible&&ServiceEditDetails.facilityId||"",
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter display name."),
@@ -43,15 +44,19 @@ const ServiceCreate = ({ setIsServiceCreateVisible }) => {
     values.installationDate = values.installationDate
       ? values.installationDate
       : null;
+      values.isActive= values.isActive === "true" || values.isActive === true;
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveServiceDetails(values, false);
+      const result = await saveServiceDetails(values,  isServiceEditVisible ? true : false);
 
       if (result.data.status === 200) {
         toast.success("Service created successfully!");
+       
         setTimeout(() => {
           setIsServiceCreateVisible(false);
+          setIsServiceEditVisible(false)
         }, 3000);
+
         resetForm();
       }
     } catch (xhr) {

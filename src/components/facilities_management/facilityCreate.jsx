@@ -8,40 +8,111 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 // Validation schema using Yup
 
-const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
+const FacilityCreate = ({
+  setIsFacilityCreateVisible,
+  isFacilityEditVisible,
+  setIsFacilityEditVisible,
+}) => {
+  console.log("isFacilityEditVisible", isFacilityEditVisible);
   const {
     saveFacilityDetails,
     isSaveFacilityDetailsLoading,
     facilityCreateResponse,
     FacilityDetails,
+    FacilityEditDetails,
   } = useFacilityStore();
   const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
     useAuthStore();
   const parkId = decodedTokenData?.data?.ParkId;
 
   const initialValues = {
-    name: "",
-    displayName: "",
-    contactName: "",
-    contactNumber: "",
-    contactEmail: "",
-    capacity: null,
-    availabilityStatus: "",
-    lastMaintenanceDate: "",
-    facilityCondition: "",
-    installationDate: "",
-    openTime: "00:00:00",
-    closeTime: "00:00:00",
-    description: "",
-    isActive: true,
-    parkId: parkId,
+    Id: isFacilityEditVisible ? FacilityEditDetails.id : "",
+    name: isFacilityEditVisible ? FacilityEditDetails.name : "",
+    displayName: isFacilityEditVisible ? FacilityEditDetails.displayName : "",
+    contactName:
+      (isFacilityEditVisible && FacilityEditDetails.contactName) || "",
+    contactNumber:
+      (isFacilityEditVisible && FacilityEditDetails.contactNumber) || "",
+    contactEmail:
+      (isFacilityEditVisible && FacilityEditDetails.contactEmail) || "",
+    capacity: (isFacilityEditVisible && FacilityEditDetails.capacity) || null,
+    availabilityStatus:
+      (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
+    lastMaintenanceDate:
+      (isFacilityEditVisible && FacilityEditDetails.lastMaintenanceDate) || "",
+    facilityCondition:
+      isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
+    installationDate:
+      isFacilityEditVisible ? FacilityEditDetails.installationDate : "",
+    openTime:
+      (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
+    closeTime:
+      (isFacilityEditVisible && FacilityEditDetails.closeTime) || "00:00:00",
+    description:
+      (isFacilityEditVisible && FacilityEditDetails.description) || "",
+    isActive: isFacilityEditVisible ? FacilityEditDetails.isActive : true,
+    parkId: (isFacilityEditVisible && FacilityEditDetails.parkId) || parkId,
   };
 
-  const onSubmit = async (
-    values,
-    { setSubmitting, resetForm },
-    saveFacilityDetails
-  ) => {
+  // const onSubmit = async (
+  //   values,
+  //   { setSubmitting, resetForm },
+  //   saveFacilityDetails
+  // ) => {
+  //   const formattedValues = {
+  //     ...values,
+  //     openTime:
+  //       values.openTime.length === 5
+  //         ? `${values.openTime}:00`
+  //         : values.openTime,
+  //     closeTime:
+  //       values.closeTime.length === 5
+  //         ? `${values.closeTime}:00`
+  //         : values.closeTime,
+  //     capacity: values.capacity == null ? 0 : values.capacity,
+  //     installationDate: values.installationDate
+  //       ? new Date(values.installationDate).toISOString()
+  //       : null,
+  //     lastMaintenanceDate: values.lastMaintenanceDate
+  //       ? new Date(values.lastMaintenanceDate).toISOString()
+  //       : null,
+  //   };
+
+  //   try {
+  //     // Call the saveFacilityDetails function from the store
+  //     const result = await saveFacilityDetails(formattedValues, isFacilityEditVisible?true:false);
+
+  //     if (result.data.status === 200) {
+  //       toast.success("Facility created successfully!");
+  //       setTimeout(() => {
+  //         setIsFacilityCreateVisible(false);
+  //         setIsFacilityEditVisible(false)
+  //       }, 3000);
+  //       resetForm();
+  //     }
+  //   } catch (xhr) {
+  //     // console.log("xhr.errors:", xhr);
+  //     if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+  //       const formErrors = {};
+  //       Object.keys(xhr.response.data.errors).forEach((key) => {
+  //         if (
+  //           Array.isArray(xhr.response.data.errors[key]) &&
+  //           xhr.response.data.errors[key].length > 0
+  //         ) {
+  //           formErrors[key] = xhr.response.data.errors[key][0];
+  //           console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+  //           toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+  //         }
+  //       });
+  //     } else {
+  //       toast.error(xhr.response.data);
+  //     }
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
     const formattedValues = {
       ...values,
       openTime:
@@ -59,22 +130,34 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
       lastMaintenanceDate: values.lastMaintenanceDate
         ? new Date(values.lastMaintenanceDate).toISOString()
         : null,
+      isActive: values.isActive === "true" || values.isActive === true,
     };
 
     try {
-      // Call the saveFacilityDetails function from the store
-      const result = await saveFacilityDetails(formattedValues, false);
+      // Call the saveFacilityDetails function
+      const result = await saveFacilityDetails(
+        formattedValues,
+        isFacilityEditVisible ? true : false
+      );
+      console.log("Save result:", result); // Debugging line
 
-      if (result.data.status === 200) {
+      if (result && result.data && result.data.status === 200) {
         toast.success("Facility created successfully!");
         setTimeout(() => {
           setIsFacilityCreateVisible(false);
+          setIsFacilityEditVisible(false);
         }, 3000);
         resetForm();
+      } else {
+        toast.error("Unexpected response from the server.");
       }
     } catch (xhr) {
-      console.log("xhr.errors:", xhr);
-      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+      if (
+        xhr &&
+        xhr.response &&
+        xhr.response.data &&
+        xhr.response.data.errors
+      ) {
         const formErrors = {};
         Object.keys(xhr.response.data.errors).forEach((key) => {
           if (
@@ -82,12 +165,11 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
             xhr.response.data.errors[key].length > 0
           ) {
             formErrors[key] = xhr.response.data.errors[key][0];
-            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
             toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
           }
         });
       } else {
-        toast.error(xhr.response.data);
+        toast.error(xhr.response?.data || "An unknown error occurred.");
       }
     } finally {
       setSubmitting(false);
@@ -145,7 +227,7 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
             onSubmit(values, actions, saveFacilityDetails)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Facility Name */}
@@ -478,6 +560,10 @@ const FacilityCreate = ({ setIsFacilityCreateVisible }) => {
                   <Field
                     as="select"
                     name="isActive"
+                    onchange={(e) => {
+                      const { value } = e.target;
+                      setFieldValue("isActive", value === "true");
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.isActive && touched.isActive
                         ? "border-red-500"
