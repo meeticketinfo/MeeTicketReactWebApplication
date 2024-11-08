@@ -2,6 +2,7 @@ export const superAdminPermissions = [
   "dashboard",
   "park-management",
   "park-admin-management",
+  "my-profile"
 ];
 
 export const parkAdminPermissions = [
@@ -15,4 +16,5 @@ export const parkAdminPermissions = [
   "working-days",
   "holidays",
   "booktickets",
+  "my-profile"
 ];
