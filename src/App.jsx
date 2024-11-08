@@ -4,6 +4,7 @@ import AppRoutes from "./routes";
 import { Routes, Route, useLocation } from "react-router-dom";
 import "./css/style.css";
 import "./charts/ChartjsConfig";
+import 'tippy.js/dist/tippy.css'; 
 
 function App() {
   const location = useLocation();

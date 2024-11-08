@@ -10,21 +10,39 @@ import { toast, ToastContainer } from "react-toastify";
 
 // Validation schema using Yup
 
-const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
-  const { saveServiceVarientDetails, isSaveServiceVarientDetailsLoading } =
-    useServiceVariantStore();
+const ServiceVarientCreate = ({
+  setIsServiceVarientCreateVisible,
+  isServiceVarientEditVisible,
+  setIsServiceVarientEditVisible,
+}) => {
+  const {
+    saveServiceVarientDetails,
+    isSaveServiceVarientDetailsLoading,
+    ServiceVariantEditDetails,
+  } = useServiceVariantStore();
   const { allServices, fetchAllServices } = useServiceStore();
 
   useEffect(() => {
     fetchAllServices();
   }, []);
   const initialValues = {
-    name: "",
-    serviceId: "",
-    displayName: "",
-    amount: null,
-    description: "",
-    isPriceFixed: false,
+    id: isServiceVarientEditVisible ? ServiceVariantEditDetails.id : "",
+    name: isServiceVarientEditVisible ? ServiceVariantEditDetails.name : "",
+    serviceId: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.serviceId
+      : "",
+    displayName: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.displayName
+      : "",
+    amount: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.amount
+      : null,
+    description: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.description
+      : "",
+    isPriceFixed: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.isPriceFixed
+      : false,
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the name."),
@@ -32,8 +50,10 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
     displayName: Yup.string().required("Please enter the display name."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
-    isPriceFixed: Yup.boolean().required("Please specify if the price is fixed."),
-});
+    isPriceFixed: Yup.boolean().required(
+      "Please specify if the price is fixed."
+    ),
+  });
 
   const onSubmit = async (
     values,
@@ -42,37 +62,41 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
   ) => {
     try {
       // Call the saveParkDetails function from the store
-      const result = await saveServiceVarientDetails(values, false);
+      const result = await saveServiceVarientDetails(
+        values,
+        isServiceVarientEditVisible ? true : false
+      );
       console.log(result);
       if (result.data.status === 200) {
-        toast.success("Service Variant created successfully!");
+        toast.success(isServiceVarientEditVisible?"Service Variant Updated successfully!":"Service Variant created successfully!");
         setTimeout(() => {
           setIsServiceVarientCreateVisible(false);
+          setIsServiceVarientEditVisible(false);
         }, 3000);
         resetForm();
       }
     } catch (xhr) {
-        console.log("xhr.errors:", xhr);
-        if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
-          const formErrors = {};
-          Object.keys(xhr.response.data.errors).forEach((key) => {
-            if (
-              Array.isArray(xhr.response.data.errors[key]) &&
-              xhr.response.data.errors[key].length > 0
-            ) {
-              formErrors[key] = xhr.response.data.errors[key][0];
-              console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
-              toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
-            }
-          });
-        } else {
-          toast.error(xhr.response.data);
-        }
-      } finally {
+      console.log("xhr.errors:", xhr);
+      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
+        const formErrors = {};
+        Object.keys(xhr.response.data.errors).forEach((key) => {
+          if (
+            Array.isArray(xhr.response.data.errors[key]) &&
+            xhr.response.data.errors[key].length > 0
+          ) {
+            formErrors[key] = xhr.response.data.errors[key][0];
+            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+          }
+        });
+      } else {
+        toast.error(xhr.response.data);
+      }
+    } finally {
       setSubmitting(false);
     }
   };
-  
+
   return (
     <div className="container mx-auto mt-10">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
@@ -118,7 +142,6 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
                 <div className="">
                   <label
                     htmlFor="name"
-
                     className="block text-sm font-semibold text-gray-700"
                   >
                     Varient Name
@@ -191,19 +214,7 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
                     className="text-red-500 text-xs mt-1 absolute mb-1"
                   />
                 </div>
-                {/* <div class="flex items-end">
-                  <label class="text-sm flex space-x-2">
-                    <div class="h-5 w-5 flex items-end">
-                      <Field
-                        type="checkbox"
-                        name="isPriceFixed"
-                        className="form-checkbox h-5 w-5 text-blue-600"
-                      />
-                    </div>
 
-                    <span className="text-gray-900">Price Fixed</span>
-                  </label>
-                </div> */}
                 <div class="flex items-end mb-3">
                   <label className="text-sm flex space-x-2">
                     <Field
@@ -215,8 +226,8 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
                     <span className="ms-3 text-md font-semibold text-gray-900 ">
                       Price Fixed
                     </span>
-                  </label>  
-                   <ErrorMessage
+                  </label>
+                  <ErrorMessage
                     name="isPriceFixed"
                     component="span"
                     className="text-red-500 text-xs"
@@ -250,11 +261,13 @@ const ServiceVarientCreate = ({setIsServiceVarientCreateVisible}) => {
               <div className="flex justify-center p-5">
                 <button
                   type="submit"
-                 className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveServiceVarientDetailsLoading}
                 >
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
+                    : isServiceVarientEditVisible
+                    ? "Update Service Varient"
                     : "Create Service Varient"}
                 </button>
               </div>

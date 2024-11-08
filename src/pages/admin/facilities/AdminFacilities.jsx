@@ -11,6 +11,7 @@ export default function AdminFacilities() {
   // Function to toggle the visibility of FacilityCreate
   const toggleFacilityCreate = () => {
     setIsFacilityCreateVisible((prev) => !prev);
+    setIsFacilityEditVisible(false)
   };
 
   return (

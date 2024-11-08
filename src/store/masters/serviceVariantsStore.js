@@ -11,6 +11,14 @@ export const useServiceVariantStore = create((set) => ({
   fetchServiceDetailsError: null,
   error: null,
   success: null,
+  ServiceVariantEditDetails: {},
+
+  setCurrentServiceVariantEditDetails: (ServiceVariantEditDetails) => {
+    console.log("ServiceVariantEditDetails",ServiceVariantEditDetails)
+    set({
+      ServiceVariantEditDetails,
+    });
+  },
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -68,7 +76,7 @@ export const useServiceVariantStore = create((set) => ({
     set({ isSaveServiceDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.Service.UPDATE_Service_DETAILS
+        ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT.UPDATE_SERVICE_VARIENT_DETAILS
         : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.ADD_NEW_SERVICE_VARIENT;
       const method = isUpdate ? "put" : "post";
 

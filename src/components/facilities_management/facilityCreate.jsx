@@ -6,6 +6,7 @@ import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
+import { formatToStandardDate } from "../../utils/TypographyHelper";
 // Validation schema using Yup
 
 const FacilityCreate = ({
@@ -39,11 +40,11 @@ const FacilityCreate = ({
     availabilityStatus:
       (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
     lastMaintenanceDate:
-      (isFacilityEditVisible && FacilityEditDetails.lastMaintenanceDate) || "",
+      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.lastMaintenanceDate): "",
     facilityCondition:
       isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
     installationDate:
-      isFacilityEditVisible ? FacilityEditDetails.installationDate : "",
+      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.installationDate) : "",
     openTime:
       (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
     closeTime:
@@ -53,64 +54,6 @@ const FacilityCreate = ({
     isActive: isFacilityEditVisible ? FacilityEditDetails.isActive : true,
     parkId: (isFacilityEditVisible && FacilityEditDetails.parkId) || parkId,
   };
-
-  // const onSubmit = async (
-  //   values,
-  //   { setSubmitting, resetForm },
-  //   saveFacilityDetails
-  // ) => {
-  //   const formattedValues = {
-  //     ...values,
-  //     openTime:
-  //       values.openTime.length === 5
-  //         ? `${values.openTime}:00`
-  //         : values.openTime,
-  //     closeTime:
-  //       values.closeTime.length === 5
-  //         ? `${values.closeTime}:00`
-  //         : values.closeTime,
-  //     capacity: values.capacity == null ? 0 : values.capacity,
-  //     installationDate: values.installationDate
-  //       ? new Date(values.installationDate).toISOString()
-  //       : null,
-  //     lastMaintenanceDate: values.lastMaintenanceDate
-  //       ? new Date(values.lastMaintenanceDate).toISOString()
-  //       : null,
-  //   };
-
-  //   try {
-  //     // Call the saveFacilityDetails function from the store
-  //     const result = await saveFacilityDetails(formattedValues, isFacilityEditVisible?true:false);
-
-  //     if (result.data.status === 200) {
-  //       toast.success("Facility created successfully!");
-  //       setTimeout(() => {
-  //         setIsFacilityCreateVisible(false);
-  //         setIsFacilityEditVisible(false)
-  //       }, 3000);
-  //       resetForm();
-  //     }
-  //   } catch (xhr) {
-  //     // console.log("xhr.errors:", xhr);
-  //     if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
-  //       const formErrors = {};
-  //       Object.keys(xhr.response.data.errors).forEach((key) => {
-  //         if (
-  //           Array.isArray(xhr.response.data.errors[key]) &&
-  //           xhr.response.data.errors[key].length > 0
-  //         ) {
-  //           formErrors[key] = xhr.response.data.errors[key][0];
-  //           console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
-  //           toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
-  //         }
-  //       });
-  //     } else {
-  //       toast.error(xhr.response.data);
-  //     }
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     const formattedValues = {
@@ -143,7 +86,7 @@ const FacilityCreate = ({
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
-        toast.success("Facility created successfully!");
+        toast.success(isFacilityEditVisible?"Facility Updated successfully!":"Facility created successfully!");
         setTimeout(() => {
           setIsFacilityCreateVisible(false);
           setIsFacilityEditVisible(false);
@@ -242,11 +185,11 @@ const FacilityCreate = ({
                   <Field
                     type="text"
                     name="name"
-                    className={`mt-1 block w-full px-2 py-1 border ${
+                    className={`mt-1 block w-full text-gray-700 px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        : ""
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Facility Name"
                   />
                   <ErrorMessage
@@ -271,7 +214,7 @@ const FacilityCreate = ({
                       errors.displayName && touched.displayName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
@@ -296,7 +239,7 @@ const FacilityCreate = ({
                       errors.contactName && touched.contactName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Contact Name"
                   />
                   <ErrorMessage
@@ -321,7 +264,7 @@ const FacilityCreate = ({
                       errors.contactNumber && touched.contactNumber
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Contact Number"
                   />
                   <ErrorMessage
@@ -345,7 +288,7 @@ const FacilityCreate = ({
                       errors.contactEmail && touched.contactEmail
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Contact Email"
                   />
                   <ErrorMessage
@@ -370,7 +313,7 @@ const FacilityCreate = ({
                       errors.capacity && touched.capacity
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder=" Enter Capacity"
                   />
                   <ErrorMessage
@@ -395,7 +338,7 @@ const FacilityCreate = ({
                       errors.availabilityStatus && touched.availabilityStatus
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value="available">Available</option>
@@ -423,7 +366,7 @@ const FacilityCreate = ({
                       errors.lastMaintenanceDate && touched.lastMaintenanceDate
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                     placeholder=" Enter LastMaintenance Date"
                   />
                   <ErrorMessage
@@ -448,7 +391,7 @@ const FacilityCreate = ({
                       errors.facilityCondition && touched.facilityCondition
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                     placeholder=" Enter Facility Condition"
                   />
                   <ErrorMessage
@@ -498,7 +441,7 @@ const FacilityCreate = ({
                       errors.openTime && touched.openTime
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Open Time"
                   />
                   <ErrorMessage
@@ -545,7 +488,7 @@ const FacilityCreate = ({
                       errors.description && touched.description
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
@@ -591,6 +534,8 @@ const FacilityCreate = ({
                 >
                   {isSaveFacilityDetailsLoading
                     ? "Saving..."
+                    : isFacilityEditVisible
+                    ? "Update Facility"
                     : "Create Facility"}
                 </button>
               </div>

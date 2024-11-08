@@ -7,14 +7,24 @@ import { useHolidayStore } from "../../store/masters/holidayStore";
 import { toast, ToastContainer } from "react-toastify";
 // Validation schema using Yup
 const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-//   description: Yup.string().required("Description is required"),
-  fromDate: Yup.date().required("Start date is required"),
-  toDate: Yup.date().required("End date is required"),
+  name: Yup.string()
+    .required("Name is required")
+    .max(50, "Description cannot be more than 50 characters"),
+  description: Yup.string().max(
+    300,
+    "Description cannot be more than 300 characters"
+  ),
+  fromDate: Yup.date()
+    .required("Start date is required"),
+    
+  toDate: Yup.date().required("End date is required").min(
+    Yup.ref("fromDate"),
+    "End date cannot be before the start date" // Must be after fromDate
+  ),
 });
 
-export default function HolidayCreate() {
-  const { saveHolidayDetails,isSaveHolidayDetailsLoading } = useHolidayStore();
+export default function HolidayCreate({ setIsHolidayCreateVisible }) {
+  const { saveHolidayDetails, isSaveHolidayDetailsLoading } = useHolidayStore();
   const handleSubmit = async (values, { resetForm }, saveHolidayDetails) => {
     // Format date fields to ISO strings
     const formattedValues = {
@@ -25,14 +35,15 @@ export default function HolidayCreate() {
 
     try {
       const result = await saveHolidayDetails(formattedValues, false);
-      if (result.data.status === 200) {
-        toast.success("Service Variant created successfully!");
+      if (result && result.data && result.data.status === 200) {
+        toast.success("Holiday created successfully!");
         setTimeout(() => {
-          // setIsServiceVarientCreateVisible(false);
+          setIsHolidayCreateVisible(false);
         }, 3000);
         resetForm();
+      } else {
+        toast.error("Unexpected response from the server.");
       }
-     
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
       if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
@@ -58,7 +69,7 @@ export default function HolidayCreate() {
       <Formik
         initialValues={{
           name: "",
-          //   description: "",
+          description: "",
           fromDate: "",
           toDate: "",
         }}
@@ -102,7 +113,7 @@ export default function HolidayCreate() {
                   name="fromDate"
                   type="date"
                   className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.name && touched.name
+                    errors.fromDate && touched.fromDate
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -123,7 +134,7 @@ export default function HolidayCreate() {
                   name="toDate"
                   type="date"
                   className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.name && touched.name
+                    errors.fromDate && touched.fromDate
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

@@ -38,6 +38,7 @@ export const API_ENDPOINTS = {
     },
     GATE_KEEPER: {
       ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`,
+      GET_GATE_KEEPERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e76`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
@@ -55,7 +56,7 @@ export const API_ENDPOINTS = {
     },
     SERVICE_VARIANT: {
       GET_SERVICE_VARIANTS: `Master/GetAllServiceVarients`,
-      UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
+      UPDATE_SERVICE_VARIENT_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
       ADD_NEW_SERVICE_VARIENT: `${API_BASE_URL}Master/AddNewServiceVarient`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
@@ -69,6 +70,7 @@ export const API_ENDPOINTS = {
     },
     HOLIDAY: {
       ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
+      GET_HOLIDAYS: `Master/GetAllHolidays`,
     },
     MY_PROFILE :{
       GET_PROFILES:`${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,

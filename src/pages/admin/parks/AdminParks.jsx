@@ -6,10 +6,13 @@ import AdminLayout from "../../../layouts/AdminLayout";
 export default function AdminParks() {
   // State to toggle the FacilityCreate component
   const [isParkCreateVisible, setIsParkCreateVisible] = useState(false);
+  const [isParkEditVisible, setIsParkEditVisible] = useState(false);
 
   // Function to toggle the visibility of ParkCreate
   const toggleParkCreate = () => {
     setIsParkCreateVisible((prev) => !prev);
+    setIsParkEditVisible(false);
+    false;
   };
   return (
     <AdminLayout>
@@ -39,9 +42,17 @@ export default function AdminParks() {
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
         {isParkCreateVisible ? (
-          <ParkCreate setIsParkCreateVisible={setIsParkCreateVisible} />
+          <ParkCreate
+            setIsParkCreateVisible={setIsParkCreateVisible}
+            isParkEditVisible={isParkEditVisible}
+            setIsParkEditVisible={setIsParkEditVisible}
+          />
         ) : (
-          <ParkList />
+          <ParkList
+            setIsParkCreateVisible={setIsParkCreateVisible}
+            isParkEditVisible={isParkEditVisible}
+            setIsParkEditVisible={setIsParkEditVisible}
+          />
         )}
         {/* </div> */}
       </div>
