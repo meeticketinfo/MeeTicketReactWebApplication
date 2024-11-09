@@ -10,9 +10,10 @@ const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
 
   return (
     <div
-      className="ag-theme-alpine bg-blue-v1"
+      className="ag-theme-alpine bg-white/30 backdrop-blur-sm border border-white/50 rounded-lg shadow-lg "
       style={{ height: gridHeight, width: "100%", position: "relative" }}
     >
+      {/* skjdfhaksjdfhk */}
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefs}
@@ -22,7 +23,7 @@ const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
       />
       {/* Loader overlay within the table body */}
       {isFetchLoading && (
-        <div className="ag-table-body-loader">
+        <div className="ag-table-body-loader backdrop-blur-sm bg-white/30">
           <div className="loader"></div>
         </div>
       )}

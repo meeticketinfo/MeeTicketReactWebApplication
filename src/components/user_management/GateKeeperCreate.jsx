@@ -46,8 +46,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .min(6, "Password cannot be less than 6 characters")
-      .max(20, "Password cannot be more than 30 characters"),
+      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
     dateOfBirth: Yup.date()
       .required("Date of Birth is required")
       .test("age", "You must be at least 18 years old", (value) => {

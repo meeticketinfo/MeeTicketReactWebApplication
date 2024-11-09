@@ -15,6 +15,9 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
+    PARK_ADMIN: {
+      GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
+    },
     FACILITY: {
       GET_FACILITIES: `Master/GetAllFacilities`,
       UPDATE_FACILITY_DETAILS: `${API_BASE_URL}Master/UpdateFacilities`,
@@ -28,6 +31,7 @@ export const API_ENDPOINTS = {
       ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+      GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
     },
     USER: {
       GET_USERS: `Master/GetAllAdminUser`,

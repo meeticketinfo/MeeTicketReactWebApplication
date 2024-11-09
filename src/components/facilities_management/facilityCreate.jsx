@@ -74,7 +74,6 @@ const FacilityCreate = ({
       lastMaintenanceDate: values.lastMaintenanceDate
         ? new Date(values.lastMaintenanceDate).toISOString()
         : null,
-      isActive: values.isActive === "true" || values.isActive === true,
     };
 
     try {

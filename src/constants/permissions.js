@@ -4,13 +4,12 @@ export const superAdminPermissions = [
   "park-admin-management",
   "my-profile"
 ];
-
 export const parkAdminPermissions = [
   "dashboard",
   "facilites",
   "service",
   "service-varient",
-  "gate-keepers",
+  "entry-scan-users",
   "payments",
   "bookings",
   "working-days",

@@ -16,7 +16,7 @@ import {
 import useCaptchaStore from "../../store/useCaptchaStore";
 import { FaRedo } from "react-icons/fa";
 import "./Login.css";
-import { bouncy } from 'ldrs'
+import { bouncy } from "ldrs";
 
 const Login = () => {
   bouncy.register();
@@ -32,8 +32,8 @@ const Login = () => {
   } = useCaptchaStore();
 
   const initialValues = {
-    EmailId: "Testing1@gmail.com",
-    password: "Test@123",
+    EmailId: "",
+    password: "",
   };
 
   const validationSchema = Yup.object({
@@ -45,7 +45,7 @@ const Login = () => {
     loadCaptcha();
   }, [loadCaptcha]);
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const isCaptchaValid = validateCaptchaInput();
     if (!isCaptchaValid) {
       setSubmitting(false);
@@ -53,6 +53,7 @@ const Login = () => {
     }
     const response = await login(values);
     if (response.success) {
+      resetForm();
       navigate("/dashboard");
     }
     setSubmitting(false);
@@ -60,175 +61,172 @@ const Login = () => {
 
   return (
     <>
-      <div className="h-screen bg-blue-v2 flex flex-col">
-        {/* Header Section */}
-        <div className="container-fluid p-3 text-white bg-blue-v1 rounded-lg">
+      <div className="min-h-screen flex flex-col bg-blue-v1 p-4  ">
+        <div className="absolute bg-blue-800 w-80 h-80 rounded-full opacity-30 -top-36 -left-20" />
+        <div className="absolute bg-blue-800 w-40 h-40 rounded-full opacity-20 top-40 -right-20" />
+        <div className="absolute bg-blue-800 w-80 h-80 rounded-full opacity-20 top-10 right-80" />
+        <div className="absolute bg-blue-800 w-48 h-48 rounded-full opacity-25 -bottom-32 left-40" />
+        {/* Header */}
+        <div className="container-fluid p-3 bg-blue-v1 rounded-[20px] text-gray-200 shadow-lg backdrop-blur-sm bg-white/30 ">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end">
-              <div className="flex justify-center items-center">
-                <img alt="site-logo" src={headerLogo} width={40} height={40} />
-              </div>
-              <div className="pl-2 flex flex-col">
-                <p className="text-lg">Government of Telangana</p>
-                <small className="text-[10px] pl-1">ITE&C Department</small>
+            {/* First Column */}
+            <div className="align-middle hidden lg:flex items-center space-x-2">
+              <img alt="site-logo" src={headerLogo} width={40} height={40} />
+              <div>
+                <p className="text-lg font-semibold">Government of Telangana</p>
+                <small className="text-[10px]">ITE&C Department</small>
               </div>
             </div>
 
             {/* Second Column */}
-            <div className="flex justify-end items-center pr-20">
-              <div className="flex items-center mr-4">
-                <div className="mr-2 text-right">
-                  <p className="text-sm font-semibold">
-                    Sri A. Revanth Reddy
-                    <span className="block text-xs">
-                      Hon'ble Chief Minister <br />
-                      Government of Telangana
-                    </span>
-                  </p>
+            <div className="flex items-center space-x-8">
+              {/* Chief Minister Section */}
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-sm font-semibold">Sri A. Revanth Reddy</p>
+                  <span className="block text-xs leading-tight">
+                    Hon'ble Chief Minister <br /> Government of Telangana
+                  </span>
                 </div>
-                <img src={cmImg} alt="CM" className="w-16 h-20" />
+                <img
+                  src={cmImg}
+                  alt="CM"
+                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
+                />
               </div>
 
-              <div className="flex items-center">
-                <div className="mr-2 text-right">
-                  <p className="text-sm font-semibold">
-                    Sri D. Sridhar Babu
-                    <span className="block text-xs">
-                      Hon'ble Minister for IT
-                      <br />
-                      Government of Telangana
-                    </span>
-                  </p>
+              {/* IT Minister Section */}
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-sm font-semibold">Sri D. Sridhar Babu</p>
+                  <span className="block text-xs leading-tight">
+                    Hon'ble Minister for IT <br /> Government of Telangana
+                  </span>
                 </div>
-                <img src={ITMinisterImg} alt="Minister" className="w-16 h-20" />
+                <img
+                  src={ITMinisterImg}
+                  alt="Minister"
+                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex flex-grow items-center justify-center px-4">
-          <div className="flex flex-col md:flex-row items-center w-full max-w-6xl space-y-6 md:space-y-0 md:space-x-10">
-            {/* Left side - MeeTicket Logo */}
-            <div className="flex justify-center items-center md:w-1/2">
+        {/* Main Content Section */}
+        <div className="flex-1 flex items-center justify-between py-5">
+          <div className=" w-full flex flex-col lg:flex-row  items-center justify-between">
+            {/* Image Section */}
+            <div className="w-full lg:w-1/2 flex justify-center ">
               <img
                 src={meetickesTelanganaImg}
-                alt="MeeTicket Logo"
-                className="h-[300px] md:max-h-full object-contain"
+                alt="MeeTicket Telangana"
+                className="w-full max-w-sm rounded-lg"
               />
             </div>
 
-            {/* Right side - Login Section */}
-            <div className="flex justify-center items-center md:w-1/2 h-full">
-              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg flex-grow flex flex-col justify-center">
-                <h3 className="text-center mb-4 text-lg font-semibold text-gray-700">
-                  Welcome to MeeTicket
-                </h3>
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validationSchema}
-                  onSubmit={handleSubmit}
-                >
-                  {({ isSubmitting }) => (
-                    <Form>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="EmailId"
-                          className="form-label text-sm font-medium text-gray-700"
-                        >
-                          User Name
-                        </label>
-                        <Field
-                          id="EmailId"
-                          name="EmailId"
-                          placeholder="User Name"
-                          className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
-                          autoComplete="off"
-                          maxLength="255"
-                        />
-                        <ErrorMessage
-                          name="EmailId"
-                          component="div"
-                          className="text-red-500 text-sm mt-1"
-                        />
+            {/* Form Section */}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ isSubmitting }) => (
+                <Form className="w-full lg:w-1/2 max-w-md  rounded-[20px] p-4  backdrop-blur-sm bg-white/30">
+                  <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
+                    Welcome to MeeTicket
+                  </h2>
+
+                  {/* Username Field */}
+                  <div className="mb-6">
+                    <label
+                      htmlFor="EmailId"
+                      className="block text-sm font-medium text-gray-100 mb-1"
+                    >
+                      User Name
+                    </label>
+                    <Field
+                      id="EmailId"
+                      name="EmailId"
+                      placeholder="Enter your name"
+                      autoComplete="off"
+                      className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
+                    />
+                    <ErrorMessage
+                      name="EmailId"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="mb-6">
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium text-gray-100 mb-1"
+                    >
+                      Password
+                    </label>
+                    <Field
+                      id="password"
+                      name="password"
+                      placeholder="Enter your password"
+                      type="password"
+                      autoComplete="off"
+                      className="w-full h-12 px-4 shadow-lg  bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-200 transition duration-300"
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="div"
+                      className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                  <div className="flex justify-center mb-3">
+                    {/* Captcha Section */}
+                    <div className="flex items-center mb-6backdrop-blur-sm bg-white/30  rounded-lg border border-gray-300">
+                      <div className="relative flex items-center flex-row-reverse w-3/4">
+                        <LoadCanvasTemplate reloadText="" />
                       </div>
-
-                      <div className="mb-4">
-                        <label
-                          htmlFor="password"
-                          className="form-label text-sm font-medium text-gray-700"
-                        >
-                          Password
-                        </label>
-                        <Field
-                          id="password"
-                          name="password"
-                          placeholder="Password"
-                          className="form-control mt-1 block w-full border rounded-md p-2 text-sm"
-                          type="password"
-                          autoComplete="off"
-                          maxLength="49"
-                        />
-                        <ErrorMessage
-                          name="password"
-                          component="div"
-                          className="text-red-500 text-sm mt-1"
-                        />
-                      </div>
-
-                      {error && (
-                        <div className="text-red-500 text-center mb-4">
-                          {error}
-                        </div>
-                      )}
-
-                      <div className="flex items-center mb-4 bg-gray-500 rounded ">
-                        <div className="relative flex items-center flex-row-reverse lg:w-3/4">
-                          <button
-                            type="button"
-                            className="absolute left-0 bg-gray-500 p-2 outline-none text-blue-v1"
-                            onClick={() =>
-                              loadCaptchaEnginge(
-                                6,
-                                "rgb(107 114 128 / 1)",
-                                "#fff"
-                              )
-                            }
-                          >
-                            <FaRedo size={16} />{" "}
-                          </button>
-                          <LoadCanvasTemplate reloadText="" />
-                        </div>
+                      <button
+                        type="button"
+                        className="flex items-center justify-center p-3 text-blue-v1"
+                        onClick={() =>
+                          loadCaptchaEnginge(
+                            6,
+                            "#a8b4c4",
+                            "rgb(107 114 128 / 1)"
+                          )
+                        }
+                      >
+                        <FaRedo size={16} />
+                      </button>
+                      <div className="flex items-centerbackdrop-blur-sm bg-white/30 rounded-lg border border-gray-300">
                         <input
                           type="text"
                           placeholder="Enter Captcha"
                           value={captchaInput}
                           onChange={(e) => updateCaptchaInput(e.target.value)}
-                          className="form-control ml-2 border rounded-md p-2 text-sm"
+                          className="w-full h-12 px-4 shadow-lg backdrop-blur-sm bg-white/30 bg-blue-50 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-white transition duration-300"
                         />
                       </div>
-                      <div className="text-center">
-                        {captchaError && (
-                          <small className="text-red-500 text-center mb-4">
-                            {captchaError}
-                          </small>
-                        )}
-                      </div>
+                    </div>
+                  </div>
 
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`relative w-full p-2 rounded-md text-white overflow-hidden flex justify-center items-center bg-gradient-to-r ${ isSubmitting ? "from-blue-v2 via-blue-300 to-blue-v2 bg-[length:200%_100%] animate-fill-right-to-left" : "bg-blue-v1"}`}
-                      >
-                        <span >
-                          Sign in
-                        </span>
-                      </button>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-            </div>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
+                      isSubmitting
+                        ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
+                        : "bg-blue-v1 hover:bg-blue-v2"
+                    }`}
+                  >
+                    Sign in
+                  </button>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>
