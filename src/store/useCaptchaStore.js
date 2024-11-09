@@ -7,7 +7,7 @@ const useCaptchaStore = create((set) => ({
   captchaLoaded: false,
 
   loadCaptcha: () => {
-    loadCaptchaEnginge(6, "rgb(107 114 128 / 1)", "#fff");
+    loadCaptchaEnginge(6, "#a8b4c4", "rgb(107 114 128 / 1)");
     set({ captchaLoaded: true, captchaError: "" });
   },
 

@@ -23,20 +23,14 @@ function Header({ variant = "default" }) {
 
   return (
     <header
-      className={`sticky top-0 before:absolute before:inset-0 before:backdrop-blur-md max-lg:before:bg-white dark:max-lg:before:bg-white before:-z-10 z-30  ${
-        variant === "v2" || variant === "v3"
-          ? "before:bg-white after:absolute after:h-px after:inset-x-0 after:top-full after:bg-white dark:after:bg-gray-700/60 after:-z-10"
-          : "max-lg:shadow-sm lg:before:bg-white dark:lg:before:bg-gray-900/90"
-      } ${variant === "v2" ? "dark:before:bg-gray-800" : ""} ${
-        variant === "v3" ? "dark:before:bg-gray-900" : ""
-      }`}
+      className={`sticky top-4 before:absolute shadow-lg backdrop-blur-sm bg-white/30 border border-bluev1 z-30 mx-4 rounded-[20px] `}
     >
-      <div className="px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8 shadow-lg rounded-[20px]">
         <div
           className={`flex items-center justify-between h-16  ${
             variant === "v2" || variant === "v3"
               ? ""
-              : "lg:border-b border-gray-200 dark:border-gray-700/60"
+              : " dark:border-gray-700/60"
           }`}
         >
           {/* Header: Left side */}
@@ -64,7 +58,7 @@ function Header({ variant = "default" }) {
             </button>
 
             {/* toggle sidebar icon */}
-            <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
+            <div className=" hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
               <div className="flex justify-center items-center px-3">
                 <button
                   className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
@@ -94,17 +88,18 @@ function Header({ variant = "default" }) {
               </div>
             </div>
           </div>
-          {roleDetails?.name == "ROLE_ADMIN" &&
-          <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
-            <div className="pl-2 text-blue-v1 text-xl tracking-widest font-medium flex flex-col ">
-              <p>
-                {(decodedTokenData?.data?.ParkName &&
-                  toTitleCase(decodedTokenData?.data?.ParkName)) ||
-                  "Park Name"}
-              </p>
-              {/* <small className="text-[10px] pl-1">ITE&C Department</small> */}
+          {roleDetails?.name == "ROLE_ADMIN" && (
+            <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
+              <div className="pl-2 text-blue-v1 text-[20px] font-bold tracking-widest flex flex-col ">
+                <p>
+                  {(decodedTokenData?.data?.ParkName &&
+                    toTitleCase(decodedTokenData?.data?.ParkName)) ||
+                    "Park Name"}
+                </p>
+                {/* <small className="text-[10px] pl-1">ITE&C Department</small> */}
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
