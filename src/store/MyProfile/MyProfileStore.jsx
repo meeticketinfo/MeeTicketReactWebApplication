@@ -5,33 +5,27 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 export const useMyProfileStore = create((set) => ({
   isFetchMyProfileDetailsLoading: false,
   ProfileDetails: [],
-  PaymentDetails: [],
-
-  serializeFilters: (filters) =>
-    Object.entries(filters)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&"),
+  fetchProfileDetailsError: null,
+  error: null,
+  success: null,
 
   // Fetch My Profile Details
-  fetchMyProfileDetails: async () => {
+  fetchMyProfileDetails: async (id) => {
     set({ isFetchMyProfileDetailsLoading: true });
     try {
-      const filterString = useMyProfileStore
-        .getState()
-        .serializeFilters(filters);
       const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.GET_PROFILES}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.MY_PROFILE.GET_PROFILES}/${id}`
       );
       set({
         ProfileDetails: response.data,
         isFetchMyProfileDetailsLoading: false,
       });
+      console.log(response.data, 'details from profile');
     } catch (error) {
       set({
-        fetchPaymentDetailsError: error.message,
+        fetchProfileDetailsError: error.message,
         isFetchMyProfileDetailsLoading: false,
       });
     }
   },
-
 }));
