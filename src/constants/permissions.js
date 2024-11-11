@@ -9,11 +9,11 @@ export const parkAdminPermissions = [
   "facilites",
   "service",
   "service-varient",
-  "entry-scan-users",
+  "gate-keepers",
   "payments",
   "bookings",
   "working-days",
   "holidays",
   "booktickets",
-  "my-profile"
+  "my-profile",
 ];

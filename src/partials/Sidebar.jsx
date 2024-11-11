@@ -29,7 +29,7 @@ function Sidebar({ variant = "default" }) {
     (state) => state.setSidebarExpanded
   );
   const { sidebarMenuItems, roleDetails } = useAuthStore();
-  console.log("sidebarMenuItems", sidebarMenuItems);
+
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {

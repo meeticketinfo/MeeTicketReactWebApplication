@@ -7,13 +7,20 @@ export const useBookingsStore = create((set) => ({
   isFetchAllBookingsLoading: false,
   error: null,
   success: null,
-  isFetchAllFacilityServicesLoading: false,
   allFacilityServices: {},
+  isSaveBookingDetailsLoading: false,
+  saveBookingDetailsError: null,
+  bookingDetails: {},
+  isFetchCurrentBookingDetailsLoading: false,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&"),
+
+  setBookingDetails: (newBookingDetails) => {
+    set({ bookingDetails: newBookingDetails });
+  },
 
   // Fetch all Bookings
   fetchAllBookings: async (pageIndex = 1, pageSize = 10, filters = {}) => {
@@ -24,8 +31,6 @@ export const useBookingsStore = create((set) => ({
         // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
         `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS}`
       );
-      console.log(response);
-
       set({
         allBookings: response.data,
         isFetchAllBookingsLoading: false,
@@ -35,27 +40,44 @@ export const useBookingsStore = create((set) => ({
     }
   },
 
-  fetchAllFacilityServices: async (
-    pageIndex = 1,
-    pageSize = 10,
-    filters = {},
-    parkId
-  ) => {
-    set({ isFetchAllFacilityServicesLoading: true });
+  fetchCurrentBookingDetailsByBookingId: async (bookingId) => {
+    set({ isFetchCurrentBookingDetailsLoading: true });
     try {
-      //   const filterString = useFacilityServicestore.getState().serializeFilters(filters);
       const response = await apiService.get(
-        // `${API_ENDPOINTS.MASTERS.PARK.GET_FacilityServices}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.BOOKING.GET_ALL_FACILITY_SERVICES}/${parkId}`
+        `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS_BOOKING_ID}/${bookingId}`
       );
-      console.log(response);
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchCurrentBookingDetailsLoading: false,
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({ error: error.message, isFetchCurrentBookingDetailsLoading: false });
+      return { success: false };
+    }
+  },
+
+  // Save Facility details
+  saveBookingDetails: async (bookingDetailsPayload) => {
+    set({ isSaveBookingDetailsLoading: true });
+    try {
+      const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_BOOKINGS;
+      const method = "post";
+
+      const response = await apiService[method](url, bookingDetailsPayload);
 
       set({
-        allFacilityServices: response.data,
-        isFetchAllFacilityServicesLoading: false,
+        facilityCreateResponse: { response },
+        FacilityDetails: response.data,
+        isSaveBookingDetailsLoading: false,
       });
+      return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isFetchAllFacilityServicesLoading: false });
+      set({
+        saveBookingDetailsError: error.message,
+        isSaveBookingDetailsLoading: false,
+      });
+      throw error;
     }
   },
 }));
