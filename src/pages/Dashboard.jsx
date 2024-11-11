@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
@@ -13,9 +13,33 @@ import { HiCurrencyRupee } from "react-icons/hi";
 import AgGridTable from "../components/tables/AgGridTable";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
+import { useDashboardStore } from "../store/dashboard/dashboardStore";
+import { useBookingsStore } from "../store/masters/bookingsStore";
+import { formatToStandardDate, formatToStandardTime } from "../utils/TypographyHelper";
+import { Chart } from "react-google-charts";
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { allBookings, fetchAllBookings } = useBookingsStore();
 
+  useEffect(() => {
+    fetchAllBookings();
+  }, []);
+
+  const data = [
+    ["Language", "Speakers (in millions)"],
+    ["German", 5.85],
+    ["French", 1.66],
+    ["Italian", 0.316],
+    ["Romansh", 0.0791],
+  ]
+
+
+  const options = {
+    legend: "none",
+    pieSliceText: "label",
+    title: "Swiss Language Use (100 degree rotation)",
+    pieStartAngle: 100,
+  };
   const dashboardCards = [
     {
       lableName: "Total Tickets",
@@ -42,57 +66,50 @@ function Dashboard() {
       icon: FaIndianRupeeSign,
     },
   ];
-  const dashboardColumnDefs = [
+  const [dashboardColumnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      sortable: false,
       width: 100,
       headerClass: "text-blue-v2",
     },
     {
-      field: "date",
-      headerName: "Date",
-      sortable: true,
+      field: "park",
+      headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "bookings",
-      headerName: "Total Bookings",
-      sortable: true,
+      field: "id",
+      headerName: "Booking Id",
       flex: 1,
       headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "Adults",
-      headerName: "Adults",
-      sortable: true,
+      field: "user",
+      headerName: "User",
       flex: 1,
       headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "children",
-      headerName: "Children",
-      sortable: true,
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "totalAmount",
+      field: "amount",
       headerName: "Total Amount",
-      sortable: true,
       flex: 1,
       headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "00:00",
     },
     {
-      headerName: "Actions",
-      field: "actions",
-      cellRenderer: () => <button>View</button>,
-      headerClass: "text-blue-v2",
+      field: "bookingDate",
+      headerName: "Date",
       flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value ? formatToStandardDate(params.value) : "N/A",
     },
-  ];
+  ]);
   const [rowData] = useState([
     {
       date: "2024-10-01",
@@ -270,8 +287,15 @@ function Dashboard() {
                   />
                 ))}
               <DashboardCard07>
+                <Chart
+                  chartType="PieChart"
+                  data={data}
+                  options={options}
+                  width={"100%"}
+                  height={"400px"}
+                />
                 <AgGridTable
-                  rowData={rowData}
+                  rowData={allBookings || []}
                   columnDefs={dashboardColumnDefs}
                 />
               </DashboardCard07>
