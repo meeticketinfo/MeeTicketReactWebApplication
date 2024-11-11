@@ -17,6 +17,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import BookTickets from "../pages/admin/BookTickets/BookTickets";
 import GateKeepers from "../pages/park_admin/users/GateKeepers";
 import MyProfile from "../pages/MyProfile/MyProfile";
+import BookingDetails from "../pages/admin/BookTickets/BookingDetails";
 
 export const routes = [
   {
@@ -61,6 +62,6 @@ export const routes = [
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
   { path: "/booktickets", element: <BookTickets /> },
+  { path: "/booktickets/view-details/:id", element: <BookingDetails /> },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
-
 ];

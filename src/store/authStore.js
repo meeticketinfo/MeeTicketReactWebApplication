@@ -13,6 +13,7 @@ const useAuthStore = create(
       isLoading: false,
       isAuthenticated: false,
       token: null,
+      loginError: "",
       error: null,
       decodedTokenData: null,
       userRoles: [],
@@ -35,8 +36,13 @@ const useAuthStore = create(
 
           return { success: true };
         } catch (error) {
-          set({ error: error.message, isLoading: false });
-          return { success: false, error: error.message };
+          set({
+            // loginError: error?.response?.data?.message,
+            error: error?.response?.data?.message,
+            isLoading: false,
+          });
+          throw error;
+          //   return { success: false, error: error };
         }
       },
 

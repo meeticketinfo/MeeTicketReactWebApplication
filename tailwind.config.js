@@ -139,6 +139,11 @@ export default {
       zIndex: {
         60: "60",
       },
+      textShadow: {
+        sm: "1px 1px 2px rgba(0, 0, 0, 0.5)",
+        DEFAULT: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+        lg: "3px 3px 6px rgba(0, 0, 0, 0.5)",
+      },
     },
   },
   plugins: [
@@ -154,5 +159,27 @@ export default {
         );
       });
     }),
+    function ({ addUtilities, theme }) {
+      const textShadow = theme("textShadow");
+      const utilities = Object.entries(textShadow).map(([key, value]) => ({
+        [`.text-shadow${key === "DEFAULT" ? "" : `-${key}`}`]: {
+          textShadow: value,
+        },
+      }));
+      addUtilities(utilities, ["responsive"]);
+    },
+    function ({ addUtilities }) {
+      addUtilities({
+        ".shadow-color-blue": {
+          "--tw-shadow-color": "rgba(0, 0, 255, 0.7)",
+        },
+        ".shadow-color-red": {
+          "--tw-shadow-color": "rgba(255, 0, 0, 0.7)",
+        },
+        ".shadow-color-white": {
+          "--tw-shadow-color": "rgba(255, 255, 255, 1)",
+        },
+      });
+    },
   ],
 };

@@ -1,5 +1,5 @@
 // stores/quantitiesStore.js
-import {create} from "zustand";
+import { create } from "zustand";
 
 export const useQuantitiesStore = create((set) => ({
   quantities: {},

@@ -8,12 +8,6 @@ export default function AdminBookings() {
   const { allBookings, fetchAllBookings } = useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
 
-  const [adultEntry, setAdultEntry] = useState(0);
-  const [childrenEntry, setChildrenEntry] = useState(0);
-  const [adultPlayground, setAdultPlayground] = useState(0);
-  const [childrenPlayground, setChildrenPlayground] = useState(0);
-  const [playgroundType, setPlaygroundType] = useState("AC"); // default to "AC"
-
   useEffect(() => {
     fetchAllBookings();
   }, []);
@@ -118,9 +112,7 @@ export default function AdminBookings() {
         </div>
 
         {/* Booking Form Section */}
-        {isBookingFormVisible && (
-            <FacilityServices />
-        )}
+        {isBookingFormVisible && <FacilityServices />}
 
         {/* Table Section - Show only if form is not visible */}
         {!isBookingFormVisible && (

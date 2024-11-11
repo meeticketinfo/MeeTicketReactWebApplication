@@ -51,6 +51,7 @@ const Login = () => {
       setSubmitting(false);
       return;
     }
+
     const response = await login(values);
     if (response.success) {
       resetForm();
@@ -143,12 +144,12 @@ const Login = () => {
                       htmlFor="EmailId"
                       className="block text-sm font-medium text-gray-100 mb-1"
                     >
-                      User Name
+                      Email
                     </label>
                     <Field
                       id="EmailId"
                       name="EmailId"
-                      placeholder="Enter your name"
+                      placeholder="Enter your Email ID"
                       autoComplete="off"
                       className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
                     />
@@ -184,7 +185,7 @@ const Login = () => {
                   <div className="flex justify-center mb-3">
                     {/* Captcha Section */}
                     <div className="flex items-center mb-6backdrop-blur-sm bg-white/30  rounded-lg border border-gray-300">
-                      <div className="relative flex items-center flex-row-reverse w-3/4">
+                      <div className="relative flex items-center flex-row-reverse ">
                         <LoadCanvasTemplate reloadText="" />
                       </div>
                       <button
@@ -200,16 +201,30 @@ const Login = () => {
                       >
                         <FaRedo size={16} />
                       </button>
-                      <div className="flex items-centerbackdrop-blur-sm bg-white/30 rounded-lg border border-gray-300">
+                      <div className="flex items-center backdrop-blur-sm bg-white/30 rounded-lg border border-gray-300">
                         <input
                           type="text"
                           placeholder="Enter Captcha"
                           value={captchaInput}
                           onChange={(e) => updateCaptchaInput(e.target.value)}
-                          className="w-full h-12 px-4 shadow-lg backdrop-blur-sm bg-white/30 bg-blue-50 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-white transition duration-300"
+                          className="w-full h-12 px-4 shadow-lg backdrop-blur-sm bg-white/30 bg-blue-50 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="flex text-center justify-center">
+                    {error && (
+                      <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
+                        {error}
+                      </small>
+                    )}
+                  </div>
+                  <div className="text-center">
+                    {captchaError && (
+                      <small className="text-red-500 text-center  mb-4">
+                        {captchaError}
+                      </small>
+                    )}
                   </div>
 
                   {/* Submit Button */}

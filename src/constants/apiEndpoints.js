@@ -27,10 +27,8 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `Master/GetAllBookings`,
-      UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
-      ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
-      DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
-      GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+      ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
     },
     USER: {
@@ -76,8 +74,11 @@ export const API_ENDPOINTS = {
       ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
       GET_HOLIDAYS: `Master/GetAllHolidays`,
     },
-    MY_PROFILE :{
-      GET_PROFILES:`${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
+    MY_PROFILE: {
+      GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
+    },
+    ENTITY_TYPE:{
+      
     }
   },
 };
