@@ -34,12 +34,22 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Parks",
+        title: "Departments",
+        icon: MdOutlineForest,
+        path: "/departments",
+      },
+      {
+        title: "Entity Types",
+        icon: MdOutlineForest,
+        path: "/entity-types",
+      },
+      {
+        title: "Entities",
         icon: MdOutlineForest,
         path: "/park-management",
       },
       {
-        title: "Park Admins",
+        title: "Entity Admins",
         icon: FaUsers,
         path: "/park-admin-management",
       },
@@ -97,12 +107,7 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "days",
-        icon: MdOutlineWorkHistory,
-        path: "/working-days",
-      },
-      {
-        title: "Holydays",
+        title: "Holidays",
         icon: MdOutlineWorkOff,
         path: "/holidays",
       },
