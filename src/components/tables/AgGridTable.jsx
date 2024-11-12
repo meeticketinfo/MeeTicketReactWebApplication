@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./AgGridTable.css";
 
-const AgGridTable = ({ rowData, columnDefs, isFetchLoading }) => {
+const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   const isPaginationEnabled = rowData.length > 10;
   const gridHeight = isPaginationEnabled ? 400 : 300;
 

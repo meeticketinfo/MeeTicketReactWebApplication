@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useParkStore } from "../../store/masters/parksStore";
@@ -6,6 +6,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BaseVariant from "../utils/file_privew/baseVariant";
+import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 
 const ParkCreate = ({
   setIsParkCreateVisible,
@@ -19,31 +21,30 @@ const ParkCreate = ({
     filePreviews,
     parkEditDetails,
   } = useParkStore();
-  console.log("editparkEditDetails", parkEditDetails);
+
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+  }, []);
+
   const initialValues = {
     Id: isParkEditVisible ? parkEditDetails.id : "",
     EntityTypeId: isParkEditVisible ? parkEditDetails.EntityTypeId : "",
     DepartmentId: isParkEditVisible ? parkEditDetails.DepartmentId : "",
+    DisplayName: "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
-    DisplayName: isParkEditVisible ? parkEditDetails.displayName : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
-    Street3: isParkEditVisible ? parkEditDetails.street3 : "",
-    Landmark: isParkEditVisible ? parkEditDetails.landmark : "",
     City: isParkEditVisible ? parkEditDetails.city : "",
     State: isParkEditVisible ? parkEditDetails.state : "",
-    Country: isParkEditVisible ? parkEditDetails.country : "",
     ZipCode: isParkEditVisible ? parkEditDetails.zipCode : "",
-    longitude: 0,
-    latitude: 0,
-    ParkSize: isParkEditVisible ? parkEditDetails.parkSize : "0",
     IsActive: isParkEditVisible ? parkEditDetails.isActive : true,
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
-    Ifsc: "",
-    BankName: "",
-    BankBranch: "",
-    AccountNumber: "",
   };
   const FILE_SIZE = 10 * 1024 * 1024;
 
@@ -56,7 +57,8 @@ const ParkCreate = ({
   // Validation schema for the form
   const validationSchema = Yup.object({
     Name: Yup.string().required("Park Name is required"),
-    DisplayName: Yup.string().required("Park Display Name is required"),
+    EntityTypeId: Yup.number().required("Entity Type is required"),
+    DepartmentId: Yup.number().required("Department is required"),
     Street1: Yup.string()
       .nullable()
       // .min(3, "Street 1 must be at least 3 characters long")
@@ -65,16 +67,6 @@ const ParkCreate = ({
       .nullable()
       .min(3, "Street 2 must be at least 3 characters long")
       .max(50, "Street 2 cannot be more than 50 characters"),
-
-    Street3: Yup.string()
-      .nullable()
-      .min(3, "Street 3 must be at least 3 characters long")
-      .max(50, "Street 3 cannot be more than 50 characters"),
-
-    Landmark: Yup.string()
-      .nullable()
-      .min(3, "Landmark must be at least 3 characters long")
-      .max(50, "Landmark cannot be more than 50 characters"),
     City: Yup.string()
       .nullable()
       .min(2, "City must be at least 2 characters long")
@@ -83,22 +75,10 @@ const ParkCreate = ({
       .nullable()
       .min(2, "State must be at least 2 characters long")
       .max(50, "State cannot be more than 50 characters"),
-    Country: Yup.string()
-      .nullable()
-      .min(2, "Country must be at least 2 characters long")
-      .max(50, "Country cannot be more than 50 characters"),
     ZipCode: Yup.string()
       .nullable()
       .matches(/^\d+$/, "Zip Code must be a number")
       .length(6, "Zip Code must be exactly 5 digits"),
-    longitude: Yup.number()
-      .min(-180, "Longitude must be between -180 and 180")
-      .max(180, "Longitude must be between -180 and 180"),
-    latitude: Yup.number()
-      .min(-90, "Latitude must be between -90 and 90")
-      .max(90, "Latitude must be between -90 and 90"),
-    // IsActive: Yup.boolean(),
-
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
@@ -111,20 +91,6 @@ const ParkCreate = ({
       .test("fileType", "Unsupported file format", (value) => {
         return !value || (value && SUPPORTED_FORMATS.includes(value.type));
       }),
-    // Ifsc: Yup.string()
-    //   .required("IFSC code is required")
-    //   .matches(/^[A-Za-z]{4}\d{7}$/, "Invalid IFSC code format"),
-    // BankName: Yup.string()
-    //   .required("Bank name is required")
-    //   .max(100, "Bank name cannot be more than 100 characters"),
-    // BankBranch: Yup.string()
-    //   .required("Bank branch is required")
-    //   .max(100, "Bank branch cannot be more than 100 characters"),
-    // AccountNumber: Yup.string()
-    //   .required("Account number is required")
-    //   .matches(/^\d+$/, "Account number must contain only digits")
-    //   .min(10, "Account number must be at least 10 digits")
-    //   .max(20, "Account number cannot exceed 20 digits"),
   });
 
   // onSubmit function to handle form submission
@@ -191,7 +157,7 @@ const ParkCreate = ({
           {({ setFieldValue, touched, errors }) => (
             <Form className="">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-                {/* Status */}
+                {/* Entity Type */}
                 <div>
                   <label className="block text-sm font-medium">
                     Entity Type
@@ -206,8 +172,14 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Entity Type</option>
-                    <option value={true}>Active</option>
-                    <option value={false}>Inactive</option>
+                    {allEntityTypes?.data?.map((entityType) => (
+                      <option
+                        key={entityType.entityTypeId}
+                        value={entityType.entityTypeId}
+                      >
+                        {entityType.entityTypeName}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
                     name="EntityTypeId"
@@ -215,7 +187,8 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* Status */}
+
+                {/* Department */}
                 <div>
                   <label className="block text-sm font-medium">
                     Department
@@ -230,8 +203,14 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Department</option>
-                    <option value={true}>Active</option>
-                    <option value={false}>Inactive</option>
+                    {allDepartmentTypes?.data?.map((departmentType) => (
+                      <option
+                        key={departmentType.departmentId}
+                        value={departmentType.departmentId}
+                      >
+                        {departmentType.departmentName}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
                     name="DepartmentId"
@@ -239,7 +218,8 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* Park Name */}
+                
+                {/* Entity Name */}
                 <div>
                   <label className="block text-sm font-medium">
                     Entity Name

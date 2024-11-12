@@ -35,7 +35,7 @@ const ParkList = ({
     },
     {
       field: "name",
-      headerName: "Park Name",
+      headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",

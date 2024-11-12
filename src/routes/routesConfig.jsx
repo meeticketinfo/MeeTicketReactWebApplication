@@ -18,6 +18,10 @@ import BookTickets from "../pages/admin/BookTickets/BookTickets";
 import GateKeepers from "../pages/park_admin/users/GateKeepers";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import BookingDetails from "../pages/admin/BookTickets/BookingDetails";
+import DepartmentList from "../components/department_management/DepartmentList";
+import Departments from "../pages/admin/departments/Departments";
+import EntityTypeList from "../components/entity_type_management/EntityTypeList";
+import EntityTypes from "../pages/admin/entity_types/EntityTypes";
 
 export const routes = [
   {
@@ -64,4 +68,12 @@ export const routes = [
   { path: "/booktickets", element: <BookTickets /> },
   { path: "/booktickets/view-details/:id", element: <BookingDetails /> },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
+  {
+    path: "/departments",
+    element: <ProtectedRoute element={<Departments />} />,
+  },
+  {
+    path: "/entity-types",
+    element: <ProtectedRoute element={<EntityTypes />} />,
+  },
 ];
