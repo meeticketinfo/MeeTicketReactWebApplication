@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
 // import FilterButton from "../components/DropdownFilter";
@@ -14,54 +14,60 @@ import AgGridTable from "../components/tables/AgGridTable";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
-import { useBookingsStore } from "../store/masters/bookingsStore";
 import { formatToStandardDate, formatToStandardTime } from "../utils/TypographyHelper";
-import { Chart } from "react-google-charts";
+import PieChart from "../config/dashboard/Piecharts";
+import { data } from "autoprefixer";
+import { useParkStore } from "../store/masters/parksStore";
+
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { allBookings, fetchAllBookings } = useBookingsStore();
+  const [pieChartData, setPieChartData] = useState([]);
+  const { allParks, fetchAllParks } = useParkStore();
+  const { allCounts, fetchAllDashboardCounts, allPieCharts, fetchAllEntityWiseCounts, fetchAllEntityBookingsByFilters, allEntityBookings , isFetchEntityBookingsLoading } = useDashboardStore();
 
+  const initialValues = {
+    fromDate: '',
+    toDate: '',
+    parkId: '',
+  }
+  //console.log(allEntityBookings , 'bookingd')
   useEffect(() => {
-    fetchAllBookings();
+    fetchAllDashboardCounts();
+    fetchAllEntityBookingsByFilters(null, null, initialValues);
+    fetchAllParks();
+    fetchAllEntityWiseCounts().then(data => setPieChartData(data));
   }, []);
 
-  const data = [
-    ["Language", "Speakers (in millions)"],
-    ["German", 5.85],
-    ["French", 1.66],
-    ["Italian", 0.316],
-    ["Romansh", 0.0791],
-  ]
-
-
-  const options = {
-    legend: "none",
-    pieSliceText: "label",
-    title: "Swiss Language Use (100 degree rotation)",
-    pieStartAngle: 100,
+  const onSubmit = async (values, { setSubmitting, resetForm }, fetchAllEntityBookingsByFilters) => {
+    try {
+      setSubmitting(true);
+      const filters = values
+      const result = await fetchAllEntityBookingsByFilters(null, null, filters);
+      if (result?.data?.status === 200) {
+        resetForm();
+      } else {
+        // Handling a response with an unexpected status code
+        toast.error(result?.data?.message || "Unexpected response. Please try again.");
+      }
+    } catch (error) {
+      // Catching and handling any errors during the API call
+      const errorMessage = error?.response?.data?.message || "Error creating user. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
   };
+  
   const dashboardCards = [
     {
       lableName: "Total Tickets",
-      count: 2780,
+      count: allCounts?.totalCountById || '0',
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
-      lableName: "Adults",
-      count: 480,
-      percentageChange: 49,
-      icon: FaPeopleGroup,
-    },
-    {
-      lableName: "Children",
-      count: 240,
-      percentageChange: 49,
-      icon: FaChildren,
-    },
-    {
       lableName: "Total Income",
-      count: 82478,
+      count: allCounts?.totalAmount,
       percentageChange: 49,
       icon: FaIndianRupeeSign,
     },
@@ -74,21 +80,21 @@ function Dashboard() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "park",
+      field: "parkName",
       headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "id",
+      field: "bookingId",
       headerName: "Booking Id",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "user",
+      field: "userName",
       headerName: "User",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -102,7 +108,7 @@ function Dashboard() {
       valueFormatter: (params) => params.value || "00:00",
     },
     {
-      field: "bookingDate",
+      field: "bookingRegistredDate",
       headerName: "Date",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -287,15 +293,86 @@ function Dashboard() {
                   />
                 ))}
               <DashboardCard07>
-                <Chart
-                  chartType="PieChart"
-                  data={data}
-                  options={options}
-                  width={"100%"}
-                  height={"400px"}
-                />
+                <div className="flex">
+                  <PieChart data={allPieCharts} title='Total Booking By Entity' angleKey="entityWiseTotalBookings" />
+                  <PieChart data={allPieCharts} title='Total Amount By Entity' angleKey="entityWiseTotalAmount" />
+                </div>
+                <div>
+                  <Formik
+                    initialValues={initialValues}
+                    onSubmit={(values, actions) =>
+                      onSubmit(values, actions, fetchAllEntityBookingsByFilters)
+                    }
+                  >
+                    <Form>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+                        <div>
+                        <label className="block text-sm font-medium">Park</label>
+                        <Field
+                          as="select"
+                          name="parkId"
+                          className={"mt-1 block w-full px-2 py-1 border-gray-300"} 
+                        >
+                          <option value="">Select </option>
+                          {allParks.map((park) => (
+                            <option key={park.id} value={park.id}>
+                              {park.name}
+                            </option>
+                          ))}
+                        </Field>
+                        </div>
+                   
+                      <div>
+                  <label
+                    htmlFor="fromDate"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    From Date
+                  </label>
+                  <Field
+                    type="date"
+                    name="fromDate"
+                  className ="mt-1 block w-full px-2 py-1 border-gray-300"
+                    placeholder="Enter date of birth"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="toDate"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    To Date
+                  </label>
+                  <Field
+                    type="date"
+                    name="toDate"
+                    className="mt-1 block w-full px-2 py-1 border-gray-300"
+                    placeholder="Enter date of birth"
+                  />
+                </div>
+                <div className="flex justify-center p-2">
+                <button
+                  type="submit"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                  disabled={isFetchEntityBookingsLoading}
+                >
+                Search
+                </button>
+                <button
+                  type="submit"
+                  onClick={() => Formik.resetForm()}
+                  className=" bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                  disabled={isFetchEntityBookingsLoading}
+                >
+                Reset
+                </button>
+              </div>
+                </div>
+                    </Form>
+                  </Formik>
+                </div>
                 <AgGridTable
-                  rowData={allBookings || []}
+                  rowData={allEntityBookings || []}
                   columnDefs={dashboardColumnDefs}
                 />
               </DashboardCard07>

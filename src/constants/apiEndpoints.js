@@ -79,6 +79,13 @@ export const API_ENDPOINTS = {
     },
     ENTITY_TYPE:{
       
-    }
+    },
   },
+  DASHBOARD : {
+      GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
+      GET_ALL_BOOKINGS : `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
+      PIE_CHARTS:{
+        GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`
+      }
+  }
 };

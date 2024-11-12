@@ -5,6 +5,12 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 export const useDashboardStore = create((set) => ({
   allBookings: [],
   isFetchAllBookingsLoading: false,
+  isFetchCountsLoading:false,
+  isFetchPieChartsLoading : false,
+  isFetchEntityBookingsLoading : false ,
+  allEntityBookings:[],
+  allPieCharts: [],
+  allCounts: [],
   error: null,
   success: null,
   allFacilityServices: {},
@@ -37,6 +43,57 @@ export const useDashboardStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchAllBookingsLoading: false });
+    }
+  },
+
+  fetchAllDashboardCounts: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+    set({ isFetchCountsLoading: true });
+    try {
+      //   const filterString = useBookingstore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}`
+      );
+      set({
+        allCounts: response.data,
+        isFetchCountsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchCountsLoading: false });
+    }
+  },
+
+  fetchAllEntityWiseCounts: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+    set({ isFetchPieChartsLoading: true });
+    try {
+      //   const filterString = useBookingstore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.DASHBOARD.PIE_CHARTS.GET_ENTITY_WISE_COUNTS}`
+      );
+      set({
+        allPieCharts: response.data,
+        isFetchPieChartsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchPieChartsLoading: false });
+    }
+  },
+
+  fetchAllEntityBookingsByFilters: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+    set({ isFetchEntityBookingsLoading: true });
+    try {
+        const filterString = useDashboardStore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?${pageSize}&${filterString}`
+        // `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}`
+      );
+      set({
+        allEntityBookings: response.data.data,
+        isFetchEntityBookingsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchEntityBookingsLoading: false });
     }
   },
 
