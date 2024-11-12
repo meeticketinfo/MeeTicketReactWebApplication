@@ -2,7 +2,9 @@ export const superAdminPermissions = [
   "dashboard",
   "park-management",
   "park-admin-management",
-  "my-profile"
+  "my-profile",
+  "departments",
+  "entity-types",
 ];
 export const parkAdminPermissions = [
   "dashboard",

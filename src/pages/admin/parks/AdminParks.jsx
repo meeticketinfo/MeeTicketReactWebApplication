@@ -22,7 +22,7 @@ export default function AdminParks() {
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Parks
+              Entities
             </h1>
           </div>
           {/* Right: Actions */}
@@ -33,7 +33,7 @@ export default function AdminParks() {
               className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
             >
               <span className="max-xs:sr-only">
-                {!isParkCreateVisible ? "Add Park" : "Back"}
+                {!isParkCreateVisible ? "Add Entity" : "Back"}
               </span>
             </button>
           </div>

@@ -77,8 +77,13 @@ export const API_ENDPOINTS = {
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
     },
-    ENTITY_TYPE:{
-      
+    ENTITY_TYPE: {
+      GET_ENTITY_TYPES: `${API_BASE_URL}Master/GetAllActiveEntitiyTypes`,
+      ADD_ENTITY_TYPE: `${API_BASE_URL}Master/AddNewEntityType`,
+      UPDATE_ENTITY_TYPE: `${API_BASE_URL}Master/UpdateEntityType`,
+    },
+    DEPARTMENT_TYPE: {
+      GET_DEPARTMENT_TYPES: `${API_BASE_URL}Master/GetAllActiveDepartments`,
     },
   },
   DASHBOARD : {

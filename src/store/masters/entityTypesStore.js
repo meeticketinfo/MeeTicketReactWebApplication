@@ -9,6 +9,7 @@ export const useEntityTypesStore = create((set) => ({
   isSaveEntityTypeDetailsLoading: false,
   saveEntityTypeDetailsError: null,
   EntityTypeDetails: {},
+  entityTypeEditDetails: {},
   isFetchCurrentEntityTypeDetailsLoading: false,
 
   serializeFilters: (filters) =>
@@ -18,6 +19,10 @@ export const useEntityTypesStore = create((set) => ({
 
   setEntityTypeDetails: (newEntityTypeDetails) => {
     set({ EntityTypeDetails: newEntityTypeDetails });
+  },
+
+  setEntityTypeEditDetails: (entityTypeEditDetails) => {
+    set({ entityTypeEditDetails });
   },
 
   // Fetch all EntityTypes
@@ -57,13 +62,19 @@ export const useEntityTypesStore = create((set) => ({
   },
 
   // Save Facility details
-  saveEntityTypeDetails: async (EntityTypeDetailsPayload) => {
+  saveEntityTypeDetails: async (EntityTypeDetailsPayload, isUpdate = false) => {
     set({ isSaveEntityTypeDetailsLoading: true });
     try {
-      const url = API_ENDPOINTS.MASTERS.EntityType.ADD_EntityTypeS;
-      const method = "post";
-
-      const response = await apiService[method](url, EntityTypeDetailsPayload);
+      const url = isUpdate
+        ? API_ENDPOINTS.MASTERS.ENTITY_TYPE.UPDATE_ENTITY_TYPE
+        : API_ENDPOINTS.MASTERS.ENTITY_TYPE.ADD_ENTITY_TYPE;
+      const method = isUpdate ? "put" : "post";
+      let response;
+      if (isUpdate) {
+        response = await apiService[method](url, EntityTypeDetailsPayload);
+      } else {
+        response = await apiService[method](url, EntityTypeDetailsPayload);
+      }
 
       set({
         facilityCreateResponse: { response },

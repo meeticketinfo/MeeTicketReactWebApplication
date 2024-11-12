@@ -215,7 +215,7 @@ const ServiceVarientCreate = ({
                   />
                 </div>
 
-                <div class="flex items-end mb-3">
+                <div className="flex items-end mb-3">
                   <label className="text-sm flex space-x-2">
                     <Field
                       type="checkbox"
