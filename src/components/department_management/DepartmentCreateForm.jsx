@@ -55,7 +55,7 @@ const DepartmentCreateForm = ({
         setTimeout(() => {
           setOpenModalId(null);
           setIsDepartmentTypeEditVisible(false);
-        }, 3000);
+        }, 1000);
 
         resetForm();
       }
