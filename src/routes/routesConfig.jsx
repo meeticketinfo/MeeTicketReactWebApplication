@@ -43,7 +43,7 @@ export const routes = [
   },
   { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
   {
-    path: "/park-admin-management",
+    path: "/entity-admin-management",
     element: <ProtectedRoute element={<AdminUsers />} />,
   },
   {

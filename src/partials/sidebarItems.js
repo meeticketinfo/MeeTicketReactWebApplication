@@ -51,7 +51,7 @@ const sidebarItems = [
       {
         title: "Entity Admins",
         icon: FaUsers,
-        path: "/park-admin-management",
+        path: "/entity-admin-management",
       },
       {
         title: "Facilites",
