@@ -2,6 +2,7 @@ import { useState } from "react";
 import DepartmentList from "../../../components/department_management/DepartmentList";
 import AdminLayout from "../../../layouts/AdminLayout";
 import EntityTypeList from "../../../components/entity_type_management/EntityTypeList";
+import { useModalStore } from "../../../store/modalStore";
 
 const EntityTypes = () => {
   const [isEntityTypeCreateVisible, setIsEntityTypeCreateVisible] =
@@ -12,6 +13,9 @@ const EntityTypes = () => {
     setIsEntityTypeEditVisible(false);
     false;
   };
+
+    const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
   return (
     <>
       <AdminLayout>
@@ -28,7 +32,7 @@ const EntityTypes = () => {
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
               <button
-                onClick={toggleEntityTypeCreate}
+                onClick={() => {setOpenModalId("entity-modal");}}
                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
                 <span className="max-xs:sr-only">Add Entity</span>

@@ -6,6 +6,9 @@ import FormWrapperCard from "../FormWrapperCard";
 import { useHolidayStore } from "../../store/masters/holidayStore";
 import { toast, ToastContainer } from "react-toastify";
 // Validation schema using Yup
+//  "description": "string",
+//     "holidayDate": "2024-11-12T13:33:55.947Z",
+//     "name": "string"
 const validationSchema = Yup.object({
   name: Yup.string()
     .required("Name is required")
@@ -14,13 +17,7 @@ const validationSchema = Yup.object({
     300,
     "Description cannot be more than 300 characters"
   ),
-  fromDate: Yup.date()
-    .required("Start date is required"),
-    
-  toDate: Yup.date().required("End date is required").min(
-    Yup.ref("fromDate"),
-    "End date cannot be before the start date" // Must be after fromDate
-  ),
+  holidayDate: Yup.date().required("Date is required"),
 });
 
 export default function HolidayCreate({ setIsHolidayCreateVisible }) {
@@ -29,12 +26,13 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
     // Format date fields to ISO strings
     const formattedValues = {
       ...values,
-      fromDate: new Date(values.fromDate).toISOString(),
-      toDate: new Date(values.toDate).toISOString(),
+      holidayDate: new Date(values.holidayDate).toISOString(),
     };
 
+    const finalDatesPayload = [formattedValues];
+
     try {
-      const result = await saveHolidayDetails(formattedValues, false);
+      const result = await saveHolidayDetails(finalDatesPayload, false);
       if (result && result.data && result.data.status === 200) {
         toast.success("Holiday created successfully!");
         setTimeout(() => {
@@ -110,50 +108,30 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                   Start Date and Time
                 </label>
                 <Field
-                  name="fromDate"
+                  name="holidayDate"
                   type="date"
                   className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.fromDate && touched.fromDate
+                    errors.holidayDate && touched.holidayDate
                       ? "border-red-500"
                       : "border-gray-300"
                   } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 />
                 <ErrorMessage
-                  name="fromDate"
+                  name="holidayDate"
                   component="div"
                   className="text-red-500 text-sm"
                 />
               </div>
 
-              {/* End Date Field */}
-              <div className="col-span-1">
-                <label className="block text-sm font-semibold text-gray-700">
-                  End Date and Time
-                </label>
-                <Field
-                  name="toDate"
-                  type="date"
-                  className={`mt-1 block w-full px-2 py-1 border ${
-                    errors.fromDate && touched.fromDate
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                />
-                <ErrorMessage
-                  name="toDate"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
               {/* Description Field */}
-              {/* <div className="md:col-span-3">
+              <div className="md:col-span-3">
                 <label className="text-gray-700 dark:text-gray-300">
                   Description
                 </label>
                 <Field
                   name="description"
-                   placeholder="Give discription"
-                   maxLength={255}
+                  placeholder="Enter discription"
+                  maxLength={255}
                   as="textarea"
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 focus:ring focus:ring-blue-300"
                 />
@@ -162,7 +140,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                   component="div"
                   className="text-red-500 text-sm"
                 />
-              </div> */}
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -172,7 +150,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                 className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                 disabled={isSaveHolidayDetailsLoading}
               >
-                {isSaveHolidayDetailsLoading ? "Submiting..." : "Submit"}
+                {isSaveHolidayDetailsLoading ? "Submiting..." : "Add Holiday"}
               </button>
             </div>
           </Form>

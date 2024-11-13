@@ -16,9 +16,10 @@ const PopupModal = ({
   titleClassName = "text-lg font-medium text-gray-900",
   defaultBodyPadding = true,
   footer,
+  onExternalSubmit,
 }) => {
   const sizeClasses = {
-    small: "max-w-sm w-full",
+    small: "max-w-md w-full",
     medium: "max-w-4xl w-full",
     large: "max-w-6xl w-full",
   };
@@ -61,7 +62,7 @@ const PopupModal = ({
       leaveTo="opacity-0"
     >
       <div
-        className={`fixed inset-0 ${overlayClassName} z-[99999999] flex items-center justify-center blur-background`}
+        className={`fixed inset-0 ${overlayClassName} z-[99999999] flex items-center justify-center backdrop-blur-sm bg-gray-100`}
         onClick={onClose}
       >
         <Transition
@@ -86,7 +87,7 @@ const PopupModal = ({
             {/* Scrollable body */}
             <div
               className={`${
-                defaultBodyPadding ? "px-6 py-4" : ""
+                defaultBodyPadding ? "" : ""
               } overflow-y-auto max-h-[60vh]`}
             >
               {children}

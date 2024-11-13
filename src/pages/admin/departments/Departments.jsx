@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DepartmentList from "../../../components/department_management/DepartmentList";
 import AdminLayout from "../../../layouts/AdminLayout";
+import { useModalStore } from "../../../store/modalStore";
 
 const Departments = () => {
   const [isDepartmentTypeCreateVisible, setIsDepartmentTypeCreateVisible] =
@@ -12,6 +13,8 @@ const Departments = () => {
     setIsDepartmentTypeEditVisible(false);
     false;
   };
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
   return (
     <>
       <AdminLayout>
@@ -28,7 +31,7 @@ const Departments = () => {
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
               <button
-                onClick={toggleDepartmentTypeCreate}
+                onClick={()=>{setOpenModalId("department-modal");}}
                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
                 <span className="max-xs:sr-only">Add Department</span>
@@ -36,25 +39,13 @@ const Departments = () => {
             </div>
           </div>
 
-          {/* Cards */}
-          {/* <div className="grid grid-cols-12 gap-6"> */}
-          {/* {isDepartmentTypeCreateVisible ? (
-            <></>
-          ) : (
-            <DepartmentList
-              setIsDepartmentTypeCreateVisible={
-                setIsDepartmentTypeCreateVisible
-              }
-              isDepartmentTypeEditVisible={isDepartmentTypeEditVisible}
-              setIsDepartmentTypeEditVisible={setIsDepartmentTypeEditVisible}
-            />
-          )} */}
+         
           <DepartmentList
             setIsDepartmentTypeCreateVisible={setIsDepartmentTypeCreateVisible}
             isDepartmentTypeEditVisible={isDepartmentTypeEditVisible}
             setIsDepartmentTypeEditVisible={setIsDepartmentTypeEditVisible}
           />
-          {/* </div> */}
+
         </div>
       </AdminLayout>
     </>
