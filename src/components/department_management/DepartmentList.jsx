@@ -3,21 +3,21 @@ import PopupModal from "../utils/popup_modal/PopupModal";
 import AgGridTable from "../tables/AgGridTable";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { LuClipboardEdit } from "react-icons/lu";
+import { useModalStore } from "../../store/modalStore";
+import DepartmentCreateForm from "./DepartmentCreateForm";
 
 const DepartmentList = ({
   setIsDepartmentTypeCreateVisible,
   isDepartmentTypeEditVisible,
   setIsDepartmentTypeEditVisible,
 }) => {
-  const [openModalId, setOpenModalId] = useState(null);
-
-  const openModal = (modalId) => setOpenModalId(modalId);
-  const closeModal = () => setOpenModalId(null);
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const {
     allDepartmentTypes,
     fetchAllDepartmentTypes,
     isFetchAllDepartmentTypesLoading,
+    setDepartmentTypeEditDetails,
   } = useDepartmentTypesStore();
 
   useEffect(() => {
@@ -66,7 +66,11 @@ const DepartmentList = ({
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <button
             className="btn-edit"
-            onClick={() => openModal("edit-department")}
+            onClick={() => {
+              setOpenModalId("department-modal");
+              setDepartmentTypeEditDetails(params.data);
+              setIsDepartmentTypeEditVisible(true);
+            }}
           >
             <span className="">
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
@@ -81,12 +85,6 @@ const DepartmentList = ({
 
   return (
     <>
-      {/* <button
-        className="flex bg-[#027F8B] font-medium text-lg text-white px-6 py-2 md:px-6 md:py-[10px] items-center rounded-sm"
-        onClick={() => openModal("log-in-modal")}
-      >
-        Open Modal
-      </button> */}
       <AgGridTable
         rowData={allDepartmentTypes?.data || []}
         columnDefs={columnDefs}
@@ -94,15 +92,22 @@ const DepartmentList = ({
       />
       <PopupModal
         popupModalId="first-modal"
-        isOpen={openModalId === "edit-department"}
+        isOpen={openModalId === "department-modal"}
         onClose={closeModal}
-        title="Modal Title"
-        size="medium"
+        title={
+          isDepartmentTypeEditVisible ? "Add Department" : "Edit Department"
+        }
+        size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
         defaultBodyPadding={true}
       >
-        <div>Your modal content here</div>
+        <div>
+          <DepartmentCreateForm
+            isDepartmentTypeEditVisible={isDepartmentTypeEditVisible}
+            setIsDepartmentTypeEditVisible={setIsDepartmentTypeEditVisible}
+          />
+        </div>
       </PopupModal>
     </>
   );

@@ -71,8 +71,9 @@ export const API_ENDPOINTS = {
       GET_PAYMENTS_DETAILS: `${API_BASE_URL}Master/`,
     },
     HOLIDAY: {
-      ADD_NEW_HOLIDAY: `Master/AddNewHoliday`,
-      GET_HOLIDAYS: `Master/GetAllHolidays`,
+      ADD_NEW_HOLIDAY: `${API_BASE_URL}Master/AddHolidaysList`,
+      GET_HOLIDAYS: `${API_BASE_URL}Master/GetAllHolidays`,
+      ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
     },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
@@ -84,13 +85,15 @@ export const API_ENDPOINTS = {
     },
     DEPARTMENT_TYPE: {
       GET_DEPARTMENT_TYPES: `${API_BASE_URL}Master/GetAllActiveDepartments`,
+      ADD_DEPARTMENT_TYPE: `${API_BASE_URL}Master/AddNewDepartment`,
+      UPDATE_DEPARTMENT_TYPE: `${API_BASE_URL}Master/UpdateDepartment`,
     },
   },
-  DASHBOARD : {
-      GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
-      GET_ALL_BOOKINGS : `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
-      PIE_CHARTS:{
-        GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`
-      }
-  }
+  DASHBOARD: {
+    GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
+    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
+    PIE_CHARTS: {
+      GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,
+    },
+  },
 };

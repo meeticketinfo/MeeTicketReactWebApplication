@@ -70,7 +70,7 @@ const EntityTypeList = ({
             onClick={() => {
               setEntityTypeEditDetails(params.data);
               setIsEntityTypeEditVisible(true);
-              setOpenModalId("edit-entity");
+              setOpenModalId("entity-modal");
             }}
           >
             <span className="">
@@ -94,10 +94,10 @@ const EntityTypeList = ({
 
       <PopupModal
         popupModalId="first-modal"
-        isOpen={openModalId === "edit-entity"}
+        isOpen={openModalId === "entity-modal"}
         onClose={closeModal}
-        title="Modal Title"
-        size="medium"
+        title={isEntityTypeEditVisible ? "Update Entity" : "Create Entity"}
+        size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
         defaultBodyPadding={true}

@@ -3,56 +3,58 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../store/masters/DepartmentTypesStore";
 import { useModalStore } from "../../store/modalStore";
+import { useEffect } from "react";
 
-const EntityCreateForm = ({
-  isEntityTypeEditVisible,
-  setIsEntityTypeEditVisible,
+const DepartmentCreateForm = ({
+  isDepartmentTypeEditVisible,
+  setIsDepartmentTypeEditVisible,
 }) => {
   const {
-    saveEntityTypeDetails,
-    isSaveEntityTypeDetailsLoading,
-    entityTypeEditDetails,
-    fetchAllEntityTypes,
-  } = useEntityTypesStore();
+    saveDepartmentTypeDetails,
+    isSaveDepartmentTypeDetailsLoading,
+    fetchAllDepartmentTypes,
+    departmentTypeEditDetails,
+    setDepartmentTypeEditDetails,
+  } = useDepartmentTypesStore();
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const initialValues = {
-    entityTypeId:
-      (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeId) || "",
-    entityTypeName:
-      (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeName) || "",
-    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : true,
+    departmentId:
+      (isDepartmentTypeEditVisible &&
+        departmentTypeEditDetails?.departmentId) ||
+      "",
+    departmentName:
+      (isDepartmentTypeEditVisible &&
+        departmentTypeEditDetails?.departmentName) ||
+      "",
+    isActive: isDepartmentTypeEditVisible
+      ? departmentTypeEditDetails?.isActive
+      : true,
   };
 
   const validationSchema = Yup.object({
-    entityTypeName: Yup.string().required("Please enter entity name."),
+    departmentName: Yup.string().required("Please enter Department Name."),
   });
 
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
-    saveEntityTypeDetails
+    saveDepartmentTypeDetails
   ) => {
     values.isActive = values.isActive === true || values.isActive === "true";
     try {
-      const result = await saveEntityTypeDetails(
+      const result = await saveDepartmentTypeDetails(
         values,
-        isEntityTypeEditVisible ? true : false
+        isDepartmentTypeEditVisible ? true : false
       );
 
       if (result.data.status === 200) {
-        // toast.success(
-        //   isEntityTypeEditVisible
-        //     ? "EntityType Updated successfully!"
-        //     : "EntityType created successfully!"
-        // );
-        fetchAllEntityTypes();
-
+        fetchAllDepartmentTypes();
         setTimeout(() => {
           setOpenModalId(null);
-          setIsEntityTypeEditVisible(false);
+          setIsDepartmentTypeEditVisible(false);
         }, 3000);
 
         resetForm();
@@ -78,6 +80,11 @@ const EntityCreateForm = ({
       setSubmitting(false);
     }
   };
+  useEffect(() => {
+    if (openModalId === null) {
+      setDepartmentTypeEditDetails({}); // Reset edit state if necessary
+    }
+  }, [openModalId]);
   return (
     <>
       {" "}
@@ -87,38 +94,37 @@ const EntityCreateForm = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveEntityTypeDetails)
+            onSubmit(values, actions, saveDepartmentTypeDetails)
           }
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-3">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-6">
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Entity Name
+                    Department Name
                   </label>
                   <Field
-                    name="entityTypeName"
+                    name="departmentName"
                     type="text"
                     maxLength={50}
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.entityTypeName && touched.entityTypeName
+                      errors.departmentName && touched.departmentName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter service name"
                   />
                   <ErrorMessage
-                    name="entityTypeName"
+                    name="departmentName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>
 
                 {/* Status */}
-
                 <div className="mt-1 flex items-end">
                   <label className="text-sm flex space-x-2">
                     <span>Status</span>
@@ -138,17 +144,17 @@ const EntityCreateForm = ({
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-center p-2">
+              <div className="flex justify-center p-2 px-6 py-4 border-t border-gray-200">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  //   disabled={isSaveEntityTypeDetailsLoading}
+                  //   disabled={isSaveDepartmentTypeDetailsLoading}
                 >
-                  {isSaveEntityTypeDetailsLoading
+                  {isSaveDepartmentTypeDetailsLoading
                     ? "Saving..."
-                    : isEntityTypeEditVisible
-                    ? "Update Entity"
-                    : "Create Entity"}
+                    : isDepartmentTypeEditVisible
+                    ? "Update Department"
+                    : "Create Department"}
                 </button>
               </div>
             </Form>
@@ -158,4 +164,4 @@ const EntityCreateForm = ({
     </>
   );
 };
-export default EntityCreateForm;
+export default DepartmentCreateForm;

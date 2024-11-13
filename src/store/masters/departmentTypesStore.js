@@ -9,6 +9,7 @@ export const useDepartmentTypesStore = create((set) => ({
   isSaveDepartmentTypeDetailsLoading: false,
   saveDepartmentTypeDetailsError: null,
   DepartmentTypeDetails: {},
+  departmentTypeEditDetails: {},
   isFetchCurrentDepartmentTypeDetailsLoading: false,
 
   serializeFilters: (filters) =>
@@ -18,6 +19,10 @@ export const useDepartmentTypesStore = create((set) => ({
 
   setDepartmentTypeDetails: (newDepartmentTypeDetails) => {
     set({ DepartmentTypeDetails: newDepartmentTypeDetails });
+  },
+
+  setDepartmentTypeEditDetails: (departmentTypeEditDetails) => {
+    set({ departmentTypeEditDetails });
   },
 
   // Fetch all DepartmentTypes
@@ -63,22 +68,29 @@ export const useDepartmentTypesStore = create((set) => ({
   },
 
   // Save Facility details
-  saveDepartmentTypeDetails: async (DepartmentTypeDetailsPayload) => {
+  saveDepartmentTypeDetails: async (
+    DepartmentTypeDetailsPayload,
+    isUpdate = false
+  ) => {
     set({ isSaveDepartmentTypeDetailsLoading: true });
     try {
-      const url = API_ENDPOINTS.MASTERS.DepartmentType.ADD_DepartmentTypeS;
-      const method = "post";
-
-      const response = await apiService[method](
-        url,
-        DepartmentTypeDetailsPayload
-      );
+      const url = isUpdate
+        ? API_ENDPOINTS.MASTERS.DEPARTMENT_TYPE.UPDATE_DEPARTMENT_TYPE
+        : API_ENDPOINTS.MASTERS.DEPARTMENT_TYPE.ADD_DEPARTMENT_TYPE;
+      const method = isUpdate ? "put" : "post";
+      let response;
+      if (isUpdate) {
+        response = await apiService[method](url, DepartmentTypeDetailsPayload);
+      } else {
+        response = await apiService[method](url, DepartmentTypeDetailsPayload);
+      }
 
       set({
-        facilityCreateResponse: { response },
-        FacilityDetails: response.data,
+        // departmentCreateResponse: { response },
+        // departmentDetails: response.data,
         isSaveDepartmentTypeDetailsLoading: false,
       });
+
       return { success: true, data: response };
     } catch (error) {
       set({
