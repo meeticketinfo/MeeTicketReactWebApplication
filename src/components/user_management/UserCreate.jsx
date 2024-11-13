@@ -37,7 +37,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-    parkId: Yup.string().required("Park is required"),
+    parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
@@ -100,7 +100,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium"> Park</label>
+                  <label className="block text-sm font-medium">Entity</label>
                   <Field
                     as="select"
                     name="parkId"
