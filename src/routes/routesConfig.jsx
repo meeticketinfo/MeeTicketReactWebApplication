@@ -22,6 +22,7 @@ import DepartmentList from "../components/department_management/DepartmentList";
 import Departments from "../pages/admin/departments/Departments";
 import EntityTypeList from "../components/entity_type_management/EntityTypeList";
 import EntityTypes from "../pages/admin/entity_types/EntityTypes";
+import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
 
 export const routes = [
   {
@@ -43,7 +44,7 @@ export const routes = [
   },
   { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
   {
-    path: "/entity-admin-management",
+    path: "/entity-admins",
     element: <ProtectedRoute element={<AdminUsers />} />,
   },
   {
@@ -75,5 +76,9 @@ export const routes = [
   {
     path: "/entity-types",
     element: <ProtectedRoute element={<EntityTypes />} />,
+  },
+  {
+    path: "/nodal-officer",
+    element: <ProtectedRoute element={<NodalOfficer />} />,
   },
 ];

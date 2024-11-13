@@ -51,7 +51,12 @@ const sidebarItems = [
       {
         title: "Entity Admins",
         icon: FaUsers,
-        path: "/entity-admin-management",
+        path: "/entity-admins",
+      },
+      {
+        title: "Nodal Officer",
+        icon: FaUsers,
+        path: "/nodal-officer",
       },
       {
         title: "Facilites",
