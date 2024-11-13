@@ -23,7 +23,7 @@ function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
   const { allParks, fetchAllParks } = useParkStore();
-  const { allCounts, fetchAllDashboardCounts, allPieCharts, fetchAllEntityWiseCounts, fetchAllEntityBookingsByFilters, allEntityBookings , isFetchEntityBookingsLoading } = useDashboardStore();
+  const { allCounts, fetchAllDashboardCounts, allPieCharts, fetchAllEntityWiseCounts, fetchAllEntityBookingsByFilters, allEntityBookings, isFetchEntityBookingsLoading } = useDashboardStore();
 
   const initialValues = {
     fromDate: '',
@@ -38,7 +38,7 @@ function Dashboard() {
     fetchAllEntityWiseCounts().then(data => setPieChartData(data));
   }, []);
 
-  const onSubmit = async (values, { setSubmitting, resetForm }, fetchAllEntityBookingsByFilters) => {
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setSubmitting(true);
       const filters = values
@@ -57,7 +57,16 @@ function Dashboard() {
       setSubmitting(false);
     }
   };
-  
+
+  const onReset = (resetForm) => {
+    alert();
+    resetForm();
+    fetchAllEntityBookingsByFilters("", "", {
+      fromDate: '',
+      toDate: '',
+      parkId: '',
+    })
+  }
   const dashboardCards = [
     {
       lableName: "Total Tickets",
@@ -72,6 +81,7 @@ function Dashboard() {
       icon: FaIndianRupeeSign,
     },
   ];
+
   const [dashboardColumnDefs] = useState([
     {
       headerName: "S.No",
@@ -301,73 +311,73 @@ function Dashboard() {
                   <Formik
                     initialValues={initialValues}
                     onSubmit={(values, actions) =>
-                      onSubmit(values, actions, fetchAllEntityBookingsByFilters)
+                      onSubmit(values, actions)
                     }
                   >
                     <Form>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                         <div>
-                        <label className="block text-sm font-medium">Park</label>
-                        <Field
-                          as="select"
-                          name="parkId"
-                          className={"mt-1 block w-full px-2 py-1 border-gray-300"} 
-                        >
-                          <option value="">Select </option>
-                          {allParks.map((park) => (
-                            <option key={park.id} value={park.id}>
-                              {park.name}
-                            </option>
-                          ))}
-                        </Field>
+                          <label className="block text-sm font-medium">Park</label>
+                          <Field
+                            as="select"
+                            name="parkId"
+                            className={"mt-1 block w-full px-2 py-1 border-gray-300"}
+                          >
+                            <option value="">Select </option>
+                            {allParks.map((park) => (
+                              <option key={park.id} value={park.id}>
+                                {park.name}
+                              </option>
+                            ))}
+                          </Field>
                         </div>
-                   
-                      <div>
-                  <label
-                    htmlFor="fromDate"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    From Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="fromDate"
-                  className ="mt-1 block w-full px-2 py-1 border-gray-300"
-                    placeholder="Enter date of birth"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="toDate"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    To Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="toDate"
-                    className="mt-1 block w-full px-2 py-1 border-gray-300"
-                    placeholder="Enter date of birth"
-                  />
-                </div>
-                <div className="flex justify-center p-2">
-                <button
-                  type="submit"
-                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  disabled={isFetchEntityBookingsLoading}
-                >
-                Search
-                </button>
-                <button
-                  type="submit"
-                  onClick={() => Formik.resetForm()}
-                  className=" bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  disabled={isFetchEntityBookingsLoading}
-                >
-                Reset
-                </button>
-              </div>
-                </div>
+
+                        <div>
+                          <label
+                            htmlFor="fromDate"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            From Date
+                          </label>
+                          <Field
+                            type="date"
+                            name="fromDate"
+                            className="mt-1 block w-full px-2 py-1 border-gray-300"
+                            placeholder="Enter date of birth"
+                          />
+                        </div>
+                        <div>
+                          <label
+                            htmlFor="toDate"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            To Date
+                          </label>
+                          <Field
+                            type="date"
+                            name="toDate"
+                            className="mt-1 block w-full px-2 py-1 border-gray-300"
+                            placeholder="Enter date of birth"
+                          />
+                        </div>
+                        <div className="flex justify-center p-2">
+                          <button
+                            type="submit"
+                            className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                            disabled={isFetchEntityBookingsLoading}
+                          >
+                            Search
+                          </button>
+                          {/* <button
+                            type="submit"
+                            onClick={() => onReset()}
+                            className=" bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                            disabled={isFetchEntityBookingsLoading}
+                          >
+                            Reset
+                          </button> */}
+                        </div>
+                      </div>
                     </Form>
                   </Formik>
                 </div>

@@ -6,8 +6,9 @@ import useAuthStore from "../store/authStore";
 import { toTitleCase } from "../utils/TypographyHelper";
 import { RiMenuUnfold2Line } from "react-icons/ri";
 import { RiMenuFold2Line } from "react-icons/ri";
+import { fetchQRFile } from "../services/fetchFileService";
 
-function Header({ variant = "default" }) {
+function Header({ variant = "default" , }) {
   const { sidebarOpen, sidebarExpanded, setSidebarOpen, setSidebarExpanded } =
     useSidebarStore();
   const { logout, isAuthenticated, roleDetails, decodedTokenData } =
@@ -103,6 +104,9 @@ function Header({ variant = "default" }) {
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
+            <button onClick={()=>{
+              fetchQRFile(decodedTokenData?.data?.ParkId || "")
+            }} >Download QR</button>
             <hr className="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />
             <UserMenu align="right" />
           </div>

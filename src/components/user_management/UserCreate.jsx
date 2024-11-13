@@ -8,8 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 
-const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
-  const { saveUserDetails, isSaveUserDetailsLoading } = useUsersStore();
+const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , setIsUserEditVisible}) => {
+  const { saveUserDetails, isSaveUserDetailsLoading , userEditDetails } = useUsersStore();
   const { allParks, fetchAllParks } = useParkStore();
 
   useEffect(() => {
@@ -17,27 +17,28 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
   }, []);
 
   const initialValues = {
-    firstName: "",
-    middleName: "",
-    parkId: "",
-    lastName: "",
-    dateOfBirth: "",
-    emailId: "",
-    phoneNumber: "",
-    password: "",
-    roleId: "",
-    isConfirmed: true,
+    id: isUserEditVisible ? userEditDetails.id : "",
+    firstName: isUserEditVisible  ? userEditDetails.firstName :  "",
+    middleName:  isUserEditVisible ? userEditDetails.middleName: "",
+    parkId:  isUserEditVisible ? userEditDetails.parkId :"",
+    lastName:isUserEditVisible ? userEditDetails.lastName: "",
+  //  dateOfBirth: isUserEditVisible ? userEditDetails.dateOfBirth :"",
+    emailId:  isUserEditVisible ? userEditDetails.emailId : "",
+    phoneNumber:isUserEditVisible ? userEditDetails.phoneNumber :  "",
+    password: isUserEditVisible ? userEditDetails.password :"",
+    roleId:isUserEditVisible ? userEditDetails.roleId : "",
+    isConfirmed: isUserEditVisible ? userEditDetails.isConfirmed : true,
   };
 
   const validationSchema = Yup.object({
     firstName: Yup.string()
-      .required("First Name is required")
+      //.required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     lastName: Yup.string()
-      .required("Last Name is required")
+      //.required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-    parkId: Yup.string().required("Entity is required"),
+     parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
@@ -52,13 +53,15 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
     saveUserDetails
   ) => {
     try {
-      const result = await saveUserDetails(values, false);
+      const result = await saveUserDetails(values, isUserEditVisible ? true: false);
       if (result.data.status === 200) {
-        toast.success("User created successfully!");
-       
+        toast.success(
+          isUserEditVisible 
+          ? "Entity Admin Updated successfully!"
+          : "Entity Admin Created Successfully");
         setTimeout(() => {
           setIsUserCreateVisible(false);
-         
+          setIsUserEditVisible(false)
         }, 3000);
 
         resetForm();
@@ -112,7 +115,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                   >
                     <option value="">Select </option>
                     {allParks.map((park) => (
-                      <option key={park.id} value={park.id}>
+                      <option key={park.id} disabled={!park.isActive} className={!park.isActive && `bg-red-200 text-white`} value={park.id}>
                         {park.name}
                       </option>
                     ))}
@@ -144,28 +147,6 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-
-                {/*Middle Name */}
-                <div>
-                  <label htmlFor="User" className="block text-xs font-medium">
-                    Middle Name
-                  </label>
-                  <Field
-                    name="middleName"
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.middleName && touched.middleName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter middle name"
-                  />
-                  <ErrorMessage
-                    name="middleName"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
@@ -187,30 +168,6 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* DOB Number */}
-                <div>
-                  <label
-                    htmlFor="dateOfBirth"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    DOB
-                  </label>
-                  <Field
-                    type="date"
-                    name="dateOfBirth"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.dateOfBirth && touched.dateOfBirth
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter date of birth"
-                  />
-                  <ErrorMessage
-                    name="dateOfBirth"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
                 {/* Email Id */}
                 <div>
                   <label
@@ -228,6 +185,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter emailId"
+                    disabled={isUserEditVisible}
                   />
                   <ErrorMessage
                     name="emailId"
@@ -253,6 +211,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter phone number"
+                    disabled={isUserEditVisible}
                   />
                   <ErrorMessage
                     name="phoneNumber"
@@ -277,7 +236,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter password"
+                    placeholder="Enter password" 
                   />
                   <ErrorMessage
                     name="password"
@@ -294,7 +253,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible }) => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveUserDetailsLoading}
                 >
-                  {isSaveUserDetailsLoading ? "Saving..." : "Create User"}
+                  {isSaveUserDetailsLoading ? "Saving..." : isUserEditVisible ? "Update Entity Admin" :"Create Entity Admin"}
                 </button>
               </div>
             </Form>

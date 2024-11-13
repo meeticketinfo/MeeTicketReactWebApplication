@@ -7,6 +7,7 @@ export const useUsersStore = create((set) => ({
   isSaveUserDetailsLoading: false,
   isFetchAllUsersLoading: false,
   allScannedUsers: [],
+  userEditDetails: {},
   isFetchAllScannedUsersLoading: false,
   error: null,
   success: null,
@@ -59,7 +60,7 @@ export const useUsersStore = create((set) => ({
     set({ isSaveUserDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+        ? API_ENDPOINTS.MASTERS.USER.UPDATE_USER_DETAILS
         : API_ENDPOINTS.MASTERS.USER.ADD_NEW_USER;
       const method = isUpdate ? "put" : "post";
 
@@ -75,8 +76,16 @@ export const useUsersStore = create((set) => ({
       set({ error: error.message, isSaveUserDetailsLoading: false });
       throw error;
     }
+  }, 
+  
+  setCurrentUserEditDetails: (userEditDetails) => {
+    console.log(userEditDetails,'userde')
+    set({
+      userEditDetails,
+    });
   },
 
+  
 }));
 
 

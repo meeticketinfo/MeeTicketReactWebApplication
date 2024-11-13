@@ -5,8 +5,10 @@ import { BsTrash } from "react-icons/bs";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
 import { useParkAdminStore } from "../../store/masters/parkAdminStore";
+import { useUsersStore } from "../../store/masters/usersStore";
 
-const ParkAdminList = () => {
+const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
+  const { setCurrentUserEditDetails} = useUsersStore()
   const { allParkAdmins, isFetchAllParkAdminsLoading, fetchAllParkAdmins } =
     useParkAdminStore();
 
@@ -50,12 +52,26 @@ const ParkAdminList = () => {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "dob",
-      headerName: "DOB",
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <button
+            className="btn-edit"
+            onClick={() => {
+              setCurrentUserEditDetails(params.data);
+              setIsUserCreateVisible(true);
+              setIsUserEditVisible(true);
+            }}
+          >
+            <span className="">
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            </span>
+          </button>
+        </div>
+      ),
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? formatToStandardDate(params.value) : "N/A",
     },
   ];
   return (

@@ -33,7 +33,7 @@ export const API_ENDPOINTS = {
     },
     USER: {
       GET_USERS: `Master/GetAllAdminUser`,
-      UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
+      UPDATE_USER_DETAILS: `${API_BASE_URL}Master/UpdateAdminUser`,
       ADD_NEW_USER: `${API_BASE_URL}Master/AddNewAdminUser`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
@@ -88,6 +88,9 @@ export const API_ENDPOINTS = {
       ADD_DEPARTMENT_TYPE: `${API_BASE_URL}Master/AddNewDepartment`,
       UPDATE_DEPARTMENT_TYPE: `${API_BASE_URL}Master/UpdateDepartment`,
     },
+  },
+  ENTITIES:{
+    DOWNLOAD_FILE:`${API_BASE_URL}Transaction/DownloadQRCodeByParkId`
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
