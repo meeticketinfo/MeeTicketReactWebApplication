@@ -154,7 +154,7 @@ function Sidebar({ variant = "default" }) {
               {filteredSidebarItems.map((item, index) => (
                 <li
                   key={index}
-                  className={`rounded-lg mb-0.5 pb-2 last:mb-0 ${
+                  className={`rounded-2xl mb-0.5 pb-2 last:mb-0 ${
                     item.subItems.some((subItem) =>
                       pathname.startsWith(subItem.path)
                     )
@@ -203,17 +203,21 @@ function Sidebar({ variant = "default" }) {
                             <ul className={`mt-1 ${!open && "hidden"}`}>
                               {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
                               {item.subItems.map((subItem, subIndex) => (
-                                <li key={subIndex} className=" mb-1 last:mb-0">
+                                <li key={subIndex} className="mb-1 px-2 last:mb-0">
                                   <NavLink
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      `block truncate transition duration-150 ease-in-out rounded-l-lg ml-8 px-3 py-2 font-medium text-sm ${
+                                      `block truncate transition duration-150 ease-in-out rounded-2xl ml-8 px-3 py-2 font-medium text-sm ${
                                         isActive
                                           ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
                                           : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
                                       }`
                                     }
+                                    // style={{
+                                    //   clipPath:
+                                    //     "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)",
+                                    // }}
                                   >
                                     <div className="flex items-center">
                                       {subItem.icon && (
