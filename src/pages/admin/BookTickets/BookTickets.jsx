@@ -114,6 +114,8 @@ export default function AdminBookings() {
         {/* Booking Form Section */}
         {isBookingFormVisible && <FacilityServices />}
 
+        
+
         {/* Table Section - Show only if form is not visible */}
         {!isBookingFormVisible && (
           <div className="mb-8">

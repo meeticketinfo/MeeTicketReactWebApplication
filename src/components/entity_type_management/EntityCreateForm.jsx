@@ -53,7 +53,7 @@ const EntityCreateForm = ({
         setTimeout(() => {
           setOpenModalId(null);
           setIsEntityTypeEditVisible(false);
-        }, 3000);
+        }, 1000);
 
         resetForm();
       }

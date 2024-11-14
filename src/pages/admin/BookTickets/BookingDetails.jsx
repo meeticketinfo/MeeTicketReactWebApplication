@@ -163,6 +163,8 @@ export default function BookingDetails() {
             <p className="text-gray-200">No booking details available.</p>
           )}
         </div>
+
+     
       </div>
     </AdminLayout>
   );

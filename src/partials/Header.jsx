@@ -24,9 +24,9 @@ function Header({ variant = "default" , }) {
 
   return (
     <header
-      className={`sticky top-4 before:absolute shadow-lg backdrop-blur-sm bg-white/30 border border-bluev1 z-30 mx-4 rounded-[20px] `}
+      className={`sticky top-4 before:absolute shadow-lg backdrop-blur-sm bg-white/30 border border-bluev1 z-30 mx-4 rounded-2xl `}
     >
-      <div className="px-4 sm:px-6 lg:px-8 shadow-lg rounded-[20px]">
+      <div className="px-4 sm:px-6 lg:px-8 shadow-lg rounded-2xl">
         <div
           className={`flex items-center justify-between h-16  ${
             variant === "v2" || variant === "v3"
