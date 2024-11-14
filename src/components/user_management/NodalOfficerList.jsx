@@ -4,10 +4,12 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
+import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 
 const NodalOfficerList = () => {
-  const { allGateKeepers, isFetchAllGateKeepersLoading, fetchAllGateKeepers } =
+  const { allGateKeepers, isFetchAllGateKeepersLoading,fetchAllGateKeepers  } =
     gateKeepersStore();
+    const { allNodalOfficers , isFetchAllNodalOfficersLoading , fetchAllNodalOfficers}=useNodalOfficerStore()
 
   useEffect(() => {
     fetchAllGateKeepers();
@@ -49,13 +51,56 @@ const NodalOfficerList = () => {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "dob",
-      headerName: "DOB",
+      field: "phoneNumber",
+      headerName: "Department",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? formatToStandardDate(params.value) : "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
+    {
+      field: "phoneNumber",
+      headerName: "Entity Type",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "phoneNumber",
+      headerName: "Status",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "phoneNumber",
+      headerName: "Entities",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <button
+            className="btn-edit"
+            // onClick={() => {
+            //   setCurrentUserEditDetails(params.data);
+            //   setIsUserCreateVisible(true);
+            //   setIsUserEditVisible(true);
+            // }}
+          >
+            <span className="">
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            </span>
+          </button>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+   
   ];
   return (
     <>

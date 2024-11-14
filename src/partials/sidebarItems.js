@@ -102,6 +102,16 @@ const sidebarItems = [
         icon: FaChalkboardUser,
         path: "/user-wise",
       },
+      {
+        title: "RTC Bookings",
+        icon: FaUsers,
+        path: "/rtc-bookings",
+      },
+      {
+        title: "Metro Bookings",
+        icon: FaUsers,
+        path: "/metro-bookings",
+      },
     ],
   },
   {

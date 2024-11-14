@@ -123,7 +123,7 @@ function Dashboard() {
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
-        params.value ? formatToStandardDate(params.value) : "N/A",
+        params.value ||  "",
     },
   ]);
   const [rowData] = useState([

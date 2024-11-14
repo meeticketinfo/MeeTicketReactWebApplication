@@ -88,14 +88,22 @@ export const API_ENDPOINTS = {
       ADD_DEPARTMENT_TYPE: `${API_BASE_URL}Master/AddNewDepartment`,
       UPDATE_DEPARTMENT_TYPE: `${API_BASE_URL}Master/UpdateDepartment`,
     },
-    NODAL_OFFICERS :{
+    NODAL_OFFICERS: {
       GET_NODAL_OFFICERS: `Master/GetAllServiceVarients`,
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}Master/AddNewServiceVarient`,
     }
   },
-  ENTITIES:{
-    DOWNLOAD_FILE:`${API_BASE_URL}Transaction/DownloadQRCodeByParkId`
+  REPORTS: {
+    RTC_BOOKINGS: {
+      GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
+    },
+    METRO_BOOKINGS: {
+      GET_METRO_BOOKINGS: `Master/GetAllFacilities`
+    }
+  },
+  ENTITIES: {
+    DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,

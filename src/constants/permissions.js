@@ -4,7 +4,9 @@ export const superAdminPermissions = [
   "entity-admins",
   "departments",
   "entity-types",
-  "nodal-officer"
+  "nodal-officer",
+  "rtc-bookings" , 
+  "metro-bookings"
 ];
 export const parkAdminPermissions = [
   "dashboard",

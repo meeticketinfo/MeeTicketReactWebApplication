@@ -1,36 +1,37 @@
 // import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useUsersStore } from "../../store/masters/usersStore";
 import { useParkStore } from "../../store/masters/parksStore";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
-import useAuthStore from "../../store/authStore";
+import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
+import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
+import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 
 const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
-  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading } =
-    gateKeepersStore();
+  const { saveNodalOfficerDetails, isSaveNodalOfficerDetailsLoading } =
+    useNodalOfficerStore()
   const { allParks, fetchAllParks } = useParkStore();
-  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
-    useAuthStore();
-  const parkId = decodedTokenData?.data?.ParkId;
+  const { allDepartmentTypes, fetchAllDepartmentTypes} = useDepartmentTypesStore()
+  const { allEntityTypes , fetchAllEntityTypes} = useEntityTypesStore()
   useEffect(() => {
     fetchAllParks();
+    fetchAllDepartmentTypes();
+    fetchAllEntityTypes();
   }, []);
-
+// console.log(allDepartmentTypes , 'departmenrts')
   const initialValues = {
     firstName: "",
     middleName: "",
-    parkId: parkId,
+    entityTypeId: "",
+    departmentName: "",
     lastName: "",
-    dateOfBirth: "",
     emailId: "",
     phoneNumber: "",
     password: "",
     roleId: "",
-    isConfirmed: true,
+    IsActive: true,
   };
 
   const validationSchema = Yup.object({
@@ -47,27 +48,15 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
     password: Yup.string()
       .required("Password is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
-    dateOfBirth: Yup.date()
-      .required("Date of Birth is required")
-      .test("age", "You must be at least 18 years old", (value) => {
-        const today = new Date();
-        const age = today.getFullYear() - value.getFullYear();
-        const month = today.getMonth() - value.getMonth();
-        // If birth month is later in the year, subtract one year
-        if (month < 0 || (month === 0 && today.getDate() < value.getDate())) {
-          return age - 1 >= 18;
-        }
-        return age >= 18;
-      }),
   });
 
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
-    saveGateKeeperDetails
+    saveNodalOfficerDetails
   ) => {
     try {
-      const result = await saveGateKeeperDetails(values, false);
+      const result = await saveNodalOfficerDetails(values, false);
       if (result && result.data && result.data.status === 200) {
         toast.success("Gate Keeper created successfully!");
         setTimeout(() => {
@@ -140,6 +129,54 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium">Department</label>
+                  <Field
+                    as="select"
+                    name="departmentId"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.departmentId && touched.departmentId
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select </option>
+                    {allDepartmentTypes?.data?.map((department) => (
+                      <option key={department.id} value={department.id}>
+                        {department.departmentName}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="departmentId"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">Entity Type</label>
+                  <Field
+                    as="select"
+                    name="entityTypeId"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.entityTypeId && touched.entityTypeId
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select </option>
+                    {allEntityTypes?.data?.map((entityType) => (
+                      <option key={entityType.id} value={entityType.id}>
+                        {entityType.entityTypeName}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="entityTypeId"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
@@ -202,30 +239,6 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     name="lastName"
                     component="div"
                     className="text-red-500 text-xs"
-                  />
-                </div>
-                {/* DOB Number */}
-                <div>
-                  <label
-                    htmlFor="dateOfBirth"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    DOB
-                  </label>
-                  <Field
-                    type="date"
-                    name="dateOfBirth"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.dateOfBirth && touched.dateOfBirth
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter date of birth"
-                  />
-                  <ErrorMessage
-                    name="dateOfBirth"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
                   />
                 </div>
                 {/* Email Id */}
@@ -302,16 +315,37 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
+                  {/* Status */}
+                  <div>
+                  <label className="block text-sm font-medium">Status</label>
+                  <Field
+                    as="select"
+                    name="IsActive"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.IsActive && touched.IsActive
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="IsActive"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
               </div>
-
               {/* Submit Button */}
               <div className="flex justify-center p-2">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  disabled={isSaveGateKeeperDetailsLoading}
+                  disabled={isSaveNodalOfficerDetailsLoading}
                 >
-                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create Nodal Officer"}
+                  {isSaveNodalOfficerDetailsLoading ? "Saving..." : "Create Nodal Officer"}
                 </button>
               </div>
             </Form>

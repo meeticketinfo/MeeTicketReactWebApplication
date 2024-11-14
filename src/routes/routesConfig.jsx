@@ -23,6 +23,8 @@ import Departments from "../pages/admin/departments/Departments";
 import EntityTypeList from "../components/entity_type_management/EntityTypeList";
 import EntityTypes from "../pages/admin/entity_types/EntityTypes";
 import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
+import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
+import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
 
 export const routes = [
   {
@@ -41,6 +43,14 @@ export const routes = [
   {
     path: "/bookings",
     element: <ProtectedRoute element={<AdminBookings />} />,
+  },
+  {
+    path: "/rtc-bookings",
+    element: <ProtectedRoute element={<RTCBookings />} />,
+  },
+  {
+    path: "/metro-bookings",
+    element: <ProtectedRoute element={<MetroBookings />} />,
   },
   { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
   {
