@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import ServiceList from "../../../components/service_management/serviceList";
 import ServiceCreate from "../../../components/service_management/serviceCreate";
+import BackButton from "../../../components/BackButton";
 
 export default function Services() {
   const [isServiceCreateVisible, setIsServiceCreateVisible] = useState(false);
@@ -27,13 +28,21 @@ export default function Services() {
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
+              {!isServiceCreateVisible ? (
               <button
               onClick={toggleServiceCreate}
                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
                 <span className="max-xs:sr-only" >
-                  {!isServiceCreateVisible ? "Add Service" : "Back"}
+               Add Service
                 </span>
               </button>
+               ) : (
+                <BackButton
+                  label="Back"
+                  onClick={() => setIsServiceCreateVisible(false)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                />
+              )}
             </div>
           </div>
           {/* Cards */}

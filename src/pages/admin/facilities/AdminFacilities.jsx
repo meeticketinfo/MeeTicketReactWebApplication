@@ -2,6 +2,7 @@ import { useState } from "react";
 import FacilityCreate from "../../../components/facilities_management/facilityCreate";
 import FacilityList from "../../../components/facilities_management/facilityList";
 import AdminLayout from "../../../layouts/AdminLayout";
+import BackButton from "../../../components/BackButton";
 
 export default function AdminFacilities() {
   // State to toggle the FacilityCreate component
@@ -28,12 +29,20 @@ export default function AdminFacilities() {
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
+            {!isFacilityCreateVisible ? (
             <button
               onClick={toggleFacilityCreate}
               className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
             >
-              <span className="max-xs:sr-only ">{!isFacilityCreateVisible ? "Add Facility" : "Back"}</span>
+              <span className="max-xs:sr-only ">Add Facility</span>
             </button>
+             ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsFacilityCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
           </div>
         </div>
 
