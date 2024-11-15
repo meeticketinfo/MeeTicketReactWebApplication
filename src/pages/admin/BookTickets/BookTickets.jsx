@@ -6,8 +6,13 @@ import { FacilityServices } from "../../../components/bookings_management/Facili
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import BackButton from "../../../components/BackButton";
 import useAuthStore from "../../../store/authStore";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useParkStore } from "../../../store/masters/parksStore";
+import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 
 export default function AdminBookings() {
+  const {allParks ,fetchAllParks}= useParkStore()
+  const { isFetchEntityBookingsLoading ,fetchAllEntityBookingsByFilters }=useDashboardStore()
   const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } = useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
   const { sidebarMenuItems, roleDetails } = useAuthStore();
@@ -15,8 +20,14 @@ export default function AdminBookings() {
 
   useEffect(() => {
     fetchAllBookings();
+    fetchAllParks();
   }, []);
 
+  const initialValues = {
+    fromDate: "",
+    toDate: "",
+    parkId: "",
+  };
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -85,6 +96,31 @@ export default function AdminBookings() {
     },
   ]);
 
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      setSubmitting(true);
+      const filters = values;
+      const result = await fetchAllEntityBookingsByFilters(null, null, filters);
+      if (result?.data?.status === 200) {
+        resetForm();
+      } else {
+        // Handling a response with an unexpected status code
+        toast.error(
+          result?.data?.message || "Unexpected response. Please try again."
+        );
+      }
+    } catch (error) {
+      // Catching and handling any errors during the API call
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Error creating user. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -97,8 +133,7 @@ export default function AdminBookings() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
               role === "ROLE_ADMIN" && (<button
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-                onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"                onClick={() => setIsBookingFormVisible(true)} // Show booking form
               >
                 Book Tickets
               </button>)
@@ -125,6 +160,75 @@ export default function AdminBookings() {
         {/* Table Section - Show only if form is not visible */}
         {!isBookingFormVisible && (
           <div className="mb-8">
+             <div>
+                <Formik
+                  initialValues={initialValues}
+                  onSubmit={(values, actions) => onSubmit(values, actions)}
+                >
+                  <Form>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                      <div>
+                        <label className="block text-xs font-medium">
+                          Entity
+                        </label>
+                        <Field
+                          as="select"
+                          name="entityId"
+                          className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        >
+                          <option value="">Select </option>
+                          {allParks.map((park) => (
+                            <option key={park.id} value={park.id}>
+                              {park.name}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="fromDate"
+                          className="block text-xs font-medium text-gray-700"
+                        >
+                          From Date
+                        </label>
+                        <Field
+                          type="date"
+                          name="fromDate"
+                          className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          placeholder="Enter date of birth"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="toDate"
+                          className="block text-xs font-medium text-gray-700"
+                        >
+                          To Date
+                        </label>
+                        <Field
+                          type="date"
+                          name="toDate"
+                          className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          placeholder="Enter date of birth"
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          type="submit"
+                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                          disabled={isFetchEntityBookingsLoading}
+                        >
+                          Search
+                        </button>
+                      </div>
+                    </div>
+                  </Form>
+                </Formik>
+              </div>
             <AgGridTable
               isFetchLoading={isFetchAllBookingsLoading}
               columnDefs={columnDefs}
