@@ -33,8 +33,8 @@ const ParkCreate = ({
 
   const initialValues = {
     Id: isParkEditVisible ? parkEditDetails.id : "",
-    EntityTypeId: isParkEditVisible ? parkEditDetails.EntityTypeId : "",
-    DepartmentId: isParkEditVisible ? parkEditDetails.DepartmentId : "",
+    EntityTypeId: isParkEditVisible ? parkEditDetails.entityTypeId : "",
+    DepartmentId: isParkEditVisible ? parkEditDetails.departmentId : "",
     DisplayName: "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
@@ -172,14 +172,16 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Entity Type</option>
-                    {allEntityTypes?.filter((entityType) => entityType.isActive).map((entityType) => (
-                      <option
-                        key={entityType.entityTypeId}
-                        value={entityType.entityTypeId}
-                      >
-                        {entityType.entityTypeName}
-                      </option>
-                    ))}
+                    {allEntityTypes
+                      ?.filter((entityType) => entityType.isActive)
+                      .map((entityType) => (
+                        <option
+                          key={entityType.entityTypeId}
+                          value={entityType.entityTypeId}
+                        >
+                          {entityType.entityTypeName}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="EntityTypeId"
@@ -203,14 +205,16 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Department</option>
-                    {allDepartmentTypes?.filter((departmentType) => departmentType.isActive).map((departmentType) => (
-                      <option
-                        key={departmentType.departmentId}
-                        value={departmentType.departmentId}
-                      >
-                        {departmentType.departmentName}
-                      </option>
-                    ))}
+                    {allDepartmentTypes
+                      ?.filter((departmentType) => departmentType.isActive)
+                      .map((departmentType) => (
+                        <option
+                          key={departmentType.departmentId}
+                          value={departmentType.departmentId}
+                        >
+                          {departmentType.departmentName}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="DepartmentId"
@@ -240,8 +244,6 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-
-               
 
                 {/* Street 2 */}
                 <div>

@@ -22,17 +22,16 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   // Function to export data to CSV
   const handleExportCsv = () => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsCsv();
+      gridRef.current.api.exportDataAsCsv([]);
     }
   };
 
   // Function to export data to Excel
   const handleExportExcel = () => {
     if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsExcel();
+      gridRef.current.api.exportDataAsExcel([]);
     }
   };
-  
 
   return (
     <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
@@ -50,9 +49,9 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           <button onClick={handleExportCsv} className="ag-grid-button">
             <FaFileCsv className="text-green-600 text-xl" />
           </button>
-          <button onClick={handleExportExcel} className="ag-grid-button">
+          {/* <button onClick={handleExportExcel} className="ag-grid-button">
             <RiFileExcel2Fill className="text-red-600 text-2xl" />
-          </button>
+          </button> */}
         </div>
       </div>
 
