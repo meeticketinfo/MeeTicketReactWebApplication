@@ -24,11 +24,13 @@ import { data } from "autoprefixer";
 import { useParkStore } from "../store/masters/parksStore";
 import AdminLayout from "../layouts/AdminLayout";
 import ServerSideAgGridTable from "../components/tables/ServerSideAgGridTable";
+import useAuthStore from "../store/authStore";
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
   const { allParks, fetchAllParks } = useParkStore();
+   const { roleDetails}= useAuthStore();
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -49,9 +51,8 @@ function Dashboard() {
     toDate: "",
     parkId: "",
   };
-  //console.log(allEntityBookings , 'bookingd')
   useEffect(() => {
-    fetchAllDashboardCounts();
+    fetchAllDashboardCounts(null,null, {}, roleDetails);
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
     fetchAllParks();
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
@@ -113,7 +114,23 @@ function Dashboard() {
       icon: FaIndianRupeeSign,
     },
   ];
+  const dashboardCardsCountByRole = [
+    {
+      lableName: "Total Bookings",
+      count: allCounts?.totalBookingsByRole || "0",
+      percentageChange: 49,
+      icon: IoTicketSharp,
+    },
+    {
+      lableName: "Total Amount",
+      count: allCounts?.totalAmountByRole,
+      percentageChange: 49,
+      icon: FaIndianRupeeSign,
+    },
+  ];
 
+  const cardsToDisplay =
+  roleDetails?.name === "ROLE_ADMIN" ? dashboardCardsCountByRole : dashboardCards;
   const [dashboardColumnDefs] = useState([
     {
       headerName: "S.No",
@@ -195,8 +212,8 @@ function Dashboard() {
         </div>
         {/* Cards */}
         <div className="grid grid-cols-12 gap-6">
-          {dashboardCards &&
-            dashboardCards.map((card, index) => (
+          {cardsToDisplay  &&
+            cardsToDisplay .map((card, index) => (
               <DashboardCard01
                 key={index} // It's important to provide a key when rendering lists
                 lableName={card.lableName}
@@ -205,6 +222,7 @@ function Dashboard() {
                 icon={card.icon}
               />
             ))}
+         {roleDetails?.name == "ROLE_SUPERADMIN" && ( 
           <DashboardCard07>
             <div className="flex">
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
@@ -223,6 +241,7 @@ function Dashboard() {
               </div>
             </div>
           </DashboardCard07>
+          )}
 
           <DashboardCard07 header={true} title="Entity Bookings">
             <div className="">
@@ -235,11 +254,11 @@ function Dashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       <div>
                         <label className="block text-xs font-medium">
-                          Park
+                          Entity
                         </label>
                         <Field
                           as="select"
-                          name="parkId"
+                          name="entityId"
                           className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         >
