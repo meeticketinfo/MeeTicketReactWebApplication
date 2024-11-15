@@ -73,14 +73,6 @@ const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
               </span>
             </button>
             </Tippy>
-            {/* <button
-              className="btn-delete"
-              onClick={() => handleDelete(params.data)}
-            >
-              <span>
-                <BsTrash className="text-[24px]" />
-              </span>
-            </button> */}
           </div>
         ),
       flex: 1,

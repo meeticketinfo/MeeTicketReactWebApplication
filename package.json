@@ -15,6 +15,7 @@
     "@tippyjs/react": "^4.2.6",
     "ag-charts-enterprise": "^10.3.1",
     "ag-grid-community": "^32.3.0",
+    "ag-grid-enterprise": "^32.3.3",
     "ag-grid-react": "^32.3.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.1",

@@ -46,12 +46,12 @@ const sidebarItems = [
       {
         title: "Entities",
         icon: MdOutlineForest,
-        path: "/park-management",
+        path: "/entities",
       },
       {
         title: "Entity Admins",
         icon: FaUsers,
-        path: "/entity-admin-management",
+        path: "/entity-admins",
       },
       {
         title: "Facilites",
@@ -89,8 +89,12 @@ const sidebarItems = [
     subItems: [
       {
         title: "Bookings",
-        icon: IoTicketOutline,
-        path: "/bookings",
+        icon: RiDashboard3Fill,
+        path: "/entity-bookings",
+        gradientClass:
+          "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+        subItems: [],
+        roles: ["Admin", "Super Admin"],
       },
       {
         title: "User Wise",
@@ -113,15 +117,15 @@ const sidebarItems = [
       },
     ],
   },
-  {
-    title: "Book Tickets",
-    icon: RiDashboard3Fill,
-    path: "/booktickets",
-    gradientClass:
-      "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-    subItems: [],
-    roles: ["Admin", "Super Admin"],
-  },
+  // {
+  //   title: "Book Tickets",
+  //   icon: RiDashboard3Fill,
+  //   path: "/entity-bookings",
+  //   gradientClass:
+  //     "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+  //   subItems: [],
+  //   roles: ["Admin", "Super Admin"],
+  // },
   {
     title: "My Account",
     icon: RiAccountPinCircleFill,

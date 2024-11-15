@@ -22,15 +22,20 @@ import DepartmentList from "../components/department_management/DepartmentList";
 import Departments from "../pages/admin/departments/Departments";
 import EntityTypeList from "../components/entity_type_management/EntityTypeList";
 import EntityTypes from "../pages/admin/entity_types/EntityTypes";
+import NotFound from "../pages/Error/NotFound";
 
 export const routes = [
+  {
+    path: "*",
+    element: <NotFound />,
+  },
   {
     path: "/",
     element: <Login />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
   {
-    path: "/park-management",
+    path: "/entities",
     element: <ProtectedRoute element={<AdminParks />} />,
   },
   {
@@ -43,7 +48,7 @@ export const routes = [
   },
   { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
   {
-    path: "/entity-admin-management",
+    path: "/entity-admins",
     element: <ProtectedRoute element={<AdminUsers />} />,
   },
   {
@@ -65,8 +70,8 @@ export const routes = [
     element: <ProtectedRoute element={<WorkingDays />} />,
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
-  { path: "/booktickets", element: <BookTickets /> },
-  { path: "/booktickets/view-details/:id", element: <BookingDetails /> },
+  { path: "/entity-bookings", element: <BookTickets /> },
+  { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
   {
     path: "/departments",

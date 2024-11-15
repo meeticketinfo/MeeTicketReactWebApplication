@@ -203,7 +203,10 @@ function Sidebar({ variant = "default" }) {
                             <ul className={`mt-1 ${!open && "hidden"}`}>
                               {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
                               {item.subItems.map((subItem, subIndex) => (
-                                <li key={subIndex} className="mb-1 px-2 last:mb-0">
+                                <li
+                                  key={subIndex}
+                                  className="mb-1 px-2 last:mb-0"
+                                >
                                   <NavLink
                                     end
                                     to={subItem.path}
@@ -271,14 +274,14 @@ function Sidebar({ variant = "default" }) {
           </div>
         </div>
 
-        {/* <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
-          <div className="pl-4 pr-3 py-2">
-            <button className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+          <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
+            <button className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100">
               <TbLogout2 className="shrink-0 text-[22px]" />
-              {!sidebarOpen && <span className="">Log out</span>}
+              {sidebarExpanded && <span className="">Log out</span>}
             </button>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

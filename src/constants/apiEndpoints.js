@@ -26,7 +26,7 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     BOOKING: {
-      GET_BOOKINGS: `Master/GetAllBookings`,
+      GET_BOOKINGS: `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
@@ -79,18 +79,19 @@ export const API_ENDPOINTS = {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
     },
     ENTITY_TYPE: {
-      GET_ENTITY_TYPES: `${API_BASE_URL}Master/GetAllActiveEntitiyTypes`,
+      GET_ENTITY_TYPES: `${API_BASE_URL}Master/GetAllEntityTypes`,
       ADD_ENTITY_TYPE: `${API_BASE_URL}Master/AddNewEntityType`,
       UPDATE_ENTITY_TYPE: `${API_BASE_URL}Master/UpdateEntityType`,
     },
     DEPARTMENT_TYPE: {
-      GET_DEPARTMENT_TYPES: `${API_BASE_URL}Master/GetAllActiveDepartments`,
+      GET_ACTIVE_DEPARTMENT_TYPES: `${API_BASE_URL}Master/GetAllActiveDepartments`,
+      GET_DEPARTMENT_TYPES: `${API_BASE_URL}Master/GetAllDepartments`,
       ADD_DEPARTMENT_TYPE: `${API_BASE_URL}Master/AddNewDepartment`,
       UPDATE_DEPARTMENT_TYPE: `${API_BASE_URL}Master/UpdateDepartment`,
     },
   },
-  ENTITIES:{
-    DOWNLOAD_FILE:`${API_BASE_URL}Transaction/DownloadQRCodeByParkId`
+  ENTITIES: {
+    DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,

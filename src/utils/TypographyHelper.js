@@ -56,3 +56,19 @@ export const formatToStandardDate = (dateInput) => {
 
   return `${year}-${month}-${day}`;
 };
+
+
+export const formatToCurrency = (amount, currency = "INR", locale = "en-IN") => {
+  if (isNaN(amount)) {
+    throw new Error("Invalid amount");
+  }
+  
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
+

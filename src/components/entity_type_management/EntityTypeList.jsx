@@ -5,6 +5,7 @@ import { useEntityTypesStore } from "../../store/masters/EntityTypesStore";
 import { LuClipboardEdit } from "react-icons/lu";
 import EntityCreateForm from "./EntityCreateForm";
 import { useModalStore } from "../../store/modalStore";
+import { ToastContainer } from "react-toastify";
 
 const EntityTypeList = ({
   setIsEntityTypeCreateVisible,
@@ -86,12 +87,12 @@ const EntityTypeList = ({
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={2000} />{" "}
       <AgGridTable
-        rowData={allEntityTypes?.data || []}
+        rowData={allEntityTypes || []}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllEntityTypesLoading}
       />
-
       <PopupModal
         popupModalId="first-modal"
         isOpen={openModalId === "entity-modal"}

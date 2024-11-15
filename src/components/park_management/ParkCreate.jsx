@@ -56,7 +56,7 @@ const ParkCreate = ({
   ];
   // Validation schema for the form
   const validationSchema = Yup.object({
-    Name: Yup.string().required("Park Name is required"),
+    Name: Yup.string().required("Entity Name is required"),
     EntityTypeId: Yup.number().required("Entity Type is required"),
     DepartmentId: Yup.number().required("Department is required"),
     Street1: Yup.string()
@@ -107,8 +107,8 @@ const ParkCreate = ({
       if (result && result.data && result.data.status === 200) {
         toast.success(
           isParkEditVisible
-            ? "Park Updated Successfully!"
-            : "Park Created Successfully!"
+            ? "Entity Updated Successfully!"
+            : "Entity Created Successfully!"
         );
         setTimeout(() => {
           setIsParkCreateVisible(false);
@@ -172,7 +172,7 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Entity Type</option>
-                    {allEntityTypes?.data?.map((entityType) => (
+                    {allEntityTypes?.filter((entityType) => entityType.isActive).map((entityType) => (
                       <option
                         key={entityType.entityTypeId}
                         value={entityType.entityTypeId}
@@ -203,7 +203,7 @@ const ParkCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Department</option>
-                    {allDepartmentTypes?.data?.map((departmentType) => (
+                    {allDepartmentTypes?.filter((departmentType) => departmentType.isActive).map((departmentType) => (
                       <option
                         key={departmentType.departmentId}
                         value={departmentType.departmentId}
@@ -218,7 +218,7 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-                
+
                 {/* Entity Name */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -232,7 +232,7 @@ const ParkCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter park name"
+                    placeholder="Enter Entity name"
                   />
                   <ErrorMessage
                     name="Name"
@@ -241,7 +241,9 @@ const ParkCreate = ({
                   />
                 </div>
 
-                {/* Street 1 */}
+               
+
+                {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
                     Address Line 1
@@ -262,7 +264,6 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-
                 {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -285,26 +286,6 @@ const ParkCreate = ({
                   />
                 </div>
 
-                {/* City */}
-                <div>
-                  <label className="block text-sm font-medium">City</label>
-                  <Field
-                    name="City"
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.City && touched.City
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter city"
-                  />
-                  <ErrorMessage
-                    name="City"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
                 {/* State */}
                 <div>
                   <label className="block text-sm font-medium">State</label>
@@ -320,6 +301,26 @@ const ParkCreate = ({
                   />
                   <ErrorMessage
                     name="State"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+
+                {/* City */}
+                <div>
+                  <label className="block text-sm font-medium">City</label>
+                  <Field
+                    name="City"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.City && touched.City
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter city"
+                  />
+                  <ErrorMessage
+                    name="City"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -393,7 +394,7 @@ const ParkCreate = ({
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Park Image
+                    Entity Image
                   </label>
                   <input
                     name="ImageUrl"
@@ -437,8 +438,8 @@ const ParkCreate = ({
                     {isSaveParkDetailsLoading
                       ? "Saving..."
                       : isParkEditVisible
-                      ? "Update Park"
-                      : "Create Park"}
+                      ? "Update Entity"
+                      : "Create Entity"}
                   </button>
                 </div>
               </div>
