@@ -69,6 +69,27 @@ const ServiceVariantList = ({
       valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
     },
     {
+      headerName: "Status",
+      field: "isActive",
+      flex: 1,
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <span
+            className={`${
+              params.value
+                ? "bg-green-400 text-white shadow-md "
+                : "bg-red-400 text-white shadow-md "
+            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+          >
+            {" "}
+            {params.value ? "Active" : "Inactive"}
+          </span>
+        </div>
+      ),
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (

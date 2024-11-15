@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  "https://meeticketservice-dev-dotnet.azurewebsites.net/api/";
+  "https://meeticket.vmaxtechservices.life/parkapi/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -96,7 +96,7 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
-    GET_BOOKINGS_BY_ROLE : `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
+    GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,
     },
