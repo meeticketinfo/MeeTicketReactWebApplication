@@ -21,7 +21,8 @@ import { bouncy } from "ldrs";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, error, login } = useAuthStore();
+  const { isLoading, isAuthenticated, loginError, login } = useAuthStore();
+  console.log("error",loginError)
   const [showPassword, setShowPassword] = useState(false);
   const {
     captchaInput,
@@ -31,13 +32,15 @@ const Login = () => {
     validateCaptchaInput,
   } = useCaptchaStore();
 
+  
+
   const initialValues = {
-    EmailId: "",
+    emailId: "",
     password: "",
   };
 
   const validationSchema = Yup.object({
-    EmailId: Yup.string().required("EmailId is required"),
+    emailId: Yup.string().required("EmailId is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -63,6 +66,17 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("auth-store"); 
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   return (
     <>
       <div className="min-h-screen flex flex-col bg-blue-v1 p-4  ">
@@ -144,20 +158,20 @@ const Login = () => {
                   {/* Username Field */}
                   <div className="mb-6">
                     <label
-                      htmlFor="EmailId"
+                      htmlFor="emailId"
                       className="block text-sm font-medium text-gray-100 mb-1"
                     >
                       Email
                     </label>
                     <Field
-                      id="EmailId"
-                      name="EmailId"
+                      id="emailId"
+                      name="emailId"
                       placeholder="Enter your Email ID"
                       autoComplete="off"
                       className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
                     />
                     <ErrorMessage
-                      name="EmailId"
+                      name="emailId"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
@@ -221,10 +235,10 @@ const Login = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex text-center justify-center">
-                    {error && (
+                 <div className="flex text-center justify-center">
+                    {loginError && (
                       <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
-                        {error}
+                        {loginError}
                       </small>
                     )}
                   </div>

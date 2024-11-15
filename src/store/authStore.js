@@ -35,14 +35,46 @@ const useAuthStore = create(
           get().setSidebarMenuItems();
 
           return { success: true };
-        } catch (error) {
-          set({
-            // loginError: error?.response?.data?.message,
-            error: error?.response?.data?.message,
-            isLoading: false,
-          });
-          throw error;
-          //   return { success: false, error: error };
+        } catch (xhr) {
+          if (
+            xhr &&
+            xhr.response &&
+            typeof xhr.response.data.errors === "object"
+          ) {
+            const formErrors = {};
+            Object.keys(xhr.response.data.errors).forEach((key) => {
+              if (
+                Array.isArray(xhr.response.data.errors[key]) &&
+                xhr.response.data.errors[key].length > 0
+              ) {
+                formErrors[key] = xhr.response.data.errors[key][0];
+                console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+                toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+              }
+            });
+
+            // Combine errors into a single string message (optional)
+            const combinedErrorMessage = Object.values(formErrors).join(", ");
+
+            set({
+              loginError:
+                combinedErrorMessage ||
+                xhr.response.data.message ||
+                "Login failed",
+              isLoading: false,
+            });
+          } else {
+            // Handle other unexpected errors
+            const errorMessage =
+              xhr?.response?.data?.message || "An unexpected error occurred";
+            set({
+              loginError: errorMessage,
+              isLoading: false,
+            });
+            toast.error(errorMessage);
+          }
+
+          return { success: false };
         }
       },
 
@@ -121,6 +153,7 @@ const useAuthStore = create(
     {
       name: "auth-store",
       getStorage: () => localStorage,
+
       //   partialize: (state) => ({
       //     token: state.token,
       //     isAuthenticated: state.isAuthenticated,
