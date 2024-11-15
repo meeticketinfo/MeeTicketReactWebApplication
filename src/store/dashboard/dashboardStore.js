@@ -50,16 +50,21 @@ export const useDashboardStore = create((set) => ({
   fetchAllDashboardCounts: async (
     pageIndex = 1,
     pageSize = 10,
-    filters = {}
+    filters = {},
+    roleDetails
   ) => {
     set({ isFetchCountsLoading: true });
     try {
+      const role = roleDetails?.name;
+      const endpoint = role == "ROLE_ADMIN" ?
+         API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE 
+     : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}`
+        `${endpoint}`
       );
-      set({
+      set({ 
         allCounts: response.data,
         isFetchCountsLoading: false,
       });

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ParkCreate from "../../../components/park_management/ParkCreate";
 import ParkList from "../../../components/park_management/ParkList";
 import AdminLayout from "../../../layouts/AdminLayout";
+import BackButton from "../../../components/BackButton";
+
 
 export default function AdminParks() {
   // State to toggle the FacilityCreate component
@@ -28,14 +30,20 @@ export default function AdminParks() {
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
-            <button
-              onClick={toggleParkCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-            >
-              <span className="max-xs:sr-only">
-                {!isParkCreateVisible ? "Add Entity" : "Back"}
-              </span>
-            </button>
+            {!isParkCreateVisible ? (
+              <button
+                onClick={toggleParkCreate}
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              >
+                <span className="max-xs:sr-only"> Entity Admin</span>
+              </button>
+            ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsParkCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
           </div>
         </div>
 
