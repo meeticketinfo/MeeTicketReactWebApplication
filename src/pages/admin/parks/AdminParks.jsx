@@ -35,7 +35,7 @@ export default function AdminParks() {
                 onClick={toggleParkCreate}
                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
-                <span className="max-xs:sr-only"> Entity Admin</span>
+                <span className="max-xs:sr-only"> Add Entity </span>
               </button>
             ) : (
               <BackButton

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../../utils/apiErrorHandler";
 import QRCodeDisplay from "./QrCodeDisplay";
+import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
 
 export default function BookingDetails() {
   const { id } = useParams();
@@ -123,35 +124,40 @@ export default function BookingDetails() {
                     <QRCodeDisplay binaryQRCode={item.binaryQRCode} />
                   </div>
                   <div className="p-5 bg-white m-2 rounded-[20px]">
-                    <div className="grid grid-cols-1 gap-4">
-                      <small className="mb-1 flex items-center">
-                        <span className="w-1/2 font-semibold">Facility</span>:{" "}
-                        {item.facilityName || "N/A"}
+                    <div className="grid grid-cols-1">
+                      <span className="w-full font-semibold">Facility : </span>
+                      <small className=" flex items-center">
+                        {toTitleCase(item.facilityName) || "N/A"}
                       </small>
-                      <small className="mb-1 flex items-center">
-                        <span className="w-1/2 font-semibold">
-                          Service Name
-                        </span>
-                        : {item.serviceName || "N/A"}
+                      <br></br>
+                      <span className="w-full font-semibold">
+                        Service Name :
+                      </span>
+                      <small className="flex items-center">
+                        {toTitleCase(item.serviceName) || "N/A"}
                       </small>
-                        <span className="w-full font-semibold">
-                          Service Variant
-                        </span>
-                      <small className="mb-1 flex flex-row items-center">
-                         {item.serviceVariantName || "N/A"}
+                      <br></br>
+
+                      <span className="w-full font-semibold">
+                        Service Variant :
+                      </span>
+                      <small className="flex flex-row items-center">
+                        {toTitleCase(item.serviceVariantName) || "N/A"}
                       </small>
-                      <small className="mb-1 flex items-center">
+                      <br></br>
+
+                      {/* <small className="mb-1 flex items-center">
                         <span className="w-1/2 font-semibold">Total</span>:
                         &#8377;{item.totalAmount || "N/A"}
-                      </small>
+                      </small> */}
                     </div>
                     <hr />
-                    <div className="flex justify-between gap-2 mt-4">
-                      <small className="mb-1">
-                        Amount : &#8377;{item.amount || "N/A"}
+                    <div className="grid">
+                      <small className="mb-1 grid-col-12 w-full">
+                        Total : {formatToCurrency(item.amount) || "N/A"}
                       </small>
-
-                      <small className="mb-1">
+<br></br>
+                      <small className="mb-1 w-full">
                         Quantity : {item.quantity || "N/A"}
                       </small>
                     </div>
@@ -163,8 +169,6 @@ export default function BookingDetails() {
             <p className="text-gray-200">No booking details available.</p>
           )}
         </div>
-
-     
       </div>
     </AdminLayout>
   );

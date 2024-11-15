@@ -25,12 +25,13 @@ import { useParkStore } from "../store/masters/parksStore";
 import AdminLayout from "../layouts/AdminLayout";
 import ServerSideAgGridTable from "../components/tables/ServerSideAgGridTable";
 import useAuthStore from "../store/authStore";
+import { toast } from "react-toastify";
 
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
   const { allParks, fetchAllParks } = useParkStore();
-   const { roleDetails}= useAuthStore();
+  const { roleDetails } = useAuthStore();
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -52,7 +53,7 @@ function Dashboard() {
     parkId: "",
   };
   useEffect(() => {
-    fetchAllDashboardCounts(null,null, {}, roleDetails);
+    fetchAllDashboardCounts(null, null, {}, roleDetails);
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
     fetchAllParks();
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
@@ -92,7 +93,6 @@ function Dashboard() {
   };
 
   const onReset = (resetForm) => {
-    alert();
     resetForm();
     fetchAllEntityBookingsByFilters("", "", {
       fromDate: "",
@@ -130,7 +130,9 @@ function Dashboard() {
   ];
 
   const cardsToDisplay =
-  roleDetails?.name === "ROLE_ADMIN" ? dashboardCardsCountByRole : dashboardCards;
+    roleDetails?.name === "ROLE_ADMIN"
+      ? dashboardCardsCountByRole
+      : dashboardCards;
   const [dashboardColumnDefs] = useState([
     {
       headerName: "S.No",
@@ -194,7 +196,8 @@ function Dashboard() {
       headerName: "Booking Amount",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
   ]);
 
@@ -212,8 +215,8 @@ function Dashboard() {
         </div>
         {/* Cards */}
         <div className="grid grid-cols-12 gap-6">
-          {cardsToDisplay  &&
-            cardsToDisplay .map((card, index) => (
+          {cardsToDisplay &&
+            cardsToDisplay.map((card, index) => (
               <DashboardCard01
                 key={index} // It's important to provide a key when rendering lists
                 lableName={card.lableName}
@@ -222,25 +225,25 @@ function Dashboard() {
                 icon={card.icon}
               />
             ))}
-         {roleDetails?.name == "ROLE_SUPERADMIN" && ( 
-          <DashboardCard07>
-            <div className="flex">
-              <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-                <PieChart
-                  data={allPieCharts}
-                  title="Total Booking By Entity"
-                  angleKey="entityWiseTotalBookings"
-                />
+          {roleDetails?.name == "ROLE_SUPERADMIN" && (
+            <DashboardCard07>
+              <div className="flex">
+                <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
+                  <PieChart
+                    data={allPieCharts}
+                    title="Total Booking By Entity"
+                    angleKey="entityWiseTotalBookings"
+                  />
+                </div>
+                <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
+                  <PieChart
+                    data={allPieCharts}
+                    title="Total Amount By Entity"
+                    angleKey="entityWiseTotalAmount"
+                  />
+                </div>
               </div>
-              <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-                <PieChart
-                  data={allPieCharts}
-                  title="Total Amount By Entity"
-                  angleKey="entityWiseTotalAmount"
-                />
-              </div>
-            </div>
-          </DashboardCard07>
+            </DashboardCard07>
           )}
 
           <DashboardCard07 header={true} title="Entity Bookings">
