@@ -30,6 +30,9 @@
   border-bottom: none !important; /* Removes bottom border of header */
 }
 
+
+
+
 /* Loader overlay styling */
 .ag-table-body-loader {
   position: absolute;

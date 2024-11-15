@@ -3,9 +3,11 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
+import { formatToCurrency } from "../../../utils/TypographyHelper";
+import BackButton from "../../../components/BackButton";
 
 export default function AdminBookings() {
-  const { allBookings, fetchAllBookings } = useBookingsStore();
+  const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } = useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
 
   useEffect(() => {
@@ -16,72 +18,69 @@ export default function AdminBookings() {
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      minWidth: 80,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
-      field: "id",
-      headerName: "Booking ID",
+      field: "bookingId",
+      headerName: "Booking Id",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value && params.value.trim() !== "" ? params.value : "N/A",
+    },
+    {
+      field: "userName",
+      headerName: "User Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "user",
-      headerName: "User",
+      field: "parkName",
+      headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "amount",
-      headerName: "Amount",
+      field: "facilityName",
+      headerName: "Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "park",
-      headerName: "Park",
+      field: "serviceName",
+      headerName: "Service Name",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingStatus",
-      headerName: "Booking Status",
+      field: "serviceVariantName",
+      headerName: "Service Variant Name",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingDate",
+      field: "bookingRegistredDate",
       headerName: "Booking Date",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "amount",
+      headerName: "Booking Amount",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
   ]);
-
-  const handleQuantityChange = (setter, value) => {
-    setter((prev) => Math.max(0, prev + value));
-  };
-
-  const calculateTotalTickets = () =>
-    adultEntry + childrenEntry + adultPlayground + childrenPlayground;
-
-  const calculateTotalAmount = () => {
-    // Entry ticket amount (₹50 for adult, ₹30 for children)
-    const entryTicketAmount = adultEntry * 50 + childrenEntry * 30;
-
-    // Playground ticket amount (₹30 for adult and ₹15 for children if AC, ₹20 and ₹10 if Non-AC)
-    const playgroundTicketAmount =
-      adultPlayground * (playgroundType === "AC" ? 30 : 20) +
-      childrenPlayground * (playgroundType === "AC" ? 15 : 10);
-
-    // Total amount
-    return entryTicketAmount + playgroundTicketAmount;
-  };
 
   return (
     <AdminLayout>
@@ -98,15 +97,21 @@ export default function AdminBookings() {
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
                 onClick={() => setIsBookingFormVisible(true)} // Show booking form
               >
-                Add Booking
+                Book Tickets
               </button>
             ) : (
-              <button
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-                onClick={() => setIsBookingFormVisible(false)} // Hide booking form
-              >
-                Back
-              </button>
+              // <button
+              //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+              //   onClick={() => setIsBookingFormVisible(false)} // Hide booking form
+              // >
+              //   Back
+              // </button>
+              <BackButton
+                label="Back"
+                onClick={() => setIsBookingFormVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+                // disabled={isSubmitting}
+              />
             )}
           </div>
         </div>
@@ -114,12 +119,11 @@ export default function AdminBookings() {
         {/* Booking Form Section */}
         {isBookingFormVisible && <FacilityServices />}
 
-        
-
         {/* Table Section - Show only if form is not visible */}
         {!isBookingFormVisible && (
           <div className="mb-8">
             <AgGridTable
+              isFetchLoading={isFetchAllBookingsLoading}
               columnDefs={columnDefs}
               rowData={allBookings || []}
               defaultColDef={{

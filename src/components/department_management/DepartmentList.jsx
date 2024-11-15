@@ -5,6 +5,7 @@ import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStor
 import { LuClipboardEdit } from "react-icons/lu";
 import { useModalStore } from "../../store/modalStore";
 import DepartmentCreateForm from "./DepartmentCreateForm";
+import { ToastContainer } from "react-toastify";
 
 const DepartmentList = ({
   setIsDepartmentTypeCreateVisible,
@@ -19,7 +20,6 @@ const DepartmentList = ({
     isFetchAllDepartmentTypesLoading,
     setDepartmentTypeEditDetails,
   } = useDepartmentTypesStore();
-
   useEffect(() => {
     fetchAllDepartmentTypes();
   }, []);
@@ -85,8 +85,9 @@ const DepartmentList = ({
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={2000} />{" "}
       <AgGridTable
-        rowData={allDepartmentTypes?.data || []}
+        rowData={allDepartmentTypes || []}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllDepartmentTypesLoading}
       />

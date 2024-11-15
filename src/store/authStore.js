@@ -75,7 +75,7 @@ const useAuthStore = create(
       setSidebarMenuItems: () => {
         const { roleDetails } = get();
         const permissions = {
-          ROLE_ADMIN: ["dashboard", "park-management", "park-admin-management"],
+          ROLE_ADMIN: ["dashboard", "entities", "park-admin-management"],
           ROLE_USER: ["facilites", "service", "service-varient"],
           ROLE_SUPERADMIN: [
             "dashboard",

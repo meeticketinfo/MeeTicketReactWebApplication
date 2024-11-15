@@ -62,7 +62,7 @@ export const FacilityServices = () => {
       const result = await saveBookingDetails(bookingDetailsPayload);
       if (result && result.data && result.data.status === 200) {
         const newBookingId = result?.data?.data?.data;
-        navigate(`/booktickets/view-details/${newBookingId}`);
+        navigate(`/entity-bookings/view-details/${newBookingId}`);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
