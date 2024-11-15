@@ -94,7 +94,7 @@ export default function AdminBookings() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
               <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                 onClick={() => setIsBookingFormVisible(true)} // Show booking form
               >
                 Book Tickets

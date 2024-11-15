@@ -43,6 +43,9 @@ const ServiceVarientCreate = ({
     isPriceFixed: isServiceVarientEditVisible
       ? ServiceVariantEditDetails.isPriceFixed
       : false,
+      isActive: isServiceVarientEditVisible 
+      ? ServiceVariantEditDetails.isActive
+      :true
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the name."),
@@ -68,7 +71,7 @@ const ServiceVarientCreate = ({
       );
       console.log(result);
       if (result.data.status === 200) {
-        toast.success(isServiceVarientEditVisible?"Service Variant Updated successfully!":"Service Variant created successfully!");
+        toast.success(isServiceVarientEditVisible ? "Service Variant Updated successfully!" : "Service Variant created successfully!");
         setTimeout(() => {
           setIsServiceVarientCreateVisible(false);
           setIsServiceVarientEditVisible(false);
@@ -118,11 +121,10 @@ const ServiceVarientCreate = ({
                   <Field
                     as="select"
                     name="serviceId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.serviceId && touched.serviceId
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.serviceId && touched.serviceId
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
                     {allServices.map((service) => (
@@ -150,11 +152,10 @@ const ServiceVarientCreate = ({
                     type="text"
                     name="name"
                     maxLength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Varient Name"
                   />
                   <ErrorMessage
@@ -175,11 +176,10 @@ const ServiceVarientCreate = ({
                   <Field
                     type="number"
                     name="amount"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.amount && touched.amount
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.amount && touched.amount
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
@@ -201,11 +201,10 @@ const ServiceVarientCreate = ({
                     type="text"
                     name="displayName"
                     maxLength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.displayName && touched.displayName
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Display Name"
                   />
                   <ErrorMessage
@@ -233,6 +232,27 @@ const ServiceVarientCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-medium">Status</label>
+                  <Field
+                    as="select"
+                    name="isActive"
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.isActive && touched.isActive
+                        ? "border-red-500"
+                        : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="active"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
 
                 {/* description */}
                 <div className="col-span-3">
@@ -243,11 +263,10 @@ const ServiceVarientCreate = ({
                     as="textarea"
                     name="description"
                     maxLength={255}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.description && touched.description
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.description && touched.description
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
@@ -267,8 +286,8 @@ const ServiceVarientCreate = ({
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
                     : isServiceVarientEditVisible
-                    ? "Update Service Varient"
-                    : "Create Service Varient"}
+                      ? "Update Service Varient"
+                      : "Create Service Varient"}
                 </button>
               </div>
             </Form>

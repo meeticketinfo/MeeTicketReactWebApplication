@@ -28,8 +28,7 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails } = useAuthStore();
-
+  const { sidebarMenuItems, roleDetails , logout } = useAuthStore();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -133,7 +132,7 @@ function Sidebar({ variant = "default" }) {
             </svg>
           </button>
           {/* Logo */}
-          <NavLink end to="/" className="block">
+          <NavLink end to="/dashboard" className="block">
             <img alt="site-logo" src={logoIcon} width={60} height={60} />
           </NavLink>
         </div>
@@ -276,9 +275,11 @@ function Sidebar({ variant = "default" }) {
 
         <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
-            <button className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100">
+            <button onClick={() => logout()} className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100">
               <TbLogout2 className="shrink-0 text-[22px]" />
-              {sidebarExpanded && <span className="">Log out</span>}
+              {sidebarExpanded && <span className=""
+                 
+              >Log out</span>}
             </button>
           </div>
         </div>
