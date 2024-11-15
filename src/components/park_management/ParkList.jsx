@@ -77,14 +77,14 @@ const ParkList = ({
     },
     {
       field: "city",
-      headerName: "city",
+      headerName: "City",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "zipCode",
-      headerName: "pincode",
+      headerName: "Pincode",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -108,31 +108,6 @@ const ParkList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
-    {
-      field: "description",
-      headerName: "Description",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      headerName: "Image",
-      flex: 1,
-      field: "ImageUrl",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <img
-            src={params.value}
-            alt="Park"
-            style={{ width: "50px", height: "50px", objectFit: "cover" }}
-            onError={(e) => {
-              e.target.src = "";
-            }}
-          />
-        </div>
-      ),
     },
     {
       headerName: "Actions",

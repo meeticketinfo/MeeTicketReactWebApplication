@@ -134,11 +134,11 @@ export default function BookingDetails() {
                         </span>
                         : {item.serviceName || "N/A"}
                       </small>
-                      <small className="mb-1 flex items-center">
-                        <span className="w-1/2 font-semibold">
+                        <span className="w-full font-semibold">
                           Service Variant
                         </span>
-                        : {item.serviceVariantName || "N/A"}
+                      <small className="mb-1 flex flex-row items-center">
+                         {item.serviceVariantName || "N/A"}
                       </small>
                       <small className="mb-1 flex items-center">
                         <span className="w-1/2 font-semibold">Total</span>:
