@@ -3,8 +3,14 @@ import AgGridTable from "../tables/AgGridTable";
 import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
 import { LuClipboardEdit } from "react-icons/lu";
 import Tippy from "@tippyjs/react";
+import { formatToCurrency } from "../../utils/TypographyHelper";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
-const ServiceVariantList = ({setIsServiceVarientCreateVisible,setIsServiceVarientEditVisible}) => {
+const ServiceVariantList = ({
+  setIsServiceVarientCreateVisible,
+  setIsServiceVarientEditVisible,
+}) => {
   const {
     allServiceVariants,
     isFetchAllServiceVariantsLoading,
@@ -14,29 +20,18 @@ const ServiceVariantList = ({setIsServiceVarientCreateVisible,setIsServiceVarien
   useEffect(() => {
     fetchAllServiceVariants();
   }, []);
-  //   "varientName": "ENTRANCE_ADULT",
-  // "amount": 10,
-  // "type": null,
-  // "serviceName": "ENTRANCE",
-  // "facilityName": "ENTRANCE",
-  // "parkName": "test park",
-  // "createdDate": "2024-10-30T16:26:19.3830469"
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      minWidth: 80,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
-      field: "varientName",
-      headerName: "Varient Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
+      field: "facilityName",
+      headerName: "Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
@@ -47,35 +42,56 @@ const ServiceVariantList = ({setIsServiceVarientCreateVisible,setIsServiceVarien
       headerClass: "text-blue-v2",
     },
     {
-      field: "facilityName",
-      headerName: "Facility Name",
+      field: "varientName",
+      headerName: "Service Variant Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
     {
       field: "parkName",
-      headerName: "Park Name",
+      headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "amount",
+      headerName: "Fixed or Count Based",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value === true ? "Yes" : "No"),
     },
     {
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
-          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-             <Tippy content="Edit" placement="right" className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg">
-            <button className="btn-edit" onClick={() => {
-             
-              setCurrentServiceVariantEditDetails(params.data);
-              setIsServiceVarientCreateVisible(true)
-              setIsServiceVarientEditVisible(true)
-              }}>
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <Tippy
+            content="Edit"
+            placement="right"
+            className=" text-white rounded-lg px-[1px] py-[1px] shadow-lg"
+          >
+            <button
+              className="btn-edit"
+              onClick={() => {
+                setCurrentServiceVariantEditDetails(params.data);
+                setIsServiceVarientCreateVisible(true);
+                setIsServiceVarientEditVisible(true);
+              }}
+            >
               <span className="">
                 <LuClipboardEdit className="text-[24px] text-[#0C3770]" />
               </span>
             </button>
-            </Tippy>
-            {/* <button
+          </Tippy>
+          {/* <button
               className="btn-delete"
               onClick={() => handleDelete(params.data)}
             >
@@ -83,12 +99,11 @@ const ServiceVariantList = ({setIsServiceVarientCreateVisible,setIsServiceVarien
                 <BsTrash className="text-[24px]" />
               </span>
             </button> */}
-          </div>
-        ),
+        </div>
+      ),
       flex: 1,
       headerClass: "text-blue-v2",
-  },
-   
+    },
   ]);
   return (
     <>

@@ -42,14 +42,14 @@ const ParkList = ({
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "name",
+      field: "entityTypeName",
       headerName: "Entity Type",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "name",
+      field: "departmentName",
       headerName: "Department",
       flex: 1,
       headerClass: "text-blue-v2",

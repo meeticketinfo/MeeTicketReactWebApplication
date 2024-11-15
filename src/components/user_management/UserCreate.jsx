@@ -26,7 +26,7 @@ const UserCreate = ({
     id: isUserEditVisible ? userEditDetails.id : "",
     firstName: isUserEditVisible ? userEditDetails.firstName : "",
     middleName: isUserEditVisible ? userEditDetails.middleName : "",
-    parkId: isUserEditVisible ? userEditDetails.parkId : "",
+    parkId: isUserEditVisible ? userEditDetails.entityId : "",
     lastName: isUserEditVisible ? userEditDetails.lastName : "",
     //  dateOfBirth: isUserEditVisible ? userEditDetails.dateOfBirth :"",
     emailId: isUserEditVisible ? userEditDetails.emailId : "",
@@ -34,12 +34,12 @@ const UserCreate = ({
     password: isUserEditVisible ? userEditDetails.password : "",
     roleId: isUserEditVisible ? userEditDetails.roleId : "",
     isConfirmed: isUserEditVisible ? userEditDetails.isConfirmed : true,
-    IsActive: isUserEditVisible ? userEditDetails.isActive : true,
+    isActive: isUserEditVisible ? userEditDetails.isActive : true,
   };
 
-  const validationSchema = Yup.object({
+  const createValidationSchema = Yup.object({
     firstName: Yup.string()
-      //.required("First Name is required")
+      .required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     lastName: Yup.string()
       //.required("Last Name is required")
@@ -49,18 +49,21 @@ const UserCreate = ({
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
-      // .required("Password is required")
-      // .min(6, "Password cannot be less than 6 characters")
-      // .max(20, "Password cannot be more than 30 characters"),
-      .when("isUserEditVisible", {
-        is: false, // Apply only if isUserEditVisible is false
-        then: (schema) =>
-          schema
-            .required("Password is required")
-            .min(6, "Password cannot be less than 6 characters")
-            .max(20, "Password cannot be more than 30 characters"),
-        otherwise: (schema) => schema.notRequired(), // Optional if isUserEditVisible is true
-      }),
+      .required("Password is required")
+      .min(6, "Password cannot be less than 6 characters")
+      .max(20, "Password cannot be more than 30 characters"),
+  });
+  const updateValidationSchema = Yup.object({
+    firstName: Yup.string()
+      //.required("First Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    lastName: Yup.string()
+      //.required("Last Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    emailId: Yup.string().required("EmailId is required"),
+    // parkId: Yup.string().required("Entity is required"),
+    phoneNumber: Yup.number().required("Phone Number is required"),
+    // .max(10, "Phone Number Must contain 10 digits"),
   });
 
   const onSubmit = async (
@@ -69,10 +72,20 @@ const UserCreate = ({
     saveUserDetails
   ) => {
     try {
+      const formattedValues = {
+        ...values,
+        isActive: values.isActive === "true" || values.isActive === true,
+        password: isUserEditVisible
+          ? userEditDetails.password || ""
+          : values.password,
+      };
+
+      console.log("formattedValues", formattedValues);
       const result = await saveUserDetails(
-        values,
+        formattedValues,
         isUserEditVisible ? true : false
       );
+
       if (result.data.status === 200) {
         toast.success(
           isUserEditVisible
@@ -114,7 +127,9 @@ const UserCreate = ({
         <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={
+            isUserEditVisible ? updateValidationSchema : createValidationSchema
+          }
           onSubmit={(values, actions) =>
             onSubmit(values, actions, saveUserDetails)
           }
@@ -127,6 +142,7 @@ const UserCreate = ({
                   <Field
                     as="select"
                     name="parkId"
+                    disabled={isUserEditVisible}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.parkId && touched.parkId
                         ? "border-red-500"
@@ -277,9 +293,9 @@ const UserCreate = ({
                   <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
-                    name="IsActive"
+                    name="isActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.IsActive && touched.IsActive
+                      errors.isActive && touched.isActive
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -289,7 +305,7 @@ const UserCreate = ({
                     <option value={false}>Inactive</option>
                   </Field>
                   <ErrorMessage
-                    name="IsActive"
+                    name="isActive"
                     component="div"
                     className="text-red-500 text-xs"
                   />

@@ -46,8 +46,8 @@ const DepartmentList = ({
           <span
             className={`${
               params.value
-                ? "bg-blue-100 text-blue-800"
-                : "bg-red-100 text-red-800"
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
             } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
           >
             {" "}
@@ -57,7 +57,6 @@ const DepartmentList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
     },
     {
       headerName: "Actions",

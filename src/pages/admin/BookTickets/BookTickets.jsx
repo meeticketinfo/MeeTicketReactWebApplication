@@ -5,10 +5,13 @@ import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import BackButton from "../../../components/BackButton";
+import useAuthStore from "../../../store/authStore";
 
 export default function AdminBookings() {
   const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } = useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
+  const { sidebarMenuItems, roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
 
   useEffect(() => {
     fetchAllBookings();
@@ -93,12 +96,12 @@ export default function AdminBookings() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-              <button
+              role === "ROLE_ADMIN" && (<button
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
                 onClick={() => setIsBookingFormVisible(true)} // Show booking form
               >
                 Book Tickets
-              </button>
+              </button>)
             ) : (
               // <button
               //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
