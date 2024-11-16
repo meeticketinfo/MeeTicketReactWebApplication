@@ -11,6 +11,7 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 import { useNavigate } from "react-router-dom";
 import { useAccordionStore } from "../../store/accordionStore";
 import { IoIosArrowDown } from "react-icons/io";
+import { formatToCurrency, toTitleCase } from "../../utils/TypographyHelper";
 
 export const FacilityServices = () => {
   const navigate = useNavigate();
@@ -85,33 +86,28 @@ export const FacilityServices = () => {
     >
       {({ values, setFieldValue }) => (
         <Form className="facility-container space-y-6 px-4 lg:px-0">
-          {allFacilities?.map((facility) => {
-            const isExpanded = expandedItems.includes(facility.id);
+          {allFacilities
+            ?.filter((facility) =>
+              allServices.some((service) => service.facilityId === facility.id)
+            )
+            .map((facility) => {
+              return (
+                <div
+                  key={facility.id}
+                  className="facility backdrop-blur-sm bg-white/30 border border-blue-v1 p-2 rounded-md shadow-md text-white cursor-pointer"
+                >
+                  <div className="bg-white p-3 rounded-lg">
+                    <div
+                      className="flex justify-between"
+                      onClick={() => toggleItem(facility.id)}
+                    >
+                      <h4 className="text-1xl font-bold text-blue-v1 cursor-pointer">
+                        {toTitleCase(facility.displayName) ||
+                          toTitleCase(facility.name)}
+                      </h4>
+                    </div>
+                    {/* <p className="text-sm opacity-80">{facility.description}</p> */}
 
-            return (
-              <div
-                key={facility.id}
-                className="facility backdrop-blur-sm bg-white/30 border border-gray-100 p-2 rounded-md shadow-md text-white cursor-pointer"
-              >
-                <div className="bg-white p-3 rounded-lg">
-                  <div
-                    className="flex justify-between"
-                    onClick={() => toggleItem(facility.id)}
-                  >
-                    <h4 className="text-1xl font-bold text-blue-v1 cursor-pointer">
-                      {facility.displayName || facility.name}
-                    </h4>
-                    <span className="text-gray-300">
-                      <IoIosArrowDown
-                        className={`text-2xl text-gray-300 transition-transform duration-200 ${
-                          isExpanded ? "rotate-180" : "rotate-0"
-                        }`}
-                      />
-                    </span>
-                  </div>
-                  <p className="text-sm opacity-80">{facility.description}</p>
-
-                  {isExpanded && (
                     <div className="services-container space-y-4 mt-4">
                       {allServices
                         .filter((service) => service.facilityId === facility.id)
@@ -121,7 +117,8 @@ export const FacilityServices = () => {
                             className="service bg-gray-200 border- border-blue-v2 p-2 rounded-md text-white"
                           >
                             <h6 className="text-1xl text-blue-v1 font-semibold">
-                              {service.displayName || service.name}
+                              {toTitleCase(service.displayName) ||
+                                toTitleCase(service.name)}
                             </h6>
 
                             <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
@@ -135,13 +132,14 @@ export const FacilityServices = () => {
                                     className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex justify-between gap-4"
                                   >
                                     <h6 className="text-sm font-medium text-[#0c3771] p-2">
-                                      {variant.name || variant.displayName}
+                                      {toTitleCase(variant.name) ||
+                                        toTitleCase(variant.displayName)}
                                     </h6>
 
                                     {variant.isPriceFixed ? (
                                       <>
                                         <p className="text-gray-800 font-semibold p-2">
-                                          ${variant.amount}
+                                          {formatToCurrency(variant.amount)}
                                         </p>
                                         <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded">
                                           <Field
@@ -270,15 +268,20 @@ export const FacilityServices = () => {
                           </div>
                         ))}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+
           <div className="flex justify-center p-2">
             <button
               type="submit"
-              className="bg-blue-v1 text-base text-white rounded-lg px-3 py-1 "
+              disabled={values.selectedItems.length === 0}
+              className={`text-base rounded-lg px-3 py-1 ${
+                values.selectedItems.length > 0
+                  ? "bg-blue-v1 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
             >
               Confirm Booking
             </button>

@@ -112,7 +112,10 @@ function Header({ variant = "default" }) {
                   fetchQRFile(decodedTokenData?.data?.ParkId || "");
                 }}
               >
-                <BsQrCode />
+                <div className="relative">
+                  <BsQrCode className="text-2xl text-gray-600" />
+                  <FaDownload className="absolute -bottom-1 -right-1 text-lg text-gray-700 bg-gray-200 rounded-full p-1 border border-gray-950" />
+                </div>
               </button>
             )}
             <hr className="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />

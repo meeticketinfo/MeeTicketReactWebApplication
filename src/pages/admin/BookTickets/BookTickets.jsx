@@ -10,6 +10,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useParkStore } from "../../../store/masters/parksStore";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 export default function AdminBookings() {
   const { allParks, fetchAllParks } = useParkStore();
@@ -96,6 +97,23 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <NavLink
+            end
+            to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
+          >
+            <span className="text-blue-v2">View Bookings</span>
+          </NavLink>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
     },
   ]);
 

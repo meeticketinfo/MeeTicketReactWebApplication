@@ -28,7 +28,7 @@ const UserCreate = ({
     middleName: isUserEditVisible ? userEditDetails.middleName : "",
     parkId: isUserEditVisible ? userEditDetails.entityId : "",
     lastName: isUserEditVisible ? userEditDetails.lastName : "",
-    //  dateOfBirth: isUserEditVisible ? userEditDetails.dateOfBirth :"",
+    dateOfBirth: "2024-11-15T06:59:41.509Z",
     emailId: isUserEditVisible ? userEditDetails.emailId : "",
     phoneNumber: isUserEditVisible ? userEditDetails.phoneNumber : "",
     password: isUserEditVisible ? userEditDetails.password : "",

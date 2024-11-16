@@ -21,8 +21,7 @@ import { bouncy } from "ldrs";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, loginError, login } = useAuthStore();
-  console.log("error",loginError)
+  const { isLoading, isAuthenticated, error, login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const {
     captchaInput,
@@ -32,15 +31,13 @@ const Login = () => {
     validateCaptchaInput,
   } = useCaptchaStore();
 
-  
-
   const initialValues = {
-    emailId: "",
+    EmailId: "",
     password: "",
   };
 
   const validationSchema = Yup.object({
-    emailId: Yup.string().required("EmailId is required"),
+    EmailId: Yup.string().required("EmailId is required"),
     password: Yup.string().required("Password is required"),
   });
 
@@ -69,7 +66,7 @@ const Login = () => {
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.removeItem("auth-store"); 
+      localStorage.removeItem("auth-store");
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
@@ -158,20 +155,20 @@ const Login = () => {
                   {/* Username Field */}
                   <div className="mb-6">
                     <label
-                      htmlFor="emailId"
+                      htmlFor="EmailId"
                       className="block text-sm font-medium text-gray-100 mb-1"
                     >
                       Email
                     </label>
                     <Field
-                      id="emailId"
-                      name="emailId"
+                      id="EmailId"
+                      name="EmailId"
                       placeholder="Enter your Email ID"
                       autoComplete="off"
                       className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
                     />
                     <ErrorMessage
-                      name="emailId"
+                      name="EmailId"
                       component="div"
                       className="text-red-500 text-sm mt-1"
                     />
@@ -193,12 +190,16 @@ const Login = () => {
                       autoComplete="off"
                       className="w-full h-12 px-4 shadow-lg  bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-200 transition duration-300"
                     />
-                    <div
-                      className="absolute right-6 top-1/2 transform -translate-y-1/6 py-4 cursor-pointer"
+                    {/* <div
+                      className="absolute right-6 top-10 transform -translate-y-1/6 py-4 cursor-pointer"
                       onClick={togglePasswordVisibility}
                     >
-                      {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
-                    </div>
+                      {showPassword ? (
+                        <FaEyeSlash size={20} />
+                      ) : (
+                        <FaEye size={20} />
+                      )}
+                    </div> */}
                     <ErrorMessage
                       name="password"
                       component="div"
@@ -235,10 +236,10 @@ const Login = () => {
                       </div>
                     </div>
                   </div>
-                 <div className="flex text-center justify-center">
-                    {loginError && (
+                  <div className="flex text-center justify-center">
+                    {error && (
                       <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
-                        {loginError}
+                        {error}
                       </small>
                     )}
                   </div>
@@ -254,10 +255,11 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${isSubmitting
+                    className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
+                      isSubmitting
                         ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
                         : "bg-blue-v1 hover:bg-blue-v2"
-                      }`}
+                    }`}
                   >
                     Sign in
                   </button>
