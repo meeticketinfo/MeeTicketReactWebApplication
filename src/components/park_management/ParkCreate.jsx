@@ -35,7 +35,7 @@ const ParkCreate = ({
     Id: isParkEditVisible ? parkEditDetails.id : "",
     EntityTypeId: isParkEditVisible ? parkEditDetails.entityTypeId : "",
     DepartmentId: isParkEditVisible ? parkEditDetails.departmentId : "",
-    DisplayName: "",
+    DisplayName: parkEditDetails.name,
     Name: isParkEditVisible ? parkEditDetails.name : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",

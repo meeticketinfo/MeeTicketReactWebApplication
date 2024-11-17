@@ -135,12 +135,15 @@ export const FacilityServices = () => {
                                       {toTitleCase(variant.name) ||
                                         toTitleCase(variant.displayName)}
                                     </h6>
+                                    <p className="text-gray-800 font-semibold p-2">
+                                      {formatToCurrency(variant.amount)}
+                                    </p>
 
                                     {variant.isPriceFixed ? (
                                       <>
-                                        <p className="text-gray-800 font-semibold p-2">
+                                        {/* <p className="text-gray-800 font-semibold p-2">
                                           {formatToCurrency(variant.amount)}
-                                        </p>
+                                        </p> */}
                                         <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded">
                                           <Field
                                             type="checkbox"
@@ -189,78 +192,80 @@ export const FacilityServices = () => {
                                                 ]);
                                               }
                                             }}
-                                            className="bg-gray-300 text-gray-800 w-12 h-full rounded hover:bg-gray-400"
+                                            className="bg-gray-300 text-gray-800 w-5 h-5 rounded hover:bg-gray-400"
                                           />
                                         </div>
                                       </>
                                     ) : (
-                                      <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded">
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const currentQuantity =
-                                              quantities[variant.id] || 0;
-                                            if (currentQuantity > 0) {
-                                              updateQuantity(variant.id, -1);
+                                      <>
+                                        <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded">
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const currentQuantity =
+                                                quantities[variant.id] || 0;
+                                              if (currentQuantity > 0) {
+                                                updateQuantity(variant.id, -1);
+                                                setFieldValue(
+                                                  "selectedItems",
+                                                  values.selectedItems.map(
+                                                    (item) =>
+                                                      item.serviceVarientId ===
+                                                      variant.id
+                                                        ? {
+                                                            ...item,
+                                                            quantity:
+                                                              item.quantity - 1,
+                                                          }
+                                                        : item
+                                                  )
+                                                );
+                                              }
+                                            }}
+                                            className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
+                                          >
+                                            -
+                                          </button>
+
+                                          <span className="text-gray-800 text-center font-medium w-[14px]">
+                                            {quantities[variant.id] || 0}
+                                          </span>
+
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const newItem = {
+                                                quantity:
+                                                  (quantities[variant.id] ||
+                                                    0) + 1,
+                                                unitAmount: variant.amount || 0,
+                                                facilityId: facility.id,
+                                                serviceId: service.id,
+                                                serviceVarientId: variant.id,
+                                              };
+
+                                              updateQuantity(variant.id, 1);
+
+                                              const updatedItems =
+                                                values.selectedItems
+                                                  .filter(
+                                                    (item) =>
+                                                      item.serviceVarientId !==
+                                                      variant.id
+                                                  )
+                                                  .concat(newItem);
+
                                               setFieldValue(
                                                 "selectedItems",
-                                                values.selectedItems.map(
-                                                  (item) =>
-                                                    item.serviceVarientId ===
-                                                    variant.id
-                                                      ? {
-                                                          ...item,
-                                                          quantity:
-                                                            item.quantity - 1,
-                                                        }
-                                                      : item
-                                                )
+                                                updatedItems
                                               );
-                                            }
-                                          }}
-                                          className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
-                                        >
-                                          -
-                                        </button>
-
-                                        <span className="text-gray-800 text-center font-medium w-[14px]">
-                                          {quantities[variant.id] || 0}
-                                        </span>
-
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const newItem = {
-                                              quantity:
-                                                (quantities[variant.id] || 0) +
-                                                1,
-                                              unitAmount: variant.amount || 0,
-                                              facilityId: facility.id,
-                                              serviceId: service.id,
-                                              serviceVarientId: variant.id,
-                                            };
-
-                                            updateQuantity(variant.id, 1);
-
-                                            const updatedItems =
-                                              values.selectedItems
-                                                .filter(
-                                                  (item) =>
-                                                    item.serviceVarientId !==
-                                                    variant.id
-                                                )
-                                                .concat(newItem);
-
-                                            setFieldValue(
-                                              "selectedItems",
-                                              updatedItems
-                                            );
-                                          }}
-                                          className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
-                                        >
-                                          +
-                                        </button>
-                                      </div>
+                                            }}
+                                            className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </>
                                     )}
                                   </div>
                                 ))}
@@ -272,6 +277,61 @@ export const FacilityServices = () => {
                 </div>
               );
             })}
+
+          {/* Preview Section */}
+          {values.selectedItems.length > 0 && (
+            <div className="preview-section bg-gray-100 p-4 rounded-md shadow-md mt-6">
+              <h3 className="text-xl font-bold text-blue-v1 mb-4">
+                Selected Items
+              </h3>
+              <ul className="space-y-4">
+                {values.selectedItems.map((item, index) => {
+                  const facility = allFacilities.find(
+                    (fac) => fac.id === item.facilityId
+                  );
+                  const service = allServices.find(
+                    (srv) => srv.id === item.serviceId
+                  );
+                  const variant = allServiceVariants.find(
+                    (varnt) => varnt.id === item.serviceVarientId
+                  );
+
+                  return (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-blue-v1">
+                          Facility: {toTitleCase(facility?.name || "")}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Service: {toTitleCase(service?.name || "")}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Variant: {toTitleCase(variant?.name || "")}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          Quantity: {item.quantity}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Amount: {formatToCurrency(item.unitAmount)}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="text-right mt-4">
+                <p className="text-lg font-bold text-blue-v1">
+                  Total:{" "}
+                  {formatToCurrency(calculateTotalAmount(values.selectedItems))}
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="flex justify-center p-2">
             <button
