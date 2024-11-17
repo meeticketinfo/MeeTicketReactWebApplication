@@ -45,9 +45,9 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
             className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
           />
         </div>
-        <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md">
+        <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
           <button onClick={handleExportCsv} className="ag-grid-button">
-            <FaFileCsv className="text-green-600 text-xl" />
+            <FaFileCsv className="text-blue-v2 text-xl" />
           </button>
           {/* <button onClick={handleExportExcel} className="ag-grid-button">
             <RiFileExcel2Fill className="text-red-600 text-2xl" />

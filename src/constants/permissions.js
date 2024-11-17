@@ -19,3 +19,13 @@ export const parkAdminPermissions = [
   "holidays",
   "entity-bookings",
 ];
+
+
+export const nodalOfficerPermissions = [
+  "dashboard",
+  "departments",
+  "entity-types",
+  "entities",
+  "entity-admins",
+  "entity-bookings",
+];

@@ -11,6 +11,7 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 import { useNavigate } from "react-router-dom";
 import { useAccordionStore } from "../../store/accordionStore";
 import { IoIosArrowDown } from "react-icons/io";
+import { formatToCurrency, toTitleCase } from "../../utils/TypographyHelper";
 
 export const FacilityServices = () => {
   const navigate = useNavigate();
@@ -85,33 +86,28 @@ export const FacilityServices = () => {
     >
       {({ values, setFieldValue }) => (
         <Form className="facility-container space-y-6 px-4 lg:px-0">
-          {allFacilities?.map((facility) => {
-            const isExpanded = expandedItems.includes(facility.id);
+          {allFacilities
+            ?.filter((facility) =>
+              allServices.some((service) => service.facilityId === facility.id)
+            )
+            .map((facility) => {
+              return (
+                <div
+                  key={facility.id}
+                  className="facility backdrop-blur-sm bg-white/30 border border-blue-v1 p-2 rounded-md shadow-md text-white cursor-pointer"
+                >
+                  <div className="bg-white p-3 rounded-lg">
+                    <div
+                      className="flex justify-between"
+                      onClick={() => toggleItem(facility.id)}
+                    >
+                      <h4 className="text-1xl font-bold text-blue-v1 cursor-pointer">
+                        {toTitleCase(facility.displayName) ||
+                          toTitleCase(facility.name)}
+                      </h4>
+                    </div>
+                    {/* <p className="text-sm opacity-80">{facility.description}</p> */}
 
-            return (
-              <div
-                key={facility.id}
-                className="facility backdrop-blur-sm bg-white/30 border border-gray-100 p-2 rounded-md shadow-md text-white cursor-pointer"
-              >
-                <div className="bg-white p-3 rounded-lg">
-                  <div
-                    className="flex justify-between"
-                    onClick={() => toggleItem(facility.id)}
-                  >
-                    <h4 className="text-1xl font-bold text-blue-v1 cursor-pointer">
-                      {facility.displayName || facility.name}
-                    </h4>
-                    <span className="text-gray-300">
-                      <IoIosArrowDown
-                        className={`text-2xl text-gray-300 transition-transform duration-200 ${
-                          isExpanded ? "rotate-180" : "rotate-0"
-                        }`}
-                      />
-                    </span>
-                  </div>
-                  <p className="text-sm opacity-80">{facility.description}</p>
-
-                  {isExpanded && (
                     <div className="services-container space-y-4 mt-4">
                       {allServices
                         .filter((service) => service.facilityId === facility.id)
@@ -121,7 +117,8 @@ export const FacilityServices = () => {
                             className="service bg-gray-200 border- border-blue-v2 p-2 rounded-md text-white"
                           >
                             <h6 className="text-1xl text-blue-v1 font-semibold">
-                              {service.displayName || service.name}
+                              {toTitleCase(service.displayName) ||
+                                toTitleCase(service.name)}
                             </h6>
 
                             <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
@@ -135,14 +132,18 @@ export const FacilityServices = () => {
                                     className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex justify-between gap-4"
                                   >
                                     <h6 className="text-sm font-medium text-[#0c3771] p-2">
-                                      {variant.name || variant.displayName}
+                                      {toTitleCase(variant.name) ||
+                                        toTitleCase(variant.displayName)}
                                     </h6>
+                                    <p className="text-gray-800 font-semibold p-2">
+                                      {formatToCurrency(variant.amount)}
+                                    </p>
 
                                     {variant.isPriceFixed ? (
                                       <>
-                                        <p className="text-gray-800 font-semibold p-2">
-                                          ${variant.amount}
-                                        </p>
+                                        {/* <p className="text-gray-800 font-semibold p-2">
+                                          {formatToCurrency(variant.amount)}
+                                        </p> */}
                                         <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded">
                                           <Field
                                             type="checkbox"
@@ -191,78 +192,80 @@ export const FacilityServices = () => {
                                                 ]);
                                               }
                                             }}
-                                            className="bg-gray-300 text-gray-800 w-12 h-full rounded hover:bg-gray-400"
+                                            className="bg-gray-300 text-gray-800 w-5 h-5 rounded hover:bg-gray-400"
                                           />
                                         </div>
                                       </>
                                     ) : (
-                                      <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded">
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const currentQuantity =
-                                              quantities[variant.id] || 0;
-                                            if (currentQuantity > 0) {
-                                              updateQuantity(variant.id, -1);
+                                      <>
+                                        <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded">
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const currentQuantity =
+                                                quantities[variant.id] || 0;
+                                              if (currentQuantity > 0) {
+                                                updateQuantity(variant.id, -1);
+                                                setFieldValue(
+                                                  "selectedItems",
+                                                  values.selectedItems.map(
+                                                    (item) =>
+                                                      item.serviceVarientId ===
+                                                      variant.id
+                                                        ? {
+                                                            ...item,
+                                                            quantity:
+                                                              item.quantity - 1,
+                                                          }
+                                                        : item
+                                                  )
+                                                );
+                                              }
+                                            }}
+                                            className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
+                                          >
+                                            -
+                                          </button>
+
+                                          <span className="text-gray-800 text-center font-medium w-[14px]">
+                                            {quantities[variant.id] || 0}
+                                          </span>
+
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const newItem = {
+                                                quantity:
+                                                  (quantities[variant.id] ||
+                                                    0) + 1,
+                                                unitAmount: variant.amount || 0,
+                                                facilityId: facility.id,
+                                                serviceId: service.id,
+                                                serviceVarientId: variant.id,
+                                              };
+
+                                              updateQuantity(variant.id, 1);
+
+                                              const updatedItems =
+                                                values.selectedItems
+                                                  .filter(
+                                                    (item) =>
+                                                      item.serviceVarientId !==
+                                                      variant.id
+                                                  )
+                                                  .concat(newItem);
+
                                               setFieldValue(
                                                 "selectedItems",
-                                                values.selectedItems.map(
-                                                  (item) =>
-                                                    item.serviceVarientId ===
-                                                    variant.id
-                                                      ? {
-                                                          ...item,
-                                                          quantity:
-                                                            item.quantity - 1,
-                                                        }
-                                                      : item
-                                                )
+                                                updatedItems
                                               );
-                                            }
-                                          }}
-                                          className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
-                                        >
-                                          -
-                                        </button>
-
-                                        <span className="text-gray-800 text-center font-medium w-[14px]">
-                                          {quantities[variant.id] || 0}
-                                        </span>
-
-                                        <button
-                                          type="button"
-                                          onClick={() => {
-                                            const newItem = {
-                                              quantity:
-                                                (quantities[variant.id] || 0) +
-                                                1,
-                                              unitAmount: variant.amount || 0,
-                                              facilityId: facility.id,
-                                              serviceId: service.id,
-                                              serviceVarientId: variant.id,
-                                            };
-
-                                            updateQuantity(variant.id, 1);
-
-                                            const updatedItems =
-                                              values.selectedItems
-                                                .filter(
-                                                  (item) =>
-                                                    item.serviceVarientId !==
-                                                    variant.id
-                                                )
-                                                .concat(newItem);
-
-                                            setFieldValue(
-                                              "selectedItems",
-                                              updatedItems
-                                            );
-                                          }}
-                                          className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
-                                        >
-                                          +
-                                        </button>
-                                      </div>
+                                            }}
+                                            className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </>
                                     )}
                                   </div>
                                 ))}
@@ -270,15 +273,75 @@ export const FacilityServices = () => {
                           </div>
                         ))}
                     </div>
-                  )}
+                  </div>
                 </div>
+              );
+            })}
+
+          {/* Preview Section */}
+          {values.selectedItems.length > 0 && (
+            <div className="preview-section bg-gray-100 p-4 rounded-md shadow-md mt-6">
+              <h3 className="text-xl font-bold text-blue-v1 mb-4">
+                Selected Items
+              </h3>
+              <ul className="space-y-4">
+                {values.selectedItems.map((item, index) => {
+                  const facility = allFacilities.find(
+                    (fac) => fac.id === item.facilityId
+                  );
+                  const service = allServices.find(
+                    (srv) => srv.id === item.serviceId
+                  );
+                  const variant = allServiceVariants.find(
+                    (varnt) => varnt.id === item.serviceVarientId
+                  );
+
+                  return (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-blue-v1">
+                          Facility: {toTitleCase(facility?.name || "")}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Service: {toTitleCase(service?.name || "")}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Variant: {toTitleCase(variant?.name || "")}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          Quantity: {item.quantity}
+                        </p>
+                        <p className="text-sm text-gray-700">
+                          Amount: {formatToCurrency(item.unitAmount)}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="text-right mt-4">
+                <p className="text-lg font-bold text-blue-v1">
+                  Total:{" "}
+                  {formatToCurrency(calculateTotalAmount(values.selectedItems))}
+                </p>
               </div>
-            );
-          })}
+            </div>
+          )}
+
           <div className="flex justify-center p-2">
             <button
               type="submit"
-              className="bg-blue-v1 text-base text-white rounded-lg px-3 py-1 "
+              disabled={values.selectedItems.length === 0}
+              className={`text-base rounded-lg px-3 py-1 ${
+                values.selectedItems.length > 0
+                  ? "bg-blue-v1 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
             >
               Confirm Booking
             </button>
