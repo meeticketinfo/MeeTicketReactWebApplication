@@ -25,15 +25,20 @@ import EntityTypes from "../pages/admin/entity_types/EntityTypes";
 import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
 import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
 import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
+import NotFound from "../pages/Error/NotFound";
 
 export const routes = [
+  {
+    path: "*",
+    element: <NotFound />,
+  },
   {
     path: "/",
     element: <Login />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
   {
-    path: "/park-management",
+    path: "/entities",
     element: <ProtectedRoute element={<AdminParks />} />,
   },
   {
@@ -76,8 +81,8 @@ export const routes = [
     element: <ProtectedRoute element={<WorkingDays />} />,
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
-  { path: "/booktickets", element: <BookTickets /> },
-  { path: "/booktickets/view-details/:id", element: <BookingDetails /> },
+  { path: "/entity-bookings", element: <BookTickets /> },
+  { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
   {
     path: "/departments",

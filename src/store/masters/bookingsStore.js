@@ -13,6 +13,14 @@ export const useBookingsStore = create((set) => ({
   bookingDetails: {},
   isFetchCurrentBookingDetailsLoading: false,
 
+  //
+  bookings: [],
+  totalCount: 0,
+  currentPage: 1,
+  pageSize: 10,
+  isLoading: false,
+  //
+
   serializeFilters: (filters) =>
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -21,6 +29,9 @@ export const useBookingsStore = create((set) => ({
   setBookingDetails: (newBookingDetails) => {
     set({ bookingDetails: newBookingDetails });
   },
+
+  // Set the current page
+  setCurrentPage: (page) => set({ currentPage: page }),
 
   // Fetch all Bookings
   fetchAllBookings: async (pageIndex = 1, pageSize = 10, filters = {}) => {
@@ -32,11 +43,39 @@ export const useBookingsStore = create((set) => ({
         `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS}`
       );
       set({
-        allBookings: response.data,
+        allBookings: response.data.data.data,
         isFetchAllBookingsLoading: false,
       });
     } catch (error) {
       set({ error: error.message, isFetchAllBookingsLoading: false });
+    }
+  },
+
+  // Fetch bookings with optional filtering
+  fetchAllEntityBookingsByFilters: async (filters = {}) => {
+    set({ isLoading: true, error: null });
+    const { currentPage, pageSize } = useBookingsStore.getState();
+    const serializedFilters = Object.entries(filters)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+
+    try {
+      const response = await apiService.get(
+        `Transaction/GetAllEntityBookingByFilters?PageIndex=${currentPage}&PageSize=${pageSize}&${serializedFilters}`
+      );
+
+      if (response.status === 200) {
+        // const { data, totalCount } = response.data.data;
+        set({
+          bookings: response.data.data.data,
+          totalCount: response.data.totalCount,
+          isLoading: false,
+        });
+      } else {
+        set({ error: response.message, isLoading: false });
+      }
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
     }
   },
 

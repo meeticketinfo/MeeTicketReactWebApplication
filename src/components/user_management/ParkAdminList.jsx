@@ -20,8 +20,16 @@ const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      minWidth: 80,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "entityName",
+      headerName: "Entity Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "firstName",
@@ -39,17 +47,37 @@ const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
     },
     {
       field: "emailId",
-      headerName: "emailId",
+      headerName: "Email",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "phoneNumber",
-      headerName: "Phone Number",
+      headerName: "Mobile Number",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "isActive",
+      headerName: "Status",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <span
+            className={`${
+              params.value
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
+            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+          >
+            {" "}
+            {params.value ? "Active" : "Inactive"}
+          </span>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
     },
     {
       headerName: "Actions",

@@ -23,7 +23,7 @@ const EntityCreateForm = ({
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeId) || "",
     entityTypeName:
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeName) || "",
-    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : true,
+    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : false,
   };
 
   const validationSchema = Yup.object({
@@ -43,19 +43,18 @@ const EntityCreateForm = ({
       );
 
       if (result.data.status === 200) {
-        // toast.success(
-        //   isEntityTypeEditVisible
-        //     ? "EntityType Updated successfully!"
-        //     : "EntityType created successfully!"
-        // );
+        resetForm();
+        setOpenModalId(null);
+        toast.success(
+          isEntityTypeEditVisible
+            ? "EntityType Updated successfully!"
+            : "EntityType created successfully!"
+        );
         fetchAllEntityTypes();
 
         setTimeout(() => {
-          setOpenModalId(null);
           setIsEntityTypeEditVisible(false);
-        }, 3000);
-
-        resetForm();
+        }, 2000);
       }
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
@@ -80,9 +79,7 @@ const EntityCreateForm = ({
   };
   return (
     <>
-      {" "}
       <div className="">
-        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -142,7 +139,7 @@ const EntityCreateForm = ({
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  //   disabled={isSaveEntityTypeDetailsLoading}
+                  disabled={isSaveEntityTypeDetailsLoading}
                 >
                   {isSaveEntityTypeDetailsLoading
                     ? "Saving..."

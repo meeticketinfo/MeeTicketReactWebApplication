@@ -5,6 +5,7 @@ import { useEntityTypesStore } from "../../store/masters/EntityTypesStore";
 import { LuClipboardEdit } from "react-icons/lu";
 import EntityCreateForm from "./EntityCreateForm";
 import { useModalStore } from "../../store/modalStore";
+import { ToastContainer } from "react-toastify";
 
 const EntityTypeList = ({
   setIsEntityTypeCreateVisible,
@@ -48,17 +49,17 @@ const EntityTypeList = ({
           <span
             className={`${
               params.value
-                ? "bg-blue-100 text-blue-800"
-                : "bg-red-100 text-red-800"
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
             } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
           >
+            {" "}
             {params.value ? "Active" : "Inactive"}
           </span>
         </div>
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
     },
     {
       headerName: "Actions",
@@ -86,12 +87,12 @@ const EntityTypeList = ({
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={2000} />{" "}
       <AgGridTable
-        rowData={allEntityTypes?.data || []}
+        rowData={allEntityTypes || []}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllEntityTypesLoading}
       />
-
       <PopupModal
         popupModalId="first-modal"
         isOpen={openModalId === "entity-modal"}

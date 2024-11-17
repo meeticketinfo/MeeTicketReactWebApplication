@@ -36,8 +36,8 @@ const ServiceCreate = ({
     facilityId: (isServiceEditVisible && ServiceEditDetails.facilityId) || "",
   };
   const validationSchema = Yup.object({
-    facilityId: Yup.string().required("Please enter display name."),
-    name: Yup.string().required("Please enter display name."),
+    facilityId: Yup.string().required("Please enter facility ."),
+    name: Yup.string().required("Please enter Service name."),
     displayName: Yup.string()
       .required("Please enter display name.")
       .max(50, "display name should be less than 50 characters"),
@@ -172,7 +172,7 @@ const ServiceCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter park name"
+                    placeholder="Enter Dispaly name"
                   />
                   <ErrorMessage
                     name="displayName"

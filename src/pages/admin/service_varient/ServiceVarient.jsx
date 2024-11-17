@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import ServiceVariantList from "../../../components/service_variant_management/serviceVariantList";
 import ServiceVarientCreate from "../../../components/service_variant_management/serviceVarientCreate";
+import BackButton from "../../../components/BackButton";
 
 export default function ServiceVariant() {
   const [isServiceVarientCreateVisible, setIsServiceVarientCreateVisible] =
@@ -27,16 +28,23 @@ export default function ServiceVariant() {
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
+              {!isServiceVarientCreateVisible ? (
               <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
                 <span
                   className="max-xs:sr-only"
                   onClick={toggleServiceVarientCreate}
                 >
-                  {!isServiceVarientCreateVisible
-                    ? "Add Service Varient"
-                    : "Back"}
+                 Add Service Varient
                 </span>
-              </button>
+                </button>
+              ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsServiceVarientCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
+           
             </div>
           </div>
           {/* Cards */}

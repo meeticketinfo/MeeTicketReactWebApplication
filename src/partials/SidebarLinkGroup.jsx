@@ -13,7 +13,7 @@ function SidebarLinkGroup({
 
   return (
     <ul
-      className={` rounded-lg mb-0.5 last:mb-0 transition duration-150 ease-in-out ${
+      className={` rounded-2xl mb-0.5 last:mb-0 transition duration-150 ease-in-out ${
         activecondition &&
         "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]"
       }`}

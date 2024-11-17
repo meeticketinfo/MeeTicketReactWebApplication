@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "../constants/apiEndpoints";
 import useAuthStore from "../store/authStore";
+import { handleApiError } from "../utils/apiErrorHandler";
 
 export const fetchQRFile = async (entityId) => {
     try {

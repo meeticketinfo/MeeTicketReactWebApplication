@@ -28,8 +28,7 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails } = useAuthStore();
-
+  const { sidebarMenuItems, roleDetails , logout } = useAuthStore();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -133,7 +132,7 @@ function Sidebar({ variant = "default" }) {
             </svg>
           </button>
           {/* Logo */}
-          <NavLink end to="/" className="block">
+          <NavLink end to="/dashboard" className="block">
             <img alt="site-logo" src={logoIcon} width={60} height={60} />
           </NavLink>
         </div>
@@ -154,7 +153,7 @@ function Sidebar({ variant = "default" }) {
               {filteredSidebarItems.map((item, index) => (
                 <li
                   key={index}
-                  className={`rounded-lg mb-0.5 pb-2 last:mb-0 ${
+                  className={`rounded-2xl mb-0.5 pb-2 last:mb-0 ${
                     item.subItems.some((subItem) =>
                       pathname.startsWith(subItem.path)
                     )
@@ -203,17 +202,24 @@ function Sidebar({ variant = "default" }) {
                             <ul className={`mt-1 ${!open && "hidden"}`}>
                               {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
                               {item.subItems.map((subItem, subIndex) => (
-                                <li key={subIndex} className=" mb-1 last:mb-0">
+                                <li
+                                  key={subIndex}
+                                  className="mb-1 px-2 last:mb-0"
+                                >
                                   <NavLink
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      `block truncate transition duration-150 ease-in-out rounded-l-lg ml-8 px-3 py-2 font-medium text-sm ${
+                                      `block truncate transition duration-150 ease-in-out rounded-2xl ml-8 px-3 py-2 font-medium text-sm ${
                                         isActive
                                           ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
                                           : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
                                       }`
                                     }
+                                    // style={{
+                                    //   clipPath:
+                                    //     "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)",
+                                    // }}
                                   >
                                     <div className="flex items-center">
                                       {subItem.icon && (
@@ -267,14 +273,16 @@ function Sidebar({ variant = "default" }) {
           </div>
         </div>
 
-        {/* <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
-          <div className="pl-4 pr-3 py-2">
-            <button className="flex items-center gap-3 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400">
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+          <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
+            <button onClick={() => logout()} className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100">
               <TbLogout2 className="shrink-0 text-[22px]" />
-              {!sidebarOpen && <span className="">Log out</span>}
+              {sidebarExpanded && <span className=""
+                 
+              >Log out</span>}
             </button>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   );

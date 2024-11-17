@@ -3,84 +3,142 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
+import { formatToCurrency } from "../../../utils/TypographyHelper";
+import BackButton from "../../../components/BackButton";
+import useAuthStore from "../../../store/authStore";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useParkStore } from "../../../store/masters/parksStore";
+import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
+import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 export default function AdminBookings() {
-  const { allBookings, fetchAllBookings } = useBookingsStore();
+  const { allParks, fetchAllParks } = useParkStore();
+  const { isFetchEntityBookingsLoading, fetchAllEntityBookingsByFilters } =
+    useDashboardStore();
+  const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } =
+    useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
+  const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
+  const role = roleDetails?.name;
 
   useEffect(() => {
     fetchAllBookings();
+    fetchAllParks();
   }, []);
 
+  const initialValues = {
+    fromDate: "",
+    toDate: "",
+    parkId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
+  };
   const [columnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      minWidth: 80,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
-      field: "id",
-      headerName: "Booking ID",
+      field: "bookingId",
+      headerName: "Booking Id",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value && params.value.trim() !== "" ? params.value : "N/A",
+    },
+    {
+      field: "userName",
+      headerName: "User Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "user",
-      headerName: "User",
+      field: "parkName",
+      headerName: "Entity Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "amount",
-      headerName: "Amount",
+      field: "facilityName",
+      headerName: "Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "park",
-      headerName: "Park",
+      field: "serviceName",
+      headerName: "Service Name",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingStatus",
-      headerName: "Booking Status",
+      field: "serviceVariantName",
+      headerName: "Service Variant Name",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingDate",
+      field: "bookingRegistredDate",
       headerName: "Booking Date",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "00:00",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "amount",
+      headerName: "Booking Amount",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <NavLink
+            end
+            to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
+          >
+            <span className="text-blue-v2">View Bookings</span>
+          </NavLink>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
     },
   ]);
 
-  const handleQuantityChange = (setter, value) => {
-    setter((prev) => Math.max(0, prev + value));
-  };
-
-  const calculateTotalTickets = () =>
-    adultEntry + childrenEntry + adultPlayground + childrenPlayground;
-
-  const calculateTotalAmount = () => {
-    // Entry ticket amount (₹50 for adult, ₹30 for children)
-    const entryTicketAmount = adultEntry * 50 + childrenEntry * 30;
-
-    // Playground ticket amount (₹30 for adult and ₹15 for children if AC, ₹20 and ₹10 if Non-AC)
-    const playgroundTicketAmount =
-      adultPlayground * (playgroundType === "AC" ? 30 : 20) +
-      childrenPlayground * (playgroundType === "AC" ? 15 : 10);
-
-    // Total amount
-    return entryTicketAmount + playgroundTicketAmount;
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      setSubmitting(true);
+      const filters = values;
+      const result = await fetchAllEntityBookingsByFilters(null, null, filters);
+      if (result?.data?.status === 200) {
+        resetForm();
+      } else {
+        // Handling a response with an unexpected status code
+        toast.error(
+          result?.data?.message || "Unexpected response. Please try again."
+        );
+      }
+    } catch (error) {
+      // Catching and handling any errors during the API call
+      const errorMessage =
+        error?.response?.data?.message ||
+        "Error creating user. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -94,19 +152,27 @@ export default function AdminBookings() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-                onClick={() => setIsBookingFormVisible(true)} // Show booking form
-              >
-                Add Booking
-              </button>
+              role === "ROLE_ADMIN" && (
+                <button
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                >
+                  Book Tickets
+                </button>
+              )
             ) : (
-              <button
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-                onClick={() => setIsBookingFormVisible(false)} // Hide booking form
-              >
-                Back
-              </button>
+              // <button
+              //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+              //   onClick={() => setIsBookingFormVisible(false)} // Hide booking form
+              // >
+              //   Back
+              // </button>
+              <BackButton
+                label="Back"
+                onClick={() => setIsBookingFormVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+                // disabled={isSubmitting}
+              />
             )}
           </div>
         </div>
@@ -117,7 +183,78 @@ export default function AdminBookings() {
         {/* Table Section - Show only if form is not visible */}
         {!isBookingFormVisible && (
           <div className="mb-8">
+            <div>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={(values, actions) => onSubmit(values, actions)}
+              >
+                <Form>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                    {role !== "ROLE_ADMIN" && (
+                      <div>
+                        <label className="block text-xs font-medium">
+                          Entity
+                        </label>
+                        <Field
+                          as="select"
+                          name="entityId"
+                          className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        >
+                          <option value="">Select </option>
+                          {allParks.map((park) => (
+                            <option key={park.id} value={park.id}>
+                              {park.name}
+                            </option>
+                          ))}
+                        </Field>
+                      </div>
+                    )}
+                    <div>
+                      <label
+                        htmlFor="fromDate"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        From Date
+                      </label>
+                      <Field
+                        type="date"
+                        name="fromDate"
+                        className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        placeholder="Enter date of birth"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="toDate"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        To Date
+                      </label>
+                      <Field
+                        type="date"
+                        name="toDate"
+                        className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        placeholder="Enter date of birth"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        type="submit"
+                        className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                        disabled={isFetchEntityBookingsLoading}
+                      >
+                        Search
+                      </button>
+                    </div>
+                  </div>
+                </Form>
+              </Formik>
+            </div>
             <AgGridTable
+              isFetchLoading={isFetchAllBookingsLoading}
               columnDefs={columnDefs}
               rowData={allBookings || []}
               defaultColDef={{

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import headerLogo from "../../images/Telangana-logo.png";
@@ -14,7 +14,7 @@ import {
   validateCaptcha,
 } from "react-simple-captcha";
 import useCaptchaStore from "../../store/useCaptchaStore";
-import { FaRedo } from "react-icons/fa";
+import { FaRedo, FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
 import { bouncy } from "ldrs";
 
@@ -22,7 +22,7 @@ const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
   const { isLoading, isAuthenticated, error, login } = useAuthStore();
-
+  const [showPassword, setShowPassword] = useState(false);
   const {
     captchaInput,
     captchaError,
@@ -59,6 +59,20 @@ const Login = () => {
     }
     setSubmitting(false);
   };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("auth-store");
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <>
@@ -172,10 +186,20 @@ const Login = () => {
                       id="password"
                       name="password"
                       placeholder="Enter your password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       autoComplete="off"
                       className="w-full h-12 px-4 shadow-lg  bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-200 transition duration-300"
                     />
+                    {/* <div
+                      className="absolute right-6 top-10 transform -translate-y-1/6 py-4 cursor-pointer"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {showPassword ? (
+                        <FaEyeSlash size={20} />
+                      ) : (
+                        <FaEye size={20} />
+                      )}
+                    </div> */}
                     <ErrorMessage
                       name="password"
                       component="div"

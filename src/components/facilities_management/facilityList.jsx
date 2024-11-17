@@ -19,7 +19,8 @@ const FacilityList = ({
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      minWidth: 80,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
@@ -30,8 +31,15 @@ const FacilityList = ({
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "parkName",
-      headerName: "Park Name",
+      field: "contactName",
+      headerName: "Contact Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "contactNumber",
+      headerName: "Contact Number",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",

@@ -1,8 +1,7 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
 
-const API_BASE_URL =
-  "https://meeticketservice-dev-dotnet.azurewebsites.net/api/";
+const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -75,7 +74,6 @@ const apiService = {
       },
     });
   },
-  
 };
 
 export default apiService;

@@ -5,10 +5,11 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 export const useDashboardStore = create((set) => ({
   allBookings: [],
   isFetchAllBookingsLoading: false,
-  isFetchCountsLoading:false,
-  isFetchPieChartsLoading : false,
-  isFetchEntityBookingsLoading : false ,
-  allEntityBookings:[],
+  isFetchCountsLoading: false,
+  isFetchPieChartsLoading: false,
+  isFetchEntityBookingsLoading: false,
+  totalEntityBookingRecords: 0,
+  allEntityBookings: [],
   allPieCharts: [],
   allCounts: [],
   error: null,
@@ -46,15 +47,24 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllDashboardCounts: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllDashboardCounts: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {},
+    roleDetails
+  ) => {
     set({ isFetchCountsLoading: true });
     try {
+      const role = roleDetails?.name;
+      const endpoint = role == "ROLE_ADMIN" ?
+         API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE 
+     : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}`
+        `${endpoint}`
       );
-      set({
+      set({ 
         allCounts: response.data,
         isFetchCountsLoading: false,
       });
@@ -63,7 +73,11 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllEntityWiseCounts: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {}
+  ) => {
     set({ isFetchPieChartsLoading: true });
     try {
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
@@ -80,17 +94,24 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityBookingsByFilters: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllEntityBookingsByFilters: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {}
+  ) => {
     set({ isFetchEntityBookingsLoading: true });
     try {
-        const filterString = useDashboardStore.getState().serializeFilters(filters);
+      const filterString = useDashboardStore
+        .getState()
+        .serializeFilters(filters);
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?${pageSize}&${filterString}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
         // `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}`
       );
       set({
-        allEntityBookings: response.data.data,
+        allEntityBookings: response.data.data.data,
         isFetchEntityBookingsLoading: false,
+        totalEntityBookingRecords: response?.data?.totalCount || 0,
       });
     } catch (error) {
       set({ error: error.message, isFetchEntityBookingsLoading: false });

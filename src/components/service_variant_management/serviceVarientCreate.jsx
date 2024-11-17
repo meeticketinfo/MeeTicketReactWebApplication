@@ -43,6 +43,9 @@ const ServiceVarientCreate = ({
     isPriceFixed: isServiceVarientEditVisible
       ? ServiceVariantEditDetails.isPriceFixed
       : false,
+    isActive: isServiceVarientEditVisible
+      ? ServiceVariantEditDetails.isActive
+      : true,
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the name."),
@@ -62,13 +65,22 @@ const ServiceVarientCreate = ({
   ) => {
     try {
       // Call the saveParkDetails function from the store
+      const formattedValues = {
+        ...values,
+        isActive: values.isActive === "true" || values.isActive === true,
+      };
+
       const result = await saveServiceVarientDetails(
-        values,
+        formattedValues,
         isServiceVarientEditVisible ? true : false
       );
       console.log(result);
       if (result.data.status === 200) {
-        toast.success(isServiceVarientEditVisible?"Service Variant Updated successfully!":"Service Variant created successfully!");
+        toast.success(
+          isServiceVarientEditVisible
+            ? "Service Variant Updated successfully!"
+            : "Service Variant created successfully!"
+        );
         setTimeout(() => {
           setIsServiceVarientCreateVisible(false);
           setIsServiceVarientEditVisible(false);
@@ -230,6 +242,28 @@ const ServiceVarientCreate = ({
                   <ErrorMessage
                     name="isPriceFixed"
                     component="span"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-medium">Status</label>
+                  <Field
+                    as="select"
+                    name="isActive"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.isActive && touched.isActive
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="active"
+                    component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>

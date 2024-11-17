@@ -1,22 +1,31 @@
 export const superAdminPermissions = [
   "dashboard",
-  "park-management",
-  "entity-admins",
   "departments",
   "entity-types",
-  "nodal-officer",
-  "rtc-bookings" , 
-  "metro-bookings"
+  "entities",
+  "entity-admins",
+  "entity-bookings",
 ];
+
 export const parkAdminPermissions = [
   "dashboard",
+  //
   "facilites",
   "service",
   "service-varient",
   "gate-keepers",
-  "payments",
+  //
   "bookings",
-  "working-days",
   "holidays",
-  "booktickets",
+  "entity-bookings",
+];
+
+
+export const nodalOfficerPermissions = [
+  "dashboard",
+  "departments",
+  "entity-types",
+  "entities",
+  "entity-admins",
+  "entity-bookings",
 ];

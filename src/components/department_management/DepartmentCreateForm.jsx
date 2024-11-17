@@ -31,7 +31,7 @@ const DepartmentCreateForm = ({
       "",
     isActive: isDepartmentTypeEditVisible
       ? departmentTypeEditDetails?.isActive
-      : true,
+      : false,
   };
 
   const validationSchema = Yup.object({
@@ -52,10 +52,15 @@ const DepartmentCreateForm = ({
 
       if (result.data.status === 200) {
         fetchAllDepartmentTypes();
+        setOpenModalId(null);
+        toast.success(
+          isDepartmentTypeEditVisible
+            ? "Department Updated successfully"
+            : "Department Added successfully"
+        );
         setTimeout(() => {
-          setOpenModalId(null);
           setIsDepartmentTypeEditVisible(false);
-        }, 3000);
+        }, 2000);
 
         resetForm();
       }
@@ -87,9 +92,7 @@ const DepartmentCreateForm = ({
   }, [openModalId]);
   return (
     <>
-      {" "}
       <div className="">
-        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -101,7 +104,7 @@ const DepartmentCreateForm = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-6">
                 {/* Service Name */}
-                <div>
+                <div className="">
                   <label className="block text-sm font-medium">
                     {" "}
                     Department Name
@@ -115,7 +118,7 @@ const DepartmentCreateForm = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter service name"
+                    placeholder="Enter Department name"
                   />
                   <ErrorMessage
                     name="departmentName"

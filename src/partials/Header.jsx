@@ -7,8 +7,10 @@ import { toTitleCase } from "../utils/TypographyHelper";
 import { RiMenuUnfold2Line } from "react-icons/ri";
 import { RiMenuFold2Line } from "react-icons/ri";
 import { fetchQRFile } from "../services/fetchFileService";
+import { BsQrCode } from "react-icons/bs";
+import { FaDownload } from "react-icons/fa6";
 
-function Header({ variant = "default" , }) {
+function Header({ variant = "default" }) {
   const { sidebarOpen, sidebarExpanded, setSidebarOpen, setSidebarExpanded } =
     useSidebarStore();
   const { logout, isAuthenticated, roleDetails, decodedTokenData } =
@@ -24,9 +26,9 @@ function Header({ variant = "default" , }) {
 
   return (
     <header
-      className={`sticky top-4 before:absolute shadow-lg backdrop-blur-sm bg-white/30 border border-bluev1 z-30 mx-4 rounded-[20px] `}
+      className={`sticky top-4 before:absolute shadow-lg backdrop-blur-sm bg-white/30 border border-bluev1 z-30 mx-4 rounded-2xl `}
     >
-      <div className="px-4 sm:px-6 lg:px-8 shadow-lg rounded-[20px]">
+      <div className="px-4 sm:px-6 lg:px-8 shadow-lg rounded-2xl">
         <div
           className={`flex items-center justify-between h-16  ${
             variant === "v2" || variant === "v3"
@@ -104,9 +106,18 @@ function Header({ variant = "default" , }) {
 
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
-            <button onClick={()=>{
-              fetchQRFile(decodedTokenData?.data?.ParkId || "")
-            }} >Download QR</button>
+            {roleDetails?.name == "ROLE_ADMIN" && (
+              <button
+                onClick={() => {
+                  fetchQRFile(decodedTokenData?.data?.ParkId || "");
+                }}
+              >
+                <div className="relative">
+                  <BsQrCode className="text-2xl text-gray-600" />
+                  <FaDownload className="absolute -bottom-1 -right-1 text-lg text-gray-700 bg-gray-200 rounded-full p-1 border border-gray-950" />
+                </div>
+              </button>
+            )}
             <hr className="w-px h-6 bg-gray-200 dark:bg-gray-700/60 border-none" />
             <UserMenu align="right" />
           </div>

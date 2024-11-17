@@ -8,8 +8,14 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 
-const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , setIsUserEditVisible}) => {
-  const { saveUserDetails, isSaveUserDetailsLoading , userEditDetails } = useUsersStore();
+const UserCreate = ({
+  roleName,
+  setIsUserCreateVisible,
+  isUserEditVisible,
+  setIsUserEditVisible,
+}) => {
+  const { saveUserDetails, isSaveUserDetailsLoading, userEditDetails } =
+    useUsersStore();
   const { allParks, fetchAllParks } = useParkStore();
 
   useEffect(() => {
@@ -18,19 +24,36 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
 
   const initialValues = {
     id: isUserEditVisible ? userEditDetails.id : "",
-    firstName: isUserEditVisible  ? userEditDetails.firstName :  "",
-    middleName:  isUserEditVisible ? userEditDetails.middleName: "",
-    parkId:  isUserEditVisible ? userEditDetails.parkId :"",
-    lastName:isUserEditVisible ? userEditDetails.lastName: "",
-  //  dateOfBirth: isUserEditVisible ? userEditDetails.dateOfBirth :"",
-    emailId:  isUserEditVisible ? userEditDetails.emailId : "",
-    phoneNumber:isUserEditVisible ? userEditDetails.phoneNumber :  "",
-    password: isUserEditVisible ? userEditDetails.password :"",
-    roleId:isUserEditVisible ? userEditDetails.roleId : "",
+    firstName: isUserEditVisible ? userEditDetails.firstName : "",
+    middleName: isUserEditVisible ? userEditDetails.middleName : "",
+    parkId: isUserEditVisible ? userEditDetails.entityId : "",
+    lastName: isUserEditVisible ? userEditDetails.lastName : "",
+    dateOfBirth: "2024-11-15T06:59:41.509Z",
+    emailId: isUserEditVisible ? userEditDetails.emailId : "",
+    phoneNumber: isUserEditVisible ? userEditDetails.phoneNumber : "",
+    password: isUserEditVisible ? userEditDetails.password : "",
+    roleId: isUserEditVisible ? userEditDetails.roleId : "",
     isConfirmed: isUserEditVisible ? userEditDetails.isConfirmed : true,
+    isActive: isUserEditVisible ? userEditDetails.isActive : true,
   };
 
-  const validationSchema = Yup.object({
+  const createValidationSchema = Yup.object({
+    firstName: Yup.string()
+      .required("First Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    lastName: Yup.string()
+      //.required("Last Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    emailId: Yup.string().required("EmailId is required"),
+    parkId: Yup.string().required("Entity is required"),
+    phoneNumber: Yup.number().required("Phone Number is required"),
+    // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password cannot be less than 6 characters")
+      .max(20, "Password cannot be more than 30 characters"),
+  });
+  const updateValidationSchema = Yup.object({
     firstName: Yup.string()
       //.required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
@@ -38,13 +61,9 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
       //.required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-     parkId: Yup.string().required("Entity is required"),
+    // parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(6, "Password cannot be less than 6 characters")
-      .max(20, "Password cannot be more than 30 characters"),
   });
 
   const onSubmit = async (
@@ -53,15 +72,29 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
     saveUserDetails
   ) => {
     try {
-      const result = await saveUserDetails(values, isUserEditVisible ? true: false);
+      const formattedValues = {
+        ...values,
+        isActive: values.isActive === "true" || values.isActive === true,
+        password: isUserEditVisible
+          ? userEditDetails.password || ""
+          : values.password,
+      };
+
+      console.log("formattedValues", formattedValues);
+      const result = await saveUserDetails(
+        formattedValues,
+        isUserEditVisible ? true : false
+      );
+
       if (result.data.status === 200) {
         toast.success(
-          isUserEditVisible 
-          ? "Entity Admin Updated successfully!"
-          : "Entity Admin Created Successfully");
+          isUserEditVisible
+            ? "Entity Admin Updated successfully!"
+            : "Entity Admin Created Successfully"
+        );
         setTimeout(() => {
           setIsUserCreateVisible(false);
-          setIsUserEditVisible(false)
+          setIsUserEditVisible(false);
         }, 3000);
 
         resetForm();
@@ -94,7 +127,9 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
         <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={
+            isUserEditVisible ? updateValidationSchema : createValidationSchema
+          }
           onSubmit={(values, actions) =>
             onSubmit(values, actions, saveUserDetails)
           }
@@ -107,6 +142,7 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
                   <Field
                     as="select"
                     name="parkId"
+                    disabled={isUserEditVisible}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.parkId && touched.parkId
                         ? "border-red-500"
@@ -114,11 +150,18 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
-                    {allParks.map((park) => (
-                      <option key={park.id} disabled={!park.isActive} className={!park.isActive && `bg-red-200 text-white`} value={park.id}>
-                        {park.name}
-                      </option>
-                    ))}
+                    {allParks
+                      ?.filter((park) => park.isActive)
+                      .map((park) => (
+                        <option
+                          key={park.id}
+                          disabled={!park.isActive}
+                          className={!park.isActive && `bg-red-200 text-white`}
+                          value={park.id}
+                        >
+                          {park.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="parkId"
@@ -236,12 +279,35 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter password" 
+                    placeholder="Enter password"
                   />
                   <ErrorMessage
                     name="password"
                     component="div"
                     className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* Status */}
+                <div>
+                  <label className="block text-sm font-medium">Status</label>
+                  <Field
+                    as="select"
+                    name="isActive"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.isActive && touched.isActive
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="isActive"
+                    component="div"
+                    className="text-red-500 text-xs"
                   />
                 </div>
               </div>
@@ -253,7 +319,11 @@ const UserCreate = ({ roleName,setIsUserCreateVisible  , isUserEditVisible , set
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveUserDetailsLoading}
                 >
-                  {isSaveUserDetailsLoading ? "Saving..." : isUserEditVisible ? "Update Entity Admin" :"Create Entity Admin"}
+                  {isSaveUserDetailsLoading
+                    ? "Saving..."
+                    : isUserEditVisible
+                    ? "Update Entity Admin"
+                    : "Create Entity Admin"}
                 </button>
               </div>
             </Form>
