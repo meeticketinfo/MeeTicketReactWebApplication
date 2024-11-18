@@ -27,10 +27,14 @@ export default function AdminBookings() {
     fetchAllParks();
   }, []);
 
+  useEffect(() => {
+    fetchAllEntityBookingsByFilters(initialValues);
+  }, []);
+
   const initialValues = {
     fromDate: "",
     toDate: "",
-    parkId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
+    entityId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
   };
   const [columnDefs] = useState([
     {

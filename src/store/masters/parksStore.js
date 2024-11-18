@@ -44,6 +44,24 @@ export const useParkStore = create((set) => ({
     }
   },
 
+  fetchCurrentEntityDetailsByParkId: async (parkId) => {
+    set({ isFetchCurrentEntityDetailsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.MASTERS.PARK.GET_ENTITIES_PARK_ID}/${parkId}`
+      );
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchCurrentEntityDetailsLoading: false,
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({ error: error.message, isFetchCurrentEntityDetailsLoading: false });
+      return { success: false };
+    }
+  },
+
+
   // Save park details
   saveParkDetails: async (ParkData, isUpdate = false) => {
     set({ isSaveParkDetailsLoading: true });

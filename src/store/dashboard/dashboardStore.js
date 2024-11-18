@@ -106,7 +106,7 @@ export const useDashboardStore = create((set) => ({
         .getState()
         .serializeFilters(filters);
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?${filterString}`
       );
       set({
         allEntityBookings: response.data.data.data || [],
@@ -114,7 +114,7 @@ export const useDashboardStore = create((set) => ({
         totalEntityBookingRecords: response?.data?.totalCount || 0,
       });
     } catch (error) {
-      set({ error: error.message, isFetchEntityBookingsLoading: false });
+      set({ error: error.error.message, isFetchEntityBookingsLoading: false });
     }
   },
 

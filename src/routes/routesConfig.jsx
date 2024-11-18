@@ -26,6 +26,7 @@ import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
 import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
 import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
 import NotFound from "../pages/Error/NotFound";
+import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
 
 export const routes = [
   {
@@ -41,6 +42,7 @@ export const routes = [
     path: "/entities",
     element: <ProtectedRoute element={<AdminParks />} />,
   },
+  { path: "/entities/view-details/:id", element: <EntitiesDetails /> },
   {
     path: "/user-management/add",
     element: <ProtectedRoute element={<AdminUsers />} />,

@@ -23,7 +23,7 @@ const EntityCreateForm = ({
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeId) || "",
     entityTypeName:
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeName) || "",
-    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : false,
+    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : true,
   };
 
   const validationSchema = Yup.object({
