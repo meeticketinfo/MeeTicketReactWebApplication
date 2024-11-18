@@ -14,6 +14,8 @@ export const useNodalOfficerStore = create((set) => ({
   NodalOfficersEditDetails: {},
   allNodalOfficerParks: [],
   isFetchAllNodalOfficerParksLoading: false,
+  isFetchAllNodalOfficerLocaionAdminsLoading: false,
+  allNodalOfficerLocaionAdmins: [],
 
   setCurrentNodalOfficerEditDetails: (NodalOfficersEditDetails) => {
     console.log("nodalOfficersEditDetails", NodalOfficersEditDetails);
@@ -67,6 +69,30 @@ export const useNodalOfficerStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchAllNodalOfficerParksLoading: false });
+    }
+  },
+  fetchAllNodalOfficerLocationAdmins: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {}
+  ) => {
+    set({ isFetchAllNodalOfficerLocaionAdminsLoading: true });
+    try {
+      //   const filterString = useServicestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_LOCATION_ADMINS}`
+      );
+
+      set({
+        allNodalOfficerLocaionAdmins: response.data,
+        isFetchAllNodalOfficerLocaionAdminsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isFetchAllNodalOfficerLocaionAdminsLoading: false,
+      });
     }
   },
 

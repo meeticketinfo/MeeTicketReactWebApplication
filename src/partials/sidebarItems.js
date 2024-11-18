@@ -44,12 +44,12 @@ const sidebarItems = [
         path: "/entity-types",
       },
       {
-        title: "Entities",
+        title: "Locations",
         icon: MdOutlineForest,
         path: "/entities",
       },
       {
-        title: "Entity Admins",
+        title: "Location Admins",
         icon: FaUsers,
         path: "/entity-admins",
       },

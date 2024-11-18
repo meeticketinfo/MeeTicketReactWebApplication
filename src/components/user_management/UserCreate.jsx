@@ -62,7 +62,7 @@ const UserCreate = ({
       //.required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-    parkId: Yup.string().required("Entity is required"),
+    parkId: Yup.string().required("Location is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
@@ -92,9 +92,7 @@ const UserCreate = ({
       const formattedValues = {
         ...values,
         isActive: values.isActive === "true" || values.isActive === true,
-        password: isUserEditVisible
-          ? userEditDetails.password || ""
-          : values.password,
+        password: values.password && values.password,
       };
 
       const result = await saveUserDetails(
@@ -105,8 +103,8 @@ const UserCreate = ({
       if (result.data.status === 200) {
         toast.success(
           isUserEditVisible
-            ? "Entity Admin Updated successfully!"
-            : "Entity Admin Created Successfully"
+            ? "Location Admin Updated successfully!"
+            : "Location Admin Created Successfully"
         );
         setTimeout(() => {
           setIsUserCreateVisible(false);
@@ -124,14 +122,12 @@ const UserCreate = ({
             xhr.response.data.errors[key].length > 0
           ) {
             formErrors[key] = xhr.response.data.errors[key][0];
-            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
             toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
           }
         });
       } else {
         toast.error(xhr.response.data);
       }
-      toast.error("Error creating park. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -154,7 +150,7 @@ const UserCreate = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Entity</label>
+                  <label className="block text-sm font-medium">Location</label>
                   <Field
                     as="select"
                     name="parkId"
@@ -165,7 +161,7 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
+                    <option value="">Select Location</option>
                     {parksToRender
                       ?.filter((park) => park.isActive)
                       .map((park) => (
@@ -338,8 +334,8 @@ const UserCreate = ({
                   {isSaveUserDetailsLoading
                     ? "Saving..."
                     : isUserEditVisible
-                    ? "Update Entity Admin"
-                    : "Create Entity Admin"}
+                    ? "Update Location Admin"
+                    : "Create Location Admin"}
                 </button>
               </div>
             </Form>

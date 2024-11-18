@@ -74,7 +74,7 @@ const ParkCreate = ({
 
   // Validation schema for the form
   const createValidationSchema = Yup.object({
-    Name: Yup.string().required("Entity Name is required"),
+    Name: Yup.string().required("Locaation Name is required"),
     EntityTypeId: Yup.number().required("Location Category is required"),
     DepartmentId: Yup.number().required("Department is required"),
     IsActive: Yup.boolean().required("Status is required"),
@@ -103,7 +103,7 @@ const ParkCreate = ({
       .min(10, "Description must be at least 10 characters long")
       .max(500, "Description cannot be more than 500 characters"),
     ImageUrl: Yup.mixed()
-      .required("Entity Image is required")
+      .required("Location Image is required")
       .test("fileSize", "File too large", (value) => {
         return !value || (value && value.size <= FILE_SIZE);
       })
@@ -117,7 +117,7 @@ const ParkCreate = ({
       }),
   });
   const updateValidationSchema = Yup.object({
-    Name: Yup.string().required("Entity Name is required"),
+    Name: Yup.string().required("Location Name is required"),
     EntityTypeId: Yup.number().required("Location Category is required"),
     DepartmentId: Yup.number().required("Department is required"),
     IsActive: Yup.boolean().required("Status is required"),
@@ -147,7 +147,7 @@ const ParkCreate = ({
       .max(500, "Description cannot be more than 500 characters"),
     ImageUrl: Yup.mixed()
       .nullable()
-      .test("isRequired", "Entity Image is required", (value, context) => {
+      .test("isRequired", "Location Image is required", (value, context) => {
         const isValidUrl =
           parkEditDetails &&
           parkEditDetails.imageUrl &&
@@ -189,8 +189,8 @@ const ParkCreate = ({
       if (result && result.data && result.data.status === 200) {
         toast.success(
           isParkEditVisible
-            ? "Entity Updated Successfully!"
-            : "Entity Created Successfully!"
+            ? "Location Updated Successfully!"
+            : "Location Created Successfully!"
         );
         setTimeout(() => {
           setIsParkCreateVisible(false);
@@ -310,7 +310,7 @@ const ParkCreate = ({
                 {/* Entity Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Entity Name
+                    Location Name
                   </label>
                   <Field
                     name="Name"
@@ -320,7 +320,7 @@ const ParkCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Entity name"
+                    placeholder="Enter Location name"
                   />
                   <ErrorMessage
                     name="Name"
@@ -460,7 +460,7 @@ const ParkCreate = ({
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Entity Image
+                    Location Image
                   </label>
                   <input
                     name="ImageUrl"
@@ -543,8 +543,8 @@ const ParkCreate = ({
                     {isSaveParkDetailsLoading
                       ? "Saving..."
                       : isParkEditVisible
-                      ? "Update Entity"
-                      : "Create Entity"}
+                      ? "Update Location"
+                      : "Create Location"}
                   </button>
                 </div>
               </div>

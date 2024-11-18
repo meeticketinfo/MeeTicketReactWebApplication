@@ -15,7 +15,7 @@ const useAuthStore = create(
       isAuthenticated: false,
       token: null,
       error: null,
-      loginError:null,
+      loginError: null,
       decodedTokenData: null,
       userRoles: [],
       roleDetails: null, // To store role id and name
@@ -31,7 +31,9 @@ const useAuthStore = create(
           // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
           await get().fetchUserRoles();
-
+          set({
+            loginError: "",
+          });
           // Set sidebar items after role is fetched
           get().setSidebarMenuItems();
 
@@ -58,9 +60,7 @@ const useAuthStore = create(
             const combinedErrorMessage = Object.values(formErrors).join(", ");
 
             set({
-              loginError:
-                xhr.response.data.message ||
-                "Login failed",
+              loginError: xhr.response.data.message || "Login failed",
               isLoading: false,
             });
           } else {

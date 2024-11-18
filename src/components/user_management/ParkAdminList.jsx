@@ -6,14 +6,25 @@ import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
 import { useParkAdminStore } from "../../store/masters/parkAdminStore";
 import { useUsersStore } from "../../store/masters/usersStore";
+import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 
-const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
-  const { setCurrentUserEditDetails} = useUsersStore()
+const ParkAdminList = ({ setIsUserCreateVisible, setIsUserEditVisible }) => {
+  const { setCurrentUserEditDetails } = useUsersStore();
   const { allParkAdmins, isFetchAllParkAdminsLoading, fetchAllParkAdmins } =
     useParkAdminStore();
+  const {
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+    fetchAllNodalOfficerParks,
+    NodalOfficersEditDetails,
+    fetchAllNodalOfficerLocationAdmins,
+    isFetchAllNodalOfficerLocaionAdminsLoading,
+    allNodalOfficerLocaionAdmins,
+  } = useNodalOfficerStore();
 
   useEffect(() => {
-    fetchAllParkAdmins();
+    // fetchAllParkAdmins();
+    fetchAllNodalOfficerLocationAdmins();
   }, []);
 
   const columnDefs = [
@@ -26,7 +37,7 @@ const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
     },
     {
       field: "entityName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -105,8 +116,8 @@ const ParkAdminList = ({setIsUserCreateVisible, setIsUserEditVisible}) => {
   return (
     <>
       <AgGridTable
-        isFetchLoading={isFetchAllParkAdminsLoading}
-        rowData={allParkAdmins}
+        isFetchLoading={isFetchAllNodalOfficerLocaionAdminsLoading}
+        rowData={allNodalOfficerLocaionAdmins}
         columnDefs={columnDefs}
       />
     </>

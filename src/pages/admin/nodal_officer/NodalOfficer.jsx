@@ -17,6 +17,9 @@ export default function NodalOfficer() {
     isFetchAllNodalOfficerParksLoading,
     fetchAllNodalOfficerParks,
     NodalOfficersEditDetails,
+    fetchAllNodalOfficerLocationAdmins,
+    isFetchAllNodalOfficerLocaionAdminsLoading,
+    allNodalOfficerLocaionAdmins
   } = useNodalOfficerStore();
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function NodalOfficer() {
     },
     {
       field: "name",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",

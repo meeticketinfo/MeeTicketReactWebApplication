@@ -175,7 +175,7 @@ function Dashboard() {
     },
     {
       field: "parkName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -248,14 +248,14 @@ function Dashboard() {
                 <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                   <PieChart
                     data={allPieCharts}
-                    title="Total Booking By Entity"
+                    title="Total Booking By Location"
                     angleKey="entityWiseTotalBookings"
                   />
                 </div>
                 <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                   <PieChart
                     data={allPieCharts}
-                    title="Total Amount By Entity"
+                    title="Total Amount By Location"
                     angleKey="entityWiseTotalAmount"
                   />
                 </div>
@@ -263,7 +263,7 @@ function Dashboard() {
             </DashboardCard07>
           )}
 
-          <DashboardCard07 header={true} title="Entity Bookings">
+          <DashboardCard07 header={true} title="Location Bookings">
             <div className="">
               <div>
                 <Formik
@@ -276,7 +276,7 @@ function Dashboard() {
                         role === "ROLE_NODALOFFICER") && (
                         <div>
                           <label className="block text-xs font-medium">
-                            Entity
+                            Location
                           </label>
                           <Field
                             as="select"
@@ -285,7 +285,7 @@ function Dashboard() {
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           >
                             <option value="">Select </option>
-                            {parksToRender?.map((park) => (
+                            {parksToRender?.filter((park) => park.isActive)?.map((park) => (
                               <option key={park.id} value={park.id}>
                                 {park.name}
                               </option>

@@ -13,26 +13,38 @@ import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 
 export default function AdminBookings() {
-  const { allParks, fetchAllParks } = useParkStore();
-    const {
-      allCounts,
-      fetchAllDashboardCounts,
-      allPieCharts,
-      fetchAllEntityWiseCounts,
-      fetchAllEntityBookingsByFilters,
-      allEntityBookings,
-      isFetchEntityBookingsLoading,
-      totalEntityBookingRecords,
-    } = useDashboardStore();
+  const {
+    allParks,
+    fetchAllParks,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+  } = useParkStore();
+  const {
+    allCounts,
+    fetchAllDashboardCounts,
+    allPieCharts,
+    fetchAllEntityWiseCounts,
+    fetchAllEntityBookingsByFilters,
+    allEntityBookings,
+    isFetchEntityBookingsLoading,
+    totalEntityBookingRecords,
+  } = useDashboardStore();
   const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } =
     useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
 
   useEffect(() => {
     fetchAllBookings();
-    fetchAllParks();
+    // fetchAllParks();
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
 
   useEffect(() => {
@@ -44,6 +56,10 @@ export default function AdminBookings() {
     toDate: "",
     entityId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
   };
+
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -69,7 +85,7 @@ export default function AdminBookings() {
     },
     {
       field: "parkName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -205,7 +221,7 @@ export default function AdminBookings() {
                     {role !== "ROLE_ADMIN" && (
                       <div>
                         <label className="block text-xs font-medium">
-                          Entity
+                          Location
                         </label>
                         <Field
                           as="select"
@@ -214,11 +230,13 @@ export default function AdminBookings() {
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         >
                           <option value="">Select </option>
-                          {allParks.map((park) => (
-                            <option key={park.id} value={park.id}>
-                              {park.name}
-                            </option>
-                          ))}
+                          {parksToRender
+                            ?.filter((park) => park.isActive)
+                            .map((park) => (
+                              <option key={park.id} value={park.id}>
+                                {park.name}
+                              </option>
+                            ))}
                         </Field>
                       </div>
                     )}

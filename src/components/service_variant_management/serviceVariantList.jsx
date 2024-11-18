@@ -49,7 +49,7 @@ const ServiceVariantList = ({
     },
     {
       field: "parkName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
