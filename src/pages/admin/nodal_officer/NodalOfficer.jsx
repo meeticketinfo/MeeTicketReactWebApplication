@@ -2,16 +2,19 @@ import { useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import NodalOfficerCreate from "../../../components/user_management/NodalOfficerCreate";
 import NodalOfficerList from "../../../components/user_management/NodalOfficerList";
+import AgGridTable from "../../../components/tables/AgGridTable";
 
 export default function NodalOfficer() {
   // State to toggle the FacilityCreate component
-  const [isParkCreateVisible, setIsParkCreateVisible] = useState(false);
-  const [isParkEditVisible, setIsParkEditVisible] = useState(false);
+  const [isNodalOfficerCreateVisible, setIsNodalOfficerCreateVisible] =
+    useState(false);
+  const [isNodalOfficerEditVisible, setIsNodalOfficerEditVisible] =
+    useState(false);
 
-  // Function to toggle the visibility of ParkCreate
-  const toggleParkCreate = () => {
-    setIsParkCreateVisible((prev) => !prev);
-    setIsParkEditVisible(false);
+  // Function to toggle the visibility of NodalOfficerCreate
+  const toggleNodalOfficerCreate = () => {
+    setIsNodalOfficerCreateVisible((prev) => !prev);
+    setIsNodalOfficerEditVisible(false);
     false;
   };
   return (
@@ -29,11 +32,11 @@ export default function NodalOfficer() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             <button
-              onClick={toggleParkCreate}
+              onClick={toggleNodalOfficerCreate}
               className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
             >
               <span className="max-xs:sr-only">
-                {!isParkCreateVisible ? "Add Nodal Officer" : "Back"}
+                {!isNodalOfficerCreateVisible ? "Add Nodal Officer" : "Back"}
               </span>
             </button>
           </div>
@@ -41,17 +44,24 @@ export default function NodalOfficer() {
 
         {/* Cards */}
         {/* <div className="grid grid-cols-12 gap-6"> */}
-        {isParkCreateVisible ? (
-          <NodalOfficerCreate
-            setIsParkCreateVisible={setIsParkCreateVisible}
-            isParkEditVisible={isParkEditVisible}
-            setIsParkEditVisible={setIsParkEditVisible}
-          />
+        {isNodalOfficerCreateVisible ? (
+          <>
+            <NodalOfficerCreate
+              setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
+              isNodalOfficerEditVisible={isNodalOfficerEditVisible}
+              setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
+            />
+            <AgGridTable
+              rowData={allParks}
+              columnDefs={columnDefs}
+              isFetchLoading={isFetchAllParksLoading}
+            />
+          </>
         ) : (
           <NodalOfficerList
-            setIsParkCreateVisible={setIsParkCreateVisible}
-            isParkEditVisible={isParkEditVisible}
-            setIsParkEditVisible={setIsParkEditVisible}
+            setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
+            isNodalOfficerEditVisible={isNodalOfficerEditVisible}
+            setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
           />
         )}
         {/* </div> */}

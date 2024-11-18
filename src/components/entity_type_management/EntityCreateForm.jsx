@@ -47,8 +47,8 @@ const EntityCreateForm = ({
         setOpenModalId(null);
         toast.success(
           isEntityTypeEditVisible
-            ? "EntityType Updated successfully!"
-            : "EntityType created successfully!"
+            ? "Location Category Updated successfully!"
+            : "Location Category created successfully!"
         );
         fetchAllEntityTypes();
 
@@ -144,8 +144,8 @@ const EntityCreateForm = ({
                   {isSaveEntityTypeDetailsLoading
                     ? "Saving..."
                     : isEntityTypeEditVisible
-                    ? "Update Entity"
-                    : "Create Entity"}
+                    ? "Update Location Category"
+                    : "Create Location Category"}
                 </button>
               </div>
             </Form>

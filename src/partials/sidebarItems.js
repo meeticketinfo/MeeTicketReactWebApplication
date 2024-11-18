@@ -39,7 +39,7 @@ const sidebarItems = [
         path: "/departments",
       },
       {
-        title: "Entity Types",
+        title: "Location Category",
         icon: MdOutlineForest,
         path: "/entity-types",
       },

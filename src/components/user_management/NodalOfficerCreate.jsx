@@ -9,32 +9,50 @@ import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStor
 import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 
-const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
-  const { saveNodalOfficerDetails, isSaveNodalOfficerDetailsLoading } =
-    useNodalOfficerStore()
+const NodalOfficerCreate = ({
+  setIsNodalOfficerCreateVisible,
+  isNodalOfficerEditVisible,
+  setIsNodalOfficerEditVisible,
+}) => {
+  const {
+    saveNodalOfficerDetails,
+    isSaveNodalOfficerDetailsLoading,
+    NodalOfficersEditDetails,
+  } = useNodalOfficerStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes} = useDepartmentTypesStore()
-  const { allEntityTypes , fetchAllEntityTypes} = useEntityTypesStore()
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+
   useEffect(() => {
     fetchAllParks();
     fetchAllDepartmentTypes();
     fetchAllEntityTypes();
   }, []);
-// console.log(allDepartmentTypes , 'departmenrts')
-  const initialValues = {
-    firstName: "",
-    middleName: "",
-    entityTypeId: "",
-    departmentName: "",
-    lastName: "",
-    emailId: "",
-    phoneNumber: "",
-    password: "",
-    roleId: "",
-    IsActive: true,
-  };
 
-  const validationSchema = Yup.object({
+  // console.log(allDepartmentTypes , 'departmenrts')
+  const initialValues = {
+    id: isNodalOfficerEditVisible ? NodalOfficersEditDetails.id : "",
+    firstName: isNodalOfficerEditVisible
+      ? NodalOfficersEditDetails.firstName
+      : "",
+    middleName: "",
+    lastName: isNodalOfficerEditVisible
+      ? NodalOfficersEditDetails.lastName
+      : "",
+    emailId: isNodalOfficerEditVisible ? NodalOfficersEditDetails.emailId : "",
+    phoneNumber: isNodalOfficerEditVisible
+      ? NodalOfficersEditDetails.phoneNumber
+      : "",
+    password: isNodalOfficerEditVisible
+      ? NodalOfficersEditDetails.password
+      : "",
+    // roleId: isNodalOfficerEditVisible ? NodalOfficersEditDetails.roleId : "",
+    IsActive: isNodalOfficerEditVisible
+      ? NodalOfficersEditDetails.isActive
+      : true,
+  };
+  const createValidationSchema = Yup.object({
     firstName: Yup.string()
       .required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
@@ -42,11 +60,24 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     emailId: Yup.string().required("EmailId is required"),
-
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
+      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
+  });
+  const updateValidationSchema = Yup.object({
+    firstName: Yup.string()
+      .required("First Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    lastName: Yup.string()
+      .required("Last Name is required")
+      .max(30, "First Name cannot be more than 30 characters"),
+    emailId: Yup.string().required("EmailId is required"),
+    phoneNumber: Yup.number().required("Phone Number is required"),
+    // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      // .required("Password is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
   });
 
@@ -56,11 +87,18 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
     saveNodalOfficerDetails
   ) => {
     try {
-      const result = await saveNodalOfficerDetails(values, false);
+      const result = await saveNodalOfficerDetails(
+        values,
+        isNodalOfficerEditVisible ? true : false
+      );
       if (result && result.data && result.data.status === 200) {
-        toast.success("Gate Keeper created successfully!");
+        toast.success(
+          isNodalOfficerEditVisible
+            ? "Nodal Officer updated successfully!"
+            : "Nodal Officer created successfully!"
+        );
         setTimeout(() => {
-          setIsGateKeeperCreateVisible(false);
+          setIsNodalOfficerCreateVisible(false);
         }, 3000);
         resetForm();
       } else {
@@ -97,41 +135,24 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
         <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={
+            isNodalOfficerEditVisible
+              ? updateValidationSchema
+              : createValidationSchema
+          }
           onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveGateKeeperDetails)
+            onSubmit(values, actions, saveNodalOfficerDetails)
           }
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
-              <div>
-                  <label className="block text-sm font-medium">Entity</label>
+                {/* <div>
+                  <label className="block text-sm font-medium">
+                    Department
+                  </label>
                   <Field
-                    as="select"
-                    name="parkId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.parkId && touched.parkId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select </option>
-                    {allParks.map((park) => (
-                      <option key={park.id} value={park.id}>
-                        {park.name}
-                      </option>
-                    ))}
-                  </Field>
-                  <ErrorMessage
-                    name="parkId"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">Department</label>
-                  <Field
+                    autoComplete="off"
                     as="select"
                     name="departmentId"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -141,11 +162,16 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
-                    {allDepartmentTypes?.data?.map((department) => (
-                      <option key={department.id} value={department.id}>
-                        {department.departmentName}
-                      </option>
-                    ))}
+                    {allDepartmentTypes
+                      ?.filter((departmentType) => departmentType.isActive)
+                      .map((departmentType) => (
+                        <option
+                          key={departmentType.departmentId}
+                          value={departmentType.departmentId}
+                        >
+                          {departmentType.departmentName}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="departmentId"
@@ -154,8 +180,11 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium">Entity Type</label>
+                  <label className="block text-sm font-medium">
+                    Entity Type
+                  </label>
                   <Field
+                    autoComplete="off"
                     as="select"
                     name="entityTypeId"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -165,24 +194,30 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
-                    {allEntityTypes?.data?.map((entityType) => (
-                      <option key={entityType.id} value={entityType.id}>
-                        {entityType.entityTypeName}
-                      </option>
-                    ))}
+                    {allEntityTypes
+                      ?.filter((entityType) => entityType.isActive)
+                      .map((entityType) => (
+                        <option
+                          key={entityType.entityTypeId}
+                          value={entityType.entityTypeId}
+                        >
+                          {entityType.entityTypeName}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="entityTypeId"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div>
+                </div> */}
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
                     First Name
                   </label>
                   <Field
+                    autoComplete="off"
                     name="firstName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -199,33 +234,13 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                   />
                 </div>
 
-                {/*Middle Name */}
-                <div>
-                  <label htmlFor="User" className="block text-xs font-medium">
-                    Middle Name
-                  </label>
-                  <Field
-                    name="middleName"
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.middleName && touched.middleName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter middle name"
-                  />
-                  <ErrorMessage
-                    name="middleName"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
                     Last Name
                   </label>
                   <Field
+                    autoComplete="off"
                     name="lastName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -250,8 +265,10 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     Email Id
                   </label>
                   <Field
+                    autoComplete="off"
                     type="email"
                     name="emailId"
+                    id="email-id"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.emailId && touched.emailId
                         ? "border-red-500"
@@ -274,6 +291,7 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     Phone Number
                   </label>
                   <Field
+                    autoComplete="off"
                     type="text"
                     maxLength="10"
                     name="phoneNumber"
@@ -300,6 +318,7 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     Password
                   </label>
                   <Field
+                    autoComplete="off"
                     type="password"
                     name="password"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -315,10 +334,11 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                  {/* Status */}
-                  <div>
+                {/* Status */}
+                <div>
                   <label className="block text-sm font-medium">Status</label>
                   <Field
+                    autoComplete="off"
                     as="select"
                     name="IsActive"
                     className={`mt-1 block w-full px-2 py-1 border ${
@@ -345,7 +365,9 @@ const NodalOfficerCreate = ({ setIsGateKeeperCreateVisible }) => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveNodalOfficerDetailsLoading}
                 >
-                  {isSaveNodalOfficerDetailsLoading ? "Saving..." : "Create Nodal Officer"}
+                  {isSaveNodalOfficerDetailsLoading
+                    ? "Saving..."
+                    : "Update Nodal Officer"}
                 </button>
               </div>
             </Form>

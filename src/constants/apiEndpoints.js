@@ -90,18 +90,19 @@ export const API_ENDPOINTS = {
       UPDATE_DEPARTMENT_TYPE: `${API_BASE_URL}Master/UpdateDepartment`,
     },
     NODAL_OFFICERS: {
-      GET_NODAL_OFFICERS: `Master/GetAllServiceVarients`,
-      UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
-      ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}Master/AddNewServiceVarient`,
-    }
+      GET_NODAL_OFFICERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e77`,
+      GET_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
+      UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
+      ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
+    },
   },
   REPORTS: {
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
     },
     METRO_BOOKINGS: {
-      GET_METRO_BOOKINGS: `Master/GetAllFacilities`
-    }
+      GET_METRO_BOOKINGS: `Master/GetAllFacilities`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,

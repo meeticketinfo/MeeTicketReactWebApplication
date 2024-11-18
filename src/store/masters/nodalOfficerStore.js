@@ -47,7 +47,7 @@ export const useNodalOfficerStore = create((set) => ({
 
 
   // Save Nodal Officers details
-  saveNodalOfficerDetails: async (ServiceData, isUpdate = false) => {
+  saveNodalOfficerDetails: async (values, isUpdate = false) => {
     set({ isSaveNodalOfficersDetailsLoading: true });
     try {
       const url = isUpdate
@@ -55,7 +55,7 @@ export const useNodalOfficerStore = create((set) => ({
         : API_ENDPOINTS.MASTERS.NODAL_OFFICERS.ADD_NEW_NODAL_OFFICERS;
       const method = isUpdate ? "put" : "post";
 
-      const response = await apiService[method](url, ServiceData);
+      const response = await apiService[method](url, values);
 
       set({
         ServiceDetails: response.data,

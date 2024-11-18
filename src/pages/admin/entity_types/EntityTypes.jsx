@@ -32,10 +32,12 @@ const EntityTypes = () => {
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
               <button
-                onClick={() => {setOpenModalId("entity-modal");}}
+                onClick={() => {
+                  setOpenModalId("entity-modal");
+                }}
                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
-                <span className="max-xs:sr-only">Add Entity Type</span>
+                <span className="max-xs:sr-only">Add Location Category</span>
               </button>
             </div>
           </div>

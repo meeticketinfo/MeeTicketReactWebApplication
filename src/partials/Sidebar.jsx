@@ -13,6 +13,7 @@ import useAuthStore from "../store/authStore";
 import {
   parkAdminPermissions,
   superAdminPermissions,
+  nodalOfficerPermissions,
 } from "../constants/permissions";
 
 function Sidebar({ variant = "default" }) {
@@ -28,7 +29,7 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails , logout } = useAuthStore();
+  const { sidebarMenuItems, roleDetails, logout } = useAuthStore();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -64,11 +65,14 @@ function Sidebar({ variant = "default" }) {
   }, [sidebarExpanded]);
 
   const role = roleDetails?.name;
+  console.log(role);
   const rolePermissions = useMemo(() => {
     if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
       return parkAdminPermissions;
+    } else if (role === "ROLE_NODALOFFICER") {
+      return nodalOfficerPermissions;
     }
     return [];
   }, [role]);
@@ -275,11 +279,12 @@ function Sidebar({ variant = "default" }) {
 
         <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
-            <button onClick={() => logout()} className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100">
+            <button
+              onClick={() => logout()}
+              className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
+            >
               <TbLogout2 className="shrink-0 text-[22px]" />
-              {sidebarExpanded && <span className=""
-                 
-              >Log out</span>}
+              {sidebarExpanded && <span className="">Log out</span>}
             </button>
           </div>
         </div>

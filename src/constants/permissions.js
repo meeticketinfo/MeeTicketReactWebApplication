@@ -3,7 +3,8 @@ export const superAdminPermissions = [
   "departments",
   "entity-types",
   "entities",
-  "entity-admins",
+  // "entity-admins",
+  "nodal-officer",
   "entity-bookings",
 ];
 
@@ -20,11 +21,8 @@ export const parkAdminPermissions = [
   "entity-bookings",
 ];
 
-
 export const nodalOfficerPermissions = [
   "dashboard",
-  "departments",
-  "entity-types",
   "entities",
   "entity-admins",
   "entity-bookings",
