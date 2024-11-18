@@ -12,11 +12,13 @@ export const useNodalOfficerStore = create((set) => ({
   error: null,
   success: null,
   NodalOfficersEditDetails: {},
+  allNodalOfficerParks: [],
+  isFetchAllNodalOfficerParksLoading: false,
 
   setCurrentNodalOfficerEditDetails: (NodalOfficersEditDetails) => {
-    console.log("nodalOfficersEditDetails",NodalOfficersEditDetails)
+    console.log("nodalOfficersEditDetails", NodalOfficersEditDetails);
     set({
-        NodalOfficersEditDetails,
+      NodalOfficersEditDetails,
     });
   },
 
@@ -44,7 +46,29 @@ export const useNodalOfficerStore = create((set) => ({
       set({ error: error.message, isFetchAllNodalOfficersLoading: false });
     }
   },
+  // Fetch all Nodal Officers
+  fetchAllNodalOfficerParks: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {},
+    userId
+  ) => {
+    set({ isFetchAllNodalOfficerParksLoading: true });
+    try {
+      //   const filterString = useServicestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_ENTITIES}?userId=${userId}`
+      );
 
+      set({
+        allNodalOfficerParks: response.data,
+        isFetchAllNodalOfficerParksLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchAllNodalOfficerParksLoading: false });
+    }
+  },
 
   // Save Nodal Officers details
   saveNodalOfficerDetails: async (values, isUpdate = false) => {

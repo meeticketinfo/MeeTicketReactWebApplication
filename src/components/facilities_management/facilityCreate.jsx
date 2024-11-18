@@ -39,12 +39,15 @@ const FacilityCreate = ({
     capacity: (isFacilityEditVisible && FacilityEditDetails.capacity) || null,
     availabilityStatus:
       (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
-    lastMaintenanceDate:
-      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.lastMaintenanceDate): "",
-    facilityCondition:
-      isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
-    installationDate:
-      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.installationDate) : "",
+    lastMaintenanceDate: isFacilityEditVisible
+      ? formatToStandardDate(FacilityEditDetails.lastMaintenanceDate)
+      : "",
+    facilityCondition: isFacilityEditVisible
+      ? FacilityEditDetails.facilityCondition
+      : "",
+    installationDate: isFacilityEditVisible
+      ? formatToStandardDate(FacilityEditDetails.installationDate)
+      : "",
     openTime:
       (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
     closeTime:
@@ -85,7 +88,11 @@ const FacilityCreate = ({
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
-        toast.success(isFacilityEditVisible?"Facility Updated successfully!":"Facility created successfully!");
+        toast.success(
+          isFacilityEditVisible
+            ? "Facility Updated successfully!"
+            : "Facility created successfully!"
+        );
         setTimeout(() => {
           setIsFacilityCreateVisible(false);
           setIsFacilityEditVisible(false);
@@ -123,37 +130,6 @@ const FacilityCreate = ({
     name: Yup.string()
       .required("Please enter facility name.")
       .max(50, "facility name should be less than 50 characters"),
-    displayName: Yup.string()
-      .required("Please enter display name.")
-      .max(50, "display name should be less than 50 characters"),
-    contactName: Yup.string()
-      .required("Please enter Contact Name.")
-      .max(50, "contact name should be less than 50 characters"),
-    contactEmail: Yup.string().email("Invalid email format"),
-    contactNumber: Yup.string()
-      .required("Please enter Contact Number.")
-      .matches(/^\d+$/, "Contact number must be numeric")
-      .max(10, "contact name should be 10 numbers"),
-
-    capacity: Yup.number()
-      .nullable()
-      .test(
-        "is-positive",
-        "Capacity must be a positive number",
-        (value) => value == null || value >= 0
-      ),
-
-    // lastMaintenanceDate: Yup.date().required(
-    //   "Please select last maintenance date."
-    // ),
-    // installationDate: Yup.date().required("Please select installation date."),
-    // availabilityStatus: Yup.string().required(
-    //   "Please select availability status."
-    // ),
-    facilityCondition: Yup.string().max(
-      50,
-      "contact name should be less than 50 characters"
-    ),
     // openTime: Yup.string().required("Please select open time."),
     // closeTime: Yup.string().required("Please select close time."),
   });
@@ -179,70 +155,18 @@ const FacilityCreate = ({
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Facility Name
+                    Display Name
                   </label>
                   <Field
                     type="text"
                     name="name"
                     className={`mt-1 block w-full text-gray-700 px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : ""
+                      errors.name && touched.name ? "border-red-500" : ""
                     } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
                     placeholder="Enter Facility Name"
                   />
                   <ErrorMessage
                     name="name"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Display Name */}
-                <div className="">
-                  <label
-                    htmlFor="displayName"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Display Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="displayName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
-                  />
-                  <ErrorMessage
-                    name="displayName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Facility Condition */}
-                <div className="">
-                  <label
-                    htmlFor="facilityCondition"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Facility Condition
-                  </label>
-                  <Field
-                    type="text"
-                    name="facilityCondition"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.facilityCondition && touched.facilityCondition
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
-                    placeholder=" Enter Facility Condition"
-                  />
-                  <ErrorMessage
-                    name="facilityCondition"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -326,7 +250,7 @@ const FacilityCreate = ({
                   <Field
                     as="select"
                     name="isActive"
-                    onchange={(e) => {
+                    onChange={(e) => {
                       const { value } = e.target;
                       setFieldValue("isActive", value === "true");
                     }}

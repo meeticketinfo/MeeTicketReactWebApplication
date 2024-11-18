@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import NodalOfficerCreate from "../../../components/user_management/NodalOfficerCreate";
 import NodalOfficerList from "../../../components/user_management/NodalOfficerList";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import BackButton from "../../../components/BackButton";
+import { useNodalOfficerStore } from "../../../store/masters/nodalOfficerStore";
 
 export default function NodalOfficer() {
   // State to toggle the FacilityCreate component
@@ -11,6 +12,18 @@ export default function NodalOfficer() {
     useState(false);
   const [isNodalOfficerEditVisible, setIsNodalOfficerEditVisible] =
     useState(false);
+  const {
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+    fetchAllNodalOfficerParks,
+    NodalOfficersEditDetails,
+  } = useNodalOfficerStore();
+
+  useEffect(() => {
+    if (isNodalOfficerEditVisible) {
+      fetchAllNodalOfficerParks(null, null, {}, NodalOfficersEditDetails.id);
+    }
+  }, [isNodalOfficerEditVisible]);
 
   // Function to toggle the visibility of NodalOfficerCreate
   const toggleNodalOfficerCreate = () => {
@@ -18,6 +31,91 @@ export default function NodalOfficer() {
     setIsNodalOfficerEditVisible(false);
     false;
   };
+  const nodalOfficerColumnDefs = [
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      minWidth: 80, // Set minimum width to enforce a narrow column
+      maxWidth: 80,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "name",
+      headerName: "Entity Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "entityTypeName",
+      headerName: "Location Category",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "departmentName",
+      headerName: "Department",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "name",
+      headerName: "Address",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueGetter: (params) => {
+        const { street1, street2 } = params.data;
+        return street1 || street2
+          ? `${street1 || ""}, ${street2 || ""}`
+          : "N/A";
+      },
+    },
+
+    {
+      field: "state",
+      headerName: "State",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "city",
+      headerName: "City",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "zipCode",
+      headerName: "Pincode",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "isActive",
+      headerName: "Status",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <span
+            className={`${
+              params.value
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
+            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+          >
+            {" "}
+            {params.value ? "Active" : "Inactive"}
+          </span>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+  ];
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -46,33 +144,35 @@ export default function NodalOfficer() {
                 className="bg-blue-600 hover:bg-blue-700"
               />
             )}
+          </div>
         </div>
-      </div>
 
-      {/* Cards */}
-      {/* <div className="grid grid-cols-12 gap-6"> */}
-      {isNodalOfficerCreateVisible ? (
-        <>
-          <NodalOfficerCreate
+        {/* Cards */}
+        {/* <div className="grid grid-cols-12 gap-6"> */}
+        {isNodalOfficerCreateVisible ? (
+          <>
+            <NodalOfficerCreate
+              setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
+              isNodalOfficerEditVisible={isNodalOfficerEditVisible}
+              setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
+            />
+            {isNodalOfficerEditVisible && (
+              <AgGridTable
+                rowData={allNodalOfficerParks || []}
+                columnDefs={nodalOfficerColumnDefs}
+                isFetchLoading={isFetchAllNodalOfficerParksLoading}
+              />
+            )}
+          </>
+        ) : (
+          <NodalOfficerList
             setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
             isNodalOfficerEditVisible={isNodalOfficerEditVisible}
             setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
           />
-          {/* <AgGridTable
-              rowData={allParks}
-              columnDefs={columnDefs}
-              isFetchLoading={isFetchAllParksLoading}
-            /> */}
-        </>
-      ) : (
-        <NodalOfficerList
-          setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
-          isNodalOfficerEditVisible={isNodalOfficerEditVisible}
-          setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
-        />
-      )}
-      {/* </div> */}
-    </div>
-    </AdminLayout >
+        )}
+        {/* </div> */}
+      </div>
+    </AdminLayout>
   );
 }

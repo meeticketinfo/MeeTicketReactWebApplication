@@ -91,7 +91,7 @@ export const API_ENDPOINTS = {
     },
     NODAL_OFFICERS: {
       GET_NODAL_OFFICERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e77`,
-      GET_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
+      GET_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficerById`,
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
