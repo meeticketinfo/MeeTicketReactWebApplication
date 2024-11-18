@@ -87,8 +87,12 @@ const NodalOfficerCreate = ({
     saveNodalOfficerDetails
   ) => {
     try {
+      const formattedValues = {
+        ...values,
+        IsActive: values.IsActive === "true" || values.IsActive === true,
+      }
       const result = await saveNodalOfficerDetails(
-        values,
+        formattedValues,
         isNodalOfficerEditVisible ? true : false
       );
       if (result && result.data && result.data.status === 200) {
@@ -367,7 +371,7 @@ const NodalOfficerCreate = ({
                 >
                   {isSaveNodalOfficerDetailsLoading
                     ? "Saving..."
-                    : "Update Nodal Officer"}
+                    :(isNodalOfficerEditVisible ? "Update Nodal Officer": "Create Nodal Officer")}
                 </button>
               </div>
             </Form>

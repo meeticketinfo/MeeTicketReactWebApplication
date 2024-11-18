@@ -25,7 +25,7 @@ const EntityTypes = () => {
             {/* Left: Title */}
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-                Entities
+                Location Category
               </h1>
             </div>
             {/* Right: Actions */}

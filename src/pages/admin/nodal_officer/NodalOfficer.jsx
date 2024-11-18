@@ -3,6 +3,7 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import NodalOfficerCreate from "../../../components/user_management/NodalOfficerCreate";
 import NodalOfficerList from "../../../components/user_management/NodalOfficerList";
 import AgGridTable from "../../../components/tables/AgGridTable";
+import BackButton from "../../../components/BackButton";
 
 export default function NodalOfficer() {
   // State to toggle the FacilityCreate component
@@ -31,41 +32,47 @@ export default function NodalOfficer() {
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
-            <button
-              onClick={toggleNodalOfficerCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-            >
-              <span className="max-xs:sr-only">
-                {!isNodalOfficerCreateVisible ? "Add Nodal Officer" : "Back"}
-              </span>
-            </button>
-          </div>
+            {!isNodalOfficerCreateVisible ? (
+              <button
+                onClick={toggleNodalOfficerCreate}
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              >
+                <span className="max-xs:sr-only"> Add Nodal Officer </span>
+              </button>
+            ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsNodalOfficerCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
         </div>
+      </div>
 
-        {/* Cards */}
-        {/* <div className="grid grid-cols-12 gap-6"> */}
-        {isNodalOfficerCreateVisible ? (
-          <>
-            <NodalOfficerCreate
-              setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
-              isNodalOfficerEditVisible={isNodalOfficerEditVisible}
-              setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
-            />
-            <AgGridTable
-              rowData={allParks}
-              columnDefs={columnDefs}
-              isFetchLoading={isFetchAllParksLoading}
-            />
-          </>
-        ) : (
-          <NodalOfficerList
+      {/* Cards */}
+      {/* <div className="grid grid-cols-12 gap-6"> */}
+      {isNodalOfficerCreateVisible ? (
+        <>
+          <NodalOfficerCreate
             setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
             isNodalOfficerEditVisible={isNodalOfficerEditVisible}
             setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
           />
-        )}
-        {/* </div> */}
-      </div>
-    </AdminLayout>
+          {/* <AgGridTable
+              rowData={allParks}
+              columnDefs={columnDefs}
+              isFetchLoading={isFetchAllParksLoading}
+            /> */}
+        </>
+      ) : (
+        <NodalOfficerList
+          setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
+          isNodalOfficerEditVisible={isNodalOfficerEditVisible}
+          setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
+        />
+      )}
+      {/* </div> */}
+    </div>
+    </AdminLayout >
   );
 }

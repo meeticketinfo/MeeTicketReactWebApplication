@@ -97,7 +97,7 @@ const EntityTypeList = ({
         popupModalId="first-modal"
         isOpen={openModalId === "entity-modal"}
         onClose={closeModal}
-        title={isEntityTypeEditVisible ? "Update Entity" : "Create Entity"}
+        title={isEntityTypeEditVisible ? "Update Location Category" : "Create Location Category"}
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
