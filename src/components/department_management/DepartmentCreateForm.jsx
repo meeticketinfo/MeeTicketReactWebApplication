@@ -31,7 +31,7 @@ const DepartmentCreateForm = ({
       "",
     isActive: isDepartmentTypeEditVisible
       ? departmentTypeEditDetails?.isActive
-      : false,
+      : true,
   };
 
   const validationSchema = Yup.object({
