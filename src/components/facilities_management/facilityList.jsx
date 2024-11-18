@@ -30,20 +30,7 @@ const FacilityList = ({
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "contactName",
-      headerName: "Contact Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "contactNumber",
-      headerName: "Contact Number",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
+   
     {
       field: "openTime",
       headerName: "Open Time",

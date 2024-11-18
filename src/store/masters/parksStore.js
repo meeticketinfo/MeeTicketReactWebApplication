@@ -2,6 +2,19 @@ import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
+const getFileTypeFromUrl = (url) => {
+  const extension = url.split(".").pop().toLowerCase();
+  const mimeTypes = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    pdf: "application/pdf",
+    // Add more mime types as needed
+  };
+  return mimeTypes[extension] || "application/octet-stream"; // Default if not found
+};
+
 export const useParkStore = create((set) => ({
   allParks: [],
   ParkDetails: [],
@@ -18,6 +31,9 @@ export const useParkStore = create((set) => ({
   filePreviews: {
     ImageUrl: null,
   },
+  isFetchAllNodalOfficerParksLoading: false,
+  allNodalOfficerParks: [],
+  nodalOfficerParksError: null,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -41,6 +57,33 @@ export const useParkStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchAllParksLoading: false });
+    }
+  },
+
+  // Fetch all Nodal Officers
+  fetchAllNodalOfficerParks: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {},
+    userId
+  ) => {
+    set({ isFetchAllNodalOfficerParksLoading: true });
+    try {
+      //   const filterString = useServicestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_ENTITIES}?userId=${userId}`
+      );
+
+      set({
+        allNodalOfficerParks: response.data,
+        isFetchAllNodalOfficerParksLoading: false,
+      });
+    } catch (error) {
+      set({
+        nodalOfficerParksError: error.message,
+        isFetchAllNodalOfficerParksLoading: false,
+      });
     }
   },
 
@@ -71,6 +114,13 @@ export const useParkStore = create((set) => ({
         success: "Park saved successfully.",
       });
 
+      set((state) => ({
+        filePreviews: {
+          ...state.filePreviews,
+          ImageUrl: { fileUrl: null, fileType: null },
+        },
+      }));
+
       return { success: true, data: response };
     } catch (error) {
       set({ error: error.message, isSaveParkDetailsLoading: false });
@@ -100,5 +150,19 @@ export const useParkStore = create((set) => ({
         },
       }));
     }
+  },
+
+  updateFilePreview: (ImageUrl) => {
+    set((state) => ({
+      filePreviews: {
+        ...state.filePreviews,
+        ImageUrl: ImageUrl
+          ? {
+              fileUrl: ImageUrl,
+              fileType: getFileTypeFromUrl(ImageUrl),
+            }
+          : { fileUrl: null, fileType: null },
+      },
+    }));
   },
 }));

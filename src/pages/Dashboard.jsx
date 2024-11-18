@@ -30,8 +30,17 @@ import { toast } from "react-toastify";
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
-  const { allParks, fetchAllParks } = useParkStore();
-  const { roleDetails } = useAuthStore();
+  const {
+    allParks,
+    fetchAllParks,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+  } = useParkStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -50,13 +59,18 @@ function Dashboard() {
   const initialValues = {
     fromDate: "",
     toDate: "",
-    parkId: "",
+    entityId: "",
   };
+
   useEffect(() => {
     fetchAllDashboardCounts(null, null, {}, roleDetails);
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
-    fetchAllParks();
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
 
   useEffect(() => {
@@ -67,6 +81,9 @@ function Dashboard() {
     setPageIndex(newPageIndex);
     setPageSize(newPageSize);
   };
+
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -255,24 +272,27 @@ function Dashboard() {
                 >
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      <div>
-                        <label className="block text-xs font-medium">
-                          Entity
-                        </label>
-                        <Field
-                          as="select"
-                          name="entityId"
-                          className={`mt-1 block w-full px-2 py-1 border
+                      {(role === "ROLE_SUPERADMIN" ||
+                        role === "ROLE_NODALOFFICER") && (
+                        <div>
+                          <label className="block text-xs font-medium">
+                            Entity
+                          </label>
+                          <Field
+                            as="select"
+                            name="entityId"
+                            className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        >
-                          <option value="">Select </option>
-                          {allParks.map((park) => (
-                            <option key={park.id} value={park.id}>
-                              {park.name}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
+                          >
+                            <option value="">Select </option>
+                            {parksToRender?.map((park) => (
+                              <option key={park.id} value={park.id}>
+                                {park.name}
+                              </option>
+                            ))}
+                          </Field>
+                        </div>
+                      )}
 
                       <div>
                         <label

@@ -31,9 +31,10 @@ const FacilityCreate = ({
     name: isFacilityEditVisible ? FacilityEditDetails.name : "",
     displayName: isFacilityEditVisible ? FacilityEditDetails.displayName : "",
     contactName:
-      (isFacilityEditVisible && FacilityEditDetails.contactName) || "",
+      (isFacilityEditVisible && FacilityEditDetails.contactName) || "test",
     contactNumber:
-      (isFacilityEditVisible && FacilityEditDetails.contactNumber) || "",
+      (isFacilityEditVisible && FacilityEditDetails.contactNumber) ||
+      "9876543288",
     contactEmail:
       (isFacilityEditVisible && FacilityEditDetails.contactEmail) || "",
     capacity: (isFacilityEditVisible && FacilityEditDetails.capacity) || null,
@@ -62,6 +63,7 @@ const FacilityCreate = ({
     const formattedValues = {
       ...values,
       isActive: values.isActive === "true" || values.isActive === true,
+      displayName: values.name,
       openTime:
         values.openTime.length === 5
           ? `${values.openTime}:00`

@@ -4,6 +4,7 @@ import { useParkStore } from "../../store/masters/parksStore";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { PiPark } from "react-icons/pi";
+import useAuthStore from "../../store/authStore";
 
 const ParkList = ({
   setIsParkCreateVisible,
@@ -15,9 +16,20 @@ const ParkList = ({
     fetchAllParks,
     isFetchAllParksLoading,
     setCurrentParkEditDetails,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
   } = useParkStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
   useEffect(() => {
-    fetchAllParks();
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
   const [isImageLoaded, setIsImageLoaded] = useState(true);
 
@@ -134,11 +146,19 @@ const ParkList = ({
   ];
   return (
     <>
-      <AgGridTable
-        rowData={allParks}
-        columnDefs={columnDefs}
-        isFetchLoading={isFetchAllParksLoading}
-      />
+      {role !== "ROLE_NODALOFFICER" ? (
+        <AgGridTable
+          rowData={allParks}
+          columnDefs={columnDefs}
+          isFetchLoading={isFetchAllParksLoading}
+        />
+      ) : (
+        <AgGridTable
+          rowData={allNodalOfficerParks}
+          columnDefs={columnDefs}
+          isFetchLoading={isFetchAllNodalOfficerParksLoading}
+        />
+      )}
     </>
   );
 };

@@ -9,6 +9,7 @@ import BaseVariant from "../utils/file_privew/baseVariant";
 import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
+import useAuthStore from "../../store/authStore";
 
 const ParkCreate = ({
   setIsParkCreateVisible,
@@ -21,6 +22,7 @@ const ParkCreate = ({
     handleFileChange,
     filePreviews,
     parkEditDetails,
+    updateFilePreview,
   } = useParkStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -31,11 +33,17 @@ const ParkCreate = ({
     isFetchAllNodalOfficersLoading,
     fetchAllNodalOfficers,
   } = useNodalOfficerStore();
-
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllNodalOfficers();
+    if (isParkEditVisible) {
+      updateFilePreview(parkEditDetails.imageUrl);
+    }
   }, []);
 
   const initialValues = {
@@ -53,7 +61,11 @@ const ParkCreate = ({
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
-    NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
+    NodalOfficerId: isParkEditVisible
+      ? parkEditDetails.nodalOfficerUserId
+      : role === "ROLE_NODALOFFICER"
+      ? userId
+      : "",
   };
   const FILE_SIZE = 10 * 1024 * 1024;
 
@@ -63,6 +75,7 @@ const ParkCreate = ({
     "image/png",
     "application/pdf",
   ];
+
   // Validation schema for the form
   const createValidationSchema = Yup.object({
     Name: Yup.string().required("Entity Name is required"),
@@ -87,7 +100,7 @@ const ParkCreate = ({
       .max(50, "Area cannot be more than 50 characters"),
     ZipCode: Yup.string()
       .nullable()
-      .matches(/^\d+$/, "Zip Code must be a number")
+      .matches(/^\d+$/, "Pincode must be a number")
       .length(6, "Zip Code must be exactly 5 digits"),
     Description: Yup.string()
       .nullable()
@@ -101,7 +114,11 @@ const ParkCreate = ({
       .test("fileType", "Unsupported file format", (value) => {
         return !value || (value && SUPPORTED_FORMATS.includes(value.type));
       }),
-    NodalOfficerId: Yup.string().required("Nodal Officer is required"),
+    NodalOfficerId: Yup.string()
+      .nullable()
+      .test("isRequired", "Nodal Officer is required", (value, context) => {
+        return role === "ROLE_NODALOFFICER" || !!value;
+      }),
   });
   const updateValidationSchema = Yup.object({
     Name: Yup.string().required("Entity Name is required"),
@@ -127,20 +144,39 @@ const ParkCreate = ({
     ZipCode: Yup.string()
       .nullable()
       .matches(/^\d+$/, "Zip Code must be a number")
-      .length(6, "Zip Code must be exactly 5 digits"),
+      .length(6, "Pincode must be exactly 5 digits"),
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
       .max(500, "Description cannot be more than 500 characters"),
     ImageUrl: Yup.mixed()
       .nullable()
+      .test("isRequired", "Entity Image is required", (value, context) => {
+        const isValidUrl =
+          parkEditDetails &&
+          parkEditDetails.imageUrl &&
+          SUPPORTED_FORMATS.some((format) =>
+            parkEditDetails.imageUrl
+              .toLowerCase()
+              .endsWith(format.split("/")[1])
+          ); // Check for valid file extension
+
+        // Validation passes if:
+        // - A new file is provided (`value` exists), OR
+        // - There is a valid existing image URL with a supported file type
+        return value || isValidUrl;
+      })
       .test("fileSize", "File too large", (value) => {
         return !value || (value && value.size <= FILE_SIZE);
       })
       .test("fileType", "Unsupported file format", (value) => {
         return !value || (value && SUPPORTED_FORMATS.includes(value.type));
       }),
-    NodalOfficerId: Yup.string().required("Nodal Officer is required"),
+    NodalOfficerId: Yup.string()
+      .nullable()
+      .test("isRequired", "Nodal Officer is required", (value, context) => {
+        return role === "ROLE_NODALOFFICER" || !!value;
+      }),
   });
 
   // onSubmit function to handle form submission
@@ -351,7 +387,7 @@ const ParkCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter city"
+                    placeholder="Enter Area"
                   />
                   <ErrorMessage
                     name="City"
@@ -360,9 +396,9 @@ const ParkCreate = ({
                   />
                 </div>
 
-                {/* Zip Code */}
+                {/* Pincode */}
                 <div>
-                  <label className="block text-sm font-medium">Zip Code</label>
+                  <label className="block text-sm font-medium">Pincode</label>
                   <Field
                     name="ZipCode"
                     type="text"
@@ -371,7 +407,7 @@ const ParkCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter zip code"
+                    placeholder="Enter Pincode"
                   />
                   <ErrorMessage
                     name="ZipCode"
@@ -460,44 +496,46 @@ const ParkCreate = ({
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-                {/* Nodal Officer */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Nodal Officer
-                  </label>
-                  <Field
-                    as="select"
-                    name="NodalOfficerId"
-                    onChange={(e) => {
-                      const { name, value } = e.target;
-                      setFieldValue("NodalOfficerId", value);
-                    }}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.NodalOfficerId && touched.NodalOfficerId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Nodal Officer</option>
-                    {allNodalOfficers
-                      ?.filter((allNodalOfficer) => allNodalOfficer.isActive)
-                      .map((allNodalOfficer) => (
-                        <option
-                          key={allNodalOfficer.id}
-                          value={allNodalOfficer.id}
-                        >
-                          {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}
-                        </option>
-                      ))}
-                  </Field>
-                  <ErrorMessage
-                    name="NodalOfficerId"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
+              {role !== "ROLE_NODALOFFICER" && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+                  {/* Nodal Officer */}
+                  <div>
+                    <label className="block text-sm font-medium">
+                      Nodal Officer
+                    </label>
+                    <Field
+                      as="select"
+                      name="NodalOfficerId"
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setFieldValue("NodalOfficerId", value);
+                      }}
+                      className={`mt-1 block w-full px-2 py-1 border ${
+                        errors.NodalOfficerId && touched.NodalOfficerId
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    >
+                      <option value="">Select Nodal Officer</option>
+                      {allNodalOfficers
+                        ?.filter((allNodalOfficer) => allNodalOfficer.isActive)
+                        .map((allNodalOfficer) => (
+                          <option
+                            key={allNodalOfficer.id}
+                            value={allNodalOfficer.id}
+                          >
+                            {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}
+                          </option>
+                        ))}
+                    </Field>
+                    <ErrorMessage
+                      name="NodalOfficerId"
+                      component="div"
+                      className="text-red-500 text-xs"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               {/* Submit Button */}
               <div className="flex justify-center">
                 <div className="">
