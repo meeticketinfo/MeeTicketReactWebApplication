@@ -16,10 +16,27 @@ const UserCreate = ({
 }) => {
   const { saveUserDetails, isSaveUserDetailsLoading, userEditDetails } =
     useUsersStore();
-  const { allParks, fetchAllParks } = useParkStore();
+  const {
+    allParks,
+    fetchAllParks,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+  } = useParkStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
+
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
   useEffect(() => {
-    fetchAllParks();
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
 
   const initialValues = {
@@ -80,7 +97,6 @@ const UserCreate = ({
           : values.password,
       };
 
-      console.log("formattedValues", formattedValues);
       const result = await saveUserDetails(
         formattedValues,
         isUserEditVisible ? true : false
@@ -150,7 +166,7 @@ const UserCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select </option>
-                    {allParks
+                    {parksToRender
                       ?.filter((park) => park.isActive)
                       .map((park) => (
                         <option

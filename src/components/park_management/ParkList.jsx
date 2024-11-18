@@ -79,17 +79,9 @@ const ParkList = ({
           : "N/A";
       },
     },
-
-    {
-      field: "state",
-      headerName: "State",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
     {
       field: "city",
-      headerName: "City",
+      headerName: "Area",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",

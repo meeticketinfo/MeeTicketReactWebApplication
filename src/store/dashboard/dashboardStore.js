@@ -108,13 +108,21 @@ export const useDashboardStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?${filterString}`
       );
-      set({
-        allEntityBookings: response.data.data.data || [],
-        isFetchEntityBookingsLoading: false,
-        totalEntityBookingRecords: response?.data?.totalCount || 0,
-      });
+      if (response.data.status === 404) {
+        set({
+          allEntityBookings: [],
+          isFetchEntityBookingsLoading: false,
+          totalEntityBookingRecords: 0,
+        });
+      } else {
+        set({
+          allEntityBookings: response.data.data.data || [],
+          isFetchEntityBookingsLoading: false,
+          totalEntityBookingRecords: response?.data?.totalCount || 0,
+        });
+      }
     } catch (error) {
-      set({ error: error.error.message, isFetchEntityBookingsLoading: false });
+      set({ error: error.error.message, isFetchEntityBookingsLoading: true });
     }
   },
 

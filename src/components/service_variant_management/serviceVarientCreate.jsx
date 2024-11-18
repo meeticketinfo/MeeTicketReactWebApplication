@@ -50,7 +50,7 @@ const ServiceVarientCreate = ({
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the name."),
     serviceId: Yup.string().required("Please enter the service ID."),
-    displayName: Yup.string().required("Please enter the display name."),
+    // displayName: Yup.string().required("Please enter the display name."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
     isPriceFixed: Yup.boolean().required(
@@ -68,6 +68,7 @@ const ServiceVarientCreate = ({
       const formattedValues = {
         ...values,
         isActive: values.isActive === "true" || values.isActive === true,
+        displayName: values.name || "",
       };
 
       const result = await saveServiceVarientDetails(
@@ -156,7 +157,7 @@ const ServiceVarientCreate = ({
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Varient Name
+                    Display Name
                   </label>
                   <Field
                     type="text"
@@ -167,7 +168,7 @@ const ServiceVarientCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Varient Name"
+                    placeholder="Enter Display Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -198,32 +199,6 @@ const ServiceVarientCreate = ({
                     name="amount"
                     component="div"
                     className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Display Name */}
-                <div className="mb-3">
-                  <label
-                    htmlFor="displayName"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Display Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="displayName"
-                    maxLength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
-                  />
-                  <ErrorMessage
-                    name="displayName"
-                    component="span"
-                    className="text-red-500 text-xs mt-1 absolute mb-1"
                   />
                 </div>
 

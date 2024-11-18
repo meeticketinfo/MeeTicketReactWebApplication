@@ -61,11 +61,7 @@ const ParkCreate = ({
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
-    NodalOfficerId: isParkEditVisible
-      ? parkEditDetails.nodalOfficerUserId
-      : role === "ROLE_NODALOFFICER"
-      ? userId
-      : "",
+    NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
   };
   const FILE_SIZE = 10 * 1024 * 1024;
 

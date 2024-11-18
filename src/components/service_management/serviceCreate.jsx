@@ -38,9 +38,10 @@ const ServiceCreate = ({
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter facility ."),
     name: Yup.string().required("Please enter Service name."),
-    displayName: Yup.string()
-      .required("Please enter display name.")
-      .max(50, "display name should be less than 50 characters"),
+    Description: Yup.string()
+      .nullable()
+      .min(10, "Description must be at least 10 characters long")
+      .max(500, "Description cannot be more than 500 characters"),
   });
 
   // onSubmit function to handle form submission
@@ -54,6 +55,7 @@ const ServiceCreate = ({
       ? values.installationDate
       : null;
     values.isActive = values.isActive === "true" || values.isActive === true;
+    values.displayName = values.name;
     try {
       // Call the saveUserDetails function from the store
       const result = await saveServiceDetails(
@@ -139,18 +141,18 @@ const ServiceCreate = ({
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Service Name
+                    Display Name
                   </label>
                   <Field
                     name="name"
                     type="text"
-                    maxlength={50}
+                    maxLength={50}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter service name"
+                    placeholder="Enter Display Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -159,77 +161,6 @@ const ServiceCreate = ({
                   />
                 </div>
                 {/* Display Name */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Display Name
-                  </label>
-                  <Field
-                    name="displayName"
-                    maxlength={50}
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Dispaly name"
-                  />
-                  <ErrorMessage
-                    name="displayName"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                {/* Description */}
-                <div>
-                  <label
-                    htmlFor="duration"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Duration
-                  </label>
-                  <Field
-                    type="text"
-                    name="duration"
-                    maxlength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.duration && touched.duration
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter Duration"
-                  />
-                  <ErrorMessage
-                    name="duration"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* DOB Number */}
-                <div>
-                  <label
-                    htmlFor="installationDate"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Installation Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.installationDate && touched.installationDate
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter date of birth"
-                  />
-                  <ErrorMessage
-                    name="installationDate"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
 
                 {/* Status */}
                 <div>
@@ -249,56 +180,6 @@ const ServiceCreate = ({
                   </Field>
                   <ErrorMessage
                     name="active"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                {/* Availability Status */}
-                <div className="">
-                  <label
-                    htmlFor="availabilityStatus"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Availability Status
-                  </label>
-                  <Field
-                    as="select"
-                    name="availability"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.availability && touched.availability
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Status</option>
-                    <option value="available">Available</option>
-                    <option value="unavailable">Unavailable</option>
-                  </Field>
-                  <ErrorMessage
-                    name="availabilityStatus"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* Service type */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Service Type
-                  </label>
-                  <Field
-                    name="serviceType"
-                    type="text"
-                    maxlength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.serviceType && touched.serviceType
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Service Type"
-                  />
-                  <ErrorMessage
-                    name="serviceType"
                     component="div"
                     className="text-red-500 text-xs"
                   />

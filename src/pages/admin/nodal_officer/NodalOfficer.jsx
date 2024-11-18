@@ -156,13 +156,15 @@ export default function NodalOfficer() {
               isNodalOfficerEditVisible={isNodalOfficerEditVisible}
               setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
             />
-            {isNodalOfficerEditVisible && (
-              <AgGridTable
-                rowData={allNodalOfficerParks || []}
-                columnDefs={nodalOfficerColumnDefs}
-                isFetchLoading={isFetchAllNodalOfficerParksLoading}
-              />
-            )}
+            <div className="mt-2">
+              {isNodalOfficerEditVisible && (
+                <AgGridTable
+                  rowData={allNodalOfficerParks || []}
+                  columnDefs={nodalOfficerColumnDefs}
+                  isFetchLoading={isFetchAllNodalOfficerParksLoading}
+                />
+              )}
+            </div>
           </>
         ) : (
           <NodalOfficerList

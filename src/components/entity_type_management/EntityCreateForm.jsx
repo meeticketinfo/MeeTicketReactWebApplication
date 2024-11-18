@@ -94,7 +94,7 @@ const EntityCreateForm = ({
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Entity Name
+                    Location Category Name
                   </label>
                   <Field
                     name="entityTypeName"
@@ -105,7 +105,7 @@ const EntityCreateForm = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter service name"
+                    placeholder="Enter Location Category Name"
                   />
                   <ErrorMessage
                     name="entityTypeName"

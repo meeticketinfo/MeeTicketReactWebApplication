@@ -21,7 +21,7 @@ import { bouncy } from "ldrs";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, error, login } = useAuthStore();
+  const { isLoading, isAuthenticated, loginError, login } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const {
     captchaInput,
@@ -237,9 +237,9 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="flex text-center justify-center">
-                    {error && (
+                    {loginError && (
                       <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
-                        {error}
+                        {loginError}
                       </small>
                     )}
                   </div>

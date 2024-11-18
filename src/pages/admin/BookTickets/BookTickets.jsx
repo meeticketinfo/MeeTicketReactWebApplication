@@ -14,8 +14,16 @@ import { NavLink } from "react-router-dom";
 
 export default function AdminBookings() {
   const { allParks, fetchAllParks } = useParkStore();
-  const { isFetchEntityBookingsLoading, fetchAllEntityBookingsByFilters } =
-    useDashboardStore();
+    const {
+      allCounts,
+      fetchAllDashboardCounts,
+      allPieCharts,
+      fetchAllEntityWiseCounts,
+      fetchAllEntityBookingsByFilters,
+      allEntityBookings,
+      isFetchEntityBookingsLoading,
+      totalEntityBookingRecords,
+    } = useDashboardStore();
   const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } =
     useBookingsStore();
   const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
@@ -257,7 +265,7 @@ export default function AdminBookings() {
                 </Form>
               </Formik>
             </div>
-            <AgGridTable
+            {/* <AgGridTable
               isFetchLoading={isFetchAllBookingsLoading}
               columnDefs={columnDefs}
               rowData={allBookings || []}
@@ -267,6 +275,14 @@ export default function AdminBookings() {
                 resizable: true,
               }}
               pagination={true}
+            /> */}
+            <AgGridTable
+              isFetchLoading={isFetchEntityBookingsLoading}
+              rowData={allEntityBookings || []}
+              columnDefs={columnDefs}
+              // onPageChange={handlePageChange}
+              totalRecords={totalEntityBookingRecords}
+              enableAdvancedFilter={true}
             />
           </div>
         )}

@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  "https://meeticket.vmaxtechservices.life/parkapi/api/";
+  "https://meeticketservicedevapi.vmaxtechservices.life/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -9,7 +9,7 @@ export const API_ENDPOINTS = {
   },
   MASTERS: {
     PARK: {
-      GET_PARKS: `Master/GetAllParks`,
+      GET_PARKS: `${API_BASE_URL}Master/GetAllEntities`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
       ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,

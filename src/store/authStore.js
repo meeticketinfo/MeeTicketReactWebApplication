@@ -14,8 +14,8 @@ const useAuthStore = create(
       isLoading: false,
       isAuthenticated: false,
       token: null,
-      loginError: "",
       error: null,
+      loginError:null,
       decodedTokenData: null,
       userRoles: [],
       roleDetails: null, // To store role id and name
@@ -59,7 +59,6 @@ const useAuthStore = create(
 
             set({
               loginError:
-                combinedErrorMessage ||
                 xhr.response.data.message ||
                 "Login failed",
               isLoading: false,

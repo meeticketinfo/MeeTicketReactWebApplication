@@ -3,6 +3,7 @@ import ParkCreate from "../../../components/park_management/ParkCreate";
 import ParkList from "../../../components/park_management/ParkList";
 import AdminLayout from "../../../layouts/AdminLayout";
 import BackButton from "../../../components/BackButton";
+import useAuthStore from "../../../store/authStore";
 
 
 export default function AdminParks() {
@@ -16,6 +17,10 @@ export default function AdminParks() {
     setIsParkEditVisible(false);
     false;
   };
+   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+     useAuthStore();
+   const role = roleDetails?.name;
+   const userId = decodedTokenData?.data?.UserId;
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -31,12 +36,14 @@ export default function AdminParks() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             {!isParkCreateVisible ? (
-              <button
-                onClick={toggleParkCreate}
-                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-              >
-                <span className="max-xs:sr-only"> Add Entity </span>
-              </button>
+              role === "ROLE_SUPERADMIN" && (
+                <button
+                  onClick={toggleParkCreate}
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                >
+                  <span className="max-xs:sr-only"> Add Entity </span>
+                </button>
+              )
             ) : (
               <BackButton
                 label="Back"
