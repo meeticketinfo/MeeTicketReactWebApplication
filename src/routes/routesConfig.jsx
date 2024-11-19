@@ -38,8 +38,10 @@ export const routes = [
     element: <Login />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+
+  // location routes
   {
-    path: "/entities",
+    path: "/locations",
     element: <ProtectedRoute element={<AdminParks />} />,
   },
   { path: "/entities/view-details/:id", element: <EntitiesDetails /> },
@@ -51,51 +53,115 @@ export const routes = [
     path: "/bookings",
     element: <ProtectedRoute element={<AdminBookings />} />,
   },
-  {
-    path: "/rtc-bookings",
-    element: <ProtectedRoute element={<RTCBookings />} />,
-  },
-  {
-    path: "/metro-bookings",
-    element: <ProtectedRoute element={<MetroBookings />} />,
-  },
-  { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
+
+  // Location Admins Routes 
   {
     path: "/entity-admins",
     element: <ProtectedRoute element={<AdminUsers />} />,
   },
   {
-    path: "/facilites",
+    path: "/entity-admins/create",
+    element: <ProtectedRoute element={<AdminUsers />} />,
+  },
+  {
+    path: "/entity-admins/edit",
+    element: <ProtectedRoute element={<AdminUsers />} />,
+  },
+
+  // Facilities routes 
+  {
+    path: "/facilities",
     element: <ProtectedRoute element={<AdminFacilities />} />,
   },
-  { path: "/service", element: <ProtectedRoute element={<Services />} /> },
   {
-    path: "/service-varient",
+    path: "/facilities/create",
+    element: <ProtectedRoute element={<CreateFacilities />} />,
+  },
+  {
+    path: "/facilities/edit",
+    element: <ProtectedRoute element={<CreateFacilities />} />,
+  },
+
+  // Service Routes
+  { path: "/service", element: <ProtectedRoute element={<Services />} /> },
+  { path: "/service/create", element: <ProtectedRoute element={<Services />} /> },
+  { path: "/service/edit", element: <ProtectedRoute element={<Services />} /> },
+
+  // Service Variant Routes 
+  {
+    path: "/service-variant",
     element: <ProtectedRoute element={<ServiceVariant />} />,
   },
+  {
+    path: "/service-variant/create",
+    element: <ProtectedRoute element={<ServiceVariant />} />,
+  },
+  {
+    path: "/service-variant/edit",
+    element: <ProtectedRoute element={<ServiceVariant />} />,
+  },
+
+  // gate Keepers 
   {
     path: "/gate-keepers",
     element: <ProtectedRoute element={<GateKeepers />} />,
   },
-  { path: "/payments", element: <ProtectedRoute element={<Payments />} /> },
   {
-    path: "/working-days",
-    element: <ProtectedRoute element={<WorkingDays />} />,
+    path: "/gate-keepers/create",
+    element: <ProtectedRoute element={<GateKeepers />} />,
   },
+  {
+    path: "/gate-keepers/edit",
+    element: <ProtectedRoute element={<GateKeepers />} />,
+  },
+
+  //holidays
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
+
+  //bookings
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
-  { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
+
+
+  // Department routes 
   {
     path: "/departments",
     element: <ProtectedRoute element={<Departments />} />,
   },
   {
-    path: "/entity-types",
+    path: "/departments/create",
+    element: <ProtectedRoute element={<Departments />} />,
+  },
+  {
+    path: "/departments/edit",
+    element: <ProtectedRoute element={<Departments />} />,
+  },
+
+  // Location Category Routes 
+  {
+    path: "/location-category",
+    element: <ProtectedRoute element={<EntityTypes />} />,
+  },  
+  {
+    path: "/location-category/create",
     element: <ProtectedRoute element={<EntityTypes />} />,
   },
   {
+    path: "/location-category/edit",
+    element: <ProtectedRoute element={<EntityTypes />} />,
+  },
+
+  // nodal Officer Routes 
+  {
     path: "/nodal-officer",
+    element: <ProtectedRoute element={<NodalOfficer />} />,
+  },
+  {
+    path: "/nodal-officer/create",
+    element: <ProtectedRoute element={<NodalOfficer />} />,
+  },
+  {
+    path: "/nodal-officer/edit",
     element: <ProtectedRoute element={<NodalOfficer />} />,
   },
 ];

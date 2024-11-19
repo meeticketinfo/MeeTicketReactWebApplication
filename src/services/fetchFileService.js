@@ -18,7 +18,7 @@ export const fetchQRFile = async (entityId) => {
         if (response.status === 200) {
             // Process the response as a Blob object
             const blob = response.data;
-            const url = window.URL.createObjectURL(blob);
+            const url = window.URL.createObjectURL(blob);   
             const a = document.createElement("a");
             a.href = url;
             a.download = "EntityQR.png";
