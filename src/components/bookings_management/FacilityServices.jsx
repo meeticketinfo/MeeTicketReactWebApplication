@@ -90,6 +90,7 @@ export const FacilityServices = () => {
             ?.filter((facility) =>
               allServices.some((service) => service.facilityId === facility.id)
             )
+            ?.filter((facility) => facility.isActive)
             .map((facility) => {
               return (
                 <div
@@ -110,7 +111,10 @@ export const FacilityServices = () => {
 
                     <div className="services-container space-y-4 mt-4">
                       {allServices
-                        .filter((service) => service.facilityId === facility.id)
+                        ?.filter((service) => service.isActive)
+                        ?.filter(
+                          (service) => service.facilityId === facility.id
+                        )
                         .map((service) => (
                           <div
                             key={service.id}
@@ -123,7 +127,10 @@ export const FacilityServices = () => {
 
                             <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
                               {allServiceVariants
-                                .filter(
+                                ?.filter(
+                                  (serviceVariant) => serviceVariant.isActive
+                                )
+                                ?.filter(
                                   (variant) => variant.serviceId === service.id
                                 )
                                 .map((variant) => (

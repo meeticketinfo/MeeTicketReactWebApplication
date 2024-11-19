@@ -64,7 +64,7 @@ const NodalOfficerCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
+      .max(8, "Password cannot be more than 8 characters"),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()
@@ -78,7 +78,8 @@ const NodalOfficerCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       // .required("Password is required")
-      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
+      .max(8, "Password cannot be more than 8 characters"),
+    // .matches(/^\d{8}$/, "Passcode must be exactly 4 digits"),
   });
 
   const onSubmit = async (
@@ -90,7 +91,7 @@ const NodalOfficerCreate = ({
       const formattedValues = {
         ...values,
         IsActive: values.IsActive === "true" || values.IsActive === true,
-      }
+      };
       const result = await saveNodalOfficerDetails(
         formattedValues,
         isNodalOfficerEditVisible ? true : false
@@ -371,7 +372,9 @@ const NodalOfficerCreate = ({
                 >
                   {isSaveNodalOfficerDetailsLoading
                     ? "Saving..."
-                    :(isNodalOfficerEditVisible ? "Update Nodal Officer": "Create Nodal Officer")}
+                    : isNodalOfficerEditVisible
+                    ? "Update Nodal Officer"
+                    : "Create Nodal Officer"}
                 </button>
               </div>
             </Form>

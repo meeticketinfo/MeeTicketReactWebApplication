@@ -124,8 +124,8 @@ const ServiceCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    {allFacilities.map((facility) => (
+                    <option value="">Select Facility</option>
+                    {allFacilities?.filter((facility) => facility.isActive)?.map((facility) => (
                       <option key={facility.id} value={facility.id}>
                         {facility.name}
                       </option>

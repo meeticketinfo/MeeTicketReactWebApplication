@@ -67,8 +67,8 @@ const UserCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .min(6, "Password cannot be less than 6 characters")
-      .max(20, "Password cannot be more than 30 characters"),
+      // .min(6, "Password cannot be less than 6 characters")
+      .max(8, "Password cannot be more than 8 characters"),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()

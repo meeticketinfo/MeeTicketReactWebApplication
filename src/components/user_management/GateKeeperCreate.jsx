@@ -25,7 +25,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     middleName: "",
     parkId: parkId,
     lastName: "",
-    dateOfBirth: "",
+    dateOfBirth: "2024-11-18T19:50:43.952Z",
     emailId: "",
     phoneNumber: "",
     password: "",
@@ -47,18 +47,18 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     password: Yup.string()
       .required("Password is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
-    dateOfBirth: Yup.date()
-      .required("Date of Birth is required")
-      .test("age", "You must be at least 18 years old", (value) => {
-        const today = new Date();
-        const age = today.getFullYear() - value.getFullYear();
-        const month = today.getMonth() - value.getMonth();
-        // If birth month is later in the year, subtract one year
-        if (month < 0 || (month === 0 && today.getDate() < value.getDate())) {
-          return age - 1 >= 18;
-        }
-        return age >= 18;
-      }),
+    // dateOfBirth: Yup.date()
+    //   .required("Date of Birth is required")
+    //   .test("age", "You must be at least 18 years old", (value) => {
+    //     const today = new Date();
+    //     const age = today.getFullYear() - value.getFullYear();
+    //     const month = today.getMonth() - value.getMonth();
+    //     // If birth month is later in the year, subtract one year
+    //     if (month < 0 || (month === 0 && today.getDate() < value.getDate())) {
+    //       return age - 1 >= 18;
+    //     }
+    //     return age >= 18;
+    //   }),
   });
 
   const onSubmit = async (
@@ -138,27 +138,6 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                   />
                 </div>
 
-                {/*Middle Name */}
-                <div>
-                  <label htmlFor="User" className="block text-xs font-medium">
-                    Middle Name
-                  </label>
-                  <Field
-                    name="middleName"
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.middleName && touched.middleName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter middle name"
-                  />
-                  <ErrorMessage
-                    name="middleName"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
@@ -180,30 +159,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* DOB Number */}
-                <div>
-                  <label
-                    htmlFor="dateOfBirth"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    DOB
-                  </label>
-                  <Field
-                    type="date"
-                    name="dateOfBirth"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.dateOfBirth && touched.dateOfBirth
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter date of birth"
-                  />
-                  <ErrorMessage
-                    name="dateOfBirth"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
+
                 {/* Email Id */}
                 <div>
                   <label
@@ -287,7 +243,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveGateKeeperDetailsLoading}
                 >
-                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create User"}
+                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create Gate Keeper"}
                 </button>
               </div>
             </Form>

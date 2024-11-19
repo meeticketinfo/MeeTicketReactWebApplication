@@ -137,8 +137,8 @@ const ServiceVarientCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    {allServices.map((service) => (
+                    <option value="">Select service</option>
+                    {allServices?.filter((service) => service.isActive)?.map((service) => (
                       <option key={service.id} value={service.id}>
                         {service.name}
                       </option>

@@ -49,36 +49,6 @@ const GateKeeperList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "dob",
-      headerName: "DOB",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? formatToStandardDate(params.value) : "N/A",
-    },
-    // {
-    //   headerName: "Actions",
-    //   field: "actions",
-    //   cellRenderer: (params) => (
-    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-    //       <button
-    //         className="btn-edit"
-    //         onClick={() => {
-    //           // setCurrentUserEditDetails(params.data);
-    //           // setIsUserCreateVisible(true);
-    //           // setIsUserEditVisible(true);
-    //         }}
-    //       >
-    //         <span className="">
-    //           <LuClipboardEdit className="text-[24px] text-blue-600 " />
-    //         </span>
-    //       </button>
-    //     </div>
-    //   ),
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    // },
   ];
   return (
     <>
