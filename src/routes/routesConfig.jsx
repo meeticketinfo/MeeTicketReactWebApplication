@@ -29,6 +29,7 @@ import NotFound from "../pages/Error/NotFound";
 import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
 import ServiceUnifiedCreator from "../components/facilities_management/ServiceUnifiedCreator";
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
+import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 
 export const routes = [
   {
@@ -92,6 +93,10 @@ export const routes = [
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
+  {
+    path: "/super-admin-facilites",
+    element: <ProtectedRoute element={<SuperAdminFacilities />} />,
+  },
   {
     path: "/departments",
     element: <ProtectedRoute element={<Departments />} />,

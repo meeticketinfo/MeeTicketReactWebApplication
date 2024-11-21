@@ -51,14 +51,16 @@ const ParkCreate = ({
     EntityTypeId: isParkEditVisible ? parkEditDetails.entityTypeId : "",
     DepartmentId: isParkEditVisible ? parkEditDetails.departmentId : "",
     DisplayName: parkEditDetails.name,
+    Prefix: isParkEditVisible ? parkEditDetails.prefix : "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
     City: isParkEditVisible ? parkEditDetails.city : "",
-    // Area: isParkEditVisible ? parkEditDetails.city : "",
+    Area: isParkEditVisible ? parkEditDetails.city : "",
     State: "Telangana",
     ZipCode: isParkEditVisible ? parkEditDetails.zipCode : "",
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
+    IsCounter:isParkEditVisible ? parkEditDetails.isCounter : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
     NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
@@ -78,6 +80,7 @@ const ParkCreate = ({
     EntityTypeId: Yup.number().required("Location Category is required"),
     DepartmentId: Yup.number().required("Department is required"),
     IsActive: Yup.boolean().required("Status is required"),
+    IsCounter: Yup.boolean().required("CounterBooking is required"),
     Street1: Yup.string()
       .required("Address Line 1 is required")
       .min(3, "Address Line 1 must be at least 3 characters long")
@@ -102,6 +105,12 @@ const ParkCreate = ({
       .nullable()
       .min(10, "Description must be at least 10 characters long")
       .max(500, "Description cannot be more than 500 characters"),
+      Prefix: Yup.string()
+      .matches(
+        /^[a-zA-Z0-9]*$/,
+        "Prefix can only contain alphanumeric characters"
+      )
+      .required("Prefix is required"),
     ImageUrl: Yup.mixed()
       .required("Location Image is required")
       .test("fileSize", "File too large", (value) => {
@@ -181,6 +190,11 @@ const ParkCreate = ({
     { setSubmitting, resetForm },
     saveParkDetails
   ) => {
+    console.log("values",values)
+    values.isActive= values.isActive === "true" || values.isActive === true
+    values.IsCounter= values.IsCounter === "true" || values.isActive === true
+    values.DisplayName= values.Name 
+
     try {
       const result = await saveParkDetails(
         values,
@@ -434,9 +448,32 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-
+                {/* counter Booking */}
+                <div>
+                  <label className="block text-sm font-medium">
+                    Counter Booking
+                  </label>
+                  <Field
+                    as="select"
+                    name="IsCounter"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.IsCounter && touched.IsCounter
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Booking Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="IsCounter"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
                 {/* Description */}
-                <div className="col-span-3">
+                <div className="col-span-1">
                   <label className="block text-sm font-medium">
                     Description
                   </label>
@@ -452,6 +489,34 @@ const ParkCreate = ({
                   />
                   <ErrorMessage
                     name="Description"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium">
+                    Transaction Prefix
+                  </label>
+                  <Field
+                    name="Prefix"
+                    maxLength={3}
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.Prefix && touched.Prefix
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Transaction Prefix"
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(
+                        /[^a-zA-Z0-9]/g,
+                        ""
+                      );
+                    }}
+                  />
+                  <ErrorMessage
+                    name="Prefix"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -520,7 +585,11 @@ const ParkCreate = ({
                             key={allNodalOfficer.id}
                             value={allNodalOfficer.id}
                           >
-                            {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}
+                            <span>
+                              {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}{" "}
+                              &nbsp;- &nbsp;{" "}
+                            </span>
+                            <span>{`${allNodalOfficer.phoneNumber}`}</span>
                           </option>
                         ))}
                     </Field>

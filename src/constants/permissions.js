@@ -6,6 +6,7 @@ export const superAdminPermissions = [
   // "entity-admins",
   "nodal-officer",
   "entity-bookings",
+  "super-admin-facilites"
 ];
 
 export const parkAdminPermissions = [
