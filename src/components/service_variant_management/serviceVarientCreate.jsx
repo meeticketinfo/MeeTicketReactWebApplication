@@ -276,8 +276,8 @@ const ServiceVarientCreate = ({
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
                     : isServiceVarientEditVisible
-                    ? "Update Service Varient"
-                    : "Create Service Varient"}
+                    ? "Update Ticket Type"
+                    : "Create Ticket Type"}
                 </button>
               </div>
             </Form>

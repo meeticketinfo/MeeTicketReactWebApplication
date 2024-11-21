@@ -77,6 +77,14 @@ export default function AdminBookings() {
         params.value && params.value.trim() !== "" ? params.value : "N/A",
     },
     {
+      field: "transactionId",
+      headerName: "Transaction Id",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value && params.value.trim() !== "" ? params.value : "N/A",
+    },
+    {
       field: "userName",
       headerName: "User Name",
       flex: 1,

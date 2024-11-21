@@ -75,10 +75,10 @@ export const routes = [
     path: "/service-varient",
     element: <ProtectedRoute element={<ServiceVariant />} />,
   },
-  {
-    path: "/facility/unified-create",
-    element: <ProtectedRoute element={<UnifiedCreate />} />,
-  },
+  // {
+  //   path: "/facility/unified-create",
+  //   element: <ProtectedRoute element={<UnifiedCreate />} />,
+  // },
   {
     path: "/gate-keepers",
     element: <ProtectedRoute element={<GateKeepers />} />,

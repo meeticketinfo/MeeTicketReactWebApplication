@@ -4,10 +4,12 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
 export const useFacilityStore = create((set) => ({
   allFacilities: [],
+  adminFacilities:[],
   FacilityDetails: [],
   isSaveFacilityDetailsLoading: false,
   isFetchFacilityDetailsLoading: false,
   isFetchAllFacilitiesLoading: false,
+  isFetchAllAdminFacilitiesLoading: false,
   fetchFacilityDetailsError: null,
   error: null,
   success: null,
@@ -39,6 +41,26 @@ export const useFacilityStore = create((set) => ({
     }
   },
 
+  fetchAllDropdownFacilities: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+    set({ isFetchAllAdminFacilitiesLoading: true });
+    try {
+      //   const filterString = useFacilitiestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Facility.GET_Facilities}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.FACILITY.FACILITIES_DROPDOWN}`
+      );
+      console.log(response);
+
+      set({
+        adminFacilities: response.data,
+        isFetchAllAdminFacilitiesLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchAllAdminFacilitiesLoading: false });
+    }
+  },
+
+
   // Fetch Facility details
   fetchFacilityDetails: async (pageIndex = 1, pageSize = 10, filters = {}) => {
     set({ isFetchFacilityDetailsLoading: true });
@@ -64,7 +86,7 @@ export const useFacilityStore = create((set) => ({
   },
 
   setCurrentFacilityEditDetails: (FacilityEditDetails) => {
-    console.log("FacilityEditDetails",FacilityEditDetails)
+   // console.log("FacilityEditDetails",FacilityEditDetails)
     set({
       FacilityEditDetails,
     });

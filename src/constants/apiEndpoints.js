@@ -1,6 +1,8 @@
 export const API_BASE_URL =
   "https://meeticketservicedevapi.vmaxtechservices.life/api/";
 
+// export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
+
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${API_BASE_URL}/auth/login`,
@@ -21,8 +23,12 @@ export const API_ENDPOINTS = {
     },
     FACILITY: {
       GET_FACILITIES: `Master/GetAllFacilities`,
+      ADMIN_GET_FACILITIES :`${API_BASE_URL}Facilities/GetAllFacilityMasters`,
+      ADMIN_ADD_FACILITIES : `${API_BASE_URL}Facilities/CreateMasterFacility`,
+      ADMIN_UPDATE_FACILITIES : `${API_BASE_URL}Facilities/UpdateMasterFacilities`,
+      FACILITIES_DROPDOWN:`${API_BASE_URL}Facilities/GetFacilitiesDropDown`,
       UPDATE_FACILITY_DETAILS: `${API_BASE_URL}Master/UpdateFacilities`,
-      ADD_NEW_FACILITY: `${API_BASE_URL}Master/AddNewFacility`,
+      ADD_NEW_FACILITY: `${API_BASE_URL}Facilities/CreateNewFacility`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
