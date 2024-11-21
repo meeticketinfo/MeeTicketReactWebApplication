@@ -17,8 +17,10 @@ export const parkAdminPermissions = [
   "gate-keepers",
   //
   "bookings",
+  "facility-services",
   "holidays",
   "entity-bookings",
+  "facility/unified-create",
 ];
 
 export const nodalOfficerPermissions = [

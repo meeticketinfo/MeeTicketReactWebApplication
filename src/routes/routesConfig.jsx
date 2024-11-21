@@ -27,6 +27,8 @@ import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
 import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
 import NotFound from "../pages/Error/NotFound";
 import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
+import ServiceUnifiedCreator from "../components/facilities_management/ServiceUnifiedCreator";
+import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 
 export const routes = [
   {
@@ -72,6 +74,10 @@ export const routes = [
   {
     path: "/service-varient",
     element: <ProtectedRoute element={<ServiceVariant />} />,
+  },
+  {
+    path: "/facility/unified-create",
+    element: <ProtectedRoute element={<UnifiedCreate />} />,
   },
   {
     path: "/gate-keepers",

@@ -74,6 +74,12 @@ const sidebarItems = [
         path: "/service-varient",
       },
       {
+        title: "facility-unified-create ",
+        icon: FaUsers,
+        path: "/facility/unified-create",
+      },
+
+      {
         title: "Gate Keeper ",
         icon: RiBodyScanLine,
         path: "/gate-keepers",
