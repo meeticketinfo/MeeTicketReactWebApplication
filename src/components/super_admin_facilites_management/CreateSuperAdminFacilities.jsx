@@ -47,16 +47,16 @@ function CreateSuperAdminFacilities({
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
-        // toast.success(
-        //   isFacilityEditVisible
-        //     ? "Facility Updated successfully!"
-        //     : "Facility created successfully!"
-        // );
-        toast.success("Facility created successfully!");
+        toast.success(
+          isFacilityEditVisible
+            ? "Facility Updated successfully!"
+            : "Facility created successfully!"
+        );
+        // toast.success("Facility created successfully!");
         setTimeout(() => {
           setIsFacilityCreateVisible(false);
           //   setIsFacilityEditVisible(false);
-        }, 2000);
+        }, 1000);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
@@ -106,7 +106,7 @@ function CreateSuperAdminFacilities({
         validationSchema={validationSchema}
       >
         {({ errors, touched, isSubmitting }) => (
-          <Form className="grid grid-cols-1 justify-center  ">
+          <Form className="grid grid-cols-1 justify-center">
             <div className="grid grid-cols-1 gap-6 p-6  rounded-lg w-96 mx-auto">
               {/* Department */}
               <div>
@@ -128,7 +128,11 @@ function CreateSuperAdminFacilities({
                       </option>
                     ))}
                 </Field>
-                <ErrorMessage className="text-red-600 text-sm" name="departmentId" component={"div"}/>
+                <ErrorMessage
+                  className="text-red-600 text-sm"
+                  name="departmentId"
+                  component={"div"}
+                />
               </div>
 
               {/* Location Category */}
@@ -153,7 +157,11 @@ function CreateSuperAdminFacilities({
                       </option>
                     ))}
                 </Field>
-                <ErrorMessage className="text-red-600 text-sm" name="locationCategoryId" component={"div"}/>
+                <ErrorMessage
+                  className="text-red-600 text-sm"
+                  name="locationCategoryId"
+                  component={"div"}
+                />
               </div>
 
               {/* Facility Name */}
@@ -167,7 +175,11 @@ function CreateSuperAdminFacilities({
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   placeholder="Enter Location name"
                 />
-                <ErrorMessage className="text-red-600 text-sm" name="facilityName" component={"div"}/>
+                <ErrorMessage
+                  className="text-red-600 text-sm"
+                  name="facilityName"
+                  component={"div"}
+                />
               </div>
 
               {/* Status */}
@@ -196,9 +208,8 @@ function CreateSuperAdminFacilities({
                     //   disabled={isSaveParkDetailsLoading}
                   >
                     {isFacilityEditVisible
-                ? "Update Facilitey"
-                : "Create Facilitey"}
-                   
+                      ? "Update Facility"
+                      : "Create Facility"}
                   </button>
                 </div>
               </div>
