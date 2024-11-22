@@ -90,12 +90,8 @@ function Dashboard() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate
-          ? `${values.fromDate}T00:00:00.000Z`
-          : "",
-        toDate: values.toDate
-          ? `${values.toDate}T12:00:00.000Z`
-          : "",
+        fromDate: values.fromDate ? `${values.fromDate}T00:00:00.000Z` : "",
+        toDate: values.toDate ? `${values.toDate}T23:59:00.000Z` : "",
       };
       setSubmitting(true);
       const filters = formattedValues;
@@ -168,13 +164,20 @@ function Dashboard() {
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
+    // {
+    //   field: "bookingId",
+    //   headerName: "Booking Id",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) =>
+    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
+    // },
     {
-      field: "bookingId",
-      headerName: "Booking Id",
-      flex: 1,
+      field: "transactionId",
+      headerName: "Transaction ID",
+      flex: 2,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value && params.value.trim() !== "" ? params.value : "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "userName",
@@ -280,78 +283,90 @@ function Dashboard() {
                   initialValues={initialValues}
                   onSubmit={(values, actions) => onSubmit(values, actions)}
                 >
-                  <Form>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      {(role === "ROLE_SUPERADMIN" ||
-                        role === "ROLE_NODALOFFICER") && (
+                  {({ values, setFieldValue }) => (
+                    <Form>
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                        {(role === "ROLE_SUPERADMIN" ||
+                          role === "ROLE_NODALOFFICER") && (
+                          <div>
+                            <label className="block text-xs font-medium">
+                              Location
+                            </label>
+                            <Field
+                              as="select"
+                              name="entityId"
+                              className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                            >
+                              <option value="">Select </option>
+                              {parksToRender
+                                ?.filter((park) => park.isActive)
+                                ?.map((park) => (
+                                  <option key={park.id} value={park.id}>
+                                    {park.name}
+                                  </option>
+                                ))}
+                            </Field>
+                          </div>
+                        )}
+
                         <div>
-                          <label className="block text-xs font-medium">
-                            Location
+                          <label
+                            htmlFor="fromDate"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            From Date
                           </label>
                           <Field
-                            as="select"
-                            name="entityId"
+                            type="date"
+                            name="fromDate"
                             className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          >
-                            <option value="">Select </option>
-                            {parksToRender?.filter((park) => park.isActive)?.map((park) => (
-                              <option key={park.id} value={park.id}>
-                                {park.name}
-                              </option>
-                            ))}
-                          </Field>
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                            // min={getCurrentDate()}
+                            onChange={(e) => {
+                              const fromDateValue = e.target.value;
+                              setFieldValue("fromDate", fromDateValue);
+                              if (
+                                new Date(fromDateValue) >
+                                new Date(values.toDate)
+                              ) {
+                                // Automatically update toDate if it's earlier than fromDate
+                                setFieldValue("toDate", fromDateValue);
+                              }
+                            }}
+                          />
                         </div>
-                      )}
-
-                      <div>
-                        <label
-                          htmlFor="fromDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          From Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="fromDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          placeholder="Enter date of birth"
-                          min={getCurrentDate()}
-                        />
+                        <div>
+                          <label
+                            htmlFor="toDate"
+                            className="block text-xs font-medium text-gray-700"
+                          >
+                            To Date
+                          </label>
+                          <Field
+                            type="date"
+                            name="toDate"
+                            className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                            min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                            onChange={(e) => {
+                              const toDateValue = e.target.value;
+                              setFieldValue("toDate", toDateValue);
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <button
+                            type="submit"
+                            className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                            disabled={isFetchEntityBookingsLoading}
+                          >
+                            Search
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <label
-                          htmlFor="toDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          To Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="toDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          placeholder="Enter date of birth"
-                          min={getCurrentDate()}
-                          onChange = { e=>{
-                            setFieldValue("fromDate", e.target.value);
-                            // Set the min value for toDate to be the selected fromDate
-                            setFieldValue("toDate", e.target.value > initialValues.toDate ? e.target.value : initialValues.toDate);                         
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-end">
-                        <button
-                          type="submit"
-                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                          disabled={isFetchEntityBookingsLoading}
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div>
-                  </Form>
+                    </Form>
+                  )}
                 </Formik>
               </div>
               <AgGridTable

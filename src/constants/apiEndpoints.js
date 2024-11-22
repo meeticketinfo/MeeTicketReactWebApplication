@@ -33,7 +33,7 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     BOOKING: {
-      GET_BOOKINGS: `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
+      GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
@@ -117,7 +117,7 @@ export const API_ENDPOINTS = {
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
-    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/GetAllEntityBookingByFilters`,
+    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,

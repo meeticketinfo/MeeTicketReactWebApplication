@@ -20,7 +20,7 @@ const MetroBookingsList = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "id",
+      field: "transactionId",
       headerName: "Transaction ID",
       flex: 2,
       headerClass: "text-blue-v2",

@@ -258,7 +258,9 @@ export default function BookingDetails() {
                                 }}
                               >
                                 Total:{" "}
-                                {(detail?.totalAmount) || "N/A"}
+                                {formatToCurrency(
+                                  detail?.amount * detail?.quantity
+                                ) || "N/A"}
                               </span>
                               <span
                                 style={{

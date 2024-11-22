@@ -16,13 +16,13 @@ const BookingsList = () => {
       width: 100,
       headerClass: "text-blue-v2",
     },
-    {
-      field: "id",
-      headerName: "Booking ID",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
+    // {
+    //   field: "id",
+    //   headerName: "Booking ID",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "user",
       headerName: "User",

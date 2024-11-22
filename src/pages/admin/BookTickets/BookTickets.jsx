@@ -3,7 +3,10 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
-import { formatToCurrency , getCurrentDate } from "../../../utils/TypographyHelper";
+import {
+  formatToCurrency,
+  getCurrentDate,
+} from "../../../utils/TypographyHelper";
 import BackButton from "../../../components/BackButton";
 import useAuthStore from "../../../store/authStore";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -11,7 +14,6 @@ import { useParkStore } from "../../../store/masters/parksStore";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
-import { PaymentQR } from "./PaymentQR";
 
 export default function AdminBookings() {
   const {
@@ -38,6 +40,7 @@ export default function AdminBookings() {
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
+
   useEffect(() => {
     fetchAllBookings();
     // fetchAllParks();
@@ -49,8 +52,6 @@ export default function AdminBookings() {
   }, []);
 
   useEffect(() => {
-    
-
     fetchAllEntityBookingsByFilters(initialValues);
   }, []);
 
@@ -70,14 +71,6 @@ export default function AdminBookings() {
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
-    },
-    {
-      field: "bookingId",
-      headerName: "Booking Id",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value && params.value.trim() !== "" ? params.value : "N/A",
     },
     {
       field: "transactionId",
@@ -160,12 +153,8 @@ export default function AdminBookings() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate
-          ? `${values.fromDate}T00:00:00.000Z`
-          : "",
-        toDate: values.toDate
-          ? `${values.toDate}T12:00:00.000Z`
-          : "",
+        fromDate: values.fromDate ? `${values.fromDate}T00:00:00.000Z` : "",
+        toDate: values.toDate ? `${values.toDate}T23:59:00.000Z` : "",
       };
       setSubmitting(true);
       const filters = formattedValues;
@@ -199,25 +188,28 @@ export default function AdminBookings() {
             </h1>
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            <PaymentQR />
-
             {!isBookingFormVisible ? (
               role === "ROLE_ADMIN" &&
               isCounterEnabled.toLowerCase() === "true" && (
-                <>
-                  <button
-                    className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                    onClick={() => setIsBookingFormVisible(true)} // Show booking form
-                  >
-                    Book Tickets
-                  </button>
-                </>
+                <button
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                >
+                  Book Tickets
+                </button>
               )
             ) : (
+              // <button
+              //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+              //   onClick={() => setIsBookingFormVisible(false)} // Hide booking form
+              // >
+              //   Back
+              // </button>
               <BackButton
                 label="Back"
                 onClick={() => setIsBookingFormVisible(false)}
                 className="bg-blue-600 hover:bg-blue-700"
+                // disabled={isSubmitting}
               />
             )}
           </div>
@@ -234,78 +226,87 @@ export default function AdminBookings() {
                 initialValues={initialValues}
                 onSubmit={(values, actions) => onSubmit(values, actions)}
               >
-                <Form>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                    {role !== "ROLE_ADMIN" && (
+                {({ values, setFieldValue }) => (
+                  <Form>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                      {role !== "ROLE_ADMIN" && (
+                        <div>
+                          <label className="block text-xs font-medium">
+                            Location
+                          </label>
+                          <Field
+                            as="select"
+                            name="entityId"
+                            className={`mt-1 block w-full px-2 py-1 border
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          >
+                            <option value="">Select </option>
+                            {parksToRender
+                              ?.filter((park) => park.isActive)
+                              .map((park) => (
+                                <option key={park.id} value={park.id}>
+                                  {park.name}
+                                </option>
+                              ))}
+                          </Field>
+                        </div>
+                      )}
                       <div>
-                        <label className="block text-xs font-medium">
-                          Location
+                        <label
+                          htmlFor="fromDate"
+                          className="block text-xs font-medium text-gray-700"
+                        >
+                          From Date
                         </label>
                         <Field
-                          as="select"
-                          name="entityId"
+                          type="date"
+                          name="fromDate"
                           className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        >
-                          <option value="">Select </option>
-                          {parksToRender
-                            ?.filter((park) => park.isActive)
-                            .map((park) => (
-                              <option key={park.id} value={park.id}>
-                                {park.name}
-                              </option>
-                            ))}
-                        </Field>
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          // min={getCurrentDate()}
+                          onChange={(e) => {
+                            const fromDateValue = e.target.value;
+                            setFieldValue("fromDate", fromDateValue);
+                            if (
+                              new Date(fromDateValue) > new Date(values.toDate)
+                            ) {
+                              // Automatically update toDate if it's earlier than fromDate
+                              setFieldValue("toDate", fromDateValue);
+                            }
+                          }}
+                        />
                       </div>
-                    )}
-                    <div>
-                      <label
-                        htmlFor="fromDate"
-                        className="block text-xs font-medium text-gray-700"
-                      >
-                        From Date
-                      </label>
-                      <Field
-                        type="date"
-                        name="fromDate"
-                        className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        placeholder="Enter date of birth"
-                        min ={getCurrentDate()}
-                        onChange={e => {
-                          setFieldValue("fromDate", e.target.value);
-                          // Set the min value for toDate to be the selected fromDate
-                          setFieldValue("toDate", e.target.value > initialValues.toDate ? e.target.value : initialValues.toDate);
-                        }}
-                      />
+                      <div>
+                        <label
+                          htmlFor="toDate"
+                          className="block text-xs font-medium text-gray-700"
+                        >
+                          To Date
+                        </label>
+                        <Field
+                          type="date"
+                          name="toDate"
+                          className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                          onChange={(e) => {
+                            const toDateValue = e.target.value;
+                            setFieldValue("toDate", toDateValue);
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          type="submit"
+                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                          disabled={isFetchEntityBookingsLoading}
+                        >
+                          Search
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        htmlFor="toDate"
-                        className="block text-xs font-medium text-gray-700"
-                      >
-                        To Date
-                      </label>
-                      <Field
-                        type="date"
-                        name="toDate"
-                        className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        placeholder="Enter date of birth"
-                        min={initialValues.fromDate || getCurrentDate()}
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <button
-                        type="submit"
-                        className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                        disabled={isFetchEntityBookingsLoading}
-                      >
-                        Search
-                      </button>
-                    </div>
-                  </div>
-                </Form>
+                  </Form>
+                )}
               </Formik>
             </div>
             {/* <AgGridTable
