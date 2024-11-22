@@ -6,11 +6,14 @@ import { toast } from "react-toastify";
 import { handleApiError } from "../../../utils/apiErrorHandler";
 import QRCodeDisplay from "./QrCodeDisplay";
 import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
+import { PaymentQR } from "./PaymentQR";
 
 export default function BookingDetails() {
   const { id } = useParams();
   const [isGridView, setIsGridView] = useState(true);
-  const [bookingDetails, setBookingDetails] = useState(null); // Start with null to handle different data types
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
+
   const {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
@@ -25,6 +28,7 @@ export default function BookingDetails() {
       const result = await fetchCurrentBookingDetailsByBookingId(bookingId);
       if (result && result.data && result.data.status === 200) {
         setBookingDetails(result.data.data.data.bookingDetails);
+        setBookingDetailsResponse(result.data.data.data);
         console.log("bookingDetails", result.data.data.data.bookingDetails);
       } else {
         toast.error("Unexpected response from the server.");
@@ -50,14 +54,14 @@ export default function BookingDetails() {
     const printStyles = `
     <style>
       @page {
-        size: 58mm 100mm; /* Adjust the width and height for ticket dimensions */
+        size: 200mm 400mm; /* Adjust the width and height for ticket dimensions */
         margin: 5mm; /* Add small margins for better readability */
       }
       body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
-        width: 58mm; /* Match the page size */
+        width: 220mm; /* Match the page size */
       }
       .printable-card {
         width: 100%; /* Fit within the 58mm width */
@@ -101,6 +105,44 @@ export default function BookingDetails() {
     printWindow.print();
   };
 
+  const consolidatedData = [];
+
+  bookingDetails?.forEach((item) => {
+    // Find if there is already an entry with the same facilityId and serviceId
+    const existingEntry = consolidatedData.find(
+      (entry) =>
+        entry.facilityId === item.facilityId &&
+        entry.serviceId === item.serviceId
+    );
+
+    if (existingEntry) {
+      // Push details to the arrays in the existing entry
+      existingEntry.details.push({
+        serviceVariantId: item.serviceVariantId,
+        serviceVariantName: item.serviceVariantName,
+        amount: item.amount,
+        quantity: item.quantity,
+      });
+    } else {
+      // Create a new entry for the first occurrence
+      consolidatedData.push({
+        facilityId: item.facilityId,
+        serviceId: item.serviceId,
+        facilityName: item.facilityName,
+        serviceName: item.serviceName,
+        details: [
+          {
+            serviceVariantId: item.serviceVariantId,
+            serviceVariantName: item.serviceVariantName,
+            amount: item.amount,
+            quantity: item.quantity,
+            totalAmount: item.totalAmount,
+          },
+        ],
+      });
+    }
+  });
+
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -111,6 +153,7 @@ export default function BookingDetails() {
             </h1>
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+            <PaymentQR />
             <NavLink
               end
               to="/entity-bookings"
@@ -129,80 +172,114 @@ export default function BookingDetails() {
             Print QR Code Cards
           </button>
         </div>
-        <div
-          className={`grid gap-6 ${
-            isGridView
-              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-              : "grid-cols-1"
-          }`}
-        >
-          {Array.isArray(bookingDetails) ? (
-            bookingDetails.map((item) => (
-              <div
-                key={item.id}
-                className="printable-card bg-white/30 backdrop-blur-sm flex flex-col md:flex-row items-center border border-gray-300 border-opacity-50 rounded-[20px] shadow-lg text-gray-800"
-              >
-                <div className="w-full">
-                  <div className="flex justify-center bg-white m-2 rounded-[20px]">
-                    <QRCodeDisplay binaryQRCode={item.binaryQRCode} />
-                  </div>
-                  <div className="p-2 bg-white m-2 rounded-[20px]">
-                    <ul className="space-y-1">
-                      <li>
-                        <div
-                          className=""
+        <div className="flex justify-center">
+          <div
+            aria-label="card"
+            className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] border printable-card"
+          >
+            <div
+              aria-label="header"
+              className="flex items-center rounded-2xl overflow-hidden"
+            >
+              <div className=" ">
+                <QRCodeDisplay
+                  binaryQRCode={bookingDetailsResponse?.binaryQRCode}
+                />
+              </div>
+            </div>
+            <div
+              aria-label="content"
+              className="mt-2 grid gap-1 rounded-md overflow-hidden"
+            >
+              {Array.isArray(consolidatedData) ? (
+                consolidatedData.map((item) => (
+                  <div key={item.facilityId + item.serviceId}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        padding: "0.5rem",
+                        backgroundColor: "#f3f4f6", // Equivalent to bg-gray-100
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          width: "100%",
+                        }}
+                      >
+                        <h3
                           style={{
-                            textAlign: "center",
-                            fontWeight: "bold",
-                            fontSize: "20px",
+                            fontSize: "1.25rem", // Equivalent to text-sm
+                            fontWeight: "500", // Equivalent to font-medium
                           }}
                         >
                           {toTitleCase(item.facilityName) || "N/A"}
-                        </div>
-                      </li>
-                      <li>
-                        <div
-                          className=""
-                          style={{ textAlign: "center", fontWeight: "bold" }}
+                        </h3>
+                        <h5
+                          style={{
+                            fontSize: "1rem", // Equivalent to text-xs
+                          }}
                         >
-                          <small className="">
-                            {toTitleCase(item.serviceName) || "N/A"}
-                          </small>
-                        </div>
-                      </li>
-                      <li>
+                          {toTitleCase(item.serviceName) || "N/A"}
+                        </h5>
                         <div
-                          className=""
-                          style={{ textAlign: "center", fontWeight: "bold" }}
+                          style={{
+                            marginTop: "0.5rem",
+                            paddingTop: "0.5rem",
+                            borderTop: "1px solid #e5e7eb", // Equivalent to divide-gray-200
+                          }}
                         >
-                          <small className="">
-                            {toTitleCase(item.serviceVariantName) || "N/A"}
-                          </small>
+                          {item.details.map((detail, index) => (
+                            <div
+                              key={index}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                paddingBottom: "0.5rem",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "0.875rem", // Equivalent to text-sm
+                                  fontWeight: "400", // Equivalent to font-normal
+                                }}
+                              >
+                                Ticket Type:{" "}
+                                {toTitleCase(detail?.serviceVariantName) ||
+                                  "N/A"}
+                              </span>
+                              <span
+                                style={{
+                                  fontSize: "0.875rem",
+                                  fontWeight: "400",
+                                }}
+                              >
+                                Total:{" "}
+                                {(detail?.totalAmount) || "N/A"}
+                              </span>
+                              <span
+                                style={{
+                                  fontSize: "0.875rem",
+                                  fontWeight: "400",
+                                }}
+                              >
+                                Qnty: {detail?.quantity || "N/A"}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      </li>
-                    </ul>
-
-                    <hr />
-                    <div className="grid">
-                      <ul style={{ paddingTop: "10px" }}>
-                        <li>
-                          <small className="" style={{float: "left"}}>
-                            Total : {formatToCurrency(item.amount) || "N/A"}
-                          </small>
-                          <small className="" style={{float:"right"}}>
-                            Qnty : {item.quantity || "N/A"}
-                          </small>
-                        </li>
-                       
-                      </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-200">No booking details available.</p>
-          )}
+                ))
+              ) : (
+                <p className="text-gray-200">No booking details available.</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </AdminLayout>

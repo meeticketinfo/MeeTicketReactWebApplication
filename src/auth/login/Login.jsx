@@ -219,7 +219,8 @@ const Login = () => {
                           loadCaptchaEnginge(
                             6,
                             "#a8b4c4",
-                            "rgb(107 114 128 / 1)"
+                            "rgb(107 114 128 / 1)",
+                            "upper"
                           )
                         }
                       >

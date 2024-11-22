@@ -11,6 +11,7 @@ import { useParkStore } from "../../../store/masters/parksStore";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
+import { PaymentQR } from "./PaymentQR";
 
 export default function AdminBookings() {
   const {
@@ -36,7 +37,7 @@ export default function AdminBookings() {
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
-
+  const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
   useEffect(() => {
     fetchAllBookings();
     // fetchAllParks();
@@ -198,27 +199,25 @@ export default function AdminBookings() {
             </h1>
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+            <PaymentQR />
+
             {!isBookingFormVisible ? (
-              role === "ROLE_ADMIN" && (
-                <button
-                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
-                >
-                  Book Tickets
-                </button>
+              role === "ROLE_ADMIN" &&
+              isCounterEnabled.toLowerCase() === "true" && (
+                <>
+                  <button
+                    className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                    onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                  >
+                    Book Tickets
+                  </button>
+                </>
               )
             ) : (
-              // <button
-              //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-              //   onClick={() => setIsBookingFormVisible(false)} // Hide booking form
-              // >
-              //   Back
-              // </button>
               <BackButton
                 label="Back"
                 onClick={() => setIsBookingFormVisible(false)}
                 className="bg-blue-600 hover:bg-blue-700"
-                // disabled={isSubmitting}
               />
             )}
           </div>

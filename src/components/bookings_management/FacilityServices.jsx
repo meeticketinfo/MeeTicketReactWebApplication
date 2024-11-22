@@ -47,7 +47,7 @@ export const FacilityServices = () => {
     { setSubmitting, resetForm },
     saveBookingDetails
   ) => {
-    console.log("Form values:", values.selectedItems);
+    // console.log("Form values:", values.selectedItems);
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const currentDateTime = new Date().toISOString;
     const bookingDetailsPayload = {
