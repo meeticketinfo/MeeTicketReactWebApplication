@@ -420,6 +420,7 @@ const FacilityCreate = ({
                                   name: "",
                                   amount: "",
                                   isPriceFixed: false,
+                                  isActive: true,
                                 })
                               }
                             >
