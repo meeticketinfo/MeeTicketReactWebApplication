@@ -58,7 +58,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
       {/* Ag-Grid Table */}
       <div
         className="ag-theme-alpine bg-white/30 backdrop-blur-sm border border-white/50 rounded-lg shadow-md overflow-hidden"
-        style={{ height: 400, width: "100%", position: "relative" }}
+        style={{ height: 410, width: "100%", position: "relative" }}
       >
         <AgGridReact
           ref={gridRef}

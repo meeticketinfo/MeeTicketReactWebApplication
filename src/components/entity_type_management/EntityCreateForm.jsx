@@ -94,7 +94,7 @@ const EntityCreateForm = ({
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Location Category Name
+                    Location Category Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="entityTypeName"

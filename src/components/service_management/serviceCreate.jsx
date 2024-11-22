@@ -114,7 +114,7 @@ const ServiceCreate = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Facility</label>
+                  <label className="block text-sm font-medium">Facility <span className="text-red-500">*</span></label>
                   <Field
                     as="select"
                     name="facilityId"
@@ -140,8 +140,7 @@ const ServiceCreate = ({
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    {" "}
-                    Display Name
+                    Display Name <span className="text-red-500">*</span> 
                   </label>
                   <Field
                     name="name"

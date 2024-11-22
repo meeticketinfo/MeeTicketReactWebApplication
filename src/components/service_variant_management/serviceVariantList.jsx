@@ -62,7 +62,7 @@ const ServiceVariantList = ({
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "amount",
+      field: "isPriceFixed",
       headerName: "Fixed or Count Based",
       flex: 1,
       headerClass: "text-blue-v2",

@@ -46,7 +46,7 @@ const FacilityCreate = ({
     isActive: isFacilityEditVisible ? FacilityEditDetails.isActive : true,
     parkId: (isFacilityEditVisible && FacilityEditDetails.parkId) || parkId,
     serviceVarientReqDTOs: [
-      { name: "", amount: "", isPriceFixed: false }, // Initial single field
+      { name: "", amount: "", isPriceFixed: false , isActive: true }, // Initial single field
     ],
   };
   console.log("FacilityEditDetails", FacilityEditDetails)

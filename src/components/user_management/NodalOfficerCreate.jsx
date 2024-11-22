@@ -219,7 +219,7 @@ const NodalOfficerCreate = ({
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    First Name
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"
@@ -242,7 +242,7 @@ const NodalOfficerCreate = ({
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    Last Name
+                    Last Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"
@@ -267,7 +267,7 @@ const NodalOfficerCreate = ({
                     htmlFor="emailId"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Email Id
+                    Email Id <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"
@@ -293,7 +293,7 @@ const NodalOfficerCreate = ({
                     htmlFor="phoneNumber"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Phone Number
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"
@@ -320,7 +320,7 @@ const NodalOfficerCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password
+                    Password {!isNodalOfficerEditVisible &&<span className="text-red-500">*</span>}
                   </label>
                   <Field
                     autoComplete="off"

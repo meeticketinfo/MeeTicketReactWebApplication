@@ -3,7 +3,7 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
-import { formatToCurrency } from "../../../utils/TypographyHelper";
+import { formatToCurrency , getCurrentDate } from "../../../utils/TypographyHelper";
 import BackButton from "../../../components/BackButton";
 import useAuthStore from "../../../store/authStore";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -48,11 +48,13 @@ export default function AdminBookings() {
   }, []);
 
   useEffect(() => {
+    
+
     fetchAllEntityBookingsByFilters(initialValues);
   }, []);
 
   const initialValues = {
-    fromDate: "",
+    fromDate: getCurrentDate(),
     toDate: "",
     entityId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
   };
@@ -155,8 +157,17 @@ export default function AdminBookings() {
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      const formattedValues = {
+        ...values,
+        fromDate: values.fromDate
+          ? `${values.fromDate}T00:00:00.000Z`
+          : "",
+        toDate: values.toDate
+          ? `${values.toDate}T12:00:00.000Z`
+          : "",
+      };
       setSubmitting(true);
-      const filters = values;
+      const filters = formattedValues;
       const result = await fetchAllEntityBookingsByFilters(null, null, filters);
       if (result?.data?.status === 200) {
         resetForm();
@@ -261,6 +272,12 @@ export default function AdminBookings() {
                         className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         placeholder="Enter date of birth"
+                        min ={getCurrentDate()}
+                        onChange={e => {
+                          setFieldValue("fromDate", e.target.value);
+                          // Set the min value for toDate to be the selected fromDate
+                          setFieldValue("toDate", e.target.value > initialValues.toDate ? e.target.value : initialValues.toDate);
+                        }}
                       />
                     </div>
                     <div>
@@ -276,6 +293,7 @@ export default function AdminBookings() {
                         className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         placeholder="Enter date of birth"
+                        min={initialValues.fromDate || getCurrentDate()}
                       />
                     </div>
                     <div className="flex items-end">

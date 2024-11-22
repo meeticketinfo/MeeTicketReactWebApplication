@@ -110,7 +110,7 @@ function CreateSuperAdminFacilities({
             <div className="grid grid-cols-1 gap-6 p-6  rounded-lg w-96 mx-auto">
               {/* Department */}
               <div>
-                <label className="block text-sm font-medium">Department</label>
+                <label className="block text-sm font-medium">Department <span className="text-red-500">*</span></label>
                 <Field
                   as="select"
                   name="departmentId"
@@ -134,7 +134,7 @@ function CreateSuperAdminFacilities({
               {/* Location Category */}
               <div>
                 <label className="block text-sm font-medium">
-                  Location Category
+                  Location Category <span className="text-red-500">*</span>
                 </label>
                 <Field
                   as="select"
@@ -159,7 +159,7 @@ function CreateSuperAdminFacilities({
               {/* Facility Name */}
               <div>
                 <label className="block text-sm font-medium">
-                  Facility Name
+                  Facility Name <span className="text-red-500">*</span>
                 </label>
                 <Field
                   name="facilityName"

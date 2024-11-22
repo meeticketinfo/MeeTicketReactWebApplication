@@ -107,7 +107,7 @@ const DepartmentCreateForm = ({
                 <div className="">
                   <label className="block text-sm font-medium">
                     {" "}
-                    Department Name
+                    Department Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="departmentName"

@@ -18,6 +18,7 @@ import {
   formatToCurrency,
   formatToStandardDate,
   formatToStandardTime,
+  getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
 import { data } from "autoprefixer";
@@ -57,7 +58,7 @@ function Dashboard() {
   } = useDashboardStore();
 
   const initialValues = {
-    fromDate: "",
+    fromDate: getCurrentDate(),
     toDate: "",
     entityId: "",
   };
@@ -87,8 +88,17 @@ function Dashboard() {
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      const formattedValues = {
+        ...values,
+        fromDate: values.fromDate
+          ? `${values.fromDate}T00:00:00.000Z`
+          : "",
+        toDate: values.toDate
+          ? `${values.toDate}T12:00:00.000Z`
+          : "",
+      };
       setSubmitting(true);
-      const filters = values;
+      const filters = formattedValues;
       const result = await fetchAllEntityBookingsByFilters(null, null, filters);
       if (result?.data?.status === 200) {
         resetForm();
@@ -307,6 +317,7 @@ function Dashboard() {
                           className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           placeholder="Enter date of birth"
+                          min={getCurrentDate()}
                         />
                       </div>
                       <div>
@@ -322,6 +333,12 @@ function Dashboard() {
                           className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           placeholder="Enter date of birth"
+                          min={getCurrentDate()}
+                          onChange = { e=>{
+                            setFieldValue("fromDate", e.target.value);
+                            // Set the min value for toDate to be the selected fromDate
+                            setFieldValue("toDate", e.target.value > initialValues.toDate ? e.target.value : initialValues.toDate);                         
+                          }}
                         />
                       </div>
                       <div className="flex items-end">

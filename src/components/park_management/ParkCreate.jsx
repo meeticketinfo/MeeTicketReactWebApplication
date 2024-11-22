@@ -53,7 +53,7 @@ const ParkCreate = ({
     DisplayName: parkEditDetails.name,
     Prefix: isParkEditVisible ? parkEditDetails.prefix : "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
-    Street1: isParkEditVisible ? parkEditDetails.street1 : " ",
+    Street1: isParkEditVisible ? parkEditDetails.street1 : "",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
     City: isParkEditVisible ? parkEditDetails.city : "",
     Area: isParkEditVisible ? parkEditDetails.city : "",
@@ -258,7 +258,7 @@ const ParkCreate = ({
                 {/* Department */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Department
+                    Department <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
@@ -291,7 +291,7 @@ const ParkCreate = ({
                 {/* Location Category */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Location Category
+                    Location Category <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
@@ -324,7 +324,7 @@ const ParkCreate = ({
                 {/* Entity Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Location Name
+                    Location Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="Name"
@@ -343,20 +343,22 @@ const ParkCreate = ({
                   />
                 </div>
 
+            
                 {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Address Line 1
+                    Address Line 1 <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="Street1"
+                    id="Street1"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.Street1 && touched.Street1
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Address Line 1"
+                    placeholder="Enter Address Line 1" // Explicitly set this as a string
                   />
                   <ErrorMessage
                     name="Street1"
@@ -367,7 +369,7 @@ const ParkCreate = ({
                 {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Address Line 2
+                    Address Line 2 <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="Street2"
@@ -388,7 +390,7 @@ const ParkCreate = ({
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-medium">Area</label>
+                  <label className="block text-sm font-medium">Area <span className="text-red-500">*</span></label>
                   <Field
                     name="City"
                     type="text"
@@ -428,7 +430,7 @@ const ParkCreate = ({
 
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium">Status</label>
+                  <label className="block text-sm font-medium">Status <span className="text-red-500">*</span></label>
                   <Field
                     as="select"
                     name="IsActive"
@@ -451,7 +453,7 @@ const ParkCreate = ({
                 {/* counter Booking */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Counter Booking
+                    Counter Booking <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
@@ -496,7 +498,7 @@ const ParkCreate = ({
 
                 <div className="col-span-1">
                   <label className="block text-sm font-medium">
-                    Transaction Prefix
+                    Transaction Prefix <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="Prefix"
@@ -525,7 +527,7 @@ const ParkCreate = ({
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Location Image
+                    Location Image {!isParkEditVisible && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     name="ImageUrl"
@@ -562,7 +564,7 @@ const ParkCreate = ({
                   {/* Nodal Officer */}
                   <div>
                     <label className="block text-sm font-medium">
-                      Nodal Officer
+                      Nodal Officer <span className="text-red-500">*</span>
                     </label>
                     <Field
                       as="select"

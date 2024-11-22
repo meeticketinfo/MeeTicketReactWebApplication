@@ -79,8 +79,8 @@ const ServiceVarientCreate = ({
       if (result.data.status === 200) {
         toast.success(
           isServiceVarientEditVisible
-            ? "Service Variant Updated successfully!"
-            : "Service Variant created successfully!"
+            ? "Ticket Type Updated successfully!"
+            : "Ticket Type created successfully!"
         );
         setTimeout(() => {
           setIsServiceVarientCreateVisible(false);
@@ -127,7 +127,7 @@ const ServiceVarientCreate = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
                 <div>
-                  <label className="block text-sm font-medium"> Service</label>
+                  <label className="block text-sm font-medium">Service <span className="text-red-500">*</span></label>
                   <Field
                     as="select"
                     name="serviceId"
@@ -157,7 +157,7 @@ const ServiceVarientCreate = ({
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Display Name
+                    Display Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
@@ -183,7 +183,7 @@ const ServiceVarientCreate = ({
                     htmlFor="amount"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Amount
+                    Amount <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="number"
@@ -246,7 +246,7 @@ const ServiceVarientCreate = ({
                 {/* description */}
                 <div className="col-span-3">
                   <label className="block text-sm font-medium">
-                    Description
+                    Description <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="textarea"

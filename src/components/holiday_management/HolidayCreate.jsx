@@ -82,7 +82,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
               {/* Name Field */}
               <div className="">
                 <label className="block text-sm font-semibold text-gray-700">
-                  Name
+                  Name <span className="text-red-500">*</span>
                 </label>
                 <Field
                   name="name"
