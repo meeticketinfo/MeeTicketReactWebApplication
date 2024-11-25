@@ -6,7 +6,8 @@ import { useDepartmentStore } from '../store/useDepartmentStore'
 const DepartmentCreate = ({
     isDepartmentTypeEditVisible, setIsDepartmentTypeEditVisible, ValidationSchema
 }) => {
-   
+    const { saveDepartmentTypeDetails,isSaveDepartmentTypeDetailsLoading, fetchAllDepartmentTypes, setDepartmentTypeEditDetails } = departmentService()
+
     const initialValues = {
         departmentId:"",
         departmentName:"",

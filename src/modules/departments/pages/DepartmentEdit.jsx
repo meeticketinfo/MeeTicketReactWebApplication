@@ -1,6 +1,7 @@
 import React from 'react';
 import DepartmentForm from '../components/DepartmentForm';
 import { useDepartmentStore } from '../store/useDepartmentStore';
+import departmentService from '../services/departmentService';
 
 const DepartmentEdit = ({
   isDepartmentTypeEditVisible,
@@ -12,7 +13,7 @@ const DepartmentEdit = ({
     isSaveDepartmentTypeDetailsLoading,
     fetchAllDepartmentTypes,
     setDepartmentTypeEditDetails,
-  } = useDepartmentStore();
+  } =departmentService()
 
   const initialValues = {
     departmentId: departmentTypeEditDetails?.departmentId || '',

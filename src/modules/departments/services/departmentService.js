@@ -1,6 +1,5 @@
 
-import apiService from "../../services/apiService";
-import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+import apiService from "../../../services/apiService";
 import { useDepartmentStore } from "../store/useDepartmentStore";
 
 

@@ -1,15 +1,15 @@
 import React from "react"
 import { ErrorMessage, Form, Formik } from "formik"
-import React from "react"
 import ValidationSchema from "../config/ValidationSchema"
-
+import DepartmentCreate from "../pages/DepartmentCreate"
 
 const DepartmentForm = ({
-  initialValues,
+  initialValues ={},
   onSubmit,
   isSubmitting,
   isSaveDepartmentTypeDetailsLoading }) => {
-
+    console.log("initialValues:", initialValues);
+    console.log("onSubmit:", onSubmit);
   return (
     <>
       <div className="">
@@ -85,7 +85,8 @@ const DepartmentForm = ({
   )
 
 }
-export default DepartmentForm()
+export default DepartmentForm ; 
+
 
 
 

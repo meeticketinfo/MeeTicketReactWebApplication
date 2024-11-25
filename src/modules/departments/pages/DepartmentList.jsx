@@ -1,16 +1,13 @@
 import React from 'react'
 import DepartmentCreate from './DepartmentCreate'
+import MuiTable from '../../../components/tables/MuiCSTable';
+import { AdvancedFilterModule } from 'ag-grid-enterprise';
+import AdminLayout from '../../../layouts/AdminLayout';
 
 const DepartmentList = () => {
 
-    const columnDefs = [
-        {
-            headerName: "S.No",
-            valueGetter: "node.rowIndex + 1",
-            width: 100,
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
+
+    const columns = [
         {
             field: "departmentName",
             headerName: "Department Name",
@@ -62,9 +59,45 @@ const DepartmentList = () => {
     ];
 
     return (
-        <div>
-           
-        </div>
+        <>
+            <div>
+
+                <AdminLayout>
+                    <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto"
+                    >
+
+                    </div>
+                    <div className="sm:flex sm:justify-between sm:items-center mb-8">
+                        {/* Left: Title */}
+                        <div className="mb-4 sm:mb-0">
+                            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
+                                Departments
+                            </h1>
+                        </div>
+                        {/* Right: Actions */}
+                        <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+                            {/* Add view button */}
+                            <button
+                                onClick={() => {
+                                    setOpenModalId("department-modal");
+                                }}
+                                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                            >
+                                <span className="max-xs:sr-only">Add Department</span>
+                            </button>
+                        </div>
+                    </div>
+                    <MuiTable
+                        columns={columns}
+                        //  data={data}
+                        isLoading={false}
+                        error={null}
+                    />
+                </AdminLayout>
+            </div>
+
+        </>
+
     )
 }
 
