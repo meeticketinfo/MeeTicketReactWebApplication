@@ -150,7 +150,7 @@ const ServiceUnifiedCreator = () => {
                         htmlFor="name"
                         className="block text-sm font-semibold text-gray-700"
                       >
-                        Type of Ticket Name
+                        Ticket Type
                       </label>
                       <Field
                         type="text"

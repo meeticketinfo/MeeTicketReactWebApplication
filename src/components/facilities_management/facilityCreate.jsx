@@ -305,7 +305,7 @@ const FacilityCreate = ({
                 </div>
 
                 {!isFacilityEditVisible && <div className="col-span-3">
-                  <h3 className="text-lg font-semibold mb-4">Type of Ticket </h3>
+                  <h3 className="text-lg font-semibold mb-4">Ticket Type </h3>
                   <FieldArray
                     name="serviceVarientReqDTOs"
                     render={(arrayHelpers) => (
@@ -326,7 +326,7 @@ const FacilityCreate = ({
                                         htmlFor={`serviceVarientReqDTOs.${index}.name`}
                                         className="block text-sm font-semibold text-gray-700"
                                       >
-                                        Type of Ticket Name <span className="text-red-500">*</span>
+                                        Ticket Type <span className="text-red-500">*</span>
                                       </label>
                                       <Field
                                         type="text"
