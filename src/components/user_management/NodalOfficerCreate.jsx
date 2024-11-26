@@ -362,6 +362,33 @@ const NodalOfficerCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
+
+                  {/* Department */}
+              <div>
+                <label className="block text-sm font-medium">Department <span className="text-red-500">*</span></label>
+                <Field
+                  as="select"
+                  name="departmentId"
+                  className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                >
+                  <option value="">Select Department</option>
+                  {allDepartmentTypes
+                    ?.filter((departmentType) => departmentType.isActive)
+                    .map((departmentType) => (
+                      <option
+                        key={departmentType.departmentId}
+                        value={departmentType.departmentId}
+                      >
+                        {departmentType.departmentName}
+                      </option>
+                    ))}
+                </Field>
+                <ErrorMessage
+                  className="text-red-600 text-sm"
+                  name="departmentId"
+                  component={"div"}
+                />
+              </div>
               </div>
               {/* Submit Button */}
               <div className="flex justify-center p-2">

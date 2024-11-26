@@ -37,7 +37,7 @@ const ServiceVariantList = ({
     },
     {
       field: "serviceName",
-      headerName: "Service Name",
+      headerName: "Sub Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },

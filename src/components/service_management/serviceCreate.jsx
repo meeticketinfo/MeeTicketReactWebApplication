@@ -37,7 +37,7 @@ const ServiceCreate = ({
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter facility ."),
-    name: Yup.string().required("Please enter Service name."),
+    name: Yup.string().required("Please enter Actual name."),
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
@@ -66,8 +66,8 @@ const ServiceCreate = ({
       if (result.data.status === 200) {
         toast.success(
           isServiceEditVisible
-            ? "Service Updated successfully!"
-            : "Service created successfully!"
+            ? "Sub Facility Updated successfully!"
+            : "Sub Facility created successfully!"
         );
 
         setTimeout(() => {
@@ -140,7 +140,7 @@ const ServiceCreate = ({
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Display Name <span className="text-red-500">*</span> 
+                    Actual Name 
                   </label>
                   <Field
                     name="name"
@@ -151,7 +151,7 @@ const ServiceCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Display Name"
+                    placeholder="Enter Actual Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -218,8 +218,8 @@ const ServiceCreate = ({
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
                     : isServiceEditVisible
-                    ? "Update Service"
-                    : "Create Service"}
+                    ? "Update Sub Facility"
+                    : "Create Sub Facility"}
                 </button>
               </div>
             </Form>

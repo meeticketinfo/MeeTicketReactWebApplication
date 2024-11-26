@@ -35,13 +35,13 @@ const GateKeeperList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "emailId",
-      headerName: "emailId",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
+    // {
+    //   field: "emailId",
+    //   headerName: "emailId",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "phoneNumber",
       headerName: "Phone Number",

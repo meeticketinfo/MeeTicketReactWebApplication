@@ -48,8 +48,8 @@ const ServiceVarientCreate = ({
       : true,
   };
   const validationSchema = Yup.object({
-    name: Yup.string().required("Please enter the name."),
-    serviceId: Yup.string().required("Please enter the service ID."),
+    name: Yup.string().required("Please enter the Actual name."),
+    serviceId: Yup.string().required("Please enter the sub facility."),
     // displayName: Yup.string().required("Please enter the display name."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
@@ -127,7 +127,7 @@ const ServiceVarientCreate = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
                 <div>
-                  <label className="block text-sm font-medium">Service <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">Sub Facility <span className="text-red-500">*</span></label>
                   <Field
                     as="select"
                     name="serviceId"
@@ -137,7 +137,7 @@ const ServiceVarientCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select service</option>
+                    <option value="">Select sub facility</option>
                     {allServices?.filter((service) => service.isActive)?.map((service) => (
                       <option key={service.id} value={service.id}>
                         {service.name}
@@ -157,7 +157,7 @@ const ServiceVarientCreate = ({
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Display Name <span className="text-red-500">*</span>
+                    Actual Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
@@ -168,7 +168,7 @@ const ServiceVarientCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Display Name"
+                    placeholder="Enter Actual Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -193,7 +193,8 @@ const ServiceVarientCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
+                    placeholder=" Enter Amount"
+                    min={0}
                   />
                   <ErrorMessage
                     name="amount"
