@@ -40,9 +40,19 @@ const sidebarItems = [
         path: "/departments",
       },
       {
+        title: "Nodal Officers",
+        icon: FaUsers,
+        path: "/nodal-officer",
+      },
+      {
         title: "Location Categories",
         icon: MdOutlineForest,
         path: "/entity-types",
+      },
+      {
+        title: " Master Facilities",
+        icon: MdOutlineForest,
+        path: "/super-admin-facilites",
       },
      
       {
@@ -51,19 +61,9 @@ const sidebarItems = [
         path: "/entities",
       },
       {
-        title: " Master Facilities",
-        icon: MdOutlineForest,
-        path: "/super-admin-facilites",
-      },
-      {
         title: "Location Admins",
         icon: FaUsers,
         path: "/entity-admins",
-      },
-      {
-        title: "Nodal Officers",
-        icon: FaUsers,
-        path: "/nodal-officer",
       },
       {
         title: "Facilites",
@@ -71,7 +71,7 @@ const sidebarItems = [
         path: "/facilites",
       },
       {
-        title: "Service ",
+        title: "Sub Facilities",
         icon: TbPackages,
         path: "/service",
       },

@@ -27,7 +27,7 @@ const ServiceList = ({setIsServiceCreateVisible,setIsServiceEditVisible}) => {
     },
     {
       field: "name",
-      headerName: "Service Name",
+      headerName: "Sub Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
