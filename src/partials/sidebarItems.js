@@ -80,11 +80,11 @@ const sidebarItems = [
         icon: FaUsers,
         path: "/service-varient",
       },
-      // {
-      //   title: "facility-unified-create ",
-      //   icon: FaUsers,
-      //   path: "/facility/unified-create",
-      // },
+      {
+        title: "facility-unified-create ",
+        icon: FaUsers,
+        path: "/facility/unified-create",
+      },
 
       {
         title: "Gate Keeper ",

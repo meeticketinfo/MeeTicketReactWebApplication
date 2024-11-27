@@ -4,6 +4,7 @@ export const superAdminPermissions = [
   "entity-types",
   "entities",
   // "entity-admins",
+  "facility/unified-create",
   "nodal-officer",
   "entity-bookings",
   "super-admin-facilites"

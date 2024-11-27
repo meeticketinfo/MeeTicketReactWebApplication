@@ -4,6 +4,7 @@ import HolidayCreate from "../../../components/holiday_management/HolidayCreate"
 import HolidayList from "../../../components/holiday_management/HolidayList";
 import { useState } from "react";
 import BackButton from "../../../components/BackButton";
+import RecurringHolidayCreate from "../../../components/holiday_management/RecurringHolidayCreate";
 
 export default function Holidays() {
   const [isHolidayCreateVisible, setIsHolidayCreateVisible] = useState(false);
@@ -28,21 +29,19 @@ export default function Holidays() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             {!isHolidayCreateVisible ? (
-            <button
-              onClick={toggleHolidayCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-            >
-              <span className="max-xs:sr-only">
-              Add Holidays
-              </span>
-            </button>
-              ) : (
-                <BackButton
-                  label="Back"
-                  onClick={() => setIsHolidayCreateVisible(false)}
-                  className="bg-blue-600 hover:bg-blue-700"
-                />
-              )}
+              <button
+                onClick={toggleHolidayCreate}
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              >
+                <span className="max-xs:sr-only">Add Holidays</span>
+              </button>
+            ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsHolidayCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
           </div>
         </div>
 
@@ -51,7 +50,10 @@ export default function Holidays() {
             setIsHolidayCreateVisible={setIsHolidayCreateVisible}
           />
         ) : (
-          <HolidayList />
+          <>
+            <HolidayList />
+            <RecurringHolidayCreate />
+          </>
         )}
 
         {/* Cards */}
