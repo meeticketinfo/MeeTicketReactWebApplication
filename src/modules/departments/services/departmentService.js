@@ -3,7 +3,7 @@ import apiService from "../../../services/apiService";
 import { useDepartmentStore } from "../store/useDepartmentStore";
 
 
-const departmentService = () => {
+export const departmentService = () => {
 
   const {
     setError,
@@ -12,30 +12,32 @@ const departmentService = () => {
 
   return {
     
-    fetchAllDepartmentTypes: async (
-      pageIndex = 1,
-      pageSize = 10,
-      filters = {}
-    ) => {
-      useDepartmentStore.setState({ isFetchAllDepartmentTypesLoading: true });
-      try {
-        const query = useDepartmentStore.getState()
-          .serializeFilters({
-            pageIndex,
-            pageSize,
-            ...filters
-          })
-        const response = await apiService.get(
-          `${API_ENDPOINTS.MASTERS.DEPARTMENT_TYPE.GET_DEPARTMENT_TYPES}?${query}`
-        );
-        useDepartmentStore.setState({
-          allDepartmentTypes: response.data,
-          isFetchAllDepartmentTypesLoading: false,
-        });
-      } catch (error) {
-        setError({ isFetchAllDepartmentTypesLoading: false });
-      }
-    },
+      fetchAllDepartmentTypes: async (
+        pageIndex = 1,  
+        pageSize = 10,
+        filters = {}
+      ) => {
+        useDepartmentStore.setState({ isFetchAllDepartmentTypesLoading: true });
+        try {
+          const query = useDepartmentStore.getState()
+            .serializeFilters({
+              pageIndex,
+              pageSize,
+              ...filters
+            })
+          const response = await apiService.get(
+            `${API_ENDPOINTS.MASTERS.DEPARTMENT_TYPE.GET_DEPARTMENT_TYPES}?${query}`
+          );
+          useDepartmentStore.setState({
+            allDepartmentTypes: response.data,
+            isFetchAllDepartmentTypesLoading: false,
+          });
+          console.log(response.data,'store')
+        } catch (error) {
+          setError(error.message || "Failed to fetch department types");
+        useDepartmentStore.setState({ isFetchAllDepartmentTypesLoading: false });
+        }
+      },
 
     fetchCurrentDepartmentTypeDetailsByDepartmentTypeId: async (
       DepartmentTypeId
@@ -94,7 +96,7 @@ const departmentService = () => {
     },
   }
 }
-export default departmentService;
+
 
 
 

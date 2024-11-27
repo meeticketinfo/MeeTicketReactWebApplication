@@ -11,7 +11,9 @@ export const useDepartmentStore = create((set) => ({
   departmentTypeEditDetails: {},
   isFetchCurrentDepartmentTypeDetailsLoading: false,
 
-  serializeFilters: (filters) =>
+  setError: (error) => set({ saveDepartmentTypeDetailsError: error }),
+
+  serializeFilters: (filters) =>  
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&"),

@@ -4,16 +4,15 @@ import { useDepartmentStore } from '../store/useDepartmentStore'
 // import departmentService from '../services/departmentService'
 
 const DepartmentCreate = ({
-    isDepartmentTypeEditVisible, setIsDepartmentTypeEditVisible, ValidationSchema
+    isDepartmentCreateVisible, setIsDepartmentTypeEditVisible, ValidationSchema
 }) => {
     const { saveDepartmentTypeDetails,isSaveDepartmentTypeDetailsLoading, fetchAllDepartmentTypes, setDepartmentTypeEditDetails } = departmentService()
-
+   
     const initialValues = {
         departmentId:"",
         departmentName:"",
         isActive:true,
     };
-
     const onSubmit = async (values, { setSubmitting, resetForm }) => {
         values.isActive = values.isActive === true || values.isActive === "true";
         const result = await saveDepartmentTypeDetails(
@@ -29,7 +28,7 @@ const DepartmentCreate = ({
             onSubmit={onSubmit}
             ValidationSchema={ValidationSchema}
             isSubmitting={isSaveDepartmentTypeDetailsLoading}
-            isDepartmentTypeEditVisible={isDepartmentTypeEditVisible}
+            isDepartmentCreateVisible={isDepartmentCreateVisible}
             isSaveDepartmentTypeDetailsLoading={isSaveDepartmentTypeDetailsLoading}
         />
         </>

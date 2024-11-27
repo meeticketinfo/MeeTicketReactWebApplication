@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import DepartmentCreate from './DepartmentCreate'
 import MuiTable from '../../../components/tables/MuiCSTable';
 import { AdvancedFilterModule } from 'ag-grid-enterprise';
 import AdminLayout from '../../../layouts/AdminLayout';
+import { departmentService } from '../services/departmentService';
+import { useDepartmentStore } from '../store/useDepartmentStore';
 
 const DepartmentList = () => {
+    const [openModelId, setOpenModalId] = useState(false);
+    const { fetchAllDepartmentTypes } = departmentService()
+    const { allDepartmentTypes, isFetchAllDepartmentTypesLoading } = useDepartmentStore();
 
 
+    const toggleDepartmentCreate = () => {
+        setOpenModalId("/departments/edit")
+    }
+    useEffect(() => {
+        fetchAllDepartmentTypes()
+    }, [])
+    console.log(allDepartmentTypes, 'departments')
     const columns = [
         {
             field: "departmentName",
@@ -42,7 +54,7 @@ const DepartmentList = () => {
                     <button
                         className="btn-edit"
                         onClick={() => {
-                            setOpenModalId("department-modal");
+                            toggleDepartmentCreate()
                             setDepartmentTypeEditDetails(params.data);
                             setIsDepartmentTypeEditVisible(true);
                         }}
@@ -78,9 +90,9 @@ const DepartmentList = () => {
                         <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
                             {/* Add view button */}
                             <button
-                                onClick={() => {
-                                    setOpenModalId("department-modal");
-                                }}
+                                onClick={() =>
+                                    setOpenModalId("/departments/create")
+                                }
                                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                             >
                                 <span className="max-xs:sr-only">Add Department</span>
@@ -89,10 +101,17 @@ const DepartmentList = () => {
                     </div>
                     <MuiTable
                         columns={columns}
-                        //  data={data}
-                        isLoading={false}
+                        data={allDepartmentTypes}
+                        isLoading={isFetchAllDepartmentTypesLoading}
                         error={null}
                     />
+                    {openModelId && (
+                        <DepartmentCreate
+                            isOpen={true}
+                            onClose={() => setOpenModalId(null)}
+                            departmentData={openModelId === "/departments/edit" ? useDepartmentStore.getState().departmentTypeEditDetails : null}
+                        />
+                    )}
                 </AdminLayout>
             </div>
 
