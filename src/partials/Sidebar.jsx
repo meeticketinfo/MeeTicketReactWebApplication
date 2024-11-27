@@ -65,7 +65,6 @@ function Sidebar({ variant = "default" }) {
   }, [sidebarExpanded]);
 
   const role = roleDetails?.name;
-  console.log(role);
   const rolePermissions = useMemo(() => {
     if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
