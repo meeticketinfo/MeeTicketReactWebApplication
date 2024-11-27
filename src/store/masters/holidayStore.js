@@ -6,6 +6,7 @@ export const useHolidayStore = create((set, get) => ({
   allHolidays: [],
   HolidayDetails: [],
   isSaveHolidayDetailsLoading: false,
+  isSaveRecurringHolidayDetailsLoading: false,
   isFetchHolidayDetailsLoading: false,
   isFetchAllHolidaysLoading: false,
   fetchHolidayDetailsError: null,
@@ -28,10 +29,32 @@ export const useHolidayStore = create((set, get) => ({
         allHolidays: response.data,
         isFetchAllHolidaysLoading: false,
       });
-    } catch (error) {
+      console.log(allHolidays,'holidays') 
+    } catch (error) { 
       set({ error: error.message, isFetchAllHolidaysLoading: false });
     }
   },
+
+
+// Save  recurring holiday details (add or update)
+saveRecurringHolidayDetails: async (HolidayData) => {
+  set({ isSaveRecurringHolidayDetailsLoading: true });
+  try {
+    const url = API_ENDPOINTS.MASTERS.HOLIDAY.ADD_NEW_RECURRING_HOLIDAY 
+
+    const response = await apiService.post(url, HolidayData);
+    set({
+      HolidayDetails: response.data,
+      isSaveRecurringHolidayDetailsLoading: false,
+      success: "Holiday saved successfully.",
+    });
+    return { success: true, data: response };
+  } catch (error) {
+    set({ error: error.message, isSaveRecurringHolidayDetailsLoading: false });
+    throw error;
+  }
+},
+
 
   // Save holiday details (add or update)
   saveHolidayDetails: async (HolidayData, isUpdate = false) => {
