@@ -30,11 +30,16 @@ import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
 import ServiceUnifiedCreator from "../components/facilities_management/ServiceUnifiedCreator";
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
+import Unauthorized from "../pages/Error/Unauthorized";
 
 export const routes = [
   {
     path: "*",
     element: <NotFound />,
+  },
+  {
+    path: "unauthorized",
+    element: <Unauthorized />,
   },
   {
     path: "/",

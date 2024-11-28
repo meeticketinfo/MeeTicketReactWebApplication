@@ -27,16 +27,8 @@ const HolidayList = () => {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "fromDate",
-      headerName: "From Date",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? formatToStandardDate(params.value) : "N/A",
-    },
-    {
-      field: "toDate",
-      headerName: "To Date",
+      field: "holidayDate",
+      headerName: "Date",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>

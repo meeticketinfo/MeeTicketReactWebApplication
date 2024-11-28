@@ -12,6 +12,9 @@ export default function Holidays() {
   const toggleHolidayCreate = () => {
     setIsHolidayCreateVisible((prev) => !prev);
   };
+  const toggleRecurringHolidayCreate = () => {
+    setIsHolidayCreateVisible((prev) => !prev);
+  };
 
   return (
     <AdminLayout>
@@ -28,21 +31,27 @@ export default function Holidays() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             {!isHolidayCreateVisible ? (
-            <button
-              onClick={toggleHolidayCreate}
-              className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-            >
-              <span className="max-xs:sr-only">
-              Add Holidays
-              </span>
-            </button>
-              ) : (
-                <BackButton
-                  label="Back"
-                  onClick={() => setIsHolidayCreateVisible(false)}
-                  className="bg-blue-600 hover:bg-blue-700"
-                />
-              )}
+              <>
+                <button
+                  onClick={toggleHolidayCreate}
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                >
+                  <span className="max-xs:sr-only">Add Holidays</span>
+                </button>
+                {/* <button
+                  onClick={toggleRecurringHolidayCreate}
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                >
+                  <span className="max-xs:sr-only">Add Recurring Holidays</span>
+                </button> */}
+              </>
+            ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsHolidayCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
           </div>
         </div>
 
