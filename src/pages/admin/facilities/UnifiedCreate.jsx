@@ -5,7 +5,6 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import BackButton from "../../../components/BackButton";
 import ServiceUnifiedCreator from "../../../components/facilities_management/ServiceUnifiedCreator";
 import UnifiedFacilityList from "../../../components/facilities_management/UnifiedFacilityList";
-// import UnifiedList from "../../../components/facilities_management/unifiedList";
 
 export default function UnifiedCreate() {
   // State to toggle the FacilityCreate component
@@ -58,8 +57,8 @@ export default function UnifiedCreate() {
           <UnifiedFacilityList
             setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible} />
         )
-
-        }
+      }
+        
       </div>
     </AdminLayout>
   );

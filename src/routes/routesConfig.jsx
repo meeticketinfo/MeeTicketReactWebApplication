@@ -83,7 +83,8 @@ export const routes = [
   },
   {
     path: "/facility/unified-create",
-    element: <ProtectedRoute element={<UnifiedCreate />} />,
+    // element: <ProtectedRoute element={<UnifiedCreate />} />,
+    element: <UnifiedCreate />,
   },
   {
     path: "/gate-keepers",
