@@ -4,12 +4,15 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
 export const useHolidayStore = create((set, get) => ({
   allHolidays: [],
+  allRecurringHolidays: [],
   HolidayDetails: [],
   isSaveHolidayDetailsLoading: false,
   isSaveRecurringHolidayDetailsLoading: false,
   isFetchHolidayDetailsLoading: false,
   isFetchAllHolidaysLoading: false,
   fetchHolidayDetailsError: null,
+  fetchAllRecurringHolidayError:null,
+  isFetchAllRecurringHolidaysLoading:false,
   error: null,
   success: null,
 
@@ -29,9 +32,26 @@ export const useHolidayStore = create((set, get) => ({
         allHolidays: response.data,
         isFetchAllHolidaysLoading: false,
       });
-      console.log(allHolidays,'holidays') 
     } catch (error) { 
       set({ error: error.message, isFetchAllHolidaysLoading: false });
+    }
+  },
+
+  fetchAllRecurringHolidays: async () => {
+    set({ isFetchAllRecurringHolidaysLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.MASTERS.HOLIDAY.GET_RECURRING_HOLIDAYS}`
+      );
+      set({
+        allRecurringHolidays: response.data,
+        isFetchAllRecurringHolidaysLoading: false,
+      });
+    } catch (error) { 
+      set({
+        fetchAllRecurringHolidayError: error.message,
+        isFetchAllRecurringHolidaysLoading: false,
+      });
     }
   },
 

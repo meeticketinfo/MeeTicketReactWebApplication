@@ -81,6 +81,7 @@ export const API_ENDPOINTS = {
       ADD_NEW_HOLIDAY: `${API_BASE_URL}Master/AddHolidaysList`,
       GET_HOLIDAYS: `${API_BASE_URL}Master/GetAllHolidays`,
       ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
+      GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
     },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,

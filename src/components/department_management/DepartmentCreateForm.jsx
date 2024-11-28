@@ -61,11 +61,10 @@ const DepartmentCreateForm = ({
         setTimeout(() => {
           setIsDepartmentTypeEditVisible(false);
         }, 2000);
-
+        
         resetForm();
       }
     } catch (xhr) {
-      console.log("xhr.errors:", xhr);
       if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
         const formErrors = {};
         Object.keys(xhr.response.data.errors).forEach((key) => {
