@@ -4,6 +4,7 @@ import FacilityList from "../../../components/facilities_management/facilityList
 import AdminLayout from "../../../layouts/AdminLayout";
 import BackButton from "../../../components/BackButton";
 import ServiceUnifiedCreator from "../../../components/facilities_management/ServiceUnifiedCreator";
+import UnifiedList from "../../../components/facilities_management/unifiedList";
 
 export default function UnifiedCreate() {
   // State to toggle the FacilityCreate component
@@ -30,11 +31,34 @@ export default function UnifiedCreate() {
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
+            {!isFacilityCreateVisible ? (
+              <button
+                onClick={toggleFacilityCreate}
+                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white">
+                <span className="max-xs:sr-only" >
+                  Add Facility
+                </span>
+              </button>
+            ) : (
+              <BackButton
+                label="Back"
+                onClick={() => setIsFacilityCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+            )}
           </div>
         </div>
         {/* Cards */}
+        {isFacilityCreateVisible ? (
+          <ServiceUnifiedCreator
+            setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible} setIsFacilityEditVisible={setIsFacilityEditVisible}
+          />
+        ) : (
+          <UnifiedList
+            setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible} />
+        )
 
-        <ServiceUnifiedCreator />
+        }
       </div>
     </AdminLayout>
   );
