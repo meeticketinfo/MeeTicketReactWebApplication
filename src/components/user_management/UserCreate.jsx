@@ -67,8 +67,21 @@ const UserCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      // .min(6, "Password cannot be less than 6 characters")
-      .max(8, "Password cannot be more than 8 characters"),
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()
@@ -81,6 +94,23 @@ const UserCreate = ({
     // parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      // .required("Password is required")
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
 
   const onSubmit = async (
@@ -147,10 +177,12 @@ const UserCreate = ({
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Location  <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Location <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="parkId"
@@ -184,7 +216,7 @@ const UserCreate = ({
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    First Name  <span className="text-red-500">*</span>
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="firstName"
@@ -205,7 +237,7 @@ const UserCreate = ({
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    Last Name  <span className="text-red-500">*</span>
+                    Last Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="lastName"
@@ -229,7 +261,7 @@ const UserCreate = ({
                     htmlFor="emailId"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Email Id  <span className="text-red-500">*</span>
+                    Email Id <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="email"
@@ -254,7 +286,7 @@ const UserCreate = ({
                     htmlFor="dob"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Phone Number  <span className="text-red-500">*</span>
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
@@ -281,7 +313,7 @@ const UserCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password  <span className="text-red-500">*</span>
+                    Password <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="password"

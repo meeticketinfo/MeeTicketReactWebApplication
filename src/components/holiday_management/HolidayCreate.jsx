@@ -77,7 +77,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
         }
       >
         {({ errors, touched, isSubmitting }) => (
-          <Form>
+          <Form autoComplete="off">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
               {/* Name Field */}
               <div className="">

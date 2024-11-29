@@ -111,10 +111,12 @@ const ServiceCreate = ({
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Facility <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="facilityId"
@@ -125,11 +127,13 @@ const ServiceCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Facility</option>
-                    {allFacilities?.filter((facility) => facility.isActive)?.map((facility) => (
-                      <option key={facility.id} value={facility.id}>
-                        {facility.name}
-                      </option>
-                    ))}
+                    {allFacilities
+                      ?.filter((facility) => facility.isActive)
+                      ?.map((facility) => (
+                        <option key={facility.id} value={facility.id}>
+                          {facility.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="facilityId"
@@ -140,7 +144,7 @@ const ServiceCreate = ({
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Display Name <span className="text-red-500">*</span> 
+                    Display Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="name"

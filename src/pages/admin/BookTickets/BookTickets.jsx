@@ -227,7 +227,7 @@ export default function AdminBookings() {
                 onSubmit={(values, actions) => onSubmit(values, actions)}
               >
                 {({ values, setFieldValue }) => (
-                  <Form>
+                  <Form autoComplete="off">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" && (
                         <div>

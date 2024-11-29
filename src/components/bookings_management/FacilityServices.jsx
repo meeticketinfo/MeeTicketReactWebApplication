@@ -85,7 +85,10 @@ export const FacilityServices = () => {
       }}
     >
       {({ values, setFieldValue }) => (
-        <Form className="facility-container space-y-6 px-4 lg:px-0">
+        <Form
+          autoComplete="off"
+          className="facility-container space-y-6 px-4 lg:px-0"
+        >
           {allFacilities
             ?.filter((facility) =>
               allServices.some((service) => service.facilityId === facility.id)

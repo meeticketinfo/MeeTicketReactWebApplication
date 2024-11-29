@@ -88,13 +88,14 @@ const EntityCreateForm = ({
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-3">
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Location Category Name <span className="text-red-500">*</span>
+                    Location Category Name{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="entityTypeName"

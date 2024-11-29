@@ -64,7 +64,21 @@ const NodalOfficerCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .max(8, "Password cannot be more than 8 characters"),
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()
@@ -78,7 +92,21 @@ const NodalOfficerCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       // .required("Password is required")
-      .max(8, "Password cannot be more than 8 characters"),
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
     // .matches(/^\d{8}$/, "Passcode must be exactly 4 digits"),
   });
 
@@ -150,7 +178,7 @@ const NodalOfficerCreate = ({
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* <div>
                   <label className="block text-sm font-medium">
@@ -320,7 +348,10 @@ const NodalOfficerCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password {!isNodalOfficerEditVisible &&<span className="text-red-500">*</span>}
+                    Password{" "}
+                    {!isNodalOfficerEditVisible && (
+                      <span className="text-red-500">*</span>
+                    )}
                   </label>
                   <Field
                     autoComplete="off"

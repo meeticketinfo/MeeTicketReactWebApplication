@@ -147,7 +147,10 @@ const Login = () => {
               onSubmit={handleSubmit}
             >
               {({ isSubmitting }) => (
-                <Form className="w-full lg:w-1/2 max-w-md  rounded-[20px] p-4  backdrop-blur-sm bg-white/30">
+                <Form
+                  autoComplete="off"
+                  className="w-full lg:w-1/2 max-w-md  rounded-[20px] p-4  backdrop-blur-sm bg-white/30"
+                >
                   <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
                     Welcome to MeeTicket
                   </h2>

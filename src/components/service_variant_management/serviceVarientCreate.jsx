@@ -123,11 +123,13 @@ const ServiceVarientCreate = ({
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
                 <div>
-                  <label className="block text-sm font-medium">Service <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Service <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="serviceId"
@@ -138,11 +140,13 @@ const ServiceVarientCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select service</option>
-                    {allServices?.filter((service) => service.isActive)?.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.name}
-                      </option>
-                    ))}
+                    {allServices
+                      ?.filter((service) => service.isActive)
+                      ?.map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="serviceId"

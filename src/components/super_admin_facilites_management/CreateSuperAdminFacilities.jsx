@@ -106,11 +106,13 @@ function CreateSuperAdminFacilities({
         validationSchema={validationSchema}
       >
         {({ errors, touched, isSubmitting }) => (
-          <Form className="grid grid-cols-1 justify-center">
+          <Form autoComplete="off"  className="grid grid-cols-1 justify-center">
             <div className="grid grid-cols-1 gap-6 p-6  rounded-lg w-96 mx-auto">
               {/* Department */}
               <div>
-                <label className="block text-sm font-medium">Department <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium">
+                  Department <span className="text-red-500">*</span>
+                </label>
                 <Field
                   as="select"
                   name="departmentId"

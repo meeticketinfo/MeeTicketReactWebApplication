@@ -253,7 +253,7 @@ const ParkCreate = ({
         >
           {/* EntityTypeId DepartmentId */}
           {({ setFieldValue, touched, errors }) => (
-            <Form className="">
+            <Form autoComplete="off" className="">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                 {/* Department */}
                 <div>
@@ -343,7 +343,6 @@ const ParkCreate = ({
                   />
                 </div>
 
-            
                 {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -390,7 +389,9 @@ const ParkCreate = ({
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-medium">Area <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Area <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     name="City"
                     type="text"
@@ -430,7 +431,9 @@ const ParkCreate = ({
 
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium">Status <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Status <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="IsActive"
@@ -527,7 +530,10 @@ const ParkCreate = ({
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Location Image {!isParkEditVisible && <span className="text-red-500">*</span>}
+                    Location Image{" "}
+                    {!isParkEditVisible && (
+                      <span className="text-red-500">*</span>
+                    )}
                   </label>
                   <input
                     name="ImageUrl"

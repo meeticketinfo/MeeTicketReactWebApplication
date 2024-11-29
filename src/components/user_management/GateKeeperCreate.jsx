@@ -46,7 +46,20 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
+    // .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
     // dateOfBirth: Yup.date()
     //   .required("Date of Birth is required")
     //   .test("age", "You must be at least 18 years old", (value) => {
@@ -114,7 +127,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
           }
         >
           {({ errors, touched, isSubmitting }) => (
-            <Form>
+            <Form autoComplete="off">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* User Select */}
                 <div>
@@ -243,7 +256,9 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveGateKeeperDetailsLoading}
                 >
-                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create Gate Keeper"}
+                  {isSaveGateKeeperDetailsLoading
+                    ? "Saving..."
+                    : "Create Gate Keeper"}
                 </button>
               </div>
             </Form>
