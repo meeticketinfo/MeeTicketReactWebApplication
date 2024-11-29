@@ -1,7 +1,8 @@
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 import NestedTable from "../tables/nestedTable/nestedTable";
 
 const UnifiedFacilityList = () => {
-
+const {allUnifiedFacilities} = useUnifiedFacilityStore();
 const data = [
   {
     packageNo: 1,
@@ -62,7 +63,7 @@ const data = [
 
   return (
     <>
-      <div className="min-h-screen bg-gray-100 p-8">
+      <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl">
         <NestedTable data={data} />
       </div>
     </>

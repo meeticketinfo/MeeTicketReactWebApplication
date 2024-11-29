@@ -37,13 +37,13 @@ const AccordionRow = ({ row }) => {
         <td className="p-2 text-center">
           <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
         </td>
-        <td className="p-2">{row.name}</td>
-        <td className="p-2">{row.description}</td>
-        <td className="p-2">{row.status}</td>
-        <td className="p-2 text-center">
-          <span className="">
+        <td className="p-2 text-center">{row.name}</td>
+        <td className="p-2 text-center">{row.description}</td>
+        <td className="p-2 text-center">{row.status}</td>
+        <td className="p-2 text-center ">
+          <div className="flex justify-center">
             <LuClipboardEdit className="text-[24px] text-blue-600 " />
-          </span>
+          </div>
         </td>
       </tr>
       {isExpanded && (
