@@ -6,17 +6,15 @@ const {allUnifiedFacilities} = useUnifiedFacilityStore();
 const data = [
   {
     packageNo: 1,
-    weight: 12,
-    dimensions: "10 x 10 x 10",
-    value: "200.00",
-    totalCost: "35.00",
-    specialServices: "4.00",
+    name: 12,
+    description: "10 x 10 x 10",
+    isActive: true,
     subRows: [
       {
         partNumber: "657338",
         description: "Lorem ipsum description 1",
         orderNumber: "6383000",
-        qtyShipped: "14",
+        subFacilityName: "14",
         weight: "45",
         totalValue: "4.00",
         details: [
@@ -28,7 +26,7 @@ const data = [
         partNumber: "657339",
         description: "Lorem ipsum description 2",
         orderNumber: "6383011",
-        qtyShipped: "4",
+        subFacilityName: "4",
         weight: "56",
         totalValue: "49.00",
         details: [
@@ -40,11 +38,9 @@ const data = [
   },
   {
     packageNo: 2,
-    weight: 14,
-    dimensions: "15 x 12 x 10",
-    value: "250.00",
-    totalCost: "50.00",
-    specialServices: "5.00",
+    name: 12,
+    description: "10 x 10 x 10",
+    isActive: true,
     subRows: [
       {
         partNumber: "657340",

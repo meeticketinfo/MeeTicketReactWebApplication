@@ -1,5 +1,4 @@
-export const API_BASE_URL =
-  "https://meeticket.vmaxtechservices.life/parkapi/api/";
+export const API_BASE_URL = "https://5f672qcg-7237.inc1.devtunnels.ms/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 

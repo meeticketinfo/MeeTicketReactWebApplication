@@ -8,10 +8,10 @@ const NestedTable = ({ data }) => {
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
         <thead className="bg-[#f8f8f8] text-blue-v1 text-sm">
           <tr>
-            <th className="p-3 text-left">S.No</th>
-            <th className="p-3 text-left">Facility Name</th>
-            <th className="p-3 text-left">Description</th>
-            <th className="p-3 text-left">Status</th>
+            <th className="p-3 text-center">S.No</th>
+            <th className="p-3 text-center">Facility Name</th>
+            <th className="p-3 text-center">Description</th>
+            <th className="p-3 text-center">Status</th>
             <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
@@ -39,7 +39,20 @@ const AccordionRow = ({ row }) => {
         </td>
         <td className="p-2 text-center">{row.name}</td>
         <td className="p-2 text-center">{row.description}</td>
-        <td className="p-2 text-center">{row.status}</td>
+        <td className="p-2 text-center">
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <span
+              className={`${
+                row.isActive
+                  ? "bg-green-400 text-white shadow-md"
+                  : "bg-red-400 text-white shadow-md"
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+            >
+              {" "}
+              {row.isActive ? "Active" : "Inactive"}
+            </span>
+          </div>
+        </td>
         <td className="p-2 text-center ">
           <div className="flex justify-center">
             <LuClipboardEdit className="text-[24px] text-blue-600 " />
@@ -52,11 +65,11 @@ const AccordionRow = ({ row }) => {
             <table className="table-auto w-full ">
               <thead className="bg-[#f8f8f8] text-blue-v1">
                 <tr>
-                  <th className="p-2 text-left">S.No</th>
-                  <th className="p-2 text-left">Sub Facility Name</th>
-                  <th className="p-2 text-left">Description</th>
-                  <th className="p-2 text-left">Status</th>
-                  <th className="p-2 text-left">Actions</th>
+                  <th className="p-2 text-center">S.No</th>
+                  <th className="p-2 text-center">Sub Facility Name</th>
+                  <th className="p-2 text-center">Description</th>
+                  <th className="p-2 text-center">Status</th>
+                  <th className="p-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,10 +97,24 @@ const AccordionSubRow = ({ subRow }) => {
         >
           <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
         </td>
-        <td className="p-2">{subRow.subFacilityName}</td>
-        <td className="p-2">{subRow.description}</td>
-        <td className="p-2">{subRow.status}</td>
-        <td className="p-2">
+        <td className="p-2 text-center">{subRow.subFacilityName}</td>
+        <td className="p-2 text-center">{subRow.description}</td>
+        <td className="p-2 text-center">
+          {" "}
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <span
+              className={`${
+                subRow.isActive
+                  ? "bg-green-400 text-white shadow-md"
+                  : "bg-red-400 text-white shadow-md"
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+            >
+              {" "}
+              {subRow.isActive ? "Active" : "Inactive"}
+            </span>
+          </div>
+        </td>
+        <td className="p-2 text-center">
           <span className="">
             <LuClipboardEdit className="text-[24px] text-blue-600 " />
           </span>
@@ -99,21 +126,36 @@ const AccordionSubRow = ({ subRow }) => {
             <table className="table-auto w-full ">
               <thead className="bg-[#f8f8f8] text-blue-v1">
                 <tr>
-                  <th className="p-2 text-left">S.No</th>
-                  <th className="p-2 text-left">Ticket Type</th>
-                  <th className="p-2 text-left">Price</th>
-                  <th className="p-2 text-left">is Person Based</th>
-                  <th className="p-2 text-left">Actions</th>
+                  <th className="p-2 text-center">S.No</th>
+                  <th className="p-2 text-center">Ticket Type</th>
+                  <th className="p-2 text-center">Price</th>
+                  <th className="p-2 text-center">is Person Based</th>
+                  <th className="p-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {subRow.details.map((detail, detailIndex) => (
                   <tr key={detailIndex} className="bg-white">
-                    <td className="p-2">{detail.detailId}</td>
-                    <td className="p-2">{detail.detailInfo}</td>
-                    <td className="p-2">{detail.notes}</td>
-                    <td className="p-2">{detail.notes}</td>
-                    <td className="p-2">
+                    <td className="p-2 text-center">{detail.detailId}</td>
+                    <td className="p-2 text-center">{detail.detailInfo}</td>
+                    <td className="p-2 text-center">{detail.notes}</td>
+                    <td className="p-2 text-center">
+                      <div
+                        style={{ display: "flex align-center", gap: "0.5rem" }}
+                      >
+                        <span
+                          className={`${
+                            subRow.isPersonBased
+                              ? "bg-green-400 text-white shadow-md"
+                              : "bg-red-400 text-white shadow-md"
+                          } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+                        >
+                          {" "}
+                          {subRow.isPersonBased ? "Yes" : "No"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="p-2 text-center">
                       <span className="">
                         <LuClipboardEdit className="text-[24px] text-blue-600 " />
                       </span>
