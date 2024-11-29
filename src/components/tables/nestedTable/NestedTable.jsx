@@ -1,16 +1,18 @@
 import React, { useState } from "react";
+import { IoIosArrowDown } from "react-icons/io";
+import { LuClipboardEdit } from "react-icons/lu";
 
 const NestedTable = ({ data }) => {
   return (
-    <div className="container mx-auto bg-white shadow-lg rounded-md p-4">
-      <table className="table-auto w-full border-collapse">
-        <thead className="bg-blue-500 text-white">
+    <div className="container mx-auto shadow-lg rounded-lg ">
+      <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
+        <thead className="bg-[#f8f8f8] text-blue-v1 text-sm">
           <tr>
             <th className="p-3 text-left">S.No</th>
             <th className="p-3 text-left">Facility Name</th>
             <th className="p-3 text-left">Description</th>
             <th className="p-3 text-left">Status</th>
-            <th className="p-3 text-left">Actions</th>
+            <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -29,38 +31,93 @@ const AccordionRow = ({ row }) => {
   return (
     <>
       <tr
-        className="cursor-pointer bg-blue-50 hover:bg-blue-100"
+        className="cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <td className="p-3 text-center">{isExpanded ? "-" : "+"}</td>
-        <td className="p-3">{row.name}</td>
-        <td className="p-3">{row.weight}</td>
-        <td className="p-3">{row.dimensions}</td>
-        <td className="p-3">{row.value}</td>
+        <td className="p-2 text-center">
+          <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
+        </td>
+        <td className="p-2">{row.name}</td>
+        <td className="p-2">{row.description}</td>
+        <td className="p-2">{row.status}</td>
+        <td className="p-2 text-center">
+          <span className="">
+            <LuClipboardEdit className="text-[24px] text-blue-600 " />
+          </span>
+        </td>
       </tr>
       {isExpanded && (
         <tr>
-          <td colSpan="7" className="p-3 bg-gray-100">
-            <table className="table-auto w-full border border-gray-300">
-              <thead className="bg-gray-200">
+          <td colSpan="5" className="p-4 bg-blue-50">
+            <table className="table-auto w-full ">
+              <thead className="bg-[#f8f8f8] text-blue-v1">
                 <tr>
-                  <th className="p-2 text-left">Part Number</th>
+                  <th className="p-2 text-left">S.No</th>
+                  <th className="p-2 text-left">Sub Facility Name</th>
                   <th className="p-2 text-left">Description</th>
-                  <th className="p-2 text-left">Order Number</th>
-                  <th className="p-2 text-left">Qty Shipped</th>
-                  <th className="p-2 text-left">Weight</th>
-                  <th className="p-2 text-left">Total Value (USD)</th>
+                  <th className="p-2 text-left">Status</th>
+                  <th className="p-2 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {row.subRows.map((subRow, subIndex) => (
-                  <tr key={subIndex} className="hover:bg-gray-50">
-                    <td className="p-2">{subRow.partNumber}</td>
-                    <td className="p-2">{subRow.description}</td>
-                    <td className="p-2">{subRow.orderNumber}</td>
-                    <td className="p-2">{subRow.qtyShipped}</td>
-                    <td className="p-2">{subRow.weight}</td>
-                    <td className="p-2">{subRow.totalValue}</td>
+                  <AccordionSubRow key={subIndex} subRow={subRow} />
+                ))}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      )}
+    </>
+  );
+};
+
+const AccordionSubRow = ({ subRow }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <>
+      <tr className="bg-white">
+        <td
+          className="p-2 text-center cursor-pointer"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
+        </td>
+        <td className="p-2">{subRow.subFacilityName}</td>
+        <td className="p-2">{subRow.description}</td>
+        <td className="p-2">{subRow.status}</td>
+        <td className="p-2">
+          <span className="">
+            <LuClipboardEdit className="text-[24px] text-blue-600 " />
+          </span>
+        </td>
+      </tr>
+      {isExpanded && (
+        <tr>
+          <td colSpan="5" className="p-4 bg-gray-200">
+            <table className="table-auto w-full ">
+              <thead className="bg-[#f8f8f8] text-blue-v1">
+                <tr>
+                  <th className="p-2 text-left">S.No</th>
+                  <th className="p-2 text-left">Ticket Type</th>
+                  <th className="p-2 text-left">Price</th>
+                  <th className="p-2 text-left">is Person Based</th>
+                  <th className="p-2 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subRow.details.map((detail, detailIndex) => (
+                  <tr key={detailIndex} className="bg-white">
+                    <td className="p-2">{detail.detailId}</td>
+                    <td className="p-2">{detail.detailInfo}</td>
+                    <td className="p-2">{detail.notes}</td>
+                    <td className="p-2">{detail.notes}</td>
+                    <td className="p-2">
+                      <span className="">
+                        <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
