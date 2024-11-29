@@ -46,19 +46,20 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .matches(
-        /[A-Z]/,
-        "Password must include at least one uppercase letter (A-Z)"
-      )
-      .matches(
-        /[a-z]/,
-        "Password must include at least one lowercase letter (a-z)"
-      )
-      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
-      .matches(
-        /[@$!%*?&]/,
-        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
-      ),
+      .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
+    // .matches(
+    //   /[A-Z]/,
+    //   "Password must include at least one uppercase letter (A-Z)"
+    // )
+    // .matches(
+    //   /[a-z]/,
+    //   "Password must include at least one lowercase letter (a-z)"
+    // )
+    // .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+    // .matches(
+    //   /[@$!%*?&]/,
+    //   "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+    // ),
     // .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
     // dateOfBirth: Yup.date()
     //   .required("Date of Birth is required")
