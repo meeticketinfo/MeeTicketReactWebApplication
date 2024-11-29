@@ -165,16 +165,6 @@ const ServiceUnifiedCreator = () => {
                 key={facility.id}
                 className="card border rounded-lg shadow-lg p-4 mb-4 bg-white"
               >
-                {/* <div className="flex justify-between items-center mb-3">
-                  <strong className="text-lg">Facility</strong>
-                  <button
-                    type="button"
-                    onClick={() => deleteFacility(facility.id)}
-                    className="text-red-600 hover:text-red-800"
-                  >
-                    <MdDeleteForever className="text-2xl" />
-                  </button>
-                </div> */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="">
                     <label
@@ -226,10 +216,16 @@ const ServiceUnifiedCreator = () => {
                 <div className="mt-4">
                   <button
                     type="button"
-                    onClick={() => addService(facility.id)}
+                    onClick={() => {
+                      if (facility.hasSubFacility) {
+                        addTicketType(facility.id); // Add Ticket Type
+                      } else {
+                        addService(facility.id); // Add Sub-Facility
+                      }
+                    }}
                     className="btn text-white bg-blue-900"
                   >
-                    Add Sub-Facility
+                    {facility.hasSubFacility ? "Add Ticket Type" : "Add Sub-Facility"}
                   </button>
                   {facility.services.map((service) => (
                     <div key={service.id} className="mt-4 border p-4 rounded-md">
@@ -283,14 +279,15 @@ const ServiceUnifiedCreator = () => {
                         {service.ticketTypes.map((ticket) => (
                           <div
                             key={ticket.id}
-                            className="mt-2 border p-2 rounded-md"
+                            className="mt-2 border p-2 rounded-md flex justify-between"
                           >
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-3 gap-2">
                               <div>
-                                <label className="block text-sm font-medium">Ticket Type Name</label>
+                                <label className=" text-sm font-medium">Ticket Type Name</label>
                                 <Field
                                   as="select"
                                   name={`ticket-${ticket.id}-name`}
+                                  value={ticket.name || ""}
                                   className="block w-full px-2 py-1 border rounded-md"
                                   onChange={(e) =>
                                     setFacilities(
@@ -316,13 +313,29 @@ const ServiceUnifiedCreator = () => {
                                     )
                                   }
                                 >
+
                                   <option value="Adult">Adult</option>
                                   <option value="Child">Child</option>
                                   <option value="Others">Others</option>
+
                                 </Field>
                               </div>
+                              {ticket.name === "Others" && (
+                                <div className="">
+                                  <label className=" text-sm font-medium">
+                                    Enter Ticket Type
+                                  </label>
+                                  <Field
+                                    type="text"
+                                    name={`facility-${facility.id}-name`}
+                                    className={` block w-full px-2 py-1 border 
+                                        border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    onChange={{}}
+                                  />
+                                </div>
+                              )}
                               <div>
-                                <label className="block text-sm font-medium">
+                                <label className=" text-sm font-medium">
                                   Is Ticket Charged Per Person ?
                                 </label>
                                 <Field
@@ -357,35 +370,23 @@ const ServiceUnifiedCreator = () => {
                                   <option value="false">No</option>
                                 </Field>
                               </div>
-                              <div className="flex items-center justify-end">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    deleteTicketType(
-                                      facility.id,
-                                      service.id,
-                                      ticket.id
-                                    )
-                                  }
-                                  className="text-red-600 hover:text-red-700"
-                                >
-                                  <MdDeleteForever />
-                                </button>
-                              </div>
+
                             </div>
-                            {/* <button
-                              type="button"
-                              onClick={() =>
-                                deleteTicketType(
-                                  facility.id,
-                                  service.id,
-                                  ticket.id
-                                )
-                              }
-                             className="flex justify-between items-center mb-3"
-                            >
-                              Delete Ticket Type
-                            </button> */}
+                            <div className="flex items-center justify-end">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  deleteTicketType(
+                                    facility.id,
+                                    service.id,
+                                    ticket.id
+                                  )
+                                }
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <MdDeleteForever className="text-2xl" />
+                              </button>
+                            </div>
 
                           </div>
                         ))}
@@ -395,22 +396,22 @@ const ServiceUnifiedCreator = () => {
                 </div>
               </div>
             ))}
- <div className="flex justify-center">
-                <div className="">
-                  <button
-                    type="submit"
-                    className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  //  disabled={isSaveParkDetailsLoading}
-                  >
-                    {/* {isSaveParkDetailsLoading
+            <div className="flex justify-center">
+              <div className="">
+                <button
+                  type="submit"
+                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                //  disabled={isSaveParkDetailsLoading}
+                >
+                  {/* {isSaveParkDetailsLoading
                       ? "Saving..."
                       : isParkEditVisible
                       ? "Update Location"
                       : "Create Location"} */}
-                      save
-                  </button>
-                </div>
+                  save
+                </button>
               </div>
+            </div>
           </Form>
         )}
       </Formik>
