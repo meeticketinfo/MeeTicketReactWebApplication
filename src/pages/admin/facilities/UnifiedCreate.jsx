@@ -51,7 +51,10 @@ export default function UnifiedCreate() {
         {/* Cards */}
         {isFacilityCreateVisible ? (
           <ServiceUnifiedCreator
-            setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible} setIsFacilityEditVisible={setIsFacilityEditVisible}
+          
+            setIsFacilityCreateVisible={setIsFacilityCreateVisible} 
+            isFacilityEditVisible={isFacilityEditVisible} 
+            setIsFacilityEditVisible={setIsFacilityEditVisible}
           />
         ) : (
           <UnifiedFacilityList

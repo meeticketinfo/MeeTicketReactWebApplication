@@ -23,7 +23,7 @@ const NestedTable = ({ data }) => {
         <tbody>
           {data.length > 0 &&
             data.map((row, index) => (
-              <AccordionRow key={index} serial={index} row={row}  setIsServiceEditVisible={setIsServiceEditVisible}/>
+              <AccordionRow key={index} serial={index} row={row}  />
             ))}
         </tbody>
       </table>
@@ -31,14 +31,10 @@ const NestedTable = ({ data }) => {
   );
 };
 
-const AccordionRow = ({ serial, row  , setIsServiceEditVisible,}) => {
+const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleEditClick = (serviceDetails) => {
-    setIsServiceEditVisible(true); // Ensure this function is available
-    setIsServiceEditVisible(serviceDetails); // Pass the relevant data
-  };
-  
+
 
   return (
     <>
@@ -73,7 +69,7 @@ const AccordionRow = ({ serial, row  , setIsServiceEditVisible,}) => {
         <td className="p-2 text-center ">
           <div className="flex justify-center">
             <LuClipboardEdit className="text-[24px] text-blue-600 "
-               onClick={handleEditClick} />
+               />
           </div>
         </td>
       </tr>
@@ -135,7 +131,7 @@ const AccordionSubRow = ({ subRow }) => {
           </div>
         </td>
         <td className="p-2 text-center">
-          <span className="">
+          <span className="flex justify-center">
             <LuClipboardEdit className="text-[24px] text-blue-600 " />
           </span>
         </td>
@@ -179,7 +175,7 @@ const AccordionSubRow = ({ subRow }) => {
                       </div>
                     </td>
                     <td className="p-2 text-center">
-                      <span className="">
+                      <span className="flex justify-center">
                         <LuClipboardEdit className="text-[24px] text-blue-600 " />
                       </span>
                     </td>

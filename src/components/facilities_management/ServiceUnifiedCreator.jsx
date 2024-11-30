@@ -22,7 +22,36 @@ const initialValues = {
   subFacilities: [{ name: "", ticketTypes: [] }],
 };
 
-const validationSchema = Yup.object({});
+const validationSchema = Yup.object({
+  facilityDto: Yup.object({
+    facilityMasterId: Yup.string().required("Facility is required"),
+  }),
+  hasSubFacility: Yup.boolean(),
+  // subFacilities: Yup.array().of(
+  //   Yup.object({
+  //     name: Yup.string().when("hasSubFacility", {
+  //       is: true,
+  //       then: Yup.string().required("Sub-Facility Name is required"),
+  //       otherwise: Yup.string(),
+  //     }),
+  //     ticketTypes: Yup.array()
+  //       .of(
+  //         Yup.object({
+  //           type: Yup.string().required("Ticket Type is required"),
+  //           customType: Yup.string().when("type", {
+  //             is: "others",
+  //             then: Yup.string().required("Custom Ticket Type is required"),
+  //             otherwise: Yup.string(),
+  //           }),
+  //           chargedPerPerson: Yup.string().required(
+  //             "Charged Per Person is required"
+  //           ),
+  //         })
+  //       )
+  //       .min(1, "At least one Ticket Type is required"),
+  //   })
+  // ),
+});
 
 const ServiceUnifiedCreator = () => {
   const { decodedTokenData } = useAuthStore();
@@ -116,10 +145,10 @@ const ServiceUnifiedCreator = () => {
   };
 
   return (
-    <div className="bg-white/30 p-3 rounded-2xl">
+    <div className="bg-white/30 p-3 rounded-2xl ">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="bg-white rounded-2xl p-2">
+      <div className="bg-white rounded-2xl p-3 shadow-md border border-gray-200">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -180,7 +209,7 @@ const ServiceUnifiedCreator = () => {
                 </div>
                 <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" />
               </div>
-              <hr></hr>
+              <hr className="py-2"></hr>
               <FieldArray name="subFacilities">
                 {({ push, remove }) => (
                   <>

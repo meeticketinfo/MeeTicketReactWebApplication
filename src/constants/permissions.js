@@ -4,7 +4,7 @@ export const superAdminPermissions = [
   "entity-types",
   "entities",
   // "entity-admins",
-  "facility/unified-create",
+  // "facility/unified-create",
   "nodal-officer",
   "entity-bookings",
   "super-admin-facilites"
@@ -13,9 +13,9 @@ export const superAdminPermissions = [
 export const parkAdminPermissions = [
   "dashboard",
   //
-  "facilites",
-  "service",
-  "service-varient",
+  // "facilites",
+  // "service",
+  // "service-varient",
   "gate-keepers",
   //
   "bookings",

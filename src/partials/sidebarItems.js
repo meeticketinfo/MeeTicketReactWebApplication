@@ -81,7 +81,7 @@ const sidebarItems = [
         path: "/service-varient",
       },
       {
-        title: "facility-unified-create ",
+        title: "Facilities ",
         icon: FaUsers,
         path: "/facility/unified-create",
       },

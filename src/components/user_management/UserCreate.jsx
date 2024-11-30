@@ -67,8 +67,21 @@ const UserCreate = ({
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      // .min(6, "Password cannot be less than 6 characters")
-      .max(8, "Password cannot be more than 8 characters"),
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()
@@ -81,6 +94,23 @@ const UserCreate = ({
     // parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      // .required("Password is required")
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
 
   const onSubmit = async (
