@@ -495,7 +495,7 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-{!isParkEditVisible &&
+
                 <div className="col-span-1">
                   <label className="block text-sm font-medium">
                     Transaction Prefix <span className="text-red-500">*</span>
@@ -523,7 +523,7 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-}
+
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">

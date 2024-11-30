@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
 
-const NestedTable = ({ data }) => {
+const NestedTable = ({ data , setIsServiceEditVisible}) => {
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -18,7 +18,7 @@ const NestedTable = ({ data }) => {
         <tbody>
           {data.length > 0 &&
             data.map((row, index) => (
-              <AccordionRow key={index} serial={index} row={row} />
+              <AccordionRow key={index} serial={index} row={row}  setIsServiceEditVisible={setIsServiceEditVisible}/>
             ))}
         </tbody>
       </table>
@@ -26,8 +26,14 @@ const NestedTable = ({ data }) => {
   );
 };
 
-const AccordionRow = ({ serial, row }) => {
+const AccordionRow = ({ serial, row  , setIsServiceEditVisible,}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleEditClick = (serviceDetails) => {
+    setIsServiceEditVisible(true); // Ensure this function is available
+    setIsServiceEditVisible(serviceDetails); // Pass the relevant data
+  };
+  
 
   return (
     <>
@@ -46,11 +52,10 @@ const AccordionRow = ({ serial, row }) => {
         <td className="p-2 text-center">
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
-              className={`${
-                row.isActive
-                  ? "bg-green-400 text-white shadow-md"
-                  : "bg-red-400 text-white shadow-md"
-              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+              className={`${row.isActive
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
+                } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
             >
               {" "}
               {row.isActive ? "Active" : "Inactive"}
@@ -59,7 +64,8 @@ const AccordionRow = ({ serial, row }) => {
         </td>
         <td className="p-2 text-center ">
           <div className="flex justify-center">
-            <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            <LuClipboardEdit className="text-[24px] text-blue-600 "
+               onClick={handleEditClick} />
           </div>
         </td>
       </tr>
@@ -107,11 +113,10 @@ const AccordionSubRow = ({ subRow }) => {
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
-              className={`${
-                subRow.isActive
-                  ? "bg-green-400 text-white shadow-md"
-                  : "bg-red-400 text-white shadow-md"
-              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+              className={`${subRow.isActive
+                ? "bg-green-400 text-white shadow-md"
+                : "bg-red-400 text-white shadow-md"
+                } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
             >
               {" "}
               {subRow.isActive ? "Active" : "Inactive"}
@@ -151,11 +156,10 @@ const AccordionSubRow = ({ subRow }) => {
                         }}
                       >
                         <span
-                          className={`${
-                            subRow.isPersonBased
-                              ? "bg-green-400 text-green-50 shadow-md"
-                              : "bg-red-400 text-red-50 shadow-md"
-                          } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+                          className={`${subRow.isPersonBased
+                            ? "bg-green-400 text-green-50 shadow-md"
+                            : "bg-red-400 text-red-50 shadow-md"
+                            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
                         >
                           {" "}
                           {subRow.isPriceFixed ? "Yes" : "No"}

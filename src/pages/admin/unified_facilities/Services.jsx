@@ -4,7 +4,7 @@ import ServiceList from "../../../components/service_management/serviceList";
 import ServiceCreate from "../../../components/service_management/serviceCreate";
 import BackButton from "../../../components/BackButton";
 
-export default function Services() {
+export default function Services({ setIsServiceEditVisible }) {
   const [isServiceCreateVisible, setIsServiceCreateVisible] = useState(false);
   const [isServiceEditVisible, setIsServiceEditVisible] = useState(false);
   // Function to toggle the visibility of ParkCreate
@@ -13,6 +13,7 @@ export default function Services() {
     setIsServiceEditVisible(false)
   };
 
+  
   return (
     <>
       <AdminLayout>
@@ -28,20 +29,22 @@ export default function Services() {
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
-             <BackButton
-                  label="Back"
-                 // onClick={() => setIsServiceCreateVisible(false)}
-                  className="bg-blue-600 hover:bg-blue-700"
-                />
-           
+              <BackButton
+                label="Back"
+                // onClick={() => setIsServiceCreateVisible(false)}
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+
             </div>
           </div>
           {/* Cards */}
           {/* <div className="grid grid-cols-12 gap-6"> */}
-       
-            <ServiceCreate
-              isServiceEditVisible={isServiceEditVisible} setIsServiceEditVisible={setIsServiceEditVisible}
-            />
+
+          <ServiceCreate
+            setIsServiceEditVisible={setIsServiceEditVisible}
+            isServiceEditVisible={isServiceEditVisible}
+            setIsServiceCreateVisible={setIsServiceCreateVisible}
+          />
           {/* </div> */}
         </div>
       </AdminLayout>
