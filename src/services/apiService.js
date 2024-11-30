@@ -1,7 +1,7 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
 
-const API_BASE_URL = "https://5f672qcg-7237.inc1.devtunnels.ms/api/";
+const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
 // prod
 // const API_BASE_URL =
 //  "https://meeticketservicedevapi.vmaxtechservices.life/api/";

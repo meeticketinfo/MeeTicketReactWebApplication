@@ -16,16 +16,17 @@ const NestedTable = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
-            <AccordionRow key={index} row={row} />
-          ))}
+          {data.length > 0 &&
+            data.map((row, index) => (
+              <AccordionRow key={index} serial={index} row={row} />
+            ))}
         </tbody>
       </table>
     </div>
   );
 };
 
-const AccordionRow = ({ row }) => {
+const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -34,8 +35,11 @@ const AccordionRow = ({ row }) => {
         className="cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <td className="p-2 text-center">
-          <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
+        <td className="p-2 flex items-center">
+          <IoIosArrowDown
+            className={`w-1/10 ${isExpanded ? "rotate-180" : ""}`}
+          />
+          <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
         <td className="p-2 text-center">{row.name}</td>
         <td className="p-2 text-center">{row.description}</td>
@@ -59,7 +63,7 @@ const AccordionRow = ({ row }) => {
           </div>
         </td>
       </tr>
-      {isExpanded && (
+      {isExpanded && row.services.length > 0 && (
         <tr>
           <td colSpan="5" className="p-4 bg-blue-50">
             <table className="table-auto w-full ">
@@ -73,7 +77,7 @@ const AccordionRow = ({ row }) => {
                 </tr>
               </thead>
               <tbody>
-                {row.subRows.map((subRow, subIndex) => (
+                {row.services.map((subRow, subIndex) => (
                   <AccordionSubRow key={subIndex} subRow={subRow} />
                 ))}
               </tbody>
@@ -97,7 +101,7 @@ const AccordionSubRow = ({ subRow }) => {
         >
           <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
         </td>
-        <td className="p-2 text-center">{subRow.subFacilityName}</td>
+        <td className="p-2 text-center">{subRow.name}</td>
         <td className="p-2 text-center">{subRow.description}</td>
         <td className="p-2 text-center">
           {" "}
@@ -120,7 +124,7 @@ const AccordionSubRow = ({ subRow }) => {
           </span>
         </td>
       </tr>
-      {isExpanded && (
+      {isExpanded && subRow.serviceVariants.length > 0 && (
         <tr>
           <td colSpan="5" className="p-4 bg-gray-200">
             <table className="table-auto w-full ">
@@ -134,24 +138,27 @@ const AccordionSubRow = ({ subRow }) => {
                 </tr>
               </thead>
               <tbody>
-                {subRow.details.map((detail, detailIndex) => (
+                {subRow.serviceVariants.map((detail, detailIndex) => (
                   <tr key={detailIndex} className="bg-white">
                     <td className="p-2 text-center">{detail.detailId}</td>
-                    <td className="p-2 text-center">{detail.detailInfo}</td>
-                    <td className="p-2 text-center">{detail.notes}</td>
+                    <td className="p-2 text-center">{detail.name}</td>
+                    <td className="p-2 text-center">{detail.amount}</td>
                     <td className="p-2 text-center">
                       <div
-                        style={{ display: "flex align-center", gap: "0.5rem" }}
+                        style={{
+                          display: "flex align-center",
+                          gap: "0.5rem",
+                        }}
                       >
                         <span
                           className={`${
                             subRow.isPersonBased
-                              ? "bg-green-400 text-white shadow-md"
-                              : "bg-red-400 text-white shadow-md"
+                              ? "bg-green-400 text-green-50 shadow-md"
+                              : "bg-red-400 text-red-50 shadow-md"
                           } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
                         >
                           {" "}
-                          {subRow.isPersonBased ? "Yes" : "No"}
+                          {subRow.isPriceFixed ? "Yes" : "No"}
                         </span>
                       </div>
                     </td>

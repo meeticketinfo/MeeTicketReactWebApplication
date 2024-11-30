@@ -21,10 +21,11 @@ export const useUnifiedFacilityStore = create((set) => ({
   fetchAllUnifiedFacilities: async () => {
     set({ isFetchAllUnifiedFacilitiesLoading: true });
     try {
+      console.log(API_ENDPOINTS.MASTERS);
       const response = await apiService.get(
         `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL}`
       );
-
+      console.log(response);
       set({
         allUnifiedFacilities: response.data,
         isFetchAllUnifiedFacilitiesLoading: false,

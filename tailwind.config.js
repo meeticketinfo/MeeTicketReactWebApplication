@@ -6,6 +6,10 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      width: {
+        "1/10": "10%",
+        "9/10": "90%",
+      },
       keyframes: {
         "fill-right-to-left": {
           "0%": {

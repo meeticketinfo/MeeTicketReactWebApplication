@@ -1,4 +1,5 @@
-export const API_BASE_URL = "https://5f672qcg-7237.inc1.devtunnels.ms/api/";
+export const API_BASE_URL =
+  "https://meeticket.vmaxtechservices.life/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 
@@ -29,6 +30,10 @@ export const API_ENDPOINTS = {
       UPDATE_FACILITY_DETAILS: `${API_BASE_URL}Master/UpdateFacilities`,
       ADD_NEW_FACILITY: `${API_BASE_URL}Facilities/CreateNewFacility`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
+      GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+    },
+    UNIFIED_FACILITY: {
+      GET_ALL: `${API_BASE_URL}Master/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     BOOKING: {
