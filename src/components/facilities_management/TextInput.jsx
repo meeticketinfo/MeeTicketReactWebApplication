@@ -3,7 +3,9 @@ import { Field, ErrorMessage } from "formik";
 
 const TextInput = ({ name, label, ...props }) => (
   <div className="form-group">
-    <label htmlFor={name}>{label}</label>
+    <label className="block text-sm font-semibold text-gray-700" htmlFor={name}>
+      {label}
+    </label>
     <Field
       id={name}
       name={name}

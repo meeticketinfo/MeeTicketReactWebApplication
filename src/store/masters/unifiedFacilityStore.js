@@ -8,7 +8,8 @@ export const useUnifiedFacilityStore = create((set) => ({
   isFetchUnifiedFacilityDetailsLoading: false,
   isFetchAllUnifiedFacilitiesLoading: false,
   fetchFacilityDetailsError: null,
-  ifetchAllUnifiedFacilitiesError: null,
+  fetchAllUnifiedFacilitiesError: null,
+  saveUnifiedFacilityDetailsError: null,
   unifiedFacilityCreateResponse: {},
   unifiedFacilityEditDetails: {},
 
@@ -32,7 +33,7 @@ export const useUnifiedFacilityStore = create((set) => ({
       });
     } catch (error) {
       set({
-        ifetchAllUnifiedFacilitiesError: error.message,
+        fetchAllUnifiedFacilitiesError: error.message,
         isFetchAllUnifiedFacilitiesLoading: false,
       });
     }
@@ -47,7 +48,7 @@ export const useUnifiedFacilityStore = create((set) => ({
 
   // Save Facility details
   saveunifiedFacilityDetails: async (FacilityData) => {
-    set({ isSaveFacilityDetailsLoading: true });
+    set({ isSaveUnifiedFacilityDetailsLoading: true });
     try {
       const url = API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.CREATE;
       const method = "post";
@@ -56,13 +57,15 @@ export const useUnifiedFacilityStore = create((set) => ({
 
       set({
         facilityCreateResponse: { response },
-        FacilityDetails: response.data,
-        isSaveFacilityDetailsLoading: false,
-        success: "Facility saved successfully.",
+        isSaveUnifiedFacilityDetailsLoading: false,
+        success: "Facility Details saved successfully.",
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveFacilityDetailsLoading: false });
+      set({
+        saveUnifiedFacilityDetailsError: error.message,
+        isSaveUnifiedFacilityDetailsLoading: false,
+      });
       throw error;
     }
   },

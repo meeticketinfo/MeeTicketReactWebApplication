@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
+import { useFacilityStore } from "../../../store/masters/facilitiesStore";
 
-const NestedTable = ({ data , setIsServiceEditVisible}) => {
+const NestedTable = ({ data }) => {
+  const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
+  useEffect(() => {
+    fetchAllDropdownFacilities();
+  }, []);
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -38,24 +43,27 @@ const AccordionRow = ({ serial, row  , setIsServiceEditVisible,}) => {
   return (
     <>
       <tr
-        className="cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white"
-        onClick={() => setIsExpanded(!isExpanded)}
+        className={`cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white `}
       >
-        <td className="p-2 flex items-center">
+        <td
+          className="p-2 flex items-center"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
           <IoIosArrowDown
-            className={`w-1/10 ${isExpanded ? "rotate-180" : ""}`}
+            className={`text-xl w-1/10 ${isExpanded ? "rotate-180" : ""}`}
           />
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
-        <td className="p-2 text-center">{row.name}</td>
-        <td className="p-2 text-center">{row.description}</td>
+        <td className="p-2 text-center">{row.name ?? "N/A"}</td>
+        <td className="p-2 text-center">{row.description ?? "N/A"}</td>
         <td className="p-2 text-center">
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
-              className={`${row.isActive
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
-                } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+              className={`${
+                row.isActive
+                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
             >
               {" "}
               {row.isActive ? "Active" : "Inactive"}
@@ -75,7 +83,7 @@ const AccordionRow = ({ serial, row  , setIsServiceEditVisible,}) => {
             <table className="table-auto w-full ">
               <thead className="bg-[#f8f8f8] text-blue-v1">
                 <tr>
-                  <th className="p-2 text-center">S.No</th>
+                  <th className="p-2 text-center"></th>
                   <th className="p-2 text-center">Sub Facility Name</th>
                   <th className="p-2 text-center">Description</th>
                   <th className="p-2 text-center">Status</th>
@@ -105,18 +113,21 @@ const AccordionSubRow = ({ subRow }) => {
           className="p-2 text-center cursor-pointer"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
+          <div className="flex justify-center">
+            <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
+          </div>
         </td>
-        <td className="p-2 text-center">{subRow.name}</td>
-        <td className="p-2 text-center">{subRow.description}</td>
+        <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
+        <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
         <td className="p-2 text-center">
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
-              className={`${subRow.isActive
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
-                } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+              className={`${
+                subRow.isActive
+                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
             >
               {" "}
               {subRow.isActive ? "Active" : "Inactive"}
@@ -135,7 +146,6 @@ const AccordionSubRow = ({ subRow }) => {
             <table className="table-auto w-full ">
               <thead className="bg-[#f8f8f8] text-blue-v1">
                 <tr>
-                  <th className="p-2 text-center">S.No</th>
                   <th className="p-2 text-center">Ticket Type</th>
                   <th className="p-2 text-center">Price</th>
                   <th className="p-2 text-center">is Person Based</th>
@@ -145,9 +155,10 @@ const AccordionSubRow = ({ subRow }) => {
               <tbody>
                 {subRow.serviceVariants.map((detail, detailIndex) => (
                   <tr key={detailIndex} className="bg-white">
-                    <td className="p-2 text-center">{detail.detailId}</td>
-                    <td className="p-2 text-center">{detail.name}</td>
-                    <td className="p-2 text-center">{detail.amount}</td>
+                    <td className="p-2 text-center">{detail.name ?? "N/A"}</td>
+                    <td className="p-2 text-center">
+                      {detail.amount ?? "N/A"}
+                    </td>
                     <td className="p-2 text-center">
                       <div
                         style={{
@@ -156,13 +167,14 @@ const AccordionSubRow = ({ subRow }) => {
                         }}
                       >
                         <span
-                          className={`${subRow.isPersonBased
-                            ? "bg-green-400 text-green-50 shadow-md"
-                            : "bg-red-400 text-red-50 shadow-md"
-                            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+                          className={`${
+                            detail.isPriceFixed
+                              ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                          } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
                         >
                           {" "}
-                          {subRow.isPriceFixed ? "Yes" : "No"}
+                          {detail.isPriceFixed ? "Yes" : "No"}
                         </span>
                       </div>
                     </td>

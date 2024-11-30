@@ -34,7 +34,7 @@ export const API_ENDPOINTS = {
     },
     UNIFIED_FACILITY: {
       GET_ALL: `${API_BASE_URL}Master/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
-      GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
+      CREATE: `${API_BASE_URL}Master/AddFacilityWithSubFacilitiesAndTicketTypes`,
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,

@@ -3,7 +3,9 @@ import { Field, ErrorMessage } from "formik";
 
 const SelectInput = ({ name, label, options }) => (
   <div className="form-group">
-    <label htmlFor={name}>{label}</label>
+    <label className="block text-sm font-semibold text-gray-700" htmlFor={name}>
+      {label}
+    </label>
     <Field
       as="select"
       id={name}
