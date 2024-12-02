@@ -135,6 +135,12 @@ export const useParkStore = create((set) => ({
     });
   },
 
+  resetFilePreview: () => {
+    set({
+      ImageUrl: { fileUrl: null, fileType: null },
+    });
+  },
+
   handleFileChange: (e, fieldName) => {
     const file = e.target.files[0];
     if (file) {

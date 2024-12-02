@@ -23,6 +23,7 @@ const ParkCreate = ({
     filePreviews,
     parkEditDetails,
     updateFilePreview,
+    resetFilePreview
   } = useParkStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -212,6 +213,7 @@ const ParkCreate = ({
           setIsParkEditVisible(false);
         }, 3000);
         resetForm();
+        resetFilePreview();
       } else {
         toast.error("Unexpected response from the server.");
       }
@@ -565,9 +567,8 @@ const ParkCreate = ({
                     />
                   )}
                 </div>
-              </div>
-              {role !== "ROLE_NODALOFFICER" && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+                {role !== "ROLE_NODALOFFICER" && (
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                   {/* Nodal Officer */}
                   <div>
                     <label className="block text-sm font-medium">
@@ -610,6 +611,8 @@ const ParkCreate = ({
                   </div>
                 </div>
               )}
+              </div>
+             
               {/* Submit Button */}
               <div className="flex justify-center">
                 <div className="">

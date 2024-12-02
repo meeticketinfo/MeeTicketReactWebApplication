@@ -131,7 +131,7 @@ const NodalOfficerCreate = ({
         );
         setTimeout(() => {
           setIsNodalOfficerCreateVisible(false);
-        }, 3000);
+        }, 1000);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
@@ -391,7 +391,7 @@ const NodalOfficerCreate = ({
                 </div>
 
                   {/* Department */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium">Department <span className="text-red-500">*</span></label>
                 <Field
                   as="select"
@@ -415,7 +415,7 @@ const NodalOfficerCreate = ({
                   name="departmentId"
                   component={"div"}
                 />
-              </div>
+              </div> */}
               </div>
               {/* Submit Button */}
               <div className="flex justify-center p-2">

@@ -87,6 +87,7 @@ const DepartmentCreateForm = ({
   useEffect(() => {
     if (openModalId === null) {
       setDepartmentTypeEditDetails({}); // Reset edit state if necessary
+      setIsDepartmentTypeEditVisible(false)
     }
   }, [openModalId]);
   return (

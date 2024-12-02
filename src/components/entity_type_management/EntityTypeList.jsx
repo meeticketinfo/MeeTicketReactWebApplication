@@ -36,7 +36,7 @@ const EntityTypeList = ({
     },
     {
       field: "entityTypeName",
-      headerName: "Department Name",
+      headerName: "Location Category",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",

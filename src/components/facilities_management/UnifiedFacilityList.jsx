@@ -30,6 +30,7 @@ const UnifiedFacilityList = ({ setIsServiceEditVisible }) => {
           setIsServiceEditVisible={setIsServiceEditVisible}
         />
       </div>
+      
       <PopupModal
         popupModalId="first-modal"
         isOpen={openModalId === "facility-modal"}

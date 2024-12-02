@@ -15,6 +15,7 @@ const NodalOfficerList = ({
     isFetchAllNodalOfficersLoading,
     fetchAllNodalOfficers,
     setCurrentNodalOfficerEditDetails,
+    fetchAllNodalOfficerParks,
   } = useNodalOfficerStore();
 
   useEffect(() => {
@@ -86,6 +87,9 @@ const NodalOfficerList = ({
               setCurrentNodalOfficerEditDetails(params.data);
               setIsNodalOfficerCreateVisible(true);
               setIsNodalOfficerEditVisible(true);
+              if (params.data.id) {
+                fetchAllNodalOfficerParks(null, null, {}, params.data.id);
+              }
             }}
           >
             <span className="">

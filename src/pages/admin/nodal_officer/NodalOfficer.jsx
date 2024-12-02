@@ -23,10 +23,11 @@ export default function NodalOfficer() {
   } = useNodalOfficerStore();
 
   useEffect(() => {
-    if (isNodalOfficerEditVisible) {
+    if (isNodalOfficerEditVisible && NodalOfficersEditDetails.id) {
       fetchAllNodalOfficerParks(null, null, {}, NodalOfficersEditDetails.id);
     }
-  }, [isNodalOfficerEditVisible]);
+  }, [isNodalOfficerEditVisible, NodalOfficersEditDetails.id]);
+  
 
   // Function to toggle the visibility of NodalOfficerCreate
   const toggleNodalOfficerCreate = () => {
