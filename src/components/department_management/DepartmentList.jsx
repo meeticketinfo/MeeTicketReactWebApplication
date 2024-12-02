@@ -95,7 +95,7 @@ const DepartmentList = ({
         isOpen={openModalId === "department-modal"}
         onClose={closeModal}
         title={
-          isDepartmentTypeEditVisible ? "Add Department" : "Edit Department"
+          !isDepartmentTypeEditVisible ? "Add Department" : "Edit Department"
         }
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"

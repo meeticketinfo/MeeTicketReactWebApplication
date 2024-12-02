@@ -31,6 +31,9 @@ export const useParkStore = create((set) => ({
   filePreviews: {
     ImageUrl: null,
   },
+  addFilePreviews: {
+    ImageUrl: null,
+  },
   isFetchAllNodalOfficerParksLoading: false,
   allNodalOfficerParks: [],
   nodalOfficerParksError: null,
@@ -137,7 +140,7 @@ export const useParkStore = create((set) => ({
 
   resetFilePreview: () => {
     set({
-      ImageUrl: { fileUrl: null, fileType: null },
+      filePreviews: {},
     });
   },
 
@@ -152,6 +155,23 @@ export const useParkStore = create((set) => ({
         fileInputs: { ...state.fileInputs, [fieldName]: file },
         filePreviews: {
           ...state.filePreviews,
+          [fieldName]: { file, fileType, fileUrl },
+        },
+      }));
+    }
+  },
+
+  addHandleFileChange: (e, fieldName) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      const fileType = file.type;
+
+      // Set both file and preview
+      set((state) => ({
+        fileInputs: { ...state.fileInputs, [fieldName]: file },
+        addFilePreviews: {
+          ...state.addFilePreviews,
           [fieldName]: { file, fileType, fileUrl },
         },
       }));

@@ -8,3 +8,8 @@
 @import 'additional-styles/flatpickr.css';
 
 @import 'tailwindcss/utilities';
+
+.Toastify__toast-container {
+    z-index: 999999999 !important; /* Ensure it's higher than the modal */
+  }
+  

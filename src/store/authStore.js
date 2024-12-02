@@ -52,7 +52,7 @@ const useAuthStore = create(
               ) {
                 formErrors[key] = xhr.response.data.errors[key][0];
                 console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
-                toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+                // toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
               }
             });
 

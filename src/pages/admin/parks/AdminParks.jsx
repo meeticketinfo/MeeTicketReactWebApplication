@@ -4,23 +4,27 @@ import ParkList from "../../../components/park_management/ParkList";
 import AdminLayout from "../../../layouts/AdminLayout";
 import BackButton from "../../../components/BackButton";
 import useAuthStore from "../../../store/authStore";
-
+import { useParkStore } from "../../../store/masters/parksStore";
 
 export default function AdminParks() {
   // State to toggle the FacilityCreate component
   const [isParkCreateVisible, setIsParkCreateVisible] = useState(false);
   const [isParkEditVisible, setIsParkEditVisible] = useState(false);
-
+  const { resetFilePreview } = useParkStore();
+  
   // Function to toggle the visibility of ParkCreate
   const toggleParkCreate = () => {
     setIsParkCreateVisible((prev) => !prev);
     setIsParkEditVisible(false);
+    resetFilePreview();
     false;
   };
-   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
-     useAuthStore();
-   const role = roleDetails?.name;
-   const userId = decodedTokenData?.data?.UserId;
+  
+  
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">

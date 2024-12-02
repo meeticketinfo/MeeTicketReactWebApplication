@@ -42,6 +42,7 @@ const ParkCreate = ({
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllNodalOfficers();
+
     if (isParkEditVisible) {
       updateFilePreview(parkEditDetails.imageUrl);
     }
@@ -559,6 +560,7 @@ const ParkCreate = ({
                     component="div"
                     className="text-red-500 text-xs"
                   />
+                  
                   {filePreviews.ImageUrl?.fileUrl && (
                     <BaseVariant
                       file={filePreviews.ImageUrl.file}
@@ -566,6 +568,7 @@ const ParkCreate = ({
                       fileUrl={filePreviews.ImageUrl.fileUrl}
                     />
                   )}
+                  
                 </div>
                 {role !== "ROLE_NODALOFFICER" && (
                 <div className="grid grid-cols-1 md:grid-cols-1 gap-4">

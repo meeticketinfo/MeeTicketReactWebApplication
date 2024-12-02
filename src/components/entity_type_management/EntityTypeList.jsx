@@ -24,6 +24,7 @@ const EntityTypeList = ({
 
   useEffect(() => {
     fetchAllEntityTypes();
+    
   }, []);
 
   const columnDefs = [

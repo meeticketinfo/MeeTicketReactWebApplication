@@ -44,7 +44,7 @@ const NodalOfficerList = ({
     },
     {
       field: "emailId",
-      headerName: "EmailId",
+      headerName: "Email Id",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
