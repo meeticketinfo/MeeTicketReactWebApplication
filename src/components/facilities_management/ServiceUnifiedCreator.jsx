@@ -23,35 +23,66 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object({
-  facilityDto: Yup.object({
+  facilityDto: Yup.object().shape({
     facilityMasterId: Yup.string().required("Facility is required"),
+    name: Yup.string().required("Facility Name is required"),
   }),
   hasSubFacility: Yup.boolean(),
-  // subFacilities: Yup.array().of(
-  //   Yup.object({
-  //     name: Yup.string().when("hasSubFacility", {
-  //       is: true,
-  //       then: Yup.string().required("Sub-Facility Name is required"),
-  //       otherwise: Yup.string(),
-  //     }),
-  //     ticketTypes: Yup.array()
-  //       .of(
-  //         Yup.object({
-  //           type: Yup.string().required("Ticket Type is required"),
-  //           customType: Yup.string().when("type", {
-  //             is: "others",
-  //             then: Yup.string().required("Custom Ticket Type is required"),
-  //             otherwise: Yup.string(),
-  //           }),
-  //           chargedPerPerson: Yup.string().required(
-  //             "Charged Per Person is required"
-  //           ),
-  //         })
-  //       )
-  //       .min(1, "At least one Ticket Type is required"),
-  //   })
-  // ),
+  subFacilities: Yup.array().of(
+    Yup.lazy((value, { parent }) => {
+      // Use Yup.ref('hasSubFacility') to check the parent's `hasSubFacility` value
+      return Yup.object().shape({
+        name: parent.hasSubFacility
+          ? Yup.string().required("Sub-Facility Name is required")
+          : Yup.string(),
+        ticketTypes: Yup.array().of(
+          Yup.object().shape({
+            type: Yup.string().required("Ticket Type is required"),
+            // customType: Yup.string().when("type", {
+            //   is: "others",
+            //   // then: Yup.string().required("Custom Ticket Type is required"),
+            // }),
+            amount: Yup.number()
+              .required("Amount is required")
+              .positive("Amount must be a positive number"),
+            chargedPerPerson: Yup.string().required(
+              "Charged Per Person is required"
+            ),
+          })
+        ),
+      });
+    })
+  ),
 });
+
+// const validationSchema = Yup.object({
+//   facilityDto: Yup.object().shape({
+//     facilityMasterId: Yup.string().required("Facility is required"),
+//     name: Yup.string().required("Facility Name is required"),
+//   }),
+//   hasSubFacility: Yup.boolean(),
+//   subFacilities: Yup.array().of(
+//     Yup.object().shape({
+//       name: Yup.string().required("Sub-Facility Name is required"),
+//       ticketTypes: Yup.array().of(
+//         Yup.object().shape({
+//           type: Yup.string().required("Ticket Type is required"),
+//           customType: Yup.string().when("type", {
+//             is: "others",
+//             then: Yup.string().required("Custom Ticket Type is required"),
+//           }),
+//           amount: Yup.number()
+//             .required("Amount is required")
+//             .positive("Amount must be a positive number"),
+//           chargedPerPerson: Yup.string().required(
+//             "Charged Per Person is required"
+//           ),
+//         })
+//       ),
+//     })
+//   ),
+//   // .min(1, "At least one sub-facility is required"),
+// });
 
 const ServiceUnifiedCreator = () => {
   const { decodedTokenData } = useAuthStore();
@@ -84,6 +115,7 @@ const ServiceUnifiedCreator = () => {
         displayName: values.hasSubFacility
           ? subFacility.name
           : values.facilityDto.facilityMasterId,
+        isActive: true,
         serviceVariants: subFacility.ticketTypes.map((ticketType) => ({
           name:
             ticketType.type === "others"
@@ -94,7 +126,9 @@ const ServiceUnifiedCreator = () => {
               ? ticketType.customType
               : ticketType.type,
           description: "lorem",
+          amount: ticketType.amount,
           isPriceFixed: ticketType.chargedPerPerson === "yes",
+          isActive: true,
         })),
       })),
     };
@@ -259,6 +293,7 @@ const ServiceUnifiedCreator = () => {
                                       type: "",
                                       customType: "",
                                       chargedPerPerson: "",
+                                      amount: "",
                                     })
                                   }
                                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -272,7 +307,7 @@ const ServiceUnifiedCreator = () => {
                                         key={ticketIndex}
                                         className="mb-3 flex justify-between pb-2 border-b-2 border border-gray-200 rounded-2xl my-3  p-3"
                                       >
-                                        <div className="grid grid-cols-3 gap-3">
+                                        <div className="grid grid-cols-4 gap-3">
                                           <SelectInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].type`}
                                             label="Ticket Type"
@@ -286,6 +321,10 @@ const ServiceUnifiedCreator = () => {
                                               label="Custom Ticket Type"
                                             />
                                           )}
+                                          <TextInput
+                                            name={`subFacilities[${index}].ticketTypes[${ticketIndex}].amount`}
+                                            label="Amount"
+                                          />
                                           <SelectInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].chargedPerPerson`}
                                             label="Charged Per Person"
@@ -324,6 +363,7 @@ const ServiceUnifiedCreator = () => {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                  disabled={isSaveUnifiedFacilityDetailsLoading}
                 >
                   {isSaveUnifiedFacilityDetailsLoading ? "Saving..." : "Submit"}
                 </button>

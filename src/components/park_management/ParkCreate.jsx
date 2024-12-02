@@ -51,7 +51,7 @@ const ParkCreate = ({
     EntityTypeId: isParkEditVisible ? parkEditDetails.entityTypeId : "",
     DepartmentId: isParkEditVisible ? parkEditDetails.departmentId : "",
     DisplayName: parkEditDetails.name,
-    Prefix: isParkEditVisible ? parkEditDetails.prefix : "",
+    // Prefix: isParkEditVisible ? parkEditDetails.prefix : "",
     Name: isParkEditVisible ? parkEditDetails.name : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : "",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
@@ -60,10 +60,11 @@ const ParkCreate = ({
     State: "Telangana",
     ZipCode: isParkEditVisible ? parkEditDetails.zipCode : "",
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
-    IsCounter:isParkEditVisible ? parkEditDetails.isCounter : "",
+    IsCounter: isParkEditVisible ? parkEditDetails.isCounter : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
     NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
+    ...(isParkEditVisible ? {} : { Prefix: "" }),
   };
   const FILE_SIZE = 10 * 1024 * 1024;
 
@@ -105,7 +106,7 @@ const ParkCreate = ({
       .nullable()
       .min(10, "Description must be at least 10 characters long")
       .max(500, "Description cannot be more than 500 characters"),
-      Prefix: Yup.string()
+    Prefix: Yup.string()
       .matches(
         /^[a-zA-Z0-9]*$/,
         "Prefix can only contain alphanumeric characters"
@@ -190,10 +191,10 @@ const ParkCreate = ({
     { setSubmitting, resetForm },
     saveParkDetails
   ) => {
-    console.log("values",values)
-    values.isActive= values.isActive === "true" || values.isActive === true
-    values.IsCounter= values.IsCounter === "true" || values.isActive === true
-    values.DisplayName= values.Name 
+    console.log("values", values);
+    values.isActive = values.isActive === "true" || values.isActive === true;
+    values.IsCounter = values.IsCounter === "true" || values.isActive === true;
+    values.DisplayName = values.Name;
 
     try {
       const result = await saveParkDetails(
@@ -343,7 +344,6 @@ const ParkCreate = ({
                   />
                 </div>
 
-            
                 {/* Street 2 */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -390,7 +390,9 @@ const ParkCreate = ({
 
                 {/* City */}
                 <div>
-                  <label className="block text-sm font-medium">Area <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Area <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     name="City"
                     type="text"
@@ -430,7 +432,9 @@ const ParkCreate = ({
 
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium">Status <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Status <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="IsActive"
@@ -495,39 +499,42 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-
-                <div className="col-span-1">
-                  <label className="block text-sm font-medium">
-                    Transaction Prefix <span className="text-red-500">*</span>
-                  </label>
-                  <Field
-                    name="Prefix"
-                    maxLength={3}
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.Prefix && touched.Prefix
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Transaction Prefix"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(
-                        /[^a-zA-Z0-9]/g,
-                        ""
-                      );
-                    }}
-                  />
-                  <ErrorMessage
-                    name="Prefix"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
+                {!isParkEditVisible && (
+                  <div className="col-span-1">
+                    <label className="block text-sm font-medium">
+                      Transaction Prefix <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="Prefix"
+                      maxLength={3}
+                      type="text"
+                      className={`mt-1 block w-full px-2 py-1 border ${
+                        errors.Prefix && touched.Prefix
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Transaction Prefix"
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(
+                          /[^a-zA-Z0-9]/g,
+                          ""
+                        );
+                      }}
+                    />
+                    <ErrorMessage
+                      name="Prefix"
+                      component="div"
+                      className="text-red-500 text-xs"
+                    />
+                  </div>
+                )}
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Location Image {!isParkEditVisible && <span className="text-red-500">*</span>}
+                    Location Image{" "}
+                    {!isParkEditVisible && (
+                      <span className="text-red-500">*</span>
+                    )}
                   </label>
                   <input
                     name="ImageUrl"

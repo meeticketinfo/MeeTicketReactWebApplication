@@ -12,7 +12,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   const [quickFilterText, setQuickFilterText] = useState(""); // For search functionality
 
   const isPaginationEnabled = rowData.length > 10;
-  const gridHeight = isPaginationEnabled ? 400 : 300;
+  const gridHeight = isPaginationEnabled ? 400 : 280;
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
@@ -58,7 +58,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
       {/* Ag-Grid Table */}
       <div
         className="ag-theme-alpine bg-white/30 backdrop-blur-sm border border-white/50 rounded-lg shadow-md overflow-hidden"
-        style={{ height: 410, width: "100%", position: "relative" }}
+        style={{ height: gridHeight, width: "100%", position: "relative" }}
       >
         <AgGridReact
           ref={gridRef}

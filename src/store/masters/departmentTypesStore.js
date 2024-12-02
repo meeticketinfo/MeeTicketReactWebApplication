@@ -41,7 +41,7 @@ export const useDepartmentTypesStore = create((set) => ({
         isFetchAllDepartmentTypesLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllDepartmentTypesLoading: false });
+      set({ isFetchAllDepartmentTypesLoading: false });
     }
   },
 

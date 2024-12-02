@@ -37,7 +37,7 @@ export const useFacilityStore = create((set) => ({
         isFetchAllFacilitiesLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllFacilitiesLoading: false });
+      set({ isFetchAllFacilitiesLoading: false });
     }
   },
 
@@ -56,7 +56,7 @@ export const useFacilityStore = create((set) => ({
         isFetchAllAdminFacilitiesLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllAdminFacilitiesLoading: false });
+      set({isFetchAllAdminFacilitiesLoading: false });
     }
   },
 
@@ -111,7 +111,7 @@ export const useFacilityStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveFacilityDetailsLoading: false });
+      set({ isSaveFacilityDetailsLoading: false });
       throw error;
     }
   },

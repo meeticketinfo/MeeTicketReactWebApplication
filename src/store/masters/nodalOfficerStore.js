@@ -45,7 +45,7 @@ export const useNodalOfficerStore = create((set) => ({
         isFetchAllNodalOfficersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllNodalOfficersLoading: false });
+      set({ isFetchAllNodalOfficersLoading: false });
     }
   },
   // Fetch all Nodal Officers
@@ -68,7 +68,7 @@ export const useNodalOfficerStore = create((set) => ({
         isFetchAllNodalOfficerParksLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllNodalOfficerParksLoading: false });
+      set({ isFetchAllNodalOfficerParksLoading: false });
     }
   },
   fetchAllNodalOfficerLocationAdmins: async (
@@ -90,7 +90,7 @@ export const useNodalOfficerStore = create((set) => ({
       });
     } catch (error) {
       set({
-        error: error.message,
+        
         isFetchAllNodalOfficerLocaionAdminsLoading: false,
       });
     }
@@ -114,7 +114,7 @@ export const useNodalOfficerStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveNodalOfficersDetailsLoading: false });
+      set({ isSaveNodalOfficersDetailsLoading: false });
       throw error;
     }
   },

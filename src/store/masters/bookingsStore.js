@@ -47,7 +47,7 @@ export const useBookingsStore = create((set) => ({
         isFetchAllBookingsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllBookingsLoading: false });
+      set({ isFetchAllBookingsLoading: false });
     }
   },
 
@@ -75,7 +75,7 @@ export const useBookingsStore = create((set) => ({
         set({ error: response.message, isLoading: false });
       }
     } catch (error) {
-      set({ error: error.message, isLoading: false });
+      set({ isLoading: false });
     }
   },
 
@@ -91,7 +91,7 @@ export const useBookingsStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isFetchCurrentBookingDetailsLoading: false });
+      set({ isFetchCurrentBookingDetailsLoading: false });
       return { success: false };
     }
   },

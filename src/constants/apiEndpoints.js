@@ -1,5 +1,7 @@
 export const API_BASE_URL =
   "https://meeticket.vmaxtechservices.life/parkapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 

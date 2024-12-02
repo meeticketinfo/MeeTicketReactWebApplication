@@ -71,7 +71,7 @@ export const useAdminFacilityStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveAdminFacilityDetailsLoading: false });
+      set({ isSaveAdminFacilityDetailsLoading: false });
       throw error;
     }
   },

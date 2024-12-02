@@ -33,7 +33,7 @@ export const useHolidayStore = create((set, get) => ({
         isFetchAllHolidaysLoading: false,
       });
     } catch (error) { 
-      set({ error: error.message, isFetchAllHolidaysLoading: false });
+      set({  isFetchAllHolidaysLoading: false });
     }
   },
 
@@ -70,7 +70,7 @@ saveRecurringHolidayDetails: async (HolidayData) => {
     });
     return { success: true, data: response };
   } catch (error) {
-    set({ error: error.message, isSaveRecurringHolidayDetailsLoading: false });
+    set({ isSaveRecurringHolidayDetailsLoading: false });
     throw error;
   }
 },
@@ -93,7 +93,7 @@ saveRecurringHolidayDetails: async (HolidayData) => {
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveHolidayDetailsLoading: false });
+      set({ isSaveHolidayDetailsLoading: false });
       throw error;
     }
   },

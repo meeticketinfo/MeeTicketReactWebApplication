@@ -41,7 +41,7 @@ export const useServiceStore = create((set) => ({
         isFetchAllServicesLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllServicesLoading: false });
+      set({  isFetchAllServicesLoading: false });
     }
   },
 
@@ -85,7 +85,7 @@ export const useServiceStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveServiceDetailsLoading: false });
+      set({ isSaveServiceDetailsLoading: false });
       throw error;
     }
   },

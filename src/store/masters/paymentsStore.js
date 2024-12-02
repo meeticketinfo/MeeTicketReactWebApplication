@@ -33,7 +33,7 @@ export const usePaymentStore = create((set) => ({
         isFetchAllPaymentLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllPaymentLoading: false });
+      set({ isFetchAllPaymentLoading: false });
     }
   },
 
@@ -79,7 +79,7 @@ export const usePaymentStore = create((set) => ({
       });
       return { success: true, data: response.data };
     } catch (error) {
-      set({ error: error.message, isSavePaymentDetailsLoading: false });
+      set({ isSavePaymentDetailsLoading: false });
       throw error;
     }
   },

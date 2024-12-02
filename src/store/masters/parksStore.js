@@ -56,7 +56,7 @@ export const useParkStore = create((set) => ({
         isFetchAllParksLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllParksLoading: false });
+      set({ isFetchAllParksLoading: false });
     }
   },
 
@@ -123,7 +123,7 @@ export const useParkStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveParkDetailsLoading: false });
+      set({  isSaveParkDetailsLoading: false });
       throw error;
     }
   },

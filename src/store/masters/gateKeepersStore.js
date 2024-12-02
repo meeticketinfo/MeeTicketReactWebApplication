@@ -30,7 +30,7 @@ export const gateKeepersStore = create((set) => ({
         isFetchAllGateKeepersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllGateKeepersLoading: false });
+      set({ isFetchAllGateKeepersLoading: false });
     }
   },
   // Fetch all Bookings
@@ -53,7 +53,7 @@ export const gateKeepersStore = create((set) => ({
         isFetchAllScannedGateKeepersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllScannedGateKeepersLoading: false });
+      set({  isFetchAllScannedGateKeepersLoading: false });
     }
   },
 
@@ -75,7 +75,7 @@ export const gateKeepersStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveGateKeeperDetailsLoading: false });
+      set({  isSaveGateKeeperDetailsLoading: false });
       throw error;
     }
   },

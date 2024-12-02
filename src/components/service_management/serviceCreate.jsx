@@ -7,33 +7,31 @@ import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
+import { useModalStore } from "../../store/modalStore";
 
-const ServiceCreate = ({
-  setIsServiceCreateVisible,
-  isServiceEditVisible,
-  setIsServiceEditVisible,
-}) => {
+const ServiceCreate = ({ onDataAdded }) => {
   const {
     saveServiceDetails,
     isSaveServiceDetailsLoading,
     ServiceEditDetails,
   } = useServiceStore();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
   useEffect(() => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
-    id: (isServiceEditVisible && ServiceEditDetails.id) || "",
-    name: (isServiceEditVisible && ServiceEditDetails.name) || "",
-    displayName: (isServiceEditVisible && ServiceEditDetails.displayName) || "",
-    serviceType: (isServiceEditVisible && ServiceEditDetails.serviceType) || "",
-    duration: (isServiceEditVisible && ServiceEditDetails.duration) || "",
-    availability: isServiceEditVisible ? ServiceEditDetails.availability : "",
-    installationDate:
-      (isServiceEditVisible && ServiceEditDetails.installationDate) || "",
-    description: (isServiceEditVisible && ServiceEditDetails.description) || "",
-    isActive: isServiceEditVisible ? ServiceEditDetails.isActive : true,
-    facilityId: (isServiceEditVisible && ServiceEditDetails.facilityId) || "",
+    id: ServiceEditDetails.id,
+    name: ServiceEditDetails.name,
+    displayName: ServiceEditDetails.displayName,
+    serviceType: ServiceEditDetails.serviceType,
+    duration: ServiceEditDetails.duration,
+    availability: ServiceEditDetails.availabilit,
+    installationDate: ServiceEditDetails.installationDate,
+    description: ServiceEditDetails.description,
+    isActive: ServiceEditDetails.isActive,
+    facilityId: ServiceEditDetails.facilityId,
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter facility ."),
@@ -58,22 +56,17 @@ const ServiceCreate = ({
     values.displayName = values.name;
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveServiceDetails(
-        values,
-        isServiceEditVisible ? true : false
-      );
+      const result = await saveServiceDetails(values, true);
 
       if (result.data.status === 200) {
-        toast.success(
-          isServiceEditVisible
-            ? "Sub Facility Updated successfully!"
-            : "Sub Facility created successfully!"
-        );
+        toast.success("Sub Facility Updated successfully!");
 
         setTimeout(() => {
-          setIsServiceCreateVisible(false);
-          setIsServiceEditVisible(false);
-        }, 3000);
+          setOpenModalId(null);
+          onDataAdded();
+          // setIsServiceCreateVisible(false);
+          // setIsServiceEditVisible(false);
+        }, 300);
 
         resetForm();
       }
@@ -102,7 +95,7 @@ const ServiceCreate = ({
     <>
       {" "}
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
-        <ToastContainer position="top-right" autoClose={3000} />
+        {/* <ToastContainer position="top-right" autoClose={3000} /> */}
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -114,7 +107,9 @@ const ServiceCreate = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Facility <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium">
+                    Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="facilityId"
@@ -125,11 +120,13 @@ const ServiceCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Facility</option>
-                    {allFacilities?.filter((facility) => facility.isActive)?.map((facility) => (
-                      <option key={facility.id} value={facility.id}>
-                        {facility.name}
-                      </option>
-                    ))}
+                    {allFacilities
+                      ?.filter((facility) => facility.isActive)
+                      ?.map((facility) => (
+                        <option key={facility.id} value={facility.id}>
+                          {facility.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="facilityId"
@@ -140,7 +137,7 @@ const ServiceCreate = ({
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Actual Name 
+                    Actual Name
                   </label>
                   <Field
                     name="name"
@@ -217,9 +214,7 @@ const ServiceCreate = ({
                 >
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
-                    : isServiceEditVisible
-                    ? "Update Sub Facility"
-                    : "Create Sub Facility"}
+                    : "Update Sub Facility"}
                 </button>
               </div>
             </Form>

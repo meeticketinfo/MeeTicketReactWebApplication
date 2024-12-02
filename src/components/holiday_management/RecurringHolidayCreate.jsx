@@ -30,7 +30,9 @@ export default function RecurringHolidayCreate() {
     { resetForm },
     saveRecurringHolidayDetails
   ) => {
-    const formattedValues = values.dayName.map((day) => ({ dayName: day }));
+    const formattedValues = {
+      dayNames: values.dayName,
+    };
     try {
       const result = await saveRecurringHolidayDetails(formattedValues, false);
       if (result && result.data && result.data.status === 200) {

@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
 import { useFacilityStore } from "../../../store/masters/facilitiesStore";
+import { useModalStore } from "../../../store/modalStore";
+import { useServiceStore } from "../../../store/masters/servicesStore";
+import { useServiceVariantStore } from "../../../store/masters/serviceVariantsStore";
+import { formatToCurrency } from "../../../utils/TypographyHelper";
 
 const NestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
+
   useEffect(() => {
     fetchAllDropdownFacilities();
   }, []);
+
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -23,7 +29,7 @@ const NestedTable = ({ data }) => {
         <tbody>
           {data.length > 0 &&
             data.map((row, index) => (
-              <AccordionRow key={index} serial={index} row={row}  />
+              <AccordionRow key={index} serial={index} row={row} />
             ))}
         </tbody>
       </table>
@@ -33,9 +39,9 @@ const NestedTable = ({ data }) => {
 
 const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
-
-
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } =
+    useFacilityStore();
   return (
     <>
       <tr
@@ -46,7 +52,7 @@ const AccordionRow = ({ serial, row }) => {
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <IoIosArrowDown
-            className={`text-xl w-1/10 ${isExpanded ? "rotate-180" : ""}`}
+            className={` ${isExpanded ? "rotate-180" : ""}`}
           />
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
@@ -68,8 +74,14 @@ const AccordionRow = ({ serial, row }) => {
         </td>
         <td className="p-2 text-center ">
           <div className="flex justify-center">
-            <LuClipboardEdit className="text-[24px] text-blue-600 "
-               />
+            <button
+              onClick={() => {
+                setCurrentFacilityEditDetails(row);
+                setOpenModalId("facility-modal");
+              }}
+            >
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            </button>
           </div>
         </td>
       </tr>
@@ -77,9 +89,13 @@ const AccordionRow = ({ serial, row }) => {
         <tr>
           <td colSpan="5" className="p-4 bg-blue-50">
             <table className="table-auto w-full ">
-              <thead className="bg-[#f8f8f8] text-blue-v1">
+              <thead
+                className={`bg-[#f8f8f8] text-blue-v1 ${
+                  row.services.length === 1 ? "hidden" : ""
+                }`}
+              >
                 <tr>
-                  <th className="p-2 text-center"></th>
+                  <th className="p-2 text-center">S.No</th>
                   <th className="p-2 text-center">Sub Facility Name</th>
                   <th className="p-2 text-center">Description</th>
                   <th className="p-2 text-center">Status</th>
@@ -88,7 +104,16 @@ const AccordionRow = ({ serial, row }) => {
               </thead>
               <tbody>
                 {row.services.map((subRow, subIndex) => (
-                  <AccordionSubRow key={subIndex} subRow={subRow} />
+                  <AccordionSubRow
+                    key={subIndex}
+                    subRow={subRow}
+                    facilityId={row.id}
+                    hasMultipleSubFacilities={
+                      row.services.length === 1 ? true : false
+                    }
+                    subRowSerial={serial}
+                    subRowIndex={subIndex}
+                  />
                 ))}
               </tbody>
             </table>
@@ -99,19 +124,32 @@ const AccordionRow = ({ serial, row }) => {
   );
 };
 
-const AccordionSubRow = ({ subRow }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+const AccordionSubRow = ({
+  subRow,
+  facilityId,
+  hasMultipleSubFacilities,
+  subRowSerial,
+  subRowIndex,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(
+    hasMultipleSubFacilities ? true : false
+  );
+  const { setOpenModalId } = useModalStore();
+  const { setCurrentServiceEditDetails } = useServiceStore();
+  const { setCurrentServiceVariantEditDetails } = useServiceVariantStore();
   return (
     <>
-      <tr className="bg-white">
+      <tr className={`bg-white ${hasMultipleSubFacilities ? "hidden" : ""}`}>
         <td
-          className="p-2 text-center cursor-pointer"
+          className="p-2 text-center cursor-pointer flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex justify-center">
             <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
           </div>
+          <div className="w-9/10 text-center">{`${
+            subRowSerial + 1
+          }.${String.fromCharCode(97 + subRowIndex)}`}</div>
         </td>
         <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
         <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
@@ -132,7 +170,17 @@ const AccordionSubRow = ({ subRow }) => {
         </td>
         <td className="p-2 text-center">
           <span className="flex justify-center">
-            <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            <button
+              onClick={() => {
+                setCurrentServiceEditDetails({
+                  ...subRow,
+                  facilityId: facilityId,
+                });
+                setOpenModalId("sub-facility-modal");
+              }}
+            >
+              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            </button>
           </span>
         </td>
       </tr>
@@ -153,7 +201,8 @@ const AccordionSubRow = ({ subRow }) => {
                   <tr key={detailIndex} className="bg-white">
                     <td className="p-2 text-center">{detail.name ?? "N/A"}</td>
                     <td className="p-2 text-center">
-                      {detail.amount ?? "N/A"}
+                      {formatToCurrency(detail?.amount) ||
+                        "N/A"}
                     </td>
                     <td className="p-2 text-center">
                       <div
@@ -176,7 +225,18 @@ const AccordionSubRow = ({ subRow }) => {
                     </td>
                     <td className="p-2 text-center">
                       <span className="flex justify-center">
-                        <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                        {/*  */}
+                        <button
+                          onClick={() => {
+                            setCurrentServiceVariantEditDetails({
+                              ...detail,
+                              serviceId: subRow.id,
+                            });
+                            setOpenModalId("type-of-ticket-modal");
+                          }}
+                        >
+                          <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                        </button>
                       </span>
                     </td>
                   </tr>

@@ -7,45 +7,31 @@ import { useServiceStore } from "../../store/masters/servicesStore";
 import { useEffect } from "react";
 import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
 import { toast, ToastContainer } from "react-toastify";
+import { useModalStore } from "../../store/modalStore";
 
 // Validation schema using Yup
 
-const ServiceVarientCreate = ({
-  setIsServiceVarientCreateVisible,
-  isServiceVarientEditVisible,
-  setIsServiceVarientEditVisible,
-}) => {
+const ServiceVarientCreate = ({ onDataAdded }) => {
   const {
     saveServiceVarientDetails,
     isSaveServiceVarientDetailsLoading,
     ServiceVariantEditDetails,
   } = useServiceVariantStore();
   const { allServices, fetchAllServices } = useServiceStore();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   useEffect(() => {
     fetchAllServices();
   }, []);
   const initialValues = {
-    id: isServiceVarientEditVisible ? ServiceVariantEditDetails.id : "",
-    name: isServiceVarientEditVisible ? ServiceVariantEditDetails.name : "",
-    serviceId: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.serviceId
-      : "",
-    displayName: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.displayName
-      : "",
-    amount: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.amount
-      : null,
-    description: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.description
-      : "",
-    isPriceFixed: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.isPriceFixed
-      : false,
-    isActive: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.isActive
-      : true,
+    id: ServiceVariantEditDetails.id,
+    name: ServiceVariantEditDetails.name,
+    serviceId: ServiceVariantEditDetails.serviceId,
+    displayName: ServiceVariantEditDetails.displayName,
+    amount: ServiceVariantEditDetails.amount,
+    description: ServiceVariantEditDetails.description,
+    isPriceFixed: ServiceVariantEditDetails.isPriceFixed,
+    isActive: ServiceVariantEditDetails.isActive,
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the Actual name."),
@@ -71,21 +57,16 @@ const ServiceVarientCreate = ({
         displayName: values.name || "",
       };
 
-      const result = await saveServiceVarientDetails(
-        formattedValues,
-        isServiceVarientEditVisible ? true : false
-      );
+      const result = await saveServiceVarientDetails(formattedValues, true);
       console.log(result);
       if (result.data.status === 200) {
-        toast.success(
-          isServiceVarientEditVisible
-            ? "Ticket Type Updated successfully!"
-            : "Ticket Type created successfully!"
-        );
+        toast.success("Ticket Type Updated successfully!");
         setTimeout(() => {
-          setIsServiceVarientCreateVisible(false);
-          setIsServiceVarientEditVisible(false);
-        }, 3000);
+          setOpenModalId(null);
+          onDataAdded();
+          // setIsServiceVarientCreateVisible(false);
+          // setIsServiceVarientEditVisible(false);
+        }, 300);
         resetForm();
       }
     } catch (xhr) {
@@ -111,10 +92,10 @@ const ServiceVarientCreate = ({
   };
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
-      <ToastContainer position="top-right" autoClose={3000} />
-      <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
+      <div className=" ">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -124,10 +105,12 @@ const ServiceVarientCreate = ({
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+              <div className="bg-zinc-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
-                <div>
-                  <label className="block text-sm font-medium">Sub Facility <span className="text-red-500">*</span></label>
+                {/* <div>
+                  <label className="block text-sm font-medium">
+                    Sub Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="serviceId"
@@ -138,18 +121,20 @@ const ServiceVarientCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select sub facility</option>
-                    {allServices?.filter((service) => service.isActive)?.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.name}
-                      </option>
-                    ))}
+                    {allServices
+                      ?.filter((service) => service.isActive)
+                      ?.map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="serviceId"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div>
+                </div> */}
 
                 {/* Varient Name */}
                 <div className="">
@@ -268,7 +253,7 @@ const ServiceVarientCreate = ({
                 </div>
               </div>
 
-              <div className="flex justify-center p-5">
+              <div className="flex justify-center p-4">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -276,9 +261,7 @@ const ServiceVarientCreate = ({
                 >
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
-                    : isServiceVarientEditVisible
-                    ? "Update Ticket Type"
-                    : "Create Ticket Type"}
+                    : "Update Ticket Type"}
                 </button>
               </div>
             </Form>
