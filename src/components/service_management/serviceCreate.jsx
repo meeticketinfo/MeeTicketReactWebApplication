@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
 import { useModalStore } from "../../store/modalStore";
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 
 const ServiceCreate = ({ onDataAdded }) => {
   const {
@@ -15,6 +16,9 @@ const ServiceCreate = ({ onDataAdded }) => {
     isSaveServiceDetailsLoading,
     ServiceEditDetails,
   } = useServiceStore();
+  const { isCreateServiceEnabled } =
+  useUnifiedFacilityStore();
+
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
@@ -22,16 +26,16 @@ const ServiceCreate = ({ onDataAdded }) => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
-    id: ServiceEditDetails.id,
-    name: ServiceEditDetails.name,
-    displayName: ServiceEditDetails.displayName,
-    serviceType: ServiceEditDetails.serviceType,
-    duration: ServiceEditDetails.duration,
-    availability: ServiceEditDetails.availabilit,
-    installationDate: ServiceEditDetails.installationDate,
-    description: ServiceEditDetails.description,
-    isActive: ServiceEditDetails.isActive,
-    facilityId: ServiceEditDetails.facilityId,
+    id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
+    name: isCreateServiceEnabled ? "" :ServiceEditDetails.name,
+    displayName: isCreateServiceEnabled ? "" :ServiceEditDetails.displayName,
+    serviceType: isCreateServiceEnabled ? "" :ServiceEditDetails.serviceType,
+    duration: isCreateServiceEnabled ? "" :ServiceEditDetails.duration,
+    availability: isCreateServiceEnabled ? "" :ServiceEditDetails.availabilit,
+    installationDate: isCreateServiceEnabled ? "" :ServiceEditDetails.installationDate,
+    description: isCreateServiceEnabled ? "" :ServiceEditDetails.description,
+    isActive: isCreateServiceEnabled ? true :ServiceEditDetails.isActive,
+    facilityId: isCreateServiceEnabled ? "" :ServiceEditDetails.facilityId,
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter facility ."),
@@ -56,10 +60,10 @@ const ServiceCreate = ({ onDataAdded }) => {
     values.displayName = values.name;
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveServiceDetails(values, true);
+      const result = await saveServiceDetails(values, isCreateServiceEnabled ? false : true);
 
       if (result.data.status === 200) {
-        toast.success("Sub Facility Updated successfully!");
+        toast.success(isCreateServiceEnabled ? "Sub Facility Added successfully" : "Sub Facility Updated successfully!");
 
         setTimeout(() => {
           setOpenModalId(null);
@@ -214,7 +218,7 @@ const ServiceCreate = ({ onDataAdded }) => {
                 >
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
-                    : "Update Sub Facility"}
+                    : (isCreateServiceEnabled ? "Add Sub Facility" : "Update Sub Facility")}
                 </button>
               </div>
             </Form>

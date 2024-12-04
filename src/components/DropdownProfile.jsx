@@ -5,6 +5,7 @@ import Transition from "../utils/Transition";
 import UserAvatar from "../images/userimg.svg";
 
 import useAuthStore from "../store/authStore";
+import useCaptchaStore from "../store/useCaptchaStore";
 
 function DropdownProfile({ align }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -14,6 +15,7 @@ function DropdownProfile({ align }) {
   const dropdown = useRef(null);
   const { logout, isAuthenticated, roleDetails, decodedTokenData } =
     useAuthStore();
+  const { updateCaptchaInput } = useCaptchaStore();
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
@@ -113,7 +115,10 @@ function DropdownProfile({ align }) {
               <Link
                 className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"
                 // to="/signin"
-                onClick={() => logout()}
+                onClick={() => {
+                  updateCaptchaInput("");
+                  logout();
+                }}
               >
                 Sign Out
               </Link>

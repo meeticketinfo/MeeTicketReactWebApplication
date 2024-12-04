@@ -7,6 +7,8 @@ export const useUnifiedFacilityStore = create((set) => ({
   isSaveUnifiedFacilityDetailsLoading: false,
   isFetchUnifiedFacilityDetailsLoading: false,
   isFetchAllUnifiedFacilitiesLoading: false,
+  isCreateServiceEnabled: false,
+  isCreateServiceVariantEnabled: false,
   fetchFacilityDetailsError: null,
   fetchAllUnifiedFacilitiesError: null,
   saveUnifiedFacilityDetailsError: null,
@@ -68,5 +70,15 @@ export const useUnifiedFacilityStore = create((set) => ({
       });
       throw error;
     }
+  },
+  setIsCreateServiceEnabled: (isCreateServiceEnabled) => {
+    set({
+      isCreateServiceEnabled,
+    });
+  },
+  setIsCreateServiceVariantEnabled: (isCreateServiceVariantEnabled) => {
+    set({
+      isCreateServiceVariantEnabled,
+    });
   },
 }));

@@ -16,6 +16,7 @@ const UnifiedFacilityList = ({ setIsServiceEditVisible }) => {
     fetchAllUnifiedFacilities();
   }, []);
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  
   const handleDataAdded = () => {
     fetchAllUnifiedFacilities();
     closeModal(); // Optionally close the modal after success

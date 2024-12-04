@@ -15,6 +15,7 @@ import {
   superAdminPermissions,
   nodalOfficerPermissions,
 } from "../constants/permissions";
+import useCaptchaStore from "../store/useCaptchaStore";
 
 function Sidebar({ variant = "default" }) {
   const location = useLocation();
@@ -30,6 +31,11 @@ function Sidebar({ variant = "default" }) {
     (state) => state.setSidebarExpanded
   );
   const { sidebarMenuItems, roleDetails, logout } = useAuthStore();
+  const {
+   
+    updateCaptchaInput,
+    
+  } = useCaptchaStore();
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -279,7 +285,10 @@ function Sidebar({ variant = "default" }) {
         <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
             <button
-              onClick={() => logout()}
+              onClick={() => {
+                
+                updateCaptchaInput("")
+                logout()}}
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
             >
               <TbLogout2 className="shrink-0 text-[22px]" />

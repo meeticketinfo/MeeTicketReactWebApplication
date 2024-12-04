@@ -329,8 +329,8 @@ const ServiceUnifiedCreator = () => {
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].chargedPerPerson`}
                                             label="Charged Per Person"
                                             options={[
-                                              { value: "yes", label: "Yes" },
-                                              { value: "no", label: "No" },
+                                              { value: "no", label: "Yes" },
+                                              { value: "yes", label: "No" },
                                             ]}
                                           />
                                         </div>

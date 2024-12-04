@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
 import { toast, ToastContainer } from "react-toastify";
 import { useModalStore } from "../../store/modalStore";
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 
 // Validation schema using Yup
 
@@ -17,6 +18,10 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
     isSaveServiceVarientDetailsLoading,
     ServiceVariantEditDetails,
   } = useServiceVariantStore();
+
+  const { isCreateServiceVariantEnabled, setIsCreateServiceVariantEnabled } =
+  useUnifiedFacilityStore();
+
   const { allServices, fetchAllServices } = useServiceStore();
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
@@ -24,14 +29,14 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
     fetchAllServices();
   }, []);
   const initialValues = {
-    id: ServiceVariantEditDetails.id,
-    name: ServiceVariantEditDetails.name,
-    serviceId: ServiceVariantEditDetails.serviceId,
-    displayName: ServiceVariantEditDetails.displayName,
-    amount: ServiceVariantEditDetails.amount,
-    description: ServiceVariantEditDetails.description,
-    isPriceFixed: ServiceVariantEditDetails.isPriceFixed,
-    isActive: ServiceVariantEditDetails.isActive,
+    id: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.id,
+    name: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.name,
+    serviceId: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.serviceId,
+    displayName: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.displayName,
+    amount: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.amount,
+    description: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.description,
+    isPriceFixed: isCreateServiceVariantEnabled ? false : !ServiceVariantEditDetails.isPriceFixed,
+    isActive: isCreateServiceVariantEnabled ? true : ServiceVariantEditDetails.isActive,
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the Actual name."),
@@ -54,18 +59,18 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
       const formattedValues = {
         ...values,
         isActive: values.isActive === "true" || values.isActive === true,
+        isPriceFixed:values.isPriceFixed===true?false:true,
         displayName: values.name || "",
       };
 
-      const result = await saveServiceVarientDetails(formattedValues, true);
+      const result = await saveServiceVarientDetails(formattedValues, isCreateServiceVariantEnabled ? false :true);
       console.log(result);
       if (result.data.status === 200) {
-        toast.success("Ticket Type Updated successfully!");
+        toast.success(isCreateServiceVariantEnabled ? "Ticket Type Added successfully!" : "Ticket Type Updated successfully!");
         setTimeout(() => {
           setOpenModalId(null);
           onDataAdded();
-          // setIsServiceVarientCreateVisible(false);
-          // setIsServiceVarientEditVisible(false);
+          setIsCreateServiceVariantEnabled(false);
         }, 300);
         resetForm();
       }
@@ -107,7 +112,8 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
             <Form>
               <div className="bg-zinc-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
-                {/* <div>
+               {setIsCreateServiceVariantEnabled &&
+                 <div>
                   <label className="block text-sm font-medium">
                     Sub Facility <span className="text-red-500">*</span>
                   </label>
@@ -134,7 +140,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div> */}
+                </div>}
 
                 {/* Varient Name */}
                 <div className="">
@@ -261,7 +267,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                 >
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
-                    : "Update Ticket Type"}
+                    : (isCreateServiceVariantEnabled ? "Add Ticket Type" :"Update Ticket Type")}
                 </button>
               </div>
             </Form>
