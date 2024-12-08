@@ -7,6 +7,8 @@ import { handleApiError } from "../../../utils/apiErrorHandler";
 import QRCodeDisplay from "./QrCodeDisplay";
 import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
 import { PaymentQR } from "./PaymentQR";
+import { MdOutlineDownloadDone } from "react-icons/md";
+import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 
 export default function BookingDetails() {
   const { id } = useParams();
@@ -17,8 +19,11 @@ export default function BookingDetails() {
   const {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
+    setIsFirstStepTransaction,
+    setSelectedBookingsList,
+    setIsBookingFormVisible
   } = useBookingsStore();
-
+console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLoading)
   useEffect(() => {
     fetchQRsForBooking(id);
   }, []);
@@ -37,6 +42,9 @@ export default function BookingDetails() {
       handleApiError(xhr);
     }
   };
+
+ 
+  
 
   const handlePrint = () => {
     const printContents = document.querySelectorAll(".printable-card");
@@ -145,7 +153,8 @@ export default function BookingDetails() {
 
   return (
     <AdminLayout>
-      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+
+      {isFetchCurrentBookingDetailsLoading?<TransactionProcessingLoader/>:<div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-8">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
@@ -157,13 +166,23 @@ export default function BookingDetails() {
             <NavLink
               end
               to="/entity-bookings"
+              onClick={() => {
+                setIsFirstStepTransaction(false)
+                setPaymentStatus({})
+                sessionStorage.removeItem("bookingPayload")
+              }}
               className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
             >
               Back
             </NavLink>
           </div>
         </div>
-
+        {/* <div className="flex  justify-center items-center py-4">
+        <MdOutlineDownloadDone className="text-green-700 text-2xl " />
+            <h1>Payment Succesefull</h1>
+          </div> */}
+        <div className="flex justify-center gap-4">
+          
         <div className="flex justify-center mb-6">
           <button
             onClick={() => handlePrint()}
@@ -171,6 +190,15 @@ export default function BookingDetails() {
           >
             Print QR Code Cards
           </button>
+        </div>
+        {/* <div className="flex justify-center mb-6">
+          <button
+            onClick={() => {setIsFirstStepTransaction(false)}}
+            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+          >
+           Continue Bookings
+          </button>
+        </div> */}
         </div>
         <div className="flex justify-center">
           <div
@@ -283,7 +311,7 @@ export default function BookingDetails() {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </AdminLayout>
   );
 }

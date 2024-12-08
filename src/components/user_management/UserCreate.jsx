@@ -297,6 +297,11 @@ const UserCreate = ({
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter phone number"
                     disabled={isUserEditVisible}
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="phoneNumber"

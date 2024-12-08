@@ -1,8 +1,8 @@
-export const API_BASE_URL =
-  "https://meeticket.vmaxtechservices.life/parkapi/api/";
-
 // export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+//   "https://meeticket.vmaxtechservices.life/parkapi/api/";
+
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 
@@ -41,6 +41,8 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
+      FIRST_STEP_TRANSACTION:`${API_BASE_URL}PaymentTransaction/Transaction`,
+      GET_PAYMENT_STATUS:`${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,

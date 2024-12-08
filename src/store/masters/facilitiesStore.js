@@ -2,9 +2,10 @@ import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
+const GET_LOCATION_DETAILS = "/Master/GetLocationById/";
 export const useFacilityStore = create((set) => ({
   allFacilities: [],
-  adminFacilities:[],
+  adminFacilities: [],
   FacilityDetails: [],
   isSaveFacilityDetailsLoading: false,
   isFetchFacilityDetailsLoading: false,
@@ -15,6 +16,7 @@ export const useFacilityStore = create((set) => ({
   success: null,
   facilityCreateResponse: {},
   FacilityEditDetails: {},
+  LocationDetails: null,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -41,7 +43,11 @@ export const useFacilityStore = create((set) => ({
     }
   },
 
-  fetchAllDropdownFacilities: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllDropdownFacilities: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {}
+  ) => {
     set({ isFetchAllAdminFacilitiesLoading: true });
     try {
       //   const filterString = useFacilitiestore.getState().serializeFilters(filters);
@@ -56,10 +62,22 @@ export const useFacilityStore = create((set) => ({
         isFetchAllAdminFacilitiesLoading: false,
       });
     } catch (error) {
-      set({isFetchAllAdminFacilitiesLoading: false });
+      set({ isFetchAllAdminFacilitiesLoading: false });
     }
   },
 
+  FetchLocationDetails: async (LocationId) => {
+    try {
+      const response = await apiService.get(
+        `${GET_LOCATION_DETAILS}${LocationId}`
+      );
+      console.log(response);
+
+      set({
+        LocationDetails: response.data,
+      });
+    } catch (error) {}
+  },
 
   // Fetch Facility details
   fetchFacilityDetails: async (pageIndex = 1, pageSize = 10, filters = {}) => {
@@ -86,7 +104,7 @@ export const useFacilityStore = create((set) => ({
   },
 
   setCurrentFacilityEditDetails: (FacilityEditDetails) => {
-   // console.log("FacilityEditDetails",FacilityEditDetails)
+    // console.log("FacilityEditDetails",FacilityEditDetails)
     set({
       FacilityEditDetails,
     });

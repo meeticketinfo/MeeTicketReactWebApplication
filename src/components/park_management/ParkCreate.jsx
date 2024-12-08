@@ -53,7 +53,7 @@ const ParkCreate = ({
     EntityTypeId: isParkEditVisible ? parkEditDetails.entityTypeId : "",
     DepartmentId: isParkEditVisible ? parkEditDetails.departmentId : "",
     DisplayName: parkEditDetails.name,
-    // Prefix: isParkEditVisible ? parkEditDetails.prefix : "",
+    // Prefix: "xyz",
     Name: isParkEditVisible ? parkEditDetails.name : "",
     Street1: isParkEditVisible ? parkEditDetails.street1 : "",
     Street2: isParkEditVisible ? parkEditDetails.street2 : "",
@@ -66,7 +66,7 @@ const ParkCreate = ({
     Description: isParkEditVisible ? parkEditDetails.description : "",
     ImageUrl: null,
     NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
-    ...(isParkEditVisible ? {} : { Prefix: "" }),
+    ...(isParkEditVisible ? { Prefix: "XYZ" } : { Prefix: "XYZ" }),
   };
   const FILE_SIZE = 10 * 1024 * 1024;
 
@@ -108,12 +108,12 @@ const ParkCreate = ({
       .nullable()
       .min(10, "Description must be at least 10 characters long")
       .max(500, "Description cannot be more than 500 characters"),
-    Prefix: Yup.string()
-      .matches(
-        /^[a-zA-Z0-9]*$/,
-        "Prefix can only contain alphanumeric characters"
-      )
-      .required("Prefix is required"),
+    // Prefix: Yup.string()
+    //   .matches(
+    //     /^[a-zA-Z0-9]*$/,
+    //     "Prefix can only contain alphanumeric characters"
+    //   )
+    //   .required("Prefix is required"),
     ImageUrl: Yup.mixed()
       .required("Location Image is required")
       .test("fileSize", "File too large", (value) => {
@@ -502,7 +502,7 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {!isParkEditVisible && (
+                {/* {!isParkEditVisible && (
                   <div className="col-span-1">
                     <label className="block text-sm font-medium">
                       Transaction Prefix <span className="text-red-500">*</span>
@@ -530,7 +530,7 @@ const ParkCreate = ({
                       className="text-red-500 text-xs"
                     />
                   </div>
-                )}
+                )} */}
                 {/* Park Image */}
                 <div>
                   <label className="block text-sm font-medium">

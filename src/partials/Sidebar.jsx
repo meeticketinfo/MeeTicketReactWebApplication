@@ -282,7 +282,7 @@ function Sidebar({ variant = "default" }) {
           </div>
         </div>
 
-        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-center mt-auto">
+        <div className="pt-3 hidden lg:inline-flex justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
             <button
               onClick={() => {

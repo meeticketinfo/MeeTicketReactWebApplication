@@ -14,6 +14,7 @@ import { useParkStore } from "../../../store/masters/parksStore";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
+import TransactionQr from "../../../components/bookings_management/TransactionQr";
 
 export default function AdminBookings() {
   const {
@@ -33,9 +34,19 @@ export default function AdminBookings() {
     isFetchEntityBookingsLoading,
     totalEntityBookingRecords,
   } = useDashboardStore();
-  const { allBookings, fetchAllBookings, isFetchAllBookingsLoading } =
-    useBookingsStore();
-  const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); // State to toggle booking form visibility
+  const {
+    allBookings,
+    fetchAllBookings,
+    isFetchAllBookingsLoading,
+    FirstStepTransactionResponse,
+    IsFirstStepTransaction,
+    setIsFirstStepTransaction,
+    setIsBookingFormVisible,
+    isBookingFormVisible,
+    setPaymentStatus
+  } = useBookingsStore();
+  // console.log("FirstStepTransactionResponse", FirstStepTransactionResponse);
+  // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); 
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
@@ -207,7 +218,12 @@ export default function AdminBookings() {
               // </button>
               <BackButton
                 label="Back"
-                onClick={() => setIsBookingFormVisible(false)}
+                onClick={() => {
+                  setIsBookingFormVisible(false);
+                  setIsFirstStepTransaction(false);
+                  setPaymentStatus({})
+                  localStorage.removeItem("booking-process-store")
+                }}
                 className="bg-blue-600 hover:bg-blue-700"
                 // disabled={isSubmitting}
               />
@@ -216,10 +232,10 @@ export default function AdminBookings() {
         </div>
 
         {/* Booking Form Section */}
-        {isBookingFormVisible && <FacilityServices />}
+        {/* {isBookingFormVisible && <FacilityServices />} */}
 
         {/* Table Section - Show only if form is not visible */}
-        {!isBookingFormVisible && (
+        {!isBookingFormVisible ? (
           <div className="mb-8">
             <div>
               <Formik
@@ -238,7 +254,7 @@ export default function AdminBookings() {
                             as="select"
                             name="entityId"
                             className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                            border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           >
                             <option value="">Select </option>
                             {parksToRender
@@ -262,7 +278,7 @@ export default function AdminBookings() {
                           type="date"
                           name="fromDate"
                           className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           // min={getCurrentDate()}
                           onChange={(e) => {
                             const fromDateValue = e.target.value;
@@ -287,7 +303,7 @@ export default function AdminBookings() {
                           type="date"
                           name="toDate"
                           className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
                           onChange={(e) => {
                             const toDateValue = e.target.value;
@@ -310,16 +326,16 @@ export default function AdminBookings() {
               </Formik>
             </div>
             {/* <AgGridTable
-              isFetchLoading={isFetchAllBookingsLoading}
-              columnDefs={columnDefs}
-              rowData={allBookings || []}
-              defaultColDef={{
-                sortable: true,
-                filter: true,
-                resizable: true,
-              }}
-              pagination={true}
-            /> */}
+            isFetchLoading={isFetchAllBookingsLoading}
+            columnDefs={columnDefs}
+            rowData={allBookings || []}
+            defaultColDef={{
+              sortable: true,
+              filter: true,
+              resizable: true,
+            }}
+            pagination={true}
+          /> */}
             <AgGridTable
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}
@@ -329,6 +345,8 @@ export default function AdminBookings() {
               enableAdvancedFilter={true}
             />
           </div>
+        ) : (
+          <FacilityServices />
         )}
       </div>
     </AdminLayout>

@@ -31,13 +31,13 @@ const Login = () => {
     validateCaptchaInput,
   } = useCaptchaStore();
 
-  const initialValues = {
+  const initialValues = {  
     EmailId: "",
     password: "",
   };
 
   const validationSchema = Yup.object({
-    EmailId: Yup.string().required("EmailId is required"),
+    EmailId: Yup.string().required("Email Id is required"),
     password: Yup.string().required("Password is required"),
   });
 

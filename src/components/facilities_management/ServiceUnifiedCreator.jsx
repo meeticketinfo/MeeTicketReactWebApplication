@@ -9,6 +9,7 @@ import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 import useAuthStore from "../../store/authStore";
 import { toast, ToastContainer } from "react-toastify";
+import { handleApiError } from "../../utils/apiErrorHandler";
 
 const ticketTypeOptions = [
   { value: "child", label: "Child" },
@@ -32,9 +33,7 @@ const validationSchema = Yup.object({
     Yup.lazy((value, { parent }) => {
       // Use Yup.ref('hasSubFacility') to check the parent's `hasSubFacility` value
       return Yup.object().shape({
-        name: parent.hasSubFacility
-          ? Yup.string().required("Sub-Facility Name is required")
-          : Yup.string(),
+        name: Yup.string().required("Sub-Facility Name is required"),
         ticketTypes: Yup.array().of(
           Yup.object().shape({
             type: Yup.string().required("Ticket Type is required"),
@@ -111,10 +110,10 @@ const ServiceUnifiedCreator = () => {
       services: values.subFacilities.map((subFacility) => ({
         name: values.hasSubFacility
           ? subFacility.name
-          : values.facilityDto.facilityMasterId,
+          : values.facilityDto.name,
         displayName: values.hasSubFacility
           ? subFacility.name
-          : values.facilityDto.facilityMasterId,
+          : values.facilityDto.name,
         isActive: true,
         serviceVariants: subFacility.ticketTypes.map((ticketType) => ({
           name:
@@ -148,31 +147,32 @@ const ServiceUnifiedCreator = () => {
       } else {
         toast.error("Unexpected response from the server.");
       }
-    } catch (error) {
-      if (error?.response?.data?.errors) {
-        const formErrors = {};
+    } catch (xhr) {
+      // if (error?.response?.data?.errors) {
+      //   const formErrors = {};
 
-        Object.entries(error.response.data.errors).forEach(
-          ([key, messages]) => {
-            if (Array.isArray(messages) && messages.length > 0) {
-              // Map error keys to form fields if necessary
-              const fieldKey = key.replace(/^\$\./, "").replace(/\./g, "_"); // Example: '$.facilityDto.facilityMasterId' -> 'facilityDto_facilityMasterId'
-              formErrors[fieldKey] = messages[0];
-              // Show error as a toast message
-              toast.error(`${fieldKey}: ${messages[0]}`);
-            }
-          }
-        );
+      //   Object.entries(error.response.data.errors).forEach(
+      //     ([key, messages]) => {
+      //       if (Array.isArray(messages) && messages.length > 0) {
+      //         // Map error keys to form fields if necessary
+      //         const fieldKey = key.replace(/^\$\./, "").replace(/\./g, "_"); // Example: '$.facilityDto.facilityMasterId' -> 'facilityDto_facilityMasterId'
+      //         formErrors[fieldKey] = messages[0];
+      //         // Show error as a toast message
+      //         toast.error(`${fieldKey}: ${messages[0]}`);
+      //       }
+      //     }
+      //   );
 
-        // Optionally, set the form errors in your state (if you're using Formik)
-        setErrors(formErrors);
-      } else if (error?.response?.data?.title) {
-        // Handle other API errors with a title
-        toast.error(error.response.data.title);
-      } else {
-        // Handle generic or unknown errors
-        toast.error("An unknown error occurred. Please try again.");
-      }
+      //   // Optionally, set the form errors in your state (if you're using Formik)
+      //   setErrors(formErrors);
+      // } else if (error?.response?.data?.title) {
+      //   // Handle other API errors with a title
+      //   toast.error(error.response.data.title);
+      // } else {
+      //   // Handle generic or unknown errors
+      //   toast.error("An unknown error occurred. Please try again.");
+      // }
+      handleApiError(xhr);
     } finally {
       setSubmitting(false);
     }
@@ -222,6 +222,15 @@ const ServiceUnifiedCreator = () => {
                         "facilityDto.name",
                         Selectedfacility.facilityName
                       );
+                      if (
+                        values.subFacilities.length === 1 &&
+                        !values.hasSubFacility
+                      ) {
+                        setFieldValue(
+                          "subFacilities[0].name",
+                          Selectedfacility.facilityName
+                        );
+                      }
                     }}
                   >
                     <option value="">Select Facility</option>
@@ -241,7 +250,31 @@ const ServiceUnifiedCreator = () => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" />
+                <div className="flex items-center">
+                  <Field
+                    type="checkbox"
+                    id="hasSubFacility"
+                    name="hasSubFacility"
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+                      setFieldValue("hasSubFacility", isChecked);
+                      if (isChecked) {
+                        setFieldValue("subFacilities[0].name", "");
+                      }else{
+                        setFieldValue("subFacilities", [values.subFacilities[0]]);
+                        setFieldValue("subFacilities[0].name", Selectedfacility.facilityName);
+                      }
+                    }}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="hasSubFacility"
+                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Has Sub-Facility
+                  </label>
+                </div>
+                {/* <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" onChange={handleSubFacilityName} /> */}
               </div>
               <hr className="py-2"></hr>
               <FieldArray name="subFacilities">
@@ -249,7 +282,9 @@ const ServiceUnifiedCreator = () => {
                   <>
                     <button
                       type="button"
-                      onClick={() => push({ name: "", ticketTypes: [] })}
+                      onClick={() => {
+                        push({ name: "", ticketTypes: [] });
+                      }}
                       className={`${
                         values.hasSubFacility ? "" : "hidden"
                       } bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 my-3`}
@@ -273,13 +308,29 @@ const ServiceUnifiedCreator = () => {
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
                             />
-                            <button
+                            {/* <button
                               type="button"
                               onClick={() => remove(index)}
                               className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
                             >
                               <MdDeleteForever className="text-white" />
-                            </button>
+                            </button> */}
+                            {values.subFacilities.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  remove(index); // Remove the sub-facility at the given index
+
+                                  // New logic: Check if there are no sub-facilities left, then reset the state
+                                  if (values.subFacilities.length === 1) {
+                                    setFieldValue("hasSubFacility", false);
+                                  }
+                                }}
+                                className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
+                              >
+                                <MdDeleteForever className="text-white" />
+                              </button>
+                            )}
                           </div>
                           <FieldArray
                             name={`subFacilities[${index}].ticketTypes`}
@@ -300,6 +351,7 @@ const ServiceUnifiedCreator = () => {
                                 >
                                   Add Ticket Type
                                 </button>
+
                                 <div className="">
                                   {subFacility.ticketTypes.map(
                                     (_, ticketIndex) => (
@@ -359,6 +411,7 @@ const ServiceUnifiedCreator = () => {
                   </>
                 )}
               </FieldArray>
+
               <div className="flex justify-center mt-3">
                 <button
                   type="submit"

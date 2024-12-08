@@ -43,7 +43,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     emailId: Yup.string().required("EmailId is required"),
 
     phoneNumber: Yup.number().required("Phone Number is required"),
-    // .max(10, "Phone Number Must contain 10 digits"),
+    // .matches(/^\d{10}$/, "Phone Number must contain exactly 10 digits"),
     password: Yup.string()
       .required("Password is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
@@ -202,6 +202,11 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter phone number"
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="phoneNumber"

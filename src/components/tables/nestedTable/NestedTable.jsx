@@ -6,10 +6,12 @@ import { useModalStore } from "../../../store/modalStore";
 import { useServiceStore } from "../../../store/masters/servicesStore";
 import { useServiceVariantStore } from "../../../store/masters/serviceVariantsStore";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
+import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
 
 const NestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
-
+ 
+  
   useEffect(() => {
     fetchAllDropdownFacilities();
   }, []);
@@ -51,13 +53,11 @@ const AccordionRow = ({ serial, row }) => {
           className="p-2 flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <IoIosArrowDown
-            className={` ${isExpanded ? "rotate-180" : ""}`}
-          />
+          <IoIosArrowDown className={` ${isExpanded ? "rotate-180" : ""}`} />
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
-        <td className="p-2 text-center">{row.name ?? "N/A"}</td>
-        <td className="p-2 text-center">{row.description ?? "N/A"}</td>
+        <td className="p-2 text-center">{row.name || "N/A"}</td>
+        <td className="p-2 text-center">{row.description ? row.description : "N/A"}</td>
         <td className="p-2 text-center">
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
@@ -137,6 +137,7 @@ const AccordionSubRow = ({
   const { setOpenModalId } = useModalStore();
   const { setCurrentServiceEditDetails } = useServiceStore();
   const { setCurrentServiceVariantEditDetails } = useServiceVariantStore();
+  const { setIsCreateServiceEnabled } = useUnifiedFacilityStore();
   return (
     <>
       <tr className={`bg-white ${hasMultipleSubFacilities ? "hidden" : ""}`}>
@@ -177,6 +178,7 @@ const AccordionSubRow = ({
                   facilityId: facilityId,
                 });
                 setOpenModalId("sub-facility-modal");
+                setIsCreateServiceEnabled(false);
               }}
             >
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
@@ -201,8 +203,7 @@ const AccordionSubRow = ({
                   <tr key={detailIndex} className="bg-white">
                     <td className="p-2 text-center">{detail.name ?? "N/A"}</td>
                     <td className="p-2 text-center">
-                      {formatToCurrency(detail?.amount) ||
-                        "N/A"}
+                      {formatToCurrency(detail?.amount) || "N/A"}
                     </td>
                     <td className="p-2 text-center">
                       <div
