@@ -3,14 +3,31 @@ import AgGridTable from "../tables/AgGridTable";
 import Tippy from "@tippyjs/react";
 import { LuClipboardEdit } from "react-icons/lu";
 import { useAdminFacilityStore } from "../../store/masters/SuperAdminFacilitiesStore";
+import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
+import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
+import Select from "react-select";
 
-function SuperAdminFacilitiesList({setIsFacilityCreateVisible,setIsFacilityEditVisible}) {
-  const { AdminFacilitiesDetails, fetchAllAdminFacilitiesDetails,setCurrentAdminFacilityEditDetails } =
-    useAdminFacilityStore();
-  useEffect(() => {
-    fetchAllAdminFacilitiesDetails();
-  }, []);
-  console.log("AdminFacilitiesDetails", AdminFacilitiesDetails);
+function SuperAdminFacilitiesList({
+  setIsFacilityCreateVisible,
+  setIsFacilityEditVisible,
+}) {
+  const {
+    AdminFacilitiesDetails,
+    fetchAllAdminFacilitiesDetails,
+    setCurrentAdminFacilityEditDetails,
+  } = useAdminFacilityStore();
+
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+
+  const [filteredFacilities, setFilteredFacilities] = useState([]);
+  const [filters, setFilters] = useState({
+    departmentId: "",
+    locationCategoryId: "",
+  });
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -26,42 +43,18 @@ function SuperAdminFacilitiesList({setIsFacilityCreateVisible,setIsFacilityEditV
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-
     {
       field: "locationCategoryName",
       headerName: "Location Category",
       flex: 1,
       headerClass: "text-blue-v2",
-      //   valueFormatter: (params) => params.value || "00:00",
     },
     {
       field: "facilityName",
       headerName: "Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
-      //   valueFormatter: (params) => params.value || "00:00",
     },
-    // {
-    //   headerName: "Status",
-    //   field: "isActive",
-    //   flex: 1,
-    //   cellRenderer: (params) => (
-    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-    //       <span
-    //         className={`${
-    //           params.value
-    //             ? "bg-green-400 text-white shadow-md "
-    //             : "bg-red-400 text-white shadow-md "
-    //         } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-    //       >
-    //         {" "}
-    //         {params.value ? "Active" : "Inactive"}
-    //       </span>
-    //     </div>
-    //   ),
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
     {
       headerName: "Actions",
       field: "actions",
@@ -74,34 +67,147 @@ function SuperAdminFacilitiesList({setIsFacilityCreateVisible,setIsFacilityEditV
           >
             <button
               className="btn-edit"
-                onClick={() => {
-                  setCurrentAdminFacilityEditDetails(params.data);
-                  setIsFacilityCreateVisible(true);
-                  setIsFacilityEditVisible(true);
-                }}
+              onClick={() => {
+                setCurrentAdminFacilityEditDetails(params.data);
+                setIsFacilityCreateVisible(true);
+                setIsFacilityEditVisible(true);
+              }}
             >
-              <span className="">
-                <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
-              </span>
+              <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
             </button>
           </Tippy>
-          {/* <button
-                  className="btn-delete"
-                  onClick={() => handleDelete(params.data)}
-                >
-                  <span>
-                    <BsTrash className="text-[24px]" />
-                  </span>
-                </button> */}
         </div>
       ),
       flex: 1,
       headerClass: "text-blue-v2",
     },
   ]);
+
+  useEffect(() => {
+    fetchAllAdminFacilitiesDetails();
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+  }, []);
+
+  useEffect(() => {
+    setFilteredFacilities(AdminFacilitiesDetails);
+  }, [AdminFacilitiesDetails]);
+
+  useEffect(() => {
+    const filtered = AdminFacilitiesDetails?.filter((facility) => {
+      const matchesDepartment =
+        !filters.departmentId ||
+        facility.departmentId === filters.departmentId;
+      const matchesLocation =
+        !filters.locationCategoryId ||
+        facility.locationCategoryId === filters.locationCategoryId;
+
+      return matchesDepartment && matchesLocation;
+    });
+
+    setFilteredFacilities(filtered);
+  }, [filters, AdminFacilitiesDetails]);
+
+  const handleFilterChange = (filterName, value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterName]: value,
+    }));
+  };
+
   return (
     <div>
-      <AgGridTable rowData={AdminFacilitiesDetails} columnDefs={columnDefs} />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+        <div>
+          <label className="block text-sm font-medium">Department</label>
+          <Select
+            name="departmentId"
+            options={allDepartmentTypes
+              ?.filter((dept) => dept.isActive)
+              .map((dept) => ({
+                value: dept.departmentId,
+                label: dept.departmentName,
+              }))}
+            onChange={(selectedOption) =>
+              handleFilterChange("departmentId", selectedOption?.value || "")
+            }
+            isClearable
+            placeholder="Department"
+            className="mt-[4px] text-sm"
+            classNamePrefix="react-select"
+            styles={{
+              control: (base) => ({
+                ...base,
+                outline: "none",         
+                boxShadow: "none",        
+                borderColor: "#ced4da",   
+                borderRadius: "6px",      
+                height: "30px",           
+                minHeight: "33px",        
+              }),
+            
+              menu: (base) => ({
+                ...base,
+                // padding: "4px 0",
+                         
+              }),
+              option: (base, { isFocused }) => ({
+                ...base,
+                fontSize: "0.775rem",
+                backgroundColor: isFocused ? "#F8F8F8" : "white",
+                color: isFocused ? "#0C3771" : "#000",              
+                cursor: "pointer",
+              }),
+            }}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium">Location Category</label>
+          <Select
+            name="locationCategoryId"
+            options={allEntityTypes
+              ?.filter((entity) => entity.isActive)
+              .map((entity) => ({
+                value: entity.entityTypeId,
+                label: entity.entityTypeName,
+              }))}
+            onChange={(selectedOption) =>
+              handleFilterChange("locationCategoryId", selectedOption?.value || "")
+            }
+            isClearable
+            placeholder="Location Category"
+            className="mt-[4px] text-sm"
+            classNamePrefix="react-select"
+            styles={{
+              control: (base) => ({
+                ...base,
+                outline: "none",         
+                boxShadow: "none",       
+                borderColor: "#ced4da",  
+                borderRadius: "6px",     
+                height: "30px",         
+                minHeight: "33px",        
+              }),
+            
+              menu: (base) => ({
+                ...base,
+                // padding: "4px 0",
+                         
+              }),
+              option: (base, { isFocused }) => ({
+                ...base,
+                fontSize: "0.775rem",
+                backgroundColor: isFocused ? "#F8F8F8" : "white",
+                color: isFocused ? "#0C3771" : "#000",              
+                cursor: "pointer",
+              }),
+            }}
+          />
+        </div>
+      </div>
+
+      <AgGridTable rowData={filteredFacilities} columnDefs={columnDefs} />
     </div>
   );
 }

@@ -274,25 +274,6 @@ export default function AdminBookings() {
                           <label className="block text-xs font-medium">
                             Location
                           </label>
-                          {/* <Select
-                            name="entityId"
-                            options={parksToRender
-                              ?.filter((park) => park.isActive)
-                              .map((park) => ({
-                                value: park.id,
-                                label: park.name,
-                              }))}
-                            onChange={(selectedOption) => {
-                              setFieldValue(
-                                "entityId",
-                                selectedOption?.value || ""
-                              );
-                            }}
-                            classNamePrefix="react-select"
-                            placeholder="Select..."
-                            isClearable
-                          /> */}
-
                           <Select
                             name="entityId"
                             options={parksToRender
@@ -315,24 +296,24 @@ export default function AdminBookings() {
                             styles={{
                               control: (base) => ({
                                 ...base,
-                                outline: "none",          // Remove outline
-                                boxShadow: "none",        // Remove box shadow
-                                borderColor: "#ced4da",   // Optional: Set border color
-                                borderRadius: "6px",      // Border radius for the control
-                                height: "30px",           // Adjust height of the control
-                                minHeight: "33px",        // Ensure the control doesn't shrink below this height
+                                outline: "none",
+                                boxShadow: "none",
+                                borderColor: "#ced4da",
+                                borderRadius: "6px",
+                                height: "30px",
+                                minHeight: "33px",
                               }),
-                            
+            
                               menu: (base) => ({
                                 ...base,
                                 // padding: "4px 0",
-                                         // Adjust padding in the dropdown menu
                               }),
-                              option: (base) => ({
+                              option: (base, { isFocused }) => ({
                                 ...base,
-                                // padding: "8px 12px",     
-                                fontSize: "0.875rem",
-                                    
+                                fontSize: "0.775rem",
+                                backgroundColor: isFocused ? "#F8F8F8" : "white",
+                                color: isFocused ? "#0C3771" : "#6D7072",
+                                cursor: "pointer",
                               }),
                             }}
                           />

@@ -22,8 +22,10 @@ export const useAdminFacilityStore = create((set) => ({
   fetchAllAdminFacilitiesDetails: async (
     pageIndex = 1,
     pageSize = 10,
-    filters = {}
+    filters = {},
+    
   ) => {
+   
     set({ isFetchAllAdminFacilitiesLoading: true });
     try {
       const filterString = useAdminFacilityStore
