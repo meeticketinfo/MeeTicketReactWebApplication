@@ -7,7 +7,7 @@ function TransactionQr() {
   const storedBookingPayload = JSON.parse(
     sessionStorage.getItem("bookingPayload")
   );
-  const [counter, setCounter] = useState(120);
+  const [counter, setCounter] = useState(240);
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
     const seconds = counter % 60;
@@ -35,7 +35,7 @@ function TransactionQr() {
       const timer = setTimeout(() => {
         setCounter((prev) => prev - 1); // Decrease the counter
         VerifyPaymentStatus(FirstStepTransactionResponse?.orderId); // Verify payment status
-      }, 1000);
+      }, 2000);
 
       return () => clearTimeout(timer); // Cleanup timer
     } else if (counter === 0) {

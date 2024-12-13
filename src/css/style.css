@@ -13,3 +13,17 @@
     z-index: 999999999 !important; /* Ensure it's higher than the modal */
   }
   
+  [type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus {
+
+    --tw-ring-offset-shadow: none;
+.react-select__control {  
+    height: 30px ! IMPORTANT;}
+}
+.css-1xc3v61-indicatorContainer {
+
+  padding: 0px 4px ! IMPORTANT;
+}
+.react-select__control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}

@@ -15,8 +15,11 @@ import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import TransactionQr from "../../../components/bookings_management/TransactionQr";
+import Select from "react-select";
 
 export default function AdminBookings() {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const {
     allParks,
     fetchAllParks,
@@ -43,10 +46,10 @@ export default function AdminBookings() {
     setIsFirstStepTransaction,
     setIsBookingFormVisible,
     isBookingFormVisible,
-    setPaymentStatus
+    setPaymentStatus,
   } = useBookingsStore();
   // console.log("FirstStepTransactionResponse", FirstStepTransactionResponse);
-  // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false); 
+  // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
@@ -221,8 +224,8 @@ export default function AdminBookings() {
                 onClick={() => {
                   setIsBookingFormVisible(false);
                   setIsFirstStepTransaction(false);
-                  setPaymentStatus({})
-                  localStorage.removeItem("booking-process-store")
+                  setPaymentStatus({});
+                  localStorage.removeItem("booking-process-store");
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
                 // disabled={isSubmitting}
@@ -246,25 +249,93 @@ export default function AdminBookings() {
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" && (
+                        // <div>
+                        //   <label className="block text-xs font-medium">
+                        //     Location
+                        //   </label>
+                        //   <Field
+                        //     as="select"
+                        //     name="entityId"
+                        //     className={`mt-1 block w-full px-2 py-1 border
+                        //     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                        //   >
+                        //     <option value="">Select </option>
+                        //     {parksToRender
+                        //       ?.filter((park) => park.isActive)
+                        //       .map((park) => (
+                        //         <option key={park.id} value={park.id}>
+                        //           {park.name}
+                        //         </option>
+                        //       ))}
+                        //   </Field>
+
+                        // </div>
                         <div>
                           <label className="block text-xs font-medium">
                             Location
                           </label>
-                          <Field
-                            as="select"
+                          {/* <Select
                             name="entityId"
-                            className={`mt-1 block w-full px-2 py-1 border
-                            border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          >
-                            <option value="">Select </option>
-                            {parksToRender
+                            options={parksToRender
                               ?.filter((park) => park.isActive)
-                              .map((park) => (
-                                <option key={park.id} value={park.id}>
-                                  {park.name}
-                                </option>
-                              ))}
-                          </Field>
+                              .map((park) => ({
+                                value: park.id,
+                                label: park.name,
+                              }))}
+                            onChange={(selectedOption) => {
+                              setFieldValue(
+                                "entityId",
+                                selectedOption?.value || ""
+                              );
+                            }}
+                            classNamePrefix="react-select"
+                            placeholder="Select..."
+                            isClearable
+                          /> */}
+
+                          <Select
+                            name="entityId"
+                            options={parksToRender
+                              ?.filter((park) => park.isActive)
+                              .map((park) => ({
+                                value: park.id,
+                                label: park.name,
+                              }))}
+                            onChange={(selectedOption) => {
+                              setFieldValue(
+                                "entityId",
+                                selectedOption?.value || ""
+                              );
+                            }}
+                            className="mt-[4px] text-sm"
+                            classNamePrefix="react-select"
+                            placeholder="Locations"
+                            isClearable
+                           
+                            styles={{
+                              control: (base) => ({
+                                ...base,
+                                outline: "none",          // Remove outline
+                                boxShadow: "none",        // Remove box shadow
+                                borderColor: "#ced4da",   // Optional: Set border color
+                                borderRadius: "6px",      // Border radius for the control
+                                height: "30px",           // Adjust height of the control
+                                minHeight: "33px",        // Ensure the control doesn't shrink below this height
+                              }),
+                            
+                              menu: (base) => ({
+                                ...base,
+                                // padding: "4px 0",
+                                         // Adjust padding in the dropdown menu
+                              }),
+                              option: (base) => ({
+                                ...base,
+                                // padding: "8px 12px",     
+                                fontSize: "0.875rem",
+                                    
+                              }),
+                            }}
+                          />
                         </div>
                       )}
                       <div>

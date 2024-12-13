@@ -269,7 +269,7 @@ const UserCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter emailId"
+                    placeholder="Enter email id"
                     disabled={isUserEditVisible}
                   />
                   <ErrorMessage

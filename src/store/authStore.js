@@ -19,7 +19,7 @@ const useAuthStore = create(
       decodedTokenData: null,
       userRoles: [],
       roleDetails: null, // To store role id and name
-      sidebarMenuItems: [], // To store filtered sidebar items
+      sidebarMenuItems: [], // To store filtered sidebar items 
 
       login: async (loginData) => {
         set({ isLoading: true });
@@ -73,12 +73,11 @@ const useAuthStore = create(
             });
             // toast.error(errorMessage);
           }
-
           return { success: false };
         }
       },
 
-      fetchDecodedToken: async () => {
+      fetchDecodedToken: async () => {  
         try {
           const response = await apiService.get(DECODED_TOKEN_ENDPOINT);
           set({ decodedTokenData: response.data, error: null });

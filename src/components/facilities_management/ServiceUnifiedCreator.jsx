@@ -33,7 +33,11 @@ const validationSchema = Yup.object({
     Yup.lazy((value, { parent }) => {
       // Use Yup.ref('hasSubFacility') to check the parent's `hasSubFacility` value
       return Yup.object().shape({
-        name: Yup.string().required("Sub-Facility Name is required"),
+        name: Yup.string().when('parent.hasSubFacility', {
+          is: true,  // When `hasSubFacility` is true
+          then: Yup.string().required("Sub-Facility Name is required"),
+          otherwise: Yup.string().notRequired(), // Disable validation if `hasSubFacility` is false
+        }),
         ticketTypes: Yup.array().of(
           Yup.object().shape({
             type: Yup.string().required("Ticket Type is required"),

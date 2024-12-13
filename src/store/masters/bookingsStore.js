@@ -23,7 +23,9 @@ export const useBookingsStore = create(
     selectedBookingsList:{},
     PaymentStatus:{},
     isBookingFormVisible:false,
-
+    isUpi:false,
+    isCash:false,
+    
     //
     bookings: [],
     totalCount: 0,
@@ -43,6 +45,12 @@ export const useBookingsStore = create(
 
     setIsBookingFormVisible: (isBookingFormVisible) => {
       set({  isBookingFormVisible });
+    },
+    setisUpi: (isUpi) => {
+      set({  isUpi });
+    },
+    setisCash: (isCash) => {
+      set({  isCash });
     },
 
     setSelectedBookingsList: (selectedBookingsList) => {

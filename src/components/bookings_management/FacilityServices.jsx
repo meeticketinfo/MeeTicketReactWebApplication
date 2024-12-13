@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Formik, Field, Form } from "formik";
+import * as Yup from "yup";
 import { useBookingsStore } from "../../store/masters/bookingsStore";
 import useAuthStore from "../../store/authStore";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
@@ -14,9 +15,16 @@ import { IoIosArrowDown } from "react-icons/io";
 import { formatToCurrency, toTitleCase } from "../../utils/TypographyHelper";
 import TransactionQr from "./TransactionQr";
 import TransactionFailed from "./TransactionFailed";
+import { Checkbox } from "@headlessui/react";
+import upiIcon from "../../images/upi.svg";
+import HandCash from "../../images/cash.svg";
+import PopupModal from "../utils/popup_modal/PopupModal";
+import { useModalStore } from "../../store/modalStore";
 
 export const FacilityServices = () => {
   const navigate = useNavigate();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
   const {
     saveBookingDetails,
     fetchCurrentBookingDetailsByBookingId,
@@ -27,8 +35,12 @@ export const FacilityServices = () => {
     VerifyPaymentStatus,
     IsTransactionFailed,
     isSaveFirstTransactionDetailsLoading,
+    setisUpi,
+    isUpi,
+    setisCash,
+    isCash,
   } = useBookingsStore();
-  // console.log("IsTransactionFailed", IsTransactionFailed);
+  // console.log("isUpi", isUpi);
   const { decodedTokenData, DepartmentId } = useAuthStore();
 
   const {
@@ -41,7 +53,7 @@ export const FacilityServices = () => {
   const { allServices, fetchAllServices } = useServiceStore();
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
-  const { quantities, updateQuantity,setQuantities } = useQuantitiesStore();
+  const { quantities, updateQuantity, setQuantities } = useQuantitiesStore();
 
   useEffect(() => {
     fetchAllFacilities();
@@ -62,6 +74,10 @@ export const FacilityServices = () => {
     { id: 2, title: "Item 2", content: "This is the content for item 2" },
     { id: 3, title: "Item 3", content: "This is the content for item 3" },
   ];
+  const validationSchema = Yup.object({
+    paymentMethod: Yup.string().required("Please select a payment method."), // Add validation for payment method
+  });
+
   const handleSubmit = async (
     values,
     { setSubmitting, resetForm },
@@ -76,70 +92,115 @@ export const FacilityServices = () => {
       paymentType: "",
       parkId: decodedTokenData?.data?.ParkId,
     };
-    // const totalAmount = calculateTotalAmount(values.selectedItems);
-    // const currentDateTime = new Date().toISOString;
-    // setSelectedBookingsList({
-    //   totalAmount: totalAmount,
-    //   userId: decodedTokenData?.data?.UserId,
-    //   parkId: decodedTokenData?.data?.ParkId,
-    //   transactionId: "",
-    //   bookingDate: currentDateTime,
-    //   bookingDetailsReqDTOs: values.selectedItems,
-    // });
-    
-    // const currentDateTime = new Date().toISOString(); 
-    const bookingPaylod = {
+
+    if (values.paymentMethod==="cash") {
+      const totalAmount = calculateTotalAmount(values.selectedItems);
+    const currentDateTime = new Date().toISOString;
+    const bookingDetailsPayload = {
       totalAmount: totalAmount,
       userId: decodedTokenData?.data?.UserId,
       parkId: decodedTokenData?.data?.ParkId,
       transactionId: "",
-    
+      bookingDate: currentDateTime,
       bookingDetailsReqDTOs: values.selectedItems,
     };
-    sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
-    
-    
-
-
-    // console.log("bookingDetailsPayload",bookingDetailsPayload)
-
+    console.log("Booking Details Payload:", bookingDetailsPayload);
     try {
-      const result = await saveFirstBookingDetails(bookingDetailsPayload);
-      setQuantities({})
-      values.selectedItems=[];
-      resetForm();
+      const result = await saveBookingDetails(bookingDetailsPayload);
+      if (result && result.data && result.data.status === 200) {
+        const newBookingId = result?.data?.data?.data;
+        navigate(`/entity-bookings/view-details/${newBookingId}`);
+        resetForm();
+      } else {
+        toast.error("Unexpected response from the server.");
+      }
     } catch (xhr) {
       handleApiError(xhr);
     } finally {
-      resetForm();
-
       setSubmitting(false);
     }
+    }
+    else{
+      const bookingPaylod = {
+        totalAmount: totalAmount,
+        userId: decodedTokenData?.data?.UserId,
+        parkId: decodedTokenData?.data?.ParkId,
+        transactionId: "",
+  
+        bookingDetailsReqDTOs: values.selectedItems,
+      };
+      sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+  
+      // console.log("bookingDetailsPayload",bookingDetailsPayload)
+  
+      try {
+        const result = await saveFirstBookingDetails(bookingDetailsPayload);
+        setQuantities({});
+        values.selectedItems = [];
+        resetForm();
+      } catch (xhr) {
+        handleApiError(xhr);
+      } finally {
+        resetForm();
+  
+        setSubmitting(false);
+      }
 
-    // const totalAmount = calculateTotalAmount(values.selectedItems);
-    // const currentDateTime = new Date().toISOString;
-    // const bookingDetailsPayload = {
-    //   totalAmount: totalAmount,
-    //   userId: decodedTokenData?.data?.UserId,
-    //   parkId: decodedTokenData?.data?.ParkId,
-    //   transactionId: "",
-    //   bookingDate: currentDateTime,
-    //   bookingDetailsReqDTOs: values.selectedItems,
-    // };
-    // console.log("Booking Details Payload:", bookingDetailsPayload);
-    // try {
-    //   const result = await saveBookingDetails(bookingDetailsPayload);
-    //   if (result && result.data && result.data.status === 200) {
-    //     const newBookingId = result?.data?.data?.data;
-    //     navigate(`/entity-bookings/view-details/${newBookingId}`);
-    //     resetForm();
-    //   } else {
-    //     toast.error("Unexpected response from the server.");
+    }
+
+
+    // if (isCash) {
+    //   const totalAmount = calculateTotalAmount(values.selectedItems);
+    //   const currentDateTime = new Date().toISOString;
+    //   const bookingDetailsPayload = {
+    //     totalAmount: totalAmount,
+    //     userId: decodedTokenData?.data?.UserId,
+    //     parkId: decodedTokenData?.data?.ParkId,
+    //     transactionId: "",
+    //     bookingDate: currentDateTime,
+    //     bookingDetailsReqDTOs: values.selectedItems,
+    //   };
+    //   // console.log("Booking Details Payload:", bookingDetailsPayload);
+    //   try {
+    //     const result = await saveBookingDetails(bookingDetailsPayload);
+    //     if (result && result.data && result.data.status === 200) {
+    //       const newBookingId = result?.data?.data?.data;
+    //       navigate(`/entity-bookings/view-details/${newBookingId}`);
+    //       resetForm();
+    //     } else {
+    //       toast.error("Unexpected response from the server.");
+    //     }
+    //   } catch (xhr) {
+    //     handleApiError(xhr);
+    //   } finally {
+    //     setSubmitting(false);
     //   }
-    // } catch (xhr) {
-    //   handleApiError(xhr);
-    // } finally {
-    //   setSubmitting(false);
+    // }
+    // if (isUpi) {
+    //   const bookingPaylod = {
+    //     totalAmount: totalAmount,
+    //     userId: decodedTokenData?.data?.UserId,
+    //     parkId: decodedTokenData?.data?.ParkId,
+    //     transactionId: "",
+
+    //     bookingDetailsReqDTOs: values.selectedItems,
+    //   };
+    //   sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+
+    //   // console.log("bookingDetailsPayload",bookingDetailsPayload)
+
+    //   try {
+    //     const result = await saveFirstBookingDetails(bookingDetailsPayload);
+    //     setQuantities({});
+    //     values.selectedItems = [];
+    //     resetForm();
+    //   } catch (xhr) {
+    //     handleApiError(xhr);
+    //   } finally {
+    //     resetForm();
+
+    //     setSubmitting(false);
+    //   }
     // }
   };
 
@@ -158,12 +219,14 @@ export const FacilityServices = () => {
           <Formik
             initialValues={{
               selectedItems: [],
+              paymentMethod: "",
             }}
+            validationSchema={validationSchema}
             onSubmit={(values, actions) => {
               handleSubmit(values, actions, saveBookingDetails);
             }}
           >
-            {({ values, setFieldValue, isSubmitting }) => (
+            {({ values, setFieldValue, isSubmitting, errors, touched }) => (
               <Form className="facility-container space-y-6 px-4 lg:px-0">
                 {allFacilities
                   ?.filter((facility) =>
@@ -437,7 +500,70 @@ export const FacilityServices = () => {
                         );
                       })}
                     </ul>
-                    <div className="text-right mt-4">
+                    <div className="flex justify-between mt-4">
+                      <div className="">
+                        <h1>Payment Method</h1>
+
+                        <div className="flex items-center gap-6 mt-2">
+                          <div className="flex items-center">
+                            <Field
+                              id="upi-radio"
+                              name="paymentMethod"
+                              type="radio"
+                              value="upi"
+                              onClick={() => {
+                                setOpenModalId("upi");
+                                setisCash(true)
+                              }}
+                              className="hidden"
+                            />
+                            <label
+                              htmlFor="upi-radio"
+                              className={`flex items-center gap-2 p-2  border rounded-md text-xs font-medium cursor-pointer transition-all ${values.paymentMethod === 'upi' ? 'bg-blue-v1 text-white shadow-lg' : 'bg-white text-blue-v1 shadow-custom border '}
+                              `}
+                            >
+                              <img
+                                className="w-8"
+                                src={upiIcon}
+                                alt="UPI Icon"
+                              />
+                              UPI Payment
+                            </label>
+                          </div>
+
+                          <div className="flex items-center">
+                            <Field
+                              id="cash-radio"
+                              name="paymentMethod"
+                              type="radio"
+                              value="cash"
+                              onClick={() => {
+                                setOpenModalId("cash");
+                                setisCash(false)
+                              }}
+                              className="hidden"
+                            />
+                            <label
+                              htmlFor="cash-radio"
+                              className={`flex items-center gap-2 p-2 rounded-md  border text-xs font-medium cursor-pointer transition-all ${values.paymentMethod === 'cash' ? 'bg-blue-v1 text-white shadow-lg' : 'bg-white text-blue-v1 shadow-custom border '}
+                              `}
+                            >
+                              <img
+                                className="w-[18px] fill-black "
+                                src={HandCash}
+                                alt="Cash Icon"
+                              />
+                              Cash Payment
+                            </label>
+                          </div>
+                        </div>
+
+                        {errors.paymentMethod && touched.paymentMethod && (
+                          <p className="text-red-500 text-sm mt-2">
+                            {errors.paymentMethod}
+                          </p>
+                        )}
+                      </div>
                       <p className="text-lg font-bold text-blue-v1">
                         Total:{" "}
                         {formatToCurrency(
@@ -449,9 +575,10 @@ export const FacilityServices = () => {
                 )}
 
                 <div className="flex justify-center p-2">
-                  <button
+                  {/* <button
                     type="submit"
-                    disabled={values.selectedItems.length === 0}
+                   
+                    disabled={!values.selectedItems?.length && !isUpi && !isCash}
                     className={`text-base rounded-lg px-3 py-1 ${
                       values.selectedItems.length > 0
                         ? `${
@@ -467,6 +594,24 @@ export const FacilityServices = () => {
                     ) : (
                       <span>Continue Booking</span>
                     )}
+                  </button> */}
+                  <button
+                    type="submit"
+                    disabled={!isCash} 
+                    className={`text-base rounded-lg px-3 py-1 ${
+                      !isCash
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        :
+                         isSubmitting
+                        ? "bg-gradient-to-r from-blue-v1 via-blue-800 to-blue-v1 animate-pulse text-white"
+                        : "bg-blue-v1 text-white"
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <span className="font-light">Loading . . .</span>
+                    ) : (
+                      <span>Continue Booking</span>
+                    )}
                   </button>
                 </div>
               </Form>
@@ -474,6 +619,80 @@ export const FacilityServices = () => {
           </Formik>
         </div>
       )}
+      {/* cash */}
+      <PopupModal
+        popupModalId="first-modal"
+        isOpen={openModalId === "cash"}
+        onClose={closeModal}
+        // title={"Add Sub-Facility"}
+        size="small"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+      >
+        <div className="px-10 py-14">
+          <h1 className="text-blue-v1 font-semibold">
+          Are you sure that you have received the cash?
+          </h1>
+          <div className="flex justify-center gap-6 mt-4">
+            <button
+              onClick={() => {
+                setisCash(true);
+                closeModal();
+              }}
+              className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+            >
+              Proceed
+            </button>
+            <button
+              onClick={() => {
+                setisCash(false);
+                closeModal();
+              }}
+              className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+            >
+              Deny
+            </button>
+          </div>
+        </div>
+      </PopupModal>
+      {/* upi */}
+      {/* <PopupModal
+        popupModalId="first-modal"
+        isOpen={openModalId === "upi"}
+        onClose={closeModal}
+        // title={"Add Sub-Facility"}
+        size="small"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+      >
+        <div className="px-10 py-14">
+          <h1 className="text-blue-v1  font-medium">
+            Would you like to proceed with UPI payment?
+          </h1>
+          <div className="flex justify-center gap-6 mt-4">
+            <button
+              onClick={() => {
+                setisUpi(true);
+                closeModal();
+              }}
+              className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+            >
+              Proceed
+            </button>
+            <button
+              onClick={() => {
+                setisUpi(false);
+                closeModal();
+              }}
+              className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+            >
+              Deny
+            </button>
+          </div>
+        </div>
+      </PopupModal> */}
     </>
   );
 };
