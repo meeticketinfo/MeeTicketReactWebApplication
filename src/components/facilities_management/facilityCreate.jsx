@@ -33,6 +33,7 @@ const FacilityCreate = ({ onDataAdded }) => {
   const initialValues = {
     Id: FacilityEditDetails.id,
     facilityMasterId: FacilityEditDetails.facilityMasterId,
+    facilitySequenceNumber:FacilityEditDetails.sequenceNumber||"",
     name: FacilityEditDetails.name,
     openTime: FacilityEditDetails.openTime || "00:00:00",
     closeTime: FacilityEditDetails.closeTime || "00:00:00",
@@ -42,6 +43,8 @@ const FacilityCreate = ({ onDataAdded }) => {
   };
   console.log("FacilityEditDetails", FacilityEditDetails);
   const validationSchema = Yup.object({
+    facilitySequenceNumber:Yup.string()
+    .required("Please enter Sequence"),
     facilityMasterId: Yup.string()
       .required("Please enter facility name")
       .max(50, "facility name should be less than 50 characters"),
@@ -269,6 +272,25 @@ const FacilityCreate = ({ onDataAdded }) => {
                     component="div"
                     className="text-red-500 text-xs"
                   />
+                </div>
+                 {/* sequence */}
+                 <div>
+                  <label className="block text-sm font-medium">
+                    Sequence<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="facilitySequenceNumber"
+                    type="number"
+                    maxLength={50}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                   <ErrorMessage
+                    name="facilitySequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                 
                 </div>
               </div>
 

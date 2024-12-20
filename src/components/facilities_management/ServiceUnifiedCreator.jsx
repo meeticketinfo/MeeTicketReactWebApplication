@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, FieldArray, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import TextInput from "./TextInput";
@@ -17,42 +17,15 @@ const ticketTypeOptions = [
   { value: "others", label: "Others" },
 ];
 
+   
+
 const initialValues = {
-  facilityDto: { facilityMasterId: "" },
+  facilityDto: { facilityMasterId: "",facilitySequenceNumber:null },
   hasSubFacility: false,
-  subFacilities: [{ name: "", ticketTypes: [] }],
+  subFacilities: [{ name: "",Limit:null,subFacilitySequenceNumber:null, ticketTypes: [] }],
 };
 
-const validationSchema = Yup.object({
-  facilityDto: Yup.object().shape({
-    facilityMasterId: Yup.string().required("Facility is required"),
-    name: Yup.string().required("Facility Name is required"),
-  }),
-  hasSubFacility: Yup.boolean(),
-  subFacilities: Yup.array().of(
-    Yup.lazy((value, { parent }) => {
-      // Use Yup.ref('hasSubFacility') to check the parent's `hasSubFacility` value
-      return Yup.object().shape({
-        name: Yup.string().required("Sub-Facility Name is required"),
-        ticketTypes: Yup.array().of(
-          Yup.object().shape({
-            type: Yup.string().required("Ticket Type is required"),
-            // customType: Yup.string().when("type", {
-            //   is: "others",
-            //   // then: Yup.string().required("Custom Ticket Type is required"),
-            // }),
-            amount: Yup.number()
-              .required("Amount is required")
-              .positive("Amount must be a positive number"),
-            chargedPerPerson: Yup.string().required(
-              "Charged Per Person is required"
-            ),
-          })
-        ),
-      });
-    })
-  ),
-});
+
 
 
 // const validationSchema = Yup.object({
@@ -84,9 +57,11 @@ const validationSchema = Yup.object({
 //   // .min(1, "At least one sub-facility is required"),
 // });
 
-const ServiceUnifiedCreator = () => {
+const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
   const { decodedTokenData } = useAuthStore();
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
+  const [isSubfacility,setIsSubfacility]=useState(false)
+  
   const {
     saveunifiedFacilityDetails,
     isSaveUnifiedFacilityDetailsLoading,
@@ -99,11 +74,41 @@ const ServiceUnifiedCreator = () => {
     value: facility.facilityMasterId,
     label: facility.facilityName,
   }));
-
+  const validationSchema = Yup.object({
+    facilityDto: Yup.object().shape({
+      facilityMasterId: Yup.string().required("Facility is required"),
+      facilitySequenceNumber:Yup.string().required("Sequence is required"),
+      name: Yup.string().required("Facility Name is required"),
+    }),
+    hasSubFacility: Yup.boolean(),
+    subFacilities: Yup.array().of(
+      Yup.lazy((value, { parent }) => {
+       
+       
+        return Yup.object().shape({
+          name: isSubfacility&&Yup.string().required("Sub-Facility Name is required"),
+          subFacilitySequenceNumber: isSubfacility&&Yup.string().required("Sequence is required"),
+          ticketTypes: Yup.array().of(
+            Yup.object().shape({
+              type: Yup.string().required("Ticket Type is required"),
+              typeOfTicketSequenceNumber: Yup.string().required("Sequence is required"),
+              amount: Yup.number()
+                .required("Amount is required")
+                .positive("Amount must be a positive number"),
+              chargedPerPerson: Yup.string().required(
+                "Charged Per Person is required"
+              ),
+            })
+          ),
+        });
+      })
+    ),
+  });
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     const transformedValues = {
       facilityDto: {
         facilityMasterId: values.facilityDto.facilityMasterId,
+        facilitySequenceNumber: values.facilityDto.facilitySequenceNumber,
         name: values.facilityDto.name,
         parkId: decodedTokenData?.data?.ParkId,
         isActive: true,
@@ -112,10 +117,17 @@ const ServiceUnifiedCreator = () => {
         name: values.hasSubFacility
           ? subFacility.name
           : values.facilityDto.name,
+          Limit: values.hasSubFacility
+          ? subFacility.Limit
+          : -1,
+          subFacilitySequenceNumber: values.hasSubFacility
+          ? subFacility.subFacilitySequenceNumber
+          : 1,
         displayName: values.hasSubFacility
           ? subFacility.name
           : values.facilityDto.name,
         isActive: true,
+
         serviceVariants: subFacility.ticketTypes.map((ticketType) => ({
           name:
             ticketType.type === "others"
@@ -127,6 +139,7 @@ const ServiceUnifiedCreator = () => {
               : ticketType.type,
           description: "lorem",
           amount: ticketType.amount,
+          typeOfTicketSequenceNumber: ticketType.typeOfTicketSequenceNumber,
           isPriceFixed: ticketType.chargedPerPerson === "yes",
           isActive: true,
         })),
@@ -140,10 +153,10 @@ const ServiceUnifiedCreator = () => {
 
       if (result && result.data && result.data.status === 200) {
         toast.success("Facility created successfully!");
-        // setTimeout(() => {
-        //   setIsFacilityCreateVisible(false);
-        //   setIsFacilityEditVisible(false);
-        // }, 3000);
+        setTimeout(() => {
+          setIsFacilityCreateVisible(false);
+          // setIsFacilityEditVisible(false);
+        }, 1000);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
@@ -251,6 +264,25 @@ const ServiceUnifiedCreator = () => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
+                <div>
+                  <label htmlFor="User" className="block text-xs font-medium">
+                    Sequence <span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="facilityDto.facilitySequenceNumber"
+                    type="text"
+                    onChange={(e) => {
+                      setFieldValue("facilityDto.facilitySequenceNumber", e.target.value);
+                    }}
+                    className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                  <ErrorMessage
+                    name="facilityDto.facilitySequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
                 <div className="flex items-center">
                   <Field
                     type="checkbox"
@@ -258,6 +290,7 @@ const ServiceUnifiedCreator = () => {
                     name="hasSubFacility"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
+                      setIsSubfacility(isChecked)
                       setFieldValue("hasSubFacility", isChecked);
                       if (isChecked) {
                         setFieldValue("subFacilities[0].name", "");
@@ -301,13 +334,21 @@ const ServiceUnifiedCreator = () => {
                           <div
                             className={`mb-3 ${
                               values.hasSubFacility
-                                ? "flex justify-between"
+                                ? "flex justify-start gap-4"
                                 : "hidden"
                             }`}
                           >
                             <TextInput
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
+                            />
+                             <TextInput
+                              name={`subFacilities[${index}].Limit`}
+                              label="Limit"
+                            />
+                            <TextInput
+                              name={`subFacilities[${index}].subFacilitySequenceNumber`}
+                              label="Sequence"
                             />
                             {/* <button
                               type="button"
@@ -346,6 +387,7 @@ const ServiceUnifiedCreator = () => {
                                       customType: "",
                                       chargedPerPerson: "",
                                       amount: "",
+                                      typeOfTicketSequenceNumber:"",
                                     })
                                   }
                                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -385,6 +427,10 @@ const ServiceUnifiedCreator = () => {
                                               { value: "no", label: "Yes" },
                                               { value: "yes", label: "No" },
                                             ]}
+                                          />
+                                           <TextInput
+                                            name={`subFacilities[${index}].ticketTypes[${ticketIndex}].typeOfTicketSequenceNumber`}
+                                            label="Sequence"
                                           />
                                         </div>
 

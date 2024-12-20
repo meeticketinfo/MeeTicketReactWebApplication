@@ -1,18 +1,20 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./AgGridTable.css";
 import { FaFileCsv } from "react-icons/fa6";
-import { RiFileExcel2Fill } from "react-icons/ri";
+import usePaginationStore from "../../store/paginationStore";
 
 const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
+  const { activePage, setActivePage } = usePaginationStore();
   const gridRef = useRef(null);
   const [quickFilterText, setQuickFilterText] = useState(""); // For search functionality
+  const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 10;
-  const gridHeight = isPaginationEnabled ? 400 : 280;
+  const isPaginationEnabled = rowData.length > 5;
+  const gridHeight = isPaginationEnabled ? 600 : 600;
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
@@ -21,17 +23,24 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
 
   // Function to export data to CSV
   const handleExportCsv = () => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsCsv([]);
+    if (gridApi) {
+      gridApi.exportDataAsCsv([]);
     }
   };
 
   // Function to export data to Excel
   const handleExportExcel = () => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsExcel([]);
+    if (gridApi) {
+      gridApi.exportDataAsExcel([]);
     }
   };
+
+  useEffect(() => {
+    // Whenever activePage changes, update the grid's pagination
+    if (gridApi) {
+      gridApi.paginationGoToPage(activePage);
+    }
+  }, [activePage, gridApi]);
 
   return (
     <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
@@ -49,9 +58,6 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           <button onClick={handleExportCsv} className="ag-grid-button">
             <FaFileCsv className="text-blue-v2 text-xl" />
           </button>
-          {/* <button onClick={handleExportExcel} className="ag-grid-button">
-            <RiFileExcel2Fill className="text-red-600 text-2xl" />
-          </button> */}
         </div>
       </div>
 
@@ -63,18 +69,25 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
         <AgGridReact
           ref={gridRef}
           rowData={rowData}
-          // columnDefs={columnDefs.map((col) => ({ ...col, sortable: true }))}
           pagination={isPaginationEnabled}
-          paginationPageSize={10}
+          paginationPageSize={20}
           columnDefs={columnDefs.map((col) => ({
             ...col,
-            // width: 180, // Default column width
             minWidth: 180, // Minimum width for responsiveness
             sortable: true,
           }))}
-          paginationPageSizeSelector={[10, 20, 50, 100]}
-          // domLayout="autoHeight" // Adapts grid height based on data
           quickFilterText={quickFilterText} // Binding quickFilterText to AgGrid
+          onGridReady={(params) => {
+            setGridApi(params.api); // Store the API instance
+            params.api.paginationGoToPage(activePage); // Navigate to the saved active page
+          }}
+          onPaginationChanged={() => {
+            if (gridApi) {
+              const currentPage = gridApi.paginationGetCurrentPage();
+              setActivePage(currentPage);
+              // console.log("currentPage", currentPage);
+            }
+          }}
         />
 
         {/* Loader overlay within the table body */}

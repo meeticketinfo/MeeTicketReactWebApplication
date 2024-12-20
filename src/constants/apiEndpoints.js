@@ -1,10 +1,23 @@
+import useAuthStore from "../store/authStore";
+
+// dev
 export const API_BASE_URL =
   "https://meeticket.vmaxtechservices.life/parkapi/api/";
-
+// uat
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
+// testing
+// export const API_BASE_URL =
+//   "https://hb5h53s7-7237.inc1.devtunnels.ms/api/";
+
+// const { isAuthenticated, roleDetails } = useAuthStore();
+ 
+
+//   const role = roleDetails?.name;
+
+//   console.log("role",role)
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -16,6 +29,7 @@ export const API_ENDPOINTS = {
     PARK: {
       GET_PARKS: `${API_BASE_URL}Master/GetAllEntities`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
+      UPDATE_NODAL_OFFICER_PARK_DETAILS: `${API_BASE_URL}Master/UpdateLocation`,
       ADD_NEW_PARK: `${API_BASE_URL}Master/AddNewPark`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
@@ -44,6 +58,7 @@ export const API_ENDPOINTS = {
       FIRST_STEP_TRANSACTION:`${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS:`${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
     },

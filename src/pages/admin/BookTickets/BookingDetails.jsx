@@ -8,6 +8,7 @@ import QRCodeDisplay from "./QrCodeDisplay";
 import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
 import { PaymentQR } from "./PaymentQR";
 import { MdOutlineDownloadDone } from "react-icons/md";
+import Logo from "../../../images/MeeTicketLogo.svg";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 
 export default function BookingDetails() {
@@ -21,9 +22,12 @@ export default function BookingDetails() {
     isFetchCurrentBookingDetailsLoading,
     setIsFirstStepTransaction,
     setSelectedBookingsList,
-    setIsBookingFormVisible
+    setIsBookingFormVisible,
   } = useBookingsStore();
-console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLoading)
+  console.log(
+    "isFetchCurrentBookingDetailsLoading",
+    isFetchCurrentBookingDetailsLoading
+  );
   useEffect(() => {
     fetchQRsForBooking(id);
   }, []);
@@ -43,9 +47,6 @@ console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLo
     }
   };
 
- 
-  
-
   const handlePrint = () => {
     const printContents = document.querySelectorAll(".printable-card");
 
@@ -56,6 +57,7 @@ console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLo
     let content = "";
     printContents.forEach((card) => {
       content += card.outerHTML; // Get the entire HTML structure of the card
+      console.log(content);
     });
 
     // Define styles for the handheld printer
@@ -74,10 +76,10 @@ console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLo
       .printable-card {
         width: 100%; /* Fit within the 58mm width */
         padding: 5mm;
-        border: 1px solid #ccc; /* Optional border */
         margin-bottom: 5mm;
         page-break-inside: avoid;
         font-size: 12px; /* Adjust font size for readability */
+        margin: 0 auto;
       }
       .printable-card ul {
         list-style-type: none;
@@ -153,45 +155,46 @@ console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLo
 
   return (
     <AdminLayout>
-
-      {isFetchCurrentBookingDetailsLoading?<TransactionProcessingLoader/>:<div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div className="sm:flex sm:justify-between sm:items-center mb-8">
-          <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Bookings
-            </h1>
+      {isFetchCurrentBookingDetailsLoading ? (
+        <TransactionProcessingLoader />
+      ) : (
+        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <div className="sm:flex sm:justify-between sm:items-center mb-8">
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
+                Bookings
+              </h1>
+            </div>
+            <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+              <PaymentQR />
+              <NavLink
+                end
+                to="/entity-bookings"
+                onClick={() => {
+                  setIsFirstStepTransaction(false);
+                  setPaymentStatus({});
+                  sessionStorage.removeItem("bookingPayload");
+                }}
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+              >
+                Back
+              </NavLink>
+            </div>
           </div>
-          <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            <PaymentQR />
-            <NavLink
-              end
-              to="/entity-bookings"
-              onClick={() => {
-                setIsFirstStepTransaction(false)
-                setPaymentStatus({})
-                sessionStorage.removeItem("bookingPayload")
-              }}
-              className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-            >
-              Back
-            </NavLink>
-          </div>
-        </div>
-        {/* <div className="flex  justify-center items-center py-4">
+          {/* <div className="flex  justify-center items-center py-4">
         <MdOutlineDownloadDone className="text-green-700 text-2xl " />
             <h1>Payment Succesefull</h1>
           </div> */}
-        <div className="flex justify-center gap-4">
-          
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={() => handlePrint()}
-            className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-          >
-            Print QR Code Cards
-          </button>
-        </div>
-        {/* <div className="flex justify-center mb-6">
+          <div className="flex justify-center gap-4">
+            <div className="flex justify-center mb-6">
+              <button
+                onClick={() => handlePrint()}
+                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
+              >
+                Print QR Code Cards
+              </button>
+            </div>
+            {/* <div className="flex justify-center mb-6">
           <button
             onClick={() => {setIsFirstStepTransaction(false)}}
             className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
@@ -199,119 +202,145 @@ console.log("isFetchCurrentBookingDetailsLoading",isFetchCurrentBookingDetailsLo
            Continue Bookings
           </button>
         </div> */}
-        </div>
-        <div className="flex justify-center">
-          <div
-            aria-label="card"
-            className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] border printable-card"
-          >
+          </div>
+          <div className="flex justify-center">
             <div
-              aria-label="header"
-              className="flex items-center rounded-2xl overflow-hidden"
+              aria-label="card"
+              style={{ width: 400 }}
+              className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] printable-card"
             >
-              <div className=" ">
-                <QRCodeDisplay
-                  binaryQRCode={bookingDetailsResponse?.binaryQRCode}
+              <div style={{ textAlign: "center" }}>
+                <img
+                  src={Logo}
+                  width={80}
+                  height={80}
+                  style={{ margin: "0 auto" }}
                 />
               </div>
-            </div>
-            <div
-              aria-label="content"
-              className="mt-2 grid gap-1 rounded-md overflow-hidden"
-            >
-              {Array.isArray(consolidatedData) ? (
-                consolidatedData.map((item) => (
-                  <div key={item.facilityId + item.serviceId}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                        padding: "0.5rem",
-                        backgroundColor: "#f3f4f6", // Equivalent to bg-gray-100
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "100%",
-                        }}
-                      >
-                        <h3
-                          style={{
-                            fontSize: "1.25rem", // Equivalent to text-sm
-                            fontWeight: "500", // Equivalent to font-medium
-                          }}
-                        >
-                          {toTitleCase(item.facilityName) || "N/A"}
-                        </h3>
-                        <h5
-                          style={{
-                            fontSize: "1rem", // Equivalent to text-xs
-                          }}
-                        >
-                          {toTitleCase(item.serviceName) || "N/A"}
-                        </h5>
-                        <div
-                          style={{
-                            marginTop: "0.5rem",
-                            paddingTop: "0.5rem",
-                            borderTop: "1px solid #e5e7eb", // Equivalent to divide-gray-200
-                          }}
-                        >
-                          {item.details.map((detail, index) => (
-                            <div
-                              key={index}
+              <h2
+                style={{
+                  fontSize: 20,
+                  color: "green",
+                  textAlign: "center",
+                  fontWeight: "600",
+                  marginBottom: 12,
+                }}
+              >
+                Entry Ticket
+              </h2>
+              <div
+                aria-label="header"
+                className="flex items-center rounded-2xl border"
+              >
+                <div
+                  className="backdrop-blur-sm"
+                  style={{
+                    border: "1px solid red",
+                    backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent background
+                  }}
+                >
+                  <QRCodeDisplay
+                    binaryQRCode={bookingDetailsResponse?.binaryQRCode}
+                  />
+                </div>
+              </div>
+              <div
+                aria-label="content"
+                style={{ padding: 20 }}
+                className="mt-2 grid gap-1 rounded-md overflow-hidden"
+              >
+                <table width={"100%"} style={{ borderSpacing: 0 }}>
+                  {Array.isArray(consolidatedData) ? (
+                    consolidatedData.map((item) => (
+                      <tbody>
+                        <>
+                          <tr key={item.facilityId + item.serviceId}>
+                            <td
                               style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                paddingBottom: "0.5rem",
+                                color: "#4b5563",
+                                paddingLeft: 10,
+                                paddingTop: 15,
                               }}
                             >
-                              <span
-                                style={{
-                                  fontSize: "0.875rem", // Equivalent to text-sm
-                                  fontWeight: "400", // Equivalent to font-normal
-                                }}
-                              >
-                                Ticket Type:{" "}
-                                {toTitleCase(detail?.serviceVariantName) ||
-                                  "N/A"}
-                              </span>
-                              <span
-                                style={{
-                                  fontSize: "0.875rem",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                Total:{" "}
-                                {formatToCurrency(
-                                  detail?.amount * detail?.quantity
-                                ) || "N/A"}
-                              </span>
-                              <span
-                                style={{
-                                  fontSize: "0.875rem",
-                                  fontWeight: "400",
-                                }}
-                              >
-                                Qnty: {detail?.quantity || "N/A"}
-                              </span>
-                            </div>
+                              Facility
+                            </td>
+                            <td style={{ color: "black", paddingTop: 15 }}>
+                              : {toTitleCase(item.facilityName) || "N/A"}
+                            </td>
+                          </tr>
+                          <tr key={item.facilityId + item.serviceId}>
+                            <td style={{ color: "#4b5563", paddingLeft: 10 }}>
+                              SubFacility
+                            </td>
+                            <td style={{ color: "black" }}>
+                              : {toTitleCase(item.serviceName) || "N/A"}
+                            </td>
+                          </tr>
+                          {item.details.map((detail, index) => (
+                            <>
+                              <tr>
+                                <td
+                                  style={{ color: "#4b5563", paddingLeft: 10 }}
+                                >
+                                  Ticket Type
+                                </td>
+                                <td style={{ color: "black" }}>
+                                  :{" "}
+                                  {toTitleCase(detail?.serviceVariantName) ||
+                                    "N/A"}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{ color: "#4b5563", paddingLeft: 10 }}
+                                >
+                                  Qnty
+                                </td>
+                                <td style={{ color: "black" }}>
+                                  : {detail?.quantity || "N/A"}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    color: "black",
+                                    padding: 5,
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Total
+                                </td>
+                                <td
+                                  style={{
+                                    color: "black",
+                                    padding: 5,
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  :{" "}
+                                  {formatToCurrency(
+                                    detail?.amount * detail?.quantity
+                                  ) || "N/A"}
+                                </td>
+                              </tr>
+                            </>
                           ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-200">No booking details available.</p>
-              )}
+                        </>
+                      </tbody>
+                    ))
+                  ) : (
+                    <p className="text-gray-200">
+                      No booking details available.
+                    </p>
+                  )}
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>}
+      )}
     </AdminLayout>
   );
 }

@@ -292,7 +292,6 @@ export default function AdminBookings() {
                             classNamePrefix="react-select"
                             placeholder="Locations"
                             isClearable
-                           
                             styles={{
                               control: (base) => ({
                                 ...base,
@@ -303,7 +302,7 @@ export default function AdminBookings() {
                                 height: "30px",
                                 minHeight: "33px",
                               }),
-            
+
                               menu: (base) => ({
                                 ...base,
                                 // padding: "4px 0",
@@ -311,7 +310,9 @@ export default function AdminBookings() {
                               option: (base, { isFocused }) => ({
                                 ...base,
                                 fontSize: "0.775rem",
-                                backgroundColor: isFocused ? "#F8F8F8" : "white",
+                                backgroundColor: isFocused
+                                  ? "#F8F8F8"
+                                  : "white",
                                 color: isFocused ? "#0C3771" : "#6D7072",
                                 cursor: "pointer",
                               }),

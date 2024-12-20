@@ -34,6 +34,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
     serviceId: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.serviceId,
     displayName: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.displayName,
     amount: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.amount,
+    serviceVarientSequenceNumber:isCreateServiceVariantEnabled ? "" :ServiceVariantEditDetails.sequenceNumber,
     description: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.description,
     isPriceFixed: isCreateServiceVariantEnabled ? false : !ServiceVariantEditDetails.isPriceFixed,
     isActive: isCreateServiceVariantEnabled ? true : ServiceVariantEditDetails.isActive,
@@ -41,7 +42,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the Actual name."),
     serviceId: Yup.string().required("Please enter the sub facility."),
-    // displayName: Yup.string().required("Please enter the display name."),
+    serviceVarientSequenceNumber: Yup.string().required("Please enter the Sequence."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
     isPriceFixed: Yup.boolean().required(
@@ -233,6 +234,25 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                     component="div"
                     className="text-red-500 text-xs"
                   />
+                </div>
+                 {/* sequence */}
+                 <div>
+                  <label className="block text-sm font-medium">
+                    Sequence
+                  </label>
+                  <Field
+                    name="serviceVarientSequenceNumber"
+                    type="number"
+                    maxLength={50}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                  <ErrorMessage
+                    name="serviceVarientSequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                 
                 </div>
 
                 {/* description */}

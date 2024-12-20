@@ -226,6 +226,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                   <Field
                     type="password"
                     name="password"
+                    maxLength={4}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.password && touched.password
                         ? "border-red-500"

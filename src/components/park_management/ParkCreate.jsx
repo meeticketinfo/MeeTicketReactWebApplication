@@ -199,9 +199,10 @@ const ParkCreate = ({
     values.DisplayName = values.Name;
 
     try {
+
       const result = await saveParkDetails(
         values,
-        isParkEditVisible ? true : false
+        isParkEditVisible ? true : false, role
       );
       if (result && result.data && result.data.status === 200) {
         toast.success(

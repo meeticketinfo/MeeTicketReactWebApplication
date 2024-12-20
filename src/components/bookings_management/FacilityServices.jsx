@@ -23,6 +23,16 @@ import { useModalStore } from "../../store/modalStore";
 
 export const FacilityServices = () => {
   const navigate = useNavigate();
+  function formatBookingDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:00:00.000`;
+  }
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const {
@@ -39,6 +49,7 @@ export const FacilityServices = () => {
     isUpi,
     setisCash,
     isCash,
+    saveBookingDetailsError
   } = useBookingsStore();
   // console.log("isUpi", isUpi);
   const { decodedTokenData, DepartmentId } = useAuthStore();
@@ -76,6 +87,7 @@ export const FacilityServices = () => {
   ];
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method."), // Add validation for payment method
+    mobileNumber: Yup.string().required("Please give mobile number."),
   });
 
   const handleSubmit = async (
@@ -86,6 +98,7 @@ export const FacilityServices = () => {
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const bookingDetailsPayload = {
       amount: totalAmount,
+      mobileNumber: values.mobileNumber,
       customerId: "XYZ",
       departmentId: LocationDetails?.departmentId,
       isIOS: false,
@@ -93,46 +106,49 @@ export const FacilityServices = () => {
       parkId: decodedTokenData?.data?.ParkId,
     };
 
-    if (values.paymentMethod==="cash") {
+    if (values.paymentMethod === "cash") {
       const totalAmount = calculateTotalAmount(values.selectedItems);
-    const currentDateTime = new Date().toISOString;
-    const bookingDetailsPayload = {
-      totalAmount: totalAmount,
-      userId: decodedTokenData?.data?.UserId,
-      parkId: decodedTokenData?.data?.ParkId,
-      transactionId: "",
-      bookingDate: currentDateTime,
-      bookingDetailsReqDTOs: values.selectedItems,
-    };
-    console.log("Booking Details Payload:", bookingDetailsPayload);
-    try {
-      const result = await saveBookingDetails(bookingDetailsPayload);
-      if (result && result.data && result.data.status === 200) {
-        const newBookingId = result?.data?.data?.data;
-        navigate(`/entity-bookings/view-details/${newBookingId}`);
-        resetForm();
-      } else {
-        toast.error("Unexpected response from the server.");
-      }
-    } catch (xhr) {
-      handleApiError(xhr);
-    } finally {
-      setSubmitting(false);
-    }
-    }
-    else{
-      const bookingPaylod = {
+      const currentDate = new Date();
+      const bookingDetailsPayload = {
+        mobileNumber: values.mobileNumber,
         totalAmount: totalAmount,
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
         transactionId: "",
-  
+        bookingDate: formatBookingDate(currentDate),
+        bookingDetailsReqDTOs: values.selectedItems,
+      };
+      console.log("Booking Details Payload:", bookingDetailsPayload);
+      try {
+        const result = await saveBookingDetails(bookingDetailsPayload);
+           console.log("error",result)
+        if (result && result.data && result.data.status === 200) {
+          const newBookingId = result?.data?.data?.data;
+          navigate(`/entity-bookings/view-details/${newBookingId}`);
+          resetForm();
+        } else {
+          toast.error("Unexpected response from the server.");
+        }
+      } catch (xhr) {
+        handleApiError(xhr);
+        // toast.error(error);
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      const bookingPaylod = {
+        mobileNumber: values.mobileNumber,
+        totalAmount: totalAmount,
+        userId: decodedTokenData?.data?.UserId,
+        parkId: decodedTokenData?.data?.ParkId,
+        transactionId: "",
+
         bookingDetailsReqDTOs: values.selectedItems,
       };
       sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
-  
+
       // console.log("bookingDetailsPayload",bookingDetailsPayload)
-  
+
       try {
         const result = await saveFirstBookingDetails(bookingDetailsPayload);
         setQuantities({});
@@ -142,12 +158,10 @@ export const FacilityServices = () => {
         handleApiError(xhr);
       } finally {
         resetForm();
-  
+
         setSubmitting(false);
       }
-
     }
-
 
     // if (isCash) {
     //   const totalAmount = calculateTotalAmount(values.selectedItems);
@@ -206,6 +220,8 @@ export const FacilityServices = () => {
 
   return (
     <>
+    <div>
+    <ToastContainer/>
       {IsFirstStepTransaction ? (
         IsTransactionFailed ? (
           <TransactionFailed />
@@ -216,9 +232,11 @@ export const FacilityServices = () => {
         )
       ) : (
         <div>
+          
           <Formik
             initialValues={{
               selectedItems: [],
+              phoneNumber: "",
               paymentMethod: "",
             }}
             validationSchema={validationSchema}
@@ -264,11 +282,29 @@ export const FacilityServices = () => {
                                   key={service.id}
                                   className="service bg-gray-200 border- border-blue-v2 p-2 rounded-md text-white"
                                 >
-                                  <h6 className="text-1xl text-blue-v1 font-semibold">
-                                    {toTitleCase(service.displayName) ||
-                                      toTitleCase(service.name)}
-                                  </h6>
+                                  <div className="flex justify-between">
+                                    <h6 className="text-1xl text-blue-v1 font-semibold">
+                                      {toTitleCase(service.displayName) ||
+                                        toTitleCase(service.name)}
+                                    </h6>
 
+                                    {service.limit >= 0 ? (
+                                      <div className="flex gap-2">
+                                        <h1 className="text-blue-v1 text-sm">
+                                          Available Tickets:
+                                        </h1>
+                                        <h1 className="text-blue-v2 font-bold">
+                                          {service.limit === null
+                                            ? "N/A"
+                                            : service.limit}
+                                        </h1>
+                                      </div>
+                                    ) : (
+                                      <span className="text-sm text-blue-v1 font-bold">
+                                        No Limit
+                                      </span>
+                                    )}
+                                  </div>
                                   <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
                                     {allServiceVariants
                                       ?.filter(
@@ -504,7 +540,7 @@ export const FacilityServices = () => {
                       <div className="">
                         <h1>Payment Method</h1>
 
-                        <div className="flex items-center gap-6 mt-2">
+                        <div className="flex items-end gap-6 mt-2">
                           <div className="flex items-center">
                             <Field
                               id="upi-radio"
@@ -513,13 +549,17 @@ export const FacilityServices = () => {
                               value="upi"
                               onClick={() => {
                                 setOpenModalId("upi");
-                                setisCash(true)
+                                setisCash(true);
                               }}
                               className="hidden"
                             />
                             <label
                               htmlFor="upi-radio"
-                              className={`flex items-center gap-2 p-2  border rounded-md text-xs font-medium cursor-pointer transition-all ${values.paymentMethod === 'upi' ? 'bg-blue-v1 text-white shadow-lg' : 'bg-white text-blue-v1 shadow-custom border '}
+                              className={`flex items-center gap-2 p-2  border rounded-md text-xs font-semibold cursor-pointer transition-all ${
+                                values.paymentMethod === "upi"
+                                  ? "bg-blue-v1 text-white shadow-lg"
+                                  : "bg-white text-blue-v1 shadow-custom border "
+                              }
                               `}
                             >
                               <img
@@ -539,13 +579,17 @@ export const FacilityServices = () => {
                               value="cash"
                               onClick={() => {
                                 setOpenModalId("cash");
-                                setisCash(false)
+                                setisCash(false);
                               }}
                               className="hidden"
                             />
                             <label
                               htmlFor="cash-radio"
-                              className={`flex items-center gap-2 p-2 rounded-md  border text-xs font-medium cursor-pointer transition-all ${values.paymentMethod === 'cash' ? 'bg-blue-v1 text-white shadow-lg' : 'bg-white text-blue-v1 shadow-custom border '}
+                              className={`flex items-center gap-2 p-2 rounded-md  border text-xs font-semibold cursor-pointer transition-all ${
+                                values.paymentMethod === "cash"
+                                  ? "bg-blue-v1 text-white shadow-lg"
+                                  : "bg-white text-blue-v1 shadow-custom border "
+                              }
                               `}
                             >
                               <img
@@ -556,6 +600,34 @@ export const FacilityServices = () => {
                               Cash Payment
                             </label>
                           </div>
+                          {/* Phone Number */}
+                          <div>
+                            <label
+                              htmlFor="mobileNumber"
+                              className="block text-xs font-medium text-gray-700"
+                            >
+                              mobile Number{" "}
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              maxLength="10"
+                              name="mobileNumber"
+                              className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                              placeholder="Enter mobile Number"
+                              onKeyPress={(e) => {
+                                if (!/^\d$/.test(e.key)) {
+                                  e.preventDefault(); // Prevent non-numeric characters
+                                }
+                              }}
+                            />
+                            {errors.mobileNumber && touched.mobileNumber && (
+                              <p className="text-red-500 text-xs   absolute z-10 ">
+                                {errors.mobileNumber}
+                              </p>
+                            )}
+                            {/* </div> */}
+                          </div>
                         </div>
 
                         {errors.paymentMethod && touched.paymentMethod && (
@@ -564,6 +636,7 @@ export const FacilityServices = () => {
                           </p>
                         )}
                       </div>
+
                       <p className="text-lg font-bold text-blue-v1">
                         Total:{" "}
                         {formatToCurrency(
@@ -571,7 +644,9 @@ export const FacilityServices = () => {
                         )}
                       </p>
                     </div>
+                    {/* {saveBookingDetailsError&&<p className="">{saveBookingDetailsError}</p>} */}
                   </div>
+                 
                 )}
 
                 <div className="flex justify-center p-2">
@@ -597,12 +672,11 @@ export const FacilityServices = () => {
                   </button> */}
                   <button
                     type="submit"
-                    disabled={!isCash} 
+                    disabled={!isCash}
                     className={`text-base rounded-lg px-3 py-1 ${
                       !isCash
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        :
-                         isSubmitting
+                        : isSubmitting
                         ? "bg-gradient-to-r from-blue-v1 via-blue-800 to-blue-v1 animate-pulse text-white"
                         : "bg-blue-v1 text-white"
                     }`}
@@ -632,7 +706,7 @@ export const FacilityServices = () => {
       >
         <div className="px-10 py-14">
           <h1 className="text-blue-v1 font-semibold">
-          Are you sure that you have received the cash?
+            Are you sure that you have received the cash?
           </h1>
           <div className="flex justify-center gap-6 mt-4">
             <button
@@ -693,6 +767,7 @@ export const FacilityServices = () => {
           </div>
         </div>
       </PopupModal> */}
+      </div>
     </>
   );
 };

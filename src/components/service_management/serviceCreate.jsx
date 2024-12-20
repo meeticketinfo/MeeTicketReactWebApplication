@@ -22,12 +22,15 @@ const ServiceCreate = ({ onDataAdded }) => {
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
+  console.log("ServiceEditDetails",ServiceEditDetails)
   useEffect(() => {
     fetchAllFacilities();
   }, []);
   const initialValues = {
     id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
     name: isCreateServiceEnabled ? "" :ServiceEditDetails.name,
+    limit: isCreateServiceEnabled ? "" :ServiceEditDetails.limit,
+    serviceSequenceNumber:isCreateServiceEnabled ? "" :ServiceEditDetails.sequenceNumber,
     displayName: isCreateServiceEnabled ? "" :ServiceEditDetails.displayName,
     serviceType: isCreateServiceEnabled ? "" :ServiceEditDetails.serviceType,
     duration: isCreateServiceEnabled ? "" :ServiceEditDetails.duration,
@@ -39,6 +42,7 @@ const ServiceCreate = ({ onDataAdded }) => {
   };
   const validationSchema = Yup.object({
     facilityId: Yup.string().required("Please enter facility ."),
+    serviceSequenceNumber:Yup.string().required("Please enter Sequence ."),
     name: Yup.string().required("Please enter Actual name."),
     Description: Yup.string()
       .nullable()
@@ -141,7 +145,7 @@ const ServiceCreate = ({ onDataAdded }) => {
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Actual Name
+                    Actual Name<span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="name"
@@ -160,8 +164,39 @@ const ServiceCreate = ({ onDataAdded }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* Display Name */}
-
+                {/* Limit */}
+                <div>
+                  <label className="block text-sm font-medium">
+                    Limit
+                  </label>
+                  <Field
+                    name="limit"
+                    type="number"
+                    maxLength={50}
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Limit"
+                  />
+                 
+                </div>
+                {/* sequence */}
+                <div>
+                  <label className="block text-sm font-medium">
+                    Sequence<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="serviceSequenceNumber"
+                    type="number"
+                    maxLength={50}
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                   <ErrorMessage
+                    name="serviceSequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                 
+                </div>
                 {/* Status */}
                 <div>
                   <label className="block text-sm font-medium">Status</label>

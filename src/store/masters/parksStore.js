@@ -91,11 +91,12 @@ export const useParkStore = create((set) => ({
   },
 
   // Save park details
-  saveParkDetails: async (ParkData, isUpdate = false) => {
+  saveParkDetails: async (ParkData, isUpdate = false, role) => {
     set({ isSaveParkDetailsLoading: true });
     try {
+      const locationEditEndPoint = (role === "ROLE_NODALOFFICER" ? API_ENDPOINTS.MASTERS.PARK.UPDATE_NODAL_OFFICER_PARK_DETAILS :API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS)
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+        ? locationEditEndPoint
         : API_ENDPOINTS.MASTERS.PARK.ADD_NEW_PARK;
 
       // Prepare form data

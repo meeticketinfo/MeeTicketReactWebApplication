@@ -11,6 +11,10 @@ const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
 // const API_BASE_URL =
 //  "https://meeticketservicedevapi.vmaxtechservices.life/api/";
 
+// testing
+// export const API_BASE_URL =
+//   "https://hb5h53s7-7237.inc1.devtunnels.ms/api/";
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

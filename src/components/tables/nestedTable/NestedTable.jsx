@@ -10,8 +10,7 @@ import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityS
 
 const NestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
- 
-  
+
   useEffect(() => {
     fetchAllDropdownFacilities();
   }, []);
@@ -24,7 +23,9 @@ const NestedTable = ({ data }) => {
             <th className="p-3 text-center">S.No</th>
             <th className="p-3 text-center">Facility Name</th>
             <th className="p-3 text-center">Description</th>
+            <th className="p-3 text-center">Sequence</th>
             <th className="p-3 text-center">Status</th>
+
             <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
@@ -57,7 +58,12 @@ const AccordionRow = ({ serial, row }) => {
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
         <td className="p-2 text-center">{row.name || "N/A"}</td>
-        <td className="p-2 text-center">{row.description ? row.description : "N/A"}</td>
+        <td className="p-2 text-center">
+          {row.description ? row.description : "N/A"}
+        </td>
+        <td className="p-2 text-center">
+          {row.sequenceNumber ? row.sequenceNumber : "N/A"}
+        </td>
         <td className="p-2 text-center">
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
@@ -98,6 +104,8 @@ const AccordionRow = ({ serial, row }) => {
                   <th className="p-2 text-center">S.No</th>
                   <th className="p-2 text-center">Sub Facility Name</th>
                   <th className="p-2 text-center">Description</th>
+                  <th className="p-2 text-center">Limit</th>
+                  <th className="p-3 text-center">Sequence</th>
                   <th className="p-2 text-center">Status</th>
                   <th className="p-2 text-center">Actions</th>
                 </tr>
@@ -154,6 +162,8 @@ const AccordionSubRow = ({
         </td>
         <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
         <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
+        <td className="p-2 text-center">{subRow.limit ?? "N/A"}</td>
+        <td className="p-2 text-center">{subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}</td>
         <td className="p-2 text-center">
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
@@ -194,6 +204,7 @@ const AccordionSubRow = ({
                 <tr>
                   <th className="p-2 text-center">Ticket Type</th>
                   <th className="p-2 text-center">Price</th>
+                  <th className="p-3 text-center">Sequence</th>
                   <th className="p-2 text-center">Is Person Based</th>
                   <th className="p-2 text-center">Actions</th>
                 </tr>
@@ -205,6 +216,7 @@ const AccordionSubRow = ({
                     <td className="p-2 text-center">
                       {formatToCurrency(detail?.amount) || "N/A"}
                     </td>
+                    <td className="p-2 text-center">{detail.sequenceNumber ? detail.sequenceNumber : "N/A"}</td>
                     <td className="p-2 text-center">
                       <div
                         style={{

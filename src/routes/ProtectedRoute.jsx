@@ -27,9 +27,9 @@ const ProtectedRoute = ({ element }) => {
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  //   if (isAuthenticated) {
-  //     return <Navigate to="/dashboard" replace />;
-  //   }
+    // if (isAuthenticated) {
+    //   return <Navigate to="/dashboard" replace />;
+    // }
   // Get current route and check if it is allowed for the user's role
   const currentPath = location.pathname.replace(/\/$/, ""); // Normalize trailing slash
   const permissions = rolePermissions || [];

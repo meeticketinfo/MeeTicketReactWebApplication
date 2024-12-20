@@ -2,6 +2,7 @@ import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import { persist } from "zustand/middleware";
+import { handleApiError } from "../../utils/apiErrorHandler";
 
 
 export const useBookingsStore = create( 
@@ -149,18 +150,21 @@ export const useBookingsStore = create(
         const method = "post";
 
         const response = await apiService[method](url, bookingDetailsPayload);
-
+       
         set({
           facilityCreateResponse: { response },
           FacilityDetails: response.data,
           isSaveBookingDetailsLoading: false,
         });
         return { success: true, data: response };
-      } catch (error) {
+      } catch ({error,xhr}) {
+        // handleApiError(xhr);
+        
         set({
-          saveBookingDetailsError: error.message,
+          saveBookingDetailsError: error.response.data.message,
           isSaveBookingDetailsLoading: false,
         });
+        return { error:  error.response.data.message };
         throw error;
       }
     },
