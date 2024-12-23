@@ -17,16 +17,17 @@ const ticketTypeOptions = [
   { value: "others", label: "Others" },
 ];
 
-   
-
 const initialValues = {
-  facilityDto: { facilityMasterId: "",facilitySequenceNumber:null },
+  facilityDto: {
+    facilityMasterId: "",
+    facilitySequenceNumber: null,
+    TermsConditions: "",
+  },
   hasSubFacility: false,
-  subFacilities: [{ name: "",Limit:null,subFacilitySequenceNumber:null, ticketTypes: [] }],
+  subFacilities: [
+    { name: "", Limit: null, subFacilitySequenceNumber: null, ticketTypes: [] },
+  ],
 };
-
-
-
 
 // const validationSchema = Yup.object({
 //   facilityDto: Yup.object().shape({
@@ -57,11 +58,11 @@ const initialValues = {
 //   // .min(1, "At least one sub-facility is required"),
 // });
 
-const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
+const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
   const { decodedTokenData } = useAuthStore();
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
-  const [isSubfacility,setIsSubfacility]=useState(false)
-  
+  const [isSubfacility, setIsSubfacility] = useState(false);
+
   const {
     saveunifiedFacilityDetails,
     isSaveUnifiedFacilityDetailsLoading,
@@ -77,21 +78,31 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
   const validationSchema = Yup.object({
     facilityDto: Yup.object().shape({
       facilityMasterId: Yup.string().required("Facility is required"),
-      facilitySequenceNumber:Yup.string().required("Sequence is required"),
+      // facilitySequenceNumber: Yup.string().required("Sequence is required").max(200, ' Sequence Number cannot exceed 200'),
+      facilitySequenceNumber: Yup.number()
+      .nullable()
+      .required("Sequence is required")
+      .max(200, "Sequence Number cannot exceed 200"),
       name: Yup.string().required("Facility Name is required"),
     }),
     hasSubFacility: Yup.boolean(),
     subFacilities: Yup.array().of(
       Yup.lazy((value, { parent }) => {
-       
-       
         return Yup.object().shape({
-          name: isSubfacility&&Yup.string().required("Sub-Facility Name is required"),
-          subFacilitySequenceNumber: isSubfacility&&Yup.string().required("Sequence is required"),
+          name:
+            isSubfacility &&
+            Yup.string().required("Sub-Facility Name is required"),
+          subFacilitySequenceNumber:
+            isSubfacility &&  Yup.number()
+            .nullable()
+            .required("Sequence is required")
+            .max(200, "Sequence Number cannot exceed 200"),
           ticketTypes: Yup.array().of(
             Yup.object().shape({
               type: Yup.string().required("Ticket Type is required"),
-              typeOfTicketSequenceNumber: Yup.string().required("Sequence is required"),
+              typeOfTicketSequenceNumber: Yup.string().required(
+                "Sequence is required"
+              ),
               amount: Yup.number()
                 .required("Amount is required")
                 .positive("Amount must be a positive number"),
@@ -110,6 +121,7 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
         facilityMasterId: values.facilityDto.facilityMasterId,
         facilitySequenceNumber: values.facilityDto.facilitySequenceNumber,
         name: values.facilityDto.name,
+        TermsConditions: values.facilityDto.TermsConditions,
         parkId: decodedTokenData?.data?.ParkId,
         isActive: true,
       },
@@ -117,10 +129,8 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
         name: values.hasSubFacility
           ? subFacility.name
           : values.facilityDto.name,
-          Limit: values.hasSubFacility
-          ? subFacility.Limit
-          : -1,
-          subFacilitySequenceNumber: values.hasSubFacility
+        Limit: values.hasSubFacility ? subFacility.Limit : -1,
+        subFacilitySequenceNumber: values.hasSubFacility
           ? subFacility.subFacilitySequenceNumber
           : 1,
         displayName: values.hasSubFacility
@@ -208,13 +218,16 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
         >
           {({ errors, touched, isSubmitting, setFieldValue, values }) => (
             <Form>
-              <div className="flex justify-start items-end gap-4 mb-3">
+              <div className="flex justify-start gap-4 mb-3">
                 <div className="w-1/4">
                   {/* <SelectInput
                     name="facilityDto.facilityMasterId"
                     label="Select Facility"
                     options={transformedOptions ?? []}
                   /> */}
+                    <label htmlFor="User" className="block text-xs font-medium">
+                    Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="facilityDto.facilityMasterId"
@@ -272,7 +285,10 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                     name="facilityDto.facilitySequenceNumber"
                     type="text"
                     onChange={(e) => {
-                      setFieldValue("facilityDto.facilitySequenceNumber", e.target.value);
+                      setFieldValue(
+                        "facilityDto.facilitySequenceNumber",
+                        e.target.value
+                      );
                     }}
                     className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Sequence"
@@ -283,6 +299,7 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
+
                 <div className="flex items-center">
                   <Field
                     type="checkbox"
@@ -290,13 +307,18 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                     name="hasSubFacility"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
-                      setIsSubfacility(isChecked)
+                      setIsSubfacility(isChecked);
                       setFieldValue("hasSubFacility", isChecked);
                       if (isChecked) {
                         setFieldValue("subFacilities[0].name", "");
-                      }else{
-                        setFieldValue("subFacilities", [values.subFacilities[0]]);
-                        setFieldValue("subFacilities[0].name", Selectedfacility.facilityName);
+                      } else {
+                        setFieldValue("subFacilities", [
+                          values.subFacilities[0],
+                        ]);
+                        setFieldValue(
+                          "subFacilities[0].name",
+                          Selectedfacility.facilityName
+                        );
                       }
                     }}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -308,8 +330,22 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                     Has Sub-Facility
                   </label>
                 </div>
+
                 {/* <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" onChange={handleSubFacilityName} /> */}
               </div>
+              <div className="md:col-span-3">
+                <label className="text-gray-700 dark:text-gray-300 text-sm">
+                  Terms&Conditions
+                </label>
+                <Field
+                  name="facilityDto.TermsConditions"
+                  placeholder="Enter terms&conditions"
+                  maxLength={255}
+                  as="textarea"
+                  className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                />
+              </div>
+
               <hr className="py-2"></hr>
               <FieldArray name="subFacilities">
                 {({ push, remove }) => (
@@ -342,11 +378,16 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
                             />
-                             <TextInput
+                            <TextInput
+                              min={0}
+                              type="number"
                               name={`subFacilities[${index}].Limit`}
                               label="Limit"
                             />
                             <TextInput
+                              min={0}
+                              max={200}
+                              type="number"
                               name={`subFacilities[${index}].subFacilitySequenceNumber`}
                               label="Sequence"
                             />
@@ -387,7 +428,7 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                                       customType: "",
                                       chargedPerPerson: "",
                                       amount: "",
-                                      typeOfTicketSequenceNumber:"",
+                                      typeOfTicketSequenceNumber: "",
                                     })
                                   }
                                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -428,7 +469,7 @@ const ServiceUnifiedCreator = ({setIsFacilityCreateVisible}) => {
                                               { value: "yes", label: "No" },
                                             ]}
                                           />
-                                           <TextInput
+                                          <TextInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].typeOfTicketSequenceNumber`}
                                             label="Sequence"
                                           />

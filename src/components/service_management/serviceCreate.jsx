@@ -29,7 +29,7 @@ const ServiceCreate = ({ onDataAdded }) => {
   const initialValues = {
     id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
     name: isCreateServiceEnabled ? "" :ServiceEditDetails.name,
-    limit: isCreateServiceEnabled ? "" :ServiceEditDetails.limit,
+    limit: isCreateServiceEnabled ? null :ServiceEditDetails.limit,
     serviceSequenceNumber:isCreateServiceEnabled ? "" :ServiceEditDetails.sequenceNumber,
     displayName: isCreateServiceEnabled ? "" :ServiceEditDetails.displayName,
     serviceType: isCreateServiceEnabled ? "" :ServiceEditDetails.serviceType,
@@ -60,6 +60,7 @@ const ServiceCreate = ({ onDataAdded }) => {
     values.installationDate = values.installationDate
       ? values.installationDate
       : null;
+      values.limit = values.limit? Number(values.limit): -1;
     values.isActive = values.isActive === "true" || values.isActive === true;
     values.displayName = values.name;
     try {
@@ -172,6 +173,7 @@ const ServiceCreate = ({ onDataAdded }) => {
                   <Field
                     name="limit"
                     type="number"
+                    min={0}
                     maxLength={50}
                     className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Limit"

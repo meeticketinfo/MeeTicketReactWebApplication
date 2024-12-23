@@ -1,16 +1,17 @@
 import useAuthStore from "../store/authStore";
 
 // dev
-export const API_BASE_URL =
-  "https://meeticket.vmaxtechservices.life/parkapi/api/";
-// uat
 // export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+//   "https://meeticket.vmaxtechservices.life/parkapi/api/";
+// uat
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
+
 // testing
 // export const API_BASE_URL =
-//   "https://hb5h53s7-7237.inc1.devtunnels.ms/api/";
+//   "https://rx3ffgz6-7237.inc1.devtunnels.ms/api/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
  

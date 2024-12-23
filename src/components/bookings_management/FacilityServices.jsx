@@ -130,8 +130,8 @@ export const FacilityServices = () => {
           toast.error("Unexpected response from the server.");
         }
       } catch (xhr) {
-        handleApiError(xhr);
-        // toast.error(error);
+        // handleApiError(xhr);
+        toast.error("Tickets are Not enough for the service");
       } finally {
         setSubmitting(false);
       }
@@ -439,6 +439,7 @@ export const FacilityServices = () => {
 
                                                 <button
                                                   type="button"
+                                                  disabled={service.limit === 0}
                                                   onClick={() => {
                                                     const newItem = {
                                                       quantity:

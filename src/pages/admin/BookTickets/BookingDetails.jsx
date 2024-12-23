@@ -235,7 +235,6 @@ export default function BookingDetails() {
                 <div
                   className="backdrop-blur-sm"
                   style={{
-                    border: "1px solid red",
                     backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent background
                   }}
                 >

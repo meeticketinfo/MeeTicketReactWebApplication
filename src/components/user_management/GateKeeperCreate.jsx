@@ -45,7 +45,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .matches(/^\d{10}$/, "Phone Number must contain exactly 10 digits"),
     password: Yup.string()
-      .required("Password is required")
+      .required("Pin is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
     // dateOfBirth: Yup.date()
     //   .required("Date of Birth is required")
@@ -221,7 +221,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password<span className="text-red-500">*</span>
+                    4-digit Pin<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="password"
@@ -232,7 +232,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter password"
+                    placeholder="Four-digit-pin"
                   />
                   <ErrorMessage
                     name="password"

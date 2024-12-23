@@ -38,8 +38,9 @@ const FacilityCreate = ({ onDataAdded }) => {
     openTime: FacilityEditDetails.openTime || "00:00:00",
     closeTime: FacilityEditDetails.closeTime || "00:00:00",
     description: FacilityEditDetails.description || "",
+    TermsConditions: FacilityEditDetails.termsConditions || "",
     isActive: FacilityEditDetails.isActive,
-    parkId: FacilityEditDetails.parkId || parkId,
+    parkId: FacilityEditDetails.parkId || parkId, 
   };
   console.log("FacilityEditDetails", FacilityEditDetails);
   const validationSchema = Yup.object({
@@ -226,7 +227,7 @@ const FacilityCreate = ({ onDataAdded }) => {
                 </div>
 
                 {/* Description */}
-                <div className="col-span-3">
+                <div className="col-span-1">
                   <label className="block text-sm font-medium">
                     Description
                   </label>
@@ -246,7 +247,19 @@ const FacilityCreate = ({ onDataAdded }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-
+               {/* terms and conditions */}
+               <div className="md:col-span-2">
+                <label className="text-gray-700 dark:text-gray-300 text-sm">
+                  Terms and Conditions
+                </label>
+                <Field
+                  name="TermsConditions"
+                  placeholder="Enter terms and conditions"
+                  maxLength={255}
+                  as="textarea"
+                  className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                />
+              </div>
                 {/* Status */}
                 <div className="col-span-1">
                   <label className="block text-sm font-medium">Status</label>

@@ -108,7 +108,7 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
                   disabled={loading || isSubmitting}
                 >
                   
-                      Continue <FaArrowRightLong className="ms-2 mt-0.5" />
+                      Send OTP
                    
                 </button>
               </div>

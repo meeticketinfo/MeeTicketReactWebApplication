@@ -23,7 +23,7 @@ const ParkCreate = ({
     filePreviews,
     parkEditDetails,
     updateFilePreview,
-    resetFilePreview
+    resetFilePreview,
   } = useParkStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -64,6 +64,7 @@ const ParkCreate = ({
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
     IsCounter: isParkEditVisible ? parkEditDetails.isCounter : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
+    TermsConditions:isParkEditVisible ? parkEditDetails.termsConditions : "",
     ImageUrl: null,
     NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
     ...(isParkEditVisible ? { Prefix: "XYZ" } : { Prefix: "XYZ" }),
@@ -199,10 +200,10 @@ const ParkCreate = ({
     values.DisplayName = values.Name;
 
     try {
-
       const result = await saveParkDetails(
         values,
-        isParkEditVisible ? true : false, role
+        isParkEditVisible ? true : false,
+        role
       );
       if (result && result.data && result.data.status === 200) {
         toast.success(
@@ -268,6 +269,7 @@ const ParkCreate = ({
                   <Field
                     as="select"
                     name="DepartmentId"
+                    disabled={ role === "ROLE_NODALOFFICER"}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.DepartmentId && touched.DepartmentId
                         ? "border-red-500"
@@ -301,6 +303,7 @@ const ParkCreate = ({
                   <Field
                     as="select"
                     name="EntityTypeId"
+                    disabled={ role === "ROLE_NODALOFFICER"}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.EntityTypeId && touched.EntityTypeId
                         ? "border-red-500"
@@ -561,7 +564,7 @@ const ParkCreate = ({
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                  
+
                   {filePreviews.ImageUrl?.fileUrl && (
                     <BaseVariant
                       file={filePreviews.ImageUrl.file}
@@ -569,54 +572,67 @@ const ParkCreate = ({
                       fileUrl={filePreviews.ImageUrl.fileUrl}
                     />
                   )}
-                  
                 </div>
                 {role !== "ROLE_NODALOFFICER" && (
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                  {/* Nodal Officer */}
-                  <div>
-                    <label className="block text-sm font-medium">
-                      Nodal Officer <span className="text-red-500">*</span>
-                    </label>
-                    <Field
-                      as="select"
-                      name="NodalOfficerId"
-                      onChange={(e) => {
-                        const { name, value } = e.target;
-                        setFieldValue("NodalOfficerId", value);
-                      }}
-                      className={`mt-1 block w-full px-2 py-1 border ${
-                        errors.NodalOfficerId && touched.NodalOfficerId
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    >
-                      <option value="">Select Nodal Officer</option>
-                      {allNodalOfficers
-                        ?.filter((allNodalOfficer) => allNodalOfficer.isActive)
-                        .map((allNodalOfficer) => (
-                          <option
-                            key={allNodalOfficer.id}
-                            value={allNodalOfficer.id}
-                          >
-                            <span>
-                              {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}{" "}
-                              &nbsp;- &nbsp;{" "}
-                            </span>
-                            <span>{`${allNodalOfficer.phoneNumber}`}</span>
-                          </option>
-                        ))}
-                    </Field>
-                    <ErrorMessage
-                      name="NodalOfficerId"
-                      component="div"
-                      className="text-red-500 text-xs"
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                    {/* Nodal Officer */}
+                    <div>
+                      <label className="block text-sm font-medium">
+                        Nodal Officer <span className="text-red-500">*</span>
+                      </label>
+                      <Field
+                        as="select"
+                        name="NodalOfficerId"
+                        onChange={(e) => {
+                          const { name, value } = e.target;
+                          setFieldValue("NodalOfficerId", value);
+                        }}
+                        className={`mt-1 block w-full px-2 py-1 border ${
+                          errors.NodalOfficerId && touched.NodalOfficerId
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      >
+                        <option value="">Select Nodal Officer</option>
+                        {allNodalOfficers
+                          ?.filter(
+                            (allNodalOfficer) => allNodalOfficer.isActive
+                          )
+                          .map((allNodalOfficer) => (
+                            <option
+                              key={allNodalOfficer.id}
+                              value={allNodalOfficer.id}
+                            >
+                              <span>
+                                {`${allNodalOfficer.firstName} ${allNodalOfficer.lastName}`}{" "}
+                                &nbsp;- &nbsp;{" "}
+                              </span>
+                              <span>{`${allNodalOfficer.phoneNumber}`}</span>
+                            </option>
+                          ))}
+                      </Field>
+                      <ErrorMessage
+                        name="NodalOfficerId"
+                        component="div"
+                        className="text-red-500 text-xs"
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+                 <div className="md:col-span-3">
+                        <label className="text-gray-700 dark:text-gray-300 text-sm">
+                          Terms and Conditions
+                        </label>
+                        <Field
+                          name="TermsConditions"
+                          placeholder="Enter terms and conditions"
+                          maxLength={255}
+                          as="textarea"
+                          className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                        />
+                      </div>
               </div>
-             
+
               {/* Submit Button */}
               <div className="flex justify-center">
                 <div className="">
