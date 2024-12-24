@@ -202,7 +202,7 @@ const Login = () => {
                       isPhoneSelected ? "text-gray-600" : "text-white"
                     }`}
                   >
-                    Login with OTP
+                    User
                   </span>
 
                   {/* Tab 2: Login with Email */}
@@ -211,7 +211,7 @@ const Login = () => {
                       isPhoneSelected ? "text-white" : "text-gray-600"
                     }`}
                   >
-                    Login with Email
+                    ESD Admin
                   </span>
                 </label>
               </div>
