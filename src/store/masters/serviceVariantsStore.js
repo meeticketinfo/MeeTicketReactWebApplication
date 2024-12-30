@@ -44,7 +44,7 @@ export const useServiceVariantStore = create((set) => ({
         isFetchAllServiceVariantsLoading: false,
       });
     } catch (error) {
-      set({  isFetchAllServiceVariantsLoading: false });
+      set({ isFetchAllServiceVariantsLoading: false });
     }
   },
 
@@ -71,11 +71,17 @@ export const useServiceVariantStore = create((set) => ({
   },
 
   // Save Service details
-  saveServiceVarientDetails: async (ServiceData, isUpdate = false) => {
+  saveServiceVarientDetails: async (ServiceData, role, isUpdate = false) => {
     set({ isSaveServiceVarientDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT.UPDATE_SERVICE_VARIENT_DETAILS
+        ? role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT
+              .UPDATE_SERVICE_VARIENT_DETAILS_NODAL_OFFICER
+          : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.UPDATE_SERVICE_VARIENT_DETAILS
+        : role === "ROLE_NODALOFFICER"
+        ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT
+            .ADD_NEW_SERVICE_VARIENT_NODAL_OFFICER
         : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.ADD_NEW_SERVICE_VARIENT;
       const method = isUpdate ? "put" : "post";
 

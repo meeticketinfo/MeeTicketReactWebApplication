@@ -14,7 +14,7 @@ export const useServiceStore = create((set) => ({
   ServiceEditDetails: {},
 
   setCurrentServiceEditDetails: (ServiceEditDetails) => {
-    console.log("serviceEditDetails",ServiceEditDetails)
+    console.log("serviceEditDetails", ServiceEditDetails);
     set({
       ServiceEditDetails,
     });
@@ -26,13 +26,24 @@ export const useServiceStore = create((set) => ({
       .join("&"),
 
   // Fetch all Services
-  fetchAllServices: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllServices: async (
+    // pageIndex = 1,
+    // pageSize = 10,
+    //  filters = {}
+    role
+  ) => {
+    const LocationId = localStorage.getItem("locationid");
     set({ isFetchAllServicesLoading: true });
     try {
+      
+      const url =
+        role === "ROLE_NODALOFFICER"
+          ? `${API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES_NODAL_OFFICER}${LocationId}`
+          : API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES;
       //   const filterString = useServicestore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES}`
+        url
       );
       console.log(response);
 
@@ -41,7 +52,7 @@ export const useServiceStore = create((set) => ({
         isFetchAllServicesLoading: false,
       });
     } catch (error) {
-      set({  isFetchAllServicesLoading: false });
+      set({ isFetchAllServicesLoading: false });
     }
   },
 
@@ -68,11 +79,15 @@ export const useServiceStore = create((set) => ({
   },
 
   // Save Service details
-  saveServiceDetails: async (ServiceData, isUpdate = false) => {
+  saveServiceDetails: async (ServiceData, role, isUpdate = false) => {
     set({ isSaveServiceDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.SERVICE.UPDATE_SERVICE_DETAILS
+        ? role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.SERVICE.UPDATE_SERVICE_DETAILS_NODAL_OFFICER
+          : API_ENDPOINTS.MASTERS.SERVICE.UPDATE_SERVICE_DETAILS
+        : role === "ROLE_NODALOFFICER"
+        ? API_ENDPOINTS.MASTERS.SERVICE.ADD_NEW_SERVICE_NODAL_OFFICER
         : API_ENDPOINTS.MASTERS.SERVICE.ADD_NEW_SERVICE;
       const method = isUpdate ? "put" : "post";
 

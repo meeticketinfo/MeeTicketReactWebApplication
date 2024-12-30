@@ -162,7 +162,7 @@ const AccordionSubRow = ({
         </td>
         <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
         <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
-        <td className="p-2 text-center">{subRow.limit ?? "N/A"}</td>
+        <td className="p-2 text-center">{(subRow.limit<0)&&(subRow.limit!=null) ? "No Limit":subRow.limit}</td>
         <td className="p-2 text-center">{subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}</td>
         <td className="p-2 text-center">
           {" "}

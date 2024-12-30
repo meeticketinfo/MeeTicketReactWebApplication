@@ -8,8 +8,18 @@ export const gateKeepersStore = create((set) => ({
   isFetchAllGateKeepersLoading: false,
   allScannedGateKeepers: [],
   isFetchAllScannedGateKeepersLoading: false,
+  IsEditGateKeeper:false,
+  currentGateKeeperEditDetails:{},
   error: null,
   success: null,
+
+
+  setIsEditGateKeeper:(IsEditGateKeeper)=>{
+    set({IsEditGateKeeper})
+  },
+  setCurrentGateKeeperEditDetails:(currentGateKeeperEditDetails)=>{
+    set({currentGateKeeperEditDetails})
+  },
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -60,8 +70,8 @@ export const gateKeepersStore = create((set) => ({
   saveGateKeeperDetails: async (GateKeeperData, isUpdate = false) => {
     set({ isSaveGateKeeperDetailsLoading: true });
     try {
-      const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+      const url = isUpdate 
+        ? API_ENDPOINTS.MASTERS.GATE_KEEPER.UPDATE_GATE_KEEPER
         : API_ENDPOINTS.MASTERS.GATE_KEEPER.ADD_NEW_GATE_KEEPER;
       const method = isUpdate ? "put" : "post";
 

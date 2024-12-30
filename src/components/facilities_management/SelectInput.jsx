@@ -1,10 +1,10 @@
 import React from "react";
 import { Field, ErrorMessage } from "formik";
 
-const SelectInput = ({ name, label, options }) => (
+const SelectInput = ({ name, label,astrix, options }) => (
   <div className="form-group">
     <label className="block text-sm font-semibold text-gray-700" htmlFor={name}>
-      {label}
+      {label}{astrix&&<span className="text-red-500">*</span>}
     </label>
     <Field
       as="select"
@@ -22,7 +22,7 @@ const SelectInput = ({ name, label, options }) => (
     <ErrorMessage
       name={name}
       component="span"
-      className="text-red-500 text-xs"
+      className="text-red-500 text-xs absolute"
     />
   </div>
 );

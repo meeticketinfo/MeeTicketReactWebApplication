@@ -9,7 +9,7 @@ import useAuthStore from "../../store/authStore";
 const MainOtpLogin = ({ closeModal }) => {
   const [userId, setUserId] = useState(false);
   console.log("userId", userId);
-  const [timeLeft, setTimeLeft] = useState(30); // Initial time
+  const [timeLeft, setTimeLeft] = useState(60); // Initial time
 
   // Get token and setToken from Zustand store
   const { token, setToken } = useAuthStore();
@@ -31,7 +31,7 @@ const MainOtpLogin = ({ closeModal }) => {
   // };
 
   const startTimer = () => {
-    setTimeLeft(30); // Restart the timer when OTP is sent
+    setTimeLeft(60); // Restart the timer when OTP is sent
   };
 
   return (

@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { useBookingsStore } from "../../store/masters/bookingsStore";
 import { useNavigate } from "react-router-dom";
+import TransactionProcessingLoader from "./TransactionProcessingLoader";
+import TransactionQrLoader from "./TransactionQrLoader";
+// import TransactionQrLoader from "./TransactionQrLoader";
 function TransactionQr() {
   const navigate = useNavigate();
   const storedBookingPayload = JSON.parse(
@@ -144,7 +147,8 @@ function TransactionQr() {
             <span>sec</span>
           </p>
         ) : (
-          <p>Payment Successful!</p>
+          
+          <TransactionQrLoader />
         )}
       </div>
     </div>

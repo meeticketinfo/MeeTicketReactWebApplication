@@ -10,7 +10,7 @@ import { gateKeepersStore } from "../../store/masters/gateKeepersStore";
 import useAuthStore from "../../store/authStore";
 
 const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
-  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading } =
+  const { saveGateKeeperDetails, isSaveGateKeeperDetailsLoading,currentGateKeeperEditDetails,IsEditGateKeeper,setIsEditGateKeeper } =
     gateKeepersStore();
   const { allParks, fetchAllParks } = useParkStore();
   const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
@@ -19,18 +19,20 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
   useEffect(() => {
     fetchAllParks();
   }, []);
+  console.log("IsEditGateKeeper",IsEditGateKeeper)
 
   const initialValues = {
-    firstName: "",
-    middleName: "",
+    id:IsEditGateKeeper?currentGateKeeperEditDetails.id :"",
+    firstName:IsEditGateKeeper?currentGateKeeperEditDetails.firstName :"",
+    middleName: IsEditGateKeeper?currentGateKeeperEditDetails.middleName :"",
     parkId: parkId,
-    lastName: "",
-    dateOfBirth: "2024-11-18T19:50:43.952Z",
-    emailId: "",
-    phoneNumber: "",
-    password: "",
-    roleId: "",
-    isConfirmed: true,
+    lastName: IsEditGateKeeper?currentGateKeeperEditDetails.lastName :"",
+    dateOfBirth: IsEditGateKeeper?currentGateKeeperEditDetails.dateOfBirth :"2024-11-18T19:50:43.952Z",
+    emailId: IsEditGateKeeper?currentGateKeeperEditDetails.emailId :"",
+    phoneNumber: IsEditGateKeeper?currentGateKeeperEditDetails.phoneNumber :"",
+    password: IsEditGateKeeper?currentGateKeeperEditDetails.password :"",
+    roleId: IsEditGateKeeper?currentGateKeeperEditDetails.roleId :"",
+    isConfirmed: IsEditGateKeeper?currentGateKeeperEditDetails.isConfirmed :true,
   };
 
   const validationSchema = Yup.object({
@@ -40,11 +42,11 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     lastName: Yup.string()
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    emailId: Yup.string().required("EmailId is required"),
+    emailId: Yup.string().required("Email Id is required"),
 
-    phoneNumber: Yup.number().required("Phone Number is required"),
-    // .matches(/^\d{10}$/, "Phone Number must contain exactly 10 digits"),
-    password: Yup.string()
+    phoneNumber: Yup.string().required("Phone Number is required")
+    .matches(/^\d{10}$/, "Phone Number must contain exactly 10 digits"),
+    password: !IsEditGateKeeper&&Yup.string()
       .required("Pin is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
     // dateOfBirth: Yup.date()
@@ -67,12 +69,15 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
     saveGateKeeperDetails
   ) => {
     try {
-      const result = await saveGateKeeperDetails(values, false);
+      const result = await saveGateKeeperDetails(values, 
+        IsEditGateKeeper ? true : false,
+        );
       if (result && result.data && result.data.status === 200) {
-        toast.success("Gate Keeper created successfully!");
+        toast.success(IsEditGateKeeper?"Gate Keeper Updated successfully!":"Gate Keeper created successfully!");
         setTimeout(() => {
           setIsGateKeeperCreateVisible(false);
-        }, 3000);
+          setIsEditGateKeeper(false)
+        }, 1000);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
@@ -176,7 +181,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter emailId"
+                    placeholder="Enter email Id"
                   />
                   <ErrorMessage
                     name="emailId"
@@ -221,12 +226,17 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    4-digit Pin<span className="text-red-500">*</span>
+                    4-digit Pin{IsEditGateKeeper?"":<span className="text-red-500">*</span>}
                   </label>
                   <Field
-                    type="password"
+                    type="text"
                     name="password"
                     maxLength={4}
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.password && touched.password
                         ? "border-red-500"
@@ -249,7 +259,7 @@ const GateKeeperCreate = ({ setIsGateKeeperCreateVisible }) => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   disabled={isSaveGateKeeperDetailsLoading}
                 >
-                  {isSaveGateKeeperDetailsLoading ? "Saving..." : "Create Gate Keeper"}
+                  {isSaveGateKeeperDetailsLoading ? "Saving..." : IsEditGateKeeper?"Edit Gate Keeper":"Create Gate Keeper"}
                 </button>
               </div>
             </Form>

@@ -2,10 +2,10 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-// const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
+const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
 
 // uat
-const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // prod
 // const API_BASE_URL =
@@ -13,7 +13,7 @@ const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // testing
 // export const API_BASE_URL =
-//   "https://rx3ffgz6-7237.inc1.devtunnels.ms/api/";
+//   "https://29j1v8ms-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,6 +28,7 @@ api.interceptors.request.use(
     const token = useAuthStore.getState().token; // Get the token from Zustand store
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
+     
     }
     return config;
   },

@@ -9,12 +9,14 @@ import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 
 const ParkList = ({
   setIsParkCreateVisible,
   isParkEditVisible,
   setIsParkEditVisible,
 }) => {
+   const navigate = useNavigate();
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [filters, setFilters] = useState({
     departmentId: "",
@@ -92,6 +94,26 @@ const ParkList = ({
       valueFormatter: (params) => params.value || "N/A",
     },
     {
+      field: "nodalOfficerName",
+      headerName: "Nodal Officer Name",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueGetter: (params) => {
+       
+        return params.data.nodalOfficerName&&params.data.nodalOfficerName !=" "? params.data.nodalOfficerName: "N/A";
+      }
+    },
+    {
+      field: "nodalOfficerPhoneNumber",
+      headerName: "Nodal Officer Number",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueGetter: (params) => {
+       
+        return params.data.nodalOfficerPhoneNumber? params.data.nodalOfficerPhoneNumber: "N/A";
+      }
+      },
+    {
       field: "name",
       headerName: "Address",
       flex: 1,
@@ -141,20 +163,39 @@ const ParkList = ({
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <button
-            className="btn-edit"
-            onClick={() => {
-              setCurrentParkEditDetails(params.data);
-              setIsParkCreateVisible(true);
-              setIsParkEditVisible(true);
-            }}
+        <>
+          <div
+            className={`${
+              role === "ROLE_NODALOFFICER" &&
+              "flex items-center justify-around py-2"
+            }`}
           >
-            <span className="">
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
-            </span>
-          </button>
-        </div>
+            {/* edit */}
+            <button
+              className=""
+              onClick={() => {
+                setCurrentParkEditDetails(params.data);
+                setIsParkCreateVisible(true);
+                setIsParkEditVisible(true);
+              }}
+            >
+              <span className="">
+                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              </span>
+            </button>
+            {role === "ROLE_NODALOFFICER" && (
+              <button
+                className=" bg-blue-700 text-white px-[10px] py-[5px] rounded-md shadow-lg text-xs font-medium me-2 leading-none"
+                onClick={() => {
+                  localStorage.setItem("locationid", params.data.id);
+                  navigate("/facility/unified-create");
+                }}
+              >
+                Facilities
+              </button>
+            )}
+          </div>
+        </>
       ),
       flex: 1,
       headerClass: "text-blue-v2",

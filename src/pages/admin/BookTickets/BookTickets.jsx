@@ -396,6 +396,7 @@ export default function AdminBookings() {
               // onPageChange={handlePageChange}
               totalRecords={totalEntityBookingRecords}
               enableAdvancedFilter={true}
+           
             />
           </div>
         ) : (

@@ -27,7 +27,7 @@ const EntityCreateForm = ({
   };
 
   const validationSchema = Yup.object({
-    entityTypeName: Yup.string().required("Please enter entity name."),
+    entityTypeName: Yup.string().required("Please enter location category."),
   });
 
   const onSubmit = async (

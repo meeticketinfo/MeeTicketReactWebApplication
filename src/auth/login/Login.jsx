@@ -23,9 +23,11 @@ import MainOtpLogin from "./MainOtpLogin";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, loginError, login } = useAuthStore();
+  const { isLoading, isAuthenticated, loginError, login,setOtpError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isPhoneSelected, setIsPhoneSelected] = useState(false);
+
+  
 
   const {
     captchaInput,
@@ -94,6 +96,7 @@ const Login = () => {
   }, [isPhoneSelected, loadCaptcha]);
 
   const handleToggle = () => {
+    setOtpError(null)
     setIsPhoneSelected((prevState) => !prevState);
     if (!isPhoneSelected) {
       loadCaptchaEnginge(6, "#a8b4c4", "rgb(107 114 128 / 1)", "upper");

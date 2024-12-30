@@ -7,18 +7,23 @@ import FacilityCreate from "./facilityCreate";
 import ServiceCreate from "../service_management/serviceCreate";
 import ServiceVarientCreate from "../service_variant_management/serviceVarientCreate";
 import { ToastContainer } from "react-toastify";
+import useAuthStore from "../../store/authStore";
 
 const UnifiedFacilityList = ({ setIsServiceEditVisible }) => {
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  
   const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
     useUnifiedFacilityStore();
 
   useEffect(() => {
-    fetchAllUnifiedFacilities();
+    fetchAllUnifiedFacilities(role);
   }, []);
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
   
   const handleDataAdded = () => {
-    fetchAllUnifiedFacilities();
+    fetchAllUnifiedFacilities(role);
     closeModal(); // Optionally close the modal after success
   };
 

@@ -33,23 +33,22 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
         }
       ),
   });
-  
 
   const login = async (values) => {
     setLoading(true);
     setError(null);
-   
+
     try {
       const response = await axios.post(
         `${API_BASE_URL}Authentication/SendLoginOTP`,
         values
       );
-     
+
       console.log(response);
       //  setUserId(true);
-      if (response.status===200) {
+      if (response.status === 200) {
         if (response.data.status === 200) {
-          onOtpSent(true)
+          onOtpSent(true);
           // toast.success("OTP sent Successfully.", {
           //   autoClose: 1000,
           // });
@@ -80,11 +79,19 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
           {({ isSubmitting, errors, touched }) => (
             <Form className="">
               <div className="my-8">
-                <label className="text-white text-sm">Enter Mobile Number</label>
+                <label className="text-white text-sm">
+                  Enter Mobile Number
+                </label>
                 <Field
                   className="shadow appearance-none border mt-2  h-12 px-4 bg-gray-100  border-gray-300 rounded-md w-full py-2  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   name="mobileNumber"
                   type="text"
+                  maxLength={10}
+                  onKeyDown={(e) => {
+                    if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+                  }}
                   placeholder=" Mobile number"
                 />
                 <ErrorMessage
@@ -107,9 +114,7 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
                   }`}
                   disabled={loading || isSubmitting}
                 >
-                  
-                      Send OTP
-                   
+                  Send OTP
                 </button>
               </div>
             </Form>

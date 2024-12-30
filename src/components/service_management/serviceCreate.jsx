@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
 import { useModalStore } from "../../store/modalStore";
 import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
+import useAuthStore from "../../store/authStore";
 
 const ServiceCreate = ({ onDataAdded }) => {
   const {
@@ -16,33 +17,39 @@ const ServiceCreate = ({ onDataAdded }) => {
     isSaveServiceDetailsLoading,
     ServiceEditDetails,
   } = useServiceStore();
-  const { isCreateServiceEnabled } =
-  useUnifiedFacilityStore();
+  const { isCreateServiceEnabled } = useUnifiedFacilityStore();
+  const {  roleDetails } =
+    useAuthStore();
+  const role = roleDetails?.name;
 
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
-  console.log("ServiceEditDetails",ServiceEditDetails)
+  console.log("ServiceEditDetails", ServiceEditDetails);
   useEffect(() => {
-    fetchAllFacilities();
+    fetchAllFacilities(role);
   }, []);
   const initialValues = {
     id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
-    name: isCreateServiceEnabled ? "" :ServiceEditDetails.name,
-    limit: isCreateServiceEnabled ? null :ServiceEditDetails.limit,
-    serviceSequenceNumber:isCreateServiceEnabled ? "" :ServiceEditDetails.sequenceNumber,
-    displayName: isCreateServiceEnabled ? "" :ServiceEditDetails.displayName,
-    serviceType: isCreateServiceEnabled ? "" :ServiceEditDetails.serviceType,
-    duration: isCreateServiceEnabled ? "" :ServiceEditDetails.duration,
-    availability: isCreateServiceEnabled ? "" :ServiceEditDetails.availabilit,
-    installationDate: isCreateServiceEnabled ? "" :ServiceEditDetails.installationDate,
-    description: isCreateServiceEnabled ? "" :ServiceEditDetails.description,
-    isActive: isCreateServiceEnabled ? true :ServiceEditDetails.isActive,
-    facilityId: isCreateServiceEnabled ? "" :ServiceEditDetails.facilityId,
+    name: isCreateServiceEnabled ? "" : ServiceEditDetails.name,
+    limit: isCreateServiceEnabled ? null : (ServiceEditDetails.limit<0)&&(ServiceEditDetails.limit!=null)?"no limit":ServiceEditDetails.limit,
+    serviceSequenceNumber: isCreateServiceEnabled
+      ? ""
+      : ServiceEditDetails.sequenceNumber,
+    displayName: isCreateServiceEnabled ? "" : ServiceEditDetails.displayName,
+    serviceType: isCreateServiceEnabled ? "" : ServiceEditDetails.serviceType,
+    duration: isCreateServiceEnabled ? "" : ServiceEditDetails.duration,
+    availability: isCreateServiceEnabled ? "" : ServiceEditDetails.availabilit,
+    installationDate: isCreateServiceEnabled
+      ? ""
+      : ServiceEditDetails.installationDate,
+    description: isCreateServiceEnabled ? "" : ServiceEditDetails.description,
+    isActive: isCreateServiceEnabled ? true : ServiceEditDetails.isActive,
+    facilityId: isCreateServiceEnabled ? "" : ServiceEditDetails.facilityId,
   };
   const validationSchema = Yup.object({
-    facilityId: Yup.string().required("Please enter facility ."),
-    serviceSequenceNumber:Yup.string().required("Please enter Sequence ."),
+    facilityId: Yup.string().required("Please select facility ."),
+    serviceSequenceNumber: Yup.string().required("Please enter Sequence ."),
     name: Yup.string().required("Please enter Actual name."),
     Description: Yup.string()
       .nullable()
@@ -60,15 +67,23 @@ const ServiceCreate = ({ onDataAdded }) => {
     values.installationDate = values.installationDate
       ? values.installationDate
       : null;
-      values.limit = values.limit? Number(values.limit): -1;
+    values.limit = values.limit ? Number(values.limit) : -1;
     values.isActive = values.isActive === "true" || values.isActive === true;
     values.displayName = values.name;
     try {
       // Call the saveUserDetails function from the store
-      const result = await saveServiceDetails(values, isCreateServiceEnabled ? false : true);
+      const result = await saveServiceDetails(
+        values,
+        role,
+        isCreateServiceEnabled ? false : true
+      );
 
       if (result.data.status === 200) {
-        toast.success(isCreateServiceEnabled ? "Sub Facility Added successfully" : "Sub Facility Updated successfully!");
+        toast.success(
+          isCreateServiceEnabled
+            ? "Sub Facility Added successfully"
+            : "Sub Facility Updated successfully!"
+        );
 
         setTimeout(() => {
           setOpenModalId(null);
@@ -167,18 +182,23 @@ const ServiceCreate = ({ onDataAdded }) => {
                 </div>
                 {/* Limit */}
                 <div>
-                  <label className="block text-sm font-medium">
-                    Limit
-                  </label>
+                  <label className="block text-sm font-medium">Limit</label>
                   <Field
                     name="limit"
-                    type="number"
-                    min={0}
-                    maxLength={50}
+                   
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxlength={3}
                     className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Limit"
                   />
-                 
                 </div>
                 {/* sequence */}
                 <div>
@@ -187,17 +207,25 @@ const ServiceCreate = ({ onDataAdded }) => {
                   </label>
                   <Field
                     name="serviceSequenceNumber"
-                    type="number"
-                    maxLength={50}
+                    // type="number"
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxlength={3}
                     className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Sequence"
                   />
-                   <ErrorMessage
+                  <ErrorMessage
                     name="serviceSequenceNumber"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                 
                 </div>
                 {/* Status */}
                 <div>
@@ -255,7 +283,9 @@ const ServiceCreate = ({ onDataAdded }) => {
                 >
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
-                    : (isCreateServiceEnabled ? "Add Sub Facility" : "Update Sub Facility")}
+                    : isCreateServiceEnabled
+                    ? "Add Sub Facility"
+                    : "Update Sub Facility"}
                 </button>
               </div>
             </Form>

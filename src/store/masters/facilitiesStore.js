@@ -24,13 +24,23 @@ export const useFacilityStore = create((set) => ({
       .join("&"),
 
   // Fetch all Facilities
-  fetchAllFacilities: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllFacilities: async (
+    // pageIndex = 1,
+    //  pageSize = 10,
+    //   filters = {}
+    role
+  ) => {
+    const LocationId = localStorage.getItem("locationid");
     set({ isFetchAllFacilitiesLoading: true });
     try {
       //   const filterString = useFacilitiestore.getState().serializeFilters(filters);
+      const url =
+        role === "ROLE_NODALOFFICER"
+          ? `${API_ENDPOINTS.MASTERS.FACILITY.GET_FACILITIES_NODAL_OFFICER}${LocationId}`
+          : `${API_ENDPOINTS.MASTERS.FACILITY.GET_FACILITIES}`;
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.Facility.GET_Facilities}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.FACILITY.GET_FACILITIES}`
+        url
       );
       console.log(response);
 
@@ -44,16 +54,23 @@ export const useFacilityStore = create((set) => ({
   },
 
   fetchAllDropdownFacilities: async (
-    pageIndex = 1,
-    pageSize = 10,
-    filters = {}
+    // pageIndex = 1,
+    // pageSize = 10,
+    // filters = {},
+    role
   ) => {
+    const LocationId = localStorage.getItem("locationid");
     set({ isFetchAllAdminFacilitiesLoading: true });
     try {
       //   const filterString = useFacilitiestore.getState().serializeFilters(filters);
+      const url =
+        role === "ROLE_NODALOFFICER"
+          ? `${API_ENDPOINTS.MASTERS.FACILITY.FACILITIES_DROPDOWN_BY_ID}${LocationId}`
+          : `${API_ENDPOINTS.MASTERS.FACILITY.FACILITIES_DROPDOWN}`;
+
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.Facility.GET_Facilities}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.FACILITY.FACILITIES_DROPDOWN}`
+        url
       );
       console.log(response);
 
@@ -111,11 +128,13 @@ export const useFacilityStore = create((set) => ({
   },
 
   // Save Facility details
-  saveFacilityDetails: async (FacilityData, isUpdate = false) => {
+  saveFacilityDetails: async (FacilityData, isUpdate = false, role) => {
     set({ isSaveFacilityDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.FACILITY.UPDATE_FACILITY_DETAILS
+        ? role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.FACILITY.UPDATE_FACILITY_DETAILS_NODAL_OFFICER
+          : API_ENDPOINTS.MASTERS.FACILITY.UPDATE_FACILITY_DETAILS
         : API_ENDPOINTS.MASTERS.FACILITY.ADD_NEW_FACILITY;
       const method = isUpdate ? "put" : "post";
 

@@ -80,11 +80,11 @@ const ParkCreate = ({
 
   // Validation schema for the form
   const createValidationSchema = Yup.object({
-    Name: Yup.string().required("Locaation Name is required"),
+    Name: Yup.string().required("Location Name is required"),
     EntityTypeId: Yup.number().required("Location Category is required"),
     DepartmentId: Yup.number().required("Department is required"),
     IsActive: Yup.boolean().required("Status is required"),
-    IsCounter: Yup.boolean().required("CounterBooking is required"),
+    IsCounter: Yup.boolean().required("Counter Booking is required"),
     Street1: Yup.string()
       .required("Address Line 1 is required")
       .min(3, "Address Line 1 must be at least 3 characters long")
@@ -99,12 +99,12 @@ const ParkCreate = ({
     //   .max(50, "Area cannot be more than 50 characters"),
     City: Yup.string()
       .required("Area is required")
-      .min(2, "Area must be at least 2 characters long")
+      .min(3, "Area must be at least 3 characters long")
       .max(50, "Area cannot be more than 50 characters"),
     ZipCode: Yup.string()
       .nullable()
       .matches(/^\d+$/, "Pincode must be a number")
-      .length(6, "Zip Code must be exactly 5 digits"),
+      .length(6, "Pincode must be exactly 6 digits"),
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
@@ -214,7 +214,7 @@ const ParkCreate = ({
         setTimeout(() => {
           setIsParkCreateVisible(false);
           setIsParkEditVisible(false);
-        }, 3000);
+        }, 1000);
         resetForm();
         resetFilePreview();
       } else {

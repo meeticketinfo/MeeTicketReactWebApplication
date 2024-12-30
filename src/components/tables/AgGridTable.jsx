@@ -73,9 +73,16 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           paginationPageSize={20}
           columnDefs={columnDefs.map((col) => ({
             ...col,
-            minWidth: 180, // Minimum width for responsiveness
+            minWidth: 180, 
             sortable: true,
+            resizable: true, 
           }))}
+          defaultColDef={{
+            resizable: true, // Apply globally
+            sortable: true,
+            flex: 1, 
+           
+          }}
           quickFilterText={quickFilterText} // Binding quickFilterText to AgGrid
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance

@@ -21,31 +21,41 @@ const FacilityCreate = ({ onDataAdded }) => {
     fetchAllDropdownFacilities,
     adminFacilities,
   } = useFacilityStore();
+  const LocationId=localStorage.getItem("locationid");
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
-  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
-    useAuthStore();
+  const {
+    isLoading,
+    isAuthenticated,
+    token,
+    error,
+    decodedTokenData,
+    roleDetails,
+    login,
+  } = useAuthStore();
   const parkId = decodedTokenData?.data?.ParkId;
+
+  const role = roleDetails?.name;
+
   //console.log(parkId,'parkid')
   useEffect(() => {
-    fetchAllDropdownFacilities();
+    fetchAllDropdownFacilities(role);
   }, []);
 
   const initialValues = {
     Id: FacilityEditDetails.id,
     facilityMasterId: FacilityEditDetails.facilityMasterId,
-    facilitySequenceNumber:FacilityEditDetails.sequenceNumber||"",
+    facilitySequenceNumber: FacilityEditDetails.sequenceNumber || "",
     name: FacilityEditDetails.name,
     openTime: FacilityEditDetails.openTime || "00:00:00",
     closeTime: FacilityEditDetails.closeTime || "00:00:00",
     description: FacilityEditDetails.description || "",
     TermsConditions: FacilityEditDetails.termsConditions || "",
     isActive: FacilityEditDetails.isActive,
-    parkId: FacilityEditDetails.parkId || parkId, 
+    parkId:( FacilityEditDetails.parkId) || (role === "ROLE_NODALOFFICER"?(LocationId):decodedTokenData?.data?.ParkId),
   };
   console.log("FacilityEditDetails", FacilityEditDetails);
   const validationSchema = Yup.object({
-    facilitySequenceNumber:Yup.string()
-    .required("Please enter Sequence"),
+    facilitySequenceNumber: Yup.string().required("Please enter Sequence"),
     facilityMasterId: Yup.string()
       .required("Please enter facility name")
       .max(50, "facility name should be less than 50 characters"),
@@ -72,7 +82,7 @@ const FacilityCreate = ({ onDataAdded }) => {
     console.log(formattedValues, "valuess dropdwom");
     try {
       // Call the saveFacilityDetails function
-      const result = await saveFacilityDetails(formattedValues, true);
+      const result = await saveFacilityDetails(formattedValues, true,role);
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
@@ -247,19 +257,19 @@ const FacilityCreate = ({ onDataAdded }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-               {/* terms and conditions */}
-               <div className="md:col-span-2">
-                <label className="text-gray-700 dark:text-gray-300 text-sm">
-                  Terms and Conditions
-                </label>
-                <Field
-                  name="TermsConditions"
-                  placeholder="Enter terms and conditions"
-                  maxLength={255}
-                  as="textarea"
-                  className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
-                />
-              </div>
+                {/* terms and conditions */}
+                <div className="md:col-span-2">
+                  <label className="text-gray-700 dark:text-gray-300 text-sm">
+                    Terms and Conditions
+                  </label>
+                  <Field
+                    name="TermsConditions"
+                    placeholder="Enter terms and conditions"
+                    maxLength={255}
+                    as="textarea"
+                    className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                  />
+                </div>
                 {/* Status */}
                 <div className="col-span-1">
                   <label className="block text-sm font-medium">Status</label>
@@ -286,8 +296,8 @@ const FacilityCreate = ({ onDataAdded }) => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                 {/* sequence */}
-                 <div>
+                {/* sequence */}
+                <div>
                   <label className="block text-sm font-medium">
                     Sequence<span className="text-red-500">*</span>
                   </label>
@@ -298,12 +308,11 @@ const FacilityCreate = ({ onDataAdded }) => {
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Sequence"
                   />
-                   <ErrorMessage
+                  <ErrorMessage
                     name="facilitySequenceNumber"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                 
                 </div>
               </div>
 

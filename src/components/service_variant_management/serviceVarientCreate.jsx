@@ -9,6 +9,7 @@ import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore
 import { toast, ToastContainer } from "react-toastify";
 import { useModalStore } from "../../store/modalStore";
 import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
+import useAuthStore from "../../store/authStore";
 
 // Validation schema using Yup
 
@@ -22,11 +23,16 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
   const { isCreateServiceVariantEnabled, setIsCreateServiceVariantEnabled } =
   useUnifiedFacilityStore();
 
+  const {  roleDetails } =
+  useAuthStore();
+const role = roleDetails?.name;
+
+
   const { allServices, fetchAllServices } = useServiceStore();
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   useEffect(() => {
-    fetchAllServices();
+    fetchAllServices(role);
   }, []);
   const initialValues = {
     id: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.id,
@@ -41,7 +47,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the Actual name."),
-    serviceId: Yup.string().required("Please enter the sub facility."),
+    serviceId: Yup.string().required("Please select the sub facility."),
     serviceVarientSequenceNumber: Yup.string().required("Please enter the Sequence."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
@@ -64,7 +70,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
         displayName: values.name || "",
       };
 
-      const result = await saveServiceVarientDetails(formattedValues, isCreateServiceVariantEnabled ? false :true);
+      const result = await saveServiceVarientDetails(formattedValues,role, isCreateServiceVariantEnabled ? false :true);
       console.log(result);
       if (result.data.status === 200) {
         toast.success(isCreateServiceVariantEnabled ? "Ticket Type Added successfully!" : "Ticket Type Updated successfully!");
@@ -178,7 +184,7 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                     Amount <span className="text-red-500">*</span>
                   </label>
                   <Field
-                    type="number"
+                    type="text"
                     name="amount"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.amount && touched.amount
@@ -186,7 +192,16 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder=" Enter Amount"
-                    min={0}
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxLength={12}
                   />
                   <ErrorMessage
                     name="amount"
@@ -242,8 +257,17 @@ const ServiceVarientCreate = ({ onDataAdded }) => {
                   </label>
                   <Field
                     name="serviceVarientSequenceNumber"
-                    type="number"
-                    maxLength={50}
+                    type="text"
+                    maxlength={3}
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Sequence"
                   />

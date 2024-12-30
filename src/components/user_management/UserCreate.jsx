@@ -139,7 +139,7 @@ const UserCreate = ({
         setTimeout(() => {
           setIsUserCreateVisible(false);
           setIsUserEditVisible(false);
-        }, 3000);
+        }, 1000);
 
         resetForm();
       }
@@ -270,7 +270,7 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter email id"
-                    disabled={isUserEditVisible}
+                    // disabled={isUserEditVisible}
                   />
                   <ErrorMessage
                     name="emailId"

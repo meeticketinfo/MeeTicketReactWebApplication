@@ -31,7 +31,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
   const validationSchema = Yup.object({
     otp: Yup.string()
       .required("OTP is required")
-      .matches(/^\d{6}$/, "OTP must be exactly 4 digits"),
+      .matches(/^\d{6}$/, "OTP must be exactly 6 digits"),
   });
 
   useEffect(() => {
@@ -186,18 +186,18 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
                   className="text-red-500 text-xs mt-1"
                 />
                 <p className="text-center text-white text-xs mt-2">
-                  Didn't receive the OTP?
+                  Didn't receive the OTP?&nbsp;
                   <span
                     className={`clr_link ${
                       canResend
                         ? "cursor-pointer text-blue-v1 underline font-bold"
-                        : "text-gray-200 "
+                        : "text-gray-900 opacity-40 "
                     }`}
                     onClick={canResend ? handleResendOtp : undefined}
                   >
                     Resend
                   </span>
-                  in {Math.floor(timeLeft / 60)}:
+                  &nbsp;in {Math.floor(timeLeft / 60)}:
                   {timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
                 </p>
                 <div className="w-full py-3 mt-4 mb-4 text-dark bg-primary hover:bg-primary rounded-md text-base font-medium flex items-center justify-center">

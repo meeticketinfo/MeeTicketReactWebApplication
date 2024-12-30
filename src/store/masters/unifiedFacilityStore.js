@@ -21,13 +21,17 @@ export const useUnifiedFacilityStore = create((set) => ({
       .join("&"),
 
   // Fetch all Facilities
-  fetchAllUnifiedFacilities: async () => {
+  fetchAllUnifiedFacilities: async (role) => {
+    const LocationId = localStorage.getItem("locationid");
     set({ isFetchAllUnifiedFacilitiesLoading: true });
     try {
       console.log(API_ENDPOINTS.MASTERS);
-      const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL}`
-      );
+
+      const url =
+        role === "ROLE_NODALOFFICER"
+          ? `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL_BY_ID}?parkId=${LocationId}`
+          : `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL}`;
+      const response = await apiService.get(url);
       console.log(response);
       set({
         allUnifiedFacilities: response.data,
@@ -49,12 +53,17 @@ export const useUnifiedFacilityStore = create((set) => ({
   },
 
   // Save Facility details
-  saveunifiedFacilityDetails: async (FacilityData) => {
+  saveunifiedFacilityDetails: async (FacilityData, role) => {
     set({ isSaveUnifiedFacilityDetailsLoading: true });
-    try {
-      const url = API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.CREATE;
-      const method = "post";
 
+    try {
+      // const url = API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.CREATE;
+      const url =
+        role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.CREATE_BY_ID
+          : API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.CREATE;
+      const method = "post";
+      
       const response = await apiService[method](url, FacilityData);
 
       set({

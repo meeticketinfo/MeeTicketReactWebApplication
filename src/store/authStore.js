@@ -216,6 +216,7 @@ const useAuthStore = create(
         set({
           token: null,
           error: null,
+          otpError:null,
           isAuthenticated: false,
           decodedTokenData: null,
           roleDetails: null,

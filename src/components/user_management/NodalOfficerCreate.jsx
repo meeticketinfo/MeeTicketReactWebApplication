@@ -59,7 +59,7 @@ const NodalOfficerCreate = ({
     lastName: Yup.string()
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    emailId: Yup.string().required("EmailId is required"),
+    emailId: Yup.string().required("Email Id is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
@@ -306,7 +306,7 @@ const NodalOfficerCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter emailId"
+                    placeholder="Enter email Id"
                   />
                   <ErrorMessage
                     name="emailId"

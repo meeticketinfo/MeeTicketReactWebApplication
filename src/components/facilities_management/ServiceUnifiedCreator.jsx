@@ -7,9 +7,10 @@ import CheckboxInput from "./CheckboxInput";
 import { MdDeleteForever } from "react-icons/md";
 import { useFacilityStore } from "../../store/masters/facilitiesStore";
 import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
-import useAuthStore from "../../store/authStore";
+
 import { toast, ToastContainer } from "react-toastify";
 import { handleApiError } from "../../utils/apiErrorHandler";
+import useAuthStore from "../../store/authStore";
 
 const ticketTypeOptions = [
   { value: "child", label: "Child" },
@@ -21,7 +22,6 @@ const initialValues = {
   facilityDto: {
     facilityMasterId: "",
     facilitySequenceNumber: null,
-    TermsConditions: "",
   },
   hasSubFacility: false,
   subFacilities: [
@@ -59,7 +59,11 @@ const initialValues = {
 // });
 
 const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
-  const { decodedTokenData } = useAuthStore();
+  const LocationId = localStorage.getItem("locationid");
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  console.log("role", role);
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
   const [isSubfacility, setIsSubfacility] = useState(false);
 
@@ -69,7 +73,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
     saveUnifiedFacilityDetailsError,
   } = useUnifiedFacilityStore();
   useEffect(() => {
-    fetchAllDropdownFacilities();
+    fetchAllDropdownFacilities(role);
   }, []);
   const transformedOptions = adminFacilities?.map((facility) => ({
     value: facility.facilityMasterId,
@@ -80,9 +84,9 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
       facilityMasterId: Yup.string().required("Facility is required"),
       // facilitySequenceNumber: Yup.string().required("Sequence is required").max(200, ' Sequence Number cannot exceed 200'),
       facilitySequenceNumber: Yup.number()
-      .nullable()
-      .required("Sequence is required")
-      .max(200, "Sequence Number cannot exceed 200"),
+        .nullable()
+        .required("Sequence is required")
+        .max(200, "Sequence Number cannot exceed 200"),
       name: Yup.string().required("Facility Name is required"),
     }),
     hasSubFacility: Yup.boolean(),
@@ -93,10 +97,11 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
             isSubfacility &&
             Yup.string().required("Sub-Facility Name is required"),
           subFacilitySequenceNumber:
-            isSubfacility &&  Yup.number()
-            .nullable()
-            .required("Sequence is required")
-            .max(200, "Sequence Number cannot exceed 200"),
+            isSubfacility &&
+            Yup.number()
+              .nullable()
+              .required("Sequence is required")
+              .max(200, "Sequence Number cannot exceed 200"),
           ticketTypes: Yup.array().of(
             Yup.object().shape({
               type: Yup.string().required("Ticket Type is required"),
@@ -121,8 +126,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
         facilityMasterId: values.facilityDto.facilityMasterId,
         facilitySequenceNumber: values.facilityDto.facilitySequenceNumber,
         name: values.facilityDto.name,
-        TermsConditions: values.facilityDto.TermsConditions,
-        parkId: decodedTokenData?.data?.ParkId,
+        parkId:
+          role === "ROLE_NODALOFFICER"
+            ? LocationId
+            : decodedTokenData?.data?.ParkId,
         isActive: true,
       },
       services: values.subFacilities.map((subFacility) => ({
@@ -155,11 +162,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
         })),
       })),
     };
-
     console.log(transformedValues, "valuess dropdwom");
     try {
       // Call the saveFacilityDetails function
-      const result = await saveunifiedFacilityDetails(transformedValues);
+      const result = await saveunifiedFacilityDetails(transformedValues, role);
 
       if (result && result.data && result.data.status === 200) {
         toast.success("Facility created successfully!");
@@ -205,7 +211,6 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
   return (
     <div className="bg-white/30 p-3 rounded-2xl ">
       <ToastContainer position="top-right" autoClose={3000} />
-
       <div className="bg-white rounded-2xl p-3 shadow-md border border-gray-200">
         <Formik
           initialValues={initialValues}
@@ -218,14 +223,14 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
         >
           {({ errors, touched, isSubmitting, setFieldValue, values }) => (
             <Form>
-              <div className="flex justify-start gap-4 mb-3">
+              <div className="flex justify-start items-center gap-4 mb-6">
                 <div className="w-1/4">
                   {/* <SelectInput
                     name="facilityDto.facilityMasterId"
                     label="Select Facility"
                     options={transformedOptions ?? []}
                   /> */}
-                    <label htmlFor="User" className="block text-xs font-medium">
+                  <label htmlFor="User" className="block text-xs font-medium">
                     Facility <span className="text-red-500">*</span>
                   </label>
                   <Field
@@ -270,11 +275,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                       </option>
                     ))}
                   </Field>
-
                   <ErrorMessage
                     name="facilityDto.facilityMasterId"
                     component="div"
-                    className="text-red-500 text-xs mt-1"
+                    className="text-red-500 text-xs mt-1 absolute "
                   />
                 </div>
                 <div>
@@ -284,10 +288,11 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   <Field
                     name="facilityDto.facilitySequenceNumber"
                     type="text"
+                    maxlength={3}
                     onChange={(e) => {
                       setFieldValue(
                         "facilityDto.facilitySequenceNumber",
-                        e.target.value
+                        e.target.value.replace(/[^0-9]/g, "")
                       );
                     }}
                     className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -296,11 +301,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   <ErrorMessage
                     name="facilityDto.facilitySequenceNumber"
                     component="div"
-                    className="text-red-500 text-xs"
+                    className="text-red-500 text-xs absolute"
                   />
                 </div>
-
-                <div className="flex items-center">
+                <div className="flex items-center mt-5">
                   <Field
                     type="checkbox"
                     id="hasSubFacility"
@@ -333,7 +337,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
 
                 {/* <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" onChange={handleSubFacilityName} /> */}
               </div>
-              <div className="md:col-span-3">
+              {/* <div className="md:col-span-3">
                 <label className="text-gray-700 dark:text-gray-300 text-sm">
                   Terms&Conditions
                 </label>
@@ -344,8 +348,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   as="textarea"
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
                 />
-              </div>
-
+              </div> */}
               <hr className="py-2"></hr>
               <FieldArray name="subFacilities">
                 {({ push, remove }) => (
@@ -368,29 +371,51 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                           className="card mb-3 p-3 border border-gray-100 rounded-2xl shadow-md"
                         >
                           <div
-                            className={`mb-3 ${
+                            className={`mb-6 ${
                               values.hasSubFacility
-                                ? "flex justify-start gap-4"
+                                ? "flex justify-start items-end gap-4"
                                 : "hidden"
                             }`}
                           >
                             <TextInput
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
+                              placeholder="Enter Sub-Facility"
+                              astrix={true}
                             />
                             <TextInput
-                              min={0}
-                              type="number"
+                              maxlength={3}
+                              placeholder="Enter Limit"
                               name={`subFacilities[${index}].Limit`}
                               label="Limit"
+                              onKeyDown={(e) => {
+                                // Allow only numbers and backspace
+                                if (
+                                  !/[0-9]/.test(e.key) &&
+                                  e.key !== "Backspace"
+                                ) {
+                                  e.preventDefault(); // Block other keys
+                                }
+                              }}
                             />
-                            <TextInput
-                              min={0}
-                              max={200}
-                              type="number"
-                              name={`subFacilities[${index}].subFacilitySequenceNumber`}
-                              label="Sequence"
-                            />
+                            <div className="w-1/5">
+                              <TextInput
+                                maxlength={3}
+                                placeholder="Enter Sequence"
+                                name={`subFacilities[${index}].subFacilitySequenceNumber`}
+                                label="Sequence"
+                                astrix={true}
+                                onKeyDown={(e) => {
+                                  // Allow only numbers and backspace
+                                  if (
+                                    !/[0-9]/.test(e.key) &&
+                                    e.key !== "Backspace"
+                                  ) {
+                                    e.preventDefault(); // Block other keys
+                                  }
+                                }}
+                              />
+                            </div>
                             {/* <button
                               type="button"
                               onClick={() => remove(index)}
@@ -435,18 +460,19 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                 >
                                   Add Ticket Type
                                 </button>
-
                                 <div className="">
                                   {subFacility.ticketTypes.map(
                                     (_, ticketIndex) => (
                                       <div
                                         key={ticketIndex}
-                                        className="mb-3 flex justify-between pb-2 border-b-2 border border-gray-200 rounded-2xl my-3  p-3"
+                                        className="mb-3 flex justify-between items-center  border-b-2 border border-gray-200 rounded-2xl my-3  p-3"
                                       >
-                                        <div className="grid grid-cols-4 gap-3">
+                                        <div className="grid grid-cols-4 gap-3 mb-4">
                                           <SelectInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].type`}
                                             label="Ticket Type"
+                                            astrix={true}
+                                            astrix={true}
                                             options={ticketTypeOptions}
                                           />
                                           {values.subFacilities[index]
@@ -455,15 +481,28 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                             <TextInput
                                               name={`subFacilities[${index}].ticketTypes[${ticketIndex}].customType`}
                                               label="Custom Ticket Type"
+                                              placeholder="Enter customType"
                                             />
                                           )}
                                           <TextInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].amount`}
                                             label="Amount"
+                                            astrix={true}
+                                            placeholder="Enter Amount"
+                                            onKeyDown={(e) => {
+                                              // Allow only numbers and backspace
+                                              if (
+                                                !/[0-9]/.test(e.key) &&
+                                                e.key !== "Backspace"
+                                              ) {
+                                                e.preventDefault(); // Block other keys
+                                              }
+                                            }}
                                           />
                                           <SelectInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].chargedPerPerson`}
                                             label="Charged Per Person"
+                                            astrix={true}
                                             options={[
                                               { value: "no", label: "Yes" },
                                               { value: "yes", label: "No" },
@@ -472,10 +511,22 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                           <TextInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].typeOfTicketSequenceNumber`}
                                             label="Sequence"
+                                            maxlength={3}
+                                            type="text"
+                                            astrix={true}
+                                            placeholder="Enter Sequence"
+                                            onKeyDown={(e) => {
+                                              // Allow only numbers and backspace
+                                              if (
+                                                !/[0-9]/.test(e.key) &&
+                                                e.key !== "Backspace"
+                                              ) {
+                                                e.preventDefault(); // Block other keys
+                                              }
+                                            }}
                                           />
                                         </div>
-
-                                        <div className="flex items-center">
+                                        <div className="flex items-center mt-2">
                                           <button
                                             type="button"
                                             onClick={() =>

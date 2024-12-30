@@ -288,15 +288,13 @@ export const FacilityServices = () => {
                                         toTitleCase(service.name)}
                                     </h6>
 
-                                    {service.limit >= 0 ? (
+                                    {service.limit >= 0&&service.limit != null ? (
                                       <div className="flex gap-2">
                                         <h1 className="text-blue-v1 text-sm">
                                           Available Tickets:
                                         </h1>
                                         <h1 className="text-blue-v2 font-bold">
-                                          {service.limit === null
-                                            ? "N/A"
-                                            : service.limit}
+                                          {service.limit}
                                         </h1>
                                       </div>
                                     ) : (
@@ -439,7 +437,11 @@ export const FacilityServices = () => {
 
                                                 <button
                                                   type="button"
-                                                  disabled={service.limit === 0}
+                                                  // disabled={service.limit === 0}
+                                                  disabled={
+                                                    service.limit !== -1 && service.limit !== null && // Allow increment if "No Limit"
+                                                    (quantities[variant.id] || 0) >= service.limit // Check against limit only if it's not "No Limit"
+                                                  }
                                                   onClick={() => {
                                                     const newItem = {
                                                       quantity:
@@ -473,7 +475,8 @@ export const FacilityServices = () => {
                                                       updatedItems
                                                     );
                                                   }}
-                                                  className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
+                                                  className={` ${service.limit !== -1 && service.limit !== null && // Allow increment if "No Limit"
+                                                    (quantities[variant.id] || 0) >= service.limit?"bg-gray-200":"bg-gray-300 hover:bg-gray-400"} text-gray-800 px-2 rounded  `}
                                                 >
                                                   +
                                                 </button>

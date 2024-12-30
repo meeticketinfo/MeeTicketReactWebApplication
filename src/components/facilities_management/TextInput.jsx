@@ -1,10 +1,10 @@
 import React from "react";
 import { Field, ErrorMessage } from "formik";
 
-const TextInput = ({ name, label, ...props }) => (
+const TextInput = ({ name, label,astrix, ...props }) => (
   <div className="form-group">
     <label className="block text-sm font-semibold text-gray-700" htmlFor={name}>
-      {label}
+      {label}{astrix&&<span className="text-red-500">*</span>}
     </label>
     <Field
       id={name}
@@ -15,7 +15,7 @@ const TextInput = ({ name, label, ...props }) => (
     <ErrorMessage
       name={name}
       component="span"
-      className="text-red-500 text-xs"
+      className="text-red-500 text-xs absolute"
     />
   </div>
 );

@@ -5,6 +5,7 @@ import UserList from "../../../components/user_management/UserList";
 import GateKeeperCreate from "../../../components/user_management/GateKeeperCreate";
 import GateKeeperList from "../../../components/user_management/GateKeeperList";
 import BackButton from "../../../components/BackButton";
+import { gateKeepersStore } from "../../../store/masters/gateKeepersStore";
 
 // Validation schema using Yup
 
@@ -12,6 +13,15 @@ export default function GateKeepers() {
   // State to toggle the FacilityCreate component
   const [isGateKeeperCreateVisible, setIsGateKeeperCreateVisible] =
     useState(false);
+
+     const {
+        allGateKeepers,
+        isFetchAllGateKeepersLoading,
+        fetchAllGateKeepers,
+        setIsEditGateKeeper,
+        setCurrentGateKeeperEditDetails,
+        IsEditGateKeeper,
+      } = gateKeepersStore();
 
   // Function to toggle the visibility of GateKeeperCreate
   const toggleGateKeeperCreate = () => {
@@ -44,7 +54,10 @@ export default function GateKeepers() {
               ) : (
                 <BackButton
                   label="Back"
-                  onClick={() => setIsGateKeeperCreateVisible(false)}
+                  onClick={() => {
+                    setIsGateKeeperCreateVisible(false)
+                    setIsEditGateKeeper(false)
+                  }}
                   className="bg-blue-600 hover:bg-blue-700"
                 />
               )}
@@ -58,7 +71,7 @@ export default function GateKeepers() {
             setIsGateKeeperCreateVisible={setIsGateKeeperCreateVisible}
           />
         ) : (
-          <GateKeeperList />
+          <GateKeeperList setIsGateKeeperCreateVisible={setIsGateKeeperCreateVisible} />
         )}
         {/* </div> */}
       </div>
