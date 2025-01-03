@@ -26,7 +26,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
     setOtpError,
     otpError
   } = useAuthStore();
-
+  const mobileNumber = localStorage.getItem("login_id");
   // Validation schema for OTP input
   const validationSchema = Yup.object({
     otp: Yup.string()
@@ -64,12 +64,12 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
     }
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values,{ setFieldValue }) => {
     setLoading(true);
     setError(null);
 
     try {
-      const mobileNumber = localStorage.getItem("login_id");
+     
       const response = await OtpLogin({
         mobileNumber: mobileNumber,
         otp: values.otp,
@@ -81,6 +81,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
       }else{
         
         setOtpError(response.response.message)
+        setFieldValue("otp", "");
       }
       setSubmitting(false);
     } catch (err) {
@@ -148,7 +149,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
                 <div className="mb-4 text-sm text-white px-10 text-center">
                   <p>
                     Please enter the 6-digit code we have sent you to your
-                    Mobile Number
+                    Mobile Number <span className="text-white text-xs">{`+91 ${mobileNumber.slice(0, 2)}****${mobileNumber.slice(-2)}`}</span>
                   </p>
                 </div>
 

@@ -175,6 +175,15 @@ export default {
       }));
       addUtilities(utilities, ["responsive"]);
     },
+    function ({ addComponents }) {
+      addComponents({
+        '.sidebar-expanded .lg\\:sidebar-expanded\\:\\!w-64': {
+          '@media (min-width: 1024px) and (max-width: 1536px)': {
+            width: '3rem !important',
+          },
+        },
+      });
+    },
     function ({ addUtilities }) {
       addUtilities({
         ".shadow-color-blue": {

@@ -16,18 +16,28 @@ const ParkList = ({
   isParkEditVisible,
   setIsParkEditVisible,
 }) => {
-   const navigate = useNavigate();
+  // local for esd
+  const storedUser = localStorage.getItem("filter");
+  const userObject = storedUser ? JSON.parse(storedUser) : "";
+  // local for nodal
+  const NodalstoredUser = localStorage.getItem("nodalFilters");
+  const NodaluserObject = NodalstoredUser ? JSON.parse(NodalstoredUser) : "";
+
+  const navigate = useNavigate();
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [filters, setFilters] = useState({
-    departmentId: "",
-    locationCategoryId: "",
+    departmentId: userObject.departmentId,
+    entityTypeId: userObject.entityTypeId,
   });
 
   const [filterednodalLocations, setFilterednodalLocations] = useState([]);
+
   const [nodalFilters, setNodalFilters] = useState({
-    departmentId: "",
-    locationCategoryId: "",
+    departmentId: NodaluserObject.departmentId,
+    entityTypeId: NodaluserObject.entityTypeId,
   });
+
+  // console.log("filters",filters)
 
   const {
     allParks,
@@ -75,48 +85,53 @@ const ParkList = ({
     {
       field: "name",
       headerName: "Location Name",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "entityTypeName",
       headerName: "Location Category",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "departmentName",
       headerName: "Department",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "nodalOfficerName",
       headerName: "Nodal Officer Name",
-      flex: 1,
+      hide: role === "ROLE_NODALOFFICER",
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
-       
-        return params.data.nodalOfficerName&&params.data.nodalOfficerName !=" "? params.data.nodalOfficerName: "N/A";
-      }
+        return params.data.nodalOfficerName &&
+          params.data.nodalOfficerName != " "
+          ? params.data.nodalOfficerName
+          : "N/A";
+      },
     },
     {
       field: "nodalOfficerPhoneNumber",
       headerName: "Nodal Officer Number",
-      flex: 1,
+      // flex: 1,
+      hide: role === "ROLE_NODALOFFICER",
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
-       
-        return params.data.nodalOfficerPhoneNumber? params.data.nodalOfficerPhoneNumber: "N/A";
-      }
+        return params.data.nodalOfficerPhoneNumber
+          ? params.data.nodalOfficerPhoneNumber
+          : "N/A";
       },
+    },
     {
       field: "name",
       headerName: "Address",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
         const { street1, street2 } = params.data;
@@ -128,14 +143,15 @@ const ParkList = ({
     {
       field: "city",
       headerName: "Area",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "zipCode",
       headerName: "Pincode",
-      flex: 1,
+      // flex: 1,
+      width: "50",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -212,8 +228,7 @@ const ParkList = ({
       const matchesDepartment =
         !filters.departmentId || facility.departmentId === filters.departmentId;
       const matchesLocation =
-        !filters.locationCategoryId ||
-        facility.locationCategoryId === filters.locationCategoryId;
+        !filters.entityTypeId || facility.entityTypeId === filters.entityTypeId;
 
       return matchesDepartment && matchesLocation;
     });
@@ -226,6 +241,11 @@ const ParkList = ({
       ...prevFilters,
       [filterName]: value,
     }));
+
+    localStorage.setItem(
+      "filter",
+      JSON.stringify({ ...filters, [filterName]: value })
+    );
   };
   //  filtring nodal officer location details
   useEffect(() => {
@@ -238,8 +258,8 @@ const ParkList = ({
         !nodalFilters.departmentId ||
         facility.departmentId === nodalFilters.departmentId;
       const matchesLocation =
-        !nodalFilters.locationCategoryId ||
-        facility.locationCategoryId === nodalFilters.locationCategoryId;
+        !nodalFilters.entityTypeId ||
+        facility.entityTypeId === nodalFilters.entityTypeId;
 
       return matchesDepartment && matchesLocation;
     });
@@ -252,6 +272,10 @@ const ParkList = ({
       ...prevFilters,
       [filterName]: value,
     }));
+    localStorage.setItem(
+      "nodalFilters",
+      JSON.stringify({ ...nodalFilters, [filterName]: value })
+    );
   };
   return (
     <>
@@ -262,6 +286,16 @@ const ParkList = ({
               <label className="block text-sm font-medium">Department</label>
               <Select
                 name="departmentId"
+                value={
+                  allDepartmentTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.departmentId,
+                      label: dept.departmentName,
+                    }))
+                    .find((option) => option.value === filters.departmentId) ||
+                  null // Set the selected value
+                }
                 options={allDepartmentTypes
                   ?.filter((dept) => dept.isActive)
                   .map((dept) => ({
@@ -309,7 +343,17 @@ const ParkList = ({
                 Location Category
               </label>
               <Select
-                name="locationCategoryId"
+                name="entityTypeId"
+                value={
+                  allEntityTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.entityTypeId,
+                      label: dept.entityTypeName,
+                    }))
+                    .find((option) => option.value === filters.entityTypeId) ||
+                  null // Set the selected value
+                }
                 options={allEntityTypes
                   ?.filter((entity) => entity.isActive)
                   .map((entity) => ({
@@ -318,7 +362,7 @@ const ParkList = ({
                   }))}
                 onChange={(selectedOption) =>
                   handleFilterChange(
-                    "locationCategoryId",
+                    "entityTypeId",
                     selectedOption?.value || ""
                   )
                 }
@@ -365,6 +409,16 @@ const ParkList = ({
               <label className="block text-sm font-medium">Department</label>
               <Select
                 name="departmentId"
+                value={
+                  allDepartmentTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.departmentId,
+                      label: dept.departmentName,
+                    }))
+                    .find((option) => option.value === nodalFilters.departmentId) ||
+                  null // Set the selected value
+                }
                 options={allDepartmentTypes
                   ?.filter((dept) => dept.isActive)
                   .map((dept) => ({
@@ -412,7 +466,17 @@ const ParkList = ({
                 Location Category
               </label>
               <Select
-                name="locationCategoryId"
+                name="entityTypeId"
+                value={
+                  allEntityTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.entityTypeId,
+                      label: dept.entityTypeName,
+                    }))
+                    .find((option) => option.value === nodalFilters.entityTypeId) ||
+                  null // Set the selected value
+                }
                 options={allEntityTypes
                   ?.filter((entity) => entity.isActive)
                   .map((entity) => ({
@@ -421,7 +485,7 @@ const ParkList = ({
                   }))}
                 onChange={(selectedOption) =>
                   handleNodalFilterChange(
-                    "locationCategoryId",
+                    "entityTypeId",
                     selectedOption?.value || ""
                   )
                 }

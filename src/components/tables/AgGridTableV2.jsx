@@ -7,9 +7,10 @@ import "./AgGridTable.css";
 import { FaFileCsv } from "react-icons/fa6";
 import usePaginationStore from "../../store/paginationStore";
 import { useAggridStore } from "../../store/agGridStore";
+import usePaginationStoreV2 from "../../store/paginationStoreV2";
 
-const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
-  const { activePage, setActivePage } = usePaginationStore();
+const AgGridTableV2 = ({ rowData = [], columnDefs, isFetchLoading }) => {
+  const { activePageV2, setActivePageV2 } = usePaginationStoreV2();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
   console.log("quickFilterText",quickFilterText)
   const gridRef = useRef(null);
@@ -52,9 +53,9 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   useEffect(() => {
     // Whenever activePage changes, update the grid's pagination
     if (gridApi) {
-      gridApi.paginationGoToPage(activePage);
+      gridApi.paginationGoToPage(activePageV2);
     }
-  }, [activePage, gridApi]);
+  }, [activePageV2, gridApi]);
 
   return (
     <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
@@ -94,13 +95,15 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           quickFilterText={quickFilterText} // Binding quickFilterText to AgGrid
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance
-            params.api.paginationGoToPage(activePage); // Navigate to the saved active page
+            params.api.paginationGoToPage(activePageV2); // Navigate to the saved active page
           }}
           onPaginationChanged={() => {
             if (gridApi) {
               const currentPage = gridApi.paginationGetCurrentPage();
-              if (currentPage !== activePage) {
-              setActivePage(currentPage);
+              if (currentPage !== activePageV2
+
+              ) {
+              setActivePageV2(currentPage);
               }
             }
           }}
@@ -117,10 +120,10 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   );
 };
 
-AgGridTable.propTypes = {
+AgGridTableV2.propTypes = {
   rowData: PropTypes.array.isRequired,
   columnDefs: PropTypes.array.isRequired,
   isFetchLoading: PropTypes.bool.isRequired,
 };
 
-export default AgGridTable;
+export default AgGridTableV2;

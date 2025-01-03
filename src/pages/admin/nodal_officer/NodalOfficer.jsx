@@ -5,6 +5,7 @@ import NodalOfficerList from "../../../components/user_management/NodalOfficerLi
 import AgGridTable from "../../../components/tables/AgGridTable";
 import BackButton from "../../../components/BackButton";
 import { useNodalOfficerStore } from "../../../store/masters/nodalOfficerStore";
+import AgGridTableV2 from "../../../components/tables/AgGridTableV2";
 
 export default function NodalOfficer() {
   // State to toggle the FacilityCreate component
@@ -162,7 +163,7 @@ export default function NodalOfficer() {
             />
             <div className="mt-2">
               {isNodalOfficerEditVisible && (
-                <AgGridTable
+                <AgGridTableV2
                   rowData={allNodalOfficerParks || []}
                   columnDefs={nodalOfficerColumnDefs}
                   isFetchLoading={isFetchAllNodalOfficerParksLoading}

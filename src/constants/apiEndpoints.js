@@ -2,7 +2,7 @@ import useAuthStore from "../store/authStore";
 
 // dev
 export const API_BASE_URL =
-  "https://meeticket.vmaxtechservices.life/parkapi/api/";
+  "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 // uat
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
@@ -11,10 +11,9 @@ export const API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://29j1v8ms-7237.inc1.devtunnels.ms/api/";
+//   "https://s2k70kpl-7237.inc1.devtunnels.ms/api/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
- 
 
 //   const role = roleDetails?.name;
 

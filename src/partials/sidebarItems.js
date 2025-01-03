@@ -33,16 +33,10 @@ const sidebarItems = [
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
-     
       {
         title: "Departments",
         icon: MdOutlineForest,
         path: "/departments",
-      },
-      {
-        title: "Nodal Officers",
-        icon: FaUsers,
-        path: "/nodal-officer",
       },
       {
         title: "Location Categories",
@@ -50,16 +44,22 @@ const sidebarItems = [
         path: "/entity-types",
       },
       {
-        title: " Master Facilities",
-        icon: MdOutlineForest,
-        path: "/super-admin-facilites",
+        title: "Nodal Officers",
+        icon: FaUsers,
+        path: "/nodal-officer",
       },
-     
       {
         title: "Locations",
         icon: MdOutlineForest,
         path: "/entities",
       },
+
+      {
+        title: " Master Facilities",
+        icon: MdOutlineForest,
+        path: "/super-admin-facilites",
+      },
+
       {
         title: "Location Admins",
         icon: FaUsers,
@@ -106,7 +106,7 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Bookings",
+        title: "Location Bookings",
         icon: RiDashboard3Fill,
         path: "/entity-bookings",
         gradientClass:

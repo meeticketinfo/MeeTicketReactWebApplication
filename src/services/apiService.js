@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/api/";
@@ -13,7 +13,7 @@ const API_BASE_URL = "https://meeticket.vmaxtechservices.life/parkapi/api/";
 
 // testing
 // export const API_BASE_URL =
-//   "https://29j1v8ms-7237.inc1.devtunnels.ms/api/";
+//   "https://s2k70kpl-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -35,6 +35,7 @@ const Login = () => {
     loadCaptcha,
     updateCaptchaInput,
     validateCaptchaInput,
+    
   } = useCaptchaStore();
 
   const initialValues = {
@@ -70,6 +71,11 @@ const Login = () => {
     if (response.success) {
       resetForm();
       navigate("/dashboard");
+    }
+    else{
+      loadCaptcha();
+      updateCaptchaInput("");
+      
     }
     setSubmitting(false);
   };
