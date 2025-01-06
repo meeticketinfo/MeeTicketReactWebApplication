@@ -32,6 +32,8 @@ import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 import Unauthorized from "../pages/Error/Unauthorized";
 import SummaryReport from "../components/metro_reports/summary/SummaryReport";
+import TrasactionReport from "../components/metro_reports/transaction/TrasactionReport";
+
 
 export const routes = [
   {
@@ -63,6 +65,10 @@ export const routes = [
   {
     path: "/summary-report",
     element: <ProtectedRoute element={<SummaryReport />} />,
+  },
+  {
+    path: "/transaction-report",
+    element: <ProtectedRoute element={<TrasactionReport/>} />,
   },
   {
     path: "/rtc-bookings",

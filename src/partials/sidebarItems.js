@@ -186,6 +186,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/summary-report",
       },
+      {
+        title: "Transaction Report",
+        icon: RiDashboard3Fill,
+        path: "/transaction-report",
+      },
     ],
   },
 ];

@@ -6,16 +6,20 @@ export const API_BASE_URL =
 
   // metro dev
 export const METRO_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/metroapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
 // uat
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 
-// testing
+// testing 
 // export const API_BASE_URL =
 //   "https://gcqr50xm-7237.inc1.devtunnels.ms/api/";
+
+// metro dev testing
+// export const METRO_API_BASE_URL =
+//   "https://kr2s6lp5-7297.inc1.devtunnels.ms/v1.0/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
 

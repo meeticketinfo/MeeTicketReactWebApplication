@@ -31,4 +31,8 @@ export const nodalOfficerPermissions = [
   "entity-bookings",
 ];
 
-export const MetroReports = ["dashboard", "summary-report"];
+export const MetroReports = [
+  "dashboard",
+   "summary-report",
+   "transaction-report"
+  ];
