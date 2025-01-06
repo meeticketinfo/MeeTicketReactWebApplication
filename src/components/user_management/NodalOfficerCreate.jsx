@@ -9,7 +9,7 @@ import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStor
 import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 
-const NodalOfficerCreate = ({
+const    NodalOfficerCreate = ({
   setIsNodalOfficerCreateVisible,
   isNodalOfficerEditVisible,
   setIsNodalOfficerEditVisible,

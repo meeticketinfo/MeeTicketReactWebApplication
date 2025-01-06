@@ -98,7 +98,7 @@ export default function AdminBookings() {
       headerName: "User Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => params.value&&params.value!="  "&&params.value!=" " ?params.value: "N/A",
     },
     {
       field: "parkName",
@@ -197,7 +197,7 @@ export default function AdminBookings() {
         <div className="sm:flex sm:justify-between sm:items-center mb-8">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Location Bookings
+               Bookings
             </h1>
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">

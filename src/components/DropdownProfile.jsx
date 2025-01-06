@@ -13,7 +13,7 @@ function DropdownProfile({ align }) {
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
-  const { logout, isAuthenticated, roleDetails, decodedTokenData } =
+  const { logout, isAuthenticated, roleDetails, decodedTokenData,terminateSession } =
     useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   useEffect(() => {
@@ -117,7 +117,8 @@ function DropdownProfile({ align }) {
                 // to="/signin"
                 onClick={() => {
                   updateCaptchaInput("");
-                  logout();
+                  terminateSession();
+                  localStorage.clear();
                 }}
               >
                 Sign Out

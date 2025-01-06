@@ -13,7 +13,7 @@ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/"
 
 // testing
 // export const API_BASE_URL =
-//   "https://s2k70kpl-7237.inc1.devtunnels.ms/api/";
+//   "https://gcqr50xm-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,8 +28,7 @@ api.interceptors.request.use(
     const token = useAuthStore.getState().token; // Get the token from Zustand store
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-     
-    }
+    } 
     return config;
   },
   (error) => Promise.reject(error)

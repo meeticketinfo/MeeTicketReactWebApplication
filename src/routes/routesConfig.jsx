@@ -33,6 +33,7 @@ import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFaci
 import Unauthorized from "../pages/Error/Unauthorized";
 import MobileBookingDetails from "../components/bookings_management/MobileBookingDetails";
 import DownloadApks from "../components/mobile_apks/DownloadApks";
+import SummaryReport from "../components/metro_reports/summary/SummaryReport";
 
 export const routes = [
   {
@@ -60,6 +61,10 @@ export const routes = [
   {
     path: "/bookings",
     element: <ProtectedRoute element={<AdminBookings />} />,
+  },
+  {
+    path: "/summary-report",
+    element: <ProtectedRoute element={<SummaryReport />} />,
   },
   {
     path: "/rtc-bookings",
