@@ -21,7 +21,7 @@ const ProtectedRoute = ({ element }) => {
       return parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
-    }else if (role === "ROLE_NODALOFFICER") {
+    }else if (role === "ROLE_METROADMIN") {
       return MetroReports;
     }
     return [];

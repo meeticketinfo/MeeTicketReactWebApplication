@@ -31,6 +31,7 @@ import ServiceUnifiedCreator from "../components/facilities_management/ServiceUn
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 import Unauthorized from "../pages/Error/Unauthorized";
+import SummaryReport from "../components/metro_reports/summary/SummaryReport";
 
 export const routes = [
   {
@@ -58,6 +59,10 @@ export const routes = [
   {
     path: "/bookings",
     element: <ProtectedRoute element={<AdminBookings />} />,
+  },
+  {
+    path: "/summary-report",
+    element: <ProtectedRoute element={<SummaryReport />} />,
   },
   {
     path: "/rtc-bookings",

@@ -7,7 +7,7 @@ export const superAdminPermissions = [
   // "facility/unified-create",
   "nodal-officer",
   "entity-bookings",
-  "super-admin-facilites"
+  "super-admin-facilites",
 ];
 
 export const parkAdminPermissions = [
@@ -17,7 +17,6 @@ export const parkAdminPermissions = [
   // "service",
   // "service-varient",
   "gate-keepers",
-  //
   "bookings",
   "facility-services",
   "holidays",
@@ -32,9 +31,4 @@ export const nodalOfficerPermissions = [
   "entity-bookings",
 ];
 
-export const MetroReports = [
-  "dashboard",
-  "entities",
-  "entity-admins",
-  "entity-bookings",
-];
+export const MetroReports = ["dashboard", "summary-report"];

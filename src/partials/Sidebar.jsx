@@ -14,6 +14,7 @@ import {
   parkAdminPermissions,
   superAdminPermissions,
   nodalOfficerPermissions,
+  MetroReports,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -78,6 +79,8 @@ function Sidebar({ variant = "default" }) {
       return parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
+    }else if (role === "ROLE_METROADMIN") {
+      return MetroReports;
     }
     return [];
   }, [role]);
