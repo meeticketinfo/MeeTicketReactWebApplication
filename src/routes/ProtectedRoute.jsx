@@ -5,6 +5,7 @@ import {
   superAdminPermissions,
   parkAdminPermissions,
   nodalOfficerPermissions,
+  MetroReports,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -20,6 +21,8 @@ const ProtectedRoute = ({ element }) => {
       return parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
+    }else if (role === "ROLE_NODALOFFICER") {
+      return MetroReports;
     }
     return [];
   }, [role]);

@@ -253,12 +253,12 @@ const role = roleDetails?.name;
                  {/* sequence */}
                  <div>
                   <label className="block text-sm font-medium">
-                    Sequence
+                    Sequence<span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="serviceVarientSequenceNumber"
                     type="text"
-                    maxlength={3}
+                    maxlength={5}
                     onKeyDown={(e) => {
                       // Allow only numbers and backspace
                       if (

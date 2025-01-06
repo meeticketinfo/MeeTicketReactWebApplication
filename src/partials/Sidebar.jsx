@@ -34,7 +34,7 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails, logout } = useAuthStore();
+  const { sidebarMenuItems, roleDetails, logout,terminateSession } = useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   // close on click outside
   useEffect(() => {
@@ -292,13 +292,13 @@ function Sidebar({ variant = "default" }) {
             <button
               onClick={() => {
                 updateCaptchaInput("");
-                logout();
+                terminateSession();
                 localStorage.clear();
               }}
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
             >
               <TbLogout2 className="shrink-0 text-[22px]" />
-              {!sidebarExpanded && <span className="lg:hidden">Log out</span>}
+               <span className="">Log out</span>
             </button>
           </div>
         </div>

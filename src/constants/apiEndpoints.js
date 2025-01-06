@@ -11,7 +11,7 @@ export const API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://s2k70kpl-7237.inc1.devtunnels.ms/api/";
+//   "https://w26kxvsr-7237.inc1.devtunnels.ms/api/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
 

@@ -65,6 +65,10 @@ export const FacilityServices = () => {
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
   const { quantities, updateQuantity, setQuantities } = useQuantitiesStore();
+  useEffect(() => {
+    // Reset quantities when unmounting or component rerenders
+    return () => setQuantities({});
+  }, []);
 
   useEffect(() => {
     fetchAllFacilities();
@@ -235,7 +239,7 @@ export const FacilityServices = () => {
             <Formik
               initialValues={{
                 selectedItems: [],
-                phoneNumber: "",
+                mobileNumber: "",
                 paymentMethod: "",
               }}
               validationSchema={validationSchema}
@@ -620,7 +624,7 @@ export const FacilityServices = () => {
                             {/* Phone Number */}
                             <div>
                               <label
-                                // htmlFor="mobileNumber"
+                                htmlFor="mobileNumber"
                                 className="block text-xs font-medium text-gray-700"
                               >
                                 mobile Number{" "}
@@ -638,12 +642,18 @@ export const FacilityServices = () => {
                                   }
                                 }}
                               />
-                              {errors.mobileNumber && touched.mobileNumber && (
+                              {/* {errors.mobileNumber && touched.mobileNumber && (
                               <p className="text-red-500 text-xs   absolute z-10 ">
                                 {errors.mobileNumber}
                               </p>
-                            )}
-                              
+                             
+                            )} */}
+                              <ErrorMessage
+                                name="mobileNumber"
+                                component="div"
+                                className="text-red-500 text-xs absolute"
+                              />
+
                               {/* </div> */}
                             </div>
                           </div>

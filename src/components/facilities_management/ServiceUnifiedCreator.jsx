@@ -85,8 +85,8 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
       // facilitySequenceNumber: Yup.string().required("Sequence is required").max(200, ' Sequence Number cannot exceed 200'),
       facilitySequenceNumber: Yup.number()
         .nullable()
-        .required("Sequence is required")
-        .max(200, "Sequence Number cannot exceed 200"),
+        .required("Sequence is required"),
+       
       name: Yup.string().required("Facility Name is required"),
     }),
     hasSubFacility: Yup.boolean(),
@@ -100,8 +100,8 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
             isSubfacility &&
             Yup.number()
               .nullable()
-              .required("Sequence is required")
-              .max(200, "Sequence Number cannot exceed 200"),
+              .required("Sequence is required"),
+              
           ticketTypes: Yup.array().of(
             Yup.object().shape({
               type: Yup.string().required("Ticket Type is required"),
@@ -288,7 +288,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   <Field
                     name="facilityDto.facilitySequenceNumber"
                     type="text"
-                    maxlength={3}
+                    maxlength={5}
                     onChange={(e) => {
                       setFieldValue(
                         "facilityDto.facilitySequenceNumber",
@@ -384,7 +384,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               astrix={true}
                             />
                             <TextInput
-                              maxlength={3}
+                              maxlength={5}
                               placeholder="Enter Limit"
                               name={`subFacilities[${index}].Limit`}
                               label="Limit"
@@ -400,7 +400,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                             />
                             <div className="w-1/5">
                               <TextInput
-                                maxlength={3}
+                                maxlength={5}
                                 placeholder="Enter Sequence"
                                 name={`subFacilities[${index}].subFacilitySequenceNumber`}
                                 label="Sequence"
@@ -424,6 +424,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               <MdDeleteForever className="text-white" />
                             </button> */}
                             {values.subFacilities.length > 1 && (
+                              <div className="flex items-center">
                               <button
                                 type="button"
                                 onClick={() => {
@@ -438,6 +439,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               >
                                 <MdDeleteForever className="text-white" />
                               </button>
+                              </div>
                             )}
                           </div>
                           <FieldArray
@@ -465,14 +467,14 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                     (_, ticketIndex) => (
                                       <div
                                         key={ticketIndex}
-                                        className="mb-3 flex justify-between items-center  border-b-2 border border-gray-200 rounded-2xl my-3  p-3"
+                                        className="mb-3 flex gap-4 items-center  border-b-2 border border-gray-200 rounded-2xl my-3  p-3"
                                       >
                                         <div className="grid grid-cols-4 gap-3 mb-4">
                                           <SelectInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].type`}
                                             label="Ticket Type"
                                             astrix={true}
-                                            astrix={true}
+                                           
                                             options={ticketTypeOptions}
                                           />
                                           {values.subFacilities[index]
@@ -487,6 +489,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                           <TextInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].amount`}
                                             label="Amount"
+                                            maxLength={5}
                                             astrix={true}
                                             placeholder="Enter Amount"
                                             onKeyDown={(e) => {
@@ -511,7 +514,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                           <TextInput
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].typeOfTicketSequenceNumber`}
                                             label="Sequence"
-                                            maxlength={3}
+                                            maxlength={5}
                                             type="text"
                                             astrix={true}
                                             placeholder="Enter Sequence"

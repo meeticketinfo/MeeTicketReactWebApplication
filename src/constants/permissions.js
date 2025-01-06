@@ -31,3 +31,10 @@ export const nodalOfficerPermissions = [
   "entity-admins",
   "entity-bookings",
 ];
+
+export const MetroReports = [
+  "dashboard",
+  "entities",
+  "entity-admins",
+  "entity-bookings",
+];

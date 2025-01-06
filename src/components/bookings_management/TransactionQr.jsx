@@ -38,7 +38,7 @@ function TransactionQr() {
       const timer = setTimeout(() => {
         setCounter((prev) => prev - 1); // Decrease the counter
         VerifyPaymentStatus(FirstStepTransactionResponse?.orderId); // Verify payment status
-      }, 2000);
+      }, 1000);
 
       return () => clearTimeout(timer); // Cleanup timer
     } else if (counter === 0) {
@@ -89,7 +89,7 @@ function TransactionQr() {
           const result = await saveBookingDetails({
             ...storedBookingPayload,
             transactionId: FirstStepTransactionResponse?.transId,
-            transactionId: FirstStepTransactionResponse?.transId,
+            // transactionId: FirstStepTransactionResponse?.transId,
             bookingDate: formatBookingDate(currentDate),
           });
           if (result && result.data && result.data.status === 200) {

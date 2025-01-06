@@ -16,6 +16,8 @@ function SuperAdminFacilitiesList({
     fetchAllAdminFacilitiesDetails,
     setCurrentAdminFacilityEditDetails,
   } = useAdminFacilityStore();
+  const storedUser = localStorage.getItem("AdminFacilityFilters");
+  const userObject = storedUser ? JSON.parse(storedUser) : "";
 
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
@@ -24,8 +26,8 @@ function SuperAdminFacilitiesList({
 
   const [filteredFacilities, setFilteredFacilities] = useState([]);
   const [filters, setFilters] = useState({
-    departmentId: "",
-    locationCategoryId: "",
+    departmentId: userObject.departmentId,
+    locationCategoryId: userObject.locationCategoryId,
   });
 
   const [columnDefs] = useState([
@@ -96,8 +98,7 @@ function SuperAdminFacilitiesList({
   useEffect(() => {
     const filtered = AdminFacilitiesDetails?.filter((facility) => {
       const matchesDepartment =
-        !filters.departmentId ||
-        facility.departmentId === filters.departmentId;
+        !filters.departmentId || facility.departmentId === filters.departmentId;
       const matchesLocation =
         !filters.locationCategoryId ||
         facility.locationCategoryId === filters.locationCategoryId;
@@ -113,6 +114,10 @@ function SuperAdminFacilitiesList({
       ...prevFilters,
       [filterName]: value,
     }));
+    localStorage.setItem(
+      "AdminFacilityFilters",
+      JSON.stringify({ ...filters, [filterName]: value })
+    );
   };
 
   return (
@@ -122,6 +127,15 @@ function SuperAdminFacilitiesList({
           <label className="block text-sm font-medium">Department</label>
           <Select
             name="departmentId"
+            value={
+              allDepartmentTypes
+                ?.filter((dept) => dept.isActive)
+                .map((dept) => ({
+                  value: dept.departmentId,
+                  label: dept.departmentName,
+                }))
+                .find((option) => option.value === filters.departmentId) || null // Set the selected value
+            }
             options={allDepartmentTypes
               ?.filter((dept) => dept.isActive)
               .map((dept) => ({
@@ -138,24 +152,23 @@ function SuperAdminFacilitiesList({
             styles={{
               control: (base) => ({
                 ...base,
-                outline: "none",         
-                boxShadow: "none",        
-                borderColor: "#ced4da",   
-                borderRadius: "6px",      
-                height: "30px",           
-                minHeight: "33px",        
+                outline: "none",
+                boxShadow: "none",
+                borderColor: "#ced4da",
+                borderRadius: "6px",
+                height: "30px",
+                minHeight: "33px",
               }),
-            
+
               menu: (base) => ({
                 ...base,
                 // padding: "4px 0",
-                         
               }),
               option: (base, { isFocused }) => ({
                 ...base,
                 fontSize: "0.775rem",
                 backgroundColor: isFocused ? "#F8F8F8" : "white",
-                color: isFocused ? "#0C3771" : "#000",              
+                color: isFocused ? "#0C3771" : "#000",
                 cursor: "pointer",
               }),
             }}
@@ -166,6 +179,17 @@ function SuperAdminFacilitiesList({
           <label className="block text-sm font-medium">Location Category</label>
           <Select
             name="locationCategoryId"
+            value={
+              allEntityTypes
+                ?.filter((dept) => dept.isActive)
+                .map((dept) => ({
+                  value: dept.entityTypeId,
+                  label: dept.entityTypeName,
+                }))
+                .find(
+                  (option) => option.value === filters.locationCategoryId
+                ) || null // Set the selected value
+            }
             options={allEntityTypes
               ?.filter((entity) => entity.isActive)
               .map((entity) => ({
@@ -173,7 +197,10 @@ function SuperAdminFacilitiesList({
                 label: entity.entityTypeName,
               }))}
             onChange={(selectedOption) =>
-              handleFilterChange("locationCategoryId", selectedOption?.value || "")
+              handleFilterChange(
+                "locationCategoryId",
+                selectedOption?.value || ""
+              )
             }
             isClearable
             placeholder="Location Category"
@@ -182,24 +209,23 @@ function SuperAdminFacilitiesList({
             styles={{
               control: (base) => ({
                 ...base,
-                outline: "none",         
-                boxShadow: "none",       
-                borderColor: "#ced4da",  
-                borderRadius: "6px",     
-                height: "30px",         
-                minHeight: "33px",        
+                outline: "none",
+                boxShadow: "none",
+                borderColor: "#ced4da",
+                borderRadius: "6px",
+                height: "30px",
+                minHeight: "33px",
               }),
-            
+
               menu: (base) => ({
                 ...base,
                 // padding: "4px 0",
-                         
               }),
               option: (base, { isFocused }) => ({
                 ...base,
                 fontSize: "0.775rem",
                 backgroundColor: isFocused ? "#F8F8F8" : "white",
-                color: isFocused ? "#0C3771" : "#000",              
+                color: isFocused ? "#0C3771" : "#000",
                 cursor: "pointer",
               }),
             }}

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 const LOGIN_API_ENDPOINT = "/Authentication/login";
 const OTP_LOGIN_API_ENDPOINT = "/Authentication/ValidateLoginOTP";
+const LOGOUT="Authentication/logout";
 const DECODED_TOKEN_ENDPOINT = "/Authentication/GetDecodedToken";
 const GET_ALL_ROLES = "/Master/GetAllRoles";
 
@@ -150,6 +151,18 @@ const useAuthStore = create(
         }
       },
 
+      terminateSession:async ()=>{
+        try {
+          const response = await apiService.post( LOGOUT );
+          if(response){
+            get().logout();
+          }
+        } catch (error) {
+         console.log("error",error)
+        }
+      },
+      
+
       fetchDecodedToken: async () => {
         try {
           const response = await apiService.get(DECODED_TOKEN_ENDPOINT);
@@ -213,6 +226,7 @@ const useAuthStore = create(
       },
 
       logout: () =>
+        
         set({
           token: null,
           error: null,
