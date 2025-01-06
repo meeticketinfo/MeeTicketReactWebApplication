@@ -31,6 +31,8 @@ import ServiceUnifiedCreator from "../components/facilities_management/ServiceUn
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 import Unauthorized from "../pages/Error/Unauthorized";
+import MobileBookingDetails from "../components/bookings_management/MobileBookingDetails";
+import DownloadApks from "../components/mobile_apks/DownloadApks";
 import SummaryReport from "../components/metro_reports/summary/SummaryReport";
 import TrasactionReport from "../components/metro_reports/transaction/TrasactionReport";
 
@@ -125,5 +127,13 @@ export const routes = [
   {
     path: "/nodal-officer",
     element: <ProtectedRoute element={<NodalOfficer />} />,
+  },
+  {
+    path: "/mobile-bookings",
+    element: <MobileBookingDetails />,
+  },
+  {
+    path: "/apks",
+    element: <DownloadApks />,
   },
 ];
