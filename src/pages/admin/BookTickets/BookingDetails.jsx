@@ -68,15 +68,10 @@ export default function BookingDetails() {
         margin: 0mm auto; /* Add small margins for better readability */
       }
       body {
-        font-family: "'Courier New', Courier, monospace";
+        font-family: "Verdana";
         margin: 0;
         padding: 0;
-        // width: 80mm; /* Match the page size */
-        font-size: 12px; /* Adjust font size for readability */
-        color: "#000", 
-        backgroundColor: "#fff",
-        border: "1px solid #ccc",
-        boxSizing: "border-box",
+        width: 220mm;
       }
       .printable-card {
         width: 100%; /* Fit within the 58mm width */
@@ -212,29 +207,32 @@ export default function BookingDetails() {
             <div
               aria-label="card"
               className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] printable-card"
+              style={{width: 700}}
             >
               <div style={{ textAlign: "center" }}>
                 <img
                   src={Logo}
-                  width={80}
-                  height={80}
+                  width={100}
+                  height={100}
                   style={{ margin: "0 auto" }}
                 />
               </div>
               <h2
                 style={{
-                  fontSize: 20,
+                  fontSize: 30,
                   color: "green",
                   textAlign: "center",
                   fontWeight: "600",
                   marginBottom: 12,
+                  textTransform: "uppercase"
                 }}
               >
-                Entry Ticket
+                Ticket
               </h2>
               <div
                 aria-label="header"
                 className="flex items-center rounded-2xl border"
+                style={{width: 400, margin:"0 auto"}}
               >
                 <div
                   className="backdrop-blur-sm"
@@ -252,7 +250,7 @@ export default function BookingDetails() {
                 style={{ padding: 20 }}
                 className="mt-2 grid gap-1 rounded-md overflow-hidden"
               >
-                <table width={"100%"} style={{ borderSpacing: 0 }}>
+                <table width={"100%"} style={{ borderSpacing: 10, fontSize: 23, marginBottom: 20, borderBottom: "1px solid #000" }}>
                   {Array.isArray(consolidatedData) ? (
                     consolidatedData.map((item) => (
                       <tbody>
@@ -263,6 +261,7 @@ export default function BookingDetails() {
                                 color: "#4b5563",
                                 paddingLeft: 10,
                                 paddingTop: 15,
+                                fontWeight: 700
                               }}
                             >
                               Facility
@@ -272,7 +271,7 @@ export default function BookingDetails() {
                             </td>
                           </tr>
                           <tr key={item.facilityId + item.serviceId}>
-                            <td style={{ color: "#4b5563", paddingLeft: 10 }}>
+                            <td style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}>
                               SubFacility
                             </td>
                             <td style={{ color: "black" }}>
@@ -283,7 +282,7 @@ export default function BookingDetails() {
                             <>
                               <tr>
                                 <td
-                                  style={{ color: "#4b5563", paddingLeft: 10 }}
+                                  style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}
                                 >
                                   Ticket Type
                                 </td>
@@ -295,9 +294,9 @@ export default function BookingDetails() {
                               </tr>
                               <tr>
                                 <td
-                                  style={{ color: "#4b5563", paddingLeft: 10 }}
+                                  style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}
                                 >
-                                  Qnty
+                                  Qty
                                 </td>
                                 <td style={{ color: "black" }}>
                                   : {detail?.quantity || "N/A"}

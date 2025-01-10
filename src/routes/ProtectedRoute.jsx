@@ -45,9 +45,9 @@ const ProtectedRoute = ({ element }) => {
   );
 
   // Redirect to a "Not Authorized" page if the route is not allowed
-  if (!isAuthorized) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // if (!isAuthorized) {
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return element;
 };

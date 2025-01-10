@@ -147,6 +147,7 @@ const PrivacyPolicy = () => {
         <p className="text-gray-500 mb-3 text-sm">
           Deputy Director (Technical), ESD shall be the grievance officer for the purposes of this Privacy Policy. All of the following may be addressed to the grievance officer at:
         </p>
+        <div className="overflow-x-auto">
         <table className="table-auto border-collapse border border-gray-400 text-gray-600 w-full mb-4 text-sm">
           <thead >
             <tr>
@@ -173,6 +174,7 @@ const PrivacyPolicy = () => {
             </tr>
           </tbody>
         </table>
+        </div>
         <ol className="list-lower-roman list-inside text-gray-500 mb-3 text-sm ps-6">
           <li>Requests for review/ modification/ deletion of any Personal Information provided by You;</li>
           <li>Questions/ queries/ clarifications regarding the terms of this Privacy Policy;</li>
