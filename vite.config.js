@@ -6,11 +6,13 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   define: {
     "process.env": process.env,
+    
   },
   plugins: [react()],
   resolve: {
     alias: {
       "@tailwindConfig": path.resolve(__dirname, "tailwind.config.js"),
+    
     },
   },
   optimizeDeps: {
@@ -20,5 +22,8 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+  },
+  server: {
+    port: 5173, // Specify the port here
   },
 });

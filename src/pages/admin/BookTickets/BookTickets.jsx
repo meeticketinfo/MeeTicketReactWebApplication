@@ -98,7 +98,7 @@ export default function AdminBookings() {
       headerName: "User Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value&&params.value!="  "&&params.value!=" " ?params.value: "N/A",
+      valueFormatter: (params) => (!params.value || params.value.trim() === "") ? "N/A" : params.value
     },
     {
       field: "parkName",
@@ -395,7 +395,6 @@ export default function AdminBookings() {
               // onPageChange={handlePageChange}
               totalRecords={totalEntityBookingRecords}
               enableAdvancedFilter={true}
-           
             />
           </div>
         ) : (

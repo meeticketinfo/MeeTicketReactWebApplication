@@ -9,6 +9,10 @@ export default {
       boxShadow: {
         custom: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
       },
+      listStyleType: {
+        'upper-roman': 'upper-roman', // For uppercase Roman numerals
+        'lower-roman': 'lower-roman', // For lowercase Roman numerals
+      },
       width: {
         "1/10": "10%",
         "9/10": "90%",

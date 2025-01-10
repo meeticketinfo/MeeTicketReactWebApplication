@@ -362,7 +362,7 @@ export const FacilityServices = () => {
                                                         // If the item exists, remove it and reset the quantity
                                                         updateQuantity(
                                                           variant.id,
-                                                          -1
+                                                          -currentQuantity
                                                         );
                                                         setFieldValue(
                                                           "selectedItems",
@@ -412,27 +412,48 @@ export const FacilityServices = () => {
                                                         quantities[
                                                           variant.id
                                                         ] || 0;
+                                                      // if (currentQuantity > 0) {
+                                                      //   updateQuantity(
+                                                      //     variant.id,
+                                                      //     -1
+                                                      //   );
+                                                      //   setFieldValue(
+                                                      //     "selectedItems",
+                                                      //     values.selectedItems.map(
+                                                      //       (item) =>
+                                                      //         item.serviceVarientId ===
+                                                      //         variant.id
+                                                      //           ? {
+                                                      //               ...item,
+                                                      //               quantity:
+                                                      //                 item.quantity -
+                                                      //                 1,
+                                                      //             }
+                                                      //           : item
+                                                      //     )
+                                                      //   );
+                                                      // }
                                                       if (currentQuantity > 0) {
-                                                        updateQuantity(
-                                                          variant.id,
-                                                          -1
-                                                        );
+                                                        const updatedQuantity = currentQuantity - 1;
+                                                    
+                                                        // Update quantity
+                                                        updateQuantity(variant.id, -1);
+                                                    
+                                                        // Remove from selectedItems if quantity is 0
                                                         setFieldValue(
-                                                          "selectedItems",
-                                                          values.selectedItems.map(
-                                                            (item) =>
-                                                              item.serviceVarientId ===
-                                                              variant.id
-                                                                ? {
-                                                                    ...item,
-                                                                    quantity:
-                                                                      item.quantity -
-                                                                      1,
-                                                                  }
-                                                                : item
-                                                          )
+                                                            "selectedItems",
+                                                            updatedQuantity === 0
+                                                                ? values.selectedItems.filter(
+                                                                      (item) => item.serviceVarientId !== variant.id
+                                                                  )
+                                                                : values.selectedItems.map((item) =>
+                                                                      item.serviceVarientId === variant.id
+                                                                          ? { ...item, quantity: updatedQuantity }
+                                                                          : item
+                                                                  )
                                                         );
-                                                      }
+                                                    }
+                                                    
                                                     }}
                                                     className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
                                                   >
@@ -518,6 +539,7 @@ export const FacilityServices = () => {
                         Selected Items
                       </h3>
                       <ul className="space-y-4">
+                        {console.log("values.selectedItems",values.selectedItems)}
                         {values.selectedItems.map((item, index) => {
                           const facility = allFacilities.find(
                             (fac) => fac.id === item.facilityId

@@ -1,134 +1,176 @@
-import React, { useEffect, useState } from 'react'
-import { useSummaryReportStore } from '../../../store/metro_reports/summaryReportStore';
-import useAuthStore from '../../../store/authStore';
-import AgGridTable from '../../tables/AgGridTable';
+import React, { useEffect, useState } from "react";
+import { useSummaryReportStore } from "../../../store/metro_reports/summaryReportStore";
+import useAuthStore from "../../../store/authStore";
+import AgGridTable from "../../tables/AgGridTable";
 
 function SummaryReportList() {
-    const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
-  useAuthStore();
-  const { allMetroSummaryReports,fetchAllMetroSummaryReport } =
-  useSummaryReportStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const {
+    allMetroSummaryReports,
+    fetchAllMetroSummaryReport,
+    isFetchAllMetroSummaryReportsLoading,
+  } = useSummaryReportStore();
 
-useEffect(()=>{
-  fetchAllMetroSummaryReport()
-},[])
-const [columnDefs] = useState([
+  useEffect(() => {
+    fetchAllMetroSummaryReport();
+  }, []);
+  const [columnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
-      width: 100,
+      maxWidth: "80",
+      // flex:1,
       headerClass: "text-blue-v2",
     },
-    
+
     {
-      field: "id",
-      headerName: "Transaction Id",
-    //   flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "transactionDate",
-      headerName: "Transaction Date",
-    //   flex: 1,
+      field: "orderId",
+      headerName: "Order Id",
+      //   flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "totalTransactionAmount",
-      headerName: "Total Transaction Amount",
-    //   flex: 1,
+      field: "userId",
+      headerName: "User Id",
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "settlementAmount",
-      headerName: "Settlement Amount",
-    //   flex: 1,
+      field: "paymentTransactionId",
+      headerName: "Payment Transaction Id",
+      //   flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "adjustment",
-      headerName: "Adjustment",
-    //   flex: 1,
+      field: "initiateTxnAmount",
+      headerName: "Transaction Amount",
+      maxWidth: "160",
+      //   flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value}rs ` || "N/A",
+    },
+    {
+      field: "fromStationId",
+      headerName: "From Station Name",
+      //   flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-        field: "netSettlementAmount",
-        headerName: "Net Settlement Amount",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
+      field: "toStationId",
+      headerName: "To Station Name",
+      //   flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    // {
+    //   field: "ticketStatus",
+    //   headerName: "Ticket Status",
+    //   headerClass: "text-blue-v2",
+    //   // valueFormatter: (params) => params.value || "N/A",
+    //   cellRenderer: (params) => (
+    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+    //       <span
+    //         className={`${
+    //           params.value==="NEW"
+    //             ? "bg-green-400 text-white shadow-md"
+    //             :  params.value==="ENTRY_USED"
+    //              ? "bg-green-400 text-white shadow-md"
+    //              :  params.value==="EXIT_USED"
+    //              ? "bg-green-400 text-white shadow-md"
+    //              :  params.value==="REFUNDED"
+    //              ? "bg-green-400 text-white shadow-md"
+    //              :  params.value==="EXPIRED"
+    //              ? "bg-green-400 text-white shadow-md"
+    //              :  params.value==="CHANGE_DESTINATION"
+    //              ? "bg-green-400 text-white shadow-md"
+    //              :""
+
+    //         } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+    //       >
+    //         {" "}
+    //         {params.value}
+    //       </span>
+    //     </div>
+    //   ),
+    // },
+
+    {
+      field: "ticketStatus",
+      headerName: "Ticket Status",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => {
+        // Define status styles dynamically
+        const statusStyles = {
+          NEW: "bg-green-400 text-white shadow-md",
+          ENTRY_USED: "bg-blue-400 text-white shadow-md",
+          EXIT_USED: "bg-yellow-400 text-white shadow-md",
+          REFUNDED: "bg-orange-400 text-white shadow-md",
+          EXPIRED: "bg-red-400 text-white shadow-md",
+          CHANGE_DESTINATION: "bg-purple-400 text-white shadow-md",
+        };
+    
+        // Apply default fallback style if no match
+        const styleClass =
+          statusStyles[params.value] || "bg-gray-400 text-white shadow-md";
+    
+        return (
+         
+            <span
+              className={`${styleClass} text-xs font-medium px-2.5 py-0.5 rounded`}
+            >
+              {params.value || "N/A"} {/* Default text if value is null */}
+            </span>
+         
+        );
       },
-      {
-        field: "from",
-        headerName: "From Date",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "till",
-        headerName: "Till Date",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "status",
-        headerName: "Status",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "utrNo",
-        headerName: "UTR No",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "settlementDate",
-        headerName: "Settlement Date",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "settlementType",
-        headerName: "Settlement Type",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "settlementCharge",
-        headerName: "Settlement Charge",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "settlementTax",
-        headerName: "Settlement Tax",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
-      {
-        field: "remarks",
-        headerName: "Remarks",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
+    },
+    
+
+  
+
+    {
+      field: "patronPhoneNumber",
+      headerName: "Mobile Number",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
+      field: "fromDate",
+      headerName: "From Date",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "toDate",
+      headerName: "To Date",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
+      field: "utrNumber",
+      headerName: "UTR Number",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
   ]);
   return (
-    <AgGridTable rowData={allMetroSummaryReports} columnDefs={columnDefs} />
-  )
+    <AgGridTable
+      rowData={allMetroSummaryReports}
+      columnDefs={columnDefs}
+      isFetchLoading={isFetchAllMetroSummaryReportsLoading}
+    />
+  );
 }
 
-export default SummaryReportList
+export default SummaryReportList;

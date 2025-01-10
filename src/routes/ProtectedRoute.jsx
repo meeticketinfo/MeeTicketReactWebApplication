@@ -13,7 +13,7 @@ const ProtectedRoute = ({ element }) => {
   const location = useLocation();
 
   const role = roleDetails?.name;
-  
+
   const rolePermissions = useMemo(() => {
     if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
@@ -21,18 +21,22 @@ const ProtectedRoute = ({ element }) => {
       return parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
-    }else if (role === "ROLE_METROADMIN") {
+    } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
     }
     return [];
   }, [role]);
 
+  // If user is authenticated and trying to access the login page, redirect to dashboard
+  if (isAuthenticated && location.pathname === "/") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // If user is not authenticated, redirect to login page
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-    // if (isAuthenticated) {
-    //   return <Navigate to="/dashboard" replace />;
-    // }
+
   // Get current route and check if it is allowed for the user's role
   const currentPath = location.pathname.replace(/\/$/, ""); // Normalize trailing slash
   const permissions = rolePermissions || [];

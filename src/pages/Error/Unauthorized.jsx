@@ -11,7 +11,7 @@ const Unauthorized = () => {
               401
             </h1>
             <p className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
-              No autherization found.
+              No authorization found.
             </p>
             <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">
               this page is not publicly available.

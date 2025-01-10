@@ -58,7 +58,7 @@ function DownloadApks() {
                 <h1 className='text-center text-3xl font-semibold text-white mt-6 '>Download APK's   </h1>
                 <div className="flex flex-wrap justify-center gap-6">
                     {/* Card 1 */}
-                    <div className="bg-white mt-5 text-center py-6 px-4 shadow-md rounded-md w-80">
+                    <div className="bg-white mt-5 text-center py-6 px-4 shadow-md border-blue-950 rounded-md w-80">
                         <div className="mb-4">
                             <img
                                 src={meeticketlogo}
@@ -66,17 +66,17 @@ function DownloadApks() {
                                 className="w-20 mx-auto"
                             />
                         </div>
-                        <div className="text-xl font-medium mb-4">Download MeeTicket App</div>
+                        <div className="text-xl text-blue-v1 font-medium mb-4">Download MeeTicket App</div>
                         <a
                             href="https://egovindia.in/meeticketapk/MeeTicket(1.0.9).apk"
-                            className="hover:bg-blue-300 bg-blue-600  hover:text-black text-white font-semibold py-2 px-4 rounded inline-block transition duration-300"
+                            className="hover:bg-blue-v1 bg-blue-v2   text-white font-semibold py-2 px-4 rounded inline-block transition duration-300"
                         >
                             Click here
                         </a>
                     </div>
 
                     {/* Card 2 */}
-                    <div className="bg-white mt-5 text-center py-6 px-4 shadow-md rounded-md w-80">
+                    <div className="bg-white mt-5 text-center py-6 px-4 shadow-md border border-blue-950 rounded-md w-80">
                         <div className="mb-4">
                             <img
                                 src={meeticketlogo}
@@ -84,10 +84,10 @@ function DownloadApks() {
                                 className="w-20 mx-auto"
                             />
                         </div>
-                        <div className="text-xl font-medium mb-4">Download GateKeper App</div>
+                        <div className="text-xl font-medium text-blue-v1 mb-4">Download GateKeper App</div>
                         <a
                             href="https://egovindia.in/meeticketapk/GateKeeper(1.0.1).apk"
-                            className="hover:bg-blue-300 bg-blue-600 hover:text-black text-white font-semibold py-2 px-4 rounded inline-block transition duration-300"
+                            className="hover:bg-blue-v1 bg-blue-v2  text-white font-semibold py-2 px-4 rounded inline-block transition duration-300"
                         >
                             Click here
                         </a>

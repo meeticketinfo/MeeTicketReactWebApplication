@@ -15,11 +15,11 @@ export const METRO_API_BASE_URL =
 
 // testing 
 // export const API_BASE_URL =
-//   "https://gcqr50xm-7237.inc1.devtunnels.ms/api/";
+//   "https://8zl2vs9v-7297.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =
-//   "https://kr2s6lp5-7297.inc1.devtunnels.ms/v1.0/";
+//   "https://vzn9g3bw-7297.inc1.devtunnels.ms/v1.0/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
 
@@ -156,7 +156,7 @@ export const API_ENDPOINTS = {
       GET_METRO_BOOKINGS: `Master/GetAllFacilities`,
     },
     METRO_Reports: {
-      GET_METRO_SUMMARY: `${METRO_API_BASE_URL}MetroAPI/GetTransactionSummaryResult`,
+      GET_METRO_SUMMARY: `${METRO_API_BASE_URL}MetroAPI/GetTransactionReportResult`,
     },
   },
   ENTITIES: {

@@ -35,6 +35,9 @@ import MobileBookingDetails from "../components/bookings_management/MobileBookin
 import DownloadApks from "../components/mobile_apks/DownloadApks";
 import SummaryReport from "../components/metro_reports/summary/SummaryReport";
 import TrasactionReport from "../components/metro_reports/transaction/TrasactionReport";
+import TermsAndConditions from "../components/terms_and_conditions_privacy_policy/termsAndConditions";
+import PrivacyPolicy from "../components/terms_and_conditions_privacy_policy/privacyPolicy";
+import AuthRoute from "./AuthRoute ";
 
 
 export const routes = [
@@ -48,7 +51,7 @@ export const routes = [
   },
   {
     path: "/",
-    element: <Login />,
+    element:  <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
   {
@@ -135,5 +138,13 @@ export const routes = [
   {
     path: "/apks",
     element: <DownloadApks />,
+  },
+  {
+    path: "/terms",
+    element: < TermsAndConditions/>,
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPolicy />,
   },
 ];

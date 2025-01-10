@@ -28,4 +28,37 @@
   box-shadow: none !important;
 }
 
+/* terms policy */
+
+.privacy_polibody {
+  padding: 20px;
+}
+.ff_bold {
+  font-family: 'roboto-bold' !important;
+}
+ul:not(.browser-default) {
+  padding-left: 0;
+  list-style-type: none;
+}
+ul:not(.browser-default) li {
+  list-style-type: none;
+}
+.ff_bold {
+  font-family: 'roboto-bold' !important;
+}
+.privacy_polibody p {
+  margin-top: 5px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.row .col {
+  float: left;
+  box-sizing: border-box;
+  padding: 0 .75rem;
+  min-height: 1px;
+}
+
 

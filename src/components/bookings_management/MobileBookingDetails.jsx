@@ -17,7 +17,7 @@ function MobileBookingDetails() {
         catch (error) {
             console.error('Error fetching booking details:', error);
         }
-
+ 
     }
 
     useEffect(() => {

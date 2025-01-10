@@ -23,11 +23,10 @@ import MainOtpLogin from "./MainOtpLogin";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, loginError, login, setOtpError } = useAuthStore();
+  const { isLoading, isAuthenticated, loginError, login, setOtpError } =
+    useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isPhoneSelected, setIsPhoneSelected] = useState(false);
-
-
 
   const {
     captchaInput,
@@ -35,7 +34,6 @@ const Login = () => {
     loadCaptcha,
     updateCaptchaInput,
     validateCaptchaInput,
-
   } = useCaptchaStore();
 
   const initialValues = {
@@ -66,16 +64,13 @@ const Login = () => {
       setSubmitting(false);
       return;
     }
-
     const response = await login(values);
     if (response.success) {
       resetForm();
       navigate("/dashboard");
-    }
-    else {
+    } else {
       loadCaptcha();
       updateCaptchaInput("");
-
     }
     setSubmitting(false);
   };
@@ -102,7 +97,7 @@ const Login = () => {
   }, [isPhoneSelected, loadCaptcha]);
 
   const handleToggle = () => {
-    setOtpError(null)
+    setOtpError(null);
     setIsPhoneSelected((prevState) => !prevState);
     if (!isPhoneSelected) {
       loadCaptchaEnginge(6, "#a8b4c4", "rgb(107 114 128 / 1)", "upper");
@@ -175,10 +170,7 @@ const Login = () => {
             </div>
 
             {/* Form Section */}
-            <div
-              autoComplete="off"
-              className="w-full lg:w-1/2 max-w-md ">
-
+            <div autoComplete="off" className="w-full lg:w-1/2 max-w-md ">
               <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 mb-3">
                 <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
                   Welcome to MeeTicket
@@ -208,16 +200,18 @@ const Login = () => {
 
                     {/* Tab 1: Login with Phone */}
                     <span
-                      className={`relative w-1/2 text-center text-sm font-bold py-2 z-10 transition-all duration-500 ease-in-out ${isPhoneSelected ? "text-gray-600" : "text-white"
-                        }`}
+                      className={`relative w-1/2 text-center text-sm font-bold py-2 z-10 transition-all duration-500 ease-in-out ${
+                        isPhoneSelected ? "text-gray-600" : "text-white"
+                      }`}
                     >
                       User
                     </span>
 
                     {/* Tab 2: Login with Email */}
                     <span
-                      className={`relative w-1/2 text-center text-sm py-2 font-bold z-10 transition-all duration-500 ease-in-out ${isPhoneSelected ? "text-white" : "text-gray-600"
-                        }`}
+                      className={`relative w-1/2 text-center text-sm py-2 font-bold z-10 transition-all duration-500 ease-in-out ${
+                        isPhoneSelected ? "text-white" : "text-gray-600"
+                      }`}
                     >
                       ESD Admin
                     </span>
@@ -297,7 +291,9 @@ const Login = () => {
                                 <div className="relative flex items-center flex-row-reverse ">
                                   <LoadCanvasTemplate
                                     key={
-                                      isPhoneSelected ? "phone-tab" : "email-tab"
+                                      isPhoneSelected
+                                        ? "phone-tab"
+                                        : "email-tab"
                                     }
                                     reloadText=""
                                   />
@@ -348,10 +344,11 @@ const Login = () => {
                             <button
                               type="submit"
                               disabled={isSubmitting}
-                              className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${isSubmitting
-                                ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
-                                : "bg-blue-v1 hover:bg-blue-v2"
-                                }`}
+                              className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
+                                isSubmitting
+                                  ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
+                                  : "bg-blue-v1 hover:bg-blue-v2"
+                              }`}
                             >
                               Sign in
                             </button>
@@ -362,7 +359,6 @@ const Login = () => {
                   )}
                 </div>
               </div>
-             
             </div>
           </div>
         </div>

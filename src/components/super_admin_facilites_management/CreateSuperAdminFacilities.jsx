@@ -89,7 +89,7 @@ function CreateSuperAdminFacilities({
   const validationSchema = Yup.object({
     departmentId: Yup.string().required("Please select Department Type."),
     locationCategoryId: Yup.string().required(
-      "Please enter the Location Category."
+      "Please select Location Category."
     ),
 
     facilityName: Yup.string().required("Please select Facility Name."),

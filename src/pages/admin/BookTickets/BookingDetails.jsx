@@ -64,21 +64,26 @@ export default function BookingDetails() {
     const printStyles = `
     <style>
       @page {
-        size: 200mm 400mm; /* Adjust the width and height for ticket dimensions */
-        margin: 5mm; /* Add small margins for better readability */
+        size: 80mm auto; /* Adjust the width and height for ticket dimensions */
+        margin: 0mm auto; /* Add small margins for better readability */
       }
       body {
-        font-family: Arial, sans-serif;
+        font-family: "'Courier New', Courier, monospace";
         margin: 0;
         padding: 0;
-        width: 220mm; /* Match the page size */
+        // width: 80mm; /* Match the page size */
+        font-size: 12px; /* Adjust font size for readability */
+        color: "#000", 
+        backgroundColor: "#fff",
+        border: "1px solid #ccc",
+        boxSizing: "border-box",
       }
       .printable-card {
         width: 100%; /* Fit within the 58mm width */
-        padding: 5mm;
-        margin-bottom: 5mm;
+        padding: 3mm;
+        margin-bottom: 3mm;
         page-break-inside: avoid;
-        font-size: 12px; /* Adjust font size for readability */
+   
         margin: 0 auto;
       }
       .printable-card ul {
@@ -206,7 +211,6 @@ export default function BookingDetails() {
           <div className="flex justify-center">
             <div
               aria-label="card"
-              style={{ width: 400 }}
               className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] printable-card"
             >
               <div style={{ textAlign: "center" }}>

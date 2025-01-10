@@ -182,12 +182,12 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Summary Report",
+        title: "Transaction Report",
         icon: RiDashboard3Fill,
         path: "/summary-report",
       },
       {
-        title: "Transaction Report",
+        title: "Summary Report",
         icon: RiDashboard3Fill,
         path: "/transaction-report",
       },

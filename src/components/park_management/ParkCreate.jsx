@@ -423,12 +423,18 @@ const ParkCreate = ({
                   <Field
                     name="ZipCode"
                     type="text"
+                    maxLength={6}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.ZipCode && touched.ZipCode
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Pincode"
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="ZipCode"
