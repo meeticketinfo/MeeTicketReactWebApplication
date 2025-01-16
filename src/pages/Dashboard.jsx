@@ -180,7 +180,7 @@ function Dashboard() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "userName",
+      field: "userPhoneNumber",
       headerName: "User Name",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -228,6 +228,13 @@ function Dashboard() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "modeOfPayment",
+      headerName: "mode Of Payment",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
   ]);
 

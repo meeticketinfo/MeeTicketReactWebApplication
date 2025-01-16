@@ -10,11 +10,14 @@ export const useSummaryReportStore = create((set) => ({
   isFetchCurrentMetroBookingsDetailsLoading: false,
 
   // Fetch all Metro Bookings
-  fetchAllMetroSummaryReport: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllMetroSummaryReport: async (
+    // pageIndex = 1, pageSize = 10, filters = {},
+    { fromDate, toDate }
+  ) => {
     set({ isFetchAllMetroSummaryReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.METRO_Reports.GET_METRO_SUMMARY}`
+        `${API_ENDPOINTS.REPORTS.METRO_Reports.GET_METRO_SUMMARY}?FromDate=${fromDate}&ToDate=${toDate}`
       );
       set({
         allMetroSummaryReports: response.data,

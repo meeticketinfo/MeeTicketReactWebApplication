@@ -94,15 +94,15 @@ export default function AdminBookings() {
         params.value && params.value.trim() !== "" ? params.value : "N/A",
     },
     {
-      field: "userName",
-      headerName: "User Name",
+      field: "userPhoneNumber",
+      headerName: "User Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (!params.value || params.value.trim() === "") ? "N/A" : params.value
     },
     {
       field: "parkName",
-      headerName: "Location Name",
+      headerName: "Location Name", 
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -142,6 +142,13 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "modeOfPayment",
+      headerName: "mode Of Payment",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       headerName: "Actions",

@@ -207,7 +207,7 @@ export default function BookingDetails() {
             <div
               aria-label="card"
               className="p-2 rounded-2xl bg-white/30 backdrop-blur-sm w-[400px] printable-card"
-              style={{width: 700}}
+              style={{ width: 700 }}
             >
               <div style={{ textAlign: "center" }}>
                 <img
@@ -224,7 +224,7 @@ export default function BookingDetails() {
                   textAlign: "center",
                   fontWeight: "600",
                   marginBottom: 12,
-                  textTransform: "uppercase"
+                  textTransform: "uppercase",
                 }}
               >
                 Ticket
@@ -232,7 +232,7 @@ export default function BookingDetails() {
               <div
                 aria-label="header"
                 className="flex items-center rounded-2xl border"
-                style={{width: 400, margin:"0 auto"}}
+                style={{ width: 400, margin: "0 auto" }}
               >
                 <div
                   className="backdrop-blur-sm"
@@ -245,12 +245,47 @@ export default function BookingDetails() {
                   />
                 </div>
               </div>
+             
+                <div  style={{ fontSize: 23, display:"flex",justifyContent:"center"
+                 }}>
+                  <span
+                    style={{
+                      color: "#4b5563",
+                      paddingLeft: 10,
+                      paddingTop: 15,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Reference ID
+                  </span>{" "}
+                  
+                  <span
+                    style={{
+                      color: "#000",
+                      paddingLeft: 10,
+                      paddingTop: 15,
+                      fontWeight: 800,
+                    }}
+                  >
+                    :{" "} {bookingDetailsResponse?.referenceId || "N/A"}
+                  </span>
+                </div>
+              
+              
               <div
                 aria-label="content"
                 style={{ padding: 20 }}
                 className="mt-2 grid gap-1 rounded-md overflow-hidden"
               >
-                <table width={"100%"} style={{ borderSpacing: 10, fontSize: 23, marginBottom: 20, borderBottom: "1px solid #000" }}>
+                <table
+                  width={"100%"}
+                  style={{
+                    borderSpacing: 10,
+                    fontSize: 23,
+                    marginBottom: 20,
+                    borderBottom: "1px solid #000",
+                  }}
+                >
                   {Array.isArray(consolidatedData) ? (
                     consolidatedData.map((item) => (
                       <tbody>
@@ -261,7 +296,7 @@ export default function BookingDetails() {
                                 color: "#4b5563",
                                 paddingLeft: 10,
                                 paddingTop: 15,
-                                fontWeight: 700
+                                fontWeight: 700,
                               }}
                             >
                               Facility
@@ -271,7 +306,13 @@ export default function BookingDetails() {
                             </td>
                           </tr>
                           <tr key={item.facilityId + item.serviceId}>
-                            <td style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}>
+                            <td
+                              style={{
+                                color: "#4b5563",
+                                paddingLeft: 10,
+                                fontWeight: 700,
+                              }}
+                            >
                               SubFacility
                             </td>
                             <td style={{ color: "black" }}>
@@ -282,7 +323,11 @@ export default function BookingDetails() {
                             <>
                               <tr>
                                 <td
-                                  style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}
+                                  style={{
+                                    color: "#4b5563",
+                                    paddingLeft: 10,
+                                    fontWeight: 700,
+                                  }}
                                 >
                                   Ticket Type
                                 </td>
@@ -294,7 +339,11 @@ export default function BookingDetails() {
                               </tr>
                               <tr>
                                 <td
-                                  style={{ color: "#4b5563", paddingLeft: 10, fontWeight: 700 }}
+                                  style={{
+                                    color: "#4b5563",
+                                    paddingLeft: 10,
+                                    fontWeight: 700,
+                                  }}
                                 >
                                   Qty
                                 </td>
