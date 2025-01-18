@@ -27,7 +27,7 @@ export const useParkAdminStore = create((set) => ({
         isFetchAllParkAdminsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllParkAdminsLoading: false });
+      set({ isFetchAllParkAdminsLoading: false });
     }
   },
 }));

@@ -39,17 +39,29 @@ const sidebarItems = [
         path: "/departments",
       },
       {
-        title: "Entity Types",
+        title: "Location Categories",
         icon: MdOutlineForest,
         path: "/entity-types",
       },
       {
-        title: "Entities",
+        title: "Nodal Officers",
+        icon: FaUsers,
+        path: "/nodal-officer",
+      },
+      {
+        title: "Locations",
         icon: MdOutlineForest,
         path: "/entities",
       },
+
       {
-        title: "Entity Admins",
+        title: " Master Facilities",
+        icon: MdOutlineForest,
+        path: "/super-admin-facilites",
+      },
+
+      {
+        title: "Location Admins",
         icon: FaUsers,
         path: "/entity-admins",
       },
@@ -59,15 +71,21 @@ const sidebarItems = [
         path: "/facilites",
       },
       {
-        title: "Service ",
+        title: "Sub Facilities",
         icon: TbPackages,
         path: "/service",
       },
       {
-        title: "Service Varient ",
+        title: "Ticket Types ",
         icon: FaUsers,
         path: "/service-varient",
       },
+      {
+        title: "Facilities ",
+        icon: FaUsers,
+        path: "/facility/unified-create",
+      },
+
       {
         title: "Gate Keeper ",
         icon: RiBodyScanLine,
@@ -100,6 +118,16 @@ const sidebarItems = [
         title: "User Wise",
         icon: FaChalkboardUser,
         path: "/user-wise",
+      },
+      {
+        title: "RTC Bookings",
+        icon: FaUsers,
+        path: "/rtc-bookings",
+      },
+      {
+        title: "Metro Bookings",
+        icon: FaUsers,
+        path: "/metro-bookings",
       },
     ],
   },
@@ -143,6 +171,26 @@ const sidebarItems = [
         icon: TbPasswordFingerprint,
         path: "/change-password",
       },
+    ],
+  },
+
+  {
+    title: "Metro Reports",
+    icon: HiOutlineDocumentReport,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Transaction Report",
+        icon: RiDashboard3Fill,
+        path: "/transaction-report",
+      },
+      // {
+      //   title: "Settlement Report",
+      //   icon: RiDashboard3Fill,
+      //   path: "/summary-report",
+      // },
     ],
   },
 ];

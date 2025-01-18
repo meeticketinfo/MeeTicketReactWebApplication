@@ -57,12 +57,16 @@ export const formatToStandardDate = (dateInput) => {
   return `${year}-${month}-${day}`;
 };
 
-
-export const formatToCurrency = (amount, currency = "INR", locale = "en-IN") => {
+export const formatToCurrency = (
+  amount,
+  currency = "INR",
+  locale = "en-IN"
+) => {
   if (isNaN(amount)) {
-    throw new Error("Invalid amount");
+    // throw new Error("Invalid amount");
+    return "Invalid amount";
   }
-  
+
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
@@ -71,4 +75,10 @@ export const formatToCurrency = (amount, currency = "INR", locale = "en-IN") => 
   }).format(amount);
 };
 
-
+export const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};

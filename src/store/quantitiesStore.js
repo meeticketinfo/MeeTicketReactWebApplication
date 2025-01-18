@@ -3,6 +3,9 @@ import { create } from "zustand";
 
 export const useQuantitiesStore = create((set) => ({
   quantities: {},
+  setQuantities:(quantities)=>{
+           set({quantities})
+  },
   updateQuantity: (variantId, amount) =>
     set((state) => ({
       quantities: {

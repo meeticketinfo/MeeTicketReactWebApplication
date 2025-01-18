@@ -34,7 +34,8 @@ const DepartmentList = ({
     {
       field: "departmentName",
       headerName: "Department Name",
-      flex: 1,
+      // flex: 1,
+      width:"300",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -95,7 +96,7 @@ const DepartmentList = ({
         isOpen={openModalId === "department-modal"}
         onClose={closeModal}
         title={
-          isDepartmentTypeEditVisible ? "Add Department" : "Edit Department"
+          !isDepartmentTypeEditVisible ? "Add Department" : "Edit Department"
         }
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"

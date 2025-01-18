@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import "tailwindcss/tailwind.css"; // Ensure Tailwind is imported
 import { useNavigate } from "react-router-dom";
@@ -7,58 +7,69 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
+import { useEffect } from "react";
+import { useModalStore } from "../../store/modalStore";
 // Validation schema using Yup
 
-const FacilityCreate = ({
-  setIsFacilityCreateVisible,
-  isFacilityEditVisible,
-  setIsFacilityEditVisible,
-}) => {
-  console.log("isFacilityEditVisible", isFacilityEditVisible);
+const FacilityCreate = ({ onDataAdded }) => {
   const {
     saveFacilityDetails,
     isSaveFacilityDetailsLoading,
     facilityCreateResponse,
     FacilityDetails,
     FacilityEditDetails,
+    fetchAllDropdownFacilities,
+    adminFacilities,
   } = useFacilityStore();
-  const { isLoading, isAuthenticated, token, error, decodedTokenData, login } =
-    useAuthStore();
+  const LocationId=localStorage.getItem("locationid");
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const {
+    isLoading,
+    isAuthenticated,
+    token,
+    error,
+    decodedTokenData,
+    roleDetails,
+    login,
+  } = useAuthStore();
   const parkId = decodedTokenData?.data?.ParkId;
 
+  const role = roleDetails?.name;
+
+  //console.log(parkId,'parkid')
+  useEffect(() => {
+    fetchAllDropdownFacilities(role);
+  }, []);
+
   const initialValues = {
-    Id: isFacilityEditVisible ? FacilityEditDetails.id : "",
-    name: isFacilityEditVisible ? FacilityEditDetails.name : "",
-    displayName: isFacilityEditVisible ? FacilityEditDetails.displayName : "",
-    contactName:
-      (isFacilityEditVisible && FacilityEditDetails.contactName) || "",
-    contactNumber:
-      (isFacilityEditVisible && FacilityEditDetails.contactNumber) || "",
-    contactEmail:
-      (isFacilityEditVisible && FacilityEditDetails.contactEmail) || "",
-    capacity: (isFacilityEditVisible && FacilityEditDetails.capacity) || null,
-    availabilityStatus:
-      (isFacilityEditVisible && FacilityEditDetails.availabilityStatus) || "",
-    lastMaintenanceDate:
-      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.lastMaintenanceDate): "",
-    facilityCondition:
-      isFacilityEditVisible ? FacilityEditDetails.facilityCondition : "",
-    installationDate:
-      isFacilityEditVisible ? formatToStandardDate(FacilityEditDetails.installationDate) : "",
-    openTime:
-      (isFacilityEditVisible && FacilityEditDetails.openTime) || "00:00:00",
-    closeTime:
-      (isFacilityEditVisible && FacilityEditDetails.closeTime) || "00:00:00",
-    description:
-      (isFacilityEditVisible && FacilityEditDetails.description) || "",
-    isActive: isFacilityEditVisible ? FacilityEditDetails.isActive : true,
-    parkId: (isFacilityEditVisible && FacilityEditDetails.parkId) || parkId,
+    Id: FacilityEditDetails.id,
+    facilityMasterId: FacilityEditDetails.facilityMasterId,
+    facilitySequenceNumber: FacilityEditDetails.sequenceNumber || "",
+    name: FacilityEditDetails.name,
+    openTime: FacilityEditDetails.openTime || "00:00:00",
+    closeTime: FacilityEditDetails.closeTime || "00:00:00",
+    description: FacilityEditDetails.description || "",
+    TermsConditions: FacilityEditDetails.termsConditions || "",
+    isActive: FacilityEditDetails.isActive,
+    parkId:( FacilityEditDetails.parkId) || (role === "ROLE_NODALOFFICER"?(LocationId):decodedTokenData?.data?.ParkId),
   };
+  console.log("FacilityEditDetails", FacilityEditDetails);
+  const validationSchema = Yup.object({
+    facilitySequenceNumber: Yup.string().required("Please enter Sequence"),
+    facilityMasterId: Yup.string()
+      .required("Please enter facility name")
+      .max(50, "facility name should be less than 50 characters"),
+
+    // openTime: Yup.string().required("Please select open time."),
+    // closeTime: Yup.string().required("Please select close time."),
+  });
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     const formattedValues = {
       ...values,
       isActive: values.isActive === "true" || values.isActive === true,
+      name: values.name,
+      facilityMasterId: values.facilityMasterId,
       openTime:
         values.openTime.length === 5
           ? `${values.openTime}:00`
@@ -67,29 +78,21 @@ const FacilityCreate = ({
         values.closeTime.length === 5
           ? `${values.closeTime}:00`
           : values.closeTime,
-      capacity: values.capacity == null ? 0 : values.capacity,
-      installationDate: values.installationDate
-        ? new Date(values.installationDate).toISOString()
-        : null,
-      lastMaintenanceDate: values.lastMaintenanceDate
-        ? new Date(values.lastMaintenanceDate).toISOString()
-        : null,
     };
-
+    console.log(formattedValues, "valuess dropdwom");
     try {
       // Call the saveFacilityDetails function
-      const result = await saveFacilityDetails(
-        formattedValues,
-        isFacilityEditVisible ? true : false
-      );
+      const result = await saveFacilityDetails(formattedValues, true,role);
       console.log("Save result:", result); // Debugging line
 
       if (result && result.data && result.data.status === 200) {
-        toast.success(isFacilityEditVisible?"Facility Updated successfully!":"Facility created successfully!");
+        toast.success("Facility Updated successfully!");
         setTimeout(() => {
-          setIsFacilityCreateVisible(false);
-          setIsFacilityEditVisible(false);
-        }, 3000);
+          setOpenModalId(null);
+          onDataAdded();
+          // setIsFacilityCreateVisible(false);
+          // setIsFacilityEditVisible(false);
+        }, 300);
         resetForm();
       } else {
         toast.error("Unexpected response from the server.");
@@ -118,308 +121,66 @@ const FacilityCreate = ({
       setSubmitting(false);
     }
   };
+  //  console.log(initialValues,"initial values")
 
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .required("Please enter facility name.")
-      .max(50, "facility name should be less than 50 characters"),
-    displayName: Yup.string()
-      .required("Please enter display name.")
-      .max(50, "display name should be less than 50 characters"),
-    contactName: Yup.string()
-      .required("Please enter Contact Name.")
-      .max(50, "contact name should be less than 50 characters"),
-    contactEmail: Yup.string().email("Invalid email format"),
-    contactNumber: Yup.string()
-      .required("Please enter Contact Number.")
-      .matches(/^\d+$/, "Contact number must be numeric")
-      .max(10, "contact name should be 10 numbers"),
-
-    capacity: Yup.number()
-      .nullable()
-      .test(
-        "is-positive",
-        "Capacity must be a positive number",
-        (value) => value == null || value >= 0
-      ),
-
-    // lastMaintenanceDate: Yup.date().required(
-    //   "Please select last maintenance date."
-    // ),
-    // installationDate: Yup.date().required("Please select installation date."),
-    // availabilityStatus: Yup.string().required(
-    //   "Please select availability status."
-    // ),
-    facilityCondition: Yup.string().max(
-      50,
-      "contact name should be less than 50 characters"
-    ),
-    // openTime: Yup.string().required("Please select open time."),
-    // closeTime: Yup.string().required("Please select close time."),
-  });
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
 
-      <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
-        <ToastContainer position="top-right" autoClose={3000} />
+      <div className=" ">
+        {/*  */}
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveFacilityDetails)
+          onSubmit={
+            (values, actions) => onSubmit(values, actions, saveFacilityDetails)
+            //console.log(values, 'values')
           }
         >
-          {({ errors, touched, isSubmitting, setFieldValue }) => (
+          {({ errors, touched, isSubmitting, setFieldValue, values }) => (
             <Form>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+              <div className="bg-zinc-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Facility Name */}
                 <div className="">
                   <label
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Facility Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    className={`mt-1 block w-full text-gray-700 px-2 py-1 border ${
-                      errors.name && touched.name
-                        ? "border-red-500"
-                        : ""
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder="Enter Facility Name"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Display Name */}
-                <div className="">
-                  <label
-                    htmlFor="displayName"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Display Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="displayName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
-                  />
-                  <ErrorMessage
-                    name="displayName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Contact Name */}
-                <div className="">
-                  <label
-                    htmlFor="contactName"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Contact Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="contactName"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.contactName && touched.contactName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder=" Enter Contact Name"
-                  />
-                  <ErrorMessage
-                    name="contactName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Contact Number */}
-                <div className="">
-                  <label
-                    htmlFor="contactNumber"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Contact Number
-                  </label>
-                  <Field
-                    type="text"
-                    name="contactNumber"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.contactNumber && touched.contactNumber
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder=" Enter Contact Number"
-                  />
-                  <ErrorMessage
-                    name="contactNumber"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* Contact Email */}
-                <div className="">
-                  <label
-                    htmlFor="contactEmail"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Contact Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="contactEmail"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.contactEmail && touched.contactEmail
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder="Enter Contact Email"
-                  />
-                  <ErrorMessage
-                    name="contactEmail"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Capacity */}
-                <div className="">
-                  <label
-                    htmlFor="capacity"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Capacity
-                  </label>
-                  <Field
-                    type="number"
-                    name="capacity"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.capacity && touched.capacity
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder=" Enter Capacity"
-                  />
-                  <ErrorMessage
-                    name="capacity"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Availability Status */}
-                <div className="">
-                  <label
-                    htmlFor="availabilityStatus"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Availability Status
+                    Select Facility <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
-                    name="availabilityStatus"
+                    name="facilityMasterId"
                     className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.availabilityStatus && touched.availabilityStatus
+                      errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
+                    } rounded-md shadow-sm focus:outline-none bg-white text-sm`}
+                    onChange={(e) => {
+                      const id = e.target.value;
+
+                      setFieldValue("facilityMasterId", id);
+
+                      const Selectedfacility = adminFacilities.find(
+                        (facility) => facility.facilityMasterId === Number(id)
+                      );
+
+                      setFieldValue("name", Selectedfacility.facilityName);
+                    }}
                   >
-                    <option value="">Select Status</option>
-                    <option value="available">Available</option>
-                    <option value="unavailable">Unavailable</option>
+                    <option value="">Select Facility</option>
+                    {adminFacilities?.map((facility) => (
+                      <option
+                        key={facility.facilityMasterId}
+                        value={facility.facilityMasterId}
+                      >
+                        {facility.facilityName}
+                      </option>
+                    ))}
                   </Field>
-                  <ErrorMessage
-                    name="availabilityStatus"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
 
-                {/* Last Maintenance Date */}
-                <div className="">
-                  <label
-                    htmlFor="lastMaintenanceDate"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Last Maintenance Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="lastMaintenanceDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.lastMaintenanceDate && touched.lastMaintenanceDate
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
-                    placeholder=" Enter LastMaintenance Date"
-                  />
                   <ErrorMessage
-                    name="lastMaintenanceDate"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Facility Condition */}
-                <div className="">
-                  <label
-                    htmlFor="facilityCondition"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Facility Condition
-                  </label>
-                  <Field
-                    type="text"
-                    name="facilityCondition"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.facilityCondition && touched.facilityCondition
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
-                    placeholder=" Enter Facility Condition"
-                  />
-                  <ErrorMessage
-                    name="facilityCondition"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Installation Date */}
-                <div className="">
-                  <label
-                    htmlFor="installationDate"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Installation Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.installationDate && touched.installationDate
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Installation Date"
-                  />
-                  <ErrorMessage
-                    name="installationDate"
+                    name="facilityMasterId"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -476,7 +237,7 @@ const FacilityCreate = ({
                 </div>
 
                 {/* Description */}
-                <div className="col-span-3">
+                <div className="col-span-1">
                   <label className="block text-sm font-medium">
                     Description
                   </label>
@@ -496,14 +257,26 @@ const FacilityCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-
+                {/* terms and conditions */}
+                <div className="md:col-span-2">
+                  <label className="text-gray-700 dark:text-gray-300 text-sm">
+                    Terms and Conditions
+                  </label>
+                  <Field
+                    name="TermsConditions"
+                    placeholder="Enter terms and conditions"
+                    maxLength={255}
+                    as="textarea"
+                    className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                  />
+                </div>
                 {/* Status */}
-                <div>
+                <div className="col-span-1">
                   <label className="block text-sm font-medium">Status</label>
                   <Field
                     as="select"
                     name="isActive"
-                    onchange={(e) => {
+                    onChange={(e) => {
                       const { value } = e.target;
                       setFieldValue("isActive", value === "true");
                     }}
@@ -523,9 +296,36 @@ const FacilityCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
+                {/* sequence */}
+                <div>
+                  <label className="block text-sm font-medium">
+                    Sequence<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="facilitySequenceNumber"
+                    type="text"
+                    maxLength={3}
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                  <ErrorMessage
+                    name="facilitySequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
               </div>
 
-              <div className="flex justify-center p-5">
+              <div className="flex justify-center p-4">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -533,9 +333,7 @@ const FacilityCreate = ({
                 >
                   {isSaveFacilityDetailsLoading
                     ? "Saving..."
-                    : isFacilityEditVisible
-                    ? "Update Facility"
-                    : "Create Facility"}
+                    : "Update Facility"}
                 </button>
               </div>
             </Form>

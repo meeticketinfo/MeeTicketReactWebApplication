@@ -3,19 +3,28 @@ import ParkCreate from "../../../components/park_management/ParkCreate";
 import ParkList from "../../../components/park_management/ParkList";
 import AdminLayout from "../../../layouts/AdminLayout";
 import BackButton from "../../../components/BackButton";
-
+import useAuthStore from "../../../store/authStore";
+import { useParkStore } from "../../../store/masters/parksStore";
 
 export default function AdminParks() {
   // State to toggle the FacilityCreate component
   const [isParkCreateVisible, setIsParkCreateVisible] = useState(false);
   const [isParkEditVisible, setIsParkEditVisible] = useState(false);
-
+  const { resetFilePreview } = useParkStore();
+  
   // Function to toggle the visibility of ParkCreate
   const toggleParkCreate = () => {
     setIsParkCreateVisible((prev) => !prev);
     setIsParkEditVisible(false);
+    resetFilePreview();
     false;
   };
+  
+  
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -24,19 +33,21 @@ export default function AdminParks() {
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Entities
+              Locations
             </h1>
           </div>
           {/* Right: Actions */}
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {/* Add view button */}
             {!isParkCreateVisible ? (
-              <button
-                onClick={toggleParkCreate}
-                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-              >
-                <span className="max-xs:sr-only"> Add Entity </span>
-              </button>
+              role === "ROLE_SUPERADMIN" && (
+                <button
+                  onClick={toggleParkCreate}
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                >
+                  <span className="max-xs:sr-only"> Add Location </span>
+                </button>
+              )
             ) : (
               <BackButton
                 label="Back"

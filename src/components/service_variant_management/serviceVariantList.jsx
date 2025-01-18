@@ -37,19 +37,19 @@ const ServiceVariantList = ({
     },
     {
       field: "serviceName",
-      headerName: "Service Name",
+      headerName: "Sub Facility Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
     {
       field: "varientName",
-      headerName: "Service Variant Name",
+      headerName: "Ticket Type",
       flex: 1,
       headerClass: "text-blue-v2",
     },
     {
       field: "parkName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
     },
@@ -62,7 +62,7 @@ const ServiceVariantList = ({
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "amount",
+      field: "isPriceFixed",
       headerName: "Fixed or Count Based",
       flex: 1,
       headerClass: "text-blue-v2",

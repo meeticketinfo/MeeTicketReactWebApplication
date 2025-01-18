@@ -17,12 +17,17 @@ import useCaptchaStore from "../../store/useCaptchaStore";
 import { FaRedo, FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
 import { bouncy } from "ldrs";
+import OtpLogin from "../OtpLogin";
+import MainOtpLogin from "./MainOtpLogin";
 
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, error, login } = useAuthStore();
+  const { isLoading, isAuthenticated, loginError, login, setOtpError } =
+    useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
+  const [isPhoneSelected, setIsPhoneSelected] = useState(false);
+
   const {
     captchaInput,
     captchaError,
@@ -37,13 +42,21 @@ const Login = () => {
   };
 
   const validationSchema = Yup.object({
-    EmailId: Yup.string().required("EmailId is required"),
+    EmailId: Yup.string().required("Email Id is required"),
     password: Yup.string().required("Password is required"),
   });
 
+  // useEffect(() => {
+  //   loadCaptcha();
+  // }, [loadCaptcha]);
+
   useEffect(() => {
-    loadCaptcha();
-  }, [loadCaptcha]);
+    // Ensure the DOM is ready before loading captcha
+    const canvasExists = document.querySelector("canvas");
+    if (canvasExists) {
+      loadCaptcha();
+    }
+  }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     const isCaptchaValid = validateCaptchaInput();
@@ -51,11 +64,13 @@ const Login = () => {
       setSubmitting(false);
       return;
     }
-
     const response = await login(values);
     if (response.success) {
       resetForm();
       navigate("/dashboard");
+    } else {
+      loadCaptcha();
+      updateCaptchaInput("");
     }
     setSubmitting(false);
   };
@@ -74,13 +89,27 @@ const Login = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Only reload captcha when switching to the phone tab
+    if (isPhoneSelected) {
+      loadCaptcha();
+    }
+  }, [isPhoneSelected, loadCaptcha]);
+
+  const handleToggle = () => {
+    setOtpError(null);
+    setIsPhoneSelected((prevState) => !prevState);
+    if (!isPhoneSelected) {
+      loadCaptchaEnginge(6, "#a8b4c4", "rgb(107 114 128 / 1)", "upper");
+    }
+  };
   return (
     <>
-      <div className="min-h-screen flex flex-col bg-blue-v1 p-4  ">
+      <div className="min-h-screen flex flex-col bg-blue-v1 p-4  overflow-hidden">
         <div className="absolute bg-blue-800 w-80 h-80 rounded-full opacity-30 -top-36 -left-20" />
-        <div className="absolute bg-blue-800 w-40 h-40 rounded-full opacity-20 top-40 -right-20" />
+        {/* <div className="absolute bg-blue-800 w-40 h-40 rounded-full opacity-20 top-40 -right-20" /> */}
         <div className="absolute bg-blue-800 w-80 h-80 rounded-full opacity-20 top-10 right-80" />
-        <div className="absolute bg-blue-800 w-48 h-48 rounded-full opacity-25 -bottom-32 left-40" />
+        <div className="absolute bg-blue-800 w-48 h-48 rounded-full opacity-25 -bottom-2 left-0" />
         {/* Header */}
         <div className="container-fluid p-3 bg-blue-v1 rounded-[20px] text-gray-200 shadow-lg backdrop-blur-sm bg-white/30 ">
           <div className="flex flex-col md:flex-row items-center justify-between">
@@ -136,61 +165,111 @@ const Login = () => {
               <img
                 src={meetickesTelanganaImg}
                 alt="MeeTicket Telangana"
-                className="w-full max-w-sm rounded-lg"
+                className="w-full max-w-sm rounded-lg "
               />
             </div>
 
             {/* Form Section */}
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
-            >
-              {({ isSubmitting }) => (
-                <Form className="w-full lg:w-1/2 max-w-md  rounded-[20px] p-4  backdrop-blur-sm bg-white/30">
-                  <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
-                    Welcome to MeeTicket
-                  </h2>
+            <div autoComplete="off" className="w-full lg:w-1/2 max-w-md ">
+              <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 mb-3">
+                <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
+                  Welcome to MeeTicket
+                </h2>
+                {/* toggle logic */}
+                <div className="relative px-1 shadow-lg w-full h-12 py-1 bg-white rounded-md overflow-hidden border border-gray-300 ">
+                  <input
+                    id="toggle"
+                    type="checkbox"
+                    className="peer hidden"
+                    checked={isPhoneSelected}
+                    onChange={handleToggle}
+                  />
+                  <label
+                    htmlFor="toggle"
+                    className="flex w-full h-full items-center justify-between text-black cursor-pointer relative"
+                  >
+                    {/* Highlight Effect */}
+                    <div
+                      className={`absolute top-0 h-full w-1/2 bg-blue-v1 rounded-md transition-transform duration-500 ease-in-out`}
+                      style={{
+                        transform: isPhoneSelected
+                          ? "translateX(100%)"
+                          : "translateX(0%)",
+                      }}
+                    ></div>
 
-                  {/* Username Field */}
-                  <div className="mb-6">
-                    <label
-                      htmlFor="EmailId"
-                      className="block text-sm font-medium text-gray-100 mb-1"
+                    {/* Tab 1: Login with Phone */}
+                    <span
+                      className={`relative w-1/2 text-center text-sm font-bold py-2 z-10 transition-all duration-500 ease-in-out ${
+                        isPhoneSelected ? "text-gray-600" : "text-white"
+                      }`}
                     >
-                      Email
-                    </label>
-                    <Field
-                      id="EmailId"
-                      name="EmailId"
-                      placeholder="Enter your Email ID"
-                      autoComplete="off"
-                      className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
-                    />
-                    <ErrorMessage
-                      name="EmailId"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
-                  </div>
+                      User
+                    </span>
 
-                  {/* Password Field */}
-                  <div className="mb-6">
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-gray-100 mb-1"
+                    {/* Tab 2: Login with Email */}
+                    <span
+                      className={`relative w-1/2 text-center text-sm py-2 font-bold z-10 transition-all duration-500 ease-in-out ${
+                        isPhoneSelected ? "text-white" : "text-gray-600"
+                      }`}
                     >
-                      Password
-                    </label>
-                    <Field
-                      id="password"
-                      name="password"
-                      placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="off"
-                      className="w-full h-12 px-4 shadow-lg  bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-200 transition duration-300"
-                    />
-                    {/* <div
+                      ESD Admin
+                    </span>
+                  </label>
+                </div>
+
+                {/* render pages */}
+                <div>
+                  {!isPhoneSelected ? (
+                    <MainOtpLogin />
+                  ) : (
+                    <div className="mt-4">
+                      <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                      >
+                        {({ isSubmitting }) => (
+                          <Form>
+                            {/* Username Field */}
+                            <div className="mb-6">
+                              <label
+                                htmlFor="EmailId"
+                                className="block text-sm font-medium text-gray-100 mb-1"
+                              >
+                                Email
+                              </label>
+                              <Field
+                                id="EmailId"
+                                name="EmailId"
+                                placeholder="Enter your Email ID"
+                                autoComplete="off"
+                                className="shadow-lg w-full h-12 px-4 bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
+                              />
+                              <ErrorMessage
+                                name="EmailId"
+                                component="div"
+                                className="text-red-500 text-sm mt-1"
+                              />
+                            </div>
+
+                            {/* Password Field */}
+                            <div className="mb-6">
+                              <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-gray-100 mb-1"
+                              >
+                                Password
+                              </label>
+                              <Field
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="off"
+                                className="w-full h-12 px-4 shadow-lg  bg-gray-100 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-200 transition duration-300"
+                              />
+                              {/* <div
                       className="absolute right-6 top-10 transform -translate-y-1/6 py-4 cursor-pointer"
                       onClick={togglePasswordVisibility}
                     >
@@ -200,72 +279,87 @@ const Login = () => {
                         <FaEye size={20} />
                       )}
                     </div> */}
-                    <ErrorMessage
-                      name="password"
-                      component="div"
-                      className="text-red-500 text-sm mt-1"
-                    />
-                  </div>
-                  <div className="flex justify-center mb-3">
-                    {/* Captcha Section */}
-                    <div className="flex items-center mb-6backdrop-blur-sm bg-white/30  rounded-lg border border-gray-300">
-                      <div className="relative flex items-center flex-row-reverse ">
-                        <LoadCanvasTemplate reloadText="" />
-                      </div>
-                      <button
-                        type="button"
-                        className="flex items-center justify-center p-3 text-blue-v1"
-                        onClick={() =>
-                          loadCaptchaEnginge(
-                            6,
-                            "#a8b4c4",
-                            "rgb(107 114 128 / 1)"
-                          )
-                        }
-                      >
-                        <FaRedo size={16} />
-                      </button>
-                      <div className="flex items-center backdrop-blur-sm bg-white/30 rounded-lg border border-gray-300">
-                        <input
-                          type="text"
-                          placeholder="Enter Captcha"
-                          value={captchaInput}
-                          onChange={(e) => updateCaptchaInput(e.target.value)}
-                          className="w-full h-12 px-4 shadow-lg backdrop-blur-sm bg-white/30 bg-blue-50 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex text-center justify-center">
-                    {error && (
-                      <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
-                        {error}
-                      </small>
-                    )}
-                  </div>
-                  <div className="text-center">
-                    {captchaError && (
-                      <small className="text-red-500 text-center  mb-4">
-                        {captchaError}
-                      </small>
-                    )}
-                  </div>
+                              <ErrorMessage
+                                name="password"
+                                component="div"
+                                className="text-red-500 text-sm mt-1"
+                              />
+                            </div>
+                            <div className="flex justify-center mb-3">
+                              {/* Captcha Section */}
+                              <div className="flex items-center mb-6backdrop-blur-sm bg-white/30  rounded-lg border border-gray-300">
+                                <div className="relative flex items-center flex-row-reverse ">
+                                  <LoadCanvasTemplate
+                                    key={
+                                      isPhoneSelected
+                                        ? "phone-tab"
+                                        : "email-tab"
+                                    }
+                                    reloadText=""
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  className="flex items-center justify-center p-3 text-blue-v1"
+                                  onClick={() =>
+                                    loadCaptchaEnginge(
+                                      6,
+                                      "#a8b4c4",
+                                      "rgb(107 114 128 / 1)",
+                                      "upper"
+                                    )
+                                  }
+                                >
+                                  <FaRedo size={16} />
+                                </button>
+                                <div className="flex items-center backdrop-blur-sm bg-white/30 rounded-lg border border-gray-300">
+                                  <input
+                                    type="text"
+                                    placeholder="Enter Captcha"
+                                    value={captchaInput}
+                                    onChange={(e) =>
+                                      updateCaptchaInput(e.target.value)
+                                    }
+                                    className="w-full h-12 px-4 shadow-lg backdrop-blur-sm bg-white/30 bg-blue-50 border border-gray-300 rounded-lg outline-none focus:border-blue-v1 focus:bg-gray-100 transition duration-300"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex text-center justify-center">
+                              {loginError && (
+                                <small className="text-red-500 text-center mb-4 text-shadow shadow-color-blue">
+                                  {loginError}
+                                </small>
+                              )}
+                            </div>
+                            <div className="text-center">
+                              {captchaError && (
+                                <small className="text-red-500 text-center  mb-4">
+                                  {captchaError}
+                                </small>
+                              )}
+                            </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
-                      isSubmitting
-                        ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
-                        : "bg-blue-v1 hover:bg-blue-v2"
-                    }`}
-                  >
-                    Sign in
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                            {/* Submit Button */}
+                            <button
+                              type="submit"
+                              disabled={isSubmitting}
+                              className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
+                                isSubmitting
+                                  ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
+                                  : "bg-blue-v1 hover:bg-blue-v2"
+                              }`}
+                            >
+                              Sign in
+                            </button>
+                          </Form>
+                        )}
+                      </Formik>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -5,6 +5,8 @@ import sidebarItems from "../partials/sidebarItems";
 import { toast } from "react-toastify";
 
 const LOGIN_API_ENDPOINT = "/Authentication/login";
+const OTP_LOGIN_API_ENDPOINT = "/Authentication/ValidateLoginOTP";
+const LOGOUT="Authentication/logout";
 const DECODED_TOKEN_ENDPOINT = "/Authentication/GetDecodedToken";
 const GET_ALL_ROLES = "/Master/GetAllRoles";
 
@@ -14,8 +16,9 @@ const useAuthStore = create(
       isLoading: false,
       isAuthenticated: false,
       token: null,
-      loginError: "",
       error: null,
+      otpError:null,
+      loginError: null,
       decodedTokenData: null,
       userRoles: [],
       roleDetails: null, // To store role id and name
@@ -31,7 +34,9 @@ const useAuthStore = create(
           // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
           await get().fetchUserRoles();
-
+          set({
+            loginError: "",
+          });
           // Set sidebar items after role is fetched
           get().setSidebarMenuItems();
 
@@ -50,7 +55,7 @@ const useAuthStore = create(
               ) {
                 formErrors[key] = xhr.response.data.errors[key][0];
                 console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
-                toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+                // toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
               }
             });
 
@@ -58,10 +63,7 @@ const useAuthStore = create(
             const combinedErrorMessage = Object.values(formErrors).join(", ");
 
             set({
-              loginError:
-                combinedErrorMessage ||
-                xhr.response.data.message ||
-                "Login failed",
+              loginError: xhr.response.data.message || "Login failed",
               isLoading: false,
             });
           } else {
@@ -72,12 +74,94 @@ const useAuthStore = create(
               loginError: errorMessage,
               isLoading: false,
             });
-            toast.error(errorMessage);
+            // toast.error(errorMessage);
           }
-
           return { success: false };
         }
       },
+
+      //  login with otp
+
+      setIsAuthenticated:(isAuthenticated)=>{
+        set({isAuthenticated})
+      },
+      setOtpError:(otpError)=>{
+        set({otpError})
+      },
+
+      OtpLogin: async (loginData) => {
+        set({ isLoading: true });
+        try {
+          const response = await apiService.post(
+            OTP_LOGIN_API_ENDPOINT,
+            loginData
+          );
+          const token = response.data;
+          set({ token, error: null, isLoading: false, isAuthenticated: true });
+          // alert(get().isAuthenticated);
+          // Fetch decoded token data and roles upon successful login
+          await get().fetchDecodedToken();
+          await get().fetchUserRoles();
+          set({
+            loginError: "",
+          });
+          // Set sidebar items after role is fetched
+          get().setSidebarMenuItems();
+
+          return { response: response.data };
+        } catch (xhr) {
+          if (
+            xhr &&
+            xhr.response &&
+            typeof xhr.response.data.errors === "object"
+          ) {
+            const formErrors = {};
+            Object.keys(xhr.response.data.errors).forEach((key) => {
+              if (
+                Array.isArray(xhr.response.data.errors[key]) &&
+                xhr.response.data.errors[key].length > 0
+              ) {
+                formErrors[key] = xhr.response.data.errors[key][0];
+                console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
+                // toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
+              }
+            });
+
+            // Combine errors into a single string message (optional)
+            const combinedErrorMessage = Object.values(formErrors).join(", ");
+
+            set({
+              loginError: xhr.response.data.message || "Login failed",
+              isLoading: false,
+            });
+          } else {
+            // Handle other unexpected errors
+            const errorMessage =
+              xhr?.response?.data?.message || "An unexpected error occurred";
+            set({
+              loginError: errorMessage,
+              isLoading: false,
+            });
+            // toast.error(errorMessage);
+          }
+          set({
+             otpError: "Unexpected error"
+          });
+          return { response: response };
+        }
+      },
+
+      terminateSession:async ()=>{
+        try {
+          const response = await apiService.post( LOGOUT );
+          if(response){
+            get().logout();
+          }
+        } catch (error) {
+         console.log("error",error)
+        }
+      },
+      
 
       fetchDecodedToken: async () => {
         try {
@@ -142,9 +226,11 @@ const useAuthStore = create(
       },
 
       logout: () =>
+        
         set({
           token: null,
           error: null,
+          otpError:null,
           isAuthenticated: false,
           decodedTokenData: null,
           roleDetails: null,

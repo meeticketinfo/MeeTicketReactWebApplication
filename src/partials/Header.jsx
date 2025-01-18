@@ -61,8 +61,8 @@ function Header({ variant = "default" }) {
             </button>
 
             {/* toggle sidebar icon */}
-            <div className=" hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
-              <div className="flex justify-center items-center px-3">
+            <div className=" hidden lg:inline-flex   justify-end mt-auto">
+              {/* <div className="flex justify-center items-center px-3">
                 <button
                   className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
                   onClick={() => setSidebarExpanded(!sidebarExpanded)}
@@ -74,8 +74,8 @@ function Header({ variant = "default" }) {
                     <RiMenuFold2Line className="text-[28px] text-blue-v1" />
                   )}
                 </button>
-              </div>
-              <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
+              </div> */}
+              <div className="align-middle hidden lg:inline-flex   justify-end ">
                 <div className="flex justify-center items-center">
                   <img
                     alt="site-logo"
@@ -92,7 +92,7 @@ function Header({ variant = "default" }) {
             </div>
           </div>
           {roleDetails?.name == "ROLE_ADMIN" && (
-            <div className="align-middle hidden lg:inline-flex 2xl:hidden justify-end ">
+            <div className="align-middle hidden lg:inline-flex   justify-end ">
               <div className="pl-2 text-blue-v1 text-[20px] font-bold tracking-widest flex flex-col ">
                 <p>
                   {(decodedTokenData?.data?.ParkName &&

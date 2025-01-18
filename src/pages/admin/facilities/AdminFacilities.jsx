@@ -45,9 +45,7 @@ export default function AdminFacilities() {
             )}
           </div>
         </div>
-
         {/* Cards */}
-       
           {isFacilityCreateVisible ? <FacilityCreate setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible} setIsFacilityEditVisible={setIsFacilityEditVisible}  /> : <FacilityList setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible} />}
         
       </div>

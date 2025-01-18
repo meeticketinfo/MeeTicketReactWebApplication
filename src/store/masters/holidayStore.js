@@ -4,11 +4,15 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
 export const useHolidayStore = create((set, get) => ({
   allHolidays: [],
+  allRecurringHolidays: [],
   HolidayDetails: [],
   isSaveHolidayDetailsLoading: false,
+  isSaveRecurringHolidayDetailsLoading: false,
   isFetchHolidayDetailsLoading: false,
   isFetchAllHolidaysLoading: false,
   fetchHolidayDetailsError: null,
+  fetchAllRecurringHolidayError:null,
+  isFetchAllRecurringHolidaysLoading:false,
   error: null,
   success: null,
 
@@ -28,10 +32,49 @@ export const useHolidayStore = create((set, get) => ({
         allHolidays: response.data,
         isFetchAllHolidaysLoading: false,
       });
-    } catch (error) {
-      set({ error: error.message, isFetchAllHolidaysLoading: false });
+    } catch (error) { 
+      set({  isFetchAllHolidaysLoading: false });
     }
   },
+
+  fetchAllRecurringHolidays: async () => {
+    set({ isFetchAllRecurringHolidaysLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.MASTERS.HOLIDAY.GET_RECURRING_HOLIDAYS}`
+      );
+      set({
+        allRecurringHolidays: response.data,
+        isFetchAllRecurringHolidaysLoading: false,
+      });
+    } catch (error) { 
+      set({
+        fetchAllRecurringHolidayError: error.message,
+        isFetchAllRecurringHolidaysLoading: false,
+      });
+    }
+  },
+
+
+// Save  recurring holiday details (add or update)
+saveRecurringHolidayDetails: async (HolidayData) => {
+  set({ isSaveRecurringHolidayDetailsLoading: true });
+  try {
+    const url = API_ENDPOINTS.MASTERS.HOLIDAY.ADD_NEW_RECURRING_HOLIDAY 
+
+    const response = await apiService.post(url, HolidayData);
+    set({
+      HolidayDetails: response.data,
+      isSaveRecurringHolidayDetailsLoading: false,
+      success: "Holiday saved successfully.",
+    });
+    return { success: true, data: response };
+  } catch (error) {
+    set({ isSaveRecurringHolidayDetailsLoading: false });
+    throw error;
+  }
+},
+
 
   // Save holiday details (add or update)
   saveHolidayDetails: async (HolidayData, isUpdate = false) => {
@@ -50,7 +93,7 @@ export const useHolidayStore = create((set, get) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveHolidayDetailsLoading: false });
+      set({ isSaveHolidayDetailsLoading: false });
       throw error;
     }
   },

@@ -95,7 +95,7 @@ const EntryScanUsersCreate = () => {
                     htmlFor="displayName"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Display Name
+                    Actual Name
                   </label>
                   <Field
                     type="text"
@@ -104,7 +104,7 @@ const EntryScanUsersCreate = () => {
                       ? "border-red-500"
                       : "border-gray-300"
                       } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
+                    placeholder=" Enter Actual Name"
                   />
                   <ErrorMessage
                     name="displayName"

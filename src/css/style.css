@@ -8,3 +8,57 @@
 @import 'additional-styles/flatpickr.css';
 
 @import 'tailwindcss/utilities';
+
+.Toastify__toast-container {
+    z-index: 999999999 !important; /* Ensure it's higher than the modal */
+  }
+  
+  [type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus {
+
+    --tw-ring-offset-shadow: none;
+.react-select__control {  
+    height: 30px ! IMPORTANT;}
+}
+.css-1xc3v61-indicatorContainer {
+
+  padding: 0px 4px ! IMPORTANT;
+}
+.react-select__control:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* terms policy */
+
+.privacy_polibody {
+  padding: 20px;
+}
+.ff_bold {
+  font-family: 'roboto-bold' !important;
+}
+ul:not(.browser-default) {
+  padding-left: 0;
+  list-style-type: none;
+}
+ul:not(.browser-default) li {
+  list-style-type: none;
+}
+.ff_bold {
+  font-family: 'roboto-bold' !important;
+}
+.privacy_polibody p {
+  margin-top: 5px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.row .col {
+  float: left;
+  box-sizing: border-box;
+  padding: 0 .75rem;
+  min-height: 1px;
+}
+
+

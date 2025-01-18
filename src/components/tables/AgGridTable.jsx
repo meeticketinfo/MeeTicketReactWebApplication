@@ -1,37 +1,60 @@
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import "./AgGridTable.css";
 import { FaFileCsv } from "react-icons/fa6";
-import { RiFileExcel2Fill } from "react-icons/ri";
+import usePaginationStore from "../../store/paginationStore";
+import { useAggridStore } from "../../store/agGridStore";
 
 const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
+  const { activePage, setActivePage } = usePaginationStore();
+  const { quickFilterText, setQuickFilterText } = useAggridStore();
+  console.log("quickFilterText",quickFilterText)
   const gridRef = useRef(null);
-  const [quickFilterText, setQuickFilterText] = useState(""); // For search functionality
+  // const [quickFilterText, setQuickFilterText] = useState("");
+  const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 10;
-  const gridHeight = isPaginationEnabled ? 400 : 300;
+  const isPaginationEnabled = rowData.length > 5;
+  const gridHeight = isPaginationEnabled ? 600 : 600;
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
-    setQuickFilterText(e.target.value);
+    const filterText = e.target.value;
+    setQuickFilterText(filterText);
+    // Persist the filter text in localStorage
+    localStorage.setItem("quickFilterText", filterText);
   };
 
   // Function to export data to CSV
   const handleExportCsv = () => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsCsv([]);
+    if (gridApi) {
+      gridApi.exportDataAsCsv([]);
     }
   };
 
   // Function to export data to Excel
   const handleExportExcel = () => {
-    if (gridRef.current && gridRef.current.api) {
-      gridRef.current.api.exportDataAsExcel([]);
+    if (gridApi) {
+      gridApi.exportDataAsExcel([]);
     }
   };
+
+  useEffect(() => {
+    // Load the saved quickFilterText from localStorage on component mount
+    const savedQuickFilterText = localStorage.getItem("quickFilterText");
+    if (savedQuickFilterText) {
+      setQuickFilterText(savedQuickFilterText);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Whenever activePage changes, update the grid's pagination
+    if (gridApi) {
+      gridApi.paginationGoToPage(activePage);
+    }
+  }, [activePage, gridApi]);
 
   return (
     <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
@@ -41,6 +64,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           <input
             type="text"
             placeholder="Search..."
+            value={quickFilterText} // Controlled input
             onChange={handleQuickFilterChange}
             className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
           />
@@ -49,32 +73,37 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           <button onClick={handleExportCsv} className="ag-grid-button">
             <FaFileCsv className="text-blue-v2 text-xl" />
           </button>
-          {/* <button onClick={handleExportExcel} className="ag-grid-button">
-            <RiFileExcel2Fill className="text-red-600 text-2xl" />
-          </button> */}
         </div>
       </div>
 
       {/* Ag-Grid Table */}
       <div
         className="ag-theme-alpine bg-white/30 backdrop-blur-sm border border-white/50 rounded-lg shadow-md overflow-hidden"
-        style={{ height: 400, width: "100%", position: "relative" }}
+        style={{ height: gridHeight, width: "100%", position: "relative" }}
       >
         <AgGridReact
           ref={gridRef}
           rowData={rowData}
-          // columnDefs={columnDefs.map((col) => ({ ...col, sortable: true }))}
           pagination={isPaginationEnabled}
-          paginationPageSize={10}
+          paginationPageSize={20}
           columnDefs={columnDefs.map((col) => ({
             ...col,
-            // width: 180, // Default column width
-            minWidth: 180, // Minimum width for responsiveness
+            minWidth: 180,
             sortable: true,
           }))}
-          paginationPageSizeSelector={[10, 20, 50, 100]}
-          // domLayout="autoHeight" // Adapts grid height based on data
           quickFilterText={quickFilterText} // Binding quickFilterText to AgGrid
+          onGridReady={(params) => {
+            setGridApi(params.api); // Store the API instance
+            params.api.paginationGoToPage(activePage); // Navigate to the saved active page
+          }}
+          onPaginationChanged={() => {
+            if (gridApi) {
+              const currentPage = gridApi.paginationGetCurrentPage();
+              if (currentPage !== activePage) {
+              setActivePage(currentPage);
+              }
+            }
+          }}
         />
 
         {/* Loader overlay within the table body */}

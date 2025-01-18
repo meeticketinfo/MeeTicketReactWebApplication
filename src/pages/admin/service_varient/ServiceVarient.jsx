@@ -22,7 +22,7 @@ export default function ServiceVariant() {
             {/* Left: Title */}
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-                Service Varient
+              Ticket Type
               </h1>
             </div>
             {/* Right: Actions */}
@@ -34,7 +34,7 @@ export default function ServiceVariant() {
                   className="max-xs:sr-only"
                   onClick={toggleServiceVarientCreate}
                 >
-                 Add Service Varient
+                 Add Ticket Type
                 </span>
                 </button>
               ) : (

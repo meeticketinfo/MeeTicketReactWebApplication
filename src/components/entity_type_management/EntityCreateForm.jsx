@@ -23,11 +23,11 @@ const EntityCreateForm = ({
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeId) || "",
     entityTypeName:
       (isEntityTypeEditVisible && entityTypeEditDetails?.entityTypeName) || "",
-    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : false,
+    isActive: isEntityTypeEditVisible ? entityTypeEditDetails?.isActive : true,
   };
 
   const validationSchema = Yup.object({
-    entityTypeName: Yup.string().required("Please enter entity name."),
+    entityTypeName: Yup.string().required("Please enter location category."),
   });
 
   const onSubmit = async (
@@ -47,8 +47,8 @@ const EntityCreateForm = ({
         setOpenModalId(null);
         toast.success(
           isEntityTypeEditVisible
-            ? "EntityType Updated successfully!"
-            : "EntityType created successfully!"
+            ? "Location Category Updated successfully!"
+            : "Location Category created successfully!"
         );
         fetchAllEntityTypes();
 
@@ -94,7 +94,7 @@ const EntityCreateForm = ({
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Entity Name
+                    Location Category Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="entityTypeName"
@@ -105,7 +105,7 @@ const EntityCreateForm = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter service name"
+                    placeholder="Enter Location Category Name"
                   />
                   <ErrorMessage
                     name="entityTypeName"
@@ -144,8 +144,8 @@ const EntityCreateForm = ({
                   {isSaveEntityTypeDetailsLoading
                     ? "Saving..."
                     : isEntityTypeEditVisible
-                    ? "Update Entity"
-                    : "Create Entity"}
+                    ? "Update Location Category"
+                    : "Create Location Category"}
                 </button>
               </div>
             </Form>

@@ -2,6 +2,19 @@ import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
+const getFileTypeFromUrl = (url) => {
+  const extension = url.split(".").pop().toLowerCase();
+  const mimeTypes = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    pdf: "application/pdf",
+    // Add more mime types as needed
+  };
+  return mimeTypes[extension] || "application/octet-stream"; // Default if not found
+};
+
 export const useParkStore = create((set) => ({
   allParks: [],
   ParkDetails: [],
@@ -18,6 +31,12 @@ export const useParkStore = create((set) => ({
   filePreviews: {
     ImageUrl: null,
   },
+  addFilePreviews: {
+    ImageUrl: null,
+  },
+  isFetchAllNodalOfficerParksLoading: false,
+  allNodalOfficerParks: [],
+  nodalOfficerParksError: null,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -40,16 +59,44 @@ export const useParkStore = create((set) => ({
         isFetchAllParksLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllParksLoading: false });
+      set({ isFetchAllParksLoading: false });
+    }
+  },
+
+  // Fetch all Nodal Officers
+  fetchAllNodalOfficerParks: async (
+    pageIndex = 1,
+    pageSize = 10,
+    filters = {},
+    userId
+  ) => {
+    set({ isFetchAllNodalOfficerParksLoading: true });
+    try {
+      //   const filterString = useServicestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_ENTITIES}?userId=${userId}`
+      );
+
+      set({
+        allNodalOfficerParks: response.data,
+        isFetchAllNodalOfficerParksLoading: false,
+      });
+    } catch (error) {
+      set({
+        nodalOfficerParksError: error.message,
+        isFetchAllNodalOfficerParksLoading: false,
+      });
     }
   },
 
   // Save park details
-  saveParkDetails: async (ParkData, isUpdate = false) => {
+  saveParkDetails: async (ParkData, isUpdate = false, role) => {
     set({ isSaveParkDetailsLoading: true });
     try {
+      const locationEditEndPoint = (role === "ROLE_NODALOFFICER" ? API_ENDPOINTS.MASTERS.PARK.UPDATE_NODAL_OFFICER_PARK_DETAILS :API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS)
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+        ? locationEditEndPoint
         : API_ENDPOINTS.MASTERS.PARK.ADD_NEW_PARK;
 
       // Prepare form data
@@ -71,9 +118,16 @@ export const useParkStore = create((set) => ({
         success: "Park saved successfully.",
       });
 
+      set((state) => ({
+        filePreviews: {
+          ...state.filePreviews,
+          ImageUrl: { fileUrl: null, fileType: null },
+        },
+      }));
+
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveParkDetailsLoading: false });
+      set({  isSaveParkDetailsLoading: false });
       throw error;
     }
   },
@@ -82,6 +136,12 @@ export const useParkStore = create((set) => ({
     console.log("parkEditDetails", parkEditDetails);
     set({
       parkEditDetails,
+    });
+  },
+
+  resetFilePreview: () => {
+    set({
+      filePreviews: {},
     });
   },
 
@@ -100,5 +160,36 @@ export const useParkStore = create((set) => ({
         },
       }));
     }
+  },
+
+  addHandleFileChange: (e, fieldName) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileUrl = URL.createObjectURL(file);
+      const fileType = file.type;
+
+      // Set both file and preview
+      set((state) => ({
+        fileInputs: { ...state.fileInputs, [fieldName]: file },
+        addFilePreviews: {
+          ...state.addFilePreviews,
+          [fieldName]: { file, fileType, fileUrl },
+        },
+      }));
+    }
+  },
+
+  updateFilePreview: (ImageUrl) => {
+    set((state) => ({
+      filePreviews: {
+        ...state.filePreviews,
+        ImageUrl: ImageUrl
+          ? {
+              fileUrl: ImageUrl,
+              fileType: getFileTypeFromUrl(ImageUrl),
+            }
+          : { fileUrl: null, fileType: null },
+      },
+    }));
   },
 }));

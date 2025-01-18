@@ -16,10 +16,27 @@ const UserCreate = ({
 }) => {
   const { saveUserDetails, isSaveUserDetailsLoading, userEditDetails } =
     useUsersStore();
-  const { allParks, fetchAllParks } = useParkStore();
+  const {
+    allParks,
+    fetchAllParks,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+  } = useParkStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
+
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
   useEffect(() => {
-    fetchAllParks();
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
 
   const initialValues = {
@@ -42,16 +59,29 @@ const UserCreate = ({
       .required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
     lastName: Yup.string()
-      //.required("Last Name is required")
+      .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    emailId: Yup.string().required("EmailId is required"),
-    parkId: Yup.string().required("Entity is required"),
+    emailId: Yup.string().required("Email Id is required"),
+    parkId: Yup.string().required("Location is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
       .required("Password is required")
-      .min(6, "Password cannot be less than 6 characters")
-      .max(20, "Password cannot be more than 30 characters"),
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
   const updateValidationSchema = Yup.object({
     firstName: Yup.string()
@@ -60,10 +90,27 @@ const UserCreate = ({
     lastName: Yup.string()
       //.required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    emailId: Yup.string().required("EmailId is required"),
+    emailId: Yup.string().required("Email Id is required"),
     // parkId: Yup.string().required("Entity is required"),
     phoneNumber: Yup.number().required("Phone Number is required"),
     // .max(10, "Phone Number Must contain 10 digits"),
+    password: Yup.string()
+      // .required("Password is required")
+      .min(10, "Password cannot be less than 10 characters")
+      .max(16, "Password cannot be more than 16 characters")
+      .matches(
+        /[A-Z]/,
+        "Password must include at least one uppercase letter (A-Z)"
+      )
+      .matches(
+        /[a-z]/,
+        "Password must include at least one lowercase letter (a-z)"
+      )
+      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
+      .matches(
+        /[@$!%*?&]/,
+        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
+      ),
   });
 
   const onSubmit = async (
@@ -75,12 +122,9 @@ const UserCreate = ({
       const formattedValues = {
         ...values,
         isActive: values.isActive === "true" || values.isActive === true,
-        password: isUserEditVisible
-          ? userEditDetails.password || ""
-          : values.password,
+        password: values.password && values.password,
       };
 
-      console.log("formattedValues", formattedValues);
       const result = await saveUserDetails(
         formattedValues,
         isUserEditVisible ? true : false
@@ -89,13 +133,13 @@ const UserCreate = ({
       if (result.data.status === 200) {
         toast.success(
           isUserEditVisible
-            ? "Entity Admin Updated successfully!"
-            : "Entity Admin Created Successfully"
+            ? "Location Admin Updated successfully!"
+            : "Location Admin Created Successfully"
         );
         setTimeout(() => {
           setIsUserCreateVisible(false);
           setIsUserEditVisible(false);
-        }, 3000);
+        }, 1000);
 
         resetForm();
       }
@@ -108,14 +152,12 @@ const UserCreate = ({
             xhr.response.data.errors[key].length > 0
           ) {
             formErrors[key] = xhr.response.data.errors[key][0];
-            console.log(`${key}: ${xhr.response.data.errors[key][0]}`);
             toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
           }
         });
       } else {
         toast.error(xhr.response.data);
       }
-      toast.error("Error creating park. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +180,7 @@ const UserCreate = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Entity</label>
+                  <label className="block text-sm font-medium">Location  <span className="text-red-500">*</span></label>
                   <Field
                     as="select"
                     name="parkId"
@@ -149,8 +191,8 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    {allParks
+                    <option value="">Select Location</option>
+                    {parksToRender
                       ?.filter((park) => park.isActive)
                       .map((park) => (
                         <option
@@ -172,7 +214,7 @@ const UserCreate = ({
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    First Name
+                    First Name  <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="firstName"
@@ -193,7 +235,7 @@ const UserCreate = ({
                 {/*Last Name */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
-                    Last Name
+                    Last Name  <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="lastName"
@@ -217,7 +259,7 @@ const UserCreate = ({
                     htmlFor="emailId"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Email Id
+                    Email Id  <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="email"
@@ -227,8 +269,8 @@ const UserCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter emailId"
-                    disabled={isUserEditVisible}
+                    placeholder="Enter email id"
+                    // disabled={isUserEditVisible}
                   />
                   <ErrorMessage
                     name="emailId"
@@ -242,7 +284,7 @@ const UserCreate = ({
                     htmlFor="dob"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Phone Number
+                    Phone Number  <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
@@ -254,7 +296,12 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                     placeholder="Enter phone number"
-                    disabled={isUserEditVisible}
+                    // disabled={isUserEditVisible}
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="phoneNumber"
@@ -269,7 +316,7 @@ const UserCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password
+                    Password  <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="password"
@@ -322,8 +369,8 @@ const UserCreate = ({
                   {isSaveUserDetailsLoading
                     ? "Saving..."
                     : isUserEditVisible
-                    ? "Update Entity Admin"
-                    : "Create Entity Admin"}
+                    ? "Update Location Admin"
+                    : "Create Location Admin"}
                 </button>
               </div>
             </Form>

@@ -8,8 +8,18 @@ export const gateKeepersStore = create((set) => ({
   isFetchAllGateKeepersLoading: false,
   allScannedGateKeepers: [],
   isFetchAllScannedGateKeepersLoading: false,
+  IsEditGateKeeper:false,
+  currentGateKeeperEditDetails:{},
   error: null,
   success: null,
+
+
+  setIsEditGateKeeper:(IsEditGateKeeper)=>{
+    set({IsEditGateKeeper})
+  },
+  setCurrentGateKeeperEditDetails:(currentGateKeeperEditDetails)=>{
+    set({currentGateKeeperEditDetails})
+  },
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -30,7 +40,7 @@ export const gateKeepersStore = create((set) => ({
         isFetchAllGateKeepersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllGateKeepersLoading: false });
+      set({ isFetchAllGateKeepersLoading: false });
     }
   },
   // Fetch all Bookings
@@ -53,15 +63,15 @@ export const gateKeepersStore = create((set) => ({
         isFetchAllScannedGateKeepersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllScannedGateKeepersLoading: false });
+      set({  isFetchAllScannedGateKeepersLoading: false });
     }
   },
 
   saveGateKeeperDetails: async (GateKeeperData, isUpdate = false) => {
     set({ isSaveGateKeeperDetailsLoading: true });
     try {
-      const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS
+      const url = isUpdate 
+        ? API_ENDPOINTS.MASTERS.GATE_KEEPER.UPDATE_GATE_KEEPER
         : API_ENDPOINTS.MASTERS.GATE_KEEPER.ADD_NEW_GATE_KEEPER;
       const method = isUpdate ? "put" : "post";
 
@@ -75,7 +85,7 @@ export const gateKeepersStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveGateKeeperDetailsLoading: false });
+      set({  isSaveGateKeeperDetailsLoading: false });
       throw error;
     }
   },

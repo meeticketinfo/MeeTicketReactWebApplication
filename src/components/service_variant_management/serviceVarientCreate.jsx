@@ -7,50 +7,48 @@ import { useServiceStore } from "../../store/masters/servicesStore";
 import { useEffect } from "react";
 import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
 import { toast, ToastContainer } from "react-toastify";
+import { useModalStore } from "../../store/modalStore";
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
+import useAuthStore from "../../store/authStore";
 
 // Validation schema using Yup
 
-const ServiceVarientCreate = ({
-  setIsServiceVarientCreateVisible,
-  isServiceVarientEditVisible,
-  setIsServiceVarientEditVisible,
-}) => {
+const ServiceVarientCreate = ({ onDataAdded }) => {
   const {
     saveServiceVarientDetails,
     isSaveServiceVarientDetailsLoading,
     ServiceVariantEditDetails,
   } = useServiceVariantStore();
+
+  const { isCreateServiceVariantEnabled, setIsCreateServiceVariantEnabled } =
+  useUnifiedFacilityStore();
+
+  const {  roleDetails } =
+  useAuthStore();
+const role = roleDetails?.name;
+
+
   const { allServices, fetchAllServices } = useServiceStore();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   useEffect(() => {
-    fetchAllServices();
+    fetchAllServices(role);
   }, []);
   const initialValues = {
-    id: isServiceVarientEditVisible ? ServiceVariantEditDetails.id : "",
-    name: isServiceVarientEditVisible ? ServiceVariantEditDetails.name : "",
-    serviceId: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.serviceId
-      : "",
-    displayName: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.displayName
-      : "",
-    amount: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.amount
-      : null,
-    description: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.description
-      : "",
-    isPriceFixed: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.isPriceFixed
-      : false,
-    isActive: isServiceVarientEditVisible
-      ? ServiceVariantEditDetails.isActive
-      : true,
+    id: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.id,
+    name: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.name,
+    serviceId: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.serviceId,
+    displayName: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.displayName,
+    amount: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.amount,
+    serviceVarientSequenceNumber:isCreateServiceVariantEnabled ? "" :ServiceVariantEditDetails.sequenceNumber,
+    description: isCreateServiceVariantEnabled ? "" : ServiceVariantEditDetails.description,
+    isPriceFixed: isCreateServiceVariantEnabled ? false : !ServiceVariantEditDetails.isPriceFixed,
+    isActive: isCreateServiceVariantEnabled ? true : ServiceVariantEditDetails.isActive,
   };
   const validationSchema = Yup.object({
-    name: Yup.string().required("Please enter the name."),
-    serviceId: Yup.string().required("Please enter the service ID."),
-    displayName: Yup.string().required("Please enter the display name."),
+    name: Yup.string().required("Please enter the Actual name."),
+    serviceId: Yup.string().required("Please select the sub facility."),
+    serviceVarientSequenceNumber: Yup.string().required("Please enter the Sequence."),
     amount: Yup.number().required("Please enter the amount."),
     description: Yup.string().required("Please enter the description."),
     isPriceFixed: Yup.boolean().required(
@@ -68,23 +66,19 @@ const ServiceVarientCreate = ({
       const formattedValues = {
         ...values,
         isActive: values.isActive === "true" || values.isActive === true,
+        isPriceFixed:values.isPriceFixed===true?false:true,
+        displayName: values.name || "",
       };
 
-      const result = await saveServiceVarientDetails(
-        formattedValues,
-        isServiceVarientEditVisible ? true : false
-      );
+      const result = await saveServiceVarientDetails(formattedValues,role, isCreateServiceVariantEnabled ? false :true);
       console.log(result);
       if (result.data.status === 200) {
-        toast.success(
-          isServiceVarientEditVisible
-            ? "Service Variant Updated successfully!"
-            : "Service Variant created successfully!"
-        );
+        toast.success(isCreateServiceVariantEnabled ? "Ticket Type Added successfully!" : "Ticket Type Updated successfully!");
         setTimeout(() => {
-          setIsServiceVarientCreateVisible(false);
-          setIsServiceVarientEditVisible(false);
-        }, 3000);
+          setOpenModalId(null);
+          onDataAdded();
+          setIsCreateServiceVariantEnabled(false);
+        }, 300);
         resetForm();
       }
     } catch (xhr) {
@@ -110,10 +104,10 @@ const ServiceVarientCreate = ({
   };
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto">
       {/* <h2 className="text-black text-2xl font-bold mb-6">Facilities</h2> */}
-      <ToastContainer position="top-right" autoClose={3000} />
-      <div className="bg-zinc-50 p-2 shadow-lg rounded-lg border border-gray-200">
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
+      <div className=" ">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -123,10 +117,13 @@ const ServiceVarientCreate = ({
         >
           {({ errors, touched, isSubmitting }) => (
             <Form>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
+              <div className="bg-zinc-50 grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Service */}
-                <div>
-                  <label className="block text-sm font-medium"> Service</label>
+               {setIsCreateServiceVariantEnabled &&
+                 <div>
+                  <label className="block text-sm font-medium">
+                    Sub Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="serviceId"
@@ -136,19 +133,21 @@ const ServiceVarientCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    {allServices.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.name}
-                      </option>
-                    ))}
+                    <option value="">Select sub facility</option>
+                    {allServices
+                      ?.filter((service) => service.isActive)
+                      ?.map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="serviceId"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div>
+                </div>}
 
                 {/* Varient Name */}
                 <div className="">
@@ -156,7 +155,7 @@ const ServiceVarientCreate = ({
                     htmlFor="name"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Varient Name
+                    Actual Name <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
@@ -167,7 +166,7 @@ const ServiceVarientCreate = ({
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Varient Name"
+                    placeholder="Enter Actual Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -182,48 +181,32 @@ const ServiceVarientCreate = ({
                     htmlFor="amount"
                     className="block text-sm font-semibold text-gray-700"
                   >
-                    Amount
+                    Amount <span className="text-red-500">*</span>
                   </label>
                   <Field
-                    type="number"
+                    type="text"
                     name="amount"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.amount && touched.amount
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
+                    placeholder=" Enter Amount"
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxLength={12}
                   />
                   <ErrorMessage
                     name="amount"
                     component="div"
                     className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Display Name */}
-                <div className="mb-3">
-                  <label
-                    htmlFor="displayName"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Display Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="displayName"
-                    maxLength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder=" Enter Display Name"
-                  />
-                  <ErrorMessage
-                    name="displayName"
-                    component="span"
-                    className="text-red-500 text-xs mt-1 absolute mb-1"
                   />
                 </div>
 
@@ -236,7 +219,7 @@ const ServiceVarientCreate = ({
                     />
                     <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
                     <span className="ms-3 text-md font-semibold text-gray-900 ">
-                      Price Fixed
+                    Is Person Based
                     </span>
                   </label>
                   <ErrorMessage
@@ -267,11 +250,39 @@ const ServiceVarientCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
+                 {/* sequence */}
+                 <div>
+                  <label className="block text-sm font-medium">
+                    Sequence<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="serviceVarientSequenceNumber"
+                    type="text"
+                    maxlength={5}
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
+                  />
+                  <ErrorMessage
+                    name="serviceVarientSequenceNumber"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                 
+                </div>
 
                 {/* description */}
                 <div className="col-span-3">
                   <label className="block text-sm font-medium">
-                    Description
+                    Description <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="textarea"
@@ -292,7 +303,7 @@ const ServiceVarientCreate = ({
                 </div>
               </div>
 
-              <div className="flex justify-center p-5">
+              <div className="flex justify-center p-4">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
@@ -300,9 +311,7 @@ const ServiceVarientCreate = ({
                 >
                   {isSaveServiceVarientDetailsLoading
                     ? "Saving..."
-                    : isServiceVarientEditVisible
-                    ? "Update Service Varient"
-                    : "Create Service Varient"}
+                    : (isCreateServiceVariantEnabled ? "Add Ticket Type" :"Update Ticket Type")}
                 </button>
               </div>
             </Form>

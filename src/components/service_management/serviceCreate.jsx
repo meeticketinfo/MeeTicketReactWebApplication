@@ -7,40 +7,54 @@ import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useServiceStore } from "../../store/masters/servicesStore";
+import { useModalStore } from "../../store/modalStore";
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
+import useAuthStore from "../../store/authStore";
 
-const ServiceCreate = ({
-  setIsServiceCreateVisible,
-  isServiceEditVisible,
-  setIsServiceEditVisible,
-}) => {
+const ServiceCreate = ({ onDataAdded }) => {
   const {
     saveServiceDetails,
     isSaveServiceDetailsLoading,
     ServiceEditDetails,
   } = useServiceStore();
+  const { isCreateServiceEnabled } = useUnifiedFacilityStore();
+  const {  roleDetails } =
+    useAuthStore();
+  const role = roleDetails?.name;
+
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
   const { fetchAllFacilities, allFacilities } = useFacilityStore();
+  console.log("ServiceEditDetails", ServiceEditDetails);
   useEffect(() => {
-    fetchAllFacilities();
+    fetchAllFacilities(role);
   }, []);
   const initialValues = {
-    id: (isServiceEditVisible && ServiceEditDetails.id) || "",
-    name: (isServiceEditVisible && ServiceEditDetails.name) || "",
-    displayName: (isServiceEditVisible && ServiceEditDetails.displayName) || "",
-    serviceType: (isServiceEditVisible && ServiceEditDetails.serviceType) || "",
-    duration: (isServiceEditVisible && ServiceEditDetails.duration) || "",
-    availability: isServiceEditVisible ? ServiceEditDetails.availability : "",
-    installationDate:
-      (isServiceEditVisible && ServiceEditDetails.installationDate) || "",
-    description: (isServiceEditVisible && ServiceEditDetails.description) || "",
-    isActive: isServiceEditVisible ? ServiceEditDetails.isActive : true,
-    facilityId: (isServiceEditVisible && ServiceEditDetails.facilityId) || "",
+    id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
+    name: isCreateServiceEnabled ? "" : ServiceEditDetails.name,
+    limit: isCreateServiceEnabled ? null : (ServiceEditDetails.limit<0)&&(ServiceEditDetails.limit!=null)?"no limit":ServiceEditDetails.limit,
+    serviceSequenceNumber: isCreateServiceEnabled
+      ? ""
+      : ServiceEditDetails.sequenceNumber,
+    displayName: isCreateServiceEnabled ? "" : ServiceEditDetails.displayName,
+    serviceType: isCreateServiceEnabled ? "" : ServiceEditDetails.serviceType,
+    duration: isCreateServiceEnabled ? "" : ServiceEditDetails.duration,
+    availability: isCreateServiceEnabled ? "" : ServiceEditDetails.availabilit,
+    installationDate: isCreateServiceEnabled
+      ? ""
+      : ServiceEditDetails.installationDate,
+    description: isCreateServiceEnabled ? "" : ServiceEditDetails.description,
+    isActive: isCreateServiceEnabled ? true : ServiceEditDetails.isActive,
+    facilityId: isCreateServiceEnabled ? "" : ServiceEditDetails.facilityId,
   };
   const validationSchema = Yup.object({
-    facilityId: Yup.string().required("Please enter facility ."),
-    name: Yup.string().required("Please enter Service name."),
-    displayName: Yup.string()
-      .required("Please enter display name.")
-      .max(50, "display name should be less than 50 characters"),
+    facilityId: Yup.string().required("Please select facility ."),
+    serviceSequenceNumber: Yup.string().required("Please enter Sequence ."),
+    name: Yup.string().required("Please enter Actual name."),
+    Description: Yup.string()
+      .nullable()
+      .min(10, "Description must be at least 10 characters long")
+      .max(500, "Description cannot be more than 500 characters"),
   });
 
   // onSubmit function to handle form submission
@@ -53,25 +67,30 @@ const ServiceCreate = ({
     values.installationDate = values.installationDate
       ? values.installationDate
       : null;
+    values.limit = values.limit ? Number(values.limit) : -1;
     values.isActive = values.isActive === "true" || values.isActive === true;
+    values.displayName = values.name;
     try {
       // Call the saveUserDetails function from the store
       const result = await saveServiceDetails(
         values,
-        isServiceEditVisible ? true : false
+        role,
+        isCreateServiceEnabled ? false : true
       );
 
       if (result.data.status === 200) {
         toast.success(
-          isServiceEditVisible
-            ? "Service Updated successfully!"
-            : "Service created successfully!"
+          isCreateServiceEnabled
+            ? "Sub Facility Added successfully"
+            : "Sub Facility Updated successfully!"
         );
 
         setTimeout(() => {
-          setIsServiceCreateVisible(false);
-          setIsServiceEditVisible(false);
-        }, 3000);
+          setOpenModalId(null);
+          onDataAdded();
+          // setIsServiceCreateVisible(false);
+          // setIsServiceEditVisible(false);
+        }, 300);
 
         resetForm();
       }
@@ -100,7 +119,7 @@ const ServiceCreate = ({
     <>
       {" "}
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
-        <ToastContainer position="top-right" autoClose={3000} />
+        {/* <ToastContainer position="top-right" autoClose={3000} /> */}
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -112,7 +131,9 @@ const ServiceCreate = ({
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>
-                  <label className="block text-sm font-medium">Facility</label>
+                  <label className="block text-sm font-medium">
+                    Facility <span className="text-red-500">*</span>
+                  </label>
                   <Field
                     as="select"
                     name="facilityId"
@@ -122,12 +143,14 @@ const ServiceCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select </option>
-                    {allFacilities.map((facility) => (
-                      <option key={facility.id} value={facility.id}>
-                        {facility.name}
-                      </option>
-                    ))}
+                    <option value="">Select Facility</option>
+                    {allFacilities
+                      ?.filter((facility) => facility.isActive)
+                      ?.map((facility) => (
+                        <option key={facility.id} value={facility.id}>
+                          {facility.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="facilityId"
@@ -138,19 +161,18 @@ const ServiceCreate = ({
                 {/* Service Name */}
                 <div>
                   <label className="block text-sm font-medium">
-                    {" "}
-                    Service Name
+                    Actual Name<span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="name"
                     type="text"
-                    maxlength={50}
+                    maxLength={50}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter service name"
+                    placeholder="Enter Actual Name"
                   />
                   <ErrorMessage
                     name="name"
@@ -158,79 +180,53 @@ const ServiceCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* Display Name */}
+                {/* Limit */}
+                <div>
+                  <label className="block text-sm font-medium">Limit</label>
+                  <Field
+                    name="limit"
+                   
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxlength={3}
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Limit"
+                  />
+                </div>
+                {/* sequence */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Display Name
+                    Sequence<span className="text-red-500">*</span>
                   </label>
                   <Field
-                    name="displayName"
-                    maxlength={50}
-                    type="text"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.displayName && touched.displayName
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Dispaly name"
+                    name="serviceSequenceNumber"
+                    // type="number"
+                    onKeyDown={(e) => {
+                      // Allow only numbers and backspace
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault(); // Block other keys
+                      }
+                    }}
+                    maxlength={3}
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Sequence"
                   />
                   <ErrorMessage
-                    name="displayName"
+                    name="serviceSequenceNumber"
                     component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>
-
-                {/* Description */}
-                <div>
-                  <label
-                    htmlFor="duration"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Duration
-                  </label>
-                  <Field
-                    type="text"
-                    name="duration"
-                    maxlength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.duration && touched.duration
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter Duration"
-                  />
-                  <ErrorMessage
-                    name="duration"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* DOB Number */}
-                <div>
-                  <label
-                    htmlFor="installationDate"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Installation Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="installationDate"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.installationDate && touched.installationDate
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter date of birth"
-                  />
-                  <ErrorMessage
-                    name="installationDate"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
                 {/* Status */}
                 <div>
                   <label className="block text-sm font-medium">Status</label>
@@ -249,56 +245,6 @@ const ServiceCreate = ({
                   </Field>
                   <ErrorMessage
                     name="active"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
-                </div>
-
-                {/* Availability Status */}
-                <div className="">
-                  <label
-                    htmlFor="availabilityStatus"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Availability Status
-                  </label>
-                  <Field
-                    as="select"
-                    name="availability"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.availability && touched.availability
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Status</option>
-                    <option value="available">Available</option>
-                    <option value="unavailable">Unavailable</option>
-                  </Field>
-                  <ErrorMessage
-                    name="availabilityStatus"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/* Service type */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Service Type
-                  </label>
-                  <Field
-                    name="serviceType"
-                    type="text"
-                    maxlength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.serviceType && touched.serviceType
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Service Type"
-                  />
-                  <ErrorMessage
-                    name="serviceType"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -337,9 +283,9 @@ const ServiceCreate = ({
                 >
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
-                    : isServiceEditVisible
-                    ? "Update Service"
-                    : "Create Service"}
+                    : isCreateServiceEnabled
+                    ? "Add Sub Facility"
+                    : "Update Sub Facility"}
                 </button>
               </div>
             </Form>

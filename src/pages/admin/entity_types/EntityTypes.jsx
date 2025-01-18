@@ -25,17 +25,20 @@ const EntityTypes = () => {
             {/* Left: Title */}
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-                Entities
+                Location Category
               </h1>
             </div>
             {/* Right: Actions */}
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               {/* Add view button */}
               <button
-                onClick={() => {setOpenModalId("entity-modal");}}
+                onClick={() => {
+                  setOpenModalId("entity-modal");
+                  setIsEntityTypeEditVisible(false)
+                }}
                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
-                <span className="max-xs:sr-only">Add Entity Type</span>
+                <span className="max-xs:sr-only">Add Location Category</span>
               </button>
             </div>
           </div>

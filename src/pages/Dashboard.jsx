@@ -18,6 +18,7 @@ import {
   formatToCurrency,
   formatToStandardDate,
   formatToStandardTime,
+  getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
 import { data } from "autoprefixer";
@@ -30,8 +31,17 @@ import { toast } from "react-toastify";
 function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pieChartData, setPieChartData] = useState([]);
-  const { allParks, fetchAllParks } = useParkStore();
-  const { roleDetails } = useAuthStore();
+  const {
+    allParks,
+    fetchAllParks,
+    fetchAllNodalOfficerParks,
+    allNodalOfficerParks,
+    isFetchAllNodalOfficerParksLoading,
+  } = useParkStore();
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+    useAuthStore();
+  const role = roleDetails?.name;
+  const userId = decodedTokenData?.data?.UserId;
 
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -48,15 +58,20 @@ function Dashboard() {
   } = useDashboardStore();
 
   const initialValues = {
-    fromDate: "",
+    fromDate: getCurrentDate(),
     toDate: "",
-    parkId: "",
+    entityId: "",
   };
+  // alert("i'm in");
   useEffect(() => {
     fetchAllDashboardCounts(null, null, {}, roleDetails);
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
-    fetchAllParks();
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
+    if (role === "ROLE_NODALOFFICER") {
+      fetchAllNodalOfficerParks(null, null, {}, userId);
+    } else {
+      fetchAllParks();
+    }
   }, []);
 
   useEffect(() => {
@@ -68,10 +83,18 @@ function Dashboard() {
     setPageSize(newPageSize);
   };
 
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
+
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      const formattedValues = {
+        ...values,
+        fromDate: values.fromDate ? `${values.fromDate}T00:00:00.000Z` : "",
+        toDate: values.toDate ? `${values.toDate}T23:59:00.000Z` : "",
+      };
       setSubmitting(true);
-      const filters = values;
+      const filters = formattedValues;
       const result = await fetchAllEntityBookingsByFilters(null, null, filters);
       if (result?.data?.status === 200) {
         resetForm();
@@ -141,16 +164,23 @@ function Dashboard() {
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
+    // {
+    //   field: "bookingId",
+    //   headerName: "Booking Id",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) =>
+    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
+    // },
     {
-      field: "bookingId",
-      headerName: "Booking Id",
-      flex: 1,
+      field: "transactionId",
+      headerName: "Transaction ID",
+      flex: 2,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value && params.value.trim() !== "" ? params.value : "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "userName",
+      field: "userPhoneNumber",
       headerName: "User Name",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -158,7 +188,7 @@ function Dashboard() {
     },
     {
       field: "parkName",
-      headerName: "Entity Name",
+      headerName: "Location Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -199,6 +229,13 @@ function Dashboard() {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
+    {
+      field: "modeOfPayment",
+      headerName: "mode Of Payment",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
   ]);
 
   return (
@@ -225,20 +262,21 @@ function Dashboard() {
                 icon={card.icon}
               />
             ))}
+
           {roleDetails?.name == "ROLE_SUPERADMIN" && (
             <DashboardCard07>
               <div className="flex">
                 <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                   <PieChart
                     data={allPieCharts}
-                    title="Total Booking By Entity"
+                    title="Total Booking By Location"
                     angleKey="entityWiseTotalBookings"
                   />
                 </div>
                 <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                   <PieChart
                     data={allPieCharts}
-                    title="Total Amount By Entity"
+                    title="Total Amount By Location"
                     angleKey="entityWiseTotalAmount"
                   />
                 </div>
@@ -246,87 +284,111 @@ function Dashboard() {
             </DashboardCard07>
           )}
 
-          <DashboardCard07 header={true} title="Entity Bookings">
-            <div className="">
-              <div>
-                <Formik
-                  initialValues={initialValues}
-                  onSubmit={(values, actions) => onSubmit(values, actions)}
-                >
-                  <Form>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      <div>
-                        <label className="block text-xs font-medium">
-                          Entity
-                        </label>
-                        <Field
-                          as="select"
-                          name="entityId"
-                          className={`mt-1 block w-full px-2 py-1 border
+          {roleDetails?.name != "ROLE_METROADMIN" && (
+            <DashboardCard07 header={true} title="Location Bookings">
+              <div className="">
+                <div>
+                  <Formik
+                    initialValues={initialValues}
+                    onSubmit={(values, actions) => onSubmit(values, actions)}
+                  >
+                    {({ values, setFieldValue }) => (
+                      <Form>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                          {(role === "ROLE_SUPERADMIN" ||
+                            role === "ROLE_NODALOFFICER") && (
+                            <div>
+                              <label className="block text-xs font-medium">
+                                Location
+                              </label>
+                              <Field
+                                as="select"
+                                name="entityId"
+                                className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        >
-                          <option value="">Select </option>
-                          {allParks.map((park) => (
-                            <option key={park.id} value={park.id}>
-                              {park.name}
-                            </option>
-                          ))}
-                        </Field>
-                      </div>
+                              >
+                                <option value="">Select </option>
+                                {parksToRender
+                                  ?.filter((park) => park.isActive)
+                                  ?.map((park) => (
+                                    <option key={park.id} value={park.id}>
+                                      {park.name}
+                                    </option>
+                                  ))}
+                              </Field>
+                            </div>
+                          )}
 
-                      <div>
-                        <label
-                          htmlFor="fromDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          From Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="fromDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          placeholder="Enter date of birth"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="toDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          To Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="toDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          placeholder="Enter date of birth"
-                        />
-                      </div>
-                      <div className="flex items-end">
-                        <button
-                          type="submit"
-                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                          disabled={isFetchEntityBookingsLoading}
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div>
-                  </Form>
-                </Formik>
+                          <div>
+                            <label
+                              htmlFor="fromDate"
+                              className="block text-xs font-medium text-gray-700"
+                            >
+                              From Date
+                            </label>
+                            <Field
+                              type="date"
+                              name="fromDate"
+                              className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              // min={getCurrentDate()}
+                              onChange={(e) => {
+                                const fromDateValue = e.target.value;
+                                setFieldValue("fromDate", fromDateValue);
+                                if (
+                                  new Date(fromDateValue) >
+                                  new Date(values.toDate)
+                                ) {
+                                  // Automatically update toDate if it's earlier than fromDate
+                                  setFieldValue("toDate", fromDateValue);
+                                }
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="toDate"
+                              className="block text-xs font-medium text-gray-700"
+                            >
+                              To Date
+                            </label>
+                            <Field
+                              type="date"
+                              name="toDate"
+                              className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                              onChange={(e) => {
+                                const toDateValue = e.target.value;
+                                setFieldValue("toDate", toDateValue);
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-end">
+                            <button
+                              type="submit"
+                              className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                              disabled={isFetchEntityBookingsLoading}
+                            >
+                              Search
+                            </button>
+                          </div>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+                <AgGridTable
+                  isFetchLoading={isFetchEntityBookingsLoading}
+                  rowData={allEntityBookings || []}
+                  columnDefs={dashboardColumnDefs}
+                  onPageChange={handlePageChange}
+                  totalRecords={totalEntityBookingRecords}
+                  enableAdvancedFilter={true}
+                />
               </div>
-              <AgGridTable
-                isFetchLoading={isFetchEntityBookingsLoading}
-                rowData={allEntityBookings || []}
-                columnDefs={dashboardColumnDefs}
-                onPageChange={handlePageChange}
-                totalRecords={totalEntityBookingRecords}
-                enableAdvancedFilter={true}
-              />
-            </div>
-          </DashboardCard07>
+            </DashboardCard07>
+          )}
         </div>
       </div>
     </AdminLayout>

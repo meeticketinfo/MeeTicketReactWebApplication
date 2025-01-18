@@ -37,7 +37,7 @@ export const useEntityTypesStore = create((set) => ({
         isFetchAllEntityTypesLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllEntityTypesLoading: false });
+      set({isFetchAllEntityTypesLoading: false });
     }
   },
 
@@ -54,7 +54,7 @@ export const useEntityTypesStore = create((set) => ({
       return { success: true, data: response };
     } catch (error) {
       set({
-        error: error.message,
+       
         isFetchCurrentEntityTypeDetailsLoading: false,
       });
       return { success: false };

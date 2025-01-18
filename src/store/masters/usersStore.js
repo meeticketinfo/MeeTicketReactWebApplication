@@ -33,7 +33,7 @@ export const useUsersStore = create((set) => ({
         isFetchAllUsersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllUsersLoading: false });
+      set({ isFetchAllUsersLoading: false });
     }
   },
   // Fetch all Bookings
@@ -52,7 +52,7 @@ export const useUsersStore = create((set) => ({
         isFetchAllScannedUsersLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllScannedUsersLoading: false });
+      set({ isFetchAllScannedUsersLoading: false });
     }
   },
 
@@ -73,7 +73,7 @@ export const useUsersStore = create((set) => ({
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveUserDetailsLoading: false });
+      set({  isSaveUserDetailsLoading: false });
       throw error;
     }
   }, 

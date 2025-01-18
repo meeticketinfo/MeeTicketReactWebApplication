@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 export const useServiceVariantStore = create((set) => ({
   allServiceVariants: [],
   ServiceDetails: [],
-  isSaveServiceDetailsLoading: false,
+  isSaveServiceVarientDetailsLoading: false,
   isFetchServiceDetailsLoading: false,
   isFetchAllServiceVariantsLoading: false,
   fetchServiceDetailsError: null,
@@ -14,7 +14,6 @@ export const useServiceVariantStore = create((set) => ({
   ServiceVariantEditDetails: {},
 
   setCurrentServiceVariantEditDetails: (ServiceVariantEditDetails) => {
-    console.log("ServiceVariantEditDetails",ServiceVariantEditDetails)
     set({
       ServiceVariantEditDetails,
     });
@@ -45,7 +44,7 @@ export const useServiceVariantStore = create((set) => ({
         isFetchAllServiceVariantsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllServiceVariantsLoading: false });
+      set({ isFetchAllServiceVariantsLoading: false });
     }
   },
 
@@ -72,11 +71,17 @@ export const useServiceVariantStore = create((set) => ({
   },
 
   // Save Service details
-  saveServiceVarientDetails: async (ServiceData, isUpdate = false) => {
-    set({ isSaveServiceDetailsLoading: true });
+  saveServiceVarientDetails: async (ServiceData, role, isUpdate = false) => {
+    set({ isSaveServiceVarientDetailsLoading: true });
     try {
       const url = isUpdate
-        ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT.UPDATE_SERVICE_VARIENT_DETAILS
+        ? role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT
+              .UPDATE_SERVICE_VARIENT_DETAILS_NODAL_OFFICER
+          : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.UPDATE_SERVICE_VARIENT_DETAILS
+        : role === "ROLE_NODALOFFICER"
+        ? API_ENDPOINTS.MASTERS.SERVICE_VARIANT
+            .ADD_NEW_SERVICE_VARIENT_NODAL_OFFICER
         : API_ENDPOINTS.MASTERS.SERVICE_VARIANT.ADD_NEW_SERVICE_VARIENT;
       const method = isUpdate ? "put" : "post";
 
@@ -84,12 +89,12 @@ export const useServiceVariantStore = create((set) => ({
 
       set({
         ServiceDetails: response.data,
-        isSaveServiceDetailsLoading: false,
+        isSaveServiceVarientDetailsLoading: false,
         success: "Service Varient saved successfully.",
       });
       return { success: true, data: response };
     } catch (error) {
-      set({ error: error.message, isSaveServiceDetailsLoading: false });
+      set({ isSaveServiceVarientDetailsLoading: false });
       throw error;
     }
   },
