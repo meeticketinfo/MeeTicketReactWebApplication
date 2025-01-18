@@ -1,0 +1,71 @@
+/* AgGridTable.css */
+
+.ag-theme-alpine .ag-header {
+  /* background-color: #4A90E2; Change this to your desired header color */
+  color: white; /* Change text color if needed */
+}
+
+.ag-theme-alpine .ag-header-cell {
+  border: none; /* Remove borders from header cells */
+}
+
+.ag-theme-alpine .ag-cell {
+  border: none; /* Remove borders from body cells */
+}
+
+.ag-theme-alpine .ag-root {
+  border: none; /* Remove borders from the entire grid */
+}
+
+.ag-root-wrapper {
+  border: none !important; /* Removes the border around the grid */
+}
+
+.ag-theme-alpine .ag-header,
+.ag-theme-alpine .ag-cell {
+  border: none !important; /* Removes borders between header and cells */
+}
+
+.ag-theme-alpine .ag-header-cell {
+  border-bottom: none !important; /* Removes bottom border of header */
+}
+
+
+
+
+/* Loader overlay styling */
+.ag-table-body-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px); /* Fallback for browsers not supporting Tailwind's backdrop-blur */
+}
+
+.loader {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 8px; /* Space between spinner and text */
+}
+
+.loader-text {
+  font-size: 1rem;
+  color: #3498db;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
