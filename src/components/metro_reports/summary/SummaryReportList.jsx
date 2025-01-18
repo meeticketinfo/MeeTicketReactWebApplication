@@ -28,7 +28,7 @@ function SummaryReportList() {
   const onSubmit = (values) => {
     fetchAllMetroSummaryReport({
       fromDate: values.fromDate,
-      toDate:values.toDate
+      toDate: values.toDate,
     });
   };
   const [columnDefs] = useState([
@@ -47,20 +47,7 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
-    // {
-    //   field: "userId",
-    //   headerName: "User Id",
 
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
-    // {
-    //   field: "paymentTransactionId",
-    //   headerName: "Payment Transaction Id",
-    //   //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
     {
       field: "initiateTxnAmount",
       headerName: "Transaction Amount",
@@ -83,67 +70,7 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    // {
-    //   field: "ticketStatus",
-    //   headerName: "Ticket Status",
-    //   headerClass: "text-blue-v2",
-    //   // valueFormatter: (params) => params.value || "N/A",
-    //   cellRenderer: (params) => (
-    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-    //       <span
-    //         className={`${
-    //           params.value==="NEW"
-    //             ? "bg-green-400 text-white shadow-md"
-    //             :  params.value==="ENTRY_USED"
-    //              ? "bg-green-400 text-white shadow-md"
-    //              :  params.value==="EXIT_USED"
-    //              ? "bg-green-400 text-white shadow-md"
-    //              :  params.value==="REFUNDED"
-    //              ? "bg-green-400 text-white shadow-md"
-    //              :  params.value==="EXPIRED"
-    //              ? "bg-green-400 text-white shadow-md"
-    //              :  params.value==="CHANGE_DESTINATION"
-    //              ? "bg-green-400 text-white shadow-md"
-    //              :""
 
-    //         } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-    //       >
-    //         {" "}
-    //         {params.value}
-    //       </span>
-    //     </div>
-    //   ),
-    // },
-
-    {
-      field: "ticketStatus",
-      headerName: "Ticket Status",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        // Define status styles dynamically
-        const statusStyles = {
-          NEW: "bg-green-400 text-white shadow-md",
-          CANCEL:"bg-red-600 text-white shadow-md",
-          ENTRY_USED: "bg-blue-400 text-white shadow-md",
-          EXIT_USED: "bg-yellow-400 text-white shadow-md",
-          REFUNDED: "bg-orange-400 text-white shadow-md",
-          EXPIRED: "bg-red-400 text-white shadow-md",
-          CHANGE_DESTINATION: "bg-purple-400 text-white shadow-md",
-        };
-
-        // Apply default fallback style if no match
-        const styleClass =
-          statusStyles[params.value] || "bg-gray-400 text-white shadow-md";
-
-        return (
-          <span
-            className={`${styleClass} text-xs font-medium px-2.5 py-0.5 rounded`}
-          >
-            {params.value || "N/A"} {/* Default text if value is null */}
-          </span>
-        );
-      },
-    },
     {
       field: "patronPhoneNumber",
       headerName: "Mobile Number",
@@ -152,20 +79,29 @@ function SummaryReportList() {
       valueFormatter: (params) => params.value || "N/A",
     },
 
+    // {
+    //   field: "fromDate",
+    //   headerName: " Date",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "fromDate",
-      headerName: " Date",
-      // flex: 1,
+      headerName: "Date",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-
-    {
-      field: "utrNumber",
-      headerName: "UTR Number",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
     },
   ]);
   return (
@@ -219,7 +155,7 @@ function SummaryReportList() {
               <button
                 type="submit"
                 className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                // disabled={isFetchEntityBookingsLoading}
+                // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>

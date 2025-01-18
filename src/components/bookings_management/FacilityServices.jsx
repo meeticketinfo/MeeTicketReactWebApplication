@@ -118,7 +118,7 @@ export const FacilityServices = () => {
         totalAmount: totalAmount,
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
-        transactionId: "",
+        transactionId: "cash",
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };

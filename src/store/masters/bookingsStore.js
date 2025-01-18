@@ -79,7 +79,7 @@ export const useBookingsStore = create(
     // Set the current page
     setCurrentPage: (page) => set({ currentPage: page }),
 
-    // Fetch all Bookings
+    // Fetch all Bookings 
     fetchAllBookings: async (pageIndex = 1, pageSize = 10, filters = {}) => {
       set({ isFetchAllBookingsLoading: true });
       try {

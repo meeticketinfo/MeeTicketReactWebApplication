@@ -68,11 +68,11 @@ export const routes = [
     element: <ProtectedRoute element={<AdminBookings />} />,
   },
   {
-    path: "/summary-report",
+    path: "/transaction-report",
     element: <ProtectedRoute element={<SummaryReport />} />,
   },
   {
-    path: "/transaction-report",
+    path: "/summary-report",
     element: <ProtectedRoute element={<TrasactionReport/>} />,
   },
   {

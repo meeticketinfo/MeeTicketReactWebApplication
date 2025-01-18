@@ -79,7 +79,7 @@ export default function BookingDetails() {
         margin-bottom: 3mm;
         page-break-inside: avoid;
    
-        margin: 0 auto;
+        margin: 0 auto; 
       }
       .printable-card ul {
         list-style-type: none;
@@ -245,38 +245,58 @@ export default function BookingDetails() {
                   />
                 </div>
               </div>
-             
-                <div  style={{ fontSize: 23, display:"flex",justifyContent:"center"
-                 }}>
-                  <span
-                    style={{
-                      color: "#4b5563",
-                      paddingLeft: 10,
-                      paddingTop: 15,
-                      fontWeight: 700,
-                    }}
-                  >
-                    Reference ID
-                  </span>{" "}
-                  
-                  <span
-                    style={{
-                      color: "#000",
-                      paddingLeft: 10,
-                      paddingTop: 15,
-                      fontWeight: 800,
-                    }}
-                  >
-                    :{" "} {bookingDetailsResponse?.referenceId || "N/A"}
-                  </span>
-                </div>
-              
-              
+
               <div
                 aria-label="content"
                 style={{ padding: 20 }}
                 className="mt-2 grid gap-1 rounded-md overflow-hidden"
               >
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div style={{ fontSize: 20 }}>
+                    <span
+                      style={{
+                        color: "#4b5563",
+                        paddingLeft: 10,
+                        paddingTop: 15,
+                        fontWeight: 700,
+                      }}
+                    >
+                      Booking Date
+                    </span>{" "}
+                    <span
+                      style={{
+                        color: "#000",
+                        paddingLeft: 10,
+                        paddingTop: 15,
+                        fontWeight: 800,
+                      }}
+                    >
+                      : {bookingDetailsResponse?.bookingDate || "N/A"}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 20 }}>
+                    <span
+                      style={{
+                        color: "#4b5563",
+                        paddingLeft: 10,
+                        paddingTop: 15,
+                        fontWeight: 700,
+                      }}
+                    >
+                      Booking ID
+                    </span>{" "}
+                    <span
+                      style={{
+                        color: "#000",
+                        paddingLeft: 10,
+                        paddingTop: 15,
+                        fontWeight: 700,
+                      }}
+                    >
+                      : {bookingDetailsResponse?.referenceId ?bookingDetailsResponse?.referenceId:bookingDetailsResponse?.paymentOrderId||"N/A"}
+                    </span>
+                  </div>
+                </div>
                 <table
                   width={"100%"}
                   style={{

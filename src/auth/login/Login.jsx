@@ -165,7 +165,7 @@ const Login = () => {
               <img
                 src={meetickesTelanganaImg}
                 alt="MeeTicket Telangana"
-                className="w-full max-w-sm rounded-lg"
+                className="w-full max-w-sm rounded-lg "
               />
             </div>
 

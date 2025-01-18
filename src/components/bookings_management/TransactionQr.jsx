@@ -4,7 +4,7 @@ import { useBookingsStore } from "../../store/masters/bookingsStore";
 import { useNavigate } from "react-router-dom";
 import TransactionProcessingLoader from "./TransactionProcessingLoader";
 import TransactionQrLoader from "./TransactionQrLoader";
-// import TransactionQrLoader from "./TransactionQrLoader";
+
 function TransactionQr() {
   const navigate = useNavigate();
   const storedBookingPayload = JSON.parse(
@@ -27,7 +27,7 @@ function TransactionQr() {
     setPaymentStatus,
     setIsBookingFormVisible,
   } = useBookingsStore();
-  // console.log("FirstStepTransactionResponse", FirstStepTransactionResponse);
+
   const canvasRef = useRef(null);
 
   const redirectUrl = FirstStepTransactionResponse?.redirectUrl;
@@ -47,38 +47,18 @@ function TransactionQr() {
       // setIsBookingFormVisible(false);
       sessionStorage.removeItem("bookingPayload");
     }
-  }, [
-    counter,
-    // PaymentStatus.resultStatus,
-    // VerifyPaymentStatus,
-    // FirstStepTransactionResponse?.orderId,
-    // setIsFirstStepTransaction,
-  ]);
-  //  formate to 2024-12-06T16:00:00.000
-  // const formatBookingDate = (date) => {
-  //   const year = date.getFullYear();
-  //   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  //   const day = String(date.getDate()).padStart(2, "0");
-  //   const hours = String(date.getHours()).padStart(2, "0");
-  //   const minutes = String(date.getMinutes()).padStart(2, "0");
-  //   const seconds = String(date.getSeconds()).padStart(2, "0");
-
-  //   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
-  // };
-  // const specificTime = new Date();
-  // specificTime.setHours(16, 0, 0, 0);
+  }, [counter]);
 
   function formatBookingDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
     return `${year}-${month}-${day}T${hours}:00:00.000`;
   }
-  
 
   // for generate booking details qr
   useEffect(() => {
@@ -88,8 +68,10 @@ function TransactionQr() {
           const currentDate = new Date();
           const result = await saveBookingDetails({
             ...storedBookingPayload,
-            transactionId: FirstStepTransactionResponse?.transId,
-            // transactionId: FirstStepTransactionResponse?.transId,
+            transactionId: FirstStepTransactionResponse?.orderId
+              ? FirstStepTransactionResponse?.orderId
+              : "CounterUpi",
+             
             bookingDate: formatBookingDate(currentDate),
           });
           if (result && result.data && result.data.status === 200) {
@@ -112,13 +94,6 @@ function TransactionQr() {
 
     handleSaveBookingDetails();
   }, [PaymentStatus.resultStatus]);
-
-  //   useEffect(() => {
-  //     if (counter === 10) {
-  //       console.log("Counter reached 10. Setting TXN_FAILURE.");
-  //       setPaymentStatus({ resultStatus: "TXN_FAILURE" });
-  //     }
-  //   }, [counter, setPaymentStatus]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -147,7 +122,6 @@ function TransactionQr() {
             <span>sec</span>
           </p>
         ) : (
-          
           <TransactionQrLoader />
         )}
       </div>

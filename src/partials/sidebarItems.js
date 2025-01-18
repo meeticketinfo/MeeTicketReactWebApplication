@@ -184,13 +184,13 @@ const sidebarItems = [
       {
         title: "Transaction Report",
         icon: RiDashboard3Fill,
-        path: "/summary-report",
-      },
-      {
-        title: "Summary Report",
-        icon: RiDashboard3Fill,
         path: "/transaction-report",
       },
+      // {
+      //   title: "Settlement Report",
+      //   icon: RiDashboard3Fill,
+      //   path: "/summary-report",
+      // },
     ],
   },
 ];
