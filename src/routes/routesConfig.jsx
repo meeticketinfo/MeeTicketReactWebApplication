@@ -38,6 +38,7 @@ import TrasactionReport from "../components/metro_reports/transaction/Trasaction
 import TermsAndConditions from "../components/terms_and_conditions_privacy_policy/termsAndConditions";
 import PrivacyPolicy from "../components/terms_and_conditions_privacy_policy/privacyPolicy";
 import AuthRoute from "./AuthRoute ";
+import TransactionGeneralReport from "../components/metro_reports/transaction/TransactionGeneralReport";
 
 
 export const routes = [
@@ -72,9 +73,14 @@ export const routes = [
     element: <ProtectedRoute element={<SummaryReport />} />,
   },
   {
+    path: "/transaction-general-report",
+    element: <ProtectedRoute element={<TransactionGeneralReport/>} />,
+  },
+  {
     path: "/summary-report",
     element: <ProtectedRoute element={<TrasactionReport/>} />,
   },
+  
   {
     path: "/rtc-bookings",
     element: <ProtectedRoute element={<RTCBookings />} />,

@@ -26,6 +26,7 @@ const sidebarItems = [
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
   },
+  // Mastres
   {
     title: "Masters",
     icon: CgDatabase,
@@ -99,7 +100,7 @@ const sidebarItems = [
     ],
   },
   {
-    title: "Reports",
+    title: "Bookings",
     icon: HiOutlineDocumentReport,
     path: "",
     gradientClass:
@@ -114,6 +115,7 @@ const sidebarItems = [
         subItems: [],
         roles: ["Admin", "Super Admin"],
       },
+     
       {
         title: "User Wise",
         icon: FaChalkboardUser,
@@ -182,10 +184,15 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Transaction Report",
+        title: "Transaction Details",
         icon: RiDashboard3Fill,
         path: "/transaction-report",
       },
+      // {
+      //   title: "Transaction Report",
+      //   icon: RiDashboard3Fill,
+      //   path: "/transaction-general-report",
+      // },
       // {
       //   title: "Settlement Report",
       //   icon: RiDashboard3Fill,

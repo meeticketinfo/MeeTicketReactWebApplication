@@ -296,6 +296,7 @@ function Sidebar({ variant = "default" }) {
               onClick={() => {
                 updateCaptchaInput("");
                 terminateSession();
+                // logout();
                 localStorage.clear();
               }}
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"

@@ -91,7 +91,8 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
             minWidth: 180,
             sortable: true,
           }))}
-          quickFilterText={quickFilterText} // Binding quickFilterText to AgGrid
+          quickFilterText={quickFilterText} 
+        
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance
             params.api.paginationGoToPage(activePage); // Navigate to the saved active page

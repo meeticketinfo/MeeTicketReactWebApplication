@@ -8,6 +8,7 @@ export const superAdminPermissions = [
   "nodal-officer",
   "entity-bookings",
   "super-admin-facilites",
+  "transaction-report",
 ];
 
 export const parkAdminPermissions = [
@@ -34,5 +35,6 @@ export const nodalOfficerPermissions = [
 export const MetroReports = [
   "dashboard",
    "summary-report",
-   "transaction-report"
+   "transaction-report",
+   "transaction-general-report"
   ];
