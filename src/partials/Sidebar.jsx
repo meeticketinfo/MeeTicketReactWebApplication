@@ -35,7 +35,8 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails, logout,terminateSession } = useAuthStore();
+  const { sidebarMenuItems, roleDetails, logout, terminateSession } =
+    useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   // close on click outside
   useEffect(() => {
@@ -81,7 +82,7 @@ function Sidebar({ variant = "default" }) {
       return parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
-    }else if (role === "ROLE_METROADMIN") {
+    } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
     }
     return [];
@@ -106,22 +107,17 @@ function Sidebar({ variant = "default" }) {
   return (
     <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}
-      <div
-        className={`fixed  ${
-          ""
-        }`}
-        aria-hidden="true"
-      ></div>
+      <div className={`fixed  ${""}`} aria-hidden="true"></div>
 
       {/* Sidebar */}
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar  sidebar-expanded  shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-200 ease-in-out ${
+        className={`flex lg:!flex flex-col  absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar  sidebar-expanded  shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-500 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         } ${
           variant === "v2"
-            ? "border-r border-gray-200 dark:border-gray-700/60"
+            ? "border-r border-gray-200 dark:border-gray-700/60 "
             : "rounded-r-2xl shadow-sm"
         }`}
       >
@@ -212,7 +208,7 @@ function Sidebar({ variant = "default" }) {
                               </div>
                             </div>
                           </a>
-                          <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
+                          <div className="lg:hidden lg:sidebar-expanded:block 2xl:block pb-2 transition ">
                             {/*  Divider */}
                             <ul className={`mt-1 ${!open && "hidden"}`}>
                               {/* <hr className="w-full h-[1px] my-1 bg-gray-400 dark:bg-gray-700/60 border-none" /> */}
@@ -226,16 +222,18 @@ function Sidebar({ variant = "default" }) {
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      `block menu-link truncate transition duration-150 ease-in-out px-3 py-2 font-medium text-sm ${
+                                      `rounded-xl block menu-link truncate transition duration-150 ease-in-out px-3 py-2 font-medium text-sm ${
                                         isActive
                                           ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
                                           : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
                                       }`
                                     }
-                                    onClick={()=>{
-                                      setQuickFilterText("")
-                                      localStorage.removeItem("quickFilterText");
-                                      setActivePage(0)
+                                    onClick={() => {
+                                      setQuickFilterText("");
+                                      localStorage.removeItem(
+                                        "quickFilterText"
+                                      );
+                                      setActivePage(0);
                                     }}
                                     // style={{
                                     //   clipPath:
@@ -307,7 +305,7 @@ function Sidebar({ variant = "default" }) {
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
             >
               <TbLogout2 className="shrink-0 text-[22px]" />
-               <span className="menu-text">Log out</span>
+              <span className="menu-text">Log out</span>
             </button>
           </div>
         </div>
