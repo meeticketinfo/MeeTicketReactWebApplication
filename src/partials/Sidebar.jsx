@@ -66,8 +66,10 @@ function Sidebar({ variant = "default" }) {
   useEffect(() => {
     if (sidebarExpanded) {
       document.querySelector("body").classList.add("sidebar-expanded");
+      document.querySelector("body").classList.remove("sidebar-minimized");
     } else {
       document.querySelector("body").classList.remove("sidebar-expanded");
+      document.querySelector("body").classList.add("sidebar-minimized");
     }
   }, [sidebarExpanded]);
 
@@ -165,7 +167,7 @@ function Sidebar({ variant = "default" }) {
               {filteredSidebarItems.map((item, index) => (
                 <li
                   key={index}
-                  className={`rounded-2xl mb-0.5 pb-2 last:mb-0 ${
+                  className={` mb-2 last:mb-0 ${
                     item.subItems.some((subItem) =>
                       pathname.startsWith(subItem.path)
                     )
@@ -184,20 +186,21 @@ function Sidebar({ variant = "default" }) {
                           <a
                             href="#0"
                             className="px-3 py-2 block text-gray-300 truncate transition duration-150  dark:hover:text-white"
+                            title={item.title}
                             onClick={(e) => {
                               e.preventDefault();
                               handleClick();
-                              setSidebarExpanded(true);
+                              // setSidebarExpanded(true);
                             }}
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between item-flex">
                               <div className="flex items-center">
                                 <item.icon className="shrink-0 text-[22px]" />
-                                <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                <span className="menu-text text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                   {item.title}
                                 </span>
                               </div>
-                              <div className="flex shrink-0 ml-2">
+                              <div className="flex shrink-0 ml-2 arrow-icon">
                                 <svg
                                   className={`w-3 h-3 ml-1 fill-current text-gray-400 dark:text-gray-500 ${
                                     open && "rotate-180"
@@ -217,12 +220,13 @@ function Sidebar({ variant = "default" }) {
                                 <li
                                   key={subIndex}
                                   className="mb-1 px-2 last:mb-0"
+                                  title={subItem.title}
                                 >
                                   <NavLink
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      `block truncate transition duration-150 ease-in-out rounded-2xl ml-8 px-3 py-2 font-medium text-sm ${
+                                      `block menu-link truncate transition duration-150 ease-in-out px-3 py-2 font-medium text-sm ${
                                         isActive
                                           ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
                                           : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
@@ -248,7 +252,7 @@ function Sidebar({ variant = "default" }) {
                                           }`}
                                         />
                                       )}
-                                      <span className="text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                      <span className="menu-text text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                         {subItem.title}
                                       </span>
                                     </div>
@@ -264,13 +268,14 @@ function Sidebar({ variant = "default" }) {
                     <NavLink
                       end
                       to={item.path}
+                      title={item.title}
                       className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150 ${
                         pathname.includes(item.path)
                           ? "text-gray-200 bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] "
                           : " text-gray-300 dark:hover:text-white"
                       }`}
                     >
-                      <div className="flex items-center">
+                      <div className="flex item-flex items-center">
                         <item.icon
                           className={`shrink-0 text-[22px] ${
                             pathname.includes(item.path)
@@ -278,7 +283,7 @@ function Sidebar({ variant = "default" }) {
                               : "text-gray-400 dark:text-gray-500"
                           }`}
                         />
-                        <span className="text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                        <span className="menu-text text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                           {item.title}
                         </span>
                       </div>
@@ -302,7 +307,7 @@ function Sidebar({ variant = "default" }) {
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
             >
               <TbLogout2 className="shrink-0 text-[22px]" />
-               <span className="">Log out</span>
+               <span className="menu-text">Log out</span>
             </button>
           </div>
         </div>

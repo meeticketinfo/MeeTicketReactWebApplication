@@ -61,4 +61,24 @@ ul:not(.browser-default) li {
   min-height: 1px;
 }
 
+.sidebar-expanded .menu-link {
+  margin-left: 25px;
+}
 
+.sidebar-minimized #sidebar {
+  width: 60px;
+  border-radius: 0;
+}
+
+.sidebar-minimized .arrow-icon,
+.sidebar-minimized .menu-text {
+  display: none;
+}
+
+.sidebar-minimized .menu-link {
+  margin-left: 0;
+}
+
+.sidebar-minimized .item-flex {
+  justify-content: center;
+}
