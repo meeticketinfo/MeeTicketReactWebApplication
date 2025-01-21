@@ -56,7 +56,7 @@ function Dashboard() {
     isFetchEntityBookingsLoading,
     totalEntityBookingRecords,
   } = useDashboardStore();
-
+ 
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
@@ -70,7 +70,7 @@ function Dashboard() {
     if (role === "ROLE_NODALOFFICER") {
       fetchAllNodalOfficerParks(null, null, {}, userId);
     } else {
-      fetchAllParks();
+      fetchAllParks();  
     }
   }, []);
 
@@ -126,13 +126,20 @@ function Dashboard() {
   const dashboardCards = [
     {
       lableName: "Total Tickets",
-      count: allCounts?.totalCountById || "0",
+      count:
+        roleDetails?.name === "ROLE_METROADMIN"
+          ? allCounts.data?.totalTicketCount || "0"
+          : allCounts?.totalCountById || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
       lableName: "Total Income",
-      count: allCounts?.totalAmount,
+      // count: allCounts?.totalAmount,
+      count:
+        roleDetails?.name === "ROLE_METROADMIN"
+          ? allCounts.data?.totalAmount || "0"
+          : allCounts?.totalAmount || "0",
       percentageChange: 49,
       icon: FaIndianRupeeSign,
     },
@@ -156,6 +163,7 @@ function Dashboard() {
     roleDetails?.name === "ROLE_ADMIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
+
   const [dashboardColumnDefs] = useState([
     {
       headerName: "S.No",

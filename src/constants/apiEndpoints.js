@@ -169,6 +169,7 @@ export const API_ENDPOINTS = {
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
+    GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {

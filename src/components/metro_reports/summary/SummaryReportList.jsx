@@ -4,7 +4,7 @@ import useAuthStore from "../../../store/authStore";
 import AgGridTable from "../../tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
-
+import { PiCurrencyInr } from "react-icons/pi";
 function SummaryReportList() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
     useAuthStore();
@@ -36,37 +36,75 @@ function SummaryReportList() {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       maxWidth: "80",
-      // flex:1,
+
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "ltmrhlPurchaseId",
+      headerName: "LTHMRL Purchase ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
     },
 
     {
-      field: "orderId",
-      headerName: "Order Id",
-      //   flex: 1,
+      field: "ticketId",
+      headerName: "Ticket ID",
+
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "rjtID",
+      headerName: "RJT ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value === "null" ? "N/A" : params.value,
+    },
+    {
+      field: "ticketTypeId",
+      headerName: "Ticket Type ID",
+      maxWidth: "160",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "merchantOrderId",
+      headerName: "Merchant Order ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
     },
 
     {
       field: "initiateTxnAmount",
       headerName: "Transaction Amount",
       maxWidth: "160",
-      //   flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value}rs ` || "N/A",
+      cellRenderer: (params) =>
+        params.value ? (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) : (
+          "N/A"
+        ),
     },
+
     {
-      field: "fromStationId",
+      field: "fromStationName",
       headerName: "From Station Name",
-      //   flex: 1,
+
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "toStationId",
+      field: "toStationName",
       headerName: "To Station Name",
-      //   flex: 1,
+
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -74,18 +112,11 @@ function SummaryReportList() {
     {
       field: "patronPhoneNumber",
       headerName: "Mobile Number",
-      // flex: 1,
+
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
 
-    // {
-    //   field: "fromDate",
-    //   headerName: " Date",
-    //   // flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
     {
       field: "fromDate",
       headerName: "Date",
@@ -102,6 +133,37 @@ function SummaryReportList() {
           hour12: true,
         });
       },
+    },
+
+    {
+      field: "merchantEachTicketFareAfterGst",
+      headerName: "Ticket Fare",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+
+    {
+      field: "noOfTickets",
+      headerName: "No Of Tickets",
+      maxWidth: "160",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "userId",
+      headerName: "User ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "orderId",
+      headerName: "Order ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "0",
     },
   ]);
   return (
