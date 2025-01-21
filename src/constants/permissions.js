@@ -23,6 +23,8 @@ export const parkAdminPermissions = [
   "holidays",
   "entity-bookings",
   "facility/unified-create",
+  "completed-bookings",
+  "payment-transaction-report"
 ];
 
 export const nodalOfficerPermissions = [

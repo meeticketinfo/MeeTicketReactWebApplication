@@ -39,7 +39,8 @@ import TermsAndConditions from "../components/terms_and_conditions_privacy_polic
 import PrivacyPolicy from "../components/terms_and_conditions_privacy_policy/privacyPolicy";
 import AuthRoute from "./AuthRoute ";
 import TransactionGeneralReport from "../components/metro_reports/transaction/TransactionGeneralReport";
-
+import CompleteBookings from "../pages/admin/BookTickets/CompletedBookings";
+import PaymentTransactionReport from "../pages/admin/BookTickets/PaymentTransactionReport";
 
 export const routes = [
   {
@@ -52,7 +53,7 @@ export const routes = [
   },
   {
     path: "/",
-    element:  <AuthRoute element={<Login />} />,
+    element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
   {
@@ -74,13 +75,13 @@ export const routes = [
   },
   {
     path: "/transaction-general-report",
-    element: <ProtectedRoute element={<TransactionGeneralReport/>} />,
+    element: <ProtectedRoute element={<TransactionGeneralReport />} />,
   },
   {
     path: "/summary-report",
-    element: <ProtectedRoute element={<TrasactionReport/>} />,
+    element: <ProtectedRoute element={<TrasactionReport />} />,
   },
-  
+
   {
     path: "/rtc-bookings",
     element: <ProtectedRoute element={<RTCBookings />} />,
@@ -120,6 +121,13 @@ export const routes = [
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
+  // -----
+  { path: "/completed-bookings", element: <CompleteBookings /> },
+  // ------
+  {
+    path: "/payment-transaction-report",
+    element: <PaymentTransactionReport />,
+  },
   { path: "/my-profile", element: <ProtectedRoute element={<MyProfile />} /> },
   {
     path: "/super-admin-facilites",
@@ -147,7 +155,7 @@ export const routes = [
   },
   {
     path: "/terms",
-    element: < TermsAndConditions/>,
+    element: <TermsAndConditions />,
   },
   {
     path: "/privacy",

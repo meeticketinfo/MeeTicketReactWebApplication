@@ -14,6 +14,12 @@ import { RiDashboard3Fill } from "react-icons/ri";
 import { CgDatabase } from "react-icons/cg";
 import { MdOutlineForest } from "react-icons/md";
 import { FaUsers } from "react-icons/fa6";
+import { MdOutlineLocalFireDepartment } from "react-icons/md";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { MdLocationCity } from "react-icons/md";
+import { TbTrain } from "react-icons/tb";
+import { GrTransaction } from "react-icons/gr";
+import { GrUserPolice } from "react-icons/gr";
 import { IoTicketOutline } from "react-icons/io5";
 import useAuthStore from "../store/authStore";
 
@@ -41,17 +47,17 @@ const sidebarItems = [
       },
       {
         title: "Location Categories",
-        icon: MdOutlineForest,
+        icon:  MdOutlineLocalFireDepartment,
         path: "/entity-types",
       },
       {
         title: "Nodal Officers",
-        icon: FaUsers,
+        icon: GrUserPolice,
         path: "/nodal-officer",
       },
       {
         title: "Locations",
-        icon: MdOutlineForest,
+        icon: MdLocationCity,
         path: "/entities",
       },
 
@@ -100,7 +106,7 @@ const sidebarItems = [
     ],
   },
   {
-    title: "Bookings",
+    title: "Bookings Reports",
     icon: HiOutlineDocumentReport,
     path: "",
     gradientClass:
@@ -117,14 +123,14 @@ const sidebarItems = [
       },
      
       {
-        title: "User Wise",
+        title: "Completed Bookings",
         icon: FaChalkboardUser,
-        path: "/user-wise",
+        path: "/completed-bookings",
       },
       {
-        title: "RTC Bookings",
+        title: "Payment Transactions",
         icon: FaUsers,
-        path: "/rtc-bookings",
+        path: "/payment-transaction-report",
       },
       {
         title: "Metro Bookings",
@@ -178,14 +184,14 @@ const sidebarItems = [
 
   {
     title: "Metro Reports",
-    icon: HiOutlineDocumentReport,
+    icon: TbTrain,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
         title: "Transaction Details",
-        icon: RiDashboard3Fill,
+        icon: GrTransaction,
         path: "/transaction-report",
       },
       // {
