@@ -35,6 +35,7 @@ export const useBookingsStore = create(
       allTransactionPaymentReports: [],
       isCompleteBookingsReportsLoading: false,
       isTransactionPaymentReportsLoading: false,
+      isCompleteBookings:false,
       //
 
       serializeFilters: (filters) =>
@@ -54,6 +55,9 @@ export const useBookingsStore = create(
       },
       setisCash: (isCash) => {
         set({ isCash });
+      },
+      setisCompleteBookings: (isCompleteBookings) => {
+        set({ isCompleteBookings });
       },
 
       setSelectedBookingsList: (selectedBookingsList) => {
@@ -222,13 +226,14 @@ export const useBookingsStore = create(
       // Complete bookings
       fetchCompleteBookingsReport: async (
         // pageIndex = 1, pageSize = 10, filters = {},
-        { fromDate, toDate }
+        payload
       ) => {
         set({ isCompleteBookingsReportsLoading: true });
         try {
-          const response = await apiService.get(
-            `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS}?FromDate=${fromDate}&ToDate=${toDate}`
-          );
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS;
+          const method = "post";
+          const response = await apiService[method](url, payload);
           set({
             allCompleteBookingsReports: response.data,
             isCompleteBookingsReportsLoading: false,
