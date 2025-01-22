@@ -62,7 +62,7 @@ function Header({ variant = "default" }) {
 
             {/* toggle sidebar icon */}
             <div className=" hidden lg:inline-flex   justify-end mt-auto">
-              {/* <div className="flex justify-center items-center px-3">
+              <div className="flex justify-center items-center px-3">
                 <button
                   className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
                   onClick={() => setSidebarExpanded(!sidebarExpanded)}
@@ -74,7 +74,7 @@ function Header({ variant = "default" }) {
                     <RiMenuFold2Line className="text-[28px] text-blue-v1" />
                   )}
                 </button>
-              </div> */}
+              </div>
               <div className="align-middle hidden lg:inline-flex   justify-end ">
                 <div className="flex justify-center items-center">
                   <img
