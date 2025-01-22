@@ -79,7 +79,7 @@ function PaymentTransactionReport() {
         <div className="sm:flex sm:justify-between sm:items-center mb-8">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Transaction report
+              Payment Transactions
             </h1>
           </div>
 
@@ -154,7 +154,7 @@ function PaymentTransactionReport() {
                     htmlFor="phoneNumber"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Phone Number <span className="text-red-500">*</span>
+                    Phone Number 
                   </label>
                   <Field
                     type="text"

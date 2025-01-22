@@ -20,6 +20,8 @@ import { MdLocationCity } from "react-icons/md";
 import { TbTrain } from "react-icons/tb";
 import { GrTransaction } from "react-icons/gr";
 import { GrUserPolice } from "react-icons/gr";
+import { TbReportSearch } from "react-icons/tb";
+import { TbReportAnalytics } from "react-icons/tb";
 import { IoTicketOutline } from "react-icons/io5";
 import useAuthStore from "../store/authStore";
 
@@ -124,12 +126,12 @@ const sidebarItems = [
      
       {
         title: "Completed Bookings",
-        icon: FaChalkboardUser,
+        icon: TbReportSearch,
         path: "/completed-bookings",
       },
       {
         title: "Payment Transactions",
-        icon: FaUsers,
+        icon: TbReportAnalytics,
         path: "/payment-transaction-report",
       },
       {

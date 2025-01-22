@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import logoIcon from "../images/Meesava-icon1.png";
+import logoIcon from "../images/logo.jpg";
 
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
@@ -143,7 +143,7 @@ function Sidebar({ variant = "default" }) {
           </button>
           {/* Logo */}
           <NavLink end to="/dashboard" className="block">
-            <img alt="site-logo" src={logoIcon} width={60} height={60} />
+            <img className="rounded-full" alt="site-logo" src={logoIcon} width={60} height={60} />
           </NavLink>
         </div>
 
