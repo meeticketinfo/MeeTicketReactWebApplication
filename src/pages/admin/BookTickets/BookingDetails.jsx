@@ -23,6 +23,8 @@ export default function BookingDetails() {
     setIsFirstStepTransaction,
     setSelectedBookingsList,
     setIsBookingFormVisible,
+    isCompleteBookings,
+    setisCompleteBookings
   } = useBookingsStore();
   console.log(
     "isFetchCurrentBookingDetailsLoading",
@@ -168,9 +170,10 @@ export default function BookingDetails() {
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               <PaymentQR />
               <NavLink
-                end
-                to="/entity-bookings"
+                end 
+                to={isCompleteBookings?"/completed-bookings":"/entity-bookings"}
                 onClick={() => {
+                  // setisCompleteBookings(false)
                   setIsFirstStepTransaction(false);
                   setPaymentStatus({});
                   sessionStorage.removeItem("bookingPayload");

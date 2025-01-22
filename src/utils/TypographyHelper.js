@@ -54,7 +54,7 @@ export const formatToStandardDate = (dateInput) => {
   const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed
   const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day}`;
+  return `${day}-${month}-${year}`;
 };
 
 export const formatToCurrency = (

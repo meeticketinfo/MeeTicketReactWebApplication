@@ -1,33 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
-import { getCurrentDate } from "../../../utils/TypographyHelper";
+import { formatToStandardDate, getCurrentDate } from "../../../utils/TypographyHelper";
+import { useBookingsStore } from "../../../store/masters/bookingsStore";
+import { NavLink } from "react-router-dom";
 
 function CompletedBookingsReportList() {
+ 
+  const {
+    fetchCompleteBookingsReport,
+    allCompleteBookingsReports,
+    setisCompleteBookings,
+    isCompleteBookingsReportsLoading,
+  } = useBookingsStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
   console.log("getSavedFilters", savedFilters);
+  useEffect(() => {
+    fetchCompleteBookingsReport({
+      startDate: savedFilters?.fromDate
+        ? savedFilters.fromDate
+        : getCurrentDate(),
+      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      bookingSource: savedFilters?.typeOfBooking
+        ? savedFilters.typeOfBooking
+        : "Counter",
+      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+    });
+  }, [fetchCompleteBookingsReport]);
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     typeOfBooking: savedFilters?.typeOfBooking
       ? savedFilters.typeOfBooking
-      : true,
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+      : "Counter",
+    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
   };
+
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
     localStorage.setItem(
       "completed-booking-report-filters",
       JSON.stringify(values)
     );
-
-    // fetchAllMetroSummaryReport({
-    //   fromDate: values.fromDate,
-    //   toDate: values.toDate,
-    // });
+    fetchCompleteBookingsReport({
+      startDate: values.fromDate,
+      endDate: values.toDate,
+      bookingSource: values.typeOfBooking,
+      mobileNumber: values.phoneNumber ? values.phoneNumber : null,
+    });
   };
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -44,7 +67,7 @@ function CompletedBookingsReportList() {
         params.value && params.value.trim() !== "" ? params.value : "N/A",
     },
     {
-      field: "userPhoneNumber",
+      field: "mobileNumber",
       headerName: "Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -52,28 +75,31 @@ function CompletedBookingsReportList() {
         !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
     {
-      field: "parkName",
+      field: "purchaseDate",
       headerName: "Purchase Date",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        const formattedDate = params.value;
+        return formattedDate ? formattedDate.replace("T", " ") : "N/A";
+      },
     },
+    
     {
-      field: "facilityName",
+      field: "bookinG_DATE",
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "0",
     },
     {
-      field: "serviceName",
+      field: "totaL_AMOUNT",
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "serviceVariantName",
+      field: "bookingSource",
       headerName: "Booking Type",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -87,15 +113,16 @@ function CompletedBookingsReportList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "amount",
+      field: "status",
       headerName: "Payment Status",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // valueFormatter: (params) =>
+      //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "modeOfPayment",
+      field: "referencE_ID",
       headerName: "Reference ID",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -108,7 +135,10 @@ function CompletedBookingsReportList() {
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <NavLink
             end
-            to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+            to={`/entity-bookings/view-details/${params.data.bookingID}`}
+            onClick={() => {
+              setisCompleteBookings(true);
+            }}
             className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
           >
             <span className="text-blue-v2"> Booking Details</span>
@@ -122,7 +152,7 @@ function CompletedBookingsReportList() {
   return (
     <div>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, resetForm  }) => (
+        {({ values, setFieldValue, resetForm }) => (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
             <div>
               <label
@@ -176,9 +206,8 @@ function CompletedBookingsReportList() {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">Select Type of Booking</option>
-                <option value={true}>Counter</option>
-                <option value={false}>App</option>
+                <option value="Counter">Counter</option>
+                <option value="MeeTicketApp">Mee TicketApp</option>
               </Field>
             </div>
             <div>
@@ -186,7 +215,7 @@ function CompletedBookingsReportList() {
                 htmlFor="phoneNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Phone Number 
+                Phone Number
               </label>
               <Field
                 type="text"
@@ -228,13 +257,12 @@ function CompletedBookingsReportList() {
                 Reset
               </button>
             </div>
-           
           </Form>
         )}
       </Formik>
       <AgGridTable
-        // isFetchLoading={isFetchEntityBookingsLoading}
-        // rowData={allEntityBookings || []}
+        isFetchLoading={isCompleteBookingsReportsLoading}
+        rowData={allCompleteBookingsReports || []}
         columnDefs={columnDefs}
         // onPageChange={handlePageChange}
         // totalRecords={totalEntityBookingRecords}
