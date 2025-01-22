@@ -1,20 +1,20 @@
 import useAuthStore from "../store/authStore";
 
 // dev
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
   // metro dev
-export const METRO_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
+// export const METRO_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
 
    // metro UAT
-// export const METRO_API_BASE_URL =
-// "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
+export const METRO_API_BASE_URL =
+"https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
 
 // uat
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkapi/api/";
   
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
  
@@ -154,6 +154,10 @@ export const API_ENDPOINTS = {
     },
   },
   REPORTS: {
+    BOOKING_REPORTS: {
+      GET_COMPLETE_BOOKINGS: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
+      GET_TRANSACTION_PAYMENT: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
+    },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
     },

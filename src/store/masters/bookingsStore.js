@@ -4,226 +4,271 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import { persist } from "zustand/middleware";
 import { handleApiError } from "../../utils/apiErrorHandler";
 
-
-export const useBookingsStore = create( 
+export const useBookingsStore = create(
   persist(
     (set) => ({
-    allBookings: [],
-    isFetchAllBookingsLoading: false,
-    error: null,
-    success: null,
-    allFacilityServices: {},
-    isSaveBookingDetailsLoading: false,
-    
-    saveBookingDetailsError: null,
-    bookingDetails: {},
-    isFetchCurrentBookingDetailsLoading: false,
-    FirstStepTransactionResponse: {},
-    IsFirstStepTransaction:false,
-    IsTransactionFailed:false,
-    selectedBookingsList:{},
-    PaymentStatus:{},
-    isBookingFormVisible:false,
-    isUpi:false,
-    isCash:false,
-    
-    //
-    bookings: [],
-    totalCount: 0,
-    currentPage: 1,
-    pageSize: 10,
-    isLoading: false,
-    //
+      allBookings: [],
+      isFetchAllBookingsLoading: false,
+      error: null,
+      success: null,
+      allFacilityServices: {},
+      isSaveBookingDetailsLoading: false,
 
-    serializeFilters: (filters) =>
-      Object.entries(filters)
-        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join("&"),
+      saveBookingDetailsError: null,
+      bookingDetails: {},
+      isFetchCurrentBookingDetailsLoading: false,
+      FirstStepTransactionResponse: {},
+      IsFirstStepTransaction: false,
+      IsTransactionFailed: false,
+      selectedBookingsList: {},
+      PaymentStatus: {},
+      isBookingFormVisible: false,
+      isUpi: false,
+      isCash: false,
+      //
+      bookings: [],
+      totalCount: 0,
+      currentPage: 1,
+      pageSize: 10,
+      isLoading: false,
+      allCompleteBookingsReports: [],
+      allTransactionPaymentReports: [],
+      isCompleteBookingsReportsLoading: false,
+      isTransactionPaymentReportsLoading: false,
+      //
 
-    setBookingDetails: (newBookingDetails) => {
-      set({ bookingDetails: newBookingDetails });
-    },
+      serializeFilters: (filters) =>
+        Object.entries(filters)
+          .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+          .join("&"),
 
-    setIsBookingFormVisible: (isBookingFormVisible) => {
-      set({  isBookingFormVisible });
-    },
-    setisUpi: (isUpi) => {
-      set({  isUpi });
-    },
-    setisCash: (isCash) => {
-      set({  isCash });
-    },
+      setBookingDetails: (newBookingDetails) => {
+        set({ bookingDetails: newBookingDetails });
+      },
 
-    setSelectedBookingsList: (selectedBookingsList) => {
-      set({ selectedBookingsList });
-    },
-    setPaymentStatus: (PaymentStatus) => {
-      set({ PaymentStatus });
-    },
-  //  --------
+      setIsBookingFormVisible: (isBookingFormVisible) => {
+        set({ isBookingFormVisible });
+      },
+      setisUpi: (isUpi) => {
+        set({ isUpi });
+      },
+      setisCash: (isCash) => {
+        set({ isCash });
+      },
 
-  // setPaymentStatus: (status) =>
-  //   set({
-  //     PaymentStatus: {
-  //       ...status,
-  //     },
-  //   }),
+      setSelectedBookingsList: (selectedBookingsList) => {
+        set({ selectedBookingsList });
+      },
+      setPaymentStatus: (PaymentStatus) => {
+        set({ PaymentStatus });
+      },
+      //  --------
 
-    setIsFirstStepTransaction: (IsFirstStepTransaction) => {
-      set({ IsFirstStepTransaction }); 
-    },
-    setIsTransactionFailed: (IsTransactionFailed) => {
-      set({ IsTransactionFailed });
-    },
+      // setPaymentStatus: (status) =>
+      //   set({
+      //     PaymentStatus: {
+      //       ...status,
+      //     },
+      //   }),
 
-    // Set the current page
-    setCurrentPage: (page) => set({ currentPage: page }),
+      setIsFirstStepTransaction: (IsFirstStepTransaction) => {
+        set({ IsFirstStepTransaction });
+      },
+      setIsTransactionFailed: (IsTransactionFailed) => {
+        set({ IsTransactionFailed });
+      },
 
-    // Fetch all Bookings 
-    fetchAllBookings: async (pageIndex = 1, pageSize = 10, filters = {}) => {
-      set({ isFetchAllBookingsLoading: true });
-      try {
-        //   const filterString = useBookingstore.getState().serializeFilters(filters);
-        const response = await apiService.get(
-          // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-          `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS}`
-        );
-        set({
-          allBookings: response.data.data.data,
-          isFetchAllBookingsLoading: false,
-        });
-      } catch (error) {
-        set({ isFetchAllBookingsLoading: false });
-      }
-    },
+      // Set the current page
+      setCurrentPage: (page) => set({ currentPage: page }),
 
-    // Fetch bookings with optional filtering
-    fetchAllEntityBookingsByFilters: async (filters = {}) => {
-      set({ isLoading: true, error: null });
-      const { currentPage, pageSize } = useBookingsStore.getState();
-      const serializedFilters = Object.entries(filters)
-        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join("&");
-
-      try {
-        const response = await apiService.get(
-          `Transaction/GetAllEntityBookingByFilters?PageIndex=${currentPage}&PageSize=${pageSize}&${serializedFilters}`
-        );
-
-        if (response.status === 200) {
-          // const { data, totalCount } = response.data.data;
+      // Fetch all Bookings
+      fetchAllBookings: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+        set({ isFetchAllBookingsLoading: true });
+        try {
+          //   const filterString = useBookingstore.getState().serializeFilters(filters);
+          const response = await apiService.get(
+            // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+            `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS}`
+          );
           set({
-            bookings: response.data.data.data,
-            totalCount: response.data.totalCount,
-            isLoading: false,
+            allBookings: response.data.data.data,
+            isFetchAllBookingsLoading: false,
           });
-        } else {
-          set({ error: response.message, isLoading: false });
+        } catch (error) {
+          set({ isFetchAllBookingsLoading: false });
         }
-      } catch (error) {
-        set({ isLoading: false });
-      }
-    },
+      },
 
-    fetchCurrentBookingDetailsByBookingId: async (bookingId) => {
-      set({ isFetchCurrentBookingDetailsLoading: true });
-      try {
-        const response = await apiService.get(
-          `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS_BOOKING_ID}/${bookingId}`
-        );
-        // Ensure correct setting of the bookingDetails state
-        set({
-          isFetchCurrentBookingDetailsLoading: false,
-        });
-        return { success: true, data: response };
-      } catch (error) {
-        set({ isFetchCurrentBookingDetailsLoading: false });
-        return { success: false };
-      }
-    },
+      // Fetch bookings with optional filtering
+      fetchAllEntityBookingsByFilters: async (filters = {}) => {
+        set({ isLoading: true, error: null });
+        const { currentPage, pageSize } = useBookingsStore.getState();
+        const serializedFilters = Object.entries(filters)
+          .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+          .join("&");
 
-    // Save Facility details
-    saveBookingDetails: async (bookingDetailsPayload) => {
-      set({ isSaveBookingDetailsLoading: true });
-      try {
-        const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_BOOKINGS;
-        const method = "post";
+        try {
+          const response = await apiService.get(
+            `Transaction/GetAllEntityBookingByFilters?PageIndex=${currentPage}&PageSize=${pageSize}&${serializedFilters}`
+          );
 
-        const response = await apiService[method](url, bookingDetailsPayload);
-       
-        set({
-          facilityCreateResponse: { response },
-          FacilityDetails: response.data,
-          isSaveBookingDetailsLoading: false,
-        });
-        return { success: true, data: response };
-      } catch ({error,xhr}) {
-        // handleApiError(xhr);
-        
-        set({
-          saveBookingDetailsError: error.response.data.message,
-          isSaveBookingDetailsLoading: false,
-        });
-        return { error:  error.response.data.message };
-        throw error;
-      }
-    },
-    // first setp of transction
+          if (response.status === 200) {
+            // const { data, totalCount } = response.data.data;
+            set({
+              bookings: response.data.data.data,
+              totalCount: response.data.totalCount,
+              isLoading: false,
+            });
+          } else {
+            set({ error: response.message, isLoading: false });
+          }
+        } catch (error) {
+          set({ isLoading: false });
+        }
+      },
 
-    saveFirstBookingDetails: async (FirstStepTransactionPayload) => {
-      set({ IsFirstStepTransaction: false });
-      try {
-        const url = API_ENDPOINTS.MASTERS.BOOKING.FIRST_STEP_TRANSACTION;
-        const method = "post";
+      fetchCurrentBookingDetailsByBookingId: async (bookingId) => {
+        set({ isFetchCurrentBookingDetailsLoading: true });
+        try {
+          const response = await apiService.get(
+            `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS_BOOKING_ID}/${bookingId}`
+          );
+          // Ensure correct setting of the bookingDetails state
+          set({
+            isFetchCurrentBookingDetailsLoading: false,
+          });
+          return { success: true, data: response };
+        } catch (error) {
+          set({ isFetchCurrentBookingDetailsLoading: false });
+          return { success: false };
+        }
+      },
 
-        const response = await apiService[method](
-          url,
-          FirstStepTransactionPayload
-        );
+      // Save Facility details
+      saveBookingDetails: async (bookingDetailsPayload) => {
+        set({ isSaveBookingDetailsLoading: true });
+        try {
+          const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_BOOKINGS;
+          const method = "post";
 
-        set({
-          FirstStepTransactionResponse: response.data.data,
-          IsFirstStepTransaction:true
-        });
-        return { success: true, data: response };
-      } catch (error) {
-        // set({
-        //   saveBookingDetailsError: error.message,
-        //   isSaveBookingDetailsLoading: false,
-        // });
-        throw error;
-      }
-    },
+          const response = await apiService[method](url, bookingDetailsPayload);
 
-    VerifyPaymentStatus: async (OrderId) => {
-      // set({ IsFirstStepTransaction: false });
-      try {
-        const url = `${API_ENDPOINTS.MASTERS.BOOKING.GET_PAYMENT_STATUS}${OrderId}`;
-        const method = "post";
+          set({
+            facilityCreateResponse: { response },
+            FacilityDetails: response.data,
+            isSaveBookingDetailsLoading: false,
+          });
+          return { success: true, data: response };
+        } catch ({ error, xhr }) {
+          // handleApiError(xhr);
 
-        const response = await apiService[method](url);
+          set({
+            saveBookingDetailsError: error.response.data.message,
+            isSaveBookingDetailsLoading: false,
+          });
+          return { error: error.response.data.message };
+          throw error;
+        }
+      },
+      // first setp of transction
 
-        set({
-          PaymentStatus: response.data.data,
-          // IsFirstStepTransaction:true
-        });
-        return { success: true, data: response };
-      } catch (error) {
-        // set({
-        //   saveBookingDetailsError: error.message,
-        //   isSaveBookingDetailsLoading: false,
-        // });
-        throw error;
-      }
-    },
+      saveFirstBookingDetails: async (FirstStepTransactionPayload) => {
+        set({ IsFirstStepTransaction: false });
+        try {
+          const url = API_ENDPOINTS.MASTERS.BOOKING.FIRST_STEP_TRANSACTION;
+          const method = "post";
+
+          const response = await apiService[method](
+            url,
+            FirstStepTransactionPayload
+          );
+
+          set({
+            FirstStepTransactionResponse: response.data.data,
+            IsFirstStepTransaction: true,
+          });
+          return { success: true, data: response };
+        } catch (error) {
+          // set({
+          //   saveBookingDetailsError: error.message,
+          //   isSaveBookingDetailsLoading: false,
+          // });
+          throw error;
+        }
+      },
+
+      VerifyPaymentStatus: async (OrderId) => {
+        // set({ IsFirstStepTransaction: false });
+        try {
+          const url = `${API_ENDPOINTS.MASTERS.BOOKING.GET_PAYMENT_STATUS}${OrderId}`;
+          const method = "post";
+
+          const response = await apiService[method](url);
+
+          set({
+            PaymentStatus: response.data.data,
+            // IsFirstStepTransaction:true
+          });
+          return { success: true, data: response };
+        } catch (error) {
+          // set({
+          //   saveBookingDetailsError: error.message,
+          //   isSaveBookingDetailsLoading: false,
+          // });
+          throw error;
+        }
+      },
+
+      // Complete bookings
+      fetchCompleteBookingsReport: async (
+        // pageIndex = 1, pageSize = 10, filters = {},
+        { fromDate, toDate }
+      ) => {
+        set({ isCompleteBookingsReportsLoading: true });
+        try {
+          const response = await apiService.get(
+            `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS}?FromDate=${fromDate}&ToDate=${toDate}`
+          );
+          set({
+            allCompleteBookingsReports: response.data,
+            isCompleteBookingsReportsLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isCompleteBookingsReportsLoading: false,
+          });
+        }
+      },
+
+      // Payment transactions
+      fetchPaymentTransactions: async (
+        // pageIndex = 1, pageSize = 10, filters = {},
+        { fromDate, toDate }
+      ) => {
+        set({ isTransactionPaymentReportsLoading: true });
+        try {
+          const response = await apiService.get(
+            `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_TRANSACTION_PAYMENT}?FromDate=${fromDate}&ToDate=${toDate}`
+          );
+          set({
+            allTransactionPaymentReports: response.data,
+            isTransactionPaymentReportsLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isTransactionPaymentReportsLoading: false,
+          });
+        }
+      },
     }),
     {
       name: "booking-process-store",
       getStorage: () => localStorage,
-        partialize: (state) => ({
-          selectedBookingsList: state.selectedBookingsList,
-        }),
+      partialize: (state) => ({
+        selectedBookingsList: state.selectedBookingsList,
+      }),
     }
   )
-
 );
