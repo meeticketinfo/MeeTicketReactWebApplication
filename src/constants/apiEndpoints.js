@@ -156,7 +156,7 @@ export const API_ENDPOINTS = {
   REPORTS: {
     BOOKING_REPORTS: {
       GET_COMPLETE_BOOKINGS: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
-      GET_TRANSACTION_PAYMENT: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
+      GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
