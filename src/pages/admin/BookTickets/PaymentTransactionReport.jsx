@@ -1,27 +1,42 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminLayout from '../../../layouts/AdminLayout'
 import AgGridTable from '../../../components/tables/AgGridTable'
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { getCurrentDate } from '../../../utils/TypographyHelper';
+import { formatToStandardDate, getCurrentDate } from '../../../utils/TypographyHelper';
 import { useBookingsStore } from '../../../store/masters/bookingsStore';
 
 function PaymentTransactionReport() {
   const {
+    isTransactionPaymentReportsLoading,
+    allTransactionPaymentReports,
+    fetchPaymentTransactions,
   } = useBookingsStore();
+  
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
     typeOfBooking: "",
     phoneNumber: "",
   };
+
+  useEffect(() => {
+    fetchPaymentTransactions({
+      startDate: getCurrentDate(),
+      endDate: getCurrentDate(),
+      currentTransactionStatus: null,
+      phoneNumber: null,
+    });
+  }, [fetchPaymentTransactions])
+  
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
-    resetForm();
-    // fetchAllMetroSummaryReport({
-    //   fromDate: values.fromDate,
-    //   toDate: values.toDate,
-    // });
+    fetchPaymentTransactions({
+      startDate: values.fromDate,
+      endDate: values.toDate,
+      currentTransactionStatus: values.typeOfBooking ? values.typeOfBooking : null,
+      phoneNumber: values.phoneNumber ? values.phoneNumber : null,
+    });
   };
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -43,25 +58,25 @@ function PaymentTransactionReport() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "mobileNo",
+      field: "phonE_NUMBER",
       headerName: "Mobile No.",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "amountInitiated",
+      field: "confirmedTxnAmount",
       headerName: "Amount Initiated",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "paymentDate",
-      headerName: "Payment Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paymentStatus",
+      field: "createdDate",
+      headerName: "Payment Date",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+    },
+    {
+      field: "currentTransactionStatus",
       headerName: "Payment Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -144,9 +159,10 @@ function PaymentTransactionReport() {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Payment Status</option>
-                    <option value="inProgress">In Progress</option>
-                    <option value="success">Success</option>
-                    <option value="failed">Failed</option>
+                    <option value="INITIATE">Initiate</option>
+                    <option value="INPROCESS">In Process</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="FAILED">Failed</option>
                   </Field>
                 </div>
                 <div>
@@ -182,8 +198,8 @@ function PaymentTransactionReport() {
             )}
           </Formik>
           <AgGridTable
-            // isFetchLoading={isFetchEntityBookingsLoading}
-            rowData={[]}
+            isFetchLoading={isTransactionPaymentReportsLoading}
+            rowData={allTransactionPaymentReports || []}
             columnDefs={columnDefs}
             // onPageChange={handlePageChange}
             // totalRecords={totalEntityBookingRecords}

@@ -242,15 +242,13 @@ export const useBookingsStore = create(
       },
 
       // Payment transactions
-      fetchPaymentTransactions: async (
-        // pageIndex = 1, pageSize = 10, filters = {},
-        { fromDate, toDate }
-      ) => {
+      fetchPaymentTransactions: async (payload) => {
         set({ isTransactionPaymentReportsLoading: true });
         try {
-          const response = await apiService.get(
-            `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_TRANSACTION_PAYMENT}?FromDate=${fromDate}&ToDate=${toDate}`
-          );
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_TRANSACTION_PAYMENT;
+          const method = "post";
+          const response = await apiService[method](url, payload);
           set({
             allTransactionPaymentReports: response.data,
             isTransactionPaymentReportsLoading: false,
