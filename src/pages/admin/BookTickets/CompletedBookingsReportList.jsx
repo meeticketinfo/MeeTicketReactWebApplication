@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
-import { getCurrentDate } from "../../../utils/TypographyHelper";
+import { formatToStandardDate, getCurrentDate } from "../../../utils/TypographyHelper";
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { NavLink } from "react-router-dom";
 
 function CompletedBookingsReportList() {
+ 
   const {
     fetchCompleteBookingsReport,
     allCompleteBookingsReports,
@@ -76,16 +77,19 @@ function CompletedBookingsReportList() {
     {
       field: "purchaseDate",
       headerName: "Purchase Date",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        const formattedDate = params.value;
+        return formattedDate ? formattedDate.replace("T", " ") : "N/A";
+      },
     },
+    
     {
       field: "bookinG_DATE",
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "0",
     },
     {
       field: "totaL_AMOUNT",
