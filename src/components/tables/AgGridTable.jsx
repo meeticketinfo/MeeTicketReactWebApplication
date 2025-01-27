@@ -82,6 +82,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
         style={{ height: gridHeight, width: "100%", position: "relative" }}
       >
         <AgGridReact
+          enableCellTextSelection
           ref={gridRef}
           rowData={rowData}
           pagination={isPaginationEnabled}

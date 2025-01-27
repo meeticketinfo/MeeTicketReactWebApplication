@@ -60,12 +60,19 @@ function CompletedBookingsReportList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "transactionId",
-      headerName: "Transaction ID",
+      field: "referencE_ID",
+      headerName: "Reference ID",
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value && params.value.trim() !== "" ? params.value : "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
+    // {
+    //   field: "transactionId",
+    //   headerName: "Transaction ID",
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) =>
+    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
+    // },
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
@@ -79,8 +86,18 @@ function CompletedBookingsReportList() {
       headerName: "Purchase Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        const formattedDate = params.value;
-        return formattedDate ? formattedDate.replace("T", " ") : "N/A";
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
       },
     },
     
@@ -89,7 +106,21 @@ function CompletedBookingsReportList() {
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+    },
+    {
+      field: "bookingSource",
+      headerName: "Booking Type",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "createD_BY",
+      headerName: "Booked By",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "totaL_AMOUNT",
@@ -99,15 +130,15 @@ function CompletedBookingsReportList() {
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingSource",
-      headerName: "Booking Type",
+      field: "paymentType",
+      headerName: "Payment Type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "bookingRegistredDate",
-      headerName: "Payment Type",
+      field: "paymentTransactionId",
+      headerName: "Payment Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -120,13 +151,6 @@ function CompletedBookingsReportList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "referencE_ID",
-      headerName: "Reference ID",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       headerName: "Actions",
