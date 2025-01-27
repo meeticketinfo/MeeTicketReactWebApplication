@@ -9,6 +9,8 @@ export const superAdminPermissions = [
   "entity-bookings",
   "super-admin-facilites",
   "transaction-report",
+  "completed-bookings",
+  "payment-transaction-report"
 ];
 
 export const parkAdminPermissions = [
