@@ -41,6 +41,9 @@ import AuthRoute from "./AuthRoute ";
 import TransactionGeneralReport from "../components/metro_reports/transaction/TransactionGeneralReport";
 import CompleteBookings from "../pages/admin/BookTickets/CompletedBookings";
 import PaymentTransactionReport from "../pages/admin/BookTickets/PaymentTransactionReport";
+import Support from "../pages/admin/support/Support";
+import MetroBookingDetails from "../components/metro_reports/bookingdetails/MetroBookingDetails";
+import MetroPendingTransactionDetails from "../components/metro_reports/pendingTransactions/MetroPendingTransactions";
 
 export const routes = [
   {
@@ -73,6 +76,18 @@ export const routes = [
     path: "/transaction-report",
     element: <ProtectedRoute element={<SummaryReport />} />,
   },
+
+
+  {
+    path: "/booking-details",
+    element: <ProtectedRoute element={<MetroBookingDetails />} />,
+  },
+
+  {
+    path: "/pending-transaction-details",
+    element: <ProtectedRoute element={<MetroPendingTransactionDetails />} />,
+  },
+
   {
     path: "/transaction-general-report",
     element: <ProtectedRoute element={<TransactionGeneralReport />} />,
@@ -124,6 +139,7 @@ export const routes = [
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
   // ------
+  { path: "/meeticket-support", element: <Support /> },
   {
     path: "/payment-transaction-report",
     element: <PaymentTransactionReport />,

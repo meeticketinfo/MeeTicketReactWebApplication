@@ -196,6 +196,16 @@ const sidebarItems = [
         icon: GrTransaction,
         path: "/transaction-report",
       },
+      {
+        title: "Booking Details",
+        icon: GrTransaction,
+        path: "/booking-details",
+      },
+      {
+        title: "Payment Transactions",
+        icon: GrTransaction,
+        path: "/pending-transaction-details",
+      },
       // {
       //   title: "Transaction Report",
       //   icon: RiDashboard3Fill,
