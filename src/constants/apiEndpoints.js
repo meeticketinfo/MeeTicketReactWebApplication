@@ -1,6 +1,6 @@
 import useAuthStore from "../store/authStore";
 
-// dev
+/// dev
 // export const API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
@@ -13,8 +13,8 @@ export const METRO_API_BASE_URL =
 "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
   
 // PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
     // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -27,17 +27,16 @@ export const API_BASE_URL =
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
  
 // testing 
-// export const API_BASE_URL =
-//   "https://xk5zzj6w-7237.inc1.devtunnels.ms/api/";
+export const API_BASE_URL =
+  "https://6phbrdb7-7237.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =
-//   "https://vzn9g3bw-7297.inc1.devtunnels.ms/v1.0/";
+//   "https://6phbrdb7-7237.inc1.devtunnels.ms/v1.0/";
 
 // METRO UAT testing
 // export const METRO_API_BASE_URL =
 //   "https://m7411qx6-7297.inc1.devtunnels.ms/v1/";
-
 
 
 export const API_ENDPOINTS = {
@@ -174,6 +173,8 @@ export const API_ENDPOINTS = {
     },
     METRO_Reports: {
       GET_METRO_SUMMARY: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
+      GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetBookingDetailsResult`,
+      GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetInprogressorFailedPaymentTxnResult`,
     },
   },
   ENTITIES: {

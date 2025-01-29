@@ -5,15 +5,15 @@ import useAuthStore from "../store/authStore";
 // const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
 // uat
-const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
 //  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 // testing
-// export const API_BASE_URL =
-//   "https://xk5zzj6w-7237.inc1.devtunnels.ms/api/";
+export const API_BASE_URL =
+  "https://6phbrdb7-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

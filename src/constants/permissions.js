@@ -40,7 +40,9 @@ export const MetroReports = [
   "dashboard",
   "summary-report",
   "transaction-report",
-  "transaction-general-report",
+  "booking-details",
+  'pending-transaction-details',
+  "transaction-general-report"
 ];
 
 export const NehruZooPark = [
