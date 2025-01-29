@@ -38,5 +38,7 @@ export const MetroReports = [
   "dashboard",
    "summary-report",
    "transaction-report",
+   "booking-details",
+   'pending-transaction-details',
    "transaction-general-report"
   ];
