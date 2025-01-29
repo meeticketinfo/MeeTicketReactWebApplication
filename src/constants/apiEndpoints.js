@@ -14,7 +14,15 @@ export const METRO_API_BASE_URL =
   
 // PARK UAT
 export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+    // METRO PROD
+// export const METRO_API_BASE_URL =
+// "https://uat.meeticket.telangana.gov.in/metroapiv2/";
+  
+// PARK PROD
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
   
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
  
@@ -30,11 +38,7 @@ export const API_BASE_URL =
 // export const METRO_API_BASE_URL =
 //   "https://m7411qx6-7297.inc1.devtunnels.ms/v1/";
 
-// const { isAuthenticated, roleDetails } = useAuthStore();
 
-//   const role = roleDetails?.name;
-
-//   console.log("role",role)
 
 export const API_ENDPOINTS = {
   AUTH: {

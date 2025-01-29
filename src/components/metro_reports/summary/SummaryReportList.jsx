@@ -79,22 +79,6 @@ function SummaryReportList() {
     },
 
     {
-      field: "initiateTxnAmount",
-      headerName: "Transaction Amount",
-      maxWidth: "160",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) : (
-          "N/A"
-        ),
-    },
-
-    {
       field: "fromStationName",
       headerName: "From Station Name",
 
@@ -136,6 +120,14 @@ function SummaryReportList() {
     },
 
     {
+      field: "noOfTickets",
+      headerName: "No Of Tickets",
+      maxWidth: "160",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
       field: "merchantEachTicketFareAfterGst",
       headerName: "Ticket Fare",
 
@@ -150,28 +142,34 @@ function SummaryReportList() {
           "N/A"
         ),
     },
-
     {
-      field: "noOfTickets",
-      headerName: "No Of Tickets",
+      field: "initiateTxnAmount",
+      headerName: "Total Ticket Fare",
       maxWidth: "160",
-
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      cellRenderer: (params) =>
+        params.value ? (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) : (
+          "N/A"
+        ),
     },
-    {
-      field: "userId",
-      headerName: "User ID",
+    // {
+    //   field: "userId",
+    //   headerName: "User ID",
 
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => `${params.value} ` || "N/A",
+    // },
     {
       field: "orderId",
       headerName: "Order ID",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => params.value || "N/A",
     },
   ]);
   return (

@@ -10,7 +10,7 @@ export const superAdminPermissions = [
   "super-admin-facilites",
   "transaction-report",
   "completed-bookings",
-  "payment-transaction-report"
+  "payment-transaction-report",
 ];
 
 export const parkAdminPermissions = [
@@ -26,7 +26,7 @@ export const parkAdminPermissions = [
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",
-  "payment-transaction-report"
+  "payment-transaction-report",
 ];
 
 export const nodalOfficerPermissions = [
@@ -38,7 +38,14 @@ export const nodalOfficerPermissions = [
 
 export const MetroReports = [
   "dashboard",
-   "summary-report",
-   "transaction-report",
-   "transaction-general-report"
-  ];
+  "summary-report",
+  "transaction-report",
+  "transaction-general-report",
+];
+
+export const NehruZooPark = [
+  "dashboard",
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
+];

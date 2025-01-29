@@ -6,6 +6,7 @@ import {
   parkAdminPermissions,
   nodalOfficerPermissions,
   MetroReports,
+  NehruZooPark,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -23,6 +24,8 @@ const ProtectedRoute = ({ element }) => {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
+    } else if (role === "ROLE_ZOOPARKADMIN") {
+      return NehruZooPark;
     }
     return [];
   }, [role]);

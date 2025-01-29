@@ -47,18 +47,17 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllDashboardCounts: async (
-    roleDetails
-  ) => {
+  fetchAllDashboardCounts: async (roleDetails) => {
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
-      const endpoint =
-        role === "ROLE_ADMIN"
+      // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
+      const endpoint =role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
           : role === "ROLE_METROADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
           : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
+
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
@@ -66,13 +65,13 @@ export const useDashboardStore = create((set) => ({
       );
       set({
         allCounts: response.data,
-        isFetchCountsLoading: false,  
+        isFetchCountsLoading: false,
       });
     } catch (error) {
       set({ error: error.message, isFetchCountsLoading: false });
     }
   },
-  
+
   fetchAllEntityWiseCounts: async (
     pageIndex = 1,
     pageSize = 10,
@@ -106,7 +105,7 @@ export const useDashboardStore = create((set) => ({
         .serializeFilters(filters);
       const response = await apiService.get(
         `${API_ENDPOINTS.DASHBOARD.GET_ALL_BOOKINGS}?${filterString}`
-      ); 
+      );
       if (response.data.status === 404) {
         set({
           allEntityBookings: [],
