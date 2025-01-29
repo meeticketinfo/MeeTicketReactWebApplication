@@ -8,11 +8,11 @@ import useAuthStore from "../store/authStore";
 // export const METRO_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
 
-   // metro UAT
+   // METRO UAT
 export const METRO_API_BASE_URL =
 "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
-
-// uat
+  
+// PARK UAT
 export const API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkapi/api/";
   
@@ -20,11 +20,15 @@ export const API_BASE_URL =
  
 // testing 
 // export const API_BASE_URL =
-//   "https://8zl2vs9v-7297.inc1.devtunnels.ms/api/";
+//   "https://xk5zzj6w-7237.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =
 //   "https://vzn9g3bw-7297.inc1.devtunnels.ms/v1.0/";
+
+// METRO UAT testing
+// export const METRO_API_BASE_URL =
+//   "https://m7411qx6-7297.inc1.devtunnels.ms/v1/";
 
 // const { isAuthenticated, roleDetails } = useAuthStore();
 

@@ -140,7 +140,15 @@ function SummaryReportList() {
       headerName: "Ticket Fare",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      cellRenderer: (params) =>
+        params.value ? (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) : (
+          "N/A"
+        ),
     },
 
     {

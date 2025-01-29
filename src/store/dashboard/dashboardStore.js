@@ -48,18 +48,15 @@ export const useDashboardStore = create((set) => ({
   },
 
   fetchAllDashboardCounts: async (
-    pageIndex = 1,
-    pageSize = 10,
-    filters = {},
     roleDetails
   ) => {
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
       const endpoint =
-        role == "ROLE_ADMIN"
+        role === "ROLE_ADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
-          : role == "ROLE_METROADMIN"
+          : role === "ROLE_METROADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
           : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
@@ -75,6 +72,7 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.message, isFetchCountsLoading: false });
     }
   },
+  
   fetchAllEntityWiseCounts: async (
     pageIndex = 1,
     pageSize = 10,

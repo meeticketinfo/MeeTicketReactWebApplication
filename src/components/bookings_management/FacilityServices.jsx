@@ -118,7 +118,7 @@ export const FacilityServices = () => {
         totalAmount: totalAmount,
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
-        transactionId: "cash",
+        transactionId: "",
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };
@@ -232,13 +232,13 @@ export const FacilityServices = () => {
           ) : (
             <div className="Transaction Failed">
               <TransactionQr />
-            </div>
+            </div>  
           )
         ) : (
           <div>
             <Formik
               initialValues={{
-                selectedItems: [],
+                selectedItems: [],     
                 mobileNumber: "",
                 paymentMethod: "",
               }}
