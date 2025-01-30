@@ -2,18 +2,18 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
+// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
 // uat
-// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/api/";
+const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
-//  "https://meeticketservicedevapi.vmaxtechservices.life/api/";
+//  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 // testing
 // export const API_BASE_URL =
-//   "https://vzn9g3bw-7297.inc1.devtunnels.ms/api/";
+//   "https://ln85ntrf-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

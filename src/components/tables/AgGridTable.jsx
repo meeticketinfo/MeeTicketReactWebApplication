@@ -11,7 +11,7 @@ import { useAggridStore } from "../../store/agGridStore";
 const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
-  console.log("quickFilterText",quickFilterText)
+  
   const gridRef = useRef(null);
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API

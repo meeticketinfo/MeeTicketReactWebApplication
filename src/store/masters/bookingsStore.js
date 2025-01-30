@@ -35,7 +35,8 @@ export const useBookingsStore = create(
       allTransactionPaymentReports: [],
       isCompleteBookingsReportsLoading: false,
       isTransactionPaymentReportsLoading: false,
-      isCompleteBookings:false,
+      isCompleteBookings: false,
+      bookingMessage: "",
       //
 
       serializeFilters: (filters) =>
@@ -187,10 +188,13 @@ export const useBookingsStore = create(
             FirstStepTransactionPayload
           );
 
-          set({
-            FirstStepTransactionResponse: response.data.data,
-            IsFirstStepTransaction: true,
-          });
+          if (response.status != 205) {
+            set({
+              FirstStepTransactionResponse: response.data.data,
+              IsFirstStepTransaction: true,
+            });
+          }
+
           return { success: true, data: response };
         } catch (error) {
           // set({

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const LOGIN_API_ENDPOINT = "/Authentication/login";
 const OTP_LOGIN_API_ENDPOINT = "/Authentication/ValidateLoginOTP";
-const LOGOUT="Authentication/logout";
+const LOGOUT = "Authentication/logout";
 const DECODED_TOKEN_ENDPOINT = "/Authentication/GetDecodedToken";
 const GET_ALL_ROLES = "/Master/GetAllRoles";
 
@@ -17,7 +17,7 @@ const useAuthStore = create(
       isAuthenticated: false,
       token: null,
       error: null,
-      otpError:null,
+      otpError: null,
       loginError: null,
       decodedTokenData: null,
       userRoles: [],
@@ -33,7 +33,7 @@ const useAuthStore = create(
 
           // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
-          await get().fetchUserRoles();
+          await get().fetchUserRoles(); 
           set({
             loginError: "",
           });
@@ -82,11 +82,11 @@ const useAuthStore = create(
 
       //  login with otp
 
-      setIsAuthenticated:(isAuthenticated)=>{
-        set({isAuthenticated})
+      setIsAuthenticated: (isAuthenticated) => {
+        set({ isAuthenticated });
       },
-      setOtpError:(otpError)=>{
-        set({otpError})
+      setOtpError: (otpError) => {
+        set({ otpError });
       },
 
       OtpLogin: async (loginData) => {
@@ -145,23 +145,22 @@ const useAuthStore = create(
             // toast.error(errorMessage);
           }
           set({
-             otpError: "Unexpected error"
+            otpError: "Unexpected error",
           });
           return { response: response };
         }
       },
 
-      terminateSession:async ()=>{
+      terminateSession: async () => {
         try {
-          const response = await apiService.post( LOGOUT );
-          if(response){
+          const response = await apiService.post(LOGOUT);
+          if (response) {
             get().logout();
           }
         } catch (error) {
-         console.log("error",error)
+          console.log("error", error);
         }
       },
-      
 
       fetchDecodedToken: async () => {
         try {
@@ -226,11 +225,10 @@ const useAuthStore = create(
       },
 
       logout: () =>
-        
         set({
           token: null,
           error: null,
-          otpError:null,
+          otpError: null,
           isAuthenticated: false,
           decodedTokenData: null,
           roleDetails: null,

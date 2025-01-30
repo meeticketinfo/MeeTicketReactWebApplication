@@ -15,6 +15,7 @@ import {
   superAdminPermissions,
   nodalOfficerPermissions,
   MetroReports,
+  NehruZooPark,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -84,7 +85,9 @@ function Sidebar({ variant = "default" }) {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
-    }
+    }else if (role === "ROLE_ZOOPARKADMIN") {
+          return NehruZooPark;
+        }
     return [];
   }, [role]);
 
