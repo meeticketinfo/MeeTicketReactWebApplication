@@ -51,8 +51,10 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
+      console.log("roleDetails", role);
       // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
-      const endpoint =role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
+      const endpoint =
+        role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
           : role === "ROLE_METROADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT

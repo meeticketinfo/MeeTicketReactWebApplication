@@ -54,7 +54,7 @@ export default function AdminBookings() {
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
-  console.log("isCounterEnabled",decodedTokenData?.data)
+  // console.log("isCounterEnabled",decodedTokenData?.data)
   useEffect(() => {
     fetchAllBookings();
     // fetchAllParks();
@@ -117,14 +117,14 @@ export default function AdminBookings() {
     },
     {
       field: "serviceName",
-      headerName: "Service Name",
+      headerName: "Sub Facility Name",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
       field: "serviceVariantName",
-      headerName: "Service Variant Name",
+      headerName: "Ticket Type",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
@@ -146,7 +146,7 @@ export default function AdminBookings() {
     },
     {
       field: "modeOfPayment",
-      headerName: "mode Of Payment",
+      headerName: "Mode of Payment",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -210,15 +210,15 @@ export default function AdminBookings() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-              (role === "ROLE_ADMIN")||(role === "ROLE_ZOOPARKADMIN") &&
-              isCounterEnabled?.toLowerCase() === "true" && (
-                <button
-                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
-                >
-                  Book Tickets
-                </button>
-              )
+             (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
+             isCounterEnabled?.toLowerCase() === "true" && (
+               <button
+                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                 onClick={() => setIsBookingFormVisible(true)} // Show booking form
+               >
+                 Book Tickets
+               </button>
+             )
             ) : (
               // <button
               //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"

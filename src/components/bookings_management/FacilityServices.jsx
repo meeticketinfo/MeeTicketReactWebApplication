@@ -44,6 +44,7 @@ export const FacilityServices = () => {
     setSelectedBookingsList,
     VerifyPaymentStatus,
     IsTransactionFailed,
+    bookingMessage,
     isSaveFirstTransactionDetailsLoading,
     setisUpi,
     isUpi,
@@ -151,10 +152,10 @@ export const FacilityServices = () => {
       };
       sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
 
-      // console.log("bookingDetailsPayload",bookingDetailsPayload)
-
       try {
         const result = await saveFirstBookingDetails(bookingDetailsPayload);
+        toast.error(result.data.data);
+
         setQuantities({});
         values.selectedItems = [];
         resetForm();
@@ -232,13 +233,13 @@ export const FacilityServices = () => {
           ) : (
             <div className="Transaction Failed">
               <TransactionQr />
-            </div>  
+            </div>
           )
         ) : (
           <div>
             <Formik
               initialValues={{
-                selectedItems: [],     
+                selectedItems: [],
                 mobileNumber: "",
                 paymentMethod: "",
               }}
@@ -434,26 +435,37 @@ export const FacilityServices = () => {
                                                       //   );
                                                       // }
                                                       if (currentQuantity > 0) {
-                                                        const updatedQuantity = currentQuantity - 1;
-                                                    
+                                                        const updatedQuantity =
+                                                          currentQuantity - 1;
+
                                                         // Update quantity
-                                                        updateQuantity(variant.id, -1);
-                                                    
+                                                        updateQuantity(
+                                                          variant.id,
+                                                          -1
+                                                        );
+
                                                         // Remove from selectedItems if quantity is 0
                                                         setFieldValue(
-                                                            "selectedItems",
-                                                            updatedQuantity === 0
-                                                                ? values.selectedItems.filter(
-                                                                      (item) => item.serviceVarientId !== variant.id
-                                                                  )
-                                                                : values.selectedItems.map((item) =>
-                                                                      item.serviceVarientId === variant.id
-                                                                          ? { ...item, quantity: updatedQuantity }
-                                                                          : item
-                                                                  )
+                                                          "selectedItems",
+                                                          updatedQuantity === 0
+                                                            ? values.selectedItems.filter(
+                                                                (item) =>
+                                                                  item.serviceVarientId !==
+                                                                  variant.id
+                                                              )
+                                                            : values.selectedItems.map(
+                                                                (item) =>
+                                                                  item.serviceVarientId ===
+                                                                  variant.id
+                                                                    ? {
+                                                                        ...item,
+                                                                        quantity:
+                                                                          updatedQuantity,
+                                                                      }
+                                                                    : item
+                                                              )
                                                         );
-                                                    }
-                                                    
+                                                      }
                                                     }}
                                                     className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
                                                   >
@@ -539,7 +551,10 @@ export const FacilityServices = () => {
                         Selected Items
                       </h3>
                       <ul className="space-y-4">
-                        {console.log("values.selectedItems",values.selectedItems)}
+                        {console.log(
+                          "values.selectedItems",
+                          values.selectedItems
+                        )}
                         {values.selectedItems.map((item, index) => {
                           const facility = allFacilities.find(
                             (fac) => fac.id === item.facilityId

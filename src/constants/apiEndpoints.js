@@ -4,31 +4,31 @@ import useAuthStore from "../store/authStore";
 // export const API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
 
-  // metro dev
+// metro dev
 // export const METRO_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
 
-   // METRO UAT
+// METRO UAT
 export const METRO_API_BASE_URL =
-"https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
-  
-// PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+  "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
 
-    // METRO PROD
+// PARK UAT
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+// METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
-  
+
 // PARK PROD
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
-  
+
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
- 
-// testing 
-export const API_BASE_URL =
-  "https://6phbrdb7-7237.inc1.devtunnels.ms/api/";
+
+// testing
+// export const API_BASE_URL =
+//   "https://ln85ntrf-7237.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =
@@ -37,7 +37,6 @@ export const API_BASE_URL =
 // METRO UAT testing
 // export const METRO_API_BASE_URL =
 //   "https://m7411qx6-7297.inc1.devtunnels.ms/v1/";
-
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -80,8 +79,8 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
-      FIRST_STEP_TRANSACTION:`${API_BASE_URL}PaymentTransaction/Transaction`,
-      GET_PAYMENT_STATUS:`${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
+      FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
+      GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,

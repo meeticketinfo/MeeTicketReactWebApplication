@@ -16,7 +16,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    console.log(roleDetails, "roleDetails");
+    // console.log(roleDetails, "roleDetails");
 
     RenderContent();
   }, [roleDetails]);

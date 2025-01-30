@@ -42,7 +42,7 @@ function AdminDashboard() {
     useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
-
+// console.log("roleDetails",roleDetails)
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -56,15 +56,15 @@ function AdminDashboard() {
     isFetchEntityBookingsLoading,
     totalEntityBookingRecords,
   } = useDashboardStore();
- 
+   console.log("allCounts",allCounts)
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
     entityId: "",
   };
-  // alert("i'm in");
+  
   useEffect(() => {
-     fetchAllDashboardCounts(null, null, {}, roleDetails);
+     fetchAllDashboardCounts(roleDetails);
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
     if (role === "ROLE_NODALOFFICER") {
@@ -154,7 +154,7 @@ function AdminDashboard() {
   ];
 
   const cardsToDisplay =
-    roleDetails?.name === "ROLE_ADMIN"
+    roleDetails?.name === "ROLE_ADMIN"|| roleDetails?.name === "ROLE_ZOOPARKADMIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
 
