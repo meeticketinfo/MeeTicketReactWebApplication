@@ -210,15 +210,15 @@ export default function AdminBookings() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-             (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
-             isCounterEnabled?.toLowerCase() === "true" && (
-               <button
-                 className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                 onClick={() => setIsBookingFormVisible(true)} // Show booking form
-               >
-                 Book Tickets
-               </button>
-             )
+              (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
+              isCounterEnabled?.toLowerCase() === "true" && (
+                <button
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                >
+                  Book Tickets
+                </button>
+              )
             ) : (
               // <button
               //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
@@ -284,8 +284,7 @@ export default function AdminBookings() {
                           <Select
                             name="entityId"
                             options={parksToRender
-                              ?.filter((park) => park.isActive)
-                              .map((park) => ({
+                              ?.map((park) => ({
                                 value: park.id,
                                 label: park.name,
                               }))}
@@ -385,17 +384,7 @@ export default function AdminBookings() {
                 )}
               </Formik>
             </div>
-            {/* <AgGridTable
-            isFetchLoading={isFetchAllBookingsLoading}
-            columnDefs={columnDefs}
-            rowData={allBookings || []}
-            defaultColDef={{
-              sortable: true,
-              filter: true,
-              resizable: true,
-            }}
-            pagination={true}
-          /> */}
+
             <AgGridTable
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}

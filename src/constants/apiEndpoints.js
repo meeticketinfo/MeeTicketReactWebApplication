@@ -12,7 +12,7 @@ import useAuthStore from "../store/authStore";
 export const METRO_API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
 
-// PARK UAT
+//  PARK UAT
 export const API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
@@ -21,14 +21,14 @@ export const API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // PARK PROD
-// export const API_BASE_URL =
+// export const API_BASE_URL = 
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
 
 // testing
 // export const API_BASE_URL =
-//   "https://ln85ntrf-7237.inc1.devtunnels.ms/api/";
+//   "https://v8hmbbs4-7237.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =

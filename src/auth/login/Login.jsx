@@ -69,8 +69,8 @@ const Login = () => {
       resetForm();
       navigate("/dashboard");
     } else {
-      // loadCaptcha();
-      // updateCaptchaInput("");
+      loadCaptcha();
+      updateCaptchaInput("");
     }
     setSubmitting(false);
   };
