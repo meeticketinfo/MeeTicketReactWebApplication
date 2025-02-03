@@ -64,8 +64,10 @@ const ParkCreate = ({
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
     IsCounter: isParkEditVisible ? parkEditDetails.isCounter : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
-    TermsConditions:isParkEditVisible ? parkEditDetails.termsConditions : "",
+    TermsConditions: isParkEditVisible ? parkEditDetails.termsConditions : "",
     ImageUrl: null,
+    OpenTime: isParkEditVisible ? parkEditDetails.openTime ?? "" : "00:00:00",
+    ClosedTime: isParkEditVisible? parkEditDetails.closedTime ?? "": "00:00:00",
     NodalOfficerId: isParkEditVisible ? parkEditDetails.nodalOfficerUserId : "",
     ...(isParkEditVisible ? { Prefix: "XYZ" } : { Prefix: "XYZ" }),
   };
@@ -194,9 +196,8 @@ const ParkCreate = ({
     { setSubmitting, resetForm },
     saveParkDetails
   ) => {
-    console.log("values", values);
-    values.isActive = values.isActive === "true" || values.isActive === true;
-    values.IsCounter = values.IsCounter === "true" || values.isActive === true;
+    values.IsActive = values.IsActive === "true" || values.IsActive === true;
+    values.IsCounter = values.IsCounter === "true" || values.IsCounter === true;
     values.DisplayName = values.Name;
 
     try {
@@ -269,7 +270,7 @@ const ParkCreate = ({
                   <Field
                     as="select"
                     name="DepartmentId"
-                    disabled={ role === "ROLE_NODALOFFICER"}
+                    disabled={role === "ROLE_NODALOFFICER"}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.DepartmentId && touched.DepartmentId
                         ? "border-red-500"
@@ -303,7 +304,7 @@ const ParkCreate = ({
                   <Field
                     as="select"
                     name="EntityTypeId"
-                    disabled={ role === "ROLE_NODALOFFICER"}
+                    disabled={role === "ROLE_NODALOFFICER"}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.EntityTypeId && touched.EntityTypeId
                         ? "border-red-500"
@@ -625,18 +626,49 @@ const ParkCreate = ({
                     </div>
                   </div>
                 )}
-                 <div className="md:col-span-3">
-                        <label className="text-gray-700 dark:text-gray-300 text-sm">
-                          Terms and Conditions
-                        </label>
-                        <Field
-                          name="TermsConditions"
-                          placeholder="Enter terms and conditions"
-                          maxLength={255}
-                          as="textarea"
-                          className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
-                        />
-                      </div>
+                {/* Open Time */}
+                <div className="">
+                  <label
+                    htmlFor="OpenTime"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Open Time
+                  </label>
+                  <Field
+                    type="time"
+                    name="OpenTime"
+                    className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Open Time"
+                  />
+                </div>
+
+                {/* Close Time */}
+                <div className="">
+                  <label
+                    htmlFor="ClosedTime"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Close Time
+                  </label>
+                  <Field
+                    type="time"
+                    name="ClosedTime"
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Close Time"
+                  />
+                </div>
+                <div className="md:col-span-3">
+                  <label className="text-gray-700 dark:text-gray-300 text-sm">
+                    Terms and Conditions
+                  </label>
+                  <Field
+                    name="TermsConditions"
+                    placeholder="Enter terms and conditions"
+                    maxLength={255}
+                    as="textarea"
+                    className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}

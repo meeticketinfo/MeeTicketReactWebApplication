@@ -20,7 +20,19 @@ import upiIcon from "../../images/upi.svg";
 import HandCash from "../../images/cash.svg";
 import PopupModal from "../utils/popup_modal/PopupModal";
 import { useModalStore } from "../../store/modalStore";
-
+import { useHolidayStore } from "../../store/masters/holidayStore";
+const formatTime = (timeString) => {
+  if (!timeString) return ""; // Handle empty cases
+  const [hours, minutes, seconds] = timeString.split(":");
+  const date = new Date();
+  date.setHours(hours, minutes, seconds);
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    // second: "2-digit",
+    hour12: true,
+  });
+};
 export const FacilityServices = () => {
   const navigate = useNavigate();
   function formatBookingDate(date) {
@@ -54,6 +66,22 @@ export const FacilityServices = () => {
   } = useBookingsStore();
   // console.log("isUpi", isUpi);
   const { decodedTokenData, DepartmentId } = useAuthStore();
+  const {
+    saveRecurringHolidayDetails,
+    isSaveRecurringHolidayDetailsLoading,
+    fetchAllRecurringHolidays,
+    allRecurringHolidays,
+  } = useHolidayStore();
+  console.log("allRecurringHolidays", allRecurringHolidays);
+  // disableing button for recurriing holidays
+
+  const currentDay = new Date()
+    .toLocaleString("en-US", { weekday: "long" })
+    .toLowerCase();
+
+  const isHoliday = allRecurringHolidays
+    .map((day) => day.toLowerCase())
+    .includes(currentDay);
 
   const {
     allFacilities,
@@ -61,7 +89,7 @@ export const FacilityServices = () => {
     FetchLocationDetails,
     LocationDetails,
   } = useFacilityStore();
-
+  //  console.log("LocationDetails",LocationDetails)
   const { allServices, fetchAllServices } = useServiceStore();
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
@@ -72,6 +100,7 @@ export const FacilityServices = () => {
   }, []);
 
   useEffect(() => {
+    fetchAllRecurringHolidays();
     fetchAllFacilities();
     fetchAllServices();
     fetchAllServiceVariants();
@@ -100,6 +129,7 @@ export const FacilityServices = () => {
     { setSubmitting, resetForm },
     saveBookingDetails
   ) => {
+    const currentDate = new Date();
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const bookingDetailsPayload = {
       amount: totalAmount,
@@ -108,6 +138,7 @@ export const FacilityServices = () => {
       departmentId: LocationDetails?.departmentId,
       isIOS: false,
       paymentType: "",
+      bookingDate: formatBookingDate(currentDate),
       parkId: decodedTokenData?.data?.ParkId,
     };
 
@@ -126,13 +157,14 @@ export const FacilityServices = () => {
       console.log("Booking Details Payload:", bookingDetailsPayload);
       try {
         const result = await saveBookingDetails(bookingDetailsPayload);
-        console.log("error", result);
+
+        // console.log("error", result);
         if (result && result.data && result.data.status === 200) {
           const newBookingId = result?.data?.data?.data;
           navigate(`/entity-bookings/view-details/${newBookingId}`);
           resetForm();
         } else {
-          toast.error("Unexpected response from the server.");
+          toast.error(result.data.data.message);
         }
       } catch (xhr) {
         // handleApiError(xhr);
@@ -154,8 +186,11 @@ export const FacilityServices = () => {
 
       try {
         const result = await saveFirstBookingDetails(bookingDetailsPayload);
-        toast.error(result.data.data);
-
+        if (result.data.data.message) {
+          toast.error(result.data.data.message);
+        } else {
+          toast.error(result.data.data);
+        }
         setQuantities({});
         values.selectedItems = [];
         resetForm();
@@ -237,6 +272,17 @@ export const FacilityServices = () => {
           )
         ) : (
           <div>
+            {LocationDetails?.openTime && LocationDetails?.closedTime && (
+              <div className="flex justify-center items-center gap-1 mb-1    ">
+                <h1 className="text-xl font-semibold text-blue-v2">
+                  Park Timings:
+                </h1>
+                <div className="flex justify-center items-center gap-1 text-xl font-semibold text-blue-v2 ">
+                  <h1>{formatTime(LocationDetails?.openTime)} -</h1>
+                  <h1>{formatTime(LocationDetails?.closedTime)}</h1>
+                </div>
+              </div>
+            )}
             <Formik
               initialValues={{
                 selectedItems: [],
