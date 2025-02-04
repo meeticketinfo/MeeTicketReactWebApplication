@@ -19,6 +19,8 @@ export const useDashboardStore = create((set) => ({
   saveBookingDetailsError: null,
   bookingDetails: {},
   isFetchCurrentBookingDetailsLoading: false,
+  isFetchZooDashboardLoading: false,
+  allZooDashboard:[],
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -57,8 +59,8 @@ export const useDashboardStore = create((set) => ({
         role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
           : role === "ROLE_METROADMIN"
-          ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
-          : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
+            ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
+            : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
 
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
@@ -164,6 +166,26 @@ export const useDashboardStore = create((set) => ({
         isSaveBookingDetailsLoading: false,
       });
       throw error;
+    }
+  },
+
+  // ZOO DASH BOARD
+  fetchAllZooDashBoardCounts: async (
+
+  ) => {
+    set({ isFetchZooDashboardLoading: true });
+    try {
+
+      const response = await apiService.get(
+
+        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}`
+      );
+      set({
+        allZooDashboard: response.data,
+        isFetchZooDashboardLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchZooDashboardLoading: false });
     }
   },
 }));

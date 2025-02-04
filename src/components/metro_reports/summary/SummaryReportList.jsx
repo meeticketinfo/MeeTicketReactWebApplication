@@ -171,6 +171,12 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    {
+      field: "ticketStatus",
+      headerName: "Ticket Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
   ]);
   return (
     <>
