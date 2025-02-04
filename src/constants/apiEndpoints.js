@@ -187,5 +187,6 @@ export const API_ENDPOINTS = {
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,
     },
+    GET_ZOO_PARK_DASHBOARD_COUNTS:  `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
   },
 };

@@ -192,14 +192,14 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Transaction Details",
-        icon: GrTransaction,
-        path: "/transaction-report",
-      },
-      {
         title: "Booking Details",
         icon: GrTransaction,
         path: "/booking-details",
+      },
+      {
+        title: "Ticket Details",
+        icon: GrTransaction,
+        path: "/transaction-report",
       },
       {
         title: "Payment Transactions",

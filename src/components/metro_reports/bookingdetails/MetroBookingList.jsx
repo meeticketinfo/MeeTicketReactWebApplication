@@ -123,6 +123,21 @@ function MetroBookingList() {
                     "N/A"
                 ),
         },
+        {
+            field: "paymentConfirmedTxnAmount",
+            headerName: "Actual Fare Paid",
+            headerClass: "text-blue-v2",
+            // valueFormatter: (params) => params.value || "N/A",
+            cellRenderer: (params) =>
+                params.value ? (
+                    <>
+                        <span>Rs. </span>
+                        <span>{params.value}</span>
+                    </>
+                ) : (
+                    "N/A"
+                ),
+        },
 
         {
             field: "travelDate",
