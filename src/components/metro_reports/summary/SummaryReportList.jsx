@@ -5,6 +5,7 @@ import AgGridTable from "../../tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import { PiCurrencyInr } from "react-icons/pi";
+import AgGridTablev3 from "../../tables/AgGridTablev3";
 function SummaryReportList() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
     useAuthStore();
@@ -36,7 +37,6 @@ function SummaryReportList() {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       maxWidth: "80",
-
       headerClass: "text-blue-v2",
     },
     {
@@ -64,7 +64,7 @@ function SummaryReportList() {
     },
     {
       field: "ticketTypeId",
-      headerName: "Ticket Type ID",
+      headerName: "Ticket Type",
       maxWidth: "160",
 
       headerClass: "text-blue-v2",
@@ -237,7 +237,7 @@ function SummaryReportList() {
           </Form>
         )}
       </Formik>
-      <AgGridTable
+      <AgGridTablev3
         rowData={allMetroSummaryReports}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllMetroSummaryReportsLoading}

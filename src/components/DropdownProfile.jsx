@@ -94,9 +94,15 @@ function DropdownProfile({ align }) {
           onBlur={() => setDropdownOpen(false)}
         >
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
-            <div className="font-medium text-gray-800 dark:text-gray-100">
+            <div className="font-normal text-sm text-black dark:text-gray-100">
               {decodedTokenData?.data?.email || "Name"}
             </div>
+            {decodedTokenData?.data?.PhoneNumber&&
+            <div className="font-normal text-xs text-black dark:text-gray-100">
+              Mobile Number : <span>{decodedTokenData?.data?.PhoneNumber || "mobile"}</span>
+              {/* {decodedTokenData?.data?.email || "Name"} */}
+            </div>
+            }
             <div className="text-xs text-gray-500 dark:text-gray-400 italic">
               {roleDetails?.displayName || "User Designation"}
             </div>

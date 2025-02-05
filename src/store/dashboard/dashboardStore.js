@@ -170,15 +170,14 @@ export const useDashboardStore = create((set) => ({
   },
 
   // ZOO DASH BOARD
-  fetchAllZooDashBoardCounts: async (
-
-  ) => {
+  fetchAllZooDashBoardCounts: async (date) => {
+    console.log("date in api call",date)
     set({ isFetchZooDashboardLoading: true });
     try {
 
       const response = await apiService.get(
 
-        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}?date=${date}`
       );
       set({
         allZooDashboard: response.data,
