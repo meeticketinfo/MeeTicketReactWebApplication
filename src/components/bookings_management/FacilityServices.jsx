@@ -64,7 +64,7 @@ export const FacilityServices = () => {
     isCash,
     saveBookingDetailsError,
   } = useBookingsStore();
-  // console.log("isUpi", isUpi);
+ 
   const { decodedTokenData, DepartmentId } = useAuthStore();
   const {
     saveRecurringHolidayDetails,
@@ -72,7 +72,6 @@ export const FacilityServices = () => {
     fetchAllRecurringHolidays,
     allRecurringHolidays,
   } = useHolidayStore();
-  console.log("allRecurringHolidays", allRecurringHolidays);
   // disableing button for recurriing holidays
 
   const currentDay = new Date()
@@ -89,7 +88,6 @@ export const FacilityServices = () => {
     FetchLocationDetails,
     LocationDetails,
   } = useFacilityStore();
-  //  console.log("LocationDetails",LocationDetails)
   const { allServices, fetchAllServices } = useServiceStore();
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
@@ -106,7 +104,6 @@ export const FacilityServices = () => {
     fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
-  console.log("allFacilities", allFacilities);
   const calculateTotalAmount = (selectedItems) => {
     return selectedItems.reduce((total, item) => {
       return total + item.quantity * item.unitAmount;
@@ -154,11 +151,11 @@ export const FacilityServices = () => {
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };
-      console.log("Booking Details Payload:", bookingDetailsPayload);
+     
       try {
         const result = await saveBookingDetails(bookingDetailsPayload);
 
-        // console.log("error", result);
+       
         if (result && result.data && result.data.status === 200) {
           const newBookingId = result?.data?.data?.data;
           navigate(`/entity-bookings/view-details/${newBookingId}`);
@@ -214,7 +211,7 @@ export const FacilityServices = () => {
     //     bookingDate: currentDateTime,
     //     bookingDetailsReqDTOs: values.selectedItems,
     //   };
-    //   // console.log("Booking Details Payload:", bookingDetailsPayload);
+    //   
     //   try {
     //     const result = await saveBookingDetails(bookingDetailsPayload);
     //     if (result && result.data && result.data.status === 200) {
@@ -241,7 +238,7 @@ export const FacilityServices = () => {
     //   };
     //   sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
 
-    //   // console.log("bookingDetailsPayload",bookingDetailsPayload)
+    //  
 
     //   try {
     //     const result = await saveFirstBookingDetails(bookingDetailsPayload);
@@ -597,10 +594,7 @@ export const FacilityServices = () => {
                         Selected Items
                       </h3>
                       <ul className="space-y-4">
-                        {console.log(
-                          "values.selectedItems",
-                          values.selectedItems
-                        )}
+                       
                         {values.selectedItems.map((item, index) => {
                           const facility = allFacilities.find(
                             (fac) => fac.id === item.facilityId

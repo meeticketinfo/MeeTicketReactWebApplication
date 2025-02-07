@@ -47,8 +47,6 @@ function AdminDashboard() {
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const parkId = decodedTokenData?.data?.ParkId;
-  console.log("parkId", parkId);
-  // console.log("roleDetails",roleDetails)
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -65,7 +63,6 @@ function AdminDashboard() {
     fetchAllZooDashBoardCounts,
     isFetchZooDashboardLoading,
   } = useDashboardStore();
-  console.log("allZooDashboard", allZooDashboard);
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
