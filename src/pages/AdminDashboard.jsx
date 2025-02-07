@@ -28,9 +28,10 @@ import ServerSideAgGridTable from "../components/tables/ServerSideAgGridTable";
 import useAuthStore from "../store/authStore";
 import { toast } from "react-toastify";
 import CountUp from "react-countup";
-import img from "../images/MeeTicketLogo.svg";
+import { superballs } from "ldrs";
 
 function AdminDashboard() {
+  superballs.register();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [DashboardDate, setDashboardDate] = useState(getCurrentDate());
   const [pieChartData, setPieChartData] = useState([]);
@@ -62,6 +63,7 @@ function AdminDashboard() {
     totalEntityBookingRecords,
     allZooDashboard,
     fetchAllZooDashBoardCounts,
+    isFetchZooDashboardLoading,
   } = useDashboardStore();
   console.log("allZooDashboard", allZooDashboard);
   const initialValues = {
@@ -265,94 +267,112 @@ function AdminDashboard() {
           ))}
 
         {/* ZOO DASHBOARD */}
-        <div className="col-span-full sm:col-span-6 xl:col-span-6"></div>
+        <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {parkId == 100 || roleDetails?.name === "ROLE_ZOOPARKADMIN" ? (
           <>
-          <div className="col-span-full ">
-            <h1 className=" text-xl font-bold">
-              Facilities and Ticket Details
-            </h1>
-            <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
-              <div>
-              <label
-                htmlFor="fromDate"
-                className="block text-sm font-medium text-gray-700"
-               
-              >
-                Search By Date
-              </label>
-              <input 
-                type="date"
-                name="fromDate"
-                className={`mt-1 block px-2 py-1 border w-full
+            <div className="col-span-full ">
+              <h1 className=" text-xl font-bold">
+                Facilities and Ticket Details
+              </h1>
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
+                <div>
+                  <label
+                    htmlFor="fromDate"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Search By Date
+                  </label>
+                  <input
+                    type="date"
+                    name="fromDate"
+                    className={`mt-1 block px-2 py-1 border w-full
                border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                // min={getCurrentDate()}
-                value={DashboardDate}
-                onChange={(e)=>{setDashboardDate(e.target.value)}}
-              />
+                    // min={getCurrentDate()}
+                    value={DashboardDate}
+                    onChange={(e) => {
+                      setDashboardDate(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    onClick={() => {
+                      fetchAllZooDashBoardCounts(DashboardDate);
+                    }}
+                    className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
-              <div className="flex items-end">
-              <button
-              onClick={()=>{
-                
-                fetchAllZooDashBoardCounts(DashboardDate);
-              }}
-               className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 " >Search</button>
             </div>
-            </div>
-          </div>
-            {allZooDashboard.data?.map((services, serviceIndex, index) => (
-              <div
-                key={serviceIndex}
-                className="flex flex-col col-span-full   sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-              >
-                <div className="flex items-center">
-                  <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-white border  rounded-lg shadow-md shadow-gray-300">
-                    <img
-                      src={services.service[0].serviceImage}
-                      className="text-3xl font-bold text-white dark:text-gray-100 w-8"
-                    />
-                  </div>
-                  <div className="flex-shrink-0 ml-3">
-                    <span className="text-2xl font-bold leading-none text-gray-600">
-                      <CountUp
-                        end={services.service[0].totalBookings}
-                        duration={2}
-                        prefix=""
-                        separator=","
+            {isFetchZooDashboardLoading ? (
+              <div className="px-96 py-20">
+                <l-superballs
+                  size="40"
+                  speed="1.4"
+                  color="black"
+                ></l-superballs>
+              </div>
+            ) : (
+              allZooDashboard.data?.map((services, serviceIndex, index) => (
+                <div
+                  key={serviceIndex}
+                  className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                >
+                  <div className="flex items-center">
+                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
+                      <img
+                        src={services.service[0].serviceImage}
+                        // src={img}
+                        className="text-3xl font-bold text-white dark:text-gray-100  w-8"
                       />
-                    </span>
-                    <h1 className="text-xs font-medium">
-                      {services.service[0].serviceName}
-                    </h1>
-                    <div className="flex gap-2">
-                      {services.service.map((Variant, variantIndex) => (
-                        <div
-                          key={variantIndex}
-                          className="flex gap-[2px] items-center"
-                        >
-                          <h3 className="text-sm font-normal text-gray-500">
-                            {Variant.serviceVariantName}:
-                          </h3>
-                          <h3 className="text-base font-normal text-gray-500">
-                            {Variant.totalBooking}
-                          </h3>
-                        </div>
-                      ))}
+                    </div>
+                    <div className="flex-shrink-0 ml-3">
+                      <span className="text-2xl font-bold leading-none text-gray-600">
+                        <CountUp
+                          end={services.service[0]?.totalBookings}
+                          duration={2}
+                          prefix=""
+                          separator=","
+                        />
+                      </span>
+                      <h1 className="text-xs font-medium">
+                        {services.service[0].serviceName}
+                      </h1>
+                      <div className="flex gap-2">
+                        {services.service.map((Variant, variantIndex) => (
+                          <div
+                            key={variantIndex}
+                            className="flex gap-[2px] items-center"
+                          >
+                            <h3 className="text-sm font-normal text-gray-500">
+                              {Variant.serviceVariantName}:
+                            </h3>
+                            <h3 className="text-base font-normal text-gray-500">
+                              {Variant.totalBooking}
+                            </h3>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            )}
+            {isFetchZooDashboardLoading ? (
+              <div className="px-96 py-20">
               </div>
-            ))}
-            {allZooDashboard.service?.map((service, serviceIndex, index) => (
+            ) :allZooDashboard.service?.map((service, serviceIndex, index) => (
               <div
                 key={serviceIndex}
-                className="flex flex-col col-span-full justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                className="flex flex-col col-span-full  md:col-span-4 justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
               >
                 <div className="flex items-center">
-                  <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-white border rounded-lg shadow-md shadow-gray-300">
+                  <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
                     <img
                       src={service.serviceImage}
+                      // src={Aqua}
                       className="text-3xl font-bold text-white dark:text-gray-100 w-8"
                     />
                   </div>

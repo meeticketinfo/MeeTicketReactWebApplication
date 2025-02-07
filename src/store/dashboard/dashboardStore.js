@@ -53,7 +53,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
-      console.log("roleDetails", role);
+      // console.log("roleDetails", role);
       // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
       const endpoint =
         role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
@@ -171,7 +171,7 @@ export const useDashboardStore = create((set) => ({
 
   // ZOO DASH BOARD
   fetchAllZooDashBoardCounts: async (date) => {
-    console.log("date in api call",date)
+    // console.log("date in api call",date)
     set({ isFetchZooDashboardLoading: true });
     try {
 

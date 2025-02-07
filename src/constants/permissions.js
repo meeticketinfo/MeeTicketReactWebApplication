@@ -53,3 +53,11 @@ export const NehruZooPark = [
   "completed-bookings",
   "payment-transaction-report",
 ];
+export const SupportAdmin = [
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
+  "transaction-report",
+  "booking-details",
+  'pending-transaction-details',
+];

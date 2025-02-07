@@ -106,7 +106,7 @@ export const FacilityServices = () => {
     fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
-
+  console.log("allFacilities", allFacilities);
   const calculateTotalAmount = (selectedItems) => {
     return selectedItems.reduce((total, item) => {
       return total + item.quantity * item.unitAmount;

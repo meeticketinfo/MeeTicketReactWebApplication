@@ -123,7 +123,7 @@ function DropdownProfile({ align }) {
                 // to="/signin"
                 onClick={() => {
                   updateCaptchaInput("");
-                  terminateSession();
+                  logout();
                   localStorage.clear();
                 }}
               >

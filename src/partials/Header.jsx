@@ -15,7 +15,7 @@ function Header({ variant = "default" }) {
     useSidebarStore();
   const { logout, isAuthenticated, roleDetails, decodedTokenData } =
     useAuthStore();
-    console.log("decodedTokenData?.data",decodedTokenData?.data)
+  console.log("decodedTokenData?.data", decodedTokenData?.data);
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded);
     if (sidebarExpanded) {
@@ -96,7 +96,7 @@ function Header({ variant = "default" }) {
             <div className="align-middle hidden lg:inline-flex   justify-end ">
               <div className="pl-2 text-blue-v1 text-[20px] font-bold tracking-widest flex flex-col ">
                 <p>
-                  {(decodedTokenData?.data?.ParkName &&
+                  {(decodedTokenData?.data?.ParkName && 
                     toTitleCase(decodedTokenData?.data?.ParkName)) ||
                     "Park Name"}
                 </p>

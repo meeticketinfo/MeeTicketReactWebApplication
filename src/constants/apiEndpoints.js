@@ -28,7 +28,7 @@ export const API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://v8hmbbs4-7237.inc1.devtunnels.ms/api/";
+//   "https://3m72k312-7237.inc1.devtunnels.ms/api/";
 
 // metro dev testing
 // export const METRO_API_BASE_URL =
