@@ -16,6 +16,7 @@ import {
   nodalOfficerPermissions,
   MetroReports,
   NehruZooPark,
+  SupportAdmin,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -36,8 +37,13 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
-  const { sidebarMenuItems, roleDetails, logout, terminateSession } =
-    useAuthStore();
+  const {
+    sidebarMenuItems,
+    roleDetails,
+    logout,
+    terminateSession,
+    decodedTokenData,
+  } = useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   // close on click outside
   useEffect(() => {
@@ -74,10 +80,31 @@ function Sidebar({ variant = "default" }) {
       document.querySelector("body").classList.add("sidebar-minimized");
     }
   }, [sidebarExpanded]);
-
+  const email = decodedTokenData?.data?.email;
   const role = roleDetails?.name;
+  // const rolePermissions = useMemo(() => {
+  //   if (role === "ROLE_SUPERADMIN") {
+  //     return superAdminPermissions;
+  //   } else if (role === "ROLE_ADMIN") {
+  //     return parkAdminPermissions;
+  //   } else if (role === "ROLE_NODALOFFICER") {
+  //     return nodalOfficerPermissions;
+  //   } else if (role === "ROLE_METROADMIN") {
+  //     return MetroReports;
+  //   }else if (role === "ROLE_ZOOPARKADMIN") {
+  //         return NehruZooPark;
+  //       }
+  //   return [];
+  // }, [role]);
+
   const rolePermissions = useMemo(() => {
-    if (role === "ROLE_SUPERADMIN") {
+    if (
+      (role === "ROLE_SUPERADMIN" && email === "supportuser1@meeticket.com") ||
+      email === "supportuser2@meeticket.com" ||
+      email === "supportuser3@meeticket.com"
+    ) {
+      return SupportAdmin;
+    } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
       return parkAdminPermissions;
@@ -85,11 +112,11 @@ function Sidebar({ variant = "default" }) {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
-    }else if (role === "ROLE_ZOOPARKADMIN") {
-          return NehruZooPark;
-        }
+    } else if (role === "ROLE_ZOOPARKADMIN") {
+      return NehruZooPark;
+    }
     return [];
-  }, [role]);
+  }, [role, email]);
 
   const filteredSidebarItems = useMemo(() => {
     return sidebarItems
@@ -146,7 +173,13 @@ function Sidebar({ variant = "default" }) {
           </button>
           {/* Logo */}
           <NavLink end to="/dashboard" className="block">
-            <img className="rounded-full" alt="site-logo" src={logoIcon} width={60} height={60} />
+            <img
+              className="rounded-full"
+              alt="site-logo"
+              src={logoIcon}
+              width={60}
+              height={60}
+            />
           </NavLink>
         </div>
 
@@ -301,8 +334,8 @@ function Sidebar({ variant = "default" }) {
             <button
               onClick={() => {
                 updateCaptchaInput("");
-                terminateSession();
-                // logout();
+                // terminateSession();
+                logout();
                 localStorage.clear();
               }}
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"

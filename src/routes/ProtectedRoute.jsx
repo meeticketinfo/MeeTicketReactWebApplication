@@ -7,16 +7,27 @@ import {
   nodalOfficerPermissions,
   MetroReports,
   NehruZooPark,
+  SupportAdmin,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
-  const { isAuthenticated, roleDetails } = useAuthStore();
+  const { isAuthenticated, roleDetails, decodedTokenData } = useAuthStore();
   const location = useLocation();
 
   const role = roleDetails?.name;
 
+  const email = decodedTokenData?.data?.email;
+  console.log("email PERMISSIONS", email);
+
   const rolePermissions = useMemo(() => {
-    if (role === "ROLE_SUPERADMIN") {
+    if (
+      role === "ROLE_SUPERADMIN" &&
+      (email === "supportuser1@meeticket.com" ||
+        email === "supportuser2@meeticket.com" ||
+        email === "supportuser3@meeticket.com")
+    ) {
+      return SupportAdmin;
+    } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
       return parkAdminPermissions;
@@ -28,7 +39,7 @@ const ProtectedRoute = ({ element }) => {
       return NehruZooPark;
     }
     return [];
-  }, [role]);
+  }, [role,email]);
 
   // If user is authenticated and trying to access the login page, redirect to dashboard
   if (isAuthenticated && location.pathname === "/") {

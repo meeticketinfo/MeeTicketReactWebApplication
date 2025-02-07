@@ -25,6 +25,7 @@ function PaymentTransactionReport() {
       endDate: getCurrentDate(),
       currentTransactionStatus: null,
       phoneNumber: null,
+      parkId:null
     });
   }, [fetchPaymentTransactions])
   
@@ -34,6 +35,7 @@ function PaymentTransactionReport() {
       endDate: values.toDate,
       currentTransactionStatus: values.typeOfBooking ? values.typeOfBooking : null,
       phoneNumber: values.phoneNumber ? values.phoneNumber : null,
+      parkId:null,
     });
   };
 
