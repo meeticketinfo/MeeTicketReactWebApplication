@@ -26,18 +26,15 @@ export const useServiceVariantStore = create((set) => ({
 
   // Fetch all Services
   fetchAllServiceVariants: async (
-    pageIndex = 1,
-    pageSize = 10,
-    filters = {}
+   date
   ) => {
     set({ isFetchAllServiceVariantsLoading: true });
     try {
       //   const filterString = useServicestore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.SERVICE_VARIANT.GET_SERVICE_VARIANTS}`
+        `${API_ENDPOINTS.MASTERS.SERVICE_VARIANT.GET_SERVICE_VARIANTS}?bookingDate=${date}`
       );
-      console.log(response);
 
       set({
         allServiceVariants: response.data,

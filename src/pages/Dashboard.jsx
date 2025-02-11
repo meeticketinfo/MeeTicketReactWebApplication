@@ -41,7 +41,7 @@ function Dashboard() {
                 email === "supportuser2@meeticket.com" ||
                 email === "supportuser3@meeticket.com"
               )
-                ? Dashboard
+                ? "Dashboard"
                 : ""}
             </h1>
           </div>

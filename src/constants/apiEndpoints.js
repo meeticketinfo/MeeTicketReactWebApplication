@@ -116,7 +116,7 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     SERVICE_VARIANT: {
-      GET_SERVICE_VARIANTS: `Master/GetAllServiceVarients`,
+      GET_SERVICE_VARIANTS: `Master/GetServiceVariantsByBookingDate`,
       UPDATE_SERVICE_VARIENT_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
       ADD_NEW_SERVICE_VARIENT: `${API_BASE_URL}Master/AddNewServiceVarient`,
       UPDATE_SERVICE_VARIENT_DETAILS_NODAL_OFFICER: `${API_BASE_URL}NodalOfficer/UpdateServiceVarients`,
@@ -183,10 +183,12 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
+    GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS:  `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
+    GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE:  `${API_BASE_URL}ParkReport/GetZooParkCounts`,
   },
 };
