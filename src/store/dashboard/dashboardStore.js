@@ -21,6 +21,8 @@ export const useDashboardStore = create((set) => ({
   isFetchCurrentBookingDetailsLoading: false,
   isFetchZooDashboardLoading: false,
   allZooDashboard:[],
+  isFetchZooDashboardTicketWiseLoading: false,
+  allZooDashboardTicketWise: [],
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -97,8 +99,7 @@ export const useDashboardStore = create((set) => ({
   },
 
   fetchAllEntityBookingsByFilters: async (
-    pageIndex = 1,
-    pageSize = 10,
+   
     filters = {}
   ) => {
     set({ isFetchEntityBookingsLoading: true });
@@ -185,4 +186,22 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.message, isFetchZooDashboardLoading: false });
     }
   },
+  fetchAllZooDashBoardCountsTicketWise: async (date) => {
+    set({ isFetchZooDashboardTicketWiseLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE}`
+      );
+      set({
+        allZooDashboardTicketWise: response.data,
+        isFetchZooDashboardTicketWiseLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isFetchZooDashboardTicketWiseLoading: false,
+      });
+    }
+  },
+
 }));

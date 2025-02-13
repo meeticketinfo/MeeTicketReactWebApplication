@@ -15,7 +15,6 @@ function Header({ variant = "default" }) {
     useSidebarStore();
   const { logout, isAuthenticated, roleDetails, decodedTokenData } =
     useAuthStore();
-  console.log("decodedTokenData?.data", decodedTokenData?.data);
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded);
     if (sidebarExpanded) {

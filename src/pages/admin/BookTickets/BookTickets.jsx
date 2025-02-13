@@ -48,13 +48,13 @@ export default function AdminBookings() {
     isBookingFormVisible,
     setPaymentStatus,
   } = useBookingsStore();
-  // console.log("FirstStepTransactionResponse", FirstStepTransactionResponse);
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
+
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
-  // console.log("isCounterEnabled",decodedTokenData?.data)
+  const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllBookings();
     // fetchAllParks();
@@ -174,12 +174,12 @@ export default function AdminBookings() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate ? `${values.fromDate}T00:00:00.000Z` : "",
-        toDate: values.toDate ? `${values.toDate}T23:59:00.000Z` : "",
+        fromDate: values.fromDate ? `${values.fromDate}` : "",
+        toDate: values.toDate ? `${values.toDate}` : "",
       };
       setSubmitting(true);
       const filters = formattedValues;
-      const result = await fetchAllEntityBookingsByFilters(null, null, filters);
+      const result = await fetchAllEntityBookingsByFilters(filters);
       if (result?.data?.status === 200) {
         resetForm();
       } else {
@@ -220,12 +220,6 @@ export default function AdminBookings() {
                 </button>
               )
             ) : (
-              // <button
-              //   className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
-              //   onClick={() => setIsBookingFormVisible(false)} // Hide booking form
-              // >
-              //   Back
-              // </button>
               <BackButton
                 label="Back"
                 onClick={() => {
@@ -256,38 +250,16 @@ export default function AdminBookings() {
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" && (
-                        // <div>
-                        //   <label className="block text-xs font-medium">
-                        //     Location
-                        //   </label>
-                        //   <Field
-                        //     as="select"
-                        //     name="entityId"
-                        //     className={`mt-1 block w-full px-2 py-1 border
-                        //     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                        //   >
-                        //     <option value="">Select </option>
-                        //     {parksToRender
-                        //       ?.filter((park) => park.isActive)
-                        //       .map((park) => (
-                        //         <option key={park.id} value={park.id}>
-                        //           {park.name}
-                        //         </option>
-                        //       ))}
-                        //   </Field>
-
-                        // </div>
                         <div>
                           <label className="block text-xs font-medium">
                             Location
                           </label>
                           <Select
                             name="entityId"
-                            options={parksToRender
-                              ?.map((park) => ({
-                                value: park.id,
-                                label: park.name,
-                              }))}
+                            options={parksToRender?.map((park) => ({
+                              value: park.id,
+                              label: park.name,
+                            }))}
                             onChange={(selectedOption) => {
                               setFieldValue(
                                 "entityId",
@@ -337,7 +309,7 @@ export default function AdminBookings() {
                           type="date"
                           name="fromDate"
                           className={`mt-1 block w-full px-2 py-1 border
-    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                         border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           // min={getCurrentDate()}
                           onChange={(e) => {
                             const fromDateValue = e.target.value;
@@ -362,7 +334,7 @@ export default function AdminBookings() {
                           type="date"
                           name="toDate"
                           className={`mt-1 block w-full px-2 py-1 border
-    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                         border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
                           onChange={(e) => {
                             const toDateValue = e.target.value;
@@ -374,7 +346,7 @@ export default function AdminBookings() {
                         <button
                           type="submit"
                           className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                          disabled={isFetchEntityBookingsLoading}
+                          // disabled={isFetchEntityBookingsLoading}
                         >
                           Search
                         </button>

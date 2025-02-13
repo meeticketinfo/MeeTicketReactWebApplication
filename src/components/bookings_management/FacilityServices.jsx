@@ -12,7 +12,7 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 import { useNavigate } from "react-router-dom";
 import { useAccordionStore } from "../../store/accordionStore";
 import { IoIosArrowDown } from "react-icons/io";
-import { formatToCurrency, toTitleCase } from "../../utils/TypographyHelper";
+import { formatToCurrency, getCurrentDate, toTitleCase } from "../../utils/TypographyHelper";
 import TransactionQr from "./TransactionQr";
 import TransactionFailed from "./TransactionFailed";
 import { Checkbox } from "@headlessui/react";
@@ -101,7 +101,7 @@ export const FacilityServices = () => {
     fetchAllRecurringHolidays();
     fetchAllFacilities();
     fetchAllServices();
-    fetchAllServiceVariants();
+    fetchAllServiceVariants(getCurrentDate());
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
   const calculateTotalAmount = (selectedItems) => {

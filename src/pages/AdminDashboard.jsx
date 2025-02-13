@@ -62,7 +62,11 @@ function AdminDashboard() {
     allZooDashboard,
     fetchAllZooDashBoardCounts,
     isFetchZooDashboardLoading,
+    isFetchZooDashboardTicketWiseLoading,
+    allZooDashboardTicketWise,
+    fetchAllZooDashBoardCountsTicketWise,
   } = useDashboardStore();
+  console.log("allZooDashboardTicketWise", allZooDashboardTicketWise);
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
@@ -72,6 +76,10 @@ function AdminDashboard() {
   useEffect(() => {
     fetchAllDashboardCounts(roleDetails);
     fetchAllZooDashBoardCounts(getCurrentDate());
+
+    if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
+      fetchAllZooDashBoardCountsTicketWise();
+    }
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
     fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
     if (role === "ROLE_NODALOFFICER") {
@@ -147,7 +155,7 @@ function AdminDashboard() {
   ];
   const dashboardCardsCountByRole = [
     {
-      lableName: "Total Bookings",
+      lableName: "Facility Bookings",
       count: allCounts?.totalBookingsByRole || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
@@ -157,6 +165,18 @@ function AdminDashboard() {
       count: allCounts?.totalAmountByRole,
       percentageChange: 49,
       icon: FaIndianRupeeSign,
+    },
+  ];
+
+  const dashboardCardCountZooTicketWise = [
+    {
+      lableName: "Total Bookings",
+      count: allZooDashboardTicketWise?.totalBookingCount || "0",
+      ChildCount: allZooDashboardTicketWise?.childCount || "0",
+      AdultCount: allZooDashboardTicketWise?.adultCount || "0",
+      OthersCount: allZooDashboardTicketWise?.othersCount || "0",
+      isCondition: true,
+      icon: IoTicketSharp,
     },
   ];
 
@@ -264,6 +284,72 @@ function AdminDashboard() {
           ))}
 
         {/* ZOO DASHBOARD */}
+        {(parkId == 100 || roleDetails?.name === "ROLE_ZOOPARKADMIN") &&
+          dashboardCardCountZooTicketWise.map((card, index) => (
+            <div
+              key={index}
+              className="flex flex-col justify-center col-span-full relative   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+            >
+              <span className="text-xs font-medium absolute top-0 right-0 px-[4px] rounded-es-md rounded-se-md bg-gray-400 text-white">
+                Ticket Wise{" "}
+              </span>
+              <div className="flex items-center">
+                <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
+                  <card.icon className="text-3xl font-bold text-white dark:text-gray-100" />
+                </div>
+                <div className="flex-shrink-0 ml-3">
+                  <span className="text-2xl font-bold leading-none text-gray-600">
+                    <CountUp
+                      end={card.count}
+                      duration={2}
+                      prefix=""
+                      separator=","
+                    />
+                  </span>
+                  {!card.isCondition && (
+                    <h1 className="text-sm font-normal text-gray-500 mt-2">
+                      Total Tickets Amount
+                    </h1>
+                  )}
+                  {/* others */}
+                  {card.isCondition && (
+                    <div className="flex gap-[2px] items-center">
+                      <h3 className="text-sm font-normal text-gray-500">
+                        Other Tickets:
+                      </h3>
+                      <h3 className="text-sm font-semibold text-gray-500">
+                        {card.OthersCount}
+                      </h3>
+                    </div>
+                  )}
+                  {card.isCondition && (
+                    <div className="flex gap-2">
+                      {/* adult */}
+                      {card.isCondition && (
+                        <div className="flex gap-[2px] items-center">
+                          <h3 className="text-sm font-normal  text-gray-500">
+                            Child:
+                          </h3>
+                          <h3 className="text-sm font-norm font-semibold text-gray-500">
+                            {card.ChildCount}
+                          </h3>
+                        </div>
+                      )}
+                      {/* child */}
+                      <div className="flex gap-[2px] items-center">
+                        <h3 className="text-sm font-normal text-gray-500">
+                          Adult:
+                        </h3>
+                        <h3 className="text-sm  font-semibold text-gray-500">
+                          {card.AdultCount}
+                        </h3>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {parkId == 100 || roleDetails?.name === "ROLE_ZOOPARKADMIN" ? (
           <>
@@ -346,7 +432,7 @@ function AdminDashboard() {
                             <h3 className="text-sm font-normal text-gray-500">
                               {Variant.serviceVariantName}:
                             </h3>
-                            <h3 className="text-base font-normal text-gray-500">
+                            <h3 className="text-base font-semibold text-gray-500">
                               {Variant.totalBooking}
                             </h3>
                           </div>
@@ -358,37 +444,38 @@ function AdminDashboard() {
               ))
             )}
             {isFetchZooDashboardLoading ? (
-              <div className="px-96 py-20">
-              </div>
-            ) :allZooDashboard.service?.map((service, serviceIndex, index) => (
-              <div
-                key={serviceIndex}
-                className="flex flex-col col-span-full  md:col-span-4 justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-              >
-                <div className="flex items-center">
-                  <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
-                    <img
-                      src={service.serviceImage}
-                      // src={Aqua}
-                      className="text-3xl font-bold text-white dark:text-gray-100 w-8"
-                    />
-                  </div>
-                  <div className="flex-shrink-0 ml-3">
-                    <span className="text-2xl font-bold leading-none text-gray-600">
-                      <CountUp
-                        end={service.serviceVariants[0].totalBookings}
-                        duration={2}
-                        prefix=""
-                        separator=","
+              <div className="px-96 py-20"></div>
+            ) : (
+              allZooDashboard.service?.map((service, serviceIndex, index) => (
+                <div
+                  key={serviceIndex}
+                  className="flex flex-col col-span-full  md:col-span-4 justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                >
+                  <div className="flex items-center">
+                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
+                      <img
+                        src={service.serviceImage}
+                        // src={Aqua}
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8"
                       />
-                    </span>
-                    <h1 className="text-sm font-medium">
-                      {service.serviceName}
-                    </h1>
+                    </div>
+                    <div className="flex-shrink-0 ml-3">
+                      <span className="text-2xl font-bold leading-none text-gray-600">
+                        <CountUp
+                          end={service.serviceVariants[0].totalBookings}
+                          duration={2}
+                          prefix=""
+                          separator=","
+                        />
+                      </span>
+                      <h1 className="text-sm font-medium">
+                        {service.serviceName}
+                      </h1>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </>
         ) : null}
 
