@@ -20,9 +20,11 @@ export const useDashboardStore = create((set) => ({
   bookingDetails: {},
   isFetchCurrentBookingDetailsLoading: false,
   isFetchZooDashboardLoading: false,
-  allZooDashboard:[],
+  allZooDashboard: [],
   isFetchZooDashboardTicketWiseLoading: false,
   allZooDashboardTicketWise: [],
+  AllFacilityBookings: [],
+  isFetchFacilityBookingsLoading: false,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -60,8 +62,8 @@ export const useDashboardStore = create((set) => ({
         role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
           ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
           : role === "ROLE_METROADMIN"
-            ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
-            : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
+          ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
+          : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
 
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
@@ -98,10 +100,7 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityBookingsByFilters: async (
-   
-    filters = {}
-  ) => {
+  fetchAllEntityBookingsByFilters: async (filters = {}) => {
     set({ isFetchEntityBookingsLoading: true });
     try {
       const filterString = useDashboardStore
@@ -173,9 +172,7 @@ export const useDashboardStore = create((set) => ({
   fetchAllZooDashBoardCounts: async (date) => {
     set({ isFetchZooDashboardLoading: true });
     try {
-
       const response = await apiService.get(
-
         `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}?date=${date}`
       );
       set({
@@ -204,4 +201,21 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
+  // facility bookings
+  fetchAllFacilityBookingsByFilters: async (filters) => {
+    set({ isFetchFacilityBookingsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
+      );
+      if (response.data.status === 200) {
+        set({
+          AllFacilityBookings: response.data.data.data || [],
+          isFetchFacilityBookingsLoading: false,
+        });
+      }
+    } catch (error) {
+      set({ error: error.error.message, isFetchFacilityBookingsLoading: true });
+    }
+  },
 }));
