@@ -208,9 +208,10 @@ export const useDashboardStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
       );
-      if (response.data.status === 200) {
+      console.log("response",response)
+      if (response.status == 200) {
         set({
-          AllFacilityBookings: response.data.data.data || [],
+          AllFacilityBookings: response.data || [],
           isFetchFacilityBookingsLoading: false,
         });
       }

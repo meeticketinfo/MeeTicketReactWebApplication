@@ -90,7 +90,7 @@ function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchAllEntityBookingsByFilters(pageIndex, pageSize, initialValues);
+    fetchAllEntityBookingsByFilters( initialValues);
   }, [pageIndex, pageSize]);
 
   const handlePageChange = (newPageIndex, newPageSize) => {
@@ -105,12 +105,12 @@ function AdminDashboard() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate ? `${values.fromDate}T00:00:00.000Z` : "",
-        toDate: values.toDate ? `${values.toDate}T23:59:00.000Z` : "",
+        fromDate: values.fromDate ? `${values.fromDate}` : "",
+        toDate: values.toDate ? `${values.toDate}` : "",
       };
       setSubmitting(true);
       const filters = formattedValues;
-      const result = await fetchAllEntityBookingsByFilters(null, null, filters);
+      const result = await fetchAllEntityBookingsByFilters(filters);
       if (result?.data?.status === 200) {
         resetForm();
       } else {
@@ -284,7 +284,7 @@ function AdminDashboard() {
           ))}
 
         {/* ZOO DASHBOARD */}
-        {(parkId == 100 || roleDetails?.name === "ROLE_ZOOPARKADMIN") &&
+        {( roleDetails?.name === "ROLE_ZOOPARKADMIN") &&
           dashboardCardCountZooTicketWise.map((card, index) => (
             <div
               key={index}
@@ -312,6 +312,32 @@ function AdminDashboard() {
                     </h1>
                   )}
                   {/* others */}
+
+                  {card.isCondition && (
+                    <div className="flex gap-2">
+                      {/* adult */}
+                      {card.isCondition && (
+                        <div className="flex gap-[2px] items-center">
+                          <h3 className="text-sm font-normal text-gray-500">
+                            Adult:
+                          </h3>
+                          <h3 className="text-sm  font-semibold text-gray-500">
+                            {card.AdultCount}
+                          </h3>
+                        </div>
+                      )}
+                      {/* child */}
+
+                      <div className="flex gap-[2px] items-center">
+                        <h3 className="text-sm font-normal  text-gray-500">
+                          Child:
+                        </h3>
+                        <h3 className="text-sm font-norm font-semibold text-gray-500">
+                          {card.ChildCount}
+                        </h3>
+                      </div>
+                    </div>
+                  )}
                   {card.isCondition && (
                     <div className="flex gap-[2px] items-center">
                       <h3 className="text-sm font-normal text-gray-500">
@@ -322,36 +348,12 @@ function AdminDashboard() {
                       </h3>
                     </div>
                   )}
-                  {card.isCondition && (
-                    <div className="flex gap-2">
-                      {/* adult */}
-                      {card.isCondition && (
-                        <div className="flex gap-[2px] items-center">
-                          <h3 className="text-sm font-normal  text-gray-500">
-                            Child:
-                          </h3>
-                          <h3 className="text-sm font-norm font-semibold text-gray-500">
-                            {card.ChildCount}
-                          </h3>
-                        </div>
-                      )}
-                      {/* child */}
-                      <div className="flex gap-[2px] items-center">
-                        <h3 className="text-sm font-normal text-gray-500">
-                          Adult:
-                        </h3>
-                        <h3 className="text-sm  font-semibold text-gray-500">
-                          {card.AdultCount}
-                        </h3>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
-        {parkId == 100 || roleDetails?.name === "ROLE_ZOOPARKADMIN" ? (
+        {roleDetails?.name === "ROLE_ZOOPARKADMIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">
@@ -582,7 +584,7 @@ function AdminDashboard() {
                         <button
                           type="submit"
                           className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
-                          disabled={isFetchEntityBookingsLoading}
+                          // disabled={isFetchEntityBookingsLoading}
                         >
                           Search
                         </button>

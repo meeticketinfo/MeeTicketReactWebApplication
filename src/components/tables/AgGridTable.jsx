@@ -12,7 +12,7 @@ import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 
 ModuleRegistry.registerModules([ExcelExportModule]);
 
-const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
+const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowData }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
 
@@ -39,59 +39,184 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
   };
 
  
-  const handleExportExcel = () => {
-    if (gridApi) {
-        gridApi.exportDataAsExcel({
-            sheetName: "Report",
-            fileName: "Report.xlsx",
-            columnWidth: (params) => {
-                const colId = params.column.getColId();
-                const rowData = [];
+//   const handleExportExcel = () => {
+//     if (gridApi) {
+//         gridApi.exportDataAsExcel({
+//             sheetName: "Report",
+//             fileName: "Report.xlsx",
+//             columnWidth: (params) => {
+//                 const colId = params.column.getColId();
+//                 const rowData = [];
 
-                gridApi.forEachNode((node) => {
-                    if (node.data && node.data[colId] !== undefined) {
-                        rowData.push(String(node.data[colId]));
-                    }
-                });
+//                 gridApi.forEachNode((node) => {
+//                     if (node.data && node.data[colId] !== undefined) {
+//                         rowData.push(String(node.data[colId]));
+//                     }
+//                 });
 
-                // Get the maximum length of text in the column, including the header
-                const headerName = params.column.getColDef().headerName || "";
-                const maxContentLength = Math.max(
-                    ...rowData.map((value) => value.length),
-                    headerName.length
-                );
+//                 // Get the maximum length of text in the column, including the header
+//                 const headerName = params.column.getColDef().headerName || "";
+//                 const maxContentLength = Math.max(
+//                     ...rowData.map((value) => value.length),
+//                     headerName.length
+//                 );
 
-                // Convert character length to approximate pixel width
-                const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+//                 // Convert character length to approximate pixel width
+//                 const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
 
-                return estimatedWidth;
-            },
-            processCellCallback: (params) => {
-                let value = params.value;
+//                 return estimatedWidth;
+//             },
+//             processCellCallback: (params) => {
+//                 let value = params.value;
 
-                // Ensure "Refund ID" and empty values show "N/A"
-                if (value === null || value === undefined || value === "") {
-                    return "N/A";
-                }
+//                 // Ensure "Refund ID" and empty values show "N/A"
+//                 if (value === null || value === undefined || value === "") {
+//                     return "N/A";
+//                 }
 
-                // Convert objects to readable JSON strings
-                if (typeof value === "object" && value !== null) {
-                    return JSON.stringify(value);
-                }
+//                 // Convert objects to readable JSON strings
+//                 if (typeof value === "object" && value !== null) {
+//                     return JSON.stringify(value);
+//                 }
 
-                // Ensure large numbers (more than 15 digits) are treated as text
-                if (typeof value === "number" || (typeof value === "string" && value.length > 15)) {
-                    return `'${value}`; // Add an apostrophe to keep it as text in Excel
-                }
+//                 // Ensure large numbers (more than 15 digits) are treated as text
+//                 if (typeof value === "number" || (typeof value === "string" && value.length > 15)) {
+//                     return `'${value}`; // Add an apostrophe to keep it as text in Excel
+//                 }
 
-                return value;
-            },
-        });
-    } else {
-        console.error("Grid API not available for Excel export.");
-    }
+//                 return value;
+//             },
+//         });
+//     } else {
+//         console.error("Grid API not available for Excel export.");
+//     }
+// };
+  
+// const handleExportExcel = () => {
+//   if (gridApi) {
+//       gridApi.exportDataAsExcel({
+//           sheetName: "Report",
+//           fileName: "Report.xlsx",
+//           columnWidth: (params) => {
+//               const colId = params.column.getColId();
+//               const rowData = [];
+
+//               gridApi.forEachNode((node) => {
+//                   if (node.data && node.data[colId] !== undefined) {
+//                       rowData.push(String(node.data[colId]));
+//                   }
+//               });
+
+//               // Get the maximum length of text in the column, including the header
+//               const headerName = params.column.getColDef().headerName || "";
+//               const maxContentLength = Math.max(
+//                   ...rowData.map((value) => value.length),
+//                   headerName.length
+//               );
+
+//               // Convert character length to approximate pixel width
+//               const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+
+//               return estimatedWidth;
+//           },
+//           processCellCallback: (params) => {
+//               let value = params.value;
+
+//               // Ensure "Refund ID" and empty values show "N/A"
+//               if (value === null || value === undefined || value === "") {
+//                   return "N/A";
+//               }
+
+//               // Convert objects to readable JSON strings
+//               if (typeof value === "object" && value !== null) {
+//                   return JSON.stringify(value);
+//               }
+
+//               if (typeof value === "string") {
+//                 value = value.replace(/[^\d.-]/g, ""); 
+//             }
+
+//             // Ensure large numbers (more than 15 digits) are treated as text
+//             if (/^\d{15,}$/.test(value)) { 
+//                 return `'${value}`; // Convert 16+ digit numbers to text to prevent Excel rounding
+//             }
+
+//               // Remove currency symbols before exporting to Excel
+//               if (typeof value === "string") {
+//                   value = value.replace(/[^\d.-]/g, ""); // Remove all non-numeric characters except dot and minus
+//               }
+
+//               return value;
+//           },
+//       });
+//   } else {
+//       console.error("Grid API not available for Excel export.");
+//   }
+// };
+
+const handleExportExcel = () => {
+  if (gridApi) {
+      gridApi.exportDataAsExcel({
+          sheetName: "Report",
+          fileName: "Report.xlsx",
+          columnWidth: (params) => {
+              const colId = params.column.getColId();
+              const rowData = [];
+
+              gridApi.forEachNode((node) => {
+                  if (node.data && node.data[colId] !== undefined) {
+                      rowData.push(String(node.data[colId]));
+                  }
+              });
+
+              // Get the maximum length of text in the column, including the header
+              const headerName = params.column.getColDef().headerName || "";
+              const maxContentLength = Math.max(
+                  ...rowData.map((value) => value.length),
+                  headerName.length
+              );
+
+              // Convert character length to approximate pixel width
+              const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+
+              return estimatedWidth;
+          },
+          processCellCallback: (params) => {
+              let value = params.value;
+
+              // Ensure "Refund ID" and empty values show "N/A"
+              if (value === null || value === undefined || value === "") {
+                  return "N/A";
+              }
+
+              // Convert objects to readable JSON strings
+              if (typeof value === "object" && value !== null) {
+                  return JSON.stringify(value);
+              }
+
+             
+              // if (typeof value === "string") {
+              //     value = value.replace(/[^\d.-]/g, ""); 
+              // }
+
+              // Prevent scientific notation by treating numbers longer than 15 digits as text
+              if (/^\d{16,}$/.test(value)) { 
+                  return `'${value}`; // Prefix with apostrophe to ensure text format
+              }
+
+             
+
+              return value;
+          },
+      });
+  } else {
+      console.error("Grid API not available for Excel export.");
+  }
 };
-  useEffect(() => {
+
+
+
+useEffect(() => {
     // Load the saved quickFilterText from localStorage on component mount
     const savedQuickFilterText = localStorage.getItem("quickFilterText");
     if (savedQuickFilterText) {
@@ -137,6 +262,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           rowData={rowData}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
+          pinnedBottomRowData={pinnedBottomRowData} 
           columnDefs={columnDefs?.map((col) => ({
             ...col,
             minWidth: 180,
