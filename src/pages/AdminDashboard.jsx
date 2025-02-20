@@ -90,7 +90,7 @@ function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchAllEntityBookingsByFilters( initialValues);
+    fetchAllEntityBookingsByFilters(initialValues);
   }, [pageIndex, pageSize]);
 
   const handlePageChange = (newPageIndex, newPageSize) => {
@@ -284,7 +284,7 @@ function AdminDashboard() {
           ))}
 
         {/* ZOO DASHBOARD */}
-        {( roleDetails?.name === "ROLE_ZOOPARKADMIN") &&
+        {roleDetails?.name === "ROLE_ZOOPARKADMIN" &&
           dashboardCardCountZooTicketWise.map((card, index) => (
             <div
               key={index}
@@ -384,7 +384,7 @@ function AdminDashboard() {
                     onClick={() => {
                       fetchAllZooDashBoardCounts(DashboardDate);
                     }}
-                    className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >
                     Search
                   </button>
@@ -501,7 +501,7 @@ function AdminDashboard() {
             </div>
           </DashboardCard07>
         )}
-
+           {/* REPORT TABLE */}
         <DashboardCard07 header={true} title="Location Bookings">
           <div className="">
             <div>
@@ -556,7 +556,7 @@ function AdminDashboard() {
                               new Date(fromDateValue) > new Date(values.toDate)
                             ) {
                               // Automatically update toDate if it's earlier than fromDate
-                              setFieldValue("toDate", fromDateValue);
+                              setFieldValue("toDate", fromDateValue); 
                             }
                           }}
                         />
@@ -583,7 +583,7 @@ function AdminDashboard() {
                       <div className="flex items-end">
                         <button
                           type="submit"
-                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                          className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                           // disabled={isFetchEntityBookingsLoading}
                         >
                           Search

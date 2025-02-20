@@ -17,7 +17,7 @@ const ProtectedRoute = ({ element }) => {
   const role = roleDetails?.name;
 
   const email = decodedTokenData?.data?.email;
-  console.log("email PERMISSIONS", email);
+  
 
   const rolePermissions = useMemo(() => {
     if (

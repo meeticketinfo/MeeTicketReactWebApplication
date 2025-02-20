@@ -130,7 +130,7 @@ export default function AdminBookings() {
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "bookingRegistredDate",
+      field: "validityDate",
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -202,9 +202,9 @@ export default function AdminBookings() {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div className="sm:flex sm:justify-between sm:items-center mb-8">
+        <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
               Bookings
             </h1>
           </div>
@@ -213,7 +213,7 @@ export default function AdminBookings() {
               (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
               isCounterEnabled?.toLowerCase() === "true" && (
                 <button
-                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                  className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                   onClick={() => setIsBookingFormVisible(true)} // Show booking form
                 >
                   Book Tickets
@@ -345,7 +345,7 @@ export default function AdminBookings() {
                       <div className="flex items-end">
                         <button
                           type="submit"
-                          className="bg-green-700 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-green-700 hover:border hover:border-green-700 "
+                          className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                           // disabled={isFetchEntityBookingsLoading}
                         >
                           Search

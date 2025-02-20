@@ -68,12 +68,12 @@ function FacilityBookings() {
       paymentType: " ",
       totaL_AMOUNT: 0, // ✅ Ensure it's a number
     };
-  
+
     // ✅ Sum the "Total Amount" column from the original data
     AllFacilityBookings.forEach((row) => {
       totals["totaL_AMOUNT"] += Number(row.totaL_AMOUNT) || 0;
     });
-  
+
     // ✅ Sum dynamic columns from processedBookings
     processedBookings.forEach((row) => {
       Object.keys(row).forEach((key) => {
@@ -82,10 +82,9 @@ function FacilityBookings() {
         }
       });
     });
-  
+
     return [totals]; // ✅ This ensures no "S.No" is applied
   }, [processedBookings, AllFacilityBookings]);
-  
 
   /** ✅ **Generate dynamic column definitions** */
   const getFacilityColumns = (data) => {
@@ -113,7 +112,7 @@ function FacilityBookings() {
           width: 130,
           headerClass: "text-blue-v2 capitalize",
         })),
-       
+
         {
           field: `${category} - Total Amount`,
           width: 120,
@@ -136,14 +135,14 @@ function FacilityBookings() {
 
   /** ✅ **Base Columns** */
   const baseColumns = [
-    
     {
-        headerName: "S.No",
-        valueGetter: (params) => (params.data.transactionId === "Total" ? "" : params.node.rowIndex + 1),
-        minWidth: 80,
-        maxWidth: 80,
-        headerClass: "text-blue-v2",
-      },
+      headerName: "S.No",
+      valueGetter: (params) =>
+        params.data.transactionId === "Total" ? "" : params.node.rowIndex + 1,
+      minWidth: 80,
+      maxWidth: 80,
+      headerClass: "text-blue-v2",
+    },
     {
       field: "transactionId",
       headerName: "Transaction Id",
@@ -190,13 +189,13 @@ function FacilityBookings() {
       headerClass: "text-blue-v2",
     },
     {
-        field: "totaL_AMOUNT",
-        headerName: "Total Amount (Rs.)",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) =>
-          params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
-      },
-      
+      field: "totaL_AMOUNT",
+      headerName: "Total Amount (Rs.)",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
+    },
+
     {
       field: "status",
       headerName: "Payment Status",
@@ -218,14 +217,14 @@ function FacilityBookings() {
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div className="sm:flex sm:justify-between sm:items-center mb-8">
+        <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
               Facility Bookings
             </h1>
           </div>
         </div>
-        <div className="mb-8">
+        <div className="">
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue }) => (
               <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -260,7 +259,7 @@ function FacilityBookings() {
                 <div className="flex items-end">
                   <button
                     type="submit"
-                    className="bg-green-700 text-white rounded-lg px-3 py-1"
+                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >
                     Search
                   </button>
@@ -274,7 +273,7 @@ function FacilityBookings() {
           rowData={processedBookings}
           columnDefs={columnDefs}
           isFetchLoading={isFetchFacilityBookingsLoading}
-        //   pinnedBottomRowData={totalRow} 
+          //   pinnedBottomRowData={totalRow}
         />
       </div>
     </AdminLayout>

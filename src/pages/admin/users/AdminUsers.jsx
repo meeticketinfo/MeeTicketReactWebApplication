@@ -24,10 +24,10 @@ export default function AdminUsers() {
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         {/* Dashboard actions */}
-        <div className="sm:flex sm:justify-between sm:items-center mb-8">
+        <div className="sm:flex sm:justify-between sm:items-center mb-2">
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-3xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
               Location Admin
             </h1>
           </div>
@@ -37,7 +37,7 @@ export default function AdminUsers() {
             {!isUserCreateVisible ? (
               <button
                 onClick={toggleUserCreate}
-                className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
                 <span className="max-xs:sr-only">Create Location Admin</span>
               </button>

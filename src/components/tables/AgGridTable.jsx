@@ -20,8 +20,8 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowD
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 5;
-  const gridHeight = isPaginationEnabled ? 600 : 600;
+  const isPaginationEnabled = rowData.length > 10;
+  const gridHeight = isPaginationEnabled ? 550 : 300;
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
@@ -39,120 +39,6 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowD
   };
 
  
-//   const handleExportExcel = () => {
-//     if (gridApi) {
-//         gridApi.exportDataAsExcel({
-//             sheetName: "Report",
-//             fileName: "Report.xlsx",
-//             columnWidth: (params) => {
-//                 const colId = params.column.getColId();
-//                 const rowData = [];
-
-//                 gridApi.forEachNode((node) => {
-//                     if (node.data && node.data[colId] !== undefined) {
-//                         rowData.push(String(node.data[colId]));
-//                     }
-//                 });
-
-//                 // Get the maximum length of text in the column, including the header
-//                 const headerName = params.column.getColDef().headerName || "";
-//                 const maxContentLength = Math.max(
-//                     ...rowData.map((value) => value.length),
-//                     headerName.length
-//                 );
-
-//                 // Convert character length to approximate pixel width
-//                 const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
-
-//                 return estimatedWidth;
-//             },
-//             processCellCallback: (params) => {
-//                 let value = params.value;
-
-//                 // Ensure "Refund ID" and empty values show "N/A"
-//                 if (value === null || value === undefined || value === "") {
-//                     return "N/A";
-//                 }
-
-//                 // Convert objects to readable JSON strings
-//                 if (typeof value === "object" && value !== null) {
-//                     return JSON.stringify(value);
-//                 }
-
-//                 // Ensure large numbers (more than 15 digits) are treated as text
-//                 if (typeof value === "number" || (typeof value === "string" && value.length > 15)) {
-//                     return `'${value}`; // Add an apostrophe to keep it as text in Excel
-//                 }
-
-//                 return value;
-//             },
-//         });
-//     } else {
-//         console.error("Grid API not available for Excel export.");
-//     }
-// };
-  
-// const handleExportExcel = () => {
-//   if (gridApi) {
-//       gridApi.exportDataAsExcel({
-//           sheetName: "Report",
-//           fileName: "Report.xlsx",
-//           columnWidth: (params) => {
-//               const colId = params.column.getColId();
-//               const rowData = [];
-
-//               gridApi.forEachNode((node) => {
-//                   if (node.data && node.data[colId] !== undefined) {
-//                       rowData.push(String(node.data[colId]));
-//                   }
-//               });
-
-//               // Get the maximum length of text in the column, including the header
-//               const headerName = params.column.getColDef().headerName || "";
-//               const maxContentLength = Math.max(
-//                   ...rowData.map((value) => value.length),
-//                   headerName.length
-//               );
-
-//               // Convert character length to approximate pixel width
-//               const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
-
-//               return estimatedWidth;
-//           },
-//           processCellCallback: (params) => {
-//               let value = params.value;
-
-//               // Ensure "Refund ID" and empty values show "N/A"
-//               if (value === null || value === undefined || value === "") {
-//                   return "N/A";
-//               }
-
-//               // Convert objects to readable JSON strings
-//               if (typeof value === "object" && value !== null) {
-//                   return JSON.stringify(value);
-//               }
-
-//               if (typeof value === "string") {
-//                 value = value.replace(/[^\d.-]/g, ""); 
-//             }
-
-//             // Ensure large numbers (more than 15 digits) are treated as text
-//             if (/^\d{15,}$/.test(value)) { 
-//                 return `'${value}`; // Convert 16+ digit numbers to text to prevent Excel rounding
-//             }
-
-//               // Remove currency symbols before exporting to Excel
-//               if (typeof value === "string") {
-//                   value = value.replace(/[^\d.-]/g, ""); // Remove all non-numeric characters except dot and minus
-//               }
-
-//               return value;
-//           },
-//       });
-//   } else {
-//       console.error("Grid API not available for Excel export.");
-//   }
-// };
 
 const handleExportExcel = () => {
   if (gridApi) {
@@ -230,9 +116,14 @@ useEffect(() => {
       gridApi.paginationGoToPage(activePage);
     }
   }, [activePage, gridApi]);
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.refreshClientSideRowModel(); // Refresh indexes when filtering
+    }
+  }, [quickFilterText]);
 
   return (
-    <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
+    <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
       {/* Search and Export Buttons */}
       <div className="ag-grid-toolbar flex justify-between items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm">
         <div>
