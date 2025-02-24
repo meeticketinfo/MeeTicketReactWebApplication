@@ -7,17 +7,21 @@ import "./AgGridTable.css";
 import { FaFileCsv } from "react-icons/fa6";
 import usePaginationStore from "../../store/paginationStore";
 import { useAggridStore } from "../../store/agGridStore";
+import { ModuleRegistry } from "ag-grid-community";
+import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 
-const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
+ModuleRegistry.registerModules([ExcelExportModule]);
+
+const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowData }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
-  
+
   const gridRef = useRef(null);
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 5;
-  const gridHeight = isPaginationEnabled ? 600 : 600;
+  const isPaginationEnabled = rowData.length > 10;
+  const gridHeight = isPaginationEnabled ? 550 : 300;
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
@@ -34,14 +38,71 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
     }
   };
 
-  // Function to export data to Excel
-  const handleExportExcel = () => {
-    if (gridApi) {
-      gridApi.exportDataAsExcel([]);
-    }
-  };
+ 
 
-  useEffect(() => {
+const handleExportExcel = () => {
+  if (gridApi) {
+      gridApi.exportDataAsExcel({
+          sheetName: "Report",
+          fileName: "Report.xlsx",
+          columnWidth: (params) => {
+              const colId = params.column.getColId();
+              const rowData = [];
+
+              gridApi.forEachNode((node) => {
+                  if (node.data && node.data[colId] !== undefined) {
+                      rowData.push(String(node.data[colId]));
+                  }
+              });
+
+              // Get the maximum length of text in the column, including the header
+              const headerName = params.column.getColDef().headerName || "";
+              const maxContentLength = Math.max(
+                  ...rowData.map((value) => value.length),
+                  headerName.length
+              );
+
+              // Convert character length to approximate pixel width
+              const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+
+              return estimatedWidth;
+          },
+          processCellCallback: (params) => {
+              let value = params.value;
+
+              // Ensure "Refund ID" and empty values show "N/A"
+              if (value === null || value === undefined || value === "") {
+                  return "N/A";
+              }
+
+              // Convert objects to readable JSON strings
+              if (typeof value === "object" && value !== null) {
+                  return JSON.stringify(value);
+              }
+
+             
+              // if (typeof value === "string") {
+              //     value = value.replace(/[^\d.-]/g, ""); 
+              // }
+
+              // Prevent scientific notation by treating numbers longer than 15 digits as text
+              if (/^\d{16,}$/.test(value)) { 
+                  return `'${value}`; // Prefix with apostrophe to ensure text format
+              }
+
+             
+
+              return value;
+          },
+      });
+  } else {
+      console.error("Grid API not available for Excel export.");
+  }
+};
+
+
+
+useEffect(() => {
     // Load the saved quickFilterText from localStorage on component mount
     const savedQuickFilterText = localStorage.getItem("quickFilterText");
     if (savedQuickFilterText) {
@@ -55,9 +116,14 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
       gridApi.paginationGoToPage(activePage);
     }
   }, [activePage, gridApi]);
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.refreshClientSideRowModel(); // Refresh indexes when filtering
+    }
+  }, [quickFilterText]);
 
   return (
-    <div className="bg-white/30 backdrop-blur-md p-4 border rounded-2xl">
+    <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
       {/* Search and Export Buttons */}
       <div className="ag-grid-toolbar flex justify-between items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm">
         <div>
@@ -70,7 +136,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           />
         </div>
         <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
-          <button onClick={handleExportCsv} className="ag-grid-button">
+          <button onClick={handleExportExcel} className="ag-grid-button">
             <FaFileCsv className="text-blue-v2 text-xl" />
           </button>
         </div>
@@ -87,13 +153,13 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
           rowData={rowData}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
-          columnDefs={columnDefs.map((col) => ({
+          pinnedBottomRowData={pinnedBottomRowData} 
+          columnDefs={columnDefs?.map((col) => ({
             ...col,
             minWidth: 180,
             sortable: true,
           }))}
-          quickFilterText={quickFilterText} 
-        
+          quickFilterText={quickFilterText}
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance
             params.api.paginationGoToPage(activePage); // Navigate to the saved active page
@@ -102,7 +168,7 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading }) => {
             if (gridApi) {
               const currentPage = gridApi.paginationGetCurrentPage();
               if (currentPage !== activePage) {
-              setActivePage(currentPage);
+                setActivePage(currentPage);
               }
             }
           }}

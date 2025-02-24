@@ -135,6 +135,11 @@ const sidebarItems = [
         path: "/payment-transaction-report",
       },
       {
+        title: "Facility Bookings",
+        icon: TbReportAnalytics,
+        path: "/facility-bookings",
+      },
+      {
         title: "Metro Bookings",
         icon: FaUsers,
         path: "/metro-bookings",
