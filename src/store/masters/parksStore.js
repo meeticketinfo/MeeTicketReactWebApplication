@@ -18,6 +18,8 @@ const getFileTypeFromUrl = (url) => {
 export const useParkStore = create((set) => ({
   allParks: [],
   ParkDetails: [],
+  allParkBankTransactions: [],
+  isFetchAllParkBankTransactionsLoading: false,
   isSaveParkDetailsLoading: false,
   isFetchParkDetailsLoading: false,
   isFetchAllParksLoading: false,
@@ -60,6 +62,23 @@ export const useParkStore = create((set) => ({
       });
     } catch (error) {
       set({ isFetchAllParksLoading: false });
+    }
+  },
+
+  fetchParkBankTransactions: async (
+    { fromDate, toDate }
+  ) => {
+    set({ isFetchAllParkBankTransactionsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.PARK_Reports.GET_PARK_BANK_TRANSACTION_REPORT}?StartDate=${fromDate}&EndDate=${toDate}`
+      );
+      set({
+        allParkBankTransactions: response.data,
+        isFetchAllParkBankTransactionsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchAllParkBankTransactionsLoading: false });
     }
   },
 

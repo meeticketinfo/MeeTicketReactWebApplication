@@ -40,9 +40,60 @@ const AgGridTablev3 = ({ rowData = [], columnDefs, isFetchLoading }) => {
   };
 
   // Function to export data to CSV
-  const handleExportCsv = () => {
+  const handleExportExcel = () => {
     if (gridApi) {
-      gridApi.exportDataAsCsv();
+      gridApi.exportDataAsExcel({
+        sheetName: "Report",
+        fileName: "Report.xlsx",
+        columnWidth: (params) => {
+          const colId = params.column.getColId();
+          const rowData = [];
+ 
+          gridApi.forEachNode((node) => {
+            if (node.data && node.data[colId] !== undefined) {
+              rowData.push(String(node.data[colId]));
+            }
+          });
+ 
+          // Get the maximum length of text in the column, including the header
+          const headerName = params.column.getColDef().headerName || "";
+          const maxContentLength = Math.max(
+            ...rowData.map((value) => value.length),
+            headerName.length
+          );
+ 
+          // Convert character length to approximate pixel width
+          const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+ 
+          return estimatedWidth;
+        },
+        processCellCallback: (params) => {
+          let value = params.value;
+ 
+          // Ensure "Refund ID" and empty values show "N/A"
+          if (value === null || value === undefined || value === "") {
+            return "N/A";
+          }
+ 
+          // Convert objects to readable JSON strings
+          if (typeof value === "object" && value !== null) {
+            return JSON.stringify(value);
+          }
+ 
+          // if (typeof value === "string") {
+          //     value = value.replace(/[^\d.-]/g, "");
+          // }
+ 
+          // Prevent scientific notation by treating numbers longer than 15 digits as text
+          if (/^\d{16,}$/.test(value)) {
+            return `'${value}`; // Prefix with apostrophe to ensure text format
+          }
+ 
+          return value;
+        },
+      });
+    } else {
+      console.error("Grid API not available for Excel export.");
     }
   };
 
@@ -72,7 +123,7 @@ const AgGridTablev3 = ({ rowData = [], columnDefs, isFetchLoading }) => {
           />
         </div>
         <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
-          <button onClick={handleExportCsv} className="ag-grid-button">
+          <button onClick={handleExportExcel} className="ag-grid-button">
             <FaFileCsv className="text-blue-v2 text-xl" />
           </button>
         </div>

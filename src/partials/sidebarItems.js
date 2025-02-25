@@ -2,7 +2,7 @@
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { MdOutlineWorkOff } from "react-icons/md";
 import { MdOutlineWorkHistory } from "react-icons/md";
-import { RiBodyScanLine } from "react-icons/ri";
+import { RiBankFill, RiBodyScanLine } from "react-icons/ri";
 import { MdPayments } from "react-icons/md";
 import { TbPackages } from "react-icons/tb";
 import { FaChalkboardUser } from "react-icons/fa6";
@@ -115,19 +115,18 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Bookings",
+        title: "Consolidated Booking Details",
+        icon: TbReportSearch,
+        path: "/completed-bookings",
+      },
+      {
+        title: "Individual Booking Details",
         icon: RiDashboard3Fill,
         path: "/entity-bookings",
         gradientClass:
           "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
         subItems: [],
         roles: ["Admin", "Super Admin"],
-      },
-     
-      {
-        title: "Completed Bookings",
-        icon: TbReportSearch,
-        path: "/completed-bookings",
       },
       {
         title: "Payment Transactions",
@@ -138,6 +137,11 @@ const sidebarItems = [
         title: "Facility Bookings",
         icon: TbReportAnalytics,
         path: "/facility-bookings",
+      },
+      {
+        title: "Bank Payments",
+        icon: RiBankFill,
+        path: "/bank-transactions",
       },
       {
         title: "Metro Bookings",
@@ -197,19 +201,24 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Booking Details",
-        icon: GrTransaction,
+        title: "Consolidated Ticket Details",
+        icon: TbReportSearch,
         path: "/booking-details",
       },
       {
-        title: "Ticket Details",
-        icon: GrTransaction,
+        title: "Individual Ticket Details",
+        icon: RiDashboard3Fill,
         path: "/transaction-report",
       },
       {
         title: "Payment Transactions",
-        icon: GrTransaction,
+        icon: TbReportAnalytics,
         path: "/pending-transaction-details",
+      },
+      {
+        title: "Bank Payments",
+        icon: RiBankFill,
+        path: "/metro-cumulative-bookings",
       },
       // {
       //   title: "Transaction Report",

@@ -5,6 +5,8 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 export const useMetroBookingStore = create((set) => ({
   allMetroBookingDetailsReports: [],
   isFetchAllMetroBookingDetailsReportsLoading: false,
+  allMetroCumulativeBookingDetailsReports: [],
+  isFetchAllMetroCumulativeBookingDetailsReportsLoading: false,
   MetroBookingsDetails: {},
 
   isFetchCurrentMetroBookingsDetailsLoading: false,
@@ -25,6 +27,23 @@ export const useMetroBookingStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchAllMetroBookingDetailsReportsLoading: false });
+    }
+  },
+
+  fetchAllMetroCumulativeBookingDetailsReport: async (
+    { fromDate, toDate }
+  ) => {
+    set({ isFetchAllMetroCumulativeBookingDetailsReportsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.METRO_Reports.GET_CUMULATIVE_METRO_BOOKINGS}?StartDate=${fromDate}&EndDate=${toDate}`
+      );
+      set({
+        allMetroCumulativeBookingDetailsReports: response.data,
+        isFetchAllMetroCumulativeBookingDetailsReportsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchAllMetroCumulativeBookingDetailsReportsLoading: false });
     }
   },
 }));

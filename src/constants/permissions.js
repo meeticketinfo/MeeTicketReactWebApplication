@@ -13,6 +13,8 @@ export const superAdminPermissions = [
   "payment-transaction-report",
   "booking-details",
   'pending-transaction-details',
+  'bank-transactions',
+  'metro-cumulative-bookings',
 ];
 
 export const parkAdminPermissions = [

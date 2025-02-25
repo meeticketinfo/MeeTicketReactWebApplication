@@ -62,7 +62,7 @@ ul:not(.browser-default) li {
 }
 
 .sidebar-expanded .menu-link {
-  margin-left: 25px;
+  margin-left: 5px;
 }
 
 .sidebar-minimized #sidebar {
@@ -81,4 +81,8 @@ ul:not(.browser-default) li {
 
 .sidebar-minimized .item-flex {
   justify-content: center;
+}
+
+.ag-watermark {
+  display: none;
 }
