@@ -82,6 +82,32 @@ function MetroBookingList() {
             valueFormatter: (params) => `${params.value} ` || "N/A",
         },
         {
+            field: "ticketType",
+            headerName: "Ticket Type",
+            maxWidth: "160",
+
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => `${params.value} ` || "N/A",
+        },
+
+        {
+            field: "travelDate",
+            headerName: "Travel Date",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => {
+                if (!params.value) return "N/A";
+                const date = new Date(params.value);
+                return date.toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                });
+            },
+        },
+        {
             field: "noOfTickets",
             headerName: "No Of Tickets",
             maxWidth: "160",
@@ -138,46 +164,97 @@ function MetroBookingList() {
                     "N/A"
                 ),
         },
-
-        {
-            field: "travelDate",
-            headerName: "Date",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => {
-                if (!params.value) return "N/A";
-                const date = new Date(params.value);
-                return date.toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                });
-            },
-        },
-
-      
         // {
-        //   field: "userId",
-        //   headerName: "User ID",
-
-        //   headerClass: "text-blue-v2",
-        //   valueFormatter: (params) => `${params.value} ` || "N/A",
+        //     field: "actualAmountPaid",
+        //     headerName: "Settlement Amount Paid",
+        //     headerClass: "text-blue-v2",            
+        //     cellRenderer: (params) =>
+        //         params.value ? (
+        //             <>
+        //                 <span>Rs. </span>
+        //                 <span>{+params.value}</span>
+        //             </>
+        //         ) : (
+        //             "N/A"
+        //         ),
+        // },
+        // {
+        //     field: "actualPaymentStatus",
+        //     headerName: "Settlement Payment Status",
+        //     headerClass: "text-blue-v2",
+        //     valueFormatter: (params) => params.value || "N/A",
         // },
         {
-          field: "paymentOrderID",
-          headerName: "Order ID",
-
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => params.value || "0",
-        },
-        {
-            field: "paymentStatus",
-            headerName: "Payment Status",
-
+            field: "paymentOrderID",
+            headerName: "Order ID",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+            field: "actualPaymentStatus",
+            headerName: "Booking Status",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+            field: "refundDate",
+            headerName: "Refund Date",
+            headerClass: "text-blue-v2 bg-[#FFD3AC] hover:!bg-[#FFD3AC]",
+            cellStyle: {backgroundColor: "rgb(243 229 218)"},
+            valueFormatter: (params) => {
+              if (!params.value) return "N/A";
+              const date = new Date(params.value);
+              return date.toLocaleString("en-US", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              });
+            },
+        },
+        {
+            field: "refundId",
+            headerName: "Refund ID",
+            headerClass: "text-blue-v2 bg-[#FFD3AC] hover:!bg-[#FFD3AC]",
+            valueFormatter: (params) => params.value || "N/A",
+            cellStyle: {backgroundColor: "rgb(243 229 218)"}
+        },
+        {
+            field: "refundStatus",
+            headerName: "Refund Status",
+            headerClass: "text-blue-v2 bg-[#FFD3AC] hover:!bg-[#FFD3AC]",
+            valueFormatter: (params) => params.value || "N/A",
+            cellStyle: {backgroundColor: "rgb(243 229 218)"}
+        },
+        // {
+        //     field: "utr",
+        //     headerName: "UTR",
+        //     headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+        //     valueFormatter: (params) => params.value || "N/A",
+        //     cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
+        // },
+        // {
+        //     field: "utrprocessedtime",
+        //     headerName: "UTR Processed Time",
+        //     headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+        //     valueFormatter: (params) => params.value || "N/A",
+        //     cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
+        // },
+        {
+            field: "finalutr",
+            headerName: "UTR",
+            headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+            valueFormatter: (params) => params.value || "N/A",
+            cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
+        },
+        {
+            field: "finalutrprocessedtime",
+            headerName: "UTR Date",
+            headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+            valueFormatter: (params) => params.value || "N/A",
+            cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
         },
     ]);
     return (

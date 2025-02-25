@@ -170,10 +170,14 @@ export const API_ENDPOINTS = {
     METRO_BOOKINGS: {
       GET_METRO_BOOKINGS: `Master/GetAllFacilities`,
     },
+    PARK_Reports: {
+      GET_PARK_BANK_TRANSACTION_REPORT : `${API_BASE_URL}ParkReport/GetParkBankTransactionReport`,
+    },
     METRO_Reports: {
       GET_METRO_SUMMARY: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
       GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetBookingDetailsResult`,
       GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetInprogressorFailedPaymentTxnResult`,
+      GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}MetroReport/GetDateWiseBookingsCumulative`,
     },
   },
   ENTITIES: {

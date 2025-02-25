@@ -45,6 +45,8 @@ import Support from "../pages/admin/support/Support";
 import MetroBookingDetails from "../components/metro_reports/bookingdetails/MetroBookingDetails";
 import MetroPendingTransactionDetails from "../components/metro_reports/pendingTransactions/MetroPendingTransactions";
 import FacilityBookings from "../pages/admin/BookTickets/FacilityBookings";
+import BankTransactions from "../pages/admin/BookTickets/BankTransactions";
+import MetroCumulativeBookings from "../components/metro_reports/cumulativeBookings/MetroCumulativeBookings";
 
 export const routes = [
   {
@@ -106,6 +108,10 @@ export const routes = [
     path: "/metro-bookings",
     element: <ProtectedRoute element={<MetroBookings />} />,
   },
+  {
+    path: "/metro-cumulative-bookings",
+    element: <ProtectedRoute element={<MetroCumulativeBookings />} />,
+  },
   { path: "/user-wise", element: <ProtectedRoute element={<AdminUsers />} /> },
   {
     path: "/entity-admins",
@@ -137,6 +143,7 @@ export const routes = [
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/facility-bookings", element: <ProtectedRoute element={<FacilityBookings />} /> },
+  { path: "/bank-transactions", element: <ProtectedRoute element={<BankTransactions />} /> },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
