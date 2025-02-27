@@ -14,7 +14,7 @@ export const useServiceStore = create((set) => ({
   ServiceEditDetails: {},
 
   setCurrentServiceEditDetails: (ServiceEditDetails) => {
-    console.log("serviceEditDetails", ServiceEditDetails);
+    
     set({
       ServiceEditDetails,
     });
@@ -45,7 +45,7 @@ export const useServiceStore = create((set) => ({
         // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
         url
       );
-      console.log(response);
+    
 
       set({
         allServices: response.data,

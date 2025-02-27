@@ -184,8 +184,15 @@ function FacilityBookings() {
       },
     },
     {
-      field: "bookingID",
-      headerName: "Booking ID",
+      field: "utr",
+      headerName: "UTR Number",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value ? params.value : "N/A",
+    },
+    {
+      field: "referencE_ID",
+      headerName: "Reference_ID",
       headerClass: "text-blue-v2",
     },
     {

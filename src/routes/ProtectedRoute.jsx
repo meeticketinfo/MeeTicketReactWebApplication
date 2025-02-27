@@ -8,6 +8,7 @@ import {
   MetroReports,
   NehruZooPark,
   SupportAdmin,
+  CustomParkAdminPermissions,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -18,6 +19,7 @@ const ProtectedRoute = ({ element }) => {
 
   const email = decodedTokenData?.data?.email;
   
+  const parkId=decodedTokenData?.data.ParkId
 
   const rolePermissions = useMemo(() => {
     if (
@@ -30,7 +32,8 @@ const ProtectedRoute = ({ element }) => {
     } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
-      return parkAdminPermissions;
+     
+      return parkId==="100"?CustomParkAdminPermissions:parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {

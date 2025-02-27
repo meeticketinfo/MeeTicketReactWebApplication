@@ -66,7 +66,7 @@ function AdminDashboard() {
     allZooDashboardTicketWise,
     fetchAllZooDashBoardCountsTicketWise,
   } = useDashboardStore();
-  console.log("allZooDashboardTicketWise", allZooDashboardTicketWise);
+  
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",

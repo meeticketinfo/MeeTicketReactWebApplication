@@ -17,10 +17,14 @@ import {
   MetroReports,
   NehruZooPark,
   SupportAdmin,
+  CustomParkAdminPermissions,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
 import usePaginationStore from "../store/paginationStore";
+import { useBookingsStore } from "../store/masters/bookingsStore";
+import { IoTicketOutline } from "react-icons/io5";
+
 
 function Sidebar({ variant = "default" }) {
   const location = useLocation();
@@ -37,6 +41,8 @@ function Sidebar({ variant = "default" }) {
   const setSidebarExpanded = useSidebarStore(
     (state) => state.setSidebarExpanded
   );
+
+  const { setIsBookingFormVisible } = useBookingsStore();
   const {
     sidebarMenuItems,
     roleDetails,
@@ -82,21 +88,8 @@ function Sidebar({ variant = "default" }) {
   }, [sidebarExpanded]);
   const email = decodedTokenData?.data?.email;
   const role = roleDetails?.name;
-  // const rolePermissions = useMemo(() => {
-  //   if (role === "ROLE_SUPERADMIN") {
-  //     return superAdminPermissions;
-  //   } else if (role === "ROLE_ADMIN") {
-  //     return parkAdminPermissions;
-  //   } else if (role === "ROLE_NODALOFFICER") {
-  //     return nodalOfficerPermissions;
-  //   } else if (role === "ROLE_METROADMIN") {
-  //     return MetroReports;
-  //   }else if (role === "ROLE_ZOOPARKADMIN") {
-  //         return NehruZooPark;
-  //       }
-  //   return [];
-  // }, [role]);
 
+  const parkId = decodedTokenData?.data.ParkId;
   const rolePermissions = useMemo(() => {
     if (
       (role === "ROLE_SUPERADMIN" && email === "supportuser1@meeticket.com") ||
@@ -107,7 +100,9 @@ function Sidebar({ variant = "default" }) {
     } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
-      return parkAdminPermissions;
+      return parkId === "100"
+        ? CustomParkAdminPermissions
+        : parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
@@ -271,10 +266,7 @@ function Sidebar({ variant = "default" }) {
                                       );
                                       setActivePage(0);
                                     }}
-                                    // style={{
-                                    //   clipPath:
-                                    //     "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)",
-                                    // }}
+                                   
                                   >
                                     <div className="flex items-center">
                                       {subItem.icon && (
@@ -303,22 +295,26 @@ function Sidebar({ variant = "default" }) {
                       end
                       to={item.path}
                       title={item.title}
-                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150 ${
+                      // onClick={() => {
+                      //   item.title === "Book Tickets" &&
+                      //     setIsBookingFormVisible(true);
+                      // }}
+                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150    ${
                         pathname.includes(item.path)
-                          ? "text-gray-200 bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] "
-                          : " text-gray-300 dark:hover:text-white"
+                          ? `text-gray-200 bg-blue-v1   from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] `
+                          : ` text-gray-300 dark:hover:text-white`
                       }`}
                     >
-                      <div className="flex item-flex items-center">
-                        <item.icon
+                      <div className={`flex item-flex items-center ${item.title === "Book Tickets"?`${!sidebarOpen?"bg-white justify-center":"justify-center"} px-2 py-2  text-blue-v1 rounded-lg`:""}  `}>
+                     { <item.icon
                           className={`shrink-0 text-[22px] ${
                             pathname.includes(item.path)
                               ? "text-violet-500"
                               : "text-gray-400 dark:text-gray-500"
                           }`}
-                        />
-                        <span className="menu-text text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                          {item.title}
+                        />}
+                        <span className={`menu-text flex items-center gap-2 text-sm  font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200`}>
+                       {item.title}
                         </span>
                       </div>
                     </NavLink>
