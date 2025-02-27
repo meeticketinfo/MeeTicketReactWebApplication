@@ -110,7 +110,7 @@ const ParkCreate = ({
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
-      .max(500, "Description cannot be more than 500 characters"),
+      .max(1000, "Description cannot be more than 1000 characters"),
     // Prefix: Yup.string()
     //   .matches(
     //     /^[a-zA-Z0-9]*$/,
@@ -159,7 +159,7 @@ const ParkCreate = ({
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
-      .max(500, "Description cannot be more than 500 characters"),
+      .max(1000, "Description cannot be more than 1000 characters"),
     ImageUrl: Yup.mixed()
       .nullable()
       .test("isRequired", "Location Image is required", (value, context) => {

@@ -47,6 +47,7 @@ import MetroPendingTransactionDetails from "../components/metro_reports/pendingT
 import FacilityBookings from "../pages/admin/BookTickets/FacilityBookings";
 import BankTransactions from "../pages/admin/BookTickets/BankTransactions";
 import MetroCumulativeBookings from "../components/metro_reports/cumulativeBookings/MetroCumulativeBookings";
+import CustomBookTickets from "../pages/admin/BookTickets/CustomBookTickets";
 
 export const routes = [
   {
@@ -142,6 +143,7 @@ export const routes = [
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
+  { path: "/book-tickets", element: <CustomBookTickets/> },
   { path: "/facility-bookings", element: <ProtectedRoute element={<FacilityBookings />} /> },
   { path: "/bank-transactions", element: <ProtectedRoute element={<BankTransactions />} /> },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },

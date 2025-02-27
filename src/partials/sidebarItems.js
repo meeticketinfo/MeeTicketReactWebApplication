@@ -232,6 +232,15 @@ const sidebarItems = [
       // },
     ],
   },
+// book tickets on counter bookings
+  {
+    title: "Book Tickets",
+    icon: IoTicketOutline, 
+    path: "/book-tickets",
+    gradientClass:
+      "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [],
+  },
 ];
 
 export default sidebarItems;

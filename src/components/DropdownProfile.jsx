@@ -127,7 +127,7 @@ function DropdownProfile({ align }) {
                   localStorage.clear();
                 }}
               >
-                Sign Out
+                Sign out
               </Link>
             </li>
           </ul>

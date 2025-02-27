@@ -42,7 +42,7 @@ export const useFacilityStore = create((set) => ({
         // `${API_ENDPOINTS.MASTERS.Facility.GET_Facilities}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
         url
       );
-      console.log(response);
+     
 
       set({
         allFacilities: response.data,
@@ -72,7 +72,7 @@ export const useFacilityStore = create((set) => ({
         // `${API_ENDPOINTS.MASTERS.Facility.GET_Facilities}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
         url
       );
-      console.log(response);
+    
 
       set({
         adminFacilities: response.data,
@@ -88,7 +88,7 @@ export const useFacilityStore = create((set) => ({
       const response = await apiService.get(
         `${GET_LOCATION_DETAILS}${LocationId}`
       );
-      console.log(response);
+     
 
       set({
         LocationDetails: response.data,
@@ -121,7 +121,7 @@ export const useFacilityStore = create((set) => ({
   },
 
   setCurrentFacilityEditDetails: (FacilityEditDetails) => {
-    // console.log("FacilityEditDetails",FacilityEditDetails)
+   
     set({
       FacilityEditDetails,
     });
@@ -139,7 +139,7 @@ export const useFacilityStore = create((set) => ({
       const method = isUpdate ? "put" : "post";
 
       const response = await apiService[method](url, FacilityData);
-      // console.log("response istunnava :", response)
+     
       set({
         facilityCreateResponse: { response },
         FacilityDetails: response.data,

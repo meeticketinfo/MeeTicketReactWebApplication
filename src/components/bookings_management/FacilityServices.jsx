@@ -117,8 +117,8 @@ export const FacilityServices = () => {
     { id: 3, title: "Item 3", content: "This is the content for item 3" },
   ];
   const validationSchema = Yup.object({
-    paymentMethod: Yup.string().required("Please select a payment method."), // Add validation for payment method
-    mobileNumber: Yup.string().required("Please give mobile number."),
+    paymentMethod: Yup.string().required("Please select a payment method"), // Add validation for payment method
+    mobileNumber: Yup.string().required("Please enter mobile number"),
   });
 
   const handleSubmit = async (
@@ -183,10 +183,9 @@ export const FacilityServices = () => {
 
       try {
         const result = await saveFirstBookingDetails(bookingDetailsPayload);
-        if (result.data.data.message) {
+        
+        if (result.data.data.status!=200) {
           toast.error(result.data.data.message);
-        } else {
-          toast.error(result.data.data);
         }
         setQuantities({});
         values.selectedItems = [];
@@ -200,59 +199,7 @@ export const FacilityServices = () => {
       }
     }
 
-    // if (isCash) {
-    //   const totalAmount = calculateTotalAmount(values.selectedItems);
-    //   const currentDateTime = new Date().toISOString;
-    //   const bookingDetailsPayload = {
-    //     totalAmount: totalAmount,
-    //     userId: decodedTokenData?.data?.UserId,
-    //     parkId: decodedTokenData?.data?.ParkId,
-    //     transactionId: "",
-    //     bookingDate: currentDateTime,
-    //     bookingDetailsReqDTOs: values.selectedItems,
-    //   };
-    //   
-    //   try {
-    //     const result = await saveBookingDetails(bookingDetailsPayload);
-    //     if (result && result.data && result.data.status === 200) {
-    //       const newBookingId = result?.data?.data?.data;
-    //       navigate(`/entity-bookings/view-details/${newBookingId}`);
-    //       resetForm();
-    //     } else {
-    //       toast.error("Unexpected response from the server.");
-    //     }
-    //   } catch (xhr) {
-    //     handleApiError(xhr);
-    //   } finally {
-    //     setSubmitting(false);
-    //   }
-    // }
-    // if (isUpi) {
-    //   const bookingPaylod = {
-    //     totalAmount: totalAmount,
-    //     userId: decodedTokenData?.data?.UserId,
-    //     parkId: decodedTokenData?.data?.ParkId,
-    //     transactionId: "",
-
-    //     bookingDetailsReqDTOs: values.selectedItems,
-    //   };
-    //   sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
-
-    //  
-
-    //   try {
-    //     const result = await saveFirstBookingDetails(bookingDetailsPayload);
-    //     setQuantities({});
-    //     values.selectedItems = [];
-    //     resetForm();
-    //   } catch (xhr) {
-    //     handleApiError(xhr);
-    //   } finally {
-    //     resetForm();
-
-    //     setSubmitting(false);
-    //   }
-    // }
+    
   };
 
   return (
@@ -704,7 +651,7 @@ export const FacilityServices = () => {
                                 htmlFor="mobileNumber"
                                 className="block text-xs font-medium text-gray-700"
                               >
-                                mobile Number{" "}
+                                Mobile number{" "}
                                 <span className="text-red-500">*</span>
                               </label>
                               <Field
@@ -712,7 +659,7 @@ export const FacilityServices = () => {
                                 maxLength="10"
                                 name="mobileNumber"
                                 className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                                placeholder="Enter mobile Number"
+                                placeholder="Enter mobile number"
                                 onKeyPress={(e) => {
                                   if (!/^\d$/.test(e.key)) {
                                     e.preventDefault(); // Prevent non-numeric characters

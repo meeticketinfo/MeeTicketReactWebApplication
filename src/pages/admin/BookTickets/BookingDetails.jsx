@@ -10,6 +10,7 @@ import { PaymentQR } from "./PaymentQR";
 import { MdOutlineDownloadDone } from "react-icons/md";
 import Logo from "../../../images/MeeTicketLogo.svg";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
+import useAuthStore from "../../../store/authStore";
 
 export default function BookingDetails() {
   const { id } = useParams();
@@ -24,12 +25,11 @@ export default function BookingDetails() {
     setSelectedBookingsList,
     setIsBookingFormVisible,
     isCompleteBookings,
-    setisCompleteBookings
+    setisCompleteBookings,
   } = useBookingsStore();
-  console.log(
-    "isFetchCurrentBookingDetailsLoading",
-    isFetchCurrentBookingDetailsLoading
-  );
+
+  const {  roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
   useEffect(() => {
     fetchQRsForBooking(id);
   }, []);
@@ -155,6 +155,19 @@ export default function BookingDetails() {
     }
   });
 
+  const grandTotal = consolidatedData?.reduce((sum, item) => {
+    return (
+      sum +
+      item.details?.reduce(
+        (detailSum, detail) =>
+          detailSum +
+          (detail.totalAmount || detail.amount * detail.quantity || 0),
+        0
+      )
+    );
+  }, 0);
+
+  
   return (
     <AdminLayout>
       {isFetchCurrentBookingDetailsLoading ? (
@@ -170,8 +183,10 @@ export default function BookingDetails() {
             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
               <PaymentQR />
               <NavLink
-                end 
-                to={isCompleteBookings?"/completed-bookings":"/entity-bookings"}
+                end
+                to={
+                  isCompleteBookings? "/completed-bookings":role === "ROLE_ZOOPARKADMIN"?"/book-tickets": "/entity-bookings"
+                }
                 onClick={() => {
                   // setisCompleteBookings(false)
                   setIsFirstStepTransaction(false);
@@ -296,7 +311,10 @@ export default function BookingDetails() {
                         fontWeight: 700,
                       }}
                     >
-                      : {bookingDetailsResponse?.referenceId ?bookingDetailsResponse?.referenceId:bookingDetailsResponse?.paymentOrderId||"N/A"}
+                      :{" "}
+                      {bookingDetailsResponse?.referenceId
+                        ? bookingDetailsResponse?.referenceId
+                        : bookingDetailsResponse?.paymentOrderId || "N/A"}
                     </span>
                   </div>
                 </div>
@@ -306,11 +324,11 @@ export default function BookingDetails() {
                     borderSpacing: 10,
                     fontSize: 23,
                     marginBottom: 20,
-                    borderBottom: "1px solid #000",
+                    // borderBottom: "1px solid #000",
                   }}
                 >
                   {Array.isArray(consolidatedData) ? (
-                    consolidatedData.map((item) => (
+                    consolidatedData.map((item, i) => (
                       <tbody>
                         <>
                           <tr key={item.facilityId + item.serviceId}>
@@ -399,6 +417,7 @@ export default function BookingDetails() {
                                   ) || "N/A"}
                                 </td>
                               </tr>
+                              {/* Grand Total */}
                             </>
                           ))}
                         </>
@@ -409,6 +428,36 @@ export default function BookingDetails() {
                       No booking details available.
                     </p>
                   )}
+                  <tbody>
+                    {
+                      <tr style={{ border:"0px solid black", background:"#D3D3D3"}}>
+                        <td
+                          style={{
+                            color: "black",
+                            padding: 5,
+                            fontSize: 22,
+                            fontWeight: "bold",
+                            
+                          }}
+                        >
+                          Grand Total
+                        </td>
+
+                        {
+                          <td
+                            style={{
+                              color: "black",
+                              padding: 5,
+                              fontSize: 20,
+                              fontWeight: "bold",
+                            }}
+                          >
+                            : {formatToCurrency(grandTotal) || "N/A"}
+                          </td>
+                        }
+                      </tr>
+                    }
+                  </tbody>
                 </table>
               </div>
             </div>
