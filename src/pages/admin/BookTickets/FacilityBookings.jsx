@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
@@ -40,51 +40,40 @@ function FacilityBookings() {
       const updatedRow = { ...row };
 
       row.facilities?.forEach((facility) => {
-        const category = facility.facilityName?.trim().toLowerCase();
-        const subcategory = facility.serviceVariantName?.trim().toLowerCase();
+        const {
+          facilityName,
+          serviceName,
+          serviceVariantName,
+          quantity,
+          totalAmount,
+        } = facility;
 
-        if (!category || !subcategory) return;
+        if (!facilityName || !serviceVariantName) return;
+ 
+        // If Facility Name and Service Name are the same, use a 2-level structure
+        if (facilityName === serviceName) {
+          const quantityKey = `${facilityName} - ${serviceVariantName} Quantity`;
+          const totalAmountKey = `${facilityName} - Total Amount`;
 
-        const quantityKey = `${category} - ${subcategory} Quantity`;
-        const totalAmountKey = `${category} - ${subcategory} Total Amount`;
+          updatedRow[quantityKey] =
+            (updatedRow[quantityKey] || 0) + (quantity || 0);
+          updatedRow[totalAmountKey] =
+            (updatedRow[totalAmountKey] || 0) + (totalAmount || 0);
+        } else {
+          // Use a 3-level structure when Facility Name and Service Name are different
+          const quantityKey = `${facilityName} - ${serviceName} - ${serviceVariantName} Quantity`;
+          const totalAmountKey = `${facilityName} - ${serviceName} - Total Amount`;
 
-        updatedRow[quantityKey] =
-          (updatedRow[quantityKey] || 0) + (facility.quantity || 0);
-        updatedRow[totalAmountKey] =
-          (updatedRow[totalAmountKey] || 0) + (facility.totalAmount || 0);
+          updatedRow[quantityKey] =
+            (updatedRow[quantityKey] || 0) + (quantity || 0);
+          updatedRow[totalAmountKey] =
+            (updatedRow[totalAmountKey] || 0) + (totalAmount || 0);
+        }
       });
 
       return updatedRow;
     });
   }, [AllFacilityBookings]);
-
-  /** ✅ **Compute Total Footer Row** */
-  const totalRow = useMemo(() => {
-    const totals = {
-      transactionId: "Total",
-      bookingID: " ",
-      status: " ",
-      mobileNumber: " ",
-      paymentType: " ",
-      totaL_AMOUNT: 0, // ✅ Ensure it's a number
-    };
-
-    // ✅ Sum the "Total Amount" column from the original data
-    AllFacilityBookings.forEach((row) => {
-      totals["totaL_AMOUNT"] += Number(row.totaL_AMOUNT) || 0;
-    });
-
-    // ✅ Sum dynamic columns from processedBookings
-    processedBookings.forEach((row) => {
-      Object.keys(row).forEach((key) => {
-        if (key.includes("Quantity") || key.includes("Total Amount")) {
-          totals[key] = (totals[key] || 0) + (Number(row[key]) || 0);
-        }
-      });
-    });
-
-    return [totals]; // ✅ This ensures no "S.No" is applied
-  }, [processedBookings, AllFacilityBookings]);
 
   /** ✅ **Generate dynamic column definitions** */
   const getFacilityColumns = (data) => {
@@ -92,49 +81,95 @@ function FacilityBookings() {
 
     data?.forEach((row) => {
       row.facilities?.forEach((facility) => {
-        const category = facility.facilityName;
-        const subcategory = facility.serviceVariantName;
+        const { facilityName, serviceName, serviceVariantName } = facility;
 
-        if (!facilityGroups[category]) {
-          facilityGroups[category] = new Set();
+        if (!facilityName || !serviceVariantName) return;
+
+        if (!facilityGroups[facilityName]) {
+          facilityGroups[facilityName] = {};
         }
-        facilityGroups[category].add(subcategory);
+
+        if (facilityName === serviceName) {
+          if (!facilityGroups[facilityName]["direct"]) {
+            facilityGroups[facilityName]["direct"] = new Set();
+          }
+          facilityGroups[facilityName]["direct"].add(serviceVariantName);
+        } else {
+          if (!facilityGroups[facilityName][serviceName]) {
+            facilityGroups[facilityName][serviceName] = new Set();
+          }
+          facilityGroups[facilityName][serviceName].add(serviceVariantName);
+        }
       });
     });
 
-    return Object.entries(facilityGroups).map(([category, subcategories]) => ({
-      headerName: category,
-      headerClass: "text-blue-v2 text-center",
-      children: [
-        ...Array.from(subcategories).map((subcategory) => ({
-          field: `${category.toLowerCase()} - ${subcategory.toLowerCase()} Quantity`,
-          headerName: subcategory,
-          width: 130,
-          headerClass: "text-blue-v2 capitalize",
-        })),
-
-        {
-          field: `${category} - Total Amount`,
-          width: 120,
-          headerName: "Total Amount",
-          headerClass: "text-blue-v2 capitalize",
-          valueGetter: (params) => {
-            const totalAmount = params.data.facilities
-              ?.filter((item) => item.facilityName === category)
-              .reduce((sum, item) => sum + item.totalAmount, 0);
-            return totalAmount;
-          },
-          valueFormatter: (params) =>
-            params.value
-              ? formatToCurrency(params.value, "INR", "en-IN")
-              : "₹0",
-        },
-      ],
-    }));
+    return Object.entries(facilityGroups).map(([facilityName, services]) => {
+      return {
+        headerName: facilityName,
+        headerClass: "text-blue-v2 text-center",
+        cellStyle: { textAlign: "center"  },
+        children: Object.entries(services).flatMap(
+          ([serviceName, serviceVariants]) =>
+            serviceName === "direct"
+              ? // **2-Level Hierarchy** (Facility → Service Variant)
+                [
+                  ...Array.from(serviceVariants).map((serviceVariantName) => ({
+                    field: `${facilityName} - ${serviceVariantName} Quantity`,
+                    headerName: serviceVariantName,
+                    width: 130,
+                    headerClass: "text-blue-v1 capitalize  ",
+                    
+                  })),
+                  {
+                    field: `${facilityName} - Total Amount`,
+                    width: 120,
+                    headerName: "Total Amount",
+                    headerClass: "text-blue-v2 capitalize",
+                    valueGetter: (params) =>
+                      params.data[`${facilityName} - Total Amount`] || 0,
+                    valueFormatter: (params) =>
+                      params.value
+                        ? formatToCurrency(params.value, "INR", "en-IN")
+                        : "₹0",
+                  },
+                ]
+              : // **3-Level Hierarchy** (Facility → Service → Service Variant)
+                [
+                  {
+                    headerName: serviceName,
+                    headerClass: "text-blue-v2 text-center",
+                    children: [
+                      ...Array.from(serviceVariants).map(
+                        (serviceVariantName) => ({
+                          field: `${facilityName} - ${serviceName} - ${serviceVariantName} Quantity`,
+                          headerName: serviceVariantName,
+                          width: 130,
+                          headerClass: "text-blue-v2 capitalize ",
+                        })
+                      ),
+                      {
+                        field: `${facilityName} - ${serviceName} - Total Amount`,
+                        width: 120,
+                        headerName: "Total Amount",
+                        headerClass: "text-blue-v2 capitalize",
+                        valueGetter: (params) =>
+                          params.data[
+                            `${facilityName} - ${serviceName} - Total Amount`
+                          ] || 0,
+                        valueFormatter: (params) =>
+                          params.value
+                            ? formatToCurrency(params.value, "INR", "en-IN")
+                            : "₹0",
+                      },
+                    ],
+                  },
+                ]
+        ),
+      };
+    });
   };
 
-  /** ✅ **Base Columns** */
-  const baseColumns = [
+  const columnDefs = [
     {
       headerName: "S.No",
       valueGetter: (params) =>
@@ -184,15 +219,8 @@ function FacilityBookings() {
       },
     },
     {
-      field: "utr",
-      headerName: "UTR Number",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? params.value : "N/A",
-    },
-    {
-      field: "referencE_ID",
-      headerName: "Reference_ID",
+      field: "bookingID",
+      headerName: "Booking ID",
       headerClass: "text-blue-v2",
     },
     {
@@ -214,10 +242,6 @@ function FacilityBookings() {
       headerName: "Payment Mode",
       headerClass: "text-blue-v2",
     },
-  ];
-
-  const columnDefs = [
-    ...baseColumns,
     ...getFacilityColumns(AllFacilityBookings),
   ];
 
@@ -245,8 +269,8 @@ function FacilityBookings() {
                   <Field
                     type="date"
                     name="fromDate"
-                    className="{`mt-1 block w-full px-2 py-1 border
-             border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}"
+                    className={`mt-1 block w-full px-2 py-1 border
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   />
                 </div>
                 <div>
@@ -259,8 +283,8 @@ function FacilityBookings() {
                   <Field
                     type="date"
                     name="toDate"
-                    className="{`mt-1 block w-full px-2 py-1 border
-             border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}"
+                    className={`mt-1 block w-full px-2 py-1 border
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   />
                 </div>
                 <div className="flex items-end">
@@ -280,6 +304,7 @@ function FacilityBookings() {
           rowData={processedBookings}
           columnDefs={columnDefs}
           isFetchLoading={isFetchFacilityBookingsLoading}
+          ExportName="Facility Bookings"
           //   pinnedBottomRowData={totalRow}
         />
       </div>

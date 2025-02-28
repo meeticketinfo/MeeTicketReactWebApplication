@@ -87,6 +87,7 @@ const DepartmentList = ({
     <>
       <ToastContainer position="top-right" autoClose={2000} />{" "}
       <AgGridTable
+        ExportName="Departments"
         rowData={allDepartmentTypes || []}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllDepartmentTypesLoading}

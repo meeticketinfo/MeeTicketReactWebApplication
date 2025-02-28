@@ -12,7 +12,13 @@ import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 
 ModuleRegistry.registerModules([ExcelExportModule]);
 
-const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowData }) => {
+const AgGridTable = ({
+  rowData = [],
+  columnDefs,
+  isFetchLoading,
+  pinnedBottomRowData,
+  ExportName,
+}) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
 
@@ -38,71 +44,67 @@ const AgGridTable = ({ rowData = [], columnDefs, isFetchLoading,pinnedBottomRowD
     }
   };
 
- 
-
-const handleExportExcel = () => {
-  if (gridApi) {
+  const handleExportExcel = () => {
+    if (gridApi) {
       gridApi.exportDataAsExcel({
-          sheetName: "Report",
-          fileName: "Report.xlsx",
-          columnWidth: (params) => {
-              const colId = params.column.getColId();
-              const rowData = [];
+        sheetName: typeof ExportName === "string" ? ExportName : "Report",
+        fileName:
+          ExportName && typeof ExportName === "string"
+            ? `${ExportName}.xlsx`
+            : "Report.xlsx",
+        columnWidth: (params) => {
+          const colId = params.column.getColId();
+          const rowData = [];
 
-              gridApi.forEachNode((node) => {
-                  if (node.data && node.data[colId] !== undefined) {
-                      rowData.push(String(node.data[colId]));
-                  }
-              });
+          gridApi.forEachNode((node) => {
+            if (node.data && node.data[colId] !== undefined) {
+              rowData.push(String(node.data[colId]));
+            }
+          });
 
-              // Get the maximum length of text in the column, including the header
-              const headerName = params.column.getColDef().headerName || "";
-              const maxContentLength = Math.max(
-                  ...rowData.map((value) => value.length),
-                  headerName.length
-              );
+          // Get the maximum length of text in the column, including the header
+          const headerName = params.column.getColDef().headerName || "";
+          const maxContentLength = Math.max(
+            ...rowData.map((value) => value.length),
+            headerName.length
+          );
 
-              // Convert character length to approximate pixel width
-              const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
+          // Convert character length to approximate pixel width
+          const estimatedWidth = maxContentLength * 7 + 20; // Adding padding
 
-              return estimatedWidth;
-          },
-          processCellCallback: (params) => {
-              let value = params.value;
+          return estimatedWidth;
+        },
+        processCellCallback: (params) => {
+          let value = params.value;
 
-              // Ensure "Refund ID" and empty values show "N/A"
-              if (value === null || value === undefined || value === "") {
-                  return "N/A";
-              }
+          // Ensure "Refund ID" and empty values show "N/A"
+          if (value === null || value === undefined || value === "") {
+            return "N/A";
+          }
 
-              // Convert objects to readable JSON strings
-              if (typeof value === "object" && value !== null) {
-                  return JSON.stringify(value);
-              }
+          // Convert objects to readable JSON strings
+          if (typeof value === "object" && value !== null) {
+            return JSON.stringify(value);
+          }
 
-             
-              // if (typeof value === "string") {
-              //     value = value.replace(/[^\d.-]/g, ""); 
-              // }
+          // if (typeof value === "string") {
+          //     value = value.replace(/[^\d.-]/g, "");
+          // }
 
-              // Prevent scientific notation by treating numbers longer than 15 digits as text
-              if (/^\d{16,}$/.test(value)) { 
-                  return `'${value}`; // Prefix with apostrophe to ensure text format
-              }
+          // Prevent scientific notation by treating numbers longer than 15 digits as text
+          if (/^\d{16,}$/.test(value)) {
+            return `'${value}`; // Prefix with apostrophe to ensure text format
+          }
 
-             
-
-              return value;
-          },
+          return value;
+        },
       });
-  } else {
+    } else {
       console.error("Grid API not available for Excel export.");
-  }
-};
+    }
+  };
 
-
-
-useEffect(() => {
+  useEffect(() => {
     // Load the saved quickFilterText from localStorage on component mount
     const savedQuickFilterText = localStorage.getItem("quickFilterText");
     if (savedQuickFilterText) {
@@ -153,7 +155,7 @@ useEffect(() => {
           rowData={rowData}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
-          pinnedBottomRowData={pinnedBottomRowData} 
+          pinnedBottomRowData={pinnedBottomRowData}
           columnDefs={columnDefs?.map((col) => ({
             ...col,
             minWidth: 180,

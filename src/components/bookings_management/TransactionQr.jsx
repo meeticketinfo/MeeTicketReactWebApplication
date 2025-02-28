@@ -4,12 +4,15 @@ import { useBookingsStore } from "../../store/masters/bookingsStore";
 import { useNavigate } from "react-router-dom";
 import TransactionProcessingLoader from "./TransactionProcessingLoader";
 import TransactionQrLoader from "./TransactionQrLoader";
+import BackButton from "../BackButton";
+import useAuthStore from "../../store/authStore";
 
 function TransactionQr() {
   const navigate = useNavigate();
   const storedBookingPayload = JSON.parse(
     sessionStorage.getItem("bookingPayload")
   );
+
   const [counter, setCounter] = useState(240);
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
@@ -27,7 +30,8 @@ function TransactionQr() {
     setPaymentStatus,
     setIsBookingFormVisible,
   } = useBookingsStore();
-
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
   const canvasRef = useRef(null);
 
   const redirectUrl = FirstStepTransactionResponse?.redirectUrl;
@@ -71,7 +75,7 @@ function TransactionQr() {
             transactionId: FirstStepTransactionResponse?.orderId
               ? FirstStepTransactionResponse?.orderId
               : "CounterUpi",
-             
+
             bookingDate: formatBookingDate(currentDate),
           });
           if (result && result.data && result.data.status === 200) {
@@ -111,21 +115,40 @@ function TransactionQr() {
   }, [redirectUrl]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h3 className="text-lg font-bold">Scan the QR Code for Payment</h3>
-      <canvas className="border" ref={canvasRef}></canvas>
-      <div className="text-center text-gray-600">
-        {PaymentStatus.resultStatus !== "TXN_SUCCESS" ? (
-          <p>
-            Transaction Timeout in:{" "}
-            <span className="font-medium text-blue-v2">{formatCounter()}</span>
-            <span>sec</span>
-          </p>
-        ) : (
-          <TransactionQrLoader />
-        )}
+    <>
+      {role === "ROLE_ZOOPARKADMIN" && (
+        <div className="flex justify-end">
+          <BackButton
+            label="Back"
+            onClick={() => {
+              setIsBookingFormVisible(false);
+              setIsFirstStepTransaction(false);
+              setPaymentStatus({});
+              localStorage.removeItem("booking-process-store");
+            }}
+            className="bg-blue-600 hover:bg-blue-700 flex items-end"
+            // disabled={isSubmitting}
+          />
+        </div>
+      )}
+      <div className="flex flex-col items-center gap-4">
+        <h3 className="text-lg font-bold">Scan the QR Code for Payment</h3>
+        <canvas className="border" ref={canvasRef}></canvas>
+        <div className="text-center text-gray-600">
+          {PaymentStatus.resultStatus !== "TXN_SUCCESS" ? (
+            <p>
+              Transaction Timeout in:{" "}
+              <span className="font-medium text-blue-v2">
+                {formatCounter()}
+              </span>
+              <span>sec</span>
+            </p>
+          ) : (
+            <TransactionQrLoader />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
