@@ -88,6 +88,7 @@ const GateKeeperList = ({ setIsGateKeeperCreateVisible }) => {
   return (
     <>
       <AgGridTable
+        ExportName="Gate Keeper"
         isFetchLoading={isFetchAllGateKeepersLoading}
         rowData={allGateKeepers}
         columnDefs={columnDefs}

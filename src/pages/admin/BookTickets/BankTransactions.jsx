@@ -200,6 +200,7 @@ export default function BankTransactions() {
           )}
         </Formik>
         <AgGridTable
+          ExportName="Bank Payments"
           rowData={allParkBankTransactions}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllParkBankTransactionsLoading}

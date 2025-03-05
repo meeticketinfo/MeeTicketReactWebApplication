@@ -200,6 +200,7 @@ function PaymentTransactionReport() {
             )}
           </Formik>
           <AgGridTable
+            ExportName="Payment Transactions"
             isFetchLoading={isTransactionPaymentReportsLoading}
             rowData={allTransactionPaymentReports || []}
             columnDefs={columnDefs}

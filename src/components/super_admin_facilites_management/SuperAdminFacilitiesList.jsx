@@ -233,7 +233,7 @@ function SuperAdminFacilitiesList({
         </div>
       </div>
 
-      <AgGridTable rowData={filteredFacilities} columnDefs={columnDefs} />
+      <AgGridTable  ExportName="Master Facilities" rowData={filteredFacilities} columnDefs={columnDefs} />
     </div>
   );
 }

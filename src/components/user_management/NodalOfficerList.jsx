@@ -105,6 +105,7 @@ const NodalOfficerList = ({
   return (
     <>
       <AgGridTable
+      ExportName = "Nodal Officer"
         isFetchLoading={isFetchAllNodalOfficersLoading}
         rowData={allNodalOfficers}
         columnDefs={columnDefs}

@@ -595,6 +595,7 @@ function AdminDashboard() {
               </Formik>
             </div>
             <AgGridTable
+              ExportName="Location Bookings"
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}
               columnDefs={dashboardColumnDefs}
