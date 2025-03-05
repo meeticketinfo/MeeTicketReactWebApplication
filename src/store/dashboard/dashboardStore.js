@@ -53,17 +53,21 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllDashboardCounts: async (roleDetails) => {
+  fetchAllDashboardCounts: async (
+    roleDetails,
+    { fromDate, toDate,entityId, active }
+  ) => {
+    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
       // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
       const endpoint =
         role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
-          ? API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
+          ? `${API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE}${date}`
           : role === "ROLE_METROADMIN"
-          ? API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT
-          : API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS;
+          ? `${API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT}${date}`
+          : `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}${date}`;
 
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
@@ -79,17 +83,12 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async (
-    pageIndex = 1,
-    pageSize = 10,
-    filters = {}
-  ) => {
+  fetchAllEntityWiseCounts: async ({ fromDate, toDate,entityId, active }) => {
+    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
     set({ isFetchPieChartsLoading: true });
     try {
-      //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
-        // `${API_ENDPOINTS.MASTERS.PARK.GET_Bookings}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.DASHBOARD.PIE_CHARTS.GET_ENTITY_WISE_COUNTS}`
+        `${API_ENDPOINTS.DASHBOARD.PIE_CHARTS.GET_ENTITY_WISE_COUNTS}${date}`
       );
       set({
         allPieCharts: response.data,
@@ -183,11 +182,12 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.message, isFetchZooDashboardLoading: false });
     }
   },
-  fetchAllZooDashBoardCountsTicketWise: async (date) => {
+  fetchAllZooDashBoardCountsTicketWise: async ({ fromDate, toDate,entityId, active }) => {
+    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
     set({ isFetchZooDashboardTicketWiseLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE}${date}`
       );
       set({
         allZooDashboardTicketWise: response.data,
@@ -208,7 +208,7 @@ export const useDashboardStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
       );
-      console.log("response",response)
+      console.log("response", response);
       if (response.status == 200) {
         set({
           AllFacilityBookings: response.data || [],

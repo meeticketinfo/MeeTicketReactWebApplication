@@ -16,6 +16,7 @@ const PopupModal = ({
   titleClassName = "text-lg font-medium text-gray-900",
   defaultBodyPadding = true,
   footer,
+  overFlow=true,
   onExternalSubmit,
 }) => {
   const sizeClasses = {
@@ -88,7 +89,7 @@ const PopupModal = ({
             <div
               className={`${
                 defaultBodyPadding ? "" : ""
-              } overflow-y-auto max-h-[60vh]`}
+              } ${overFlow?"overflow-y-auto max-h-[60vh]":"max-h-[90vh]"}`}
             >
               {children}
             </div>

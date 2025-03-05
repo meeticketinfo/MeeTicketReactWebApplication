@@ -29,12 +29,17 @@ import useAuthStore from "../store/authStore";
 import { toast } from "react-toastify";
 import CountUp from "react-countup";
 import { superballs } from "ldrs";
-
+import Select from "react-select";
+import { useEntityTypesStore } from "../store/masters/entityTypesStore";
 function AdminDashboard() {
   superballs.register();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [DashboardDate, setDashboardDate] = useState(getCurrentDate());
   const [pieChartData, setPieChartData] = useState([]);
+  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [filters, setFilters] = useState({
+    entityTypeId: "",
+  });
   const {
     allParks,
     fetchAllParks,
@@ -42,6 +47,8 @@ function AdminDashboard() {
     allNodalOfficerParks,
     isFetchAllNodalOfficerParksLoading,
   } = useParkStore();
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  // console.log("allEntityTypes", allEntityTypes);
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
     useAuthStore();
   const role = roleDetails?.name;
@@ -66,7 +73,7 @@ function AdminDashboard() {
     allZooDashboardTicketWise,
     fetchAllZooDashBoardCountsTicketWise,
   } = useDashboardStore();
-  
+
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
@@ -74,14 +81,27 @@ function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchAllDashboardCounts(roleDetails);
+    fetchAllEntityTypes();
+    fetchAllDashboardCounts(roleDetails, {
+      fromDate: "",
+      toDate: "",
+      active: false,
+    });
     fetchAllZooDashBoardCounts(getCurrentDate());
 
     if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
-      fetchAllZooDashBoardCountsTicketWise();
+      fetchAllZooDashBoardCountsTicketWise({
+        fromDate: "",
+        toDate: "",
+        active: false,
+      });
     }
     // fetchAllEntityBookingsByFilters(null, null, initialValues);
-    fetchAllEntityWiseCounts().then((data) => setPieChartData(data));
+    fetchAllEntityWiseCounts({
+      fromDate: "",
+      toDate: "",
+      active: false,
+    }).then((data) => setPieChartData(data));
     if (role === "ROLE_NODALOFFICER") {
       fetchAllNodalOfficerParks(null, null, {}, userId);
     } else {
@@ -107,6 +127,7 @@ function AdminDashboard() {
         ...values,
         fromDate: values.fromDate ? `${values.fromDate}` : "",
         toDate: values.toDate ? `${values.toDate}` : "",
+        // locationCategoryId:values.entityTypeId
       };
       setSubmitting(true);
       const filters = formattedValues;
@@ -267,11 +288,138 @@ function AdminDashboard() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
   ]);
+  const EsdInitialValues = {
+    fromDate: "",
+    toDate: "",
+    entityId: "",
+  };
+  const overAllOnSubmit = (values) => {
+    console.log("values", values);
+    fetchAllDashboardCounts(roleDetails, { ...values, active: true });
+    fetchAllEntityWiseCounts({ ...values, active: true });
+    fetchAllZooDashBoardCountsTicketWise({ ...values, active: true });
+  };
 
   return (
     <>
       {/* Cards */}
       <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-full ">
+          <Formik initialValues={EsdInitialValues} onSubmit={overAllOnSubmit}>
+            {({ values, setFieldValue }) => (
+              <Form>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                  <div>
+                    <label
+                      htmlFor="fromDate"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      From Date
+                    </label>
+                    <Field
+                      type="date"
+                      name="fromDate"
+                      className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      // min={getCurrentDate()}
+                      onChange={(e) => {
+                        const fromDateValue = e.target.value;
+                        setFieldValue("fromDate", fromDateValue);
+                        if (new Date(fromDateValue) > new Date(values.toDate)) {
+                          // Automatically update toDate if it's earlier than fromDate
+                          setFieldValue("toDate", fromDateValue);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="toDate"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      To Date
+                    </label>
+                    <Field
+                      type="date"
+                      name="toDate"
+                      className={`mt-1 block w-full px-2 py-1 border
+      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                      onChange={(e) => {
+                        const toDateValue = e.target.value;
+                        setFieldValue("toDate", toDateValue);
+                      }}
+                    />
+                  </div>
+                  {!( roleDetails?.name === "ROLE_ADMIN" ||roleDetails?.name === "ROLE_ZOOPARKADMIN")&&<div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Location Category
+                    </label>
+
+                    <Select
+                      name="entityId"
+                      value={
+                        allEntityTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.entityTypeId,
+                            label: dept.entityTypeName,
+                          }))
+                          .find((option) => option.value === values.entityId) ||
+                        null // Use values.entityId
+                      }
+                      options={allEntityTypes
+                        ?.filter((entity) => entity.isActive)
+                        .map((entity) => ({
+                          value: entity.entityTypeId,
+                          label: entity.entityTypeName,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue("entityId", selectedOption?.value || "")
+                      }
+                      isClearable
+                      placeholder="Location Category"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#6D7072",
+                          cursor: "pointer",
+                        }),
+                      }}
+                    />
+                  </div>}
+                  <div className="flex items-end">
+                    <button
+                      type="submit"
+                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                      // disabled={isFetchEntityBookingsLoading}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </div>
         {cardsToDisplay &&
           cardsToDisplay.map((card, index) => (
             <DashboardCard01
@@ -501,7 +649,7 @@ function AdminDashboard() {
             </div>
           </DashboardCard07>
         )}
-           {/* REPORT TABLE */}
+        {/* REPORT TABLE */}
         <DashboardCard07 header={true} title="Location Bookings">
           <div className="">
             <div>
@@ -524,7 +672,7 @@ function AdminDashboard() {
                             className={`mt-1 block w-full px-2 py-1 border
                               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           >
-                            <option value="">Select </option>
+                            <option value="">Location </option>
                             {parksToRender
                               ?.filter((park) => park.isActive)
                               ?.map((park) => (
@@ -535,7 +683,61 @@ function AdminDashboard() {
                           </Field>
                         </div>
                       )}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Location Category
+                    </label>
 
+                    <Select
+                      name="locationCategoryId"
+                      value={
+                        allEntityTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.entityTypeId,
+                            label: dept.entityTypeName,
+                          }))
+                          .find((option) => option.value === values.locationCategoryId) ||
+                        null // Use values.entityId
+                      }
+                      options={allEntityTypes
+                        ?.filter((entity) => entity.isActive)
+                        .map((entity) => ({
+                          value: entity.entityTypeId,
+                          label: entity.entityTypeName,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue("locationCategoryId", selectedOption?.value || "")
+                      }
+                      isClearable
+                      placeholder="Location Category"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#6D7072",
+                          cursor: "pointer",
+                        }),
+                      }}
+                    />
+                  </div>
                       <div>
                         <label
                           htmlFor="fromDate"
@@ -556,7 +758,7 @@ function AdminDashboard() {
                               new Date(fromDateValue) > new Date(values.toDate)
                             ) {
                               // Automatically update toDate if it's earlier than fromDate
-                              setFieldValue("toDate", fromDateValue); 
+                              setFieldValue("toDate", fromDateValue);
                             }
                           }}
                         />

@@ -49,7 +49,7 @@ const sidebarItems = [
       },
       {
         title: "Location Categories",
-        icon:  MdOutlineLocalFireDepartment,
+        icon: MdOutlineLocalFireDepartment,
         path: "/entity-types",
       },
       {
@@ -232,10 +232,35 @@ const sidebarItems = [
       // },
     ],
   },
-// book tickets on counter bookings
+  // griveance
+  {
+    title: "Grievance",
+    icon: TbTrain,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Consolidated Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-consolidate",
+      },
+      {
+        title: "Overall Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-Incident",
+      },
+      {
+        title: "Individual Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-individual",
+      },
+    ],
+  },
+  // book tickets on counter bookings
   {
     title: "Book Tickets",
-    icon: IoTicketOutline, 
+    icon: IoTicketOutline,
     path: "/book-tickets",
     gradientClass:
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",

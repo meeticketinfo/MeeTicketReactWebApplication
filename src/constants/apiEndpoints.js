@@ -10,7 +10,7 @@ import useAuthStore from "../store/authStore";
 
 // METRO UAT
 export const METRO_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metrohsmapi/v1/";
+  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
 
 //  PARK UAT
 export const API_BASE_URL =
@@ -116,7 +116,7 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     SERVICE_VARIANT: {
-      GET_SERVICE_VARIANTS: `Master/GetServiceVariantsByBookingDate`,
+      GET_SERVICE_VARIANTS: `Master/GetAllServiceVarients`,
       UPDATE_SERVICE_VARIENT_DETAILS: `${API_BASE_URL}Master/UpdateServiceVarients`,
       ADD_NEW_SERVICE_VARIENT: `${API_BASE_URL}Master/AddNewServiceVarient`,
       UPDATE_SERVICE_VARIENT_DETAILS_NODAL_OFFICER: `${API_BASE_URL}NodalOfficer/UpdateServiceVarients`,
@@ -174,24 +174,24 @@ export const API_ENDPOINTS = {
       GET_PARK_BANK_TRANSACTION_REPORT : `${API_BASE_URL}ParkReport/GetParkBankTransactionReport`,
     },
     METRO_Reports: {
-      GET_METRO_SUMMARY: `${METRO_API_BASE_URL}MetroReport/GetTransactionReportResult`,
-      GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetBookingDetailsResult`,
-      GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}MetroReport/GetInprogressorFailedPaymentTxnResult`,
-      GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}MetroReport/GetDateWiseBookingsCumulative`,
+      GET_METRO_SUMMARY: `${METRO_API_BASE_URL}v1/MetroReport/GetTransactionReportResult`,
+      GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetBookingDetailsResult`,
+      GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetInprogressorFailedPaymentTxnResult`,
+      GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}v1/MetroReport/GetDateWiseBookingsCumulative`,
     },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
   },
   DASHBOARD: {
-    GET_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetTotalBookingCount`,
-    GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}MetroReport/GetTotalBookingCount`,
+    GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
+    GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
-    GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}DashBoard/GetTotalBookingCountByRole`,
+    GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
-      GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}DashBoard/GetEntityWiseTotalBookings`,
+      GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS:  `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE:  `${API_BASE_URL}ParkReport/GetZooParkCounts`,

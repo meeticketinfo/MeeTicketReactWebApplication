@@ -12,7 +12,11 @@ import { handleApiError } from "../../utils/apiErrorHandler";
 import { useNavigate } from "react-router-dom";
 import { useAccordionStore } from "../../store/accordionStore";
 import { IoIosArrowDown } from "react-icons/io";
-import { formatToCurrency, getCurrentDate, toTitleCase } from "../../utils/TypographyHelper";
+import {
+  formatToCurrency,
+  getCurrentDate,
+  toTitleCase,
+} from "../../utils/TypographyHelper";
 import TransactionQr from "./TransactionQr";
 import TransactionFailed from "./TransactionFailed";
 import { Checkbox } from "@headlessui/react";
@@ -64,7 +68,7 @@ export const FacilityServices = () => {
     isCash,
     saveBookingDetailsError,
   } = useBookingsStore();
- 
+
   const { decodedTokenData, DepartmentId } = useAuthStore();
   const {
     saveRecurringHolidayDetails,
@@ -101,7 +105,7 @@ export const FacilityServices = () => {
     fetchAllRecurringHolidays();
     fetchAllFacilities();
     fetchAllServices();
-    fetchAllServiceVariants(getCurrentDate());
+    fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
   const calculateTotalAmount = (selectedItems) => {
@@ -151,11 +155,10 @@ export const FacilityServices = () => {
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };
-     
+
       try {
         const result = await saveBookingDetails(bookingDetailsPayload);
 
-       
         if (result && result.data && result.data.status === 200) {
           const newBookingId = result?.data?.data?.data;
           navigate(`/entity-bookings/view-details/${newBookingId}`);
@@ -183,8 +186,8 @@ export const FacilityServices = () => {
 
       try {
         const result = await saveFirstBookingDetails(bookingDetailsPayload);
-        
-        if (result.data.data.status!=200) {
+
+        if (result.data.data.status != 200) {
           toast.error(result.data.data.message);
         }
         setQuantities({});
@@ -198,8 +201,6 @@ export const FacilityServices = () => {
         setSubmitting(false);
       }
     }
-
-    
   };
 
   return (
@@ -299,7 +300,7 @@ export const FacilityServices = () => {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+                                    <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 mt-3">
                                       {allServiceVariants
                                         ?.filter(
                                           (serviceVariant) =>
@@ -312,25 +313,28 @@ export const FacilityServices = () => {
                                         .map((variant) => (
                                           <div
                                             key={variant.id}
-                                            className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex justify-between gap-4"
+                                            className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex flex-col gap-0"
                                           >
-                                            <h6 className="text-sm font-medium text-[#0c3771] p-2">
-                                              {toTitleCase(variant.name) ||
-                                                toTitleCase(
-                                                  variant.displayName
+                                            <div className="w-full flex justify-between items-center">
+                                              <h6 className="text-sm font-medium text-[#0c3771] p-2">
+                                                {toTitleCase(variant.name) ||
+                                                  toTitleCase(
+                                                    variant.displayName
+                                                  )}
+                                              </h6>
+                                              <p className="text-gray-800 font-semibold p-2 pl-0 ms-auto">
+                                                {formatToCurrency(
+                                                  variant.amount
                                                 )}
-                                            </h6>
-                                            <p className="text-gray-800 font-semibold p-2">
-                                              {formatToCurrency(variant.amount)}
-                                            </p>
-
+                                              </p>
+                                            </div>
                                             {variant.isPriceFixed ? (
                                               <>
                                                 {/* <p className="text-gray-800 font-semibold p-2">
                                           {formatToCurrency(variant.amount)}
                                         </p> */}
-                                                <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded">
-                                                  <Field
+                                                <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded justify-end">
+                                                  {/* <Field
                                                     type="checkbox"
                                                     name="selectedItems"
                                                     checked={
@@ -390,12 +394,78 @@ export const FacilityServices = () => {
                                                       }
                                                     }}
                                                     className="bg-gray-300 text-gray-800 w-5 h-5 rounded hover:bg-gray-400"
+                                                  /> */}
+                                                  <Field
+                                                    type="checkbox"
+                                                    name="selectedItems"
+                                                    checked={values.selectedItems.some(
+                                                      (item) =>
+                                                        item.serviceVarientId ===
+                                                        variant.id
+                                                    )}
+                                                    onChange={(e) => {
+                                                      e.stopPropagation();
+                                                      const currentQuantity =
+                                                        quantities[
+                                                          variant.id
+                                                        ] || 0;
+
+                                                      const exists =
+                                                        values.selectedItems.find(
+                                                          (item) =>
+                                                            item.serviceVarientId ===
+                                                            variant.id
+                                                        );
+
+                                                      if (exists) {
+                                                        // Remove item & reset quantity
+                                                        updateQuantity(
+                                                          variant.id,
+                                                          -currentQuantity
+                                                        );
+
+                                                        setFieldValue(
+                                                          "selectedItems",
+                                                          values.selectedItems.filter(
+                                                            (item) =>
+                                                              item.serviceVarientId !==
+                                                              variant.id
+                                                          )
+                                                        );
+                                                      } else {
+                                                        // Add new item
+                                                        updateQuantity(
+                                                          variant.id,
+                                                          1
+                                                        );
+
+                                                        setFieldValue(
+                                                          "selectedItems",
+                                                          [
+                                                            ...values.selectedItems,
+                                                            {
+                                                              quantity: 1,
+                                                              unitAmount:
+                                                                variant.amount ||
+                                                                0,
+                                                              facilityId:
+                                                                facility.id,
+                                                              serviceId:
+                                                                service.id,
+                                                              serviceVarientId:
+                                                                variant.id,
+                                                            },
+                                                          ]
+                                                        );
+                                                      }
+                                                    }}
+                                                    className="bg-gray-100 outline-none text-blue-v2 w-4 h-4  rounded hover:bg-gray-200"
                                                   />
                                                 </div>
                                               </>
                                             ) : (
                                               <>
-                                                <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded">
+                                                <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded justify-center">
                                                   <button
                                                     type="button"
                                                     onClick={() => {
@@ -462,10 +532,93 @@ export const FacilityServices = () => {
                                                     -
                                                   </button>
 
-                                                  <span className="text-gray-800 text-center font-medium w-[14px]">
+                                                  {/* <span className="text-gray-800 text-center font-medium w-[14px]">
                                                     {quantities[variant.id] ||
                                                       0}
-                                                  </span>
+                                                  </span> */}
+
+                                                  <input
+                                                    type="text"
+                                                    className="text-blue-v2 p-1  text-center font-medium w-[80px] border border-blue-v2 rounded-md placeholder:text-blue-v2"
+                                                    value={
+                                                      quantities[variant.id] ??
+                                                      ""
+                                                    }
+                                                    placeholder="0"
+                                                    onChange={(e) => {
+                                                      const input =
+                                                        e.target.value;
+
+                                                      // Allow only numbers (optional: also allow empty input for better UX)
+                                                      if (
+                                                        !/^\d*$/.test(input)
+                                                      ) {
+                                                        return; // Skip update if non-numeric character detected
+                                                      }
+
+                                                      let newValue =
+                                                        parseInt(input, 10) ||
+                                                        0;
+
+                                                      // Enforce limit
+                                                      if (
+                                                        service.limit !== -1 &&
+                                                        service.limit !==
+                                                          null &&
+                                                        newValue > service.limit
+                                                      ) {
+                                                        newValue =
+                                                          service.limit; // Automatically correct to max limit
+                                                      }
+
+                                                      // Update quantities state directly
+                                                      updateQuantity(
+                                                        variant.id,
+                                                        newValue -
+                                                          (quantities[
+                                                            variant.id
+                                                          ] || 0)
+                                                      );
+
+                                                      if (newValue > 0) {
+                                                        // Add or update the item in selectedItems
+                                                        const newItem = {
+                                                          quantity: newValue,
+                                                          unitAmount:
+                                                            variant.amount || 0,
+                                                          facilityId:
+                                                            facility.id,
+                                                          serviceId: service.id,
+                                                          serviceVarientId:
+                                                            variant.id,
+                                                        };
+
+                                                        const updatedItems =
+                                                          values.selectedItems
+                                                            .filter(
+                                                              (item) =>
+                                                                item.serviceVarientId !==
+                                                                variant.id
+                                                            )
+                                                            .concat(newItem);
+
+                                                        setFieldValue(
+                                                          "selectedItems",
+                                                          updatedItems
+                                                        );
+                                                      } else {
+                                                        // Remove item if quantity is 0
+                                                        setFieldValue(
+                                                          "selectedItems",
+                                                          values.selectedItems.filter(
+                                                            (item) =>
+                                                              item.serviceVarientId !==
+                                                              variant.id
+                                                          )
+                                                        );
+                                                      }
+                                                    }}
+                                                  />
 
                                                   <button
                                                     type="button"
@@ -541,7 +694,6 @@ export const FacilityServices = () => {
                         Selected Items
                       </h3>
                       <ul className="space-y-4">
-                       
                         {values.selectedItems.map((item, index) => {
                           const facility = allFacilities.find(
                             (fac) => fac.id === item.facilityId

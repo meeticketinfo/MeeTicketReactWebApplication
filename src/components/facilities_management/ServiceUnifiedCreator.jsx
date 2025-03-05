@@ -22,6 +22,7 @@ const initialValues = {
   facilityDto: {
     facilityMasterId: "",
     facilitySequenceNumber: null,
+    description: "",
   },
   hasSubFacility: false,
   subFacilities: [
@@ -86,7 +87,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
       facilitySequenceNumber: Yup.number()
         .nullable()
         .required("Sequence is required"),
-       
+
       name: Yup.string().required("Facility Name is required"),
     }),
     hasSubFacility: Yup.boolean(),
@@ -98,10 +99,8 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
             Yup.string().required("Sub-Facility Name is required"),
           subFacilitySequenceNumber:
             isSubfacility &&
-            Yup.number()
-              .nullable()
-              .required("Sequence is required"),
-              
+            Yup.number().nullable().required("Sequence is required"),
+
           ticketTypes: Yup.array().of(
             Yup.object().shape({
               type: Yup.string().required("Ticket Type is required"),
@@ -125,6 +124,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
       facilityDto: {
         facilityMasterId: values.facilityDto.facilityMasterId,
         facilitySequenceNumber: values.facilityDto.facilitySequenceNumber,
+        description: values.facilityDto.description,
         name: values.facilityDto.name,
         parkId:
           role === "ROLE_NODALOFFICER"
@@ -304,6 +304,26 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                     className="text-red-500 text-xs absolute"
                   />
                 </div>
+                {/* discription */}
+                <div className="col-span-3">
+                  <label className="block text-sm font-medium">
+                    Description
+                  </label>
+                  <Field
+                    as="textarea"
+                    maxlength={100}
+                    name="facilityDto.description"
+                    onChange={(e) => {
+                      setFieldValue(
+                        "facilityDto.description",
+                        e.target.value
+                      );
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter description"
+                  />
+                </div>
+                {/* has sub facility */}
                 <div className="flex items-center mt-5">
                   <Field
                     type="checkbox"
@@ -425,20 +445,20 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                             </button> */}
                             {values.subFacilities.length > 1 && (
                               <div className="flex items-center">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  remove(index); // Remove the sub-facility at the given index
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    remove(index); // Remove the sub-facility at the given index
 
-                                  // New logic: Check if there are no sub-facilities left, then reset the state
-                                  if (values.subFacilities.length === 1) {
-                                    setFieldValue("hasSubFacility", false);
-                                  }
-                                }}
-                                className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
-                              >
-                                <MdDeleteForever className="text-white" />
-                              </button>
+                                    // New logic: Check if there are no sub-facilities left, then reset the state
+                                    if (values.subFacilities.length === 1) {
+                                      setFieldValue("hasSubFacility", false);
+                                    }
+                                  }}
+                                  className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
+                                >
+                                  <MdDeleteForever className="text-white" />
+                                </button>
                               </div>
                             )}
                           </div>
@@ -474,7 +494,6 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                             name={`subFacilities[${index}].ticketTypes[${ticketIndex}].type`}
                                             label="Ticket Type"
                                             astrix={true}
-                                           
                                             options={ticketTypeOptions}
                                           />
                                           {values.subFacilities[index]
