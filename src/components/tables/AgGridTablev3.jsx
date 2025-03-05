@@ -43,8 +43,8 @@ const AgGridTablev3 = ({ rowData = [], columnDefs, isFetchLoading }) => {
   const handleExportExcel = () => {
     if (gridApi) {
       gridApi.exportDataAsExcel({
-        sheetName: "Report",
-        fileName: "Report.xlsx",
+        sheetName: "Individual Ticket Details",
+        fileName: "Individual Ticket Details.xlsx",
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];

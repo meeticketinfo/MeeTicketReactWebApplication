@@ -90,6 +90,7 @@ const EntityTypeList = ({
     <>
       <ToastContainer position="top-right" autoClose={2000} />{" "}
       <AgGridTable
+        ExportName = "Location Category"
         rowData={allEntityTypes || []}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllEntityTypesLoading}

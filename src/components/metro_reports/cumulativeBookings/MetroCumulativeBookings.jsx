@@ -174,6 +174,7 @@ export default function MetroCumulativeBookings() {
           )}
         </Formik>
         <AgGridTable
+         ExportName="Bank Payments"
           rowData={allMetroCumulativeBookingDetailsReports}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllMetroCumulativeBookingDetailsReportsLoading}

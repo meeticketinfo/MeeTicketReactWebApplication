@@ -285,6 +285,7 @@ function CompletedBookingsReportList() {
         )}
       </Formik>
       <AgGridTable
+        ExportName = "Completed Bookings Details"
         isFetchLoading={isCompleteBookingsReportsLoading}
         rowData={allCompleteBookingsReports || []}
         columnDefs={columnDefs}

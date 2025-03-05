@@ -321,6 +321,7 @@ function MetroBookingList() {
                 )}
             </Formik>
             <AgGridTable
+                ExportName="Consolidated Ticket Details"
                 rowData={allMetroBookingDetailsReports}
                 columnDefs={columnDefs}
                 isFetchLoading={isFetchAllMetroBookingDetailsReportsLoading}

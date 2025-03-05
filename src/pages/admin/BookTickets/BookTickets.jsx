@@ -358,6 +358,7 @@ export default function AdminBookings() {
             </div>
 
             <AgGridTable
+              ExportName = "Individual Booking Details"
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}
               columnDefs={columnDefs}

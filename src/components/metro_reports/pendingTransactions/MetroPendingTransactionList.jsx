@@ -203,6 +203,7 @@ function MetroPendingTransactionList() {
         )}
       </Formik>
       <AgGridTable
+        ExportName="Payment Transactions"
         rowData={allMetroPendingTransactionDetailsReports}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllMetroPaymentTransactionDetailsReportsLoading}

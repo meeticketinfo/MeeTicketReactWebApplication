@@ -38,7 +38,7 @@ const HolidayList = () => {
   return (
     <>
       {/* <DashboardCard07> */}
-      <AgGridTable rowData={allHolidays} columnDefs={columnDefs} />
+      <AgGridTable ExportName="Holidays" rowData={allHolidays} columnDefs={columnDefs} />
       {/* </DashboardCard07> */}
     </>
   );

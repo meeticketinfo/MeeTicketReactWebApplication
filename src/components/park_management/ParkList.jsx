@@ -397,6 +397,7 @@ const ParkList = ({
             </div>
           </div>
           <AgGridTable
+            ExportName = "Locations"
             rowData={filteredLocations}
             columnDefs={columnDefs}
             isFetchLoading={isFetchAllParksLoading}
