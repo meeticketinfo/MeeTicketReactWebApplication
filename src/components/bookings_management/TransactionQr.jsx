@@ -13,7 +13,7 @@ function TransactionQr() {
     sessionStorage.getItem("bookingPayload")
   );
 
-  const [counter, setCounter] = useState(240);
+  const [counter, setCounter] = useState(240); 
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
     const seconds = counter % 60;

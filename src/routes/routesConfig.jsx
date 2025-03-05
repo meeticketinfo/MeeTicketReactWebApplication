@@ -48,6 +48,10 @@ import FacilityBookings from "../pages/admin/BookTickets/FacilityBookings";
 import BankTransactions from "../pages/admin/BookTickets/BankTransactions";
 import MetroCumulativeBookings from "../components/metro_reports/cumulativeBookings/MetroCumulativeBookings";
 import CustomBookTickets from "../pages/admin/BookTickets/CustomBookTickets";
+import GrievanceConsolidateReportList from "../components/grievance/grievance_consolidate/GrievanceConsolidateReportList";
+import GrievanceConsolidateReport from "../components/grievance/grievance_consolidate/GrievanceConsolidateReport";
+import GrievanceIncident from "../components/grievance/grievance_incident/GrievanceIncident";
+import GrievanceIndividualReport from "../components/grievance/grievance_individual/GrievanceIndividualReport";
 
 export const routes = [
   {
@@ -80,7 +84,6 @@ export const routes = [
     path: "/transaction-report",
     element: <ProtectedRoute element={<SummaryReport />} />,
   },
-
 
   {
     path: "/booking-details",
@@ -143,9 +146,15 @@ export const routes = [
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
-  { path: "/book-tickets", element: <CustomBookTickets/> },
-  { path: "/facility-bookings", element: <ProtectedRoute element={<FacilityBookings />} /> },
-  { path: "/bank-transactions", element: <ProtectedRoute element={<BankTransactions />} /> },
+  { path: "/book-tickets", element: <CustomBookTickets /> },
+  {
+    path: "/facility-bookings",
+    element: <ProtectedRoute element={<FacilityBookings />} />,
+  },
+  {
+    path: "/bank-transactions",
+    element: <ProtectedRoute element={<BankTransactions />} />,
+  },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
@@ -187,5 +196,17 @@ export const routes = [
   {
     path: "/privacy",
     element: <PrivacyPolicy />,
+  },
+  {
+    path: "/Grievance-consolidate",
+    element: <ProtectedRoute element={<GrievanceConsolidateReport />} />,
+  },
+  {
+    path: "/Grievance-Incident",
+    element: <ProtectedRoute element={<GrievanceIncident />} />,
+  },
+  {
+    path: "/Grievance-individual",
+    element: <ProtectedRoute element={<GrievanceIndividualReport/>} />,
   },
 ];

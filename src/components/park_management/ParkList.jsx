@@ -416,8 +416,9 @@ const ParkList = ({
                       value: dept.departmentId,
                       label: dept.departmentName,
                     }))
-                    .find((option) => option.value === nodalFilters.departmentId) ||
-                  null // Set the selected value
+                    .find(
+                      (option) => option.value === nodalFilters.departmentId
+                    ) || null // Set the selected value
                 }
                 options={allDepartmentTypes
                   ?.filter((dept) => dept.isActive)
@@ -474,8 +475,9 @@ const ParkList = ({
                       value: dept.entityTypeId,
                       label: dept.entityTypeName,
                     }))
-                    .find((option) => option.value === nodalFilters.entityTypeId) ||
-                  null // Set the selected value
+                    .find(
+                      (option) => option.value === nodalFilters.entityTypeId
+                    ) || null // Set the selected value
                 }
                 options={allEntityTypes
                   ?.filter((entity) => entity.isActive)
