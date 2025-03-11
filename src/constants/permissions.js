@@ -17,7 +17,11 @@ export const superAdminPermissions = [
   "metro-cumulative-bookings",
   "Grievance-consolidate",
   "Grievance-Incident",
-  
+  "Grievance-individual",
+  "tourism-consolidate",
+  "tourism-payment-transaction",
+  "tourism-individual",
+  "toursim-bank-payments",
 ];
 
 export const parkAdminPermissions = [
@@ -35,8 +39,8 @@ export const parkAdminPermissions = [
   "completed-bookings",
   "payment-transaction-report",
   "Grievance-consolidate",
+  "Grievance-Incident",
   "Grievance-individual",
-  
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -49,6 +53,7 @@ export const CustomParkAdminPermissions = [
   "completed-bookings",
   "payment-transaction-report",
   "Grievance-consolidate",
+  "Grievance-Incident",
   "Grievance-individual",
   "facility-bookings",
 ];
@@ -59,8 +64,8 @@ export const nodalOfficerPermissions = [
   "entity-admins",
   "entity-bookings",
   "Grievance-consolidate",
-  "Grievance-individual",
   "Grievance-Incident",
+  "Grievance-individual",
 ];
 
 export const MetroReports = [
@@ -87,4 +92,12 @@ export const SupportAdmin = [
   "transaction-report",
   "booking-details",
   "pending-transaction-details",
+];
+
+export const Toursim = [
+  "dashboard",
+  "tourism-consolidate",
+  "tourism-payment-transaction",
+  "tourism-individual",
+  "toursim-bank-payments",
 ];

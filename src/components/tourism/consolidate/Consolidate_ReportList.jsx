@@ -1,22 +1,22 @@
-import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-import { getCurrentDate } from "../../../utils/TypographyHelper";
+import { formatToCurrency, getCurrentDate } from "../../../utils/TypographyHelper";
+import { Field, Form, Formik } from "formik";
 import AgGridTable from "../../tables/AgGridTable";
-import { GriveanceReportStore } from "../../../store/reports/GrievanceStore";
+import { ToursimReportStore } from "../../../store/reports/toursimStore";
 
-function GrievanceIndividualReportList() {
+function Consolidate_ReportList() {
   const {
-    IndividualReports,
-    isFetchOverIndividualLoading,
-    fetchIndividualReports,
-  } = GriveanceReportStore();
-  console.log("IndividualReports", IndividualReports);
+    ConsolidateReports,
+    isFetchConsolidateReportsLoading,
+    fetchConsolidateReports,
+  } = ToursimReportStore();
+
   useEffect(() => {
-    fetchIndividualReports({
+    fetchConsolidateReports({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
     });
-  }, [fetchIndividualReports]);
+  }, [fetchConsolidateReports]);
 
   const [columnDefs] = useState([
     {
@@ -26,46 +26,90 @@ function GrievanceIndividualReportList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "ticketId",
-      headerName: "Ticket ID",
+      field: "ticket_Number",
+      headerName: "Ticket Number",
 
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value}` || "N/A",
+    },
+
+    {
+      field: "package_Type",
+      headerName: "Package Type",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "userMobileNumber",
-      headerName: "User mobile Number",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "grievanceCategoryName",
-      headerName: "Location category",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-
-    {
-      field: "locationName",
-      headerName: "Location Name",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "complaintDescription",
-      headerName: " Complaint Description",
-
+      field: "package_Services",
+      headerName: "Package Services",
+      width: 300,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value === "null" ? "0" : params.value,
     },
+
     {
-      field: "raisedDate",
-      headerName: "Incident Generated Date ",
-      maxWidth: "160",
+      field: "from_Station_Name",
+      headerName: "From Station Name",
+      width: 300,
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "0",
+    },
+    {
+      field: "to_Station_Name",
+      headerName: "To Station Name",
+      width: 300,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "mobile_Number",
+      headerName: "Mobile Number",
+      maxWidth: "150",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "purchase_Date",
+      headerName: "Purchase Date",
+      maxWidth: "130",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "booking_Date",
+      headerName: "Booking Date",
+      maxWidth: "130",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "total_Ticket_Fare",
+      headerName: "Total Ticket Fare (including GST)",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => formatToCurrency(params.value) || "N/A",
+    },
+    {
+      field: "transaction_ID",
+      headerName: "Transaction ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "booking_Status",
+      headerName: "Booking Status",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
+      field: "refundDate",
+      headerName: "Refund Date",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -79,9 +123,31 @@ function GrievanceIndividualReportList() {
       },
     },
     {
-      field: "incidentUpdatedDate",
-      headerName: "Incident Updated Date",
+      field: "refundId",
+      headerName: "Refund ID",
 
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "refundStatus",
+      headerName: "Refund Status",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "utrNumber",
+      headerName: "UTR Number",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "utrDate",
+      headerName: "UTR Date",
+      maxWidth: "130",
+      
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -91,41 +157,16 @@ function GrievanceIndividualReportList() {
           month: "2-digit",
           day: "2-digit",
         });
-      },
-    },
-    {
-      field: "ticketStatus",
-      headerName: "Status",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const statusMap = {
-          1: { label: "Open", color: "bg-green-500 text-white" },
-          2: { label: "Pending", color: "bg-yellow-500 text-black" },
-          3: { label: "ReOpen", color: "bg-blue-500 text-white" },
-          4: { label: "Closed", color: "bg-red-500 text-white" },
-        };
-
-        const status = statusMap[params.value] || {
-          label: "N/A",
-          color: "bg-gray-500 text-white",
-        };
-
-        return (
-          <span
-            className={`px-2 py-0.5 shadow-lg rounded-md text-sm font-medium ${status.color}`}
-          >
-            {status.label}
-          </span>
-        );
       },
     },
   ]);
+
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
   };
   const onSubmit = (values) => {
-    fetchIndividualReports({
+    fetchConsolidateReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
     });
@@ -190,13 +231,13 @@ function GrievanceIndividualReportList() {
         )}
       </Formik>
       <AgGridTable
-      ExportName="Grievance Individual"
-        rowData={IndividualReports}
+        ExportName="Tourisim Consolidate"
+        rowData={ConsolidateReports}
         columnDefs={columnDefs}
-        isFetchLoading={isFetchOverIndividualLoading}
+        isFetchLoading={isFetchConsolidateReportsLoading}
       />
     </div>
   );
 }
 
-export default GrievanceIndividualReportList;
+export default Consolidate_ReportList;

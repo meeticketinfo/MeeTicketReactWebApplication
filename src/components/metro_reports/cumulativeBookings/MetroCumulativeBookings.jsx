@@ -1,11 +1,15 @@
 import { Field, Form, Formik } from "formik";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { useEffect, useState } from "react";
-import { formatToStandardDate, getCurrentDate } from "../../../utils/TypographyHelper";
+import {
+  formatToStandardDate,
+  getCurrentDate,
+} from "../../../utils/TypographyHelper";
 import AgGridTable from "../../tables/AgGridTable";
 import { useMetroBookingStore } from "../../../store/metro_reports/metroBookingReportStore";
 import { toast, ToastContainer } from "react-toastify";
 import PopupModal from "../../utils/popup_modal/PopupModal";
+import useAuthStore from "../../../store/authStore";
 
 export default function MetroCumulativeBookings() {
   const [openModal, setOpenModal] = useState(false);
@@ -15,7 +19,9 @@ export default function MetroCumulativeBookings() {
     fetchAllMetroCumulativeBookingDetailsReport,
     isFetchAllMetroCumulativeBookingDetailsReportsLoading,
   } = useMetroBookingStore();
+  const { decodedTokenData } = useAuthStore();
 
+  const email = decodedTokenData?.data?.email;
   useEffect(() => {
     fetchAllMetroCumulativeBookingDetailsReport({
       fromDate: getCurrentDate(),
@@ -85,13 +91,15 @@ export default function MetroCumulativeBookings() {
     {
       headerName: "Actions",
       field: "actions",
+      hide: email !="esdfinancialadmin@meeseva.com",
       cellRenderer: (params) => (
         <div className=" flex align-center">
           <button
+          
             className="bg-green-400 text-white leading-normal px-2 py-1 mt-1.5 rounded-md"
             onClick={() => {
               setOpenModal(true);
-              setSettlementAmount(params.data.totalConfirmedTicketFare)
+              setSettlementAmount(params.data.totalConfirmedTicketFare);
             }}
           >
             Pay Now
@@ -165,7 +173,7 @@ export default function MetroCumulativeBookings() {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllParkBankTransactionsLoading}
+                  // disabled={isFetchAllParkBankTransactionsLoading}
                 >
                   Search
                 </button>
@@ -174,7 +182,7 @@ export default function MetroCumulativeBookings() {
           )}
         </Formik>
         <AgGridTable
-         ExportName="Bank Payments"
+          ExportName="Bank Payments"
           rowData={allMetroCumulativeBookingDetailsReports}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllMetroCumulativeBookingDetailsReportsLoading}
@@ -192,13 +200,14 @@ export default function MetroCumulativeBookings() {
       >
         <div className="px-10 py-14">
           <h1 className="text-blue-v1 font-semibold">
-            The amount to be settled is Rs. {settlementAmount}.<br /> Please confirm to proceed with settlement.
+            The amount to be settled is Rs. {settlementAmount}.<br /> Please
+            confirm to proceed with settlement.
           </h1>
           <div className="flex justify-center gap-6 mt-4">
             <button
               onClick={() => {
                 setOpenModal(false);
-                toast.success("The amount successfully transferred")
+                toast.success("The amount successfully transferred");
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
@@ -216,5 +225,5 @@ export default function MetroCumulativeBookings() {
         </div>
       </PopupModal>
     </AdminLayout>
-  )
+  );
 }

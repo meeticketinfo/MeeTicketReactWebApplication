@@ -4,6 +4,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import useAuthStore from "../store/authStore";
 import MetroDashboard from "../components/metro_reports/MetroDashboard";
 import { useNavigate } from "react-router-dom";
+import ToursimDashboard from "../components/tourism/ToursimDashboard";
 
 function Dashboard() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
@@ -16,6 +17,8 @@ function Dashboard() {
   const RenderContent = () => {
     if (roleDetails?.name === "ROLE_METROADMIN") {
       return <MetroDashboard />;
+    } else if (roleDetails?.name === "Role_TourismAdmin") {
+      return <ToursimDashboard />;
     } else {
       return <AdminDashboard />;
     }
@@ -38,7 +41,7 @@ function Dashboard() {
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
               {!(
                 email === "supportuser1@meeticket.com" ||
-                email === "supportuser2@meeticket.com" || 
+                email === "supportuser2@meeticket.com" ||
                 email === "supportuser3@meeticket.com"
               )
                 ? "Dashboard"

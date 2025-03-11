@@ -539,7 +539,7 @@ export const FacilityServices = () => {
 
                                                   <input
                                                     type="text"
-                                                    className="text-blue-v2 p-1  text-center font-medium w-[80px] border border-blue-v2 rounded-md placeholder:text-blue-v2"
+                                                    className="text-blue-v2 p-1  text-center font-medium w-[80px] border border-blue-v2  rounded-md placeholder:text-blue-v2"
                                                     value={
                                                       quantities[variant.id] ??
                                                       ""

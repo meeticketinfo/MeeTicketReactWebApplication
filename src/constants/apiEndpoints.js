@@ -1,27 +1,43 @@
 import useAuthStore from "../store/authStore";
 
-/// dev
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
-
-// metro dev
-// export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/metroapi/v1.0/";
-
-// METRO UAT
-export const METRO_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+/// dev park
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+// metro dev
+export const METRO_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+
+// METRO UAT
+// export const METRO_API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+
+//  Grievance DEV
+export const GRIEVANCE_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.life/meesevaconnectapi/v1/";
+
+//  Grievance UAT
+// export const GRIEVANCE_API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+//  TOURSIM DEV
+export const TOURISM_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+
+//  TOURSIM UAT
+// export const TOURISM_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // PARK PROD
-// export const API_BASE_URL = 
+// export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 // export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
@@ -33,6 +49,10 @@ export const API_BASE_URL =
 // metro dev testing
 // export const METRO_API_BASE_URL =
 //   "https://6phbrdb7-7237.inc1.devtunnels.ms/v1.0/";
+
+// grivience dev testing
+// export const GRIEVANCE_API_BASE_URL =
+//   "https://v1nbj8m4-7210.inc1.devtunnels.ms/v1.0/";
 
 // METRO UAT testing
 // export const METRO_API_BASE_URL =
@@ -171,13 +191,26 @@ export const API_ENDPOINTS = {
       GET_METRO_BOOKINGS: `Master/GetAllFacilities`,
     },
     PARK_Reports: {
-      GET_PARK_BANK_TRANSACTION_REPORT : `${API_BASE_URL}ParkReport/GetParkBankTransactionReport`,
+      GET_PARK_BANK_TRANSACTION_REPORT: `${API_BASE_URL}ParkReport/GetParkBankTransactionReport`,
     },
     METRO_Reports: {
       GET_METRO_SUMMARY: `${METRO_API_BASE_URL}v1/MetroReport/GetTransactionReportResult`,
       GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetBookingDetailsResult`,
       GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetInprogressorFailedPaymentTxnResult`,
       GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}v1/MetroReport/GetDateWiseBookingsCumulative`,
+    },
+    GRIVEANCE_REPORTS: {
+      GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,
+      GET_CONSOLIDATE_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/TotalCountsByLocationCategory`,
+      GET_INDIVIDUAL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceTracking/GetIndividualDetails`,
+      POST_COMMENT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/AddMessageToWebChat`,
+      UpdateStatus: `${GRIEVANCE_API_BASE_URL}GrievanceTracking/UpdateComplaintDetails`,
+    },
+    TOURISM_REPORTS: {
+      GET_TOURISM_CONSOLIDATE_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetConsolidatedBookingReport`,
+      GET_TOURISM_INDIVIDUAL_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetIndividualBookingsReport`,
+      GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
+      GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
   },
   ENTITIES: {
@@ -193,7 +226,7 @@ export const API_ENDPOINTS = {
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
-    GET_ZOO_PARK_DASHBOARD_COUNTS:  `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
-    GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE:  `${API_BASE_URL}ParkReport/GetZooParkCounts`,
+    GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
+    GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
   },
 };

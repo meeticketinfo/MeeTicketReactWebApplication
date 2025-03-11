@@ -18,6 +18,7 @@ import {
   NehruZooPark,
   SupportAdmin,
   CustomParkAdminPermissions,
+  Toursim,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -109,7 +110,9 @@ function Sidebar({ variant = "default" }) {
       return MetroReports;
     } else if (role === "ROLE_ZOOPARKADMIN") {
       return NehruZooPark;
-    }
+    }else if (role === "Role_TourismAdmin") {
+          return Toursim;
+        }
     return [];
   }, [role, email]);
 

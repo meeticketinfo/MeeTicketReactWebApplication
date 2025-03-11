@@ -2,22 +2,21 @@ import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../tables/AgGridTable";
-import { GriveanceReportStore } from "../../../store/reports/GrievanceStore";
+import { ToursimReportStore } from "../../../store/reports/toursimStore";
 
-function GrievanceIndividualReportList() {
+function IndividualReportList() {
   const {
     IndividualReports,
-    isFetchOverIndividualLoading,
+    isFetchIndividualReportsLoading,
     fetchIndividualReports,
-  } = GriveanceReportStore();
-  console.log("IndividualReports", IndividualReports);
+  } = ToursimReportStore();
+
   useEffect(() => {
     fetchIndividualReports({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
     });
   }, [fetchIndividualReports]);
-
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -26,47 +25,54 @@ function GrievanceIndividualReportList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "ticketId",
+      field: "transactionId",
+      headerName: "Transaction Id",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+
+    {
+      field: "ticketID",
       headerName: "Ticket ID",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "userMobileNumber",
-      headerName: "User mobile Number",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "grievanceCategoryName",
-      headerName: "Location category",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-
-    {
-      field: "locationName",
-      headerName: "Location Name",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "complaintDescription",
-      headerName: " Complaint Description",
-
+      field: "ticketType",
+      headerName: "Ticket Type",
+      width:300,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value === "null" ? "0" : params.value,
     },
-    {
-      field: "raisedDate",
-      headerName: "Incident Generated Date ",
-      maxWidth: "160",
 
+    {
+      field: "fromStationName",
+      headerName: "From Station Name",
+      width:300,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "toStationName",
+      headerName: "To Station Name",
+      width:300,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "purchaseDate",
+      headerName: "Purchase Date",
+      maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -79,47 +85,28 @@ function GrievanceIndividualReportList() {
       },
     },
     {
-      field: "incidentUpdatedDate",
-      headerName: "Incident Updated Date",
-
+      field: "ticketActualFare",
+      headerName: "Ticket Actual Fare",
+      maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
-      },
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "ticketStatus",
-      headerName: "Status",
+      field: "amountincGST18",
+      headerName: "Amount(inc.GST 18%)",
+      maxWidth: "175",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const statusMap = {
-          1: { label: "Open", color: "bg-green-500 text-white" },
-          2: { label: "Pending", color: "bg-yellow-500 text-black" },
-          3: { label: "ReOpen", color: "bg-blue-500 text-white" },
-          4: { label: "Closed", color: "bg-red-500 text-white" },
-        };
-
-        const status = statusMap[params.value] || {
-          label: "N/A",
-          color: "bg-gray-500 text-white",
-        };
-
-        return (
-          <span
-            className={`px-2 py-0.5 shadow-lg rounded-md text-sm font-medium ${status.color}`}
-          >
-            {status.label}
-          </span>
-        );
-      },
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "totalFare",
+      headerName: "Total Fare",
+      maxWidth: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
   ]);
+
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
@@ -146,7 +133,7 @@ function GrievanceIndividualReportList() {
                 type="date"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
-                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 // min={getCurrentDate()}
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
@@ -169,7 +156,7 @@ function GrievanceIndividualReportList() {
                 type="date"
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
-                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 min={values.fromDate || getCurrentDate()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
@@ -190,13 +177,13 @@ function GrievanceIndividualReportList() {
         )}
       </Formik>
       <AgGridTable
-      ExportName="Grievance Individual"
+       ExportName="Tourisim Individual"
         rowData={IndividualReports}
         columnDefs={columnDefs}
-        isFetchLoading={isFetchOverIndividualLoading}
+        isFetchLoading={isFetchIndividualReportsLoading}
       />
     </div>
   );
 }
 
-export default GrievanceIndividualReportList;
+export default IndividualReportList;
