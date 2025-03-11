@@ -1,9 +1,21 @@
 import { Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../tables/AgGridTable";
+import { GriveanceReportStore } from "../../../store/reports/GrievanceStore";
 
 function GrievanceConsolidateReportList() {
+  const {
+    ConsolidateReports,
+    isFetchOverConsolidateLoading,
+    fetchConsolidateReports,
+  } = GriveanceReportStore();
+  useEffect(() => {
+    fetchConsolidateReports({
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+    });
+  }, [fetchConsolidateReports]);
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -12,7 +24,7 @@ function GrievanceConsolidateReportList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "Location category",
+      field: "category",
       headerName: "Location category",
 
       headerClass: "text-blue-v2",
@@ -20,53 +32,55 @@ function GrievanceConsolidateReportList() {
     },
 
     {
-      field: "Locations",
+      field: "location",
       headerName: "Locations",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "No of Tickets Open",
+      field: "openTickets",
       headerName: "No of Tickets Open",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value === "null" ? "0" : params.value,
     },
+   
     {
-      field: "No of Tickets Pending",
+      field: "pendingTickets",
       headerName: "No of Tickets Pending",
-      maxWidth: "160",
+      maxWidth: "180",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "No of Tickets Closed",
+      field: "closedTickets",
       headerName: "No of Tickets Closed",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "Total no of tickets",
+      field: "totalTickets",
       headerName: "Total no of tickets ",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
   ]);
-   const initialValues = {
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
-    };
-    const onSubmit = (values) => {
-      fetchAllMetroSummaryReport({
-        fromDate: values.fromDate,
-        toDate: values.toDate,
-      });
-    };
+
+  const initialValues = {
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+  };
+  const onSubmit = (values) => {
+    fetchConsolidateReports({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+    });
+  };
   return (
     <div>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -127,9 +141,10 @@ function GrievanceConsolidateReportList() {
         )}
       </Formik>
       <AgGridTable
-        // rowData={allMetroSummaryReports}
+       ExportName="Grievance Consolidate"
+        rowData={ConsolidateReports}
         columnDefs={columnDefs}
-        // isFetchLoading={isFetchAllMetroSummaryReportsLoading}
+        isFetchLoading={isFetchOverConsolidateLoading}
       />
     </div>
   );

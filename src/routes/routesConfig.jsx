@@ -52,6 +52,10 @@ import GrievanceConsolidateReportList from "../components/grievance/grievance_co
 import GrievanceConsolidateReport from "../components/grievance/grievance_consolidate/GrievanceConsolidateReport";
 import GrievanceIncident from "../components/grievance/grievance_incident/GrievanceIncident";
 import GrievanceIndividualReport from "../components/grievance/grievance_individual/GrievanceIndividualReport";
+import BankPaymentReport from "../components/tourism/bank_payment/BankPaymentReport";
+import IndividualReport from "../components/tourism/individual/IndividualReport";
+import Consolidate_Report from "../components/tourism/consolidate/Consolidate_Report";
+import TourismPaymentTransactionReport from "../components/tourism/payment_transaction/TourismPaymentTransactionReport";
 
 export const routes = [
   {
@@ -197,6 +201,7 @@ export const routes = [
     path: "/privacy",
     element: <PrivacyPolicy />,
   },
+  // Grievance
   {
     path: "/Grievance-consolidate",
     element: <ProtectedRoute element={<GrievanceConsolidateReport />} />,
@@ -207,6 +212,24 @@ export const routes = [
   },
   {
     path: "/Grievance-individual",
-    element: <ProtectedRoute element={<GrievanceIndividualReport/>} />,
+    element: <ProtectedRoute element={<GrievanceIndividualReport />} />,
+  },
+
+  // Tourism
+  {
+    path: "/tourism-individual",
+    element: <ProtectedRoute element={<IndividualReport />} />,
+  },
+  {
+    path: "/tourism-consolidate",
+    element: <ProtectedRoute element={<Consolidate_Report />} />,
+  },
+  {
+    path: "/tourism-payment-transaction",
+    element: <ProtectedRoute element={<TourismPaymentTransactionReport />} />,
+  },
+  {
+    path: "/toursim-bank-payments",
+    element: <ProtectedRoute element={<BankPaymentReport />} />,
   },
 ];

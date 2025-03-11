@@ -23,7 +23,9 @@ import { GrUserPolice } from "react-icons/gr";
 import { TbReportSearch } from "react-icons/tb";
 import { TbReportAnalytics } from "react-icons/tb";
 import { IoTicketOutline } from "react-icons/io5";
+import { SiReacthookform } from "react-icons/si";
 import useAuthStore from "../store/authStore";
+import { FaCalendarCheck } from "react-icons/fa";
 
 const sidebarItems = [
   {
@@ -164,15 +166,7 @@ const sidebarItems = [
       },
     ],
   },
-  // {
-  //   title: "Book Tickets",
-  //   icon: RiDashboard3Fill,
-  //   path: "/entity-bookings",
-  //   gradientClass:
-  //     "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-  //   subItems: [],
-  //   roles: ["Admin", "Super Admin"],
-  // },
+ 
   {
     title: "My Account",
     icon: RiAccountPinCircleFill,
@@ -235,7 +229,7 @@ const sidebarItems = [
   // griveance
   {
     title: "Grievance",
-    icon: TbTrain,
+    icon: SiReacthookform,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
@@ -254,6 +248,36 @@ const sidebarItems = [
         title: "Individual Incident Details",
         icon: TbReportSearch,
         path: "/Grievance-individual",
+      },
+    ],
+  },
+  // Tourism
+  {
+    title: "Tourism",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Consolidated Details",
+        icon: TbReportSearch,
+        path: "/tourism-consolidate",
+      },
+      {
+        title: "Individual Details",
+        icon: TbReportSearch,
+        path: "/tourism-individual",
+      },
+      {
+        title: "Payment Transaction Details",
+        icon: TbReportSearch,
+        path: "/tourism-payment-transaction",
+      },
+      {
+        title: "Bank Paymnet Details",
+        icon: TbReportSearch,
+        path: "/toursim-bank-payments",
       },
     ],
   },

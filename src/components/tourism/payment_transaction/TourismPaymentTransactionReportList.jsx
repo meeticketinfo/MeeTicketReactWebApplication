@@ -1,23 +1,21 @@
+import React, { useState, useEffect } from "react";
+import { formatToCurrency, getCurrentDate } from "../../../utils/TypographyHelper";
 import { Field, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import { getCurrentDate } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../tables/AgGridTable";
-import { GriveanceReportStore } from "../../../store/reports/GrievanceStore";
+import { ToursimReportStore } from "../../../store/reports/toursimStore";
 
-function GrievanceIndividualReportList() {
+function TourismPaymentTransactionReportList() {
   const {
-    IndividualReports,
-    isFetchOverIndividualLoading,
-    fetchIndividualReports,
-  } = GriveanceReportStore();
-  console.log("IndividualReports", IndividualReports);
+    PaymentTransactionReports,
+    isFetchPaymentTransactionReportsLoading,
+    fetchPaymentTransactionReports,
+  } = ToursimReportStore();
   useEffect(() => {
-    fetchIndividualReports({
+    fetchPaymentTransactionReports({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
     });
-  }, [fetchIndividualReports]);
-
+  }, [fetchPaymentTransactionReports]);
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -26,47 +24,33 @@ function GrievanceIndividualReportList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "ticketId",
-      headerName: "Ticket ID",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "userMobileNumber",
-      headerName: "User mobile Number",
-
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
-    },
-    {
-      field: "grievanceCategoryName",
-      headerName: "Location category",
+      field: "transactionId",
+      headerName: "Transaction ID",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
 
     {
-      field: "locationName",
-      headerName: "Location Name",
+      field: "mobileNumber",
+      headerName: "Mobile Number",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => params.value ?params.value: "N/A",
     },
     {
-      field: "complaintDescription",
-      headerName: " Complaint Description",
+      field: "initiateTxnAmount",
+      headerName: "TXN Amount",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
-        params.value === "null" ? "0" : params.value,
+        params.value === "null" ? "0" : formatToCurrency(params.value),
     },
-    {
-      field: "raisedDate",
-      headerName: "Incident Generated Date ",
-      maxWidth: "160",
 
+    {
+      field: "createdDate",
+      headerName: "Date",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -79,53 +63,48 @@ function GrievanceIndividualReportList() {
       },
     },
     {
-      field: "incidentUpdatedDate",
-      headerName: "Incident Updated Date",
+      field: "paymentStatus",
+      headerName: "Payment Status While Booking",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
-      },
+      valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "ticketStatus",
-      headerName: "Status",
+      field: "actualPaymentStatus",
+      headerName: " Actual Payment Status",
+
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const statusMap = {
-          1: { label: "Open", color: "bg-green-500 text-white" },
-          2: { label: "Pending", color: "bg-yellow-500 text-black" },
-          3: { label: "ReOpen", color: "bg-blue-500 text-white" },
-          4: { label: "Closed", color: "bg-red-500 text-white" },
-        };
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "actualAmountPaid",
+      headerName: "Actual Amount Paid",
 
-        const status = statusMap[params.value] || {
-          label: "N/A",
-          color: "bg-gray-500 text-white",
-        };
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => formatToCurrency(params.value) || "N/A",
+    },
+    {
+      field: "refundId",
+      headerName: "Refund Id",
 
-        return (
-          <span
-            className={`px-2 py-0.5 shadow-lg rounded-md text-sm font-medium ${status.color}`}
-          >
-            {status.label}
-          </span>
-        );
-      },
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "refundStatus",
+      headerName: "Refund Status",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
   ]);
+
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
   };
   const onSubmit = (values) => {
-    fetchIndividualReports({
+    fetchPaymentTransactionReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
     });
@@ -146,7 +125,7 @@ function GrievanceIndividualReportList() {
                 type="date"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
-                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 // min={getCurrentDate()}
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
@@ -169,7 +148,7 @@ function GrievanceIndividualReportList() {
                 type="date"
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
-                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 min={values.fromDate || getCurrentDate()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
@@ -190,13 +169,13 @@ function GrievanceIndividualReportList() {
         )}
       </Formik>
       <AgGridTable
-      ExportName="Grievance Individual"
-        rowData={IndividualReports}
+       ExportName="Tourisim Payment Transaction"
+        rowData={PaymentTransactionReports}
         columnDefs={columnDefs}
-        isFetchLoading={isFetchOverIndividualLoading}
+        isFetchLoading={isFetchPaymentTransactionReportsLoading}
       />
     </div>
   );
 }
 
-export default GrievanceIndividualReportList;
+export default TourismPaymentTransactionReportList;

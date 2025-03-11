@@ -9,6 +9,7 @@ import {
   NehruZooPark,
   SupportAdmin,
   CustomParkAdminPermissions,
+  Toursim,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -40,6 +41,8 @@ const ProtectedRoute = ({ element }) => {
       return MetroReports;
     } else if (role === "ROLE_ZOOPARKADMIN") {
       return NehruZooPark;
+    }else if (role === "Role_TourismAdmin") {
+      return Toursim;
     }
     return [];
   }, [role,email]);
