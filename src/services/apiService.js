@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
@@ -13,7 +13,7 @@ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/"
 
 // testing
 // export const API_BASE_URL =
-//   "https://3m72k312-7237.inc1.devtunnels.ms/api/";
+//   "https://knm5q0hz-7169.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -56,8 +56,7 @@ const apiService = {
 
   put: (url, body = {}, headers = {}) => api.put(url, body, { headers }),
 
-  delete: (url, params = {}, headers = {}) =>
-    api.delete(url, { params, headers }),
+  delete: (url, params = {}, headers = {}) => api.delete(url, { params, headers }),
 
   uploadFile: (url, file, additionalData = {}, headers = {}) => {
     const formData = new FormData();

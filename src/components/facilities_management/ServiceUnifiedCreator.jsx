@@ -178,30 +178,6 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
         toast.error("Unexpected response from the server.");
       }
     } catch (xhr) {
-      // if (error?.response?.data?.errors) {
-      //   const formErrors = {};
-
-      //   Object.entries(error.response.data.errors).forEach(
-      //     ([key, messages]) => {
-      //       if (Array.isArray(messages) && messages.length > 0) {
-      //         // Map error keys to form fields if necessary
-      //         const fieldKey = key.replace(/^\$\./, "").replace(/\./g, "_"); // Example: '$.facilityDto.facilityMasterId' -> 'facilityDto_facilityMasterId'
-      //         formErrors[fieldKey] = messages[0];
-      //         // Show error as a toast message
-      //         toast.error(`${fieldKey}: ${messages[0]}`);
-      //       }
-      //     }
-      //   );
-
-      //   // Optionally, set the form errors in your state (if you're using Formik)
-      //   setErrors(formErrors);
-      // } else if (error?.response?.data?.title) {
-      //   // Handle other API errors with a title
-      //   toast.error(error.response.data.title);
-      // } else {
-      //   // Handle generic or unknown errors
-      //   toast.error("An unknown error occurred. Please try again.");
-      // }
       handleApiError(xhr);
     } finally {
       setSubmitting(false);
@@ -215,21 +191,14 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={
-            (values, actions) =>
-              onSubmit(values, actions, saveunifiedFacilityDetails)
-            //console.log(values, 'values')
+          onSubmit={(values, actions) =>
+            onSubmit(values, actions, saveunifiedFacilityDetails)
           }
         >
           {({ errors, touched, isSubmitting, setFieldValue, values }) => (
             <Form>
               <div className="flex justify-start items-center gap-4 mb-6">
                 <div className="w-1/4">
-                  {/* <SelectInput
-                    name="facilityDto.facilityMasterId"
-                    label="Select Facility"
-                    options={transformedOptions ?? []}
-                  /> */}
                   <label htmlFor="User" className="block text-xs font-medium">
                     Facility <span className="text-red-500">*</span>
                   </label>
@@ -304,25 +273,7 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                     className="text-red-500 text-xs absolute"
                   />
                 </div>
-                {/* discription */}
-                <div className="col-span-3">
-                  <label className="block text-sm font-medium">
-                    Description
-                  </label>
-                  <Field
-                    as="textarea"
-                    maxlength={100}
-                    name="facilityDto.description"
-                    onChange={(e) => {
-                      setFieldValue(
-                        "facilityDto.description",
-                        e.target.value
-                      );
-                    }}
-                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter description"
-                  />
-                </div>
+
                 {/* has sub facility */}
                 <div className="flex items-center mt-5">
                   <Field
@@ -369,6 +320,20 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 "
                 />
               </div> */}
+              {/* discription */}
+              <div className="col-span-3">
+                <label className="block text-sm font-medium">Description</label>
+                <Field
+                  as="textarea"
+                  maxlength={100}
+                  name="facilityDto.description"
+                  onChange={(e) => {
+                    setFieldValue("facilityDto.description", e.target.value);
+                  }}
+                  className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  placeholder="Enter description"
+                />
+              </div>
               <hr className="py-2"></hr>
               <FieldArray name="subFacilities">
                 {({ push, remove }) => (

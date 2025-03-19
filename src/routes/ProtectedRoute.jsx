@@ -10,6 +10,7 @@ import {
   SupportAdmin,
   CustomParkAdminPermissions,
   Toursim,
+  RtcAdmin,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -19,8 +20,8 @@ const ProtectedRoute = ({ element }) => {
   const role = roleDetails?.name;
 
   const email = decodedTokenData?.data?.email;
-  
-  const parkId=decodedTokenData?.data.ParkId
+
+  const parkId = decodedTokenData?.data.ParkId;
 
   const rolePermissions = useMemo(() => {
     if (
@@ -33,19 +34,22 @@ const ProtectedRoute = ({ element }) => {
     } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
     } else if (role === "ROLE_ADMIN") {
-     
-      return parkId==="100"?CustomParkAdminPermissions:parkAdminPermissions;
+      return parkId === "100"
+        ? CustomParkAdminPermissions
+        : parkAdminPermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
       return MetroReports;
     } else if (role === "ROLE_ZOOPARKADMIN") {
       return NehruZooPark;
-    }else if (role === "Role_TourismAdmin") {
+    } else if (role === "Role_TourismAdmin") {
       return Toursim;
+    } else if (role === "Role_RTCADMIN") {
+      return RtcAdmin;
     }
     return [];
-  }, [role,email]);
+  }, [role, email]);
 
   // If user is authenticated and trying to access the login page, redirect to dashboard
   if (isAuthenticated && location.pathname === "/") {

@@ -91,6 +91,7 @@ export const GriveanceReportStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
+      console.log("res",error)
       set({ isSaveCommentLoading: false });
       throw error;
     }

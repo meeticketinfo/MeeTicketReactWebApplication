@@ -22,6 +22,7 @@ const validationSchema = Yup.object({
 
 export default function HolidayCreate({ setIsHolidayCreateVisible }) {
   const { saveHolidayDetails, isSaveHolidayDetailsLoading } = useHolidayStore();
+
   const handleSubmit = async (values, { resetForm }, saveHolidayDetails) => {
     // Format date fields to ISO strings
     const formattedValues = {
@@ -68,8 +69,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
         initialValues={{
           name: "",
           description: "",
-          fromDate: "",
-          toDate: "",
+          holidayDate:"",
         }}
         validationSchema={validationSchema}
         onSubmit={(values, actions) =>
@@ -105,7 +105,7 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
               {/* Start Date Field */}
               <div className="col-span-1">
                 <label className="block text-sm font-semibold text-gray-700">
-                  Start Date and Time
+                  Start Date and Time<span className="text-red-500">*</span>
                 </label>
                 <Field
                   name="holidayDate"
@@ -130,16 +130,16 @@ export default function HolidayCreate({ setIsHolidayCreateVisible }) {
                 </label>
                 <Field
                   name="description"
-                  placeholder="Enter discription"
+                  placeholder="Enter Description"
                   maxLength={255}
                   as="textarea"
                   className="mt-1 p-2 w-full rounded-lg border border-gray-300 focus:ring focus:ring-blue-300"
                 />
-                <ErrorMessage
+                {/* <ErrorMessage
                   name="description"
                   component="div"
                   className="text-red-500 text-sm"
-                />
+                /> */}
               </div>
             </div>
 

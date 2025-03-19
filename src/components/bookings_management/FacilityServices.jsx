@@ -247,7 +247,7 @@ export const FacilityServices = () => {
                         (service) => service.facilityId === facility.id
                       )
                     )
-                    ?.filter((facility) => facility.isActive)
+                    ?.filter((facility) => facility.isCounterEnable)
                     .map((facility) => {
                       return (
                         <div

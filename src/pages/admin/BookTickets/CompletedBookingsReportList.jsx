@@ -25,7 +25,7 @@ function CompletedBookingsReportList() {
       endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
       bookingSource: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
-        : "Counter",
+        : "",
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
     });
   }, [fetchCompleteBookingsReport]);
@@ -34,7 +34,7 @@ function CompletedBookingsReportList() {
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     typeOfBooking: savedFilters?.typeOfBooking
       ? savedFilters.typeOfBooking
-      : "Counter",
+      : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
   };
 
@@ -230,6 +230,7 @@ function CompletedBookingsReportList() {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
+                 <option value="">ALL</option>
                 <option value="Counter">Counter</option>
                 <option value="MeeTicketApp">Mee TicketApp</option>
               </Field>

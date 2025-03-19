@@ -33,7 +33,7 @@ const useAuthStore = create(
 
           // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
-          await get().fetchUserRoles(); 
+          await get().fetchUserRoles();
           set({
             loginError: "",
           });
@@ -98,8 +98,6 @@ const useAuthStore = create(
           );
           const token = response.data;
           set({ token, error: null, isLoading: false, isAuthenticated: true });
-          // alert(get().isAuthenticated);
-          // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
           await get().fetchUserRoles();
           set({
@@ -110,6 +108,13 @@ const useAuthStore = create(
 
           return { response: response.data };
         } catch (xhr) {
+          if (xhr?.response?.status === 409) {
+            set({
+              otpError: xhr.response.data.message || "Invalid OTP",
+              isLoading: false,
+            });
+            return;
+          }
           if (
             xhr &&
             xhr.response &&

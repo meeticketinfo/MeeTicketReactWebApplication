@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import TransactionQr from "../../../components/bookings_management/TransactionQr";
 import Select from "react-select";
+import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 
 export default function AdminBookings() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,6 +49,7 @@ export default function AdminBookings() {
     isBookingFormVisible,
     setPaymentStatus,
   } = useBookingsStore();
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
@@ -107,6 +109,13 @@ export default function AdminBookings() {
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "locationCategoryName",
+      headerName: "Location Category",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "0",
     },
     {
       field: "facilityName",
@@ -250,6 +259,7 @@ export default function AdminBookings() {
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" && (
+                        <>
                         <div>
                           <label className="block text-xs font-medium">
                             Location
@@ -297,6 +307,67 @@ export default function AdminBookings() {
                             }}
                           />
                         </div>
+                        {/* <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location Category
+                        </label>
+
+                        <Select
+                          name="locationCategoryId"
+                          value={
+                            allEntityTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.entityTypeId,
+                                label: dept.entityTypeName,
+                              }))
+                              .find(
+                                (option) =>
+                                  option.value === values.locationCategoryId
+                              ) || null // Use values.entityId
+                          }
+                          options={allEntityTypes
+                            ?.filter((entity) => entity.isActive)
+                            .map((entity) => ({
+                              value: entity.entityTypeId,
+                              label: entity.entityTypeName,
+                            }))}
+                          onChange={(selectedOption) =>
+                            setFieldValue(
+                              "locationCategoryId",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          isClearable
+                          placeholder="Location Category"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
+
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div> */}
+                        </>
                       )}
                       <div>
                         <label

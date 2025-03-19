@@ -11,10 +11,12 @@ export const useHolidayStore = create((set, get) => ({
   isFetchHolidayDetailsLoading: false,
   isFetchAllHolidaysLoading: false,
   fetchHolidayDetailsError: null,
-  fetchAllRecurringHolidayError:null,
-  isFetchAllRecurringHolidaysLoading:false,
+  fetchAllRecurringHolidayError: null,
+  isFetchAllRecurringHolidaysLoading: false,
   error: null,
   success: null,
+  // delete Holiday
+  DeleteHolidayDetailsLoading: false,
 
   serializeFilters: (filters) =>
     Object.entries(filters)
@@ -32,8 +34,8 @@ export const useHolidayStore = create((set, get) => ({
         allHolidays: response.data,
         isFetchAllHolidaysLoading: false,
       });
-    } catch (error) { 
-      set({  isFetchAllHolidaysLoading: false });
+    } catch (error) {
+      set({ isFetchAllHolidaysLoading: false });
     }
   },
 
@@ -47,7 +49,7 @@ export const useHolidayStore = create((set, get) => ({
         allRecurringHolidays: response.data,
         isFetchAllRecurringHolidaysLoading: false,
       });
-    } catch (error) { 
+    } catch (error) {
       set({
         fetchAllRecurringHolidayError: error.message,
         isFetchAllRecurringHolidaysLoading: false,
@@ -55,26 +57,24 @@ export const useHolidayStore = create((set, get) => ({
     }
   },
 
+  // Save  recurring holiday details (add or update)
+  saveRecurringHolidayDetails: async (HolidayData) => {
+    set({ isSaveRecurringHolidayDetailsLoading: true });
+    try {
+      const url = API_ENDPOINTS.MASTERS.HOLIDAY.ADD_NEW_RECURRING_HOLIDAY;
 
-// Save  recurring holiday details (add or update)
-saveRecurringHolidayDetails: async (HolidayData) => {
-  set({ isSaveRecurringHolidayDetailsLoading: true });
-  try {
-    const url = API_ENDPOINTS.MASTERS.HOLIDAY.ADD_NEW_RECURRING_HOLIDAY 
-
-    const response = await apiService.post(url, HolidayData);
-    set({
-      HolidayDetails: response.data,
-      isSaveRecurringHolidayDetailsLoading: false,
-      success: "Holiday saved successfully.",
-    });
-    return { success: true, data: response };
-  } catch (error) {
-    set({ isSaveRecurringHolidayDetailsLoading: false });
-    throw error;
-  }
-},
-
+      const response = await apiService.post(url, HolidayData);
+      set({
+        HolidayDetails: response.data,
+        isSaveRecurringHolidayDetailsLoading: false,
+        success: "Holiday saved successfully.",
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({ isSaveRecurringHolidayDetailsLoading: false });
+      throw error;
+    }
+  },
 
   // Save holiday details (add or update)
   saveHolidayDetails: async (HolidayData, isUpdate = false) => {
@@ -94,6 +94,26 @@ saveRecurringHolidayDetails: async (HolidayData) => {
       return { success: true, data: response };
     } catch (error) {
       set({ isSaveHolidayDetailsLoading: false });
+      throw error;
+    }
+  },
+  setDeleteHolidayDetailsLoading: (loading) =>
+    set({ DeleteHolidayDetailsLoading: loading }),
+  // delete Holiday
+  DeleteHolidayDetails: async (HolidayData) => {
+    set({ DeleteHolidayDetailsLoading: true });
+    try {
+      const url = API_ENDPOINTS.MASTERS.HOLIDAY.DELETE_HOLIDAY;
+
+      const response = await apiService.delete(
+        `${url}?holidayId=${HolidayData}`
+      );
+      set({
+        DeleteHolidayDetailsLoading: false,
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({DeleteHolidayDetailsLoading: false,});
       throw error;
     }
   },

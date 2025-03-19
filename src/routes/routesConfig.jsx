@@ -56,6 +56,12 @@ import BankPaymentReport from "../components/tourism/bank_payment/BankPaymentRep
 import IndividualReport from "../components/tourism/individual/IndividualReport";
 import Consolidate_Report from "../components/tourism/consolidate/Consolidate_Report";
 import TourismPaymentTransactionReport from "../components/tourism/payment_transaction/TourismPaymentTransactionReport";
+import DayPassReport from "../components/rtc/rtc_reports/day_pass/DayPassReport";
+import OrdinaryPassReport from "../components/rtc/rtc_reports/ordinary_pass/OrdinaryPassReport";
+import MstPassReport from "../components/rtc/rtc_reports/mst_pass/MstPassReport";
+import ExpressPassReport from "../components/rtc/rtc_reports/express_pass/ExpressPassReport";
+import StudentPass from "../components/rtc/rtc_reports/student_pass/StudentPass";
+import PendingPassesReport from "../components/rtc/rtc_reports/pending_passes/PendingPassesReport";
 
 export const routes = [
   {
@@ -213,6 +219,33 @@ export const routes = [
   {
     path: "/Grievance-individual",
     element: <ProtectedRoute element={<GrievanceIndividualReport />} />,
+  },
+
+  // rtc Routs
+
+  {
+    path: "/day-pass",
+    element: <ProtectedRoute element={<DayPassReport />} />,
+  },
+  {
+    path: "/ordinary-pass",
+    element: <ProtectedRoute element={<OrdinaryPassReport />} />,
+  },
+  {
+    path: "/mst-pass",
+    element: <ProtectedRoute element={<MstPassReport />} />,
+  },
+  {
+    path: "/express-pass",
+    element: <ProtectedRoute element={<ExpressPassReport />} />,
+  },
+  {
+    path: "/student-pass",
+    element: <ProtectedRoute element={<StudentPass />} />,
+  },
+  {
+    path: "/pending-pass",
+    element: <ProtectedRoute element={<PendingPassesReport />} />,
   },
 
   // Tourism

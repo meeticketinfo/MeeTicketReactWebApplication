@@ -51,6 +51,7 @@ const FacilityCreate = ({ onDataAdded }) => {
     description: FacilityEditDetails.description || "",
     TermsConditions: FacilityEditDetails.termsConditions || "",
     isActive: FacilityEditDetails.isActive,
+    isCounterEnable:FacilityEditDetails.isCounterEnable,
     parkId:( FacilityEditDetails.parkId) || (role === "ROLE_NODALOFFICER"?(LocationId):decodedTokenData?.data?.ParkId),
   };
   console.log("FacilityEditDetails", FacilityEditDetails);
@@ -68,6 +69,7 @@ const FacilityCreate = ({ onDataAdded }) => {
     const formattedValues = {
       ...values,
       isActive: values.isActive === "true" || values.isActive === true,
+      isCounterEnable: values.isCounterEnable === "true" || values.isCounterEnable === true,
       name: values.name,
       facilityMasterId: values.facilityMasterId,
       openTime:
@@ -272,7 +274,7 @@ const FacilityCreate = ({ onDataAdded }) => {
                 </div>
                 {/* Status */}
                 <div className="col-span-1">
-                  <label className="block text-sm font-medium">Status</label>
+                  <label className="block text-sm font-medium">User Status</label>
                   <Field
                     as="select"
                     name="isActive"
@@ -292,6 +294,31 @@ const FacilityCreate = ({ onDataAdded }) => {
                   </Field>
                   <ErrorMessage
                     name="isActive"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium">Counter Status</label>
+                  <Field
+                    as="select"
+                    name="isCounterEnable"
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      setFieldValue("isCounterEnable", value === "true");
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border ${
+                      errors.isCounterEnable && touched.isCounterEnable
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Status</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Field>
+                  <ErrorMessage
+                    name="isCounterEnable"
                     component="div"
                     className="text-red-500 text-xs"
                   />

@@ -17,7 +17,7 @@ export const superAdminPermissions = [
   "metro-cumulative-bookings",
   "Grievance-consolidate",
   "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-individual",
   "tourism-consolidate",
   "tourism-payment-transaction",
   "tourism-individual",
@@ -40,7 +40,7 @@ export const parkAdminPermissions = [
   "payment-transaction-report",
   "Grievance-consolidate",
   "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-individual",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -54,7 +54,7 @@ export const CustomParkAdminPermissions = [
   "payment-transaction-report",
   "Grievance-consolidate",
   "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-individual",
   "facility-bookings",
 ];
 
@@ -65,7 +65,7 @@ export const nodalOfficerPermissions = [
   "entity-bookings",
   "Grievance-consolidate",
   "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-individual",
 ];
 
 export const MetroReports = [
@@ -75,6 +75,8 @@ export const MetroReports = [
   "booking-details",
   "pending-transaction-details",
   "transaction-general-report",
+  "Grievance-consolidate",
+  "Grievance-Incident",
 ];
 
 export const NehruZooPark = [
@@ -84,6 +86,8 @@ export const NehruZooPark = [
   "payment-transaction-report",
   "facility-bookings",
   "book-tickets",
+  "Grievance-consolidate",
+  "Grievance-Incident",
 ];
 export const SupportAdmin = [
   "entity-bookings",
@@ -92,6 +96,16 @@ export const SupportAdmin = [
   "transaction-report",
   "booking-details",
   "pending-transaction-details",
+];
+
+export const RtcAdmin = [
+  "dashboard",
+  "day-pass",
+  "ordinary-pass",
+  "mst-pass",
+  "express-pass",
+  "student-pass",
+  "pending-pass",
 ];
 
 export const Toursim = [

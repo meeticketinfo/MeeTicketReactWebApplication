@@ -5,6 +5,7 @@ import useAuthStore from "../store/authStore";
 import MetroDashboard from "../components/metro_reports/MetroDashboard";
 import { useNavigate } from "react-router-dom";
 import ToursimDashboard from "../components/tourism/ToursimDashboard";
+import RtcDasboard from "../components/rtc/RtcDasboard";
 
 function Dashboard() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
@@ -17,6 +18,8 @@ function Dashboard() {
   const RenderContent = () => {
     if (roleDetails?.name === "ROLE_METROADMIN") {
       return <MetroDashboard />;
+    } else if (roleDetails?.name === "Role_RTCADMIN") {
+      return <RtcDasboard />;
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
     } else {

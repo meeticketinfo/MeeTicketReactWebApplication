@@ -19,6 +19,7 @@ import {
   SupportAdmin,
   CustomParkAdminPermissions,
   Toursim,
+  RtcAdmin,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -112,7 +113,9 @@ function Sidebar({ variant = "default" }) {
       return NehruZooPark;
     }else if (role === "Role_TourismAdmin") {
           return Toursim;
-        }
+        }else if (role === "Role_RTCADMIN") {
+              return RtcAdmin;
+            }
     return [];
   }, [role, email]);
 

@@ -2,10 +2,10 @@
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { MdOutlineWorkOff } from "react-icons/md";
 import { MdOutlineWorkHistory } from "react-icons/md";
-import { RiBankFill, RiBodyScanLine } from "react-icons/ri";
+import { RiBankFill, RiBodyScanLine, RiPassPendingLine, RiPassValidFill } from "react-icons/ri";
 import { MdPayments } from "react-icons/md";
 import { TbPackages } from "react-icons/tb";
-import { FaChalkboardUser } from "react-icons/fa6";
+import { FaBus, FaChalkboardUser } from "react-icons/fa6";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { RiAccountPinCircleFill } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
@@ -22,10 +22,13 @@ import { GrTransaction } from "react-icons/gr";
 import { GrUserPolice } from "react-icons/gr";
 import { TbReportSearch } from "react-icons/tb";
 import { TbReportAnalytics } from "react-icons/tb";
-import { IoTicketOutline } from "react-icons/io5";
+import { IoTicketOutline, IoTodayOutline } from "react-icons/io5";
 import { SiReacthookform } from "react-icons/si";
 import useAuthStore from "../store/authStore";
 import { FaCalendarCheck } from "react-icons/fa";
+import { BsPassport } from "react-icons/bs";
+import { VscCompassActive } from "react-icons/vsc";
+
 
 const sidebarItems = [
   {
@@ -249,6 +252,47 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/Grievance-individual",
       },
+    ],
+  },
+  // rtc
+  {
+    title: "Bus Pass Reports",
+    icon: FaBus,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Day Pass",
+        icon: IoTodayOutline,
+        path: "/day-pass",
+      },
+      {
+        title: "Ordinary pass",
+        icon: RiPassPendingLine,
+        path: "/ordinary-pass",
+      },
+      {
+        title: "MST Pass",
+        icon: BsPassport,
+        path: "/mst-pass",
+      },
+      {
+        title: "Express Pass",
+        icon: VscCompassActive,
+        path: "/express-pass",
+      },
+      {
+        title: "Student Pass",
+        icon: RiPassValidFill,
+        path: "/student-pass",
+      },
+      {
+        title: "Pending Pass",
+        icon: RiPassPendingLine,
+        path: "/pending-pass",
+      },
+   
     ],
   },
   // Tourism

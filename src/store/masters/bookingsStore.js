@@ -228,16 +228,19 @@ export const useBookingsStore = create(
       },
 
       // Complete bookings
-      fetchCompleteBookingsReport: async (
-        // pageIndex = 1, pageSize = 10, filters = {},
-        payload
-      ) => {
+      fetchCompleteBookingsReport: async (payload) => {
+        console.log("payload", payload);
+        const Payload1 = {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+        };
+        const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });
         try {
           const url =
             API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS;
           const method = "post";
-          const response = await apiService[method](url, payload);
+          const response = await apiService[method](url, finalPyload);
           set({
             allCompleteBookingsReports: response.data,
             isCompleteBookingsReportsLoading: false,

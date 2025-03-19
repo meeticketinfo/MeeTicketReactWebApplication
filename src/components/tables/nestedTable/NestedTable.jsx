@@ -24,8 +24,8 @@ const NestedTable = ({ data }) => {
             <th className="p-3 text-center">Facility Name</th>
             <th className="p-3 text-center">Description</th>
             <th className="p-3 text-center">Sequence</th>
-            <th className="p-3 text-center">Status</th>
-
+            <th className="p-3 text-center">User Status</th>
+            <th className="p-3 text-center">Counter Status</th>
             <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
@@ -75,6 +75,20 @@ const AccordionRow = ({ serial, row }) => {
             >
               {" "}
               {row.isActive ? "Active" : "Inactive"}
+            </span>
+          </div>
+        </td>
+        <td className="p-2 text-center">
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <span
+              className={`${
+                row.isCounterEnable
+                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+            >
+              {" "}
+              {row.isCounterEnable ? "Active" : "Inactive"}
             </span>
           </div>
         </td>
