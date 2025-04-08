@@ -1,20 +1,24 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // metro dev
-export const METRO_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+// export const METRO_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/metroapi/";
 
 // METRO UAT
-// export const METRO_API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+export const METRO_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+// metroapi UAT
+export const METRO_API_Plain_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
 export const GRIEVANCE_API_BASE_URL =
@@ -48,7 +52,7 @@ export const RTC_API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://knm5q0hz-7169.inc1.devtunnels.ms/api/";
+//   "https://b39r6v4l-7169.inc1.devtunnels.ms/api/";
 
 // metro  testing
 // export const METRO_API_BASE_URL =
@@ -57,8 +61,6 @@ export const RTC_API_BASE_URL =
 // grivience  testing
 // export const GRIEVANCE_API_BASE_URL =
 //   "https://v1nbj8m4-7210.inc1.devtunnels.ms/v1.0/";
-
-
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -100,7 +102,7 @@ export const API_ENDPOINTS = {
       CREATE_BY_ID: `${API_BASE_URL}NodalOfficer/AddFacilityWithSubFacilitiesAndTicketTypes`,
     },
     BOOKING: {
-      GET_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
+      GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
       FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
@@ -116,7 +118,7 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     GATE_KEEPER: {
-      ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`, 
+      ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`,
       UPDATE_GATE_KEEPER: `${API_BASE_URL}Master/UpdateGatekeeper`,
       GET_GATE_KEEPERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e76`,
     },
@@ -201,6 +203,10 @@ export const API_ENDPOINTS = {
       GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetBookingDetailsResult`,
       GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetInprogressorFailedPaymentTxnResult`,
       GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}v1/MetroReport/GetDateWiseBookingsCumulative`,
+      ADD_INITIAT_PAYMENT: `${METRO_API_Plain_BASE_URL}v1/MetroConsolidation/xxx---InititatePayment---xxx`,
+      REFRESH_BUTTON: `${METRO_API_Plain_BASE_URL}v1/MetroConsolidation/PaymentInquiry`,
+      UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
+      ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
@@ -231,8 +237,9 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
-    GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
+    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
+    GET_ALL_DASHBOARD_DETAILED_REPORT: `${API_BASE_URL}ParkReport/GetZooParkDashboardDetails`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {

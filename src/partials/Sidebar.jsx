@@ -27,7 +27,6 @@ import usePaginationStore from "../store/paginationStore";
 import { useBookingsStore } from "../store/masters/bookingsStore";
 import { IoTicketOutline } from "react-icons/io5";
 
-
 function Sidebar({ variant = "default" }) {
   const location = useLocation();
   const { pathname } = location;
@@ -88,6 +87,7 @@ function Sidebar({ variant = "default" }) {
       document.querySelector("body").classList.add("sidebar-minimized");
     }
   }, [sidebarExpanded]);
+  
   const email = decodedTokenData?.data?.email;
   const role = roleDetails?.name;
 
@@ -111,11 +111,11 @@ function Sidebar({ variant = "default" }) {
       return MetroReports;
     } else if (role === "ROLE_ZOOPARKADMIN") {
       return NehruZooPark;
-    }else if (role === "Role_TourismAdmin") {
-          return Toursim;
-        }else if (role === "Role_RTCADMIN") {
-              return RtcAdmin;
-            }
+    } else if (role === "Role_TourismAdmin") {
+      return Toursim;
+    } else if (role === "Role_RTCADMIN") {
+      return RtcAdmin;
+    }
     return [];
   }, [role, email]);
 
@@ -272,7 +272,6 @@ function Sidebar({ variant = "default" }) {
                                       );
                                       setActivePage(0);
                                     }}
-                                   
                                   >
                                     <div className="flex items-center">
                                       {subItem.icon && (
@@ -311,16 +310,30 @@ function Sidebar({ variant = "default" }) {
                           : ` text-gray-300 dark:hover:text-white`
                       }`}
                     >
-                      <div className={`flex item-flex items-center ${item.title === "Book Tickets"?`${!sidebarOpen?"bg-white justify-center":"justify-center"} px-2 py-2  text-blue-v1 rounded-lg`:""}  `}>
-                     { <item.icon
-                          className={`shrink-0 text-[22px] ${
-                            pathname.includes(item.path)
-                              ? "text-violet-500"
-                              : "text-gray-400 dark:text-gray-500"
-                          }`}
-                        />}
-                        <span className={`menu-text flex items-center gap-2 text-sm  font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200`}>
-                       {item.title}
+                      <div
+                        className={`flex item-flex items-center ${
+                          item.title === "Book Tickets"
+                            ? `${
+                                !sidebarOpen
+                                  ? "bg-white justify-center"
+                                  : "justify-center"
+                              } px-2 py-2  text-blue-v1 rounded-lg`
+                            : ""
+                        }  `}
+                      >
+                        {
+                          <item.icon
+                            className={`shrink-0 text-[22px] ${
+                              pathname.includes(item.path)
+                                ? "text-violet-500"
+                                : "text-gray-400 dark:text-gray-500"
+                            }`}
+                          />
+                        }
+                        <span
+                          className={`menu-text flex items-center gap-2 text-sm  font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200`}
+                        >
+                          {item.title}
                         </span>
                       </div>
                     </NavLink>

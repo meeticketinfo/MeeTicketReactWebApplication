@@ -290,7 +290,7 @@ function PendingPassesReportList() {
         contentClassName="bg-white"
         defaultBodyPadding={true}
       >
-        {true ? (
+        {isStatusLoading ? (
           <div className="px-10 py-24 flex justify-center ">
             {" "}
             <l-bouncy size="65" speed="1.75" color="gray"></l-bouncy>

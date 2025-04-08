@@ -137,7 +137,7 @@ function SummaryReportList() {
     {
       field: "changeDestinationAmount",
       headerName: "Change Destination Ticket Fare",
-      maxWidth: "160",
+      Width: "100",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => <>
             <span>Rs. </span>
@@ -203,6 +203,13 @@ function SummaryReportList() {
     //     headerClass: "text-blue-v2",
     //     valueFormatter: (params) => params.value || "N/A",
     // },
+    {
+      field: "merchantOrderId",
+      headerName: "Merchant Order Id",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
     {
       field: "paymentOrderId",
       headerName: "Order ID",

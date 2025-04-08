@@ -74,9 +74,9 @@ export default function AdminBookings() {
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
-    entityId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
+    entityId: (role === "ROLE_ADMIN"||role ==="ROLE_ZOOPARKADMIN") ? decodedTokenData?.data?.ParkId : "",
   };
-
+ 
   const parksToRender =
     role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
@@ -110,13 +110,14 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "locationCategoryName",
-      headerName: "Location Category",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
+    // {
+    //   field: "locationCategoryName",
+    //   headerName: "Location Category",
+    //   hide:role != "ROLE_ADMIN",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -258,7 +259,7 @@ export default function AdminBookings() {
                 {({ values, setFieldValue }) => (
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      {role !== "ROLE_ADMIN" && (
+                      {(role !== "ROLE_ADMIN"&&role !=="ROLE_ZOOPARKADMIN") && (
                         <>
                         <div>
                           <label className="block text-xs font-medium">

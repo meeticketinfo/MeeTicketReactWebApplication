@@ -2,10 +2,10 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 // uat
-// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
@@ -13,7 +13,7 @@ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/a
 
 // testing
 // export const API_BASE_URL =
-//   "https://knm5q0hz-7169.inc1.devtunnels.ms/api/";
+//   "https://b39r6v4l-7169.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,7 +28,7 @@ api.interceptors.request.use(
     const token = useAuthStore.getState().token; // Get the token from Zustand store
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-    } 
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -56,7 +56,8 @@ const apiService = {
 
   put: (url, body = {}, headers = {}) => api.put(url, body, { headers }),
 
-  delete: (url, params = {}, headers = {}) => api.delete(url, { params, headers }),
+  delete: (url, params = {}, headers = {}) =>
+    api.delete(url, { params, headers }),
 
   uploadFile: (url, file, additionalData = {}, headers = {}) => {
     const formData = new FormData();
@@ -90,18 +91,3 @@ const apiService = {
 
 export default apiService;
 
-// // GET example with params
-// apiService.get(API_ENDPOINTS.MASTERS.PARK.GET_PARKS, { location: 'downtown' })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));
-
-// // POST example with body payload
-// apiService.post(API_ENDPOINTS.MASTERS.PARK.CREATE_PARK, { name: 'Central Park', city: 'New York' })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));
-
-// // File upload example with additional data
-// const file = document.querySelector('#fileInput').files[0];
-// apiService.uploadFile(API_ENDPOINTS.MASTERS.PARK.CREATE_PARK, file, { parkId: 123 })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));

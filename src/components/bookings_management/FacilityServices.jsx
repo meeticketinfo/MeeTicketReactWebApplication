@@ -67,6 +67,7 @@ export const FacilityServices = () => {
     setisCash,
     isCash,
     saveBookingDetailsError,
+    setIsTransactionFailed
   } = useBookingsStore();
 
   const { decodedTokenData, DepartmentId } = useAuthStore();
@@ -108,6 +109,8 @@ export const FacilityServices = () => {
     fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
+
+  
   const calculateTotalAmount = (selectedItems) => {
     return selectedItems.reduce((total, item) => {
       return total + item.quantity * item.unitAmount;
@@ -122,7 +125,10 @@ export const FacilityServices = () => {
   ];
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method"), // Add validation for payment method
-    mobileNumber: Yup.string().required("Please enter mobile number"),
+
+    mobileNumber: Yup.string()
+      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+      .required("Please enter mobile number"),
   });
 
   const handleSubmit = async (
@@ -130,6 +136,7 @@ export const FacilityServices = () => {
     { setSubmitting, resetForm },
     saveBookingDetails
   ) => {
+    setIsTransactionFailed(false);
     const currentDate = new Date();
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const bookingDetailsPayload = {
@@ -202,6 +209,8 @@ export const FacilityServices = () => {
       }
     }
   };
+
+  
 
   return (
     <>

@@ -14,7 +14,7 @@ const EntityTypes = () => {
     false;
   };
 
-    const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
   return (
     <>
@@ -34,7 +34,7 @@ const EntityTypes = () => {
               <button
                 onClick={() => {
                   setOpenModalId("entity-modal");
-                  setIsEntityTypeEditVisible(false)
+                  setIsEntityTypeEditVisible(false);
                 }}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
               >
@@ -43,19 +43,6 @@ const EntityTypes = () => {
             </div>
           </div>
 
-          {/* Cards */}
-          {/* <div className="grid grid-cols-12 gap-6"> */}
-          {/* {isEntityTypeCreateVisible ? (
-            <></>
-          ) : (
-            <DepartmentList
-              setIsEntityTypeCreateVisible={
-                setIsEntityTypeCreateVisible
-              }
-              isEntityTypeEditVisible={isEntityTypeEditVisible}
-              setIsEntityTypeEditVisible={setIsEntityTypeEditVisible}
-            />
-          )} */}
           <EntityTypeList
             setIsEntityTypeCreateVisible={setIsEntityTypeCreateVisible}
             isEntityTypeCreateVisible={isEntityTypeCreateVisible}

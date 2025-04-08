@@ -62,6 +62,7 @@ import MstPassReport from "../components/rtc/rtc_reports/mst_pass/MstPassReport"
 import ExpressPassReport from "../components/rtc/rtc_reports/express_pass/ExpressPassReport";
 import StudentPass from "../components/rtc/rtc_reports/student_pass/StudentPass";
 import PendingPassesReport from "../components/rtc/rtc_reports/pending_passes/PendingPassesReport";
+import DashBoardDetailed from "../pages/DashBoardDetailed/DashBoardDetailed";
 
 export const routes = [
   {
@@ -77,6 +78,9 @@ export const routes = [
     element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+  // dashboard detailed report
+
+  { path: "/dashboard-detailed-report", element: <ProtectedRoute element={<DashBoardDetailed />} /> },
   {
     path: "/entities",
     element: <ProtectedRoute element={<AdminParks />} />,

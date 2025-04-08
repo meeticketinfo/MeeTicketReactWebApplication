@@ -50,7 +50,7 @@ const sidebarItems = [
       {
         title: "Departments",
         icon: MdOutlineForest,
-        path: "/departments",
+        path: "/departments", 
       },
       {
         title: "Location Categories",

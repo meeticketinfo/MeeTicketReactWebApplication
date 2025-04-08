@@ -66,13 +66,31 @@ function CompletedBookingsReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    // {
-    //   field: "transactionId",
-    //   headerName: "Transaction ID",
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) =>
-    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
-    // },
+    // ------------------
+
+    {
+      field: "parkName",
+      headerName: "Park Name",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "totalTicketsBooked",
+      headerName: "Total No Of Tickets",
+      maxWidth:170,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "mid",
+      headerName: "MID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    // -------------------
+    
     {
       field: "mobileNumber",
       headerName: "Mobile Number",

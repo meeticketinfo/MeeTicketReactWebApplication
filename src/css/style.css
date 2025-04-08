@@ -86,3 +86,21 @@ ul:not(.browser-default) li {
 .ag-watermark {
   display: none;
 }
+
+/* sweet alert */
+
+.swal-custom-btn {
+  @apply bg-blue-v1 hover:bg-blue-v2 text-white font-semibold py-2 px-4 rounded;
+}
+
+
+/* tippy */
+
+/* styles.css */
+.tippy-box[data-theme~="custom"] {
+  background-color: #071e68 !important; /* Change to your desired color */
+  color: white !important;
+  border-radius: 6px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+

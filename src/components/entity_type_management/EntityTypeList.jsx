@@ -30,10 +30,10 @@ const EntityTypeList = ({
   const columnDefs = [
     {
       headerName: "S.No",
+      field:"SNo",
       valueGetter: "node.rowIndex + 1",
       width: 100,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "entityTypeName",

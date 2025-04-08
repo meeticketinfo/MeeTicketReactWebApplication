@@ -58,10 +58,8 @@ const DepartmentCreateForm = ({
             ? "Department Updated successfully"
             : "Department Added successfully"
         );
-        setTimeout(() => {
-          setIsDepartmentTypeEditVisible(false);
-        }, 2000);
-        
+        setIsDepartmentTypeEditVisible(false);
+
         resetForm();
       }
     } catch (xhr) {
@@ -87,7 +85,7 @@ const DepartmentCreateForm = ({
   useEffect(() => {
     if (openModalId === null) {
       setDepartmentTypeEditDetails({}); // Reset edit state if necessary
-      setIsDepartmentTypeEditVisible(false)
+      setIsDepartmentTypeEditVisible(false);
     }
   }, [openModalId]);
   return (

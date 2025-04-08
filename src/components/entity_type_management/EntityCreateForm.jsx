@@ -51,10 +51,7 @@ const EntityCreateForm = ({
             : "Location Category created successfully!"
         );
         fetchAllEntityTypes();
-
-        setTimeout(() => {
-          setIsEntityTypeEditVisible(false);
-        }, 2000);
+        setIsEntityTypeEditVisible(false);
       }
     } catch (xhr) {
       console.log("xhr.errors:", xhr);
@@ -94,7 +91,8 @@ const EntityCreateForm = ({
                 <div>
                   <label className="block text-sm font-medium">
                     {" "}
-                    Location Category Name <span className="text-red-500">*</span>
+                    Location Category Name{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="entityTypeName"
