@@ -520,7 +520,8 @@ function AdminDashboard() {
             </div>
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
-        {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
+        {
+        roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
         roleDetails?.name === "ROLE_ADMIN" ? (
           <>
             <div className="col-span-full ">
@@ -582,9 +583,9 @@ function AdminDashboard() {
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
-                      <Link
-                        to="/dashboard-detailed-report"
-                        className="text-2xl  font-bold leading-none text-[#577daf]  "
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl  font-bold leading-none   "
                         onClick={() => {
                           setDetailedReportParams({
                             Date: DashboardDate,
@@ -599,7 +600,7 @@ function AdminDashboard() {
                           prefix=""
                           separator=","
                         />
-                      </Link>
+                      </div>
                       <h1 className="text-xs font-medium">
                         {services.service[0].serviceName}
                       </h1>
@@ -639,9 +640,9 @@ function AdminDashboard() {
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
-                      <Link
-                        to="/dashboard-detailed-report"
-                        className="text-2xl font-bold leading-none text-[#577daf] text-shadow-lg"
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl font-bold leading-none "
                         onClick={() => {
                           setDetailedReportParams({
                             Date: DashboardDate,
@@ -657,7 +658,7 @@ function AdminDashboard() {
                           prefix=""
                           separator=","
                         />
-                      </Link>
+                      </div>
                       <h1 className="text-sm font-medium">
                         {service.serviceName}
                       </h1>

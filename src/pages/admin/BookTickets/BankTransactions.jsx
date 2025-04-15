@@ -12,7 +12,9 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { toast, ToastContainer } from "react-toastify";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import useAuthStore from "../../../store/authStore";
-
+import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
+import Select from "react-select";
 export default function BankTransactions() {
   const [openModal, setOpenModal] = useState(false);
   const [settlementAmount, setSettlementAmount] = useState("");
@@ -22,25 +24,38 @@ export default function BankTransactions() {
     isFetchAllParkBankTransactionsLoading,
   } = useParkStore();
 
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+
   const { decodedTokenData } = useAuthStore();
 
   const email = decodedTokenData?.data?.email;
-  
+
   useEffect(() => {
     fetchParkBankTransactions({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
+      departmentId:"",
+      entityTypeId:""
     });
   }, [fetchParkBankTransactions]);
-
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+  }, []);
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
+    entityId: "",
+    departmentId: "",
   };
   const onSubmit = (values) => {
     fetchParkBankTransactions({
       fromDate: values.fromDate,
       toDate: values.toDate,
+      departmentId:values.departmentId,
+      entityTypeId:values.entityId
     });
   };
   const [columnDefs] = useState([
@@ -62,6 +77,20 @@ export default function BankTransactions() {
       headerName: "Location Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "departmentName",
+      headerName: "Department",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "entityTypeName",
+      headerName: "Location category",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "bookings",
@@ -154,7 +183,7 @@ export default function BankTransactions() {
         {/* <SummaryReportList /> */}
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
           {({ values, setFieldValue }) => (
-            <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+            <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
               <div>
                 <label
                   htmlFor="fromDate"
@@ -194,6 +223,118 @@ export default function BankTransactions() {
                   onChange={(e) => {
                     const toDateValue = e.target.value;
                     setFieldValue("toDate", toDateValue);
+                  }}
+                />
+              </div>
+              {/* department */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Department
+                </label>
+
+                <Select
+                  name="departmentId"
+                  value={
+                    allDepartmentTypes
+                      ?.filter((dept) => dept.isActive)
+                      .map((dept) => ({
+                        value: dept.departmentId,
+                        label: dept.departmentName,
+                      }))
+                      .find((option) => option.value === values.departmentId) ||
+                    null // Set the selected value
+                  }
+                  options={allDepartmentTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.departmentId,
+                      label: dept.departmentName,
+                    }))}
+                  onChange={(selectedOption) =>
+                    setFieldValue("departmentId", selectedOption?.value || "")
+                  }
+                  isClearable
+                  placeholder="Department"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      // padding: "4px 0",
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#000",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
+              {/* location category */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Location Category
+                </label>
+
+                <Select
+                  name="entityId"
+                  value={
+                    allEntityTypes
+                      ?.filter((dept) => dept.isActive)
+                      .map((dept) => ({
+                        value: dept.entityTypeId,
+                        label: dept.entityTypeName,
+                      }))
+                      .find((option) => option.value === values.entityId) ||
+                    null // Use values.entityId
+                  }
+                  options={allEntityTypes
+                    ?.filter((entity) => entity.isActive)
+                    .map((entity) => ({
+                      value: entity.entityTypeId,
+                      label: entity.entityTypeName,
+                    }))}
+                  onChange={(selectedOption) =>
+                    setFieldValue("entityId", selectedOption?.value || "")
+                  }
+                  isClearable
+                  placeholder="Location Category"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      // padding: "4px 0",
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#6D7072",
+                      cursor: "pointer",
+                    }),
                   }}
                 />
               </div>

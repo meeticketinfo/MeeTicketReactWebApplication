@@ -7,24 +7,33 @@ import TransactionQrLoader from "./TransactionQrLoader";
 import BackButton from "../BackButton";
 import useAuthStore from "../../store/authStore";
 
+function formatBookingDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:00:00.000`;
+}
+
 function TransactionQr() {
   const navigate = useNavigate();
   const storedBookingPayload = JSON.parse(
     sessionStorage.getItem("bookingPayload")
   );
-
-  const [counter, setCounter] = useState(180); 
+  const [counter, setCounter] = useState(240);
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
     const seconds = counter % 60;
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`; // Example: "1:30"
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
   const {
     FirstStepTransactionResponse,
     VerifyPaymentStatus,
     PaymentStatus,
     saveBookingDetails,
-    selectedBookingsList,
     setIsFirstStepTransaction,
     setIsTransactionFailed,
     setPaymentStatus,
@@ -40,29 +49,19 @@ function TransactionQr() {
   useEffect(() => {
     if (counter > 0 && PaymentStatus.resultStatus != "TXN_SUCCESS") {
       const timer = setTimeout(() => {
-        setCounter((prev) => prev - 1); // Decrease the counter
-        VerifyPaymentStatus(FirstStepTransactionResponse?.orderId); // Verify payment status
+        setCounter((prev) => prev - 1);
+        VerifyPaymentStatus(FirstStepTransactionResponse?.orderId);
       }, 1000);
 
-      return () => clearTimeout(timer); // Cleanup timer
+      return () => clearTimeout(timer);
     } else if (counter === 0) {
-      // Timer is done, set the first step transaction to false
       setIsFirstStepTransaction(false);
-      // setIsBookingFormVisible(false);
+      setPaymentStatus({});
       sessionStorage.removeItem("bookingPayload");
     }
   }, [counter]);
 
-  function formatBookingDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-
-    return `${year}-${month}-${day}T${hours}:00:00.000`;
-  }
+  
 
   // for generate booking details qr
   useEffect(() => {
@@ -79,10 +78,11 @@ function TransactionQr() {
             bookingDate: formatBookingDate(currentDate),
           });
           if (result && result.data && result.data.status === 200) {
+            setPaymentStatus({});
             const newBookingId = result?.data?.data?.data;
-            // localStorage.removeItem("booking-process-store");
+           
             navigate(`/entity-bookings/view-details/${newBookingId}`);
-            // resetForm();
+           
           } else {
             toast.error("Unexpected response from the server.");
           }
@@ -93,6 +93,7 @@ function TransactionQr() {
         }
       } else if (PaymentStatus.resultStatus === "TXN_FAILURE") {
         setIsTransactionFailed(true);
+        setPaymentStatus({});
       }
     }
 

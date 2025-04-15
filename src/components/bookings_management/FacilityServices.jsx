@@ -53,30 +53,18 @@ export const FacilityServices = () => {
 
   const {
     saveBookingDetails,
-    fetchCurrentBookingDetailsByBookingId,
+    saveCashBookingDetails,
     saveFirstBookingDetails,
-    FirstStepTransactionResponse,
     IsFirstStepTransaction,
-    setSelectedBookingsList,
-    VerifyPaymentStatus,
     IsTransactionFailed,
-    bookingMessage,
-    isSaveFirstTransactionDetailsLoading,
-    setisUpi,
-    isUpi,
     setisCash,
     isCash,
-    saveBookingDetailsError,
-    setIsTransactionFailed
+    setIsTransactionFailed,
+    setPaymentStatus,
   } = useBookingsStore();
 
-  const { decodedTokenData, DepartmentId } = useAuthStore();
-  const {
-    saveRecurringHolidayDetails,
-    isSaveRecurringHolidayDetailsLoading,
-    fetchAllRecurringHolidays,
-    allRecurringHolidays,
-  } = useHolidayStore();
+  const { decodedTokenData } = useAuthStore();
+  const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
   // disableing button for recurriing holidays
 
   const currentDay = new Date()
@@ -110,13 +98,12 @@ export const FacilityServices = () => {
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
 
-  
   const calculateTotalAmount = (selectedItems) => {
     return selectedItems.reduce((total, item) => {
       return total + item.quantity * item.unitAmount;
     }, 0);
   };
-  const { expandedItems, toggleItem } = useAccordionStore();
+  const {  toggleItem } = useAccordionStore();
 
   const accordionItems = [
     { id: 1, title: "Item 1", content: "This is the content for item 1" },
@@ -136,6 +123,7 @@ export const FacilityServices = () => {
     { setSubmitting, resetForm },
     saveBookingDetails
   ) => {
+    setPaymentStatus({});
     setIsTransactionFailed(false);
     const currentDate = new Date();
     const totalAmount = calculateTotalAmount(values.selectedItems);
@@ -158,13 +146,13 @@ export const FacilityServices = () => {
         totalAmount: totalAmount,
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
-        transactionId: "",
+        // transactionId: "",
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };
 
       try {
-        const result = await saveBookingDetails(bookingDetailsPayload);
+        const result = await saveCashBookingDetails(bookingDetailsPayload);
 
         if (result && result.data && result.data.status === 200) {
           const newBookingId = result?.data?.data?.data;
@@ -209,8 +197,6 @@ export const FacilityServices = () => {
       }
     }
   };
-
-  
 
   return (
     <>
@@ -862,26 +848,6 @@ export const FacilityServices = () => {
                   )}
 
                   <div className="flex justify-center p-2">
-                    {/* <button
-                    type="submit"
-                   
-                    disabled={!values.selectedItems?.length && !isUpi && !isCash}
-                    className={`text-base rounded-lg px-3 py-1 ${
-                      values.selectedItems.length > 0
-                        ? `${
-                            isSubmitting
-                              ? "bg-gradient-to-r from-blue-v1 via-blue-800 to-blue-v1 animate-pulse text-white"
-                              : "bg-blue-v1 text-white"
-                          }`
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <span className="font-light">Loading . . .</span>
-                    ) : (
-                      <span>Continue Booking</span>
-                    )}
-                  </button> */}
                     <button
                       type="submit"
                       disabled={!isCash}

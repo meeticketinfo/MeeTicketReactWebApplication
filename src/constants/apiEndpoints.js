@@ -52,7 +52,7 @@ export const RTC_API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://b39r6v4l-7169.inc1.devtunnels.ms/api/";
+//   "https://jvbngjwk-7237.inc1.devtunnels.ms/api/";
 
 // metro  testing
 // export const METRO_API_BASE_URL =
@@ -106,6 +106,7 @@ export const API_ENDPOINTS = {
       FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      ADD_CASH_BOOKINGS: `Transaction/AddBookingDetailswithCash`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
