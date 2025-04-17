@@ -2,10 +2,10 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 // uat
-const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
