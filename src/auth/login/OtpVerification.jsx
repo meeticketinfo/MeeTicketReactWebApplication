@@ -24,7 +24,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
     OtpLogin,
     setIsAuthenticated,
     setOtpError,
-    otpError
+    otpError,
   } = useAuthStore();
   const mobileNumber = localStorage.getItem("login_id");
   // Validation schema for OTP input
@@ -64,23 +64,21 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
     }
   };
 
-  const handleSubmit = async (values,{ setFieldValue }) => {
+  const handleSubmit = async (values, { setFieldValue }) => {
     setLoading(true);
     setError(null);
 
     try {
-     
       const response = await OtpLogin({
         mobileNumber: mobileNumber,
         otp: values.otp,
       });
-      console.log("response",response)
-      if (response.response.status!=409) {
+      console.log("response status", response.response.status);
+      if (response.response.status != 409) {
         navigate("/dashboard");
         resetForm();
-      }else{
-        
-        setOtpError(response.response.message)
+      } else {
+        setOtpError(response.response.message);
         setFieldValue("otp", "");
       }
       setSubmitting(false);
@@ -92,7 +90,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
   };
 
   const handleResendOtp = async () => {
-    setOtpError(null)
+    setOtpError(null);
     setLoading(true);
     setError(null);
     const mobileNumber = localStorage.getItem("login_id");
@@ -104,9 +102,8 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
           mobileNumber,
         }
       );
-      console.log("response",response)
-      if (response.data.status=== 200) {
-        
+      console.log("response", response);
+      if (response.data.status === 200) {
         toast.success(` OTP sent successfully`, {
           autoClose: 1500,
         });
@@ -149,7 +146,11 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
                 <div className="mb-4 text-sm text-white px-10 text-center">
                   <p>
                     Please enter the 6-digit code we have sent you to your
-                    Mobile Number <span className="text-white text-xs">{`+91 ${mobileNumber.slice(0, 2)}****${mobileNumber.slice(-2)}`}</span>
+                    Mobile Number{" "}
+                    <span className="text-white text-xs">{`+91 ${mobileNumber.slice(
+                      0,
+                      2
+                    )}****${mobileNumber.slice(-2)}`}</span>
                   </p>
                 </div>
 
@@ -180,7 +181,7 @@ const OtPVerification = ({ userId, onTokenReceived, startTimer, timeLeft }) => {
                     />
                   ))}
                 </div>
-                <span className="text-red-600">{otpError&&otpError}</span>
+                <span className="text-red-600">{otpError && otpError}</span>
                 <ErrorMessage
                   name="otp"
                   component="div"

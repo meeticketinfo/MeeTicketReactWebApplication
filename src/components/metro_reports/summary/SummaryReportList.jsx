@@ -46,7 +46,6 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
-
     {
       field: "ticketId",
       headerName: "Ticket ID",
@@ -84,7 +83,6 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-
     {
       field: "patronPhoneNumber",
       headerName: "Mobile Number",
@@ -92,7 +90,6 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-
     {
       field: "fromDate",
       headerName: "Date",
@@ -110,18 +107,11 @@ function SummaryReportList() {
         });
       },
     },
-
-    // {
-    //   field: "noOfTickets",
-    //   headerName: "No Of Tickets",
-    //   maxWidth: "160",
-
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => `${params.value} ` || "N/A",
-    // },
+   
+  
     {
       field: "merchantEachTicketFareAfterGst",
-      headerName: "Ticket Fare",
+      headerName: "Each Ticket Fare",
 
       headerClass: "text-blue-v2",
       cellRenderer: (params) =>
@@ -137,7 +127,7 @@ function SummaryReportList() {
     {
       field: "changeDestinationAmount",
       headerName: "Change Destination Ticket Fare",
-      maxWidth: "160",
+      Width: "100",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => <>
             <span>Rs. </span>
@@ -159,50 +149,13 @@ function SummaryReportList() {
           "N/A"
         ),
     },
-    // {
-    //     field: "actualAmountPaid",
-    //     headerName: "Settlement Amount Paid",
-    //     headerClass: "text-blue-v2",            
-    //     cellRenderer: (params) =>
-    //         params.value ? (
-    //             <>
-    //                 <span>Rs. </span>
-    //                 <span>{+params.value}</span>
-    //             </>
-    //         ) : (
-    //             "N/A"
-    //         ),
-    // },
-    // {
-    //     field: "actualPaymentStatus",
-    //     headerName: "Settlement Payment Status",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
-    // },
-    // {
-    //     field: "utr",
-    //     headerName: "UTR",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
-    // },
-    // {
-    //     field: "utrprocessedtime",
-    //     headerName: "UTR Processed Time",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
-    // },
-    // {
-    //     field: "refundId",
-    //     headerName: "Refund ID",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
-    // },
-    // {
-    //     field: "refundStatus",
-    //     headerName: "Refund Status",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
-    // },
+    {
+      field: "merchantOrderId",
+      headerName: "Merchant Order Id",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
     {
       field: "paymentOrderId",
       headerName: "Order ID",

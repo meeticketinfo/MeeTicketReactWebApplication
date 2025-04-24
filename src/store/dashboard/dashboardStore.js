@@ -25,7 +25,10 @@ export const useDashboardStore = create((set) => ({
   allZooDashboardTicketWise: [],
   AllFacilityBookings: [],
   isFetchFacilityBookingsLoading: false,
+  AllDetailedReport:[],
+  isFetchDetailedLoading: false,
 
+  
   serializeFilters: (filters) =>
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -55,9 +58,11 @@ export const useDashboardStore = create((set) => ({
 
   fetchAllDashboardCounts: async (
     roleDetails,
-    { fromDate, toDate,entityId, active }
+    { fromDate, toDate, entityId, active }
   ) => {
-    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
+    const date = active
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      : "";
     set({ isFetchCountsLoading: true });
     try {
       const role = roleDetails?.name;
@@ -83,8 +88,10 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async ({ fromDate, toDate,entityId, active }) => {
-    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
+  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active }) => {
+    const date = active
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      : "";
     set({ isFetchPieChartsLoading: true });
     try {
       const response = await apiService.get(
@@ -182,8 +189,15 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.message, isFetchZooDashboardLoading: false });
     }
   },
-  fetchAllZooDashBoardCountsTicketWise: async ({ fromDate, toDate,entityId, active }) => {
-    const date = active ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}` : "";
+  fetchAllZooDashBoardCountsTicketWise: async ({
+    fromDate,
+    toDate,
+    entityId,
+    active,
+  }) => {
+    const date = active
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      : "";
     set({ isFetchZooDashboardTicketWiseLoading: true });
     try {
       const response = await apiService.get(
@@ -219,4 +233,25 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.error.message, isFetchFacilityBookingsLoading: true });
     }
   },
+
+  // detailed Report
+  fetchAllDetailedReportFilters: async (filters) => {
+    set({ isFetchDetailedLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DASHBOARD_DETAILED_REPORT}?ParkId=100&Date=${filters.Date}&ServiceId=${filters.ServiceId}`
+      );
+      console.log("response", response);
+      if (response.status == 200) {
+        set({
+          AllDetailedReport: response.data || [],
+          isFetchDetailedLoading: false,
+        });
+      }
+    } catch (error) {
+      set({ error: error.error.message, isFetchDetailedLoading: true });
+    }
+  },
+  
+
 }));

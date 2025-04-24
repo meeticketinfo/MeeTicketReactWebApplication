@@ -499,6 +499,7 @@ const ParkCreate = ({
                   </label>
                   <Field
                     as="textarea"
+                    maxLength={1000}
                     name="Description"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.Description && touched.Description

@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import TransactionQr from "../../../components/bookings_management/TransactionQr";
 import Select from "react-select";
+import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
 
 export default function AdminBookings() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,6 +50,10 @@ export default function AdminBookings() {
     isBookingFormVisible,
     setPaymentStatus,
   } = useBookingsStore();
+
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
   const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
@@ -57,6 +63,8 @@ export default function AdminBookings() {
   const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllBookings();
+    fetchAllDepartmentTypes();
+    fetchAllEntityTypes();
     // fetchAllParks();
     if (role === "ROLE_NODALOFFICER") {
       fetchAllNodalOfficerParks(null, null, {}, userId);
@@ -72,7 +80,12 @@ export default function AdminBookings() {
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
-    entityId: role === "ROLE_ADMIN" ? decodedTokenData?.data?.ParkId : "",
+    entityTypeId: "",
+    departmentId: "",
+    entityId:
+      role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
+        ? decodedTokenData?.data?.ParkId
+        : "",
   };
 
   const parksToRender =
@@ -108,6 +121,28 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    {
+      field: "departmentName",
+      headerName: "Department",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "entityTypeName",
+      headerName: "Location category",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    // {
+    //   field: "locationCategoryName",
+    //   headerName: "Location Category",
+    //   hide:role != "ROLE_ADMIN",
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -176,6 +211,8 @@ export default function AdminBookings() {
         ...values,
         fromDate: values.fromDate ? `${values.fromDate}` : "",
         toDate: values.toDate ? `${values.toDate}` : "",
+        departmentId:values.departmentId,
+        entityTypeId:values.entityTypeId,
       };
       setSubmitting(true);
       const filters = formattedValues;
@@ -249,55 +286,118 @@ export default function AdminBookings() {
                 {({ values, setFieldValue }) => (
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      {role !== "ROLE_ADMIN" && (
-                        <div>
-                          <label className="block text-xs font-medium">
-                            Location
-                          </label>
-                          <Select
-                            name="entityId"
-                            options={parksToRender?.map((park) => ({
-                              value: park.id,
-                              label: park.name,
-                            }))}
-                            onChange={(selectedOption) => {
-                              setFieldValue(
-                                "entityId",
-                                selectedOption?.value || ""
-                              );
-                            }}
-                            className="mt-[4px] text-sm"
-                            classNamePrefix="react-select"
-                            placeholder="Locations"
-                            isClearable
-                            styles={{
-                              control: (base) => ({
-                                ...base,
-                                outline: "none",
-                                boxShadow: "none",
-                                borderColor: "#ced4da",
-                                borderRadius: "6px",
-                                height: "30px",
-                                minHeight: "33px",
-                              }),
+                      {role !== "ROLE_ADMIN" &&
+                        role !== "ROLE_ZOOPARKADMIN" && (
+                          <>
+                            <div>
+                              <label className="block text-xs font-medium">
+                                Location
+                              </label>
+                              <Select
+                                name="entityId"
+                                options={parksToRender?.map((park) => ({
+                                  value: park.id,
+                                  label: park.name,
+                                }))}
+                                onChange={(selectedOption) => {
+                                  setFieldValue(
+                                    "entityId",
+                                    selectedOption?.value || ""
+                                  );
+                                }}
+                                className="mt-[4px] text-sm"
+                                classNamePrefix="react-select"
+                                placeholder="Locations"
+                                isClearable
+                                styles={{
+                                  control: (base) => ({
+                                    ...base,
+                                    outline: "none",
+                                    boxShadow: "none",
+                                    borderColor: "#ced4da",
+                                    borderRadius: "6px",
+                                    height: "30px",
+                                    minHeight: "33px",
+                                  }),
 
-                              menu: (base) => ({
-                                ...base,
-                                // padding: "4px 0",
-                              }),
-                              option: (base, { isFocused }) => ({
-                                ...base,
-                                fontSize: "0.775rem",
-                                backgroundColor: isFocused
-                                  ? "#F8F8F8"
-                                  : "white",
-                                color: isFocused ? "#0C3771" : "#6D7072",
-                                cursor: "pointer",
-                              }),
-                            }}
-                          />
-                        </div>
-                      )}
+                                  menu: (base) => ({
+                                    ...base,
+                                    // padding: "4px 0",
+                                  }),
+                                  option: (base, { isFocused }) => ({
+                                    ...base,
+                                    fontSize: "0.775rem",
+                                    backgroundColor: isFocused
+                                      ? "#F8F8F8"
+                                      : "white",
+                                    color: isFocused ? "#0C3771" : "#6D7072",
+                                    cursor: "pointer",
+                                  }),
+                                }}
+                              />
+                            </div>
+                            {/* <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location Category
+                        </label>
+
+                        <Select
+                          name="locationCategoryId"
+                          value={
+                            allEntityTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.entityTypeId,
+                                label: dept.entityTypeName,
+                              }))
+                              .find(
+                                (option) =>
+                                  option.value === values.locationCategoryId
+                              ) || null // Use values.entityId
+                          }
+                          options={allEntityTypes
+                            ?.filter((entity) => entity.isActive)
+                            .map((entity) => ({
+                              value: entity.entityTypeId,
+                              label: entity.entityTypeName,
+                            }))}
+                          onChange={(selectedOption) =>
+                            setFieldValue(
+                              "locationCategoryId",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          isClearable
+                          placeholder="Location Category"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
+
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div> */}
+                          </>
+                        )}
                       <div>
                         <label
                           htmlFor="fromDate"
@@ -342,6 +442,126 @@ export default function AdminBookings() {
                           }}
                         />
                       </div>
+                      {/* department */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Department
+                        </label>
+
+                        <Select
+                          name="departmentId"
+                          value={
+                            allDepartmentTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.departmentId,
+                                label: dept.departmentName,
+                              }))
+                              .find(
+                                (option) => option.value === values.departmentId
+                              ) || null // Set the selected value
+                          }
+                          options={allDepartmentTypes
+                            ?.filter((dept) => dept.isActive)
+                            .map((dept) => ({
+                              value: dept.departmentId,
+                              label: dept.departmentName,
+                            }))}
+                          onChange={(selectedOption) =>
+                            setFieldValue(
+                              "departmentId",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          isClearable
+                          placeholder="Department"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
+
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#000",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
+                      {/* location category */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location Category
+                        </label>
+
+                        <Select
+                          name="entityTypeId"
+                          value={
+                            allEntityTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.entityTypeId,
+                                label: dept.entityTypeName,
+                              }))
+                              .find(
+                                (option) => option.value === values.entityTypeId
+                              ) || null // Use values.entityId
+                          }
+                          options={allEntityTypes
+                            ?.filter((entity) => entity.isActive)
+                            .map((entity) => ({
+                              value: entity.entityTypeId,
+                              label: entity.entityTypeName,
+                            }))}
+                          onChange={(selectedOption) =>
+                            setFieldValue(
+                              "entityTypeId",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          isClearable
+                          placeholder="Location Category"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
+
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
                       <div className="flex items-end">
                         <button
                           type="submit"
@@ -358,7 +578,7 @@ export default function AdminBookings() {
             </div>
 
             <AgGridTable
-              ExportName = "Individual Booking Details"
+              ExportName="Individual Booking Details"
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}
               columnDefs={columnDefs}

@@ -31,6 +31,8 @@ import CountUp from "react-countup";
 import { superballs } from "ldrs";
 import Select from "react-select";
 import { useEntityTypesStore } from "../store/masters/entityTypesStore";
+import { Link } from "react-router-dom";
+import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
 function AdminDashboard() {
   superballs.register();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -73,6 +75,8 @@ function AdminDashboard() {
     allZooDashboardTicketWise,
     fetchAllZooDashBoardCountsTicketWise,
   } = useDashboardStore();
+
+  const { setDetailedReportParams } = useDashboardDetailedStore();
 
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -118,8 +122,7 @@ function AdminDashboard() {
     setPageSize(newPageSize);
   };
 
-  const parksToRender =
-    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
+  const parksToRender = role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -244,6 +247,14 @@ function AdminDashboard() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    // {
+    //   field: "locationCategoryName",
+    //   headerName: "Location Category",
+
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -258,6 +269,7 @@ function AdminDashboard() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
+
     {
       field: "serviceVariantName",
       headerName: "Service Variant Name",
@@ -351,61 +363,67 @@ function AdminDashboard() {
                       }}
                     />
                   </div>
-                  {!( roleDetails?.name === "ROLE_ADMIN" ||roleDetails?.name === "ROLE_ZOOPARKADMIN")&&<div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Location Category
-                    </label>
+                  {!(
+                    roleDetails?.name === "ROLE_ADMIN" ||
+                    roleDetails?.name === "ROLE_ZOOPARKADMIN"
+                  ) && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700">
+                        Location Category
+                      </label>
 
-                    <Select
-                      name="entityId"
-                      value={
-                        allEntityTypes
-                          ?.filter((dept) => dept.isActive)
-                          .map((dept) => ({
-                            value: dept.entityTypeId,
-                            label: dept.entityTypeName,
-                          }))
-                          .find((option) => option.value === values.entityId) ||
-                        null // Use values.entityId
-                      }
-                      options={allEntityTypes
-                        ?.filter((entity) => entity.isActive)
-                        .map((entity) => ({
-                          value: entity.entityTypeId,
-                          label: entity.entityTypeName,
-                        }))}
-                      onChange={(selectedOption) =>
-                        setFieldValue("entityId", selectedOption?.value || "")
-                      }
-                      isClearable
-                      placeholder="Location Category"
-                      className="mt-[4px] text-sm"
-                      classNamePrefix="react-select"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          outline: "none",
-                          boxShadow: "none",
-                          borderColor: "#ced4da",
-                          borderRadius: "6px",
-                          height: "30px",
-                          minHeight: "33px",
-                        }),
+                      <Select
+                        name="entityId"
+                        value={
+                          allEntityTypes
+                            ?.filter((dept) => dept.isActive)
+                            .map((dept) => ({
+                              value: dept.entityTypeId,
+                              label: dept.entityTypeName,
+                            }))
+                            .find(
+                              (option) => option.value === values.entityId
+                            ) || null // Use values.entityId
+                        }
+                        options={allEntityTypes
+                          ?.filter((entity) => entity.isActive)
+                          .map((entity) => ({
+                            value: entity.entityTypeId,
+                            label: entity.entityTypeName,
+                          }))}
+                        onChange={(selectedOption) =>
+                          setFieldValue("entityId", selectedOption?.value || "")
+                        }
+                        isClearable
+                        placeholder="Location Category"
+                        className="mt-[4px] text-sm"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            outline: "none",
+                            boxShadow: "none",
+                            borderColor: "#ced4da",
+                            borderRadius: "6px",
+                            height: "30px",
+                            minHeight: "33px",
+                          }),
 
-                        menu: (base) => ({
-                          ...base,
-                          // padding: "4px 0",
-                        }),
-                        option: (base, { isFocused }) => ({
-                          ...base,
-                          fontSize: "0.775rem",
-                          backgroundColor: isFocused ? "#F8F8F8" : "white",
-                          color: isFocused ? "#0C3771" : "#6D7072",
-                          cursor: "pointer",
-                        }),
-                      }}
-                    />
-                  </div>}
+                          menu: (base) => ({
+                            ...base,
+                            // padding: "4px 0",
+                          }),
+                          option: (base, { isFocused }) => ({
+                            ...base,
+                            fontSize: "0.775rem",
+                            backgroundColor: isFocused ? "#F8F8F8" : "white",
+                            color: isFocused ? "#0C3771" : "#6D7072",
+                            cursor: "pointer",
+                          }),
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="flex items-end">
                     <button
                       type="submit"
@@ -423,7 +441,7 @@ function AdminDashboard() {
         {cardsToDisplay &&
           cardsToDisplay.map((card, index) => (
             <DashboardCard01
-              key={index} // It's important to provide a key when rendering lists
+              key={index}
               lableName={card.lableName}
               count={card.count}
               percentageChange={card.percentageChange}
@@ -432,11 +450,12 @@ function AdminDashboard() {
           ))}
 
         {/* ZOO DASHBOARD */}
-        {roleDetails?.name === "ROLE_ZOOPARKADMIN" &&
+        {(roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
+          roleDetails?.name === "ROLE_ADMIN") &&
           dashboardCardCountZooTicketWise.map((card, index) => (
             <div
               key={index}
-              className="flex flex-col justify-center col-span-full relative   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+              className="flex flex-col justify-center col-span-full relative   md:col-span-4  xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
             >
               <span className="text-xs font-medium absolute top-0 right-0 px-[4px] rounded-es-md rounded-se-md bg-gray-400 text-white">
                 Ticket Wise{" "}
@@ -501,7 +520,9 @@ function AdminDashboard() {
             </div>
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
-        {roleDetails?.name === "ROLE_ZOOPARKADMIN" ? (
+        {
+        roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
+        roleDetails?.name === "ROLE_ADMIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">
@@ -562,14 +583,24 @@ function AdminDashboard() {
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
-                      <span className="text-2xl font-bold leading-none text-gray-600">
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl  font-bold leading-none   "
+                        onClick={() => {
+                          setDetailedReportParams({
+                            Date: DashboardDate,
+                            ServiceId:services.service[0]?.serviceId,
+                            serviceName:services.service[0]?.serviceName
+                          });
+                        }}
+                      >
                         <CountUp
                           end={services.service[0]?.totalBookings}
                           duration={2}
                           prefix=""
                           separator=","
                         />
-                      </span>
+                      </div>
                       <h1 className="text-xs font-medium">
                         {services.service[0].serviceName}
                       </h1>
@@ -605,19 +636,29 @@ function AdminDashboard() {
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
                       <img
                         src={service.serviceImage}
-                        // src={Aqua}
                         className="text-3xl font-bold text-white dark:text-gray-100 w-8"
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
-                      <span className="text-2xl font-bold leading-none text-gray-600">
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl font-bold leading-none "
+                        onClick={() => {
+                          setDetailedReportParams({
+                            Date: DashboardDate,
+                            ServiceId:service.serviceId,
+                            serviceName:service?.serviceName
+                          });
+                        }
+                        }
+                      >
                         <CountUp
                           end={service.serviceVariants[0].totalBookings}
                           duration={2}
                           prefix=""
                           separator=","
                         />
-                      </span>
+                      </div>
                       <h1 className="text-sm font-medium">
                         {service.serviceName}
                       </h1>
@@ -628,7 +669,7 @@ function AdminDashboard() {
             )}
           </>
         ) : null}
-
+        {/* PIE CHART */}
         {roleDetails?.name == "ROLE_SUPERADMIN" && (
           <DashboardCard07>
             <div className="flex">
@@ -683,61 +724,66 @@ function AdminDashboard() {
                           </Field>
                         </div>
                       )}
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Location Category
-                    </label>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location Category
+                        </label>
 
-                    <Select
-                      name="locationCategoryId"
-                      value={
-                        allEntityTypes
-                          ?.filter((dept) => dept.isActive)
-                          .map((dept) => ({
-                            value: dept.entityTypeId,
-                            label: dept.entityTypeName,
-                          }))
-                          .find((option) => option.value === values.locationCategoryId) ||
-                        null // Use values.entityId
-                      }
-                      options={allEntityTypes
-                        ?.filter((entity) => entity.isActive)
-                        .map((entity) => ({
-                          value: entity.entityTypeId,
-                          label: entity.entityTypeName,
-                        }))}
-                      onChange={(selectedOption) =>
-                        setFieldValue("locationCategoryId", selectedOption?.value || "")
-                      }
-                      isClearable
-                      placeholder="Location Category"
-                      className="mt-[4px] text-sm"
-                      classNamePrefix="react-select"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          outline: "none",
-                          boxShadow: "none",
-                          borderColor: "#ced4da",
-                          borderRadius: "6px",
-                          height: "30px",
-                          minHeight: "33px",
-                        }),
+                        <Select
+                          name="locationCategoryId"
+                          value={
+                            allEntityTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.entityTypeId,
+                                label: dept.entityTypeName,
+                              }))
+                              .find(
+                                (option) =>
+                                  option.value === values.locationCategoryId
+                              ) || null // Use values.entityId
+                          }
+                          options={allEntityTypes
+                            ?.filter((entity) => entity.isActive)
+                            .map((entity) => ({
+                              value: entity.entityTypeId,
+                              label: entity.entityTypeName,
+                            }))}
+                          onChange={(selectedOption) =>
+                            setFieldValue(
+                              "locationCategoryId",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          isClearable
+                          placeholder="Location Category"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
 
-                        menu: (base) => ({
-                          ...base,
-                          // padding: "4px 0",
-                        }),
-                        option: (base, { isFocused }) => ({
-                          ...base,
-                          fontSize: "0.775rem",
-                          backgroundColor: isFocused ? "#F8F8F8" : "white",
-                          color: isFocused ? "#0C3771" : "#6D7072",
-                          cursor: "pointer",
-                        }),
-                      }}
-                    />
-                  </div>
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
                       <div>
                         <label
                           htmlFor="fromDate"

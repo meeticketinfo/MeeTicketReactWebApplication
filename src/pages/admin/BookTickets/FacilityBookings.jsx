@@ -179,8 +179,8 @@ function FacilityBookings() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "transactionId",
-      headerName: "Transaction Id",
+      field: "createD_BY",
+      headerName: "Created By",
       headerClass: "text-blue-v2",
     },
     {
@@ -230,13 +230,17 @@ function FacilityBookings() {
       valueFormatter: (params) =>
         params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
     },
-
     {
       field: "status",
       headerName: "Payment Status",
       headerClass: "text-blue-v2",
     },
     { field: "mobileNumber", headerName: "Phone", headerClass: "text-blue-v2" },
+    {
+      field: "transactionId",
+      headerName: "Transaction Id",
+      headerClass: "text-blue-v2",
+    },
     {
       field: "paymentType",
       headerName: "Payment Mode",

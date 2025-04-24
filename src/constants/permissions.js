@@ -15,13 +15,13 @@ export const superAdminPermissions = [
   "pending-transaction-details",
   "bank-transactions",
   "metro-cumulative-bookings",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
-  "tourism-consolidate",
-  "tourism-payment-transaction",
-  "tourism-individual",
-  "toursim-bank-payments",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
+  // "tourism-consolidate",
+  // "tourism-payment-transaction",
+  // "tourism-individual",
+  // "toursim-bank-payments",
 ];
 
 export const parkAdminPermissions = [
@@ -38,9 +38,9 @@ export const parkAdminPermissions = [
   "facility/unified-create",
   "completed-bookings",
   "payment-transaction-report",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -52,9 +52,9 @@ export const CustomParkAdminPermissions = [
   "facility/unified-create",
   "completed-bookings",
   "payment-transaction-report",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
   "facility-bookings",
 ];
 
@@ -63,9 +63,9 @@ export const nodalOfficerPermissions = [
   "entities",
   "entity-admins",
   "entity-bookings",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
 ];
 
 export const MetroReports = [
@@ -75,6 +75,8 @@ export const MetroReports = [
   "booking-details",
   "pending-transaction-details",
   "transaction-general-report",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
 ];
 
 export const NehruZooPark = [
@@ -84,6 +86,8 @@ export const NehruZooPark = [
   "payment-transaction-report",
   "facility-bookings",
   "book-tickets",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
 ];
 export const SupportAdmin = [
   "entity-bookings",
@@ -94,10 +98,20 @@ export const SupportAdmin = [
   "pending-transaction-details",
 ];
 
+export const RtcAdmin = [
+  // "dashboard",
+  // "day-pass",
+  // "ordinary-pass",
+  // "mst-pass",
+  // "express-pass",
+  // "student-pass",
+  // "pending-pass",
+];
+
 export const Toursim = [
-  "dashboard",
-  "tourism-consolidate",
-  "tourism-payment-transaction",
-  "tourism-individual",
-  "toursim-bank-payments",
+  // "dashboard",
+  // "tourism-consolidate",
+  // "tourism-payment-transaction",
+  // "tourism-individual",
+  // "toursim-bank-payments",
 ];

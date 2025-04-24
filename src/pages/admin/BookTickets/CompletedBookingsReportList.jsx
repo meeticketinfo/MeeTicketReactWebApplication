@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
-import { formatToStandardDate, getCurrentDate } from "../../../utils/TypographyHelper";
+import {
+  formatToStandardDate,
+  getCurrentDate,
+} from "../../../utils/TypographyHelper";
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { NavLink } from "react-router-dom";
-
+import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
+import Select from "react-select";
+import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
 function CompletedBookingsReportList() {
- 
   const {
     fetchCompleteBookingsReport,
     allCompleteBookingsReports,
     setisCompleteBookings,
     isCompleteBookingsReportsLoading,
   } = useBookingsStore();
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
-  console.log("getSavedFilters", savedFilters);
+
   useEffect(() => {
     fetchCompleteBookingsReport({
       startDate: savedFilters?.fromDate
@@ -25,20 +32,28 @@ function CompletedBookingsReportList() {
       endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
       bookingSource: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
-        : "Counter",
+        : "",
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+      departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
+      entityTypeId: savedFilters?.entityTypeId ? savedFilters.entityTypeId : null,
     });
   }, [fetchCompleteBookingsReport]);
+
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+  }, []);
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    typeOfBooking: savedFilters?.typeOfBooking
-      ? savedFilters.typeOfBooking
-      : "Counter",
+    entityId: savedFilters?.entityId ? savedFilters.entityId : null,
+    departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
+    typeOfBooking: savedFilters?.typeOfBooking ? savedFilters.typeOfBooking: "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
   };
 
   const onSubmit = (values, { resetForm }) => {
+    
     localStorage.setItem(
       "completed-booking-report-filters",
       JSON.stringify(values)
@@ -46,8 +61,11 @@ function CompletedBookingsReportList() {
     fetchCompleteBookingsReport({
       startDate: values.fromDate,
       endDate: values.toDate,
+      departmentId:values.departmentId,
+      entityTypeId:values.entityId,
       bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : null,
+
     });
   };
 
@@ -66,13 +84,45 @@ function CompletedBookingsReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    // {
-    //   field: "transactionId",
-    //   headerName: "Transaction ID",
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) =>
-    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
-    // },
+    // ------------------
+
+    {
+      field: "parkName",
+      headerName: "Park Name",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "departmentName",
+      headerName: "Department",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "entityTypeName",
+      headerName: "Location category",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "totalTicketsBooked",
+      headerName: "Total No Of Tickets",
+      maxWidth: 170,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "mid",
+      headerName: "MID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    // -------------------
+
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
@@ -100,7 +150,7 @@ function CompletedBookingsReportList() {
         return `${formattedDate} ${formattedTime}`;
       },
     },
-    
+
     {
       field: "bookinG_DATE",
       headerName: "Booking Date",
@@ -177,7 +227,7 @@ function CompletedBookingsReportList() {
     <div>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
             <div>
               <label
                 htmlFor="fromDate"
@@ -230,6 +280,7 @@ function CompletedBookingsReportList() {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
+                <option value="">ALL</option>
                 <option value="Counter">Counter</option>
                 <option value="MeeTicketApp">Mee TicketApp</option>
               </Field>
@@ -254,17 +305,129 @@ function CompletedBookingsReportList() {
                 }}
               />
             </div>
+            {/* department */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Department
+              </label>
+
+              <Select
+                name="departmentId"
+                value={
+                  allDepartmentTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.departmentId,
+                      label: dept.departmentName,
+                    }))
+                    .find((option) => option.value === values.departmentId) ||
+                  null // Set the selected value
+                }
+                options={allDepartmentTypes
+                  ?.filter((dept) => dept.isActive)
+                  .map((dept) => ({
+                    value: dept.departmentId,
+                    label: dept.departmentName,
+                  }))}
+                onChange={(selectedOption) =>
+                  setFieldValue("departmentId", selectedOption?.value || null)
+                }
+                isClearable
+                placeholder="Department"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
+
+                  menu: (base) => ({
+                    ...base,
+                    // padding: "4px 0",
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#000",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
+            {/* location category */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Location Category
+              </label>
+
+              <Select
+                name="entityId"
+                value={
+                  allEntityTypes
+                    ?.filter((dept) => dept.isActive)
+                    .map((dept) => ({
+                      value: dept.entityTypeId,
+                      label: dept.entityTypeName,
+                    }))
+                    .find((option) => option.value === values.entityId) || null // Use values.entityId
+                }
+                options={allEntityTypes
+                  ?.filter((entity) => entity.isActive)
+                  .map((entity) => ({
+                    value: entity.entityTypeId,
+                    label: entity.entityTypeName,
+                  }))}
+                onChange={(selectedOption) =>
+                  setFieldValue("entityId", selectedOption?.value || null)
+                }
+                isClearable
+                placeholder="Location Category"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
+
+                  menu: (base) => ({
+                    ...base,
+                    // padding: "4px 0",
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
+            {/* submit */}
             <div className="flex items-end gap-2">
               <button
                 type="submit"
-                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
               <button
                 type="button"
-                  className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem("completed-booking-report-filters");
@@ -272,8 +435,10 @@ function CompletedBookingsReportList() {
                     values: {
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
-                      typeOfBooking: true,
+                      typeOfBooking: "",
                       phoneNumber: "",
+                      entityId:null,
+                      departmentId:null,
                     },
                   });
                 }}
@@ -285,7 +450,7 @@ function CompletedBookingsReportList() {
         )}
       </Formik>
       <AgGridTable
-        ExportName = "Completed Bookings Details"
+        ExportName="Completed Bookings Details"
         isFetchLoading={isCompleteBookingsReportsLoading}
         rowData={allCompleteBookingsReports || []}
         columnDefs={columnDefs}

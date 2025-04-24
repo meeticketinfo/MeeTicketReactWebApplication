@@ -11,17 +11,18 @@ import { ModuleRegistry } from "ag-grid-community";
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 
 ModuleRegistry.registerModules([ExcelExportModule]);
-
+ 
 const AgGridTable = ({
   rowData = [],
   columnDefs,
   isFetchLoading,
   pinnedBottomRowData,
   ExportName,
+  gridOptions
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
-
+   
   const gridRef = useRef(null);
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
@@ -52,6 +53,10 @@ const AgGridTable = ({
           ExportName && typeof ExportName === "string"
             ? `${ExportName}.xlsx`
             : "Report.xlsx",
+            // columnKeys: gridApi
+            // .getColumnDefs()
+            // .filter(col => col.field !== "actions")
+            // .map(col => col.field),
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];
@@ -104,6 +109,8 @@ const AgGridTable = ({
     }
   };
 
+  
+
   useEffect(() => {
     // Load the saved quickFilterText from localStorage on component mount
     const savedQuickFilterText = localStorage.getItem("quickFilterText");
@@ -153,6 +160,7 @@ const AgGridTable = ({
           enableCellTextSelection
           ref={gridRef}
           rowData={rowData}
+          gridOptions={gridOptions}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
           pinnedBottomRowData={pinnedBottomRowData}

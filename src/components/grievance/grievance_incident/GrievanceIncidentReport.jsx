@@ -28,8 +28,8 @@ function GrievanceIncidentReport() {
   const userObject = storedUser ? JSON.parse(storedUser) : "";
   useEffect(() => {
     fetchOverAllReports({
-      fromDate: userObject ?userObject.fromDate: getCurrentDate(),
-      toDate: userObject?userObject.toDate : getCurrentDate(),
+      fromDate: userObject ? userObject.fromDate : getCurrentDate(),
+      toDate: userObject ? userObject.toDate : getCurrentDate(),
       active: false,
     });
   }, [fetchOverAllReports]);
@@ -57,11 +57,11 @@ function GrievanceIncidentReport() {
       headerName: "User mobile Number",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "locationCategory",
-      headerName: "Location category",
+      headerName: "Location category",  
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
@@ -77,7 +77,7 @@ function GrievanceIncidentReport() {
     {
       field: "complaintDescription",
       headerName: " Complaint Description",
-      width:300,
+      width: 300,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value === "null" ? "0" : params.value,
@@ -177,8 +177,8 @@ function GrievanceIncidentReport() {
     },
   ]);
   const initialValues = {
-    fromDate: userObject ?userObject.fromDate: getCurrentDate(),
-    toDate: userObject?userObject.toDate : getCurrentDate(),
+    fromDate: userObject ? userObject.fromDate : getCurrentDate(),
+    toDate: userObject ? userObject.toDate : getCurrentDate(),
   };
   const onSubmit = (values) => {
     fetchOverAllReports({
@@ -283,18 +283,16 @@ function GrievanceIncidentReport() {
                   onClick={() => {
                     localStorage.removeItem("OverAllFilters");
 
-                   
                     setValues({
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
                     });
-                   
-                      fetchOverAllReports({
-                        fromDate: getCurrentDate(),
-                        toDate: getCurrentDate(),
-                        active: false,
-                      });
-                    
+
+                    fetchOverAllReports({
+                      fromDate: getCurrentDate(),
+                      toDate: getCurrentDate(),
+                      active: false,
+                    });
                   }}
                 >
                   Reset
@@ -306,7 +304,7 @@ function GrievanceIncidentReport() {
       </Formik>
 
       <AgGridTable
-      ExportName="Grievance Incident"
+        ExportName="Grievance Incident"
         rowData={parsedResponse}
         columnDefs={columnDefs}
         isFetchLoading={isFetchOverAllReportsLoading}

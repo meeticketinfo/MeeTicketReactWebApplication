@@ -66,12 +66,12 @@ export const useParkStore = create((set) => ({
   },
 
   fetchParkBankTransactions: async (
-    { fromDate, toDate }
+    { fromDate, toDate,departmentId,entityTypeId }
   ) => {
     set({ isFetchAllParkBankTransactionsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.PARK_Reports.GET_PARK_BANK_TRANSACTION_REPORT}?StartDate=${fromDate}&EndDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.PARK_Reports.GET_PARK_BANK_TRANSACTION_REPORT}?StartDate=${fromDate}&EndDate=${toDate}&entityTypeId=${entityTypeId}&departmentId=${departmentId}`
       );
       set({
         allParkBankTransactions: response.data,

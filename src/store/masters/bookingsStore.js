@@ -175,6 +175,35 @@ export const useBookingsStore = create(
           throw error;
         }
       },
+
+      // booking detailos for cash
+      saveCashBookingDetails: async (bookingDetailsPayload) => {
+        set({ isSaveBookingDetailsLoading: true });
+        try {
+          const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_CASH_BOOKINGS;
+          const method = "post";
+
+          const response = await apiService[method](url, bookingDetailsPayload);
+
+          // set({
+          //   facilityCreateResponse: { response },
+          //   FacilityDetails: response.data,
+          //   isSaveBookingDetailsLoading: false,
+          // });
+          return { success: true, data: response };
+        } catch ({ error, xhr }) {
+          // handleApiError(xhr);
+
+          set({
+            saveBookingDetailsError: error.response.data.message,
+            isSaveBookingDetailsLoading: false,
+          });
+          return { error: error.response.data.message };
+          throw error;
+        }
+      },
+
+
       // first setp of transction
 
       saveFirstBookingDetails: async (FirstStepTransactionPayload) => {
@@ -228,16 +257,21 @@ export const useBookingsStore = create(
       },
 
       // Complete bookings
-      fetchCompleteBookingsReport: async (
-        // pageIndex = 1, pageSize = 10, filters = {},
-        payload
-      ) => {
+      fetchCompleteBookingsReport: async (payload) => {
+        console.log("payload", payload);
+        const Payload1 = {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          departmentId:payload.departmentId,
+          entityTypeId:payload.entityTypeId,
+        };
+        const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });
         try {
           const url =
             API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS;
           const method = "post";
-          const response = await apiService[method](url, payload);
+          const response = await apiService[method](url, finalPyload);
           set({
             allCompleteBookingsReports: response.data,
             isCompleteBookingsReportsLoading: false,

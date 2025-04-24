@@ -9,12 +9,15 @@ export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // metro dev
-export const METRO_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+// export const METRO_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/metroapi/";
 
 // METRO UAT
-// export const METRO_API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+export const METRO_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+// metroapi UAT
+export const METRO_API_Plain_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
 export const GRIEVANCE_API_BASE_URL =
@@ -32,6 +35,10 @@ export const TOURISM_API_BASE_URL =
 // export const TOURISM_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
 
+// RTC dev
+export const RTC_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.life/rtcbuspassapi/v1/";
+
 // METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
@@ -44,19 +51,15 @@ export const TOURISM_API_BASE_URL =
 
 // testing
 // export const API_BASE_URL =
-//   "https://3m72k312-7237.inc1.devtunnels.ms/api/";
+//   "https://jvbngjwk-7237.inc1.devtunnels.ms/api/";
 
-// metro dev testing
+// metro  testing
 // export const METRO_API_BASE_URL =
 //   "https://6phbrdb7-7237.inc1.devtunnels.ms/v1.0/";
 
-// grivience dev testing
+// grivience  testing
 // export const GRIEVANCE_API_BASE_URL =
 //   "https://v1nbj8m4-7210.inc1.devtunnels.ms/v1.0/";
-
-// METRO UAT testing
-// export const METRO_API_BASE_URL =
-//   "https://m7411qx6-7297.inc1.devtunnels.ms/v1/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -78,22 +81,22 @@ export const API_ENDPOINTS = {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },
     FACILITY: {
-      GET_FACILITIES: `Master/GetAllFacilities`,
+      GET_FACILITIES: `v2/Master/GetAllFacilities`,
       GET_FACILITIES_NODAL_OFFICER: `NodalOfficer/GetAllFacilities?parkId=`,
       ADMIN_GET_FACILITIES: `${API_BASE_URL}Facilities/GetAllFacilityMasters`,
       ADMIN_ADD_FACILITIES: `${API_BASE_URL}Facilities/CreateMasterFacility`,
       ADMIN_UPDATE_FACILITIES: `${API_BASE_URL}Facilities/UpdateMasterFacilities`,
       FACILITIES_DROPDOWN: `${API_BASE_URL}Facilities/GetFacilitiesDropDown`,
       FACILITIES_DROPDOWN_BY_ID: `${API_BASE_URL}NodalOfficer/GetFacilitiesDropDownByParkId?parkId=`,
-      UPDATE_FACILITY_DETAILS: `${API_BASE_URL}Master/UpdateFacilities`,
-      UPDATE_FACILITY_DETAILS_NODAL_OFFICER: `${API_BASE_URL}NodalOfficer/UpdateFacilities`,
+      UPDATE_FACILITY_DETAILS: `${API_BASE_URL}v2/Master/UpdateFacilities`,
+      UPDATE_FACILITY_DETAILS_NODAL_OFFICER: `${API_BASE_URL}v2/NodalOfficer/UpdateFacilities`,
       ADD_NEW_FACILITY: `${API_BASE_URL}Facilities/CreateNewFacility`,
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
     UNIFIED_FACILITY: {
-      GET_ALL: `${API_BASE_URL}Master/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
-      GET_ALL_BY_ID: `${API_BASE_URL}NodalOfficer/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
+      GET_ALL: `${API_BASE_URL}v2/Master/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
+      GET_ALL_BY_ID: `${API_BASE_URL}v2/NodalOfficer/GetFacilitiesWithSubFacilitiesAndTicketTypes`,
       CREATE: `${API_BASE_URL}Master/AddFacilityWithSubFacilitiesAndTicketTypes`,
       CREATE_BY_ID: `${API_BASE_URL}NodalOfficer/AddFacilityWithSubFacilitiesAndTicketTypes`,
     },
@@ -102,6 +105,7 @@ export const API_ENDPOINTS = {
       FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      ADD_CASH_BOOKINGS: `Transaction/AddBookingDetailswithCash`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
@@ -153,6 +157,7 @@ export const API_ENDPOINTS = {
     },
     HOLIDAY: {
       ADD_NEW_HOLIDAY: `${API_BASE_URL}Master/AddHolidaysList`,
+      DELETE_HOLIDAY: `${API_BASE_URL}Master/DeleteHoliday`,
       GET_HOLIDAYS: `${API_BASE_URL}Master/GetAllHolidays`,
       ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
       GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
@@ -198,6 +203,19 @@ export const API_ENDPOINTS = {
       GET_METRO_BOOKING_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetBookingDetailsResult`,
       GET_METRO_PENDING_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetInprogressorFailedPaymentTxnResult`,
       GET_CUMULATIVE_METRO_BOOKINGS: `${METRO_API_BASE_URL}v1/MetroReport/GetDateWiseBookingsCumulative`,
+      ADD_INITIAT_PAYMENT: `${METRO_API_Plain_BASE_URL}v1/MetroConsolidation/xxx---InititatePayment---xxx`,
+      REFRESH_BUTTON: `${METRO_API_Plain_BASE_URL}v1/MetroConsolidation/PaymentInquiry`,
+      UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
+      ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
+    },
+    RTC_REPORTS: {
+      GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
+      GET_ORDINARY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTOrdinaryApplicationDetails`,
+      GET_MTS_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTMstApplicationDetails`,
+      GET_EXPRESS_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTExpressApplicationDetails`,
+      GET_STUDENT_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentApplicationDetails`,
+      GET_PENDING_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentPendingApplicationDetails`,
+      UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}RTCDashboard/updateStudentApplicationStatus`,
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,
@@ -221,6 +239,7 @@ export const API_ENDPOINTS = {
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
+    GET_ALL_DASHBOARD_DETAILED_REPORT: `${API_BASE_URL}ParkReport/GetZooParkDashboardDetails`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
@@ -228,5 +247,17 @@ export const API_ENDPOINTS = {
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
+  },
+  RTC_DASHBOARD: {
+    GET_OVER_ALL: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardReports`,
+    GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardAllPassesInfo`,
+    GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
+    GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+  },
+  TOURSIM_DASHBOARD: {
+    GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,
+    GET_CATEGORY_WISE_TOTALCOUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetCategoryWiseTotalBookings`,
+    GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
+    GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
 };

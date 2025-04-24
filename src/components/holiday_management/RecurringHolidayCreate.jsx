@@ -66,14 +66,13 @@ export default function RecurringHolidayCreate() {
   return (
     <div className="mt-5">
       <DashboardCard07 header={true} title="Add Recurring Weekdays">
-        <ToastContainer position="top-right" autoClose={3000} />
         <div className="bg-white rounded-md">
           <Formik
             initialValues={{
               dayName: allRecurringHolidays || [], // Pre-selected holidays
             }}
             enableReinitialize
-            validationSchema={validationSchema}
+            // validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
             {({ values, errors, touched }) => (
@@ -84,7 +83,10 @@ export default function RecurringHolidayCreate() {
                       {({ push, remove }) => (
                         <div>
                           {weekdaysStartingWithSunday.map((weekday) => (
-                            <div key={weekday} className="flex items-center mb-2">
+                            <div
+                              key={weekday}
+                              className="flex items-center mb-2"
+                            >
                               <input
                                 type="checkbox"
                                 id={weekday}
@@ -100,7 +102,10 @@ export default function RecurringHolidayCreate() {
                                 }}
                                 className="w-4 h-4 text-blue-600 bg-gray-100 outline-none border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                               />
-                              <label htmlFor={weekday} className="ml-2 text-md font-medium text-gray-700 cursor-pointer border-gray-400">
+                              <label
+                                htmlFor={weekday}
+                                className="ml-2 text-md font-medium text-gray-700 cursor-pointer border-gray-400"
+                              >
                                 {weekday}
                               </label>
                             </div>
@@ -117,7 +122,9 @@ export default function RecurringHolidayCreate() {
                     className="bg-blue-v1 text-base text-white rounded-lg px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1"
                     disabled={isSaveRecurringHolidayDetailsLoading}
                   >
-                    {isSaveRecurringHolidayDetailsLoading ? "Submitting..." : "Save"}
+                    {isSaveRecurringHolidayDetailsLoading
+                      ? "Submitting..."
+                      : "Save"}
                   </button>
                 </div>
               </Form>

@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
@@ -13,7 +13,7 @@ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/parkapi/api/"
 
 // testing
 // export const API_BASE_URL =
-//   "https://3m72k312-7237.inc1.devtunnels.ms/api/";
+//   "https://jvbngjwk-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -28,7 +28,7 @@ api.interceptors.request.use(
     const token = useAuthStore.getState().token; // Get the token from Zustand store
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-    } 
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -91,18 +91,3 @@ const apiService = {
 
 export default apiService;
 
-// // GET example with params
-// apiService.get(API_ENDPOINTS.MASTERS.PARK.GET_PARKS, { location: 'downtown' })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));
-
-// // POST example with body payload
-// apiService.post(API_ENDPOINTS.MASTERS.PARK.CREATE_PARK, { name: 'Central Park', city: 'New York' })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));
-
-// // File upload example with additional data
-// const file = document.querySelector('#fileInput').files[0];
-// apiService.uploadFile(API_ENDPOINTS.MASTERS.PARK.CREATE_PARK, file, { parkId: 123 })
-//   .then(response => console.log(response.data))
-//   .catch(error => console.error(error));

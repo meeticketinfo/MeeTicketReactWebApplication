@@ -53,29 +53,18 @@ export const FacilityServices = () => {
 
   const {
     saveBookingDetails,
-    fetchCurrentBookingDetailsByBookingId,
+    saveCashBookingDetails,
     saveFirstBookingDetails,
-    FirstStepTransactionResponse,
     IsFirstStepTransaction,
-    setSelectedBookingsList,
-    VerifyPaymentStatus,
     IsTransactionFailed,
-    bookingMessage,
-    isSaveFirstTransactionDetailsLoading,
-    setisUpi,
-    isUpi,
     setisCash,
     isCash,
-    saveBookingDetailsError,
+    setIsTransactionFailed,
+    setPaymentStatus,
   } = useBookingsStore();
 
-  const { decodedTokenData, DepartmentId } = useAuthStore();
-  const {
-    saveRecurringHolidayDetails,
-    isSaveRecurringHolidayDetailsLoading,
-    fetchAllRecurringHolidays,
-    allRecurringHolidays,
-  } = useHolidayStore();
+  const { decodedTokenData } = useAuthStore();
+  const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
   // disableing button for recurriing holidays
 
   const currentDay = new Date()
@@ -108,12 +97,13 @@ export const FacilityServices = () => {
     fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
   }, []);
+
   const calculateTotalAmount = (selectedItems) => {
     return selectedItems.reduce((total, item) => {
       return total + item.quantity * item.unitAmount;
     }, 0);
   };
-  const { expandedItems, toggleItem } = useAccordionStore();
+  const {  toggleItem } = useAccordionStore();
 
   const accordionItems = [
     { id: 1, title: "Item 1", content: "This is the content for item 1" },
@@ -122,7 +112,10 @@ export const FacilityServices = () => {
   ];
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method"), // Add validation for payment method
-    mobileNumber: Yup.string().required("Please enter mobile number"),
+
+    mobileNumber: Yup.string()
+      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+      .required("Please enter mobile number"),
   });
 
   const handleSubmit = async (
@@ -130,6 +123,8 @@ export const FacilityServices = () => {
     { setSubmitting, resetForm },
     saveBookingDetails
   ) => {
+    setPaymentStatus({});
+    setIsTransactionFailed(false);
     const currentDate = new Date();
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const bookingDetailsPayload = {
@@ -151,13 +146,13 @@ export const FacilityServices = () => {
         totalAmount: totalAmount,
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
-        transactionId: "",
+        // transactionId: "",
         bookingDate: formatBookingDate(currentDate),
         bookingDetailsReqDTOs: values.selectedItems,
       };
 
       try {
-        const result = await saveBookingDetails(bookingDetailsPayload);
+        const result = await saveCashBookingDetails(bookingDetailsPayload);
 
         if (result && result.data && result.data.status === 200) {
           const newBookingId = result?.data?.data?.data;
@@ -247,7 +242,7 @@ export const FacilityServices = () => {
                         (service) => service.facilityId === facility.id
                       )
                     )
-                    ?.filter((facility) => facility.isActive)
+                    ?.filter((facility) => facility.isCounterEnable)
                     .map((facility) => {
                       return (
                         <div
@@ -853,26 +848,6 @@ export const FacilityServices = () => {
                   )}
 
                   <div className="flex justify-center p-2">
-                    {/* <button
-                    type="submit"
-                   
-                    disabled={!values.selectedItems?.length && !isUpi && !isCash}
-                    className={`text-base rounded-lg px-3 py-1 ${
-                      values.selectedItems.length > 0
-                        ? `${
-                            isSubmitting
-                              ? "bg-gradient-to-r from-blue-v1 via-blue-800 to-blue-v1 animate-pulse text-white"
-                              : "bg-blue-v1 text-white"
-                          }`
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <span className="font-light">Loading . . .</span>
-                    ) : (
-                      <span>Continue Booking</span>
-                    )}
-                  </button> */}
                     <button
                       type="submit"
                       disabled={!isCash}
