@@ -11,6 +11,7 @@ import { MdOutlineDownloadDone } from "react-icons/md";
 import Logo from "../../../images/MeeTicketLogo.svg";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 import useAuthStore from "../../../store/authStore";
+import { launchPaytmPOS } from "../../../utils/Helper";
 
 export default function BookingDetails() {
   const { id } = useParams();
@@ -22,16 +23,16 @@ export default function BookingDetails() {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
     setIsFirstStepTransaction,
-    setSelectedBookingsList,
-    setIsBookingFormVisible,
     isCompleteBookings,
-    setisCompleteBookings,
+    setCheckPosTsxStatusData,
+    
   } = useBookingsStore();
 
-  const {  roleDetails } = useAuthStore();
+  const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   useEffect(() => {
     fetchQRsForBooking(id);
+   
   }, []);
 
   const fetchQRsForBooking = async (bookingId) => {
@@ -167,7 +168,6 @@ export default function BookingDetails() {
     );
   }, 0);
 
-  
   return (
     <AdminLayout>
       {isFetchCurrentBookingDetailsLoading ? (
@@ -185,12 +185,17 @@ export default function BookingDetails() {
               <NavLink
                 end
                 to={
-                  isCompleteBookings? "/completed-bookings":role === "ROLE_ZOOPARKADMIN"?"/book-tickets": "/entity-bookings"
+                  isCompleteBookings
+                    ? "/completed-bookings"
+                    : role === "ROLE_ZOOPARKADMIN"
+                    ? "/book-tickets"
+                    : "/entity-bookings"
                 }
                 onClick={() => {
                   // setisCompleteBookings(false)
                   setIsFirstStepTransaction(false);
                   setPaymentStatus({});
+                  setCheckPosTsxStatusData([]);
                   sessionStorage.removeItem("bookingPayload");
                 }}
                 className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
@@ -314,7 +319,7 @@ export default function BookingDetails() {
                       :{" "}
                       {bookingDetailsResponse?.referenceId
                         ? bookingDetailsResponse?.referenceId
-                        : bookingDetailsResponse?.paymentOrderId || "N/A"}
+                        : bookingDetailsResponse?.id || "N/A"}
                     </span>
                   </div>
                 </div>
@@ -430,14 +435,18 @@ export default function BookingDetails() {
                   )}
                   <tbody>
                     {
-                      <tr style={{ border:"0px solid black", background:"#D3D3D3"}}>
+                      <tr
+                        style={{
+                          border: "0px solid black",
+                          background: "#D3D3D3",
+                        }}
+                      >
                         <td
                           style={{
                             color: "black",
                             padding: 5,
                             fontSize: 22,
                             fontWeight: "bold",
-                            
                           }}
                         >
                           Grand Total

@@ -26,10 +26,10 @@ function IndividualReportList() {
     },
     {
       field: "transactionId",
-      headerName: "Transaction Id",
+      headerName: "Transaction ID",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
 
     {
@@ -37,15 +37,14 @@ function IndividualReportList() {
       headerName: "Ticket ID",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "ticketType",
       headerName: "Ticket Type",
       width:300,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value === "null" ? "0" : params.value,
+      valueFormatter: (params) => params.value || "N/A",
     },
 
     {
@@ -53,7 +52,7 @@ function IndividualReportList() {
       headerName: "From Station Name",
       width:300,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "toStationName",

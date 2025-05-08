@@ -144,6 +144,16 @@ const sidebarItems = [
         path: "/facility-bookings",
       },
       {
+        title: "Consolidated Facility Booking",
+        icon: TbReportAnalytics,
+        path: "/day-wise-bookings",
+      },
+      {
+        title: "Individual Facility Booking",
+        icon: TbReportAnalytics,
+        path: "/application-day-wise-bookings",
+      },
+      {
         title: "Bank Payments",
         icon: RiBankFill,
         path: "/bank-transactions",
@@ -319,7 +329,7 @@ const sidebarItems = [
         path: "/tourism-payment-transaction",
       },
       {
-        title: "Bank Paymnet Details",
+        title: "Bank Payment Details",
         icon: TbReportSearch,
         path: "/toursim-bank-payments",
       },

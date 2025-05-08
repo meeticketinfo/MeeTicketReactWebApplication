@@ -22,8 +22,14 @@ function ToursimDashboard() {
     fetchallPieChartPackagesData,
     allPieChartPackagesData,
     isFetchAllPieChartPackagesDataLoading,
+    fetchallPackageTransactionReportData,
+    isFetchallPackageTransactionReportDataLoading,
+    allPackageTransactionReportData,
   } = usetoursimDashboardStore();
-  console.log("allPieChartPackagesData", allPieChartPackagesData);
+  console.log(
+    "allPackageTransactionReportData",
+    allPackageTransactionReportData
+  );
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -32,7 +38,7 @@ function ToursimDashboard() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "transactionID",
+      field: "transactionId",
       headerName: "Transaction ID",
 
       headerClass: "text-blue-v2",
@@ -40,23 +46,23 @@ function ToursimDashboard() {
     },
 
     {
-      field: "userName",
-      headerName: "User Name",
+      field: "totalFare",
+      headerName: "Total Fare",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "MobileNumber",
-      headerName: "Pass Type",
+      field: "toStationName",
+      headerName: "To Station Name",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
 
     {
-      field: "bookingDate",
-      headerName: "Booking Date ",
+      field: "purchaseDate",
+      headerName: "Purchase Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -70,42 +76,42 @@ function ToursimDashboard() {
     },
 
     {
-      field: "totalAmount",
-      headerName: "Booking Amount",
+      field: "ticketActualFare",
+      headerName: "Ticket Actual Fare",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paymentStatus",
-      headerName: " Status",
-
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <span
-            className={`${
-              params.value?.toLowerCase() === "approved"
-                ? "bg-green-100 text-green-700 shadow-md"
-                : params.value?.toLowerCase() === "Issued"
-                ? "bg-orange-100 text-orange-700 shadow-md"
-                : params.value?.toLowerCase() === "rejected"
-                ? "bg-red-200 text-red-800 shadow-md"
-                : "bg-gray-500 text-white shadow-md"
-            } text-xs font-medium me-2 px-2.5 py-0.5 rounded-md`}
-          >
-            {params.value}
-          </span>
-        </div>
-      ),
-    },
-    {
-      field: "ModeofPayment",
-      headerName: "Mode of Payment",
+      field: "ticketType",
+      headerName: "Ticket Type",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    {
+      field: "ticketID",
+      headerName: "Ticket ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+  
+   
   ]);
   useEffect(() => {
     fetchallPackagesData({
@@ -123,6 +129,10 @@ function ToursimDashboard() {
       active: false,
     });
     fetchallPackageCategoriesData();
+    fetchallPackageTransactionReportData({
+      fromDate: "",
+      toDate: "",
+    });
   }, []);
 
   const dashboardCards = [
@@ -152,8 +162,16 @@ function ToursimDashboard() {
     fetchallPackagesData({ ...values, active: true });
     fetchallPieChartPackagesData({ ...values, active: true });
   };
+  const ReportInitialValues = {
+    fromDate: "",
+    toDate: "",
+    
+  };
   const reportOnSubmit = (values) => {
-    // console.log("report", values);
+    fetchallPackageTransactionReportData({
+      fromDate: "",
+      toDate: "",
+    });
   };
   return (
     <>
@@ -359,7 +377,7 @@ function ToursimDashboard() {
         <DashboardCard07 header={true} title="Location Bookings">
           <div className="">
             <div>
-              <Formik initialValues={initialValues} onSubmit={reportOnSubmit}>
+              <Formik initialValues={ReportInitialValues} onSubmit={reportOnSubmit}>
                 {({ values, setFieldValue }) => (
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -422,8 +440,8 @@ function ToursimDashboard() {
               </Formik>
             </div>
             <AgGridTable
-              // isFetchLoading={isFetchEntityBookingsLoading}
-              // rowData={allEntityBookings || []}
+              isFetchLoading={isFetchallPackageTransactionReportDataLoading}
+              rowData={allPackageTransactionReportData || []}
               columnDefs={columnDefs}
               // onPageChange={handlePageChange}
               // totalRecords={totalEntityBookingRecords}

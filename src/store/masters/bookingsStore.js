@@ -37,6 +37,12 @@ export const useBookingsStore = create(
       isTransactionPaymentReportsLoading: false,
       isCompleteBookings: false,
       bookingMessage: "",
+
+      Generate_deep_link_data: [],
+      isGenerate_deep_linkLoading: false,
+      //
+      CheckPosTsxStatusData: [],
+      isTransactionPaymentReportsLoading: false,
       //
 
       serializeFilters: (filters) =>
@@ -46,6 +52,10 @@ export const useBookingsStore = create(
 
       setBookingDetails: (newBookingDetails) => {
         set({ bookingDetails: newBookingDetails });
+      },
+
+      setCheckPosTsxStatusData: (CheckPosTsxStatusData) => {
+        set({ CheckPosTsxStatusData });
       },
 
       setIsBookingFormVisible: (isBookingFormVisible) => {
@@ -176,6 +186,32 @@ export const useBookingsStore = create(
         }
       },
 
+      savePosBookingDetails: async (bookingDetailsPayload) => {
+        set({ isSaveBookingDetailsLoading: true });
+        try {
+          const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_POS_BOOKINGS;
+          const method = "post";
+
+          const response = await apiService[method](url, bookingDetailsPayload);
+
+          // set({
+          //   facilityCreateResponse: { response },
+          //   FacilityDetails: response.data,
+          //   isSaveBookingDetailsLoading: false,
+          // });
+          return { success: true, data: response };
+        } catch ({ error, xhr }) {
+          // handleApiError(xhr);
+
+          set({
+            saveBookingDetailsError: error.response.data.message,
+            isSaveBookingDetailsLoading: false,
+          });
+          return { error: error.response.data.message };
+          throw error;
+        }
+      },
+
       // booking detailos for cash
       saveCashBookingDetails: async (bookingDetailsPayload) => {
         set({ isSaveBookingDetailsLoading: true });
@@ -202,7 +238,6 @@ export const useBookingsStore = create(
           throw error;
         }
       },
-
 
       // first setp of transction
 
@@ -262,8 +297,8 @@ export const useBookingsStore = create(
         const Payload1 = {
           startDate: payload.startDate,
           endDate: payload.endDate,
-          departmentId:payload.departmentId,
-          entityTypeId:payload.entityTypeId,
+          departmentId: payload.departmentId,
+          entityTypeId: payload.entityTypeId,
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });
@@ -301,6 +336,59 @@ export const useBookingsStore = create(
             error: error.message,
             isTransactionPaymentReportsLoading: false,
           });
+        }
+      },
+      // GENERATE DEEP LINK
+      Generate_deep_link: async (payload) => {
+        set({ isGenerate_deep_linkLoading: true });
+        try {
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_GENERATE_POS_QR;
+          const method = "post";
+          const response = await apiService[method](url, payload);
+          set({
+            Generate_deep_link_data: response.data,
+            isGenerate_deep_linkLoading: false,
+          });
+          return { success: true, data: response };
+        } catch (error) {
+          set({
+            error: error.message,
+            isGenerate_deep_linkLoading: false,
+          });
+        }
+      },
+      // CHECK POS TSX STATUS
+      CheckPosTsxStatus: async (OrderId) => {
+        set({ isCheckPosTsxStatusLoading: true });
+        try {
+          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${OrderId}`;
+          const method = "post";
+          const response = await apiService[method](url);
+          set({
+            CheckPosTsxStatusData: response.data,
+            isTransactionPaymentReportsLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isTransactionPaymentReportsLoading: false,
+          });
+        }
+      },
+      
+      // cgg toggle
+
+      saveCggDetails: async (CggPayload) => {
+        try {
+          const url = `${API_ENDPOINTS.MASTERS.BOOKING.CGG_TOGGLE}?IsCggEnable=${CggPayload.IsCggEnable}`;
+          const method = "put";
+
+          const response = await apiService[method](url);
+
+          return { success: true, data: response };
+        } catch ({ error, xhr }) {
+          return { error: error.response.data.message };
         }
       },
     }),

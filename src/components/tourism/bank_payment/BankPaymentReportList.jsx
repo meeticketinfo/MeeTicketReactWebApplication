@@ -62,8 +62,7 @@ function BankPaymentReportList() {
       headerName: "Cancel Tickets",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value === "null" ? "0" : params.value,
+      valueFormatter: (params) => params.value || "N/A",
     },
 
     {
@@ -71,7 +70,7 @@ function BankPaymentReportList() {
       headerName: "Confirm Tickets",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "totalTickets",

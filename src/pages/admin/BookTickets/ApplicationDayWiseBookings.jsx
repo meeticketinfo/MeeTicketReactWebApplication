@@ -1,22 +1,23 @@
 import React, { useEffect, useMemo } from "react";
-import AdminLayout from "../../../layouts/AdminLayout";
-import AgGridTable from "../../../components/tables/AgGridTable";
-import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
+
 import {
   formatToCurrency,
   getCurrentDate,
 } from "../../../utils/TypographyHelper";
 import { Field, Form, Formik } from "formik";
+import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
+import AdminLayout from "../../../layouts/AdminLayout";
+import AgGridTable from "../../../components/tables/AgGridTable";
 
-function FacilityBookings() {
+function ApplicationDayWiseBookings() {
   const {
-    fetchAllFacilityBookingsByFilters,
-    AllFacilityBookings,
-    isFetchFacilityBookingsLoading,
+    fetchAllFacilityBookingsByBookingSource,
+    AllApplicationFacilityBookings,
+    isFetchFacilityBookingSourceLoading,
   } = useDashboardStore();
 
   useEffect(() => {
-    fetchAllFacilityBookingsByFilters({
+    fetchAllFacilityBookingsByBookingSource({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
       bookingSource: "",
@@ -31,7 +32,7 @@ function FacilityBookings() {
 
   const onSubmit = (values) => {
     console.log("values", values);
-    fetchAllFacilityBookingsByFilters({
+    fetchAllFacilityBookingsByBookingSource({
       fromDate: values.fromDate,
       toDate: values.toDate,
       bookingSource: values.bookingSource,
@@ -40,7 +41,7 @@ function FacilityBookings() {
 
   /** ✅ **Precompute totals before passing to the table** */
   const processedBookings = useMemo(() => {
-    return AllFacilityBookings.map((row) => {
+    return AllApplicationFacilityBookings.map((row) => {
       const updatedRow = { ...row };
 
       row.facilities?.forEach((facility) => {
@@ -77,7 +78,7 @@ function FacilityBookings() {
 
       return updatedRow;
     });
-  }, [AllFacilityBookings]);
+  }, [AllApplicationFacilityBookings]);
 
   /** ✅ **Generate dynamic column definitions** */
   const getFacilityColumns = (data) => {
@@ -173,92 +174,62 @@ function FacilityBookings() {
   };
 
   const columnDefs = [
-    {
-      headerName: "S.No",
-      valueGetter: (params) =>
-        params.data.transactionId === "Total" ? "" : params.node.rowIndex + 1,
-      minWidth: 80,
-      maxWidth: 80,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "bookingSource",
-      headerName: "Booking Source",
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "purchaseDate",
-      headerName: "Purchase Date",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return " ";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+      {
+        headerName: "S.No",
+        valueGetter: (params) =>
+          params.data.transactionId === "Total" ? "" : params.node.rowIndex + 1,
+        minWidth: 80,
+        maxWidth: 80,
+        headerClass: "text-blue-v2",
       },
-    },
-    {
-      field: "bookinG_DATE",
-      headerName: "Booking Date",
-      width: 100,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return " ";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+      {
+        field: "bookingSource",
+        headerName: "Booking Source",
+        headerClass: "text-blue-v2",
       },
-    },
-    {
-      field: "bookingID",
-      headerName: "Booking ID",
-      headerClass: "text-blue-v2",
-    },
-
-    { field: "mobileNumber", headerName: "Phone", headerClass: "text-blue-v2" },
-    {
-      field: "transactionId",
-      headerName: "Transaction Id",
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "paymentType",
-      headerName: "Payment Mode",
-      headerClass: "text-blue-v2",
-    },
-    ...getFacilityColumns(AllFacilityBookings),
-    {
-      field: "totaL_AMOUNT",
-      headerName: "Total Amount (Rs.)",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
-    },
-    {
-      field: "status",
-      headerName: "Payment Status",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        return params.value ? (
-          <span className=" ">{params.value}</span>
-        ) : (
-          <span className="text-gray-900">N/A</span>
-        );
+  
+      {
+        field: "bookingDate",
+        headerName: "Booking Date",
+        width: 100,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return " ";
+          const date = new Date(params.value);
+          return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            // hour: "2-digit",
+            // minute: "2-digit",
+            // hour12: true,
+          });
+        },
       },
-    },
-  ];
+      {
+        field: "totalUPIAmount",
+        headerName: "Total Online Amount (Rs.)",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
+      },
+      {
+        field: "totalCashAmount",
+        headerName: "Total Cash Amount (Rs.)",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
+      },
+      {
+        field: "totalAmount",
+        headerName: "Total Amount (Rs.)",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
+      },
+  
+      ...getFacilityColumns(AllApplicationFacilityBookings),
+    ];
 
   return (
     <AdminLayout>
@@ -266,7 +237,7 @@ function FacilityBookings() {
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Facility Bookings
+            Individual Facility Booking
             </h1>
           </div>
         </div>
@@ -332,7 +303,7 @@ function FacilityBookings() {
         <AgGridTable
           rowData={processedBookings}
           columnDefs={columnDefs}
-          isFetchLoading={isFetchFacilityBookingsLoading}
+          isFetchLoading={isFetchFacilityBookingSourceLoading}
           ExportName="Facility Bookings"
           //   pinnedBottomRowData={totalRow}
         />
@@ -341,4 +312,4 @@ function FacilityBookings() {
   );
 }
 
-export default FacilityBookings;
+export default ApplicationDayWiseBookings;

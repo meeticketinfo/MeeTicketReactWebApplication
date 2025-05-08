@@ -63,6 +63,9 @@ import ExpressPassReport from "../components/rtc/rtc_reports/express_pass/Expres
 import StudentPass from "../components/rtc/rtc_reports/student_pass/StudentPass";
 import PendingPassesReport from "../components/rtc/rtc_reports/pending_passes/PendingPassesReport";
 import DashBoardDetailed from "../pages/DashBoardDetailed/DashBoardDetailed";
+import PosConfirmation from "../components/bookings_management/PosConfirmation";
+import DayWiseBookings from "../pages/admin/BookTickets/DayWiseBookings";
+import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDayWiseBookings";
 
 export const routes = [
   {
@@ -164,6 +167,18 @@ export const routes = [
   {
     path: "/facility-bookings",
     element: <ProtectedRoute element={<FacilityBookings />} />,
+  },
+  {
+    path: "/day-wise-bookings",
+    element: <ProtectedRoute element={<DayWiseBookings />} />,
+  },
+  {
+    path: "/application-day-wise-bookings",
+    element: <ProtectedRoute element={<ApplicationDayWiseBookings />} />,
+  },
+  {
+    path: "/confirm-pos",
+    element: <ProtectedRoute element={<PosConfirmation />} />,
   },
   {
     path: "/bank-transactions",

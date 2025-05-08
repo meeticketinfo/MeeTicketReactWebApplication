@@ -74,14 +74,14 @@ export const usetoursimDashboardStore = create((set) => ({
     }
   },
   // Fetch all packages report data
-  fetchallPackageTransactionReportData: async ({ fromDate, toDate, active }) => {
-    const date = active ? `?startDate=${fromDate}&endDate=${toDate}` : "";
+  fetchallPackageTransactionReportData: async ({ fromDate, toDate }) => {
+    const params =  `?startDate=${fromDate}&endDate=${toDate}`;
     set({ isFetchallPackageTransactionReportDataLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.TOURSIM_DASHBOARD.GET_TRANSACTIONS_REPORTS}${date}`
+        `${API_ENDPOINTS.TOURSIM_DASHBOARD.GET_TRANSACTIONS_REPORTS}${params}`
       );
-
+     
       set({
         allPackageTransactionReportData: response.data,
         isFetchallPackageTransactionReportDataLoading: false,

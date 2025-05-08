@@ -27,6 +27,12 @@ export const useDashboardStore = create((set) => ({
   isFetchFacilityBookingsLoading: false,
   AllDetailedReport:[],
   isFetchDetailedLoading: false,
+  // Day Wise Bookings
+  AllFacilityDayWiseBookings:  [],
+  isFacilityDayWiseBookingsLoading: false,
+  // Application Facility Bookings By Booking Source
+  AllApplicationFacilityBookings: [],
+  isFetchFacilityBookingSourceLoading: false,
 
   
   serializeFilters: (filters) =>
@@ -128,6 +134,7 @@ export const useDashboardStore = create((set) => ({
           totalEntityBookingRecords: response?.data?.totalCount || 0,
         });
       }
+      return { success: true, data: response };
     } catch (error) {
       set({ error: error.error.message, isFetchEntityBookingsLoading: true });
     }
@@ -220,7 +227,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchFacilityBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}`
       );
       console.log("response", response);
       if (response.status == 200) {
@@ -231,6 +238,44 @@ export const useDashboardStore = create((set) => ({
       }
     } catch (error) {
       set({ error: error.error.message, isFetchFacilityBookingsLoading: true });
+    }
+  },
+
+  //  GET_ALL_DAY_WISE_BOOKINGS
+  fetchAllFacilityDayWiseBookings: async (filters) => {
+    set({ isFacilityDayWiseBookingsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DAY_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
+      );
+      console.log("response", response);
+      if (response.status == 200) {
+        set({
+          AllFacilityDayWiseBookings: response.data || [],
+          isFacilityDayWiseBookingsLoading: false,
+        });
+      }
+    } catch (error) {
+      set({ error: error.error.message, isFacilityDayWiseBookingsLoading: true });
+    }
+  },
+
+  // GET_ALL_APPLICATION_WISE_BOOKINGS
+  fetchAllFacilityBookingsByBookingSource: async (filters) => {
+    set({ isFetchFacilityBookingSourceLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_APPLICATION_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}`
+      );
+      console.log("response", response);
+      if (response.status == 200) {
+        set({
+          AllApplicationFacilityBookings: response.data || [],
+          isFetchFacilityBookingSourceLoading: false,
+        });
+      }
+    } catch (error) {
+      set({ error: error.error.message, isFetchFacilityBookingSourceLoading: true });
     }
   },
 

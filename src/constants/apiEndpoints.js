@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // metro dev
 // export const METRO_API_BASE_URL =
@@ -105,7 +105,9 @@ export const API_ENDPOINTS = {
       FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
       ADD_CASH_BOOKINGS: `Transaction/AddBookingDetailswithCash`,
+      ADD_POS_BOOKINGS: `Transaction/AddBookingDetailsForPOS`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
@@ -188,6 +190,8 @@ export const API_ENDPOINTS = {
     BOOKING_REPORTS: {
       GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
+      POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
+      POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
@@ -237,8 +241,10 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
-    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
+    GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
+    GET_ALL_DAY_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseBookingSummaryReport`,
+    GET_ALL_APPLICATION_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseReportWithBookingSource`,
     GET_ALL_DASHBOARD_DETAILED_REPORT: `${API_BASE_URL}ParkReport/GetZooParkDashboardDetails`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
