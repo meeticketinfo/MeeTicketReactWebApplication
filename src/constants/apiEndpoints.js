@@ -2,7 +2,7 @@ import useAuthStore from "../store/authStore";
 
 /// dev park
 // export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+//   "https://meeticketdevui.vmaxtechservices.help/webservices/api/";
 
 //  PARK UAT
 export const API_BASE_URL =
@@ -10,7 +10,7 @@ export const API_BASE_URL =
 
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
 export const METRO_API_BASE_URL =
@@ -21,7 +21,7 @@ export const METRO_API_Plain_BASE_URL =
 
 //  Grievance DEV
 export const GRIEVANCE_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/meesevaconnectapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
 // export const GRIEVANCE_API_BASE_URL =
@@ -29,15 +29,15 @@ export const GRIEVANCE_API_BASE_URL =
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
 // export const TOURISM_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+//   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 // RTC dev
 export const RTC_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/rtcbuspassapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // METRO PROD
 // export const METRO_API_BASE_URL =

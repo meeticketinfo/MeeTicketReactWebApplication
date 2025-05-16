@@ -183,12 +183,6 @@ function ApplicationDayWiseBookings() {
         headerClass: "text-blue-v2",
       },
       {
-        field: "bookingSource",
-        headerName: "Booking Source",
-        headerClass: "text-blue-v2",
-      },
-  
-      {
         field: "bookingDate",
         headerName: "Booking Date",
         width: 100,
@@ -206,6 +200,13 @@ function ApplicationDayWiseBookings() {
           });
         },
       },
+      {
+        field: "bookingSource",
+        headerName: "Created By",
+        headerClass: "text-blue-v2",
+      },
+  
+      
       {
         field: "totalUPIAmount",
         headerName: "Total Online Amount (Rs.)",
@@ -275,14 +276,14 @@ function ApplicationDayWiseBookings() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium">
-                    booking Source
+                    Created By
                   </label>
                   <Field
                     as="select"
                     name="bookingSource"
                     className={` block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select Booking Source</option>
+                    <option value="">Select Created By</option>
                     <option value="Counter">Counter</option>
                     <option value="MeeTicketApp">MeeTicket App</option>
                   </Field>
