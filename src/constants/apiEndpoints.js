@@ -33,7 +33,7 @@ export const TOURISM_API_BASE_URL =
 
 //  TOURSIM UAT
 // export const TOURISM_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+//   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 // RTC dev
 export const RTC_API_BASE_URL =
