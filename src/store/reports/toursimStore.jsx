@@ -58,7 +58,7 @@ export const ToursimReportStore = create((set) => ({
     set({ isFetchPaymentTransactionReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_PAYMENT_TRANSACTION_REPORT}?FromDate=${fromDate}&ToDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_PAYMENT_TRANSACTION_REPORT}?StartDate=${fromDate}&EndDate=${toDate}`
       );
       set({
         PaymentTransactionReports: response.data,
