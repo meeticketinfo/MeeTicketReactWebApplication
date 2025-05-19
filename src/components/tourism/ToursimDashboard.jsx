@@ -169,8 +169,8 @@ function ToursimDashboard() {
   };
   const reportOnSubmit = (values) => {
     fetchallPackageTransactionReportData({
-      fromDate: "",
-      toDate: "",
+      fromDate: values.fromDate,
+      toDate: values.toDate,
     });
   };
   return (

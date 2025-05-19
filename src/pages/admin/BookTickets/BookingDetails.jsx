@@ -315,12 +315,10 @@ export default function BookingDetails() {
                         paddingTop: 15,
                         fontWeight: 700,
                       }}
-                    >
-                      :{" "}
-                      {bookingDetailsResponse?.referenceId
-                        ? bookingDetailsResponse?.referenceId
-                        : bookingDetailsResponse?.id || "N/A"}
-                    </span>
+                      dangerouslySetInnerHTML={{__html: `: ${bookingDetailsResponse?.referenceId
+                        ? bookingDetailsResponse?.referenceId.replace(/\n/g, "<br />")
+                        : bookingDetailsResponse?.id?.replace(/\n/g, "<br />") || "N/A"}`}}
+                    />
                   </div>
                 </div>
                 <table

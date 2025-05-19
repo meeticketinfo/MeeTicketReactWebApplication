@@ -29,7 +29,7 @@ export const usetoursimDashboardStore = create((set) => ({
     active,
   }) => {
     const date = active
-      ? `?startDate=${fromDate}&endDate=${toDate}&TypeId=${TypeId}&ticketType=${ticketType}`
+      ? `?fromDate=${fromDate}&toDate=${toDate}&TypeId=${TypeId}&ticketType=${ticketType}`
       : "";
     set({ isFetchAllPackagesDataLoading: true });
     try {
@@ -54,7 +54,7 @@ export const usetoursimDashboardStore = create((set) => ({
     active,
   }) => {
     const date = active
-      ? `?startDate=${fromDate}&endDate=${toDate}&TypeId=${TypeId}&ticketType=${ticketType}`
+      ? `?fromDate=${fromDate}&toDate=${toDate}&TypeId=${TypeId}&ticketType=${ticketType}`
       : "";
     set({ isFetchAllPassDataLoading: true });
     try {
@@ -75,7 +75,7 @@ export const usetoursimDashboardStore = create((set) => ({
   },
   // Fetch all packages report data
   fetchallPackageTransactionReportData: async ({ fromDate, toDate }) => {
-    const params =  `?startDate=${fromDate}&endDate=${toDate}`;
+    const params =  `?FromDate=${fromDate}&ToDate=${toDate}`;
     set({ isFetchallPackageTransactionReportDataLoading: true });
     try {
       const response = await apiService.get(

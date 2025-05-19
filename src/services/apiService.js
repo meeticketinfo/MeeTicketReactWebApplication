@@ -2,10 +2,10 @@ import axios from "axios";
 import useAuthStore from "../store/authStore";
 // dev
 
-// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/api/";
 
 // uat
-const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
@@ -45,6 +45,9 @@ api.interceptors.response.use(
       useAuthStore.getState().logout(); // Logging out the user
       // Optionally, you could redirect to login or show a message
     }
+    // if (error.response && error.response.status === 500) {
+    //   toast.error("Internal Server Error")
+    // }
     return Promise.reject(error);
   }
 );

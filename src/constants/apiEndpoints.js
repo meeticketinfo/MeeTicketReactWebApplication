@@ -1,27 +1,27 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/webservices/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // metro dev
-// export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+export const METRO_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
-export const METRO_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+// export const METRO_API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
 // metroapi UAT
 export const METRO_API_Plain_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
 export const GRIEVANCE_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/meesevaconnectapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
 // export const GRIEVANCE_API_BASE_URL =
@@ -29,7 +29,7 @@ export const GRIEVANCE_API_BASE_URL =
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
 // export const TOURISM_API_BASE_URL =
@@ -37,7 +37,7 @@ export const TOURISM_API_BASE_URL =
 
 // RTC dev
 export const RTC_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/rtcbuspassapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -46,20 +46,6 @@ export const RTC_API_BASE_URL =
 // PARK PROD
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
-
-// export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
-
-// testing
-// export const API_BASE_URL =
-//   "https://jvbngjwk-7237.inc1.devtunnels.ms/api/";
-
-// metro  testing
-// export const METRO_API_BASE_URL =
-//   "https://6phbrdb7-7237.inc1.devtunnels.ms/v1.0/";
-
-// grivience  testing
-// export const GRIEVANCE_API_BASE_URL =
-//   "https://v1nbj8m4-7210.inc1.devtunnels.ms/v1.0/";
 
 export const API_ENDPOINTS = {
   AUTH: {
