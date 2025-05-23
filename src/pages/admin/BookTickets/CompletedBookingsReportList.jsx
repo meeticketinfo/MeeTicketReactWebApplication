@@ -202,6 +202,14 @@ function CompletedBookingsReportList() {
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
+     {
+      field: "resultStatus",
+      headerName: "Actual Paytm Status",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? "Success" : "Failed"),
+     
+    },
     {
       headerName: "Actions",
       field: "actions",
