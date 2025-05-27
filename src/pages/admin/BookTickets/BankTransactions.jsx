@@ -109,6 +109,7 @@ export default function BankTransactions() {
     {
       field: "bookingDate",
       headerName: "Booking Date",
+       maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         `${formatToStandardDate(params.value)} ` || "N/A",
@@ -128,7 +129,8 @@ export default function BankTransactions() {
     },
     {
       field: "entityTypeName",
-      headerName: "Location category",
+      headerName: "Location Category",
+       maxWidth: "180",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -136,12 +138,14 @@ export default function BankTransactions() {
     {
       field: "bookings",
       headerName: "Bookings",
+       maxWidth: "110",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
       field: "quantity",
       headerName: "Quantity",
+       maxWidth: "110",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
@@ -149,6 +153,7 @@ export default function BankTransactions() {
       field: "cashCollectedAmount",
       headerName: "Collected Cash Amount",
       headerClass: "text-blue-v2",
+        maxWidth: "180",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -163,6 +168,7 @@ export default function BankTransactions() {
       field: "upiCollectedAmount",
       headerName: "Collected UPI Amount",
       headerClass: "text-blue-v2",
+        maxWidth: "180",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -191,6 +197,7 @@ export default function BankTransactions() {
       field: "verifiedAmount",
       headerName: " Verified Amount",
       headerClass: "text-blue-v2",
+        maxWidth: "140",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -203,7 +210,7 @@ export default function BankTransactions() {
     },
     {
       field: "pendingVerifiedAmount",
-      headerName: "Difference In verified  Amount",
+      headerName: "Difference In Verified  Amount",
       Width: "390",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -277,7 +284,7 @@ export default function BankTransactions() {
     {
       field: "utrprocessedtime",
       headerName: "UTR Processed Time",
-      maxWidth: "180",
+      maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value || params.value == "N/A") return "N/A";
@@ -797,7 +804,7 @@ export default function BankTransactions() {
               {/* location */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
-                  Department
+                  Location
                 </label>
 
                 <Select
