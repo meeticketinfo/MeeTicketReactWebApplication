@@ -5,7 +5,7 @@ import { MdOutlineWorkHistory } from "react-icons/md";
 import { RiBankFill, RiBodyScanLine, RiPassPendingLine, RiPassValidFill } from "react-icons/ri";
 import { MdPayments } from "react-icons/md";
 import { TbPackages } from "react-icons/tb";
-import { FaBus, FaChalkboardUser } from "react-icons/fa6";
+import { FaBus, FaChalkboardUser, FaUser } from "react-icons/fa6";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { RiAccountPinCircleFill } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
@@ -334,6 +334,15 @@ const sidebarItems = [
         path: "/toursim-bank-payments",
       },
     ],
+  },
+  // User Transaction
+  {
+    title: "User Transaction",
+    icon: FaUser,
+    path: "/user-transaction",
+    gradientClass:
+      "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [],
   },
   // book tickets on counter bookings
   {

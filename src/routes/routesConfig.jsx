@@ -1,5 +1,3 @@
-// src/routes/index.tsx
-
 import Dashboard from "../pages/Dashboard";
 import AdminUsers from "../pages/admin/users/AdminUsers";
 import AdminParks from "../pages/admin/parks/AdminParks";
@@ -66,6 +64,8 @@ import DashBoardDetailed from "../pages/DashBoardDetailed/DashBoardDetailed";
 import PosConfirmation from "../components/bookings_management/PosConfirmation";
 import DayWiseBookings from "../pages/admin/BookTickets/DayWiseBookings";
 import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDayWiseBookings";
+import UserTransactionReport from "../components/payments_management/UserTransactionReport";
+import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 
 export const routes = [
   {
@@ -283,5 +283,13 @@ export const routes = [
   {
     path: "/toursim-bank-payments",
     element: <ProtectedRoute element={<BankPaymentReport />} />,
+  },
+  {
+    path: "/user-transaction",
+    element: <ProtectedRoute element={<UserTransactionReport />} />,
+  },
+  {
+    path: "/user-status-transaction",
+    element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
 ];
