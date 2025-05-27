@@ -15,9 +15,9 @@ export const superAdminPermissions = [
   "pending-transaction-details",
   "bank-transactions",
   "metro-cumulative-bookings",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
   // "tourism-consolidate",
   // "tourism-payment-transaction",
   // "tourism-individual",
@@ -38,9 +38,9 @@ export const parkAdminPermissions = [
   "facility/unified-create",
   "completed-bookings",
   "payment-transaction-report",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -52,9 +52,9 @@ export const CustomParkAdminPermissions = [
   "facility/unified-create",
   "completed-bookings",
   "payment-transaction-report",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
   "facility-bookings",
   "application-day-wise-bookings",
   "day-wise-bookings",
@@ -65,9 +65,9 @@ export const nodalOfficerPermissions = [
   "entities",
   "entity-admins",
   "entity-bookings",
-  "Grievance-consolidate",
-  "Grievance-Incident",
-  "Grievance-individual",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
+  // "Grievance-individual",
 ];
 
 export const MetroReports = [
@@ -77,8 +77,8 @@ export const MetroReports = [
   "booking-details",
   "pending-transaction-details",
   "transaction-general-report",
-  "Grievance-consolidate",
-  "Grievance-Incident",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
 ];
 
 export const NehruZooPark = [
@@ -90,8 +90,8 @@ export const NehruZooPark = [
   "application-day-wise-bookings",
   "day-wise-bookings",
   "book-tickets",
-  "Grievance-consolidate",
-  "Grievance-Incident",
+  // "Grievance-consolidate",
+  // "Grievance-Incident",
 ];
 export const SupportAdmin = [
   "entity-bookings",
