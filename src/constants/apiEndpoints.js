@@ -220,6 +220,10 @@ export const API_ENDPOINTS = {
       GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
       GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
+    USER_REPORTS: {
+      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
+      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+    }
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
