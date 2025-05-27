@@ -13,4 +13,7 @@ export const launchPaytmPOS = (deeplinkUrl) => {
   window.location.href = deeplinkUrl; // More reliable than using iframe
 };[]
 
+export function formatDate(dateTimeString) {
+  return dateTimeString?.split("T")[0] || "";
+}
 
