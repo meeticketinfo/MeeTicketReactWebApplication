@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { Field, Form, Formik } from "formik";
-import { getCurrentDate, getCurrentDateEndTime, getCurrentDateStartTime } from "../../utils/TypographyHelper";
+import { getCurrentDateEndTime, getCurrentDateStartTime } from "../../utils/TypographyHelper";
 import AgGridTable from "../tables/AgGridTable";
 import { userTransaction } from "../../store/user/userTransaction";
 import { Link } from "react-router-dom";
+import { useParkStore } from "../../store/masters/parksStore";
+import Select from "react-select";
 
 const UserTransactionReport = () => {
-  const {userTransactionReport, isFetchUserTransactionReport, fetchUserTransactionReport, fetFilters, filters} = userTransaction();
+  const userTransactionReportFilter = JSON.parse(localStorage.getItem("UserTransactionReportFilter"));
+  const { userTransactionReport, isFetchUserTransactionReport, fetchUserTransactionReport } = userTransaction();
+  const {
+    allParks,
+    fetchAllParks,
+  } = useParkStore();
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -19,51 +27,54 @@ const UserTransactionReport = () => {
       field: "mobileNumber",
       headerName: "Mobile No.",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (<Link to="/user-status-transaction">{params.value}</Link>),
+      valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "totalAttempts",
       headerName: "Total Attempts",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (<Link to="/user-status-transaction">{params.value}</Link>),
+      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "" }} to="/user-status-transaction">{params.value}</Link>),
     },
     {
       field: "successCount",
       headerName: "Success Count",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "0",
+      cellRenderer: (params) => <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "CONFIRMED" }} to="/user-status-transaction">{params.value}</Link>,
     },
     {
       field: "pendingCount",
-      headerName: "Pending Count",
+      headerName: "In Process Count",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "0",
+      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "INPROCESS" }} to="/user-status-transaction">{params.value}</Link>),
     },
     {
       field: "failureCount",
       headerName: "Failure Count",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "0",
+      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "FAILED" }} to="/user-status-transaction">{params.value}</Link>),
     },
   ]);
 
+  useEffect(() => {
+    fetchAllParks();
+    fetchUserTransactionReport(initialValues);
+  }, [])
 
   const initialValues = {
-    fromDate: filters.fromDate || getCurrentDateStartTime(),
-    toDate: filters.toDate || getCurrentDateEndTime(),
+    fromDate: userTransactionReportFilter?.fromDate || getCurrentDateStartTime(),
+    toDate: userTransactionReportFilter?.toDate || getCurrentDateEndTime(),
+    mobileNumber: userTransactionReportFilter?.mobileNumber || "",
+    parkId: userTransactionReportFilter?.parkId || "",
   };
 
-  useEffect(() => {
-    fetchUserTransactionReport(initialValues);
-  },[])
-
   const onSubmit = (values) => {
-    console.log(values, "values")
-    fetFilters(values)
     fetchUserTransactionReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
+      mobileNumber: values.mobileNumber,
+      parkId: values.parkId,
     });
+    localStorage.setItem("UserTransactionReportFilter", JSON.stringify(values));
   };
   return (
     <>
@@ -123,6 +134,76 @@ const UserTransactionReport = () => {
                       }}
                     />
                   </div>
+                  <div>
+                    <label
+                      htmlFor="mobileNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Phone Number
+                    </label>
+                    <Field
+                      type="text"
+                      name="mobileNumber"
+                      placeholder="Enter Phone Number"
+                      className={`mt-1 block w-full px-2 py-1 border
+                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Location
+                    </label>
+
+                    <Select
+                      name="parkId"
+                      value={
+                        allParks
+                          ?.filter((park) => park.isActive)
+                          .map((park) => ({
+                            value: park.id,
+                            label: park.name,
+                          }))
+                          .find((option) => option.value === values.parkId) || null
+                      }
+                      options={allParks
+                        ?.filter((park) => park.isActive)
+                        .map((park) => ({
+                          value: park.id,
+                          label: park.name,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue("parkId", selectedOption?.value || "")
+                      }
+                      isClearable
+                      placeholder="Location"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#6D7072",
+                          cursor: "pointer",
+                        }),
+                      }}
+                    />
+                  </div>
                   <div className="flex items-end">
                     <button
                       type="submit"
@@ -136,7 +217,7 @@ const UserTransactionReport = () => {
               )}
             </Formik>
             <AgGridTable
-              ExportName="Tourisim Bank Payment"
+              ExportName="UserTransactionReport"
               rowData={userTransactionReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchUserTransactionReport}

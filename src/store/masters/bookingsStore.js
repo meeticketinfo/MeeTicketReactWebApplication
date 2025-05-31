@@ -293,7 +293,6 @@ export const useBookingsStore = create(
 
       // Complete bookings
       fetchCompleteBookingsReport: async (payload) => {
-        console.log("payload", payload);
         const Payload1 = {
           startDate: payload.startDate,
           endDate: payload.endDate,

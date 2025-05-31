@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/webservices/api/";
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
   //  paynow UAT
 export const PAYNOW_API_BASE_URL =
