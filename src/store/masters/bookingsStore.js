@@ -293,12 +293,12 @@ export const useBookingsStore = create(
 
       // Complete bookings
       fetchCompleteBookingsReport: async (payload) => {
-        console.log("payload", payload);
         const Payload1 = {
           startDate: payload.startDate,
           endDate: payload.endDate,
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
+           mobileNumber:payload.mobileNumber
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });

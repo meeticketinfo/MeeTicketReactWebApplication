@@ -71,6 +71,7 @@ const UserStatusTransactionReport = () => {
     {
       field: "amount",
       headerName: "Amount",
+      maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",

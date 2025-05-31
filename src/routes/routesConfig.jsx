@@ -66,6 +66,7 @@ import DayWiseBookings from "../pages/admin/BookTickets/DayWiseBookings";
 import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDayWiseBookings";
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
+import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 
 export const routes = [
   {
@@ -225,6 +226,10 @@ export const routes = [
   {
     path: "/privacy",
     element: <PrivacyPolicy />,
+  },
+  {
+    path: "/privacy-policy-meeticket-app",
+    element: <PrivacyPolicyMeeticketApp />,
   },
   // Grievance
   {
