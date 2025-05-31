@@ -267,10 +267,10 @@ export const useDashboardStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.DASHBOARD.GET_ALL_APPLICATION_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}`
       );
-      console.log("response", response);
+      // console.log("responsenow", response);
       if (response.status == 200) {
         set({
-          AllApplicationFacilityBookings: response.data || [],
+          AllApplicationFacilityBookings: response.data.bookings || [],
           isFetchFacilityBookingSourceLoading: false,
         });
       }

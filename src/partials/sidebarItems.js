@@ -2,7 +2,12 @@
 import { MdOutlineCalendarMonth } from "react-icons/md";
 import { MdOutlineWorkOff } from "react-icons/md";
 import { MdOutlineWorkHistory } from "react-icons/md";
-import { RiBankFill, RiBodyScanLine, RiPassPendingLine, RiPassValidFill } from "react-icons/ri";
+import {
+  RiBankFill,
+  RiBodyScanLine,
+  RiPassPendingLine,
+  RiPassValidFill,
+} from "react-icons/ri";
 import { MdPayments } from "react-icons/md";
 import { TbPackages } from "react-icons/tb";
 import { FaBus, FaChalkboardUser, FaUser } from "react-icons/fa6";
@@ -29,7 +34,6 @@ import { FaCalendarCheck } from "react-icons/fa";
 import { BsPassport } from "react-icons/bs";
 import { VscCompassActive } from "react-icons/vsc";
 
-
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -50,7 +54,7 @@ const sidebarItems = [
       {
         title: "Departments",
         icon: MdOutlineForest,
-        path: "/departments", 
+        path: "/departments",
       },
       {
         title: "Location Categories",
@@ -138,21 +142,7 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/payment-transaction-report",
       },
-      {
-        title: "Facility Bookings",
-        icon: TbReportAnalytics,
-        path: "/facility-bookings",
-      },
-      {
-        title: "Consolidated Facility Booking",
-        icon: TbReportAnalytics,
-        path: "/day-wise-bookings",
-      },
-      {
-        title: "Individual Facility Booking",
-        icon: TbReportAnalytics,
-        path: "/application-day-wise-bookings",
-      },
+
       {
         title: "Bank Payments",
         icon: RiBankFill,
@@ -165,6 +155,33 @@ const sidebarItems = [
       },
     ],
   },
+  // facilities
+  {
+    title: "Facility Reports",
+    icon: HiOutlineDocumentReport,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Facility Bookings",
+        icon: TbReportAnalytics,
+        path: "/facility-bookings",
+      },
+
+      {
+        title: "Consolidated Facility Booking",
+        icon: TbReportAnalytics,
+        path: "/day-wise-bookings",
+      },
+      {
+        title: "Individual Facility Booking",
+        icon: TbReportAnalytics,
+        path: "/application-day-wise-bookings",
+      },
+    ],
+  },
+  // ---------
   {
     title: "Dates",
     icon: MdOutlineCalendarMonth,
@@ -179,7 +196,7 @@ const sidebarItems = [
       },
     ],
   },
- 
+
   {
     title: "My Account",
     icon: RiAccountPinCircleFill,
@@ -302,7 +319,6 @@ const sidebarItems = [
         icon: RiPassPendingLine,
         path: "/pending-pass",
       },
-   
     ],
   },
   // Tourism

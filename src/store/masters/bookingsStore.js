@@ -299,6 +299,7 @@ export const useBookingsStore = create(
           endDate: payload.endDate,
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
+          mobileNumber:payload.mobileNumber
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });

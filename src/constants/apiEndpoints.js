@@ -8,6 +8,10 @@ import useAuthStore from "../store/authStore";
 export const API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
+  //  paynow UAT
+export const PAYNOW_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkapi/";
+
 // metro dev
 // export const METRO_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
@@ -20,12 +24,12 @@ export const METRO_API_Plain_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
-export const GRIEVANCE_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
+// export const GRIEVANCE_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
-// export const GRIEVANCE_API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const GRIEVANCE_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL =
@@ -200,8 +204,8 @@ export const API_ENDPOINTS = {
     },
     PARK_BANK_PAYMENT:{
       PAYMENT_VERIFY:`${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
-      PAYMENT_INITIAT:`${METRO_API_Plain_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
-      PAYMENT_REFRESH:`${METRO_API_Plain_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
+      PAYMENT_INITIAT:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
+      PAYMENT_REFRESH:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,

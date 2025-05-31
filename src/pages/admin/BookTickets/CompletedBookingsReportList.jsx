@@ -53,6 +53,7 @@ function CompletedBookingsReportList() {
   };
 
   const onSubmit = (values, { resetForm }) => {
+    console.log("values",values)
     
     localStorage.setItem(
       "completed-booking-report-filters",

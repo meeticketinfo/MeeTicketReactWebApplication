@@ -52,6 +52,8 @@ export const FacilityServices = () => {
     return `${year}-${month}-${day}T${hours}:00:00.000`;
   }
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
 
   const {
     saveBookingDetails,
@@ -796,7 +798,7 @@ export const FacilityServices = () => {
                               </label>
                             </div>
                             {/* POS Device */}
-                            <div className="flex items-center">
+                            {role === "ROLE_ZOOPARKADMIN"&&<div className="flex items-center">
                               <Field
                                 id="pos-radio"
                                 name="paymentMethod"
@@ -823,7 +825,7 @@ export const FacilityServices = () => {
                                 />
                                 Pos Device
                               </label>
-                            </div>
+                            </div>}
                             {/* CASH */}
                             <div className="flex items-center">
                               <Field
