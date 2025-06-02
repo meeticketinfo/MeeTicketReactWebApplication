@@ -13,8 +13,14 @@ const MainPackages = () => {
               Packages
             </h1>
           </div>
-
-          <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2"></div>
+          <div className="flex justify-between gap-2">
+            <button className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 ">
+              <span className="max-xs:sr-only ">Add Package</span>
+            </button>
+            <button className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 ">
+              <span className="max-xs:sr-only ">Add House</span>
+            </button>
+          </div>
         </div>
         {/* <SummaryReportList /> */}
       </div>
