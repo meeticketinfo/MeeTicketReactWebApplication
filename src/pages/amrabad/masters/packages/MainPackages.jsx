@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { ToastContainer } from "react-toastify";
+import PackagesList from "./PackagesList";
+import AddPackage from "./AddPackage";
 
 const MainPackages = () => {
+  const [currentTab, setCurrentTab] = useState(0);
+  const TabConfig = {
+    0: <PackagesList />,
+    1: <AddPackage />,
+    // 2:<AddRoom/>
+  };
   return (
     <AdminLayout>
       <ToastContainer position="top-right" autoClose={3000} />{" "}
@@ -13,16 +21,52 @@ const MainPackages = () => {
               Packages
             </h1>
           </div>
-          <div className="flex justify-between gap-2">
-            <button className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 ">
-              <span className="max-xs:sr-only ">Add Package</span>
-            </button>
-            <button className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 ">
-              <span className="max-xs:sr-only ">Add House</span>
-            </button>
-          </div>
+          {/* buttons */}
+          {currentTab == 0 ? (
+            <div className="flex justify-between gap-2">
+              <button
+                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+                onClick={() => {
+                  setCurrentTab(1);
+                }}
+              >
+                <span className="max-xs:sr-only ">Add Package</span>
+              </button>
+              <button
+                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+                onClick={() => {
+                  setCurrentTab(2);
+                }}
+              >
+                <span className="max-xs:sr-only ">Add House</span>
+              </button>
+            </div>
+          ) : currentTab == 1 ? (
+            <div>
+              <button
+                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+                onClick={() => {
+                  setCurrentTab(0);
+                }}
+              >
+                <span className="max-xs:sr-only ">back</span>
+              </button>
+            </div>
+          ) : currentTab == 2 ? (
+            <div>
+              <button
+                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+                onClick={() => {
+                  setCurrentTab(0);
+                }}
+              >
+                <span className="max-xs:sr-only ">back</span>
+              </button>
+            </div>
+          ) : null}
         </div>
         {/* <SummaryReportList /> */}
+        <div>{TabConfig[currentTab]}</div>
       </div>
     </AdminLayout>
   );
