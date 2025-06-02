@@ -6,6 +6,7 @@ import MetroDashboard from "../components/metro_reports/MetroDashboard";
 import { useNavigate } from "react-router-dom";
 import ToursimDashboard from "../components/tourism/ToursimDashboard";
 import RtcDasboard from "../components/rtc/RtcDasboard";
+import AmrabadDashboard from "./amrabad/dashboard/AmrabadDashboard";
 
 function Dashboard() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
@@ -22,6 +23,8 @@ function Dashboard() {
       return <RtcDasboard />;
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
+    } else if (roleDetails?.name === "Role_AmrabadAdmin") {
+      return <AmrabadDashboard/>;
     } else {
       return <AdminDashboard />;
     }

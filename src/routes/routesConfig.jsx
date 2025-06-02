@@ -67,6 +67,7 @@ import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDa
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
+import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
 
 export const routes = [
   {
@@ -296,5 +297,10 @@ export const routes = [
   {
     path: "/user-status-transaction",
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
+  },
+  // amrabad
+   {
+    path: "/packages",
+    element: <ProtectedRoute element={<MainPackages/>} />,
   },
 ];
