@@ -35,10 +35,10 @@ import { Link } from "react-router-dom";
 import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
 function AdminDashboard() {
   superballs.register();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [DashboardDate, setDashboardDate] = useState(getCurrentDate());
+
+  const [DashboardDate, setDashboardDate] = useState("");
   const [pieChartData, setPieChartData] = useState([]);
-  const [filteredLocations, setFilteredLocations] = useState([]);
+  
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
@@ -47,7 +47,7 @@ function AdminDashboard() {
     fetchAllParks,
     fetchAllNodalOfficerParks,
     allNodalOfficerParks,
-    isFetchAllNodalOfficerParksLoading,
+   
   } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // console.log("allEntityTypes", allEntityTypes);
@@ -91,7 +91,7 @@ function AdminDashboard() {
       toDate: "",
       active: false,
     });
-    fetchAllZooDashBoardCounts(getCurrentDate());
+    fetchAllZooDashBoardCounts("");
 
     if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
       fetchAllZooDashBoardCountsTicketWise({
@@ -569,7 +569,7 @@ function AdminDashboard() {
                 ></l-superballs>
               </div>
             ) : (
-              allZooDashboard.data?.map((services, serviceIndex, index) => (
+              allZooDashboard.data?.map((services, serviceIndex, index) => (  
                 <div
                   key={serviceIndex}
                   className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
@@ -630,7 +630,7 @@ function AdminDashboard() {
               allZooDashboard.service?.map((service, serviceIndex, index) => (
                 <div
                   key={serviceIndex}
-                  className="flex flex-col col-span-full  md:col-span-4 justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                  className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
                 >
                   <div className="flex items-center">
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">

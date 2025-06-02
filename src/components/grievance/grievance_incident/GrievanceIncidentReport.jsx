@@ -8,11 +8,14 @@ import Chat from "../Chat";
 import { GriveanceReportStore } from "../../../store/reports/GrievanceStore";
 import { ToastContainer, toast } from "react-toastify";
 import { bouncy } from "ldrs";
+import { FaImage } from "react-icons/fa6";
+import { IoMdImages } from "react-icons/io";
 
 bouncy.register();
 
 function GrievanceIncidentReport() {
   const [openModal, setOpenModal] = useState(false);
+  const [ImgopenModal, setImgopenModal] = useState(false);
   const [openComplaintModal, setopenComplaintModal] = useState(false);
 
   const [record, setRecord] = useState({});
@@ -61,7 +64,7 @@ function GrievanceIncidentReport() {
     },
     {
       field: "locationCategory",
-      headerName: "Location category",  
+      headerName: "Location category",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
@@ -112,6 +115,30 @@ function GrievanceIncidentReport() {
           day: "2-digit",
         });
       },
+    },
+    {
+      headerName: "Uploaded Image",
+      // field: "image",
+       maxWidth: "140",
+      cellRenderer: (params) => (
+        
+        params.data.imageUrl?<div className="flex items-center justify-center gap-3">
+          <button
+            className=" mt-1.5"
+            onClick={() => {
+              setRecord(params.data);
+              setImgopenModal(true);
+            }}
+          >
+            <span className="">
+              
+              <IoMdImages className="text-[24px] text-blue-600 " />
+            </span>
+          </button>
+        </div>:<span className="flex items-center justify-center gap-3">N/A</span>
+      ),
+      // flex: 1,
+      headerClass: "text-blue-v2",
     },
     {
       field: "status",
@@ -325,7 +352,7 @@ function GrievanceIncidentReport() {
           <Chat Record={record} setOpenModal={setOpenModal} />
         </div>
       </PopupModal>
-
+      {/* complint */}
       <PopupModal
         popupModalId="first-modal"
         isOpen={openComplaintModal}
@@ -361,6 +388,26 @@ function GrievanceIncidentReport() {
             >
               Deny
             </button>
+          </div>
+        </div>
+      </PopupModal>
+      {/* image */}
+
+      <PopupModal
+        popupModalId="first-modal"
+        isOpen={ImgopenModal}
+        onClose={() => setImgopenModal(false)}
+        title={"Uploaded Image"}
+        size="small"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+        titleColour="text-blue-v1"
+      >
+        <div className="px-4 py-2 ">
+          {/* <h1 className="text-blue-v1 font-semibold text-center uppercase">Uploaded Image</h1> */}
+          <div className="">
+            <img className="" src={record.imageUrl} />
           </div>
         </div>
       </PopupModal>

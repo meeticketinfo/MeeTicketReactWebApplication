@@ -27,6 +27,8 @@ export default function MetroCumulativeBookings() {
   const [openModal, setOpenModal] = useState(false);
   const [VerifyopenModal, setVerifyOpenModal] = useState(false);
   const [settlementAmount, setSettlementAmount] = useState(null);
+  const [gridApi, setGridApi] = useState(null);
+  const localRefreshMap = new Map();
 
   // console.log("settlementAmount", settlementAmount);
 
@@ -51,7 +53,7 @@ export default function MetroCumulativeBookings() {
     isSaveRefreshButtonLoading,
   } = useMetroBookingStore();
   const { decodedTokenData } = useAuthStore();
-console.log("isSaveRefreshButtotLoading",isSaveRefreshButtonLoading)
+  console.log("isSaveRefreshButtotLoading", isSaveRefreshButtonLoading);
   const email = decodedTokenData?.data?.email;
   useEffect(() => {
     fetchAllMetroCumulativeBookingDetailsReport({
@@ -80,6 +82,18 @@ console.log("isSaveRefreshButtotLoading",isSaveRefreshButtonLoading)
       })
     );
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (gridApi) {
+        gridApi.refreshCells({
+          force: true, // important to force re-render
+          columns: ["actions"], // only refresh Actions column
+        });
+      }
+    }, 10 * 1000); // every 10 seconds
+
+    return () => clearInterval(interval); // cleanup
+  }, [gridApi]);
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -177,7 +191,7 @@ console.log("isSaveRefreshButtotLoading",isSaveRefreshButtonLoading)
       field: "remarks",
       headerName: "Remarks",
       maxWidth: 160,
-      hide:email === "esdadmin@gmail.com" ,
+      hide: email === "esdadmin@gmail.com",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         return (
@@ -269,108 +283,134 @@ console.log("isSaveRefreshButtotLoading",isSaveRefreshButtonLoading)
           "0"
         ),
     },
+
     {
       headerName: "Actions",
       field: "actions",
-      hide:email === "esdadmin@gmail.com" ,
-      cellRenderer: (params) => (
-        <div className=" flex align-center gap-2">
-          {email != "esdfinancialadmin@meeseva.com" ? (
-            <>
-              <button
-                className={` ${
-                  params.data.status != "Verified"
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-green-400"
-                } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                disabled={params.data.status != "Verified"}
-                onClick={() => {
-                  setOpenModal(true);
-                  setAmount_Date({
-                    ...Amount_Date,
-                    amount: params.data.verifiedAmount,
-                    date: params.data.travelDate,
-                    settlementId: params.data.settlementId,
-                  });
-                  setAmountSetteledDetails({
-                    ...SetteledDetails,
-                    travelDate: params.data.travelDate,
-                    noOfConfirmTickets: params.data.noOfConfirmTickets,
-                    noOfCancelTickets: params.data.noOfCancelTickets,
-                    noOfTickets: params.data.totalConfirmedTicketFare,
-                    totalTicketFare: params.data.totalTicketFare,
-                    amountToSettle: params.data.totalConfirmedTicketFare,
-                    totalCancelledTicketFare:
-                      params.data.totalCancelledTicketFare,
-                    settlementId: params.data.settlementId,
-                    // settledDate: params.data.settledDate,
-                    // paymentStatus: params.data.status,
-                    payTmconfirmedAmount: params.data.paytM_CONFIRMED_AMOUNT,
-                  });
-                  setSettlementAmount(params.data.verifiedAmount);
-                }}
-              >
-                Pay Now
-              </button>
-              {params.data.status != "Verified" &&
-                params.data.status != "Not Settled" &&
-                params.data.status != "Completed" && (
-                  <button
-                    className={` mt-2.5  ${
-                      isSaveRefreshButtonLoading ? "animate-spin" : ""
-                    }`}
-                    disabled={isSaveRefreshButtonLoading}
-                    onClick={() => {
-                      HandleRefreshButton(
-                        params.data.txnDate,
-                        params.data.cbxapirefno,
-                        params.data.settlementId
-                      );
-                    }}
-                  >
-                    <span className="">
-                      <IoIosRefresh className="text-[24px] text-blue-v2 " />
-                    </span>
-                  </button>
-                )}
-            </>
-          ) : (
-            <>
-              <button
-                className={` ${
-                  params.data.status != "Not Settled"
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-v2"
-                } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                disabled={params.data.status != "Not Settled"}
-                onClick={() => {
-                  setVerifyOpenModal(true);
-                  setAmount_Date({
-                    ...Amount_Date,
-                    amount: params.data.totalConfirmedTicketFare,
-                    date: params.data.travelDate,
-                  });
-                  setAmountSetteledDetails({
-                    ...SetteledDetails,
-                    travelDate: params.data.travelDate,
-                    noOfConfirmTickets: params.data.noOfConfirmTickets,
-                    noOfCancelTickets: params.data.noOfCancelTickets,
-                    noOfTickets: params.data.totalConfirmedTicketFare,
-                    totalTicketFare: params.data.totalTicketFare,
-                    amountToSettle: params.data.totalConfirmedTicketFare,
-                    totalCancelledTicketFare:
-                      params.data.totalCancelledTicketFare,
-                    payTmconfirmedAmount: params.data.paytM_CONFIRMED_AMOUNT,
-                  });
-                  setSettlementAmount(params.data.totalConfirmedTicketFare);
-                }}
-              >
-                Verify Now
-              </button>
-            </>
-          )}
-        </div>
-      ),
+      hide: email === "esdadmin@gmail.com",
+      cellRenderer: (params) => {
+        const settlementId = params.data.settlementId;
+
+        // Use the last clicked time if available, else fall back to API-provided time
+        const lastRefreshTimeStr =localRefreshMap.get(settlementId) ||params.data.lastRefreshedDateTim;
+
+        const lastRefreshTime = new Date(lastRefreshTimeStr);
+        const now = new Date();
+        const diffMins = (now - lastRefreshTime) / (1000 * 60);
+        const isDisabled = diffMins < 1;
+
+        if (isDisabled) {
+          const timeout = 60 * 1000 - (now - lastRefreshTime);
+          setTimeout(() => {
+            params.api.refreshCells({
+              rowNodes: [params.node],
+              columns: ["actions"], // column field
+              force: true,
+            });
+          }, timeout);
+        }
+
+        return (
+          <div className="flex align-center gap-2">
+            {email !== "esdfinancialadmin@meeseva.com" ? (
+              <>
+                <button
+                  className={`${
+                    params.data.status !== "Verified"
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-green-400"
+                  } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+                  disabled={params.data.status !== "Verified"}
+                  onClick={() => {
+                    setOpenModal(true);
+                    setAmount_Date({
+                      ...Amount_Date,
+                      amount: params.data.verifiedAmount,
+                      date: params.data.travelDate,
+                      settlementId: params.data.settlementId,
+                    });
+                    setAmountSetteledDetails({
+                      ...SetteledDetails,
+                      travelDate: params.data.travelDate,
+                      noOfConfirmTickets: params.data.noOfConfirmTickets,
+                      noOfCancelTickets: params.data.noOfCancelTickets,
+                      noOfTickets: params.data.totalConfirmedTicketFare,
+                      totalTicketFare: params.data.totalTicketFare,
+                      amountToSettle: params.data.totalConfirmedTicketFare,
+                      totalCancelledTicketFare:
+                        params.data.totalCancelledTicketFare,
+                      settlementId: params.data.settlementId,
+                      payTmconfirmedAmount: params.data.paytM_CONFIRMED_AMOUNT,
+                    });
+                    setSettlementAmount(params.data.verifiedAmount);
+                  }}
+                >
+                  Pay Now
+                </button>
+                {params.data.status !== "Verified" &&
+                  params.data.status !== "Not Settled" &&
+                  params.data.status !== "Completed" && (
+                    <button
+                      className={`mt-2.5 `}
+                      disabled={params.data.lastRefreshedDateTim||isDisabled}
+                      onClick={() => {
+                        HandleRefreshButton(
+                          params.data.txnDate,
+                          params.data.cbxapirefno,
+                          params.data.settlementId
+                        );
+
+                        // Track local click to disable the button immediately
+                        localRefreshMap.set(
+                          settlementId,
+                          new Date().toISOString()
+                        );
+                      }}
+                    >
+                      <span>
+                        <IoIosRefresh className={`text-[24px] text-blue-v2 ${isDisabled ? "text-gray-300 cursor-not-allowed" : ""}`} />
+                      </span>
+                    </button>
+                  )}
+              </>
+            ) : (
+              <>
+                <button
+                  className={`${
+                    params.data.status !== "Not Settled"
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-blue-v2"
+                  } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+                  disabled={params.data.status !== "Not Settled"}
+                  onClick={() => {
+                    setVerifyOpenModal(true);
+                    setAmount_Date({
+                      ...Amount_Date,
+                      amount: params.data.totalConfirmedTicketFare,
+                      date: params.data.travelDate,
+                    });
+                    setAmountSetteledDetails({
+                      ...SetteledDetails,
+                      travelDate: params.data.travelDate,
+                      noOfConfirmTickets: params.data.noOfConfirmTickets,
+                      noOfCancelTickets: params.data.noOfCancelTickets,
+                      noOfTickets: params.data.totalConfirmedTicketFare,
+                      totalTicketFare: params.data.totalTicketFare,
+                      amountToSettle: params.data.totalConfirmedTicketFare,
+                      totalCancelledTicketFare:
+                        params.data.totalCancelledTicketFare,
+                      payTmconfirmedAmount: params.data.paytM_CONFIRMED_AMOUNT,
+                    });
+                    setSettlementAmount(params.data.totalConfirmedTicketFare);
+                  }}
+                >
+                  Verify Now
+                </button>
+              </>
+            )}
+          </div>
+        );
+      },
       flex: 1,
       headerClass: "text-blue-v2",
     },

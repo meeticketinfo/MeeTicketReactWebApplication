@@ -12,16 +12,34 @@ import useAuthStore from "../../../store/authStore";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useParkStore } from "../../../store/masters/parksStore";
 import { useDashboardStore } from "../../../store/dashboard/dashboardStore";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import TransactionQr from "../../../components/bookings_management/TransactionQr";
 import Select from "react-select";
 import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
+import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
 export default function AdminBookings() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const {
+    fetchAllEntityBookingsByFilters,
+    allEntityBookings,
+    isFetchEntityBookingsLoading,
+    totalEntityBookingRecords,
+  } = useDashboardStore();
+  const {
+    fetchAllBookings,
+    setIsFirstStepTransaction,
+    setIsBookingFormVisible,
+    isBookingFormVisible,
+    setPaymentStatus,
+    saveCggDetails,
+  } = useBookingsStore();
 
+  const [cgg, setCgg] = useState(null);
+
+  
   const {
     allParks,
     fetchAllParks,
@@ -29,33 +47,12 @@ export default function AdminBookings() {
     allNodalOfficerParks,
     isFetchAllNodalOfficerParksLoading,
   } = useParkStore();
-  const {
-    allCounts,
-    fetchAllDashboardCounts,
-    allPieCharts,
-    fetchAllEntityWiseCounts,
-    fetchAllEntityBookingsByFilters,
-    allEntityBookings,
-    isFetchEntityBookingsLoading,
-    totalEntityBookingRecords,
-  } = useDashboardStore();
-  const {
-    allBookings,
-    fetchAllBookings,
-    isFetchAllBookingsLoading,
-    FirstStepTransactionResponse,
-    IsFirstStepTransaction,
-    setIsFirstStepTransaction,
-    setIsBookingFormVisible,
-    isBookingFormVisible,
-    setPaymentStatus,
-  } = useBookingsStore();
 
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
-  const { sidebarMenuItems, roleDetails, decodedTokenData } = useAuthStore();
+  const {  roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
 
@@ -74,8 +71,20 @@ export default function AdminBookings() {
   }, []);
 
   useEffect(() => {
-    fetchAllEntityBookingsByFilters(initialValues);
+    const fetchData = async () => {
+      try {
+        const res = await fetchAllEntityBookingsByFilters(initialValues);
+       
+        setCgg(res.data.data.data.isCggEnable)
+
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+      }
+    };
+  
+    fetchData();
   }, []);
+  
 
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -135,14 +144,7 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    // {
-    //   field: "locationCategoryName",
-    //   headerName: "Location Category",
-    //   hide:role != "ROLE_ADMIN",
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
+    
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -172,8 +174,23 @@ export default function AdminBookings() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
+      field: "quantity",
+      headerName: "Quantity",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => ( params.value?? "N/A"),
+    },
+    {
       field: "amount",
-      headerName: "Booking Amount",
+      headerName: "Amount(Per Ticket)",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "totalTicketAmount",
+      headerName: "Total Tickets Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
@@ -211,19 +228,19 @@ export default function AdminBookings() {
         ...values,
         fromDate: values.fromDate ? `${values.fromDate}` : "",
         toDate: values.toDate ? `${values.toDate}` : "",
-        departmentId:values.departmentId,
-        entityTypeId:values.entityTypeId,
+        departmentId: values.departmentId,
+        entityTypeId: values.entityTypeId,
       };
       setSubmitting(true);
       const filters = formattedValues;
       const result = await fetchAllEntityBookingsByFilters(filters);
+
+     
       if (result?.data?.status === 200) {
         resetForm();
       } else {
         // Handling a response with an unexpected status code
-        toast.error(
-          result?.data?.message || "Unexpected response. Please try again."
-        );
+        toast.error(result?.data?.message);
       }
     } catch (error) {
       // Catching and handling any errors during the API call
@@ -236,8 +253,23 @@ export default function AdminBookings() {
     }
   };
 
+  const handleCggSubmit = async () => {
+    const cggPayload = {
+      IsCggEnable: cgg,
+    };
+    const res = await saveCggDetails(cggPayload);
+
+    if (res.data.status === 200) {
+      toast.success("CGG Update Sucessfuly..");
+      setOpenModal(false);
+    } else {
+      toast.error("Someting went wrong please try again ");
+    }
+  };
+
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
@@ -247,15 +279,35 @@ export default function AdminBookings() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-              (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
-              isCounterEnabled?.toLowerCase() === "true" && (
-                <button
-                  className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                  onClick={() => setIsBookingFormVisible(true)} // Show booking form
-                >
-                  Book Tickets
-                </button>
-              )
+              <div className="flex gap-2 ">
+                {parkId==="100"&&<div className="flex items-center shadow px-2 py-1">
+                  <label className="text-sm flex ">
+                    <input
+                      type="checkbox"
+                      checked={cgg}
+                      // value={cgg}
+                      onChange={(e) => {
+                        setCgg(e.target.checked);
+                        setOpenModal(true);
+                      }}
+                      className="sr-only peer "
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
+                    <span className="ms-3 text-md font-semibold text-gray-900 ">
+                      {cgg ? "CGG ON" : "CGG OFF"}
+                    </span>
+                  </label>
+                </div>}
+                {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
+                  isCounterEnabled?.toLowerCase() === "true" && (
+                    <button
+                      className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                      onClick={() => setIsBookingFormVisible(true)} // Show booking form
+                    >
+                      Book Tickets
+                    </button>
+                  )}
+              </div>
             ) : (
               <BackButton
                 label="Back"
@@ -590,6 +642,42 @@ export default function AdminBookings() {
         ) : (
           <FacilityServices />
         )}
+
+        <PopupModal
+          isOpen={openModal}
+          onClose={() => {
+            setOpenModal(false);
+          }}
+          // title={"Add Sub-Facility"}
+          size="small"
+          overlayClassName="bg-gray-800 bg-opacity-60"
+          contentClassName="bg-white"
+          defaultBodyPadding={true}
+        >
+          <div className="px-20 py-14">
+            <h1 className="text-blue-v1 font-semibold">
+              {cgg
+                ? "Are you sure want to enable CGG ?"
+                : "Are you sure want to disable CGG ?"}
+            </h1>
+            <div className="flex justify-center gap-6 mt-4">
+              <button
+                onClick={handleCggSubmit}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              >
+                Proceed
+              </button>
+              <button
+                onClick={() => {
+                  setOpenModal(false);
+                }}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+              >
+                Deny
+              </button>
+            </div>
+          </div>
+        </PopupModal>
       </div>
     </AdminLayout>
   );

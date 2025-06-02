@@ -99,9 +99,6 @@ function MetroBookingList() {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
         });
       },
     },
@@ -109,7 +106,6 @@ function MetroBookingList() {
       field: "noOfTickets",
       headerName: "No Of Tickets",
       maxWidth: "160",
-
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
@@ -120,18 +116,20 @@ function MetroBookingList() {
       maxWidth: "160",
       headerClass: "text-blue-v2",
       cellRenderer: (params) =>
-        <>
-      <span>Rs. </span>
-      <span>{params.value}</span>
-    </>?? "N/A"
-        // params.value ? (
-        //   <>
-        //     <span>Rs. </span>
-        //     <span>{params.value}</span>
-        //   </>
-        // ) : (
-        //   "N/A"
-        // ),
+        (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) ?? "N/A",
+      // params.value ? (
+      //   <>
+      //     <span>Rs. </span>
+      //     <span>{params.value}</span>
+      //   </>
+      // ) : (
+      //   "N/A"
+      // ),
     },
 
     {
@@ -141,18 +139,20 @@ function MetroBookingList() {
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => params.value || "N/A",
       cellRenderer: (params) =>
-        <>
-      <span>Rs. </span>
-      <span>{params.value}</span>
-    </>?? "N/A"
-        // params.value ? (
-        //   <>
-        //     <span>Rs. </span>
-        //     <span>{params.value}</span>
-        //   </>
-        // ) : (
-        //   "N/A"
-        // ),
+        (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) ?? "N/A",
+      // params.value ? (
+      //   <>
+      //     <span>Rs. </span>
+      //     <span>{params.value}</span>
+      //   </>
+      // ) : (
+      //   "N/A"
+      // ),
     },
     {
       field: "paymentConfirmedTxnAmount",
@@ -160,18 +160,20 @@ function MetroBookingList() {
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => params.value || "N/A",
       cellRenderer: (params) =>
-        <>
-      <span>Rs. </span>
-      <span>{params.value}</span>
-    </>?? "N/A"
-        // params.value ? (
-        //   <>
-        //     <span>Rs. </span>
-        //     <span>{params.value}</span>
-        //   </>
-        // ) : (
-        //   "N/A"
-        // ),
+        (
+          <>
+            <span>Rs. </span>
+            <span>{params.value}</span>
+          </>
+        ) ?? "N/A",
+      // params.value ? (
+      //   <>
+      //     <span>Rs. </span>
+      //     <span>{params.value}</span>
+      //   </>
+      // ) : (
+      //   "N/A"
+      // ),
     },
     // {
     //     field: "actualAmountPaid",
@@ -245,18 +247,18 @@ function MetroBookingList() {
       cellStyle: { backgroundColor: "rgb(243 229 218)" },
     },
     {
-        field: "utr",
-        headerName: "UTR",
-        headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
-        valueFormatter: (params) => params.value || "N/A",
-        cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
+      field: "utr",
+      headerName: "UTR",
+      headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+      valueFormatter: (params) => params.value || "N/A",
+      cellStyle: { backgroundColor: "rgb(219 234 254 / 1)" },
     },
     {
-        field: "utrprocessedtime",
-        headerName: "UTR Processed Time",  
-        headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
-        valueFormatter: (params) => params.value || "N/A",
-        cellStyle: {backgroundColor: "rgb(219 234 254 / 1)"}
+      field: "utrprocessedtime",
+      headerName: "UTR Processed Time",
+      headerClass: "text-blue-v2 bg-blue-200 hover:!bg-blue-200",
+      valueFormatter: (params) => params.value || "N/A",
+      cellStyle: { backgroundColor: "rgb(219 234 254 / 1)" },
     },
     {
       field: "finalutr",

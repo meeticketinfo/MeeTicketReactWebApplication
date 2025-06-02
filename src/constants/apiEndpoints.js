@@ -2,15 +2,19 @@ import useAuthStore from "../store/authStore";
 
 /// dev park
 export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/api/";
+  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
+  //  paynow UAT
+export const PAYNOW_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkapi/";
+
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
 export const METRO_API_BASE_URL =
@@ -20,24 +24,24 @@ export const METRO_API_Plain_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
-export const GRIEVANCE_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/meesevaconnectapi/v1/";
+// export const GRIEVANCE_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
-// export const GRIEVANCE_API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const GRIEVANCE_API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
 // export const TOURISM_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.life/webservices/v1/";
+//   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 // RTC dev
 export const RTC_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.life/rtcbuspassapi/v1/";
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -46,20 +50,6 @@ export const RTC_API_BASE_URL =
 // PARK PROD
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
-
-// export const API_BASE_URL ="https://hq78vgwh-7237.inc1.devtunnels.ms/api/"
-
-// testing
-// export const API_BASE_URL =
-//   "https://jvbngjwk-7237.inc1.devtunnels.ms/api/";
-
-// metro  testing
-// export const METRO_API_BASE_URL =
-//   "https://6phbrdb7-7237.inc1.devtunnels.ms/v1.0/";
-
-// grivience  testing
-// export const GRIEVANCE_API_BASE_URL =
-//   "https://v1nbj8m4-7210.inc1.devtunnels.ms/v1.0/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -105,7 +95,9 @@ export const API_ENDPOINTS = {
       FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
+      CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
       ADD_CASH_BOOKINGS: `Transaction/AddBookingDetailswithCash`,
+      ADD_POS_BOOKINGS: `Transaction/AddBookingDetailsForPOS`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
@@ -188,6 +180,8 @@ export const API_ENDPOINTS = {
     BOOKING_REPORTS: {
       GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
+      POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
+      POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
@@ -207,6 +201,11 @@ export const API_ENDPOINTS = {
       REFRESH_BUTTON: `${METRO_API_Plain_BASE_URL}v1/MetroConsolidation/PaymentInquiry`,
       UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
       ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
+    },
+    PARK_BANK_PAYMENT:{
+      PAYMENT_VERIFY:`${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
+      PAYMENT_INITIAT:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
+      PAYMENT_REFRESH:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
@@ -230,6 +229,10 @@ export const API_ENDPOINTS = {
       GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
       GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
+    USER_REPORTS: {
+      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
+      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+    }
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -237,8 +240,10 @@ export const API_ENDPOINTS = {
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
-    GET_ALL_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
+    GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
+    GET_ALL_DAY_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseBookingSummaryReport`,
+    GET_ALL_APPLICATION_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseReportWithBookingSource`,
     GET_ALL_DASHBOARD_DETAILED_REPORT: `${API_BASE_URL}ParkReport/GetZooParkDashboardDetails`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,

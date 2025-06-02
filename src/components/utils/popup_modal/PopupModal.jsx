@@ -13,11 +13,12 @@ const PopupModal = ({
   overlayClassName = "bg-black bg-opacity-50",
   contentClassName = "bg-white rounded-lg shadow-lg",
   closeButton = true,
-  titleClassName = "text-lg font-medium text-gray-900",
+  titleClassName = "text-lg font-medium ",
   defaultBodyPadding = true,
   footer,
   overFlow=true,
   onExternalSubmit,
+  titleColour="text-gray-900"
 }) => {
   const sizeClasses = {
     small: "max-w-md w-full",
@@ -80,7 +81,7 @@ const PopupModal = ({
             onClick={(e) => e.stopPropagation()}
           >
             {title && (
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className={`px-6 py-4 border-b border-gray-200 ${titleColour}`}>
                 <h3 className={titleClassName}>{title}</h3>
               </div>
             )}

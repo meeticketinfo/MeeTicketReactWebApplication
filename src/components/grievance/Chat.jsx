@@ -5,6 +5,7 @@ import { getCurrentDate } from "../../utils/TypographyHelper";
 
 bouncy.register();
 function Chat({ Record, setOpenModal }) {
+  console.log("Record", Record);
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState("");
   const { saveCommentDetails, fetchOverAllReports, isSaveCommentLoading } =
@@ -28,7 +29,8 @@ function Chat({ Record, setOpenModal }) {
     scrollToBottom(); // Scroll to the latest chat when the component mounts
   }, [Record.comments]); // Run when comments update
 
-  const CommentSubmit = async () => {
+  const CommentSubmit = async (event) => {
+     event.preventDefault();
     if (comment == "") {
       setCommentError("Cannot submit with empty message ");
       return;
@@ -60,12 +62,12 @@ function Chat({ Record, setOpenModal }) {
             className="flex flex-col overflow-y-auto h-96 py-2 space-y-2"
           >
             {/* Messages go here */}
-            {Record.comments.map((comment, index) => (
+            {Record.comments?.map((comment, index) => (
               <div key={index}>
                 {comment.UserType === "User" && (
                   <div className="flex">
-                    <div className="bg-blue-v2 text-sm text-white px-3 pt-2 pb-4 shadow-md rounded-lg max-w-xs relative">
-                      <span className="text-[10px] font-thin absolute bottom-0 right-2 text-gray-200 opacity-70 tracking-wider">
+                    <div className="bg-blue-v2 text-xs text-white px-3 pt-2 pb-4 shadow-md rounded-t-md rounded-l-md overflow-x-auto max-w-xs relative">
+                      <span className="text-[10px] font-thin upp absolute bottom-0 right-1 text-gray-200 opacity-70 tracking-wider">
                         User
                       </span>
                       {comment.Comment}
@@ -75,7 +77,7 @@ function Chat({ Record, setOpenModal }) {
 
                 {comment.UserType === "Admin" && (
                   <div className="flex justify-end">
-                    <div className="bg-gray-200 text-sm text-black px-3 pt-2 pb-4 shadow-md rounded-lg max-w-xs relative">
+                    <div className="bg-gray-200 text-xs text-black px-3 pt-2 pb-4 shadow-md rounded-t-md rounded-l-md max-w-xs relative">
                       <span className="text-[8px] font-semibold absolute bottom-0 right-1 text-blue-v1 tracking-wider">
                         Admin
                       </span>
@@ -90,7 +92,9 @@ function Chat({ Record, setOpenModal }) {
 
         {/* Send Message Section */}
         <div className="relative">
-          <div className="bg-white sticky p-4 flex items-center">
+          <form 
+          onSubmit={CommentSubmit}
+          className="bg-white sticky p-4 flex items-center">
             <input
               type="text"
               placeholder="Type your message..."
@@ -103,8 +107,9 @@ function Chat({ Record, setOpenModal }) {
             />
 
             <button
+            type="submit"
               className="bg-blue-v2 text-white rounded-full p-2 ml-2 hover:bg-blue-600 focus:outline-none"
-              onClick={CommentSubmit}
+              // onClick={CommentSubmit}
             >
               {isSaveCommentLoading ? (
                 <span>
@@ -129,7 +134,7 @@ function Chat({ Record, setOpenModal }) {
                 </svg>
               )}
             </button>
-          </div>
+          </form>
           <div className="text-red-700 text-xs text-end px-6  absolute bottom-0 right-0">
             {commentError}
           </div>

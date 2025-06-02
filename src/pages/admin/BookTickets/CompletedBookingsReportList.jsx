@@ -53,6 +53,7 @@ function CompletedBookingsReportList() {
   };
 
   const onSubmit = (values, { resetForm }) => {
+    console.log("values",values)
     
     localStorage.setItem(
       "completed-booking-report-filters",
@@ -201,6 +202,14 @@ function CompletedBookingsReportList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+     {
+      field: "resultStatus",
+      headerName: "Actual Paytm Status",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? "Success" : "Failed"),
+     
     },
     {
       headerName: "Actions",

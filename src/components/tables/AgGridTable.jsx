@@ -163,9 +163,10 @@ const AgGridTable = ({
           gridOptions={gridOptions}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
+          paginationPageSizeSelector={[20,50,100,500,1000]}
           pinnedBottomRowData={pinnedBottomRowData}
           columnDefs={columnDefs?.map((col) => ({
-            ...col,
+            ...col, 
             minWidth: 180,
             sortable: true,
           }))}

@@ -25,7 +25,7 @@ export const ToursimReportStore = create((set) => ({
     set({ isFetchConsolidateReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_CONSOLIDATE_REPORT}?startDate=${fromDate}&endDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_CONSOLIDATE_REPORT}?FromDate=${fromDate}&ToDate=${toDate}`
       );
       set({
         ConsolidateReports: response.data,
@@ -42,7 +42,7 @@ export const ToursimReportStore = create((set) => ({
     set({ isFetchIndividualReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_INDIVIDUAL_REPORT}?startDate=${fromDate}&endDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_INDIVIDUAL_REPORT}?FromDate=${fromDate}&ToDate=${toDate}`
       );
       set({
         IndividualReports: response.data,
@@ -58,7 +58,7 @@ export const ToursimReportStore = create((set) => ({
     set({ isFetchPaymentTransactionReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_PAYMENT_TRANSACTION_REPORT}?startDate=${fromDate}&endDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_PAYMENT_TRANSACTION_REPORT}?StartDate=${fromDate}&EndDate=${toDate}`
       );
       set({
         PaymentTransactionReports: response.data,
@@ -77,7 +77,7 @@ export const ToursimReportStore = create((set) => ({
     set({ isFetchBankPaymentReportsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_BANK_PAYMENT_REPORT}?startDate=${fromDate}&endDate=${toDate}`
+        `${API_ENDPOINTS.REPORTS.TOURISM_REPORTS.GET_TOURISM_BANK_PAYMENT_REPORT}?FromDate=${fromDate}&ToDate=${toDate}`
       );
       set({
         BankPaymentReports: response.data,

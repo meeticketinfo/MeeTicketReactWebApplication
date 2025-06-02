@@ -25,6 +25,7 @@ import HandCash from "../../images/cash.svg";
 import PopupModal from "../utils/popup_modal/PopupModal";
 import { useModalStore } from "../../store/modalStore";
 import { useHolidayStore } from "../../store/masters/holidayStore";
+import { launchPaytmPOS } from "../../utils/Helper";
 const formatTime = (timeString) => {
   if (!timeString) return ""; // Handle empty cases
   const [hours, minutes, seconds] = timeString.split(":");
@@ -37,6 +38,7 @@ const formatTime = (timeString) => {
     hour12: true,
   });
 };
+
 export const FacilityServices = () => {
   const navigate = useNavigate();
   function formatBookingDate(date) {
@@ -50,6 +52,8 @@ export const FacilityServices = () => {
     return `${year}-${month}-${day}T${hours}:00:00.000`;
   }
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
 
   const {
     saveBookingDetails,
@@ -61,8 +65,12 @@ export const FacilityServices = () => {
     isCash,
     setIsTransactionFailed,
     setPaymentStatus,
+    Generate_deep_link,
+    setCheckPosTsxStatusData,
   } = useBookingsStore();
 
+  const [upi, SetUpi] = useState(false);
+  const [pos, SetPos] = useState(false);
   const { decodedTokenData } = useAuthStore();
   const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
   // disableing button for recurriing holidays
@@ -103,7 +111,7 @@ export const FacilityServices = () => {
       return total + item.quantity * item.unitAmount;
     }, 0);
   };
-  const {  toggleItem } = useAccordionStore();
+  const { toggleItem } = useAccordionStore();
 
   const accordionItems = [
     { id: 1, title: "Item 1", content: "This is the content for item 1" },
@@ -125,6 +133,8 @@ export const FacilityServices = () => {
   ) => {
     setPaymentStatus({});
     setIsTransactionFailed(false);
+    setCheckPosTsxStatusData([]);
+
     const currentDate = new Date();
     const totalAmount = calculateTotalAmount(values.selectedItems);
     const bookingDetailsPayload = {
@@ -137,6 +147,33 @@ export const FacilityServices = () => {
       bookingDate: formatBookingDate(currentDate),
       parkId: decodedTokenData?.data?.ParkId,
     };
+
+    if (values.paymentMethod === "pos") {
+      const bookingPaylod = {
+        mobileNumber: values.mobileNumber,
+        totalAmount: totalAmount,
+        userId: decodedTokenData?.data?.UserId,
+        parkId: decodedTokenData?.data?.ParkId,
+        transactionId: "",
+        bookingDetailsReqDTOs: values.selectedItems,
+      };
+
+      sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+      const PosBookingPayload = {
+        amount: totalAmount,
+        mobileNumber: values.mobileNumber,
+        customerId: "XYZ",
+        departmentId: LocationDetails?.departmentId,
+        parkId: decodedTokenData?.data?.ParkId,
+      };
+      const res = await Generate_deep_link(PosBookingPayload);
+      if (res.data.data.status === 200) {
+        launchPaytmPOS(res.data.data.deeplink);
+        setSubmitting(false);
+        navigate(`/confirm-pos`);
+      }
+      return;
+    }
 
     if (values.paymentMethod === "cash") {
       const totalAmount = calculateTotalAmount(values.selectedItems);
@@ -174,7 +211,6 @@ export const FacilityServices = () => {
         userId: decodedTokenData?.data?.UserId,
         parkId: decodedTokenData?.data?.ParkId,
         transactionId: "",
-
         bookingDetailsReqDTOs: values.selectedItems,
       };
       sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
@@ -213,7 +249,7 @@ export const FacilityServices = () => {
         ) : (
           <div>
             {LocationDetails?.openTime && LocationDetails?.closedTime && (
-              <div className="flex justify-center items-center gap-1 mb-1    ">
+              <div className="flex justify-center items-center gap-1 mb-1">
                 <h1 className="text-xl font-semibold text-blue-v2">
                   Park Timings:
                 </h1>
@@ -740,8 +776,7 @@ export const FacilityServices = () => {
                                 type="radio"
                                 value="upi"
                                 onClick={() => {
-                                  setOpenModalId("upi");
-                                  setisCash(true);
+                                  SetUpi(true);
                                 }}
                                 className="hidden"
                               />
@@ -762,7 +797,36 @@ export const FacilityServices = () => {
                                 UPI Payment
                               </label>
                             </div>
-
+                            {/* POS Device */}
+                            {role === "ROLE_ZOOPARKADMIN"&&<div className="flex items-center">
+                              <Field
+                                id="pos-radio"
+                                name="paymentMethod"
+                                type="radio"
+                                value="pos"
+                                onClick={() => {
+                                  SetPos(true);
+                                }}
+                                className="hidden"
+                              />
+                              <label
+                                htmlFor="pos-radio"
+                                className={`flex items-center gap-2 p-2  border rounded-md text-xs font-semibold cursor-pointer transition-all ${
+                                  values.paymentMethod === "pos"
+                                    ? "bg-blue-v1 text-white shadow-lg"
+                                    : "bg-white text-blue-v1 shadow-custom border border-[#c0c0c0] hover:bg-blue-v1 hover:text-white hover:shadow-custom "
+                                }
+                              `}
+                              >
+                                <img
+                                  className="w-8"
+                                  src={upiIcon}
+                                  alt="UPI Icon"
+                                />
+                                Pos Device
+                              </label>
+                            </div>}
+                            {/* CASH */}
                             <div className="flex items-center">
                               <Field
                                 id="cash-radio"
@@ -850,9 +914,9 @@ export const FacilityServices = () => {
                   <div className="flex justify-center p-2">
                     <button
                       type="submit"
-                      disabled={!isCash}
+                      disabled={!isCash && !upi && !pos}
                       className={`text-base rounded-lg px-3 py-1 ${
-                        !isCash
+                        !isCash && !upi && !pos
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                           : isSubmitting
                           ? "bg-gradient-to-r from-blue-v1 via-blue-800 to-blue-v1 animate-pulse text-white"
@@ -908,43 +972,6 @@ export const FacilityServices = () => {
             </div>
           </div>
         </PopupModal>
-        {/* upi */}
-        {/* <PopupModal
-        popupModalId="first-modal"
-        isOpen={openModalId === "upi"}
-        onClose={closeModal}
-        // title={"Add Sub-Facility"}
-        size="small"
-        overlayClassName="bg-gray-800 bg-opacity-60"
-        contentClassName="bg-white"
-        defaultBodyPadding={true}
-      >
-        <div className="px-10 py-14">
-          <h1 className="text-blue-v1  font-medium">
-            Would you like to proceed with UPI payment?
-          </h1>
-          <div className="flex justify-center gap-6 mt-4">
-            <button
-              onClick={() => {
-                setisUpi(true);
-                closeModal();
-              }}
-              className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
-            >
-              Proceed
-            </button>
-            <button
-              onClick={() => {
-                setisUpi(false);
-                closeModal();
-              }}
-              className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
-            >
-              Deny
-            </button>
-          </div>
-        </div>
-      </PopupModal> */}
       </div>
     </>
   );

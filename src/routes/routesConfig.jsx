@@ -1,5 +1,3 @@
-// src/routes/index.tsx
-
 import Dashboard from "../pages/Dashboard";
 import AdminUsers from "../pages/admin/users/AdminUsers";
 import AdminParks from "../pages/admin/parks/AdminParks";
@@ -63,6 +61,12 @@ import ExpressPassReport from "../components/rtc/rtc_reports/express_pass/Expres
 import StudentPass from "../components/rtc/rtc_reports/student_pass/StudentPass";
 import PendingPassesReport from "../components/rtc/rtc_reports/pending_passes/PendingPassesReport";
 import DashBoardDetailed from "../pages/DashBoardDetailed/DashBoardDetailed";
+import PosConfirmation from "../components/bookings_management/PosConfirmation";
+import DayWiseBookings from "../pages/admin/BookTickets/DayWiseBookings";
+import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDayWiseBookings";
+import UserTransactionReport from "../components/payments_management/UserTransactionReport";
+import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
+import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 
 export const routes = [
   {
@@ -166,6 +170,18 @@ export const routes = [
     element: <ProtectedRoute element={<FacilityBookings />} />,
   },
   {
+    path: "/day-wise-bookings",
+    element: <ProtectedRoute element={<DayWiseBookings />} />,
+  },
+  {
+    path: "/application-day-wise-bookings",
+    element: <ProtectedRoute element={<ApplicationDayWiseBookings />} />,
+  },
+  {
+    path: "/confirm-pos",
+    element: <ProtectedRoute element={<PosConfirmation />} />,
+  },
+  {
     path: "/bank-transactions",
     element: <ProtectedRoute element={<BankTransactions />} />,
   },
@@ -210,6 +226,10 @@ export const routes = [
   {
     path: "/privacy",
     element: <PrivacyPolicy />,
+  },
+  {
+    path: "/privacy-policy-meeticket-app",
+    element: <PrivacyPolicyMeeticketApp />,
   },
   // Grievance
   {
@@ -268,5 +288,13 @@ export const routes = [
   {
     path: "/toursim-bank-payments",
     element: <ProtectedRoute element={<BankPaymentReport />} />,
+  },
+  {
+    path: "/user-transaction",
+    element: <ProtectedRoute element={<UserTransactionReport />} />,
+  },
+  {
+    path: "/user-status-transaction",
+    element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
 ];
