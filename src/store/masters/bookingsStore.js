@@ -43,7 +43,8 @@ export const useBookingsStore = create(
       //
       CheckPosTsxStatusData: [],
       isTransactionPaymentReportsLoading: false,
-      //
+      // regenerate ticket
+      isReGenerateTicketLoading:false,
 
       serializeFilters: (filters) =>
         Object.entries(filters)
@@ -389,6 +390,25 @@ export const useBookingsStore = create(
           return { success: true, data: response };
         } catch ({ error, xhr }) {
           return { error: error.response.data.message };
+        }
+      },
+      // regenerate park ticket
+
+       FetchReGenerateTicket: async (reGenerateDetails) => {
+        set({ isReGenerateTicketLoading: true });
+        try {
+          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_RE_GENERATE_TICKET}`;
+          const method = "post";
+          const response = await apiService[method](url,reGenerateDetails);
+          set({
+            isReGenerateTicketLoading: false,
+          });
+          return{response:response}
+        } catch (error) {
+          set({
+            error: error.message,
+            isReGenerateTicketLoading: false,
+          });
         }
       },
     }),
