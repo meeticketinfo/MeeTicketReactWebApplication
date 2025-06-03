@@ -49,7 +49,7 @@ export const RTC_API_BASE_URL =
 
 // PARK test
 // export const API_BASE_URL =
-//   "https://s37shpxx-7237.inc1.devtunnels.ms/api/";
+//   "https://g681gc3l-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -92,7 +92,7 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
-      FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
+      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v3/PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
@@ -183,6 +183,7 @@ export const API_ENDPOINTS = {
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
       GET_RE_GENERATE_TICKET:`${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
+       POST_VERIFY_TICKET:`${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
