@@ -13,7 +13,6 @@ const TransactionDepartment = () => {
   ];
 
   useEffect(() => {
-    const total = data.reduce((sum, item) => sum + item.count, 0);
     const options = {
       container: chartRef.current,
       autoSize: true,
@@ -62,22 +61,21 @@ const TransactionDepartment = () => {
 
   return (
     <div
-      className="card"
       style={{
         width: 500,
-        margin: "10px 10px",
+        margin: "10px",
         background: "#fff",
         borderRadius: 12,
         padding: 20,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
       }}
     >
       <div ref={chartRef} style={{ width: "100%", height: 300 }} />
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "12px",
           marginTop: 20,
         }}
       >
@@ -87,8 +85,12 @@ const TransactionDepartment = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              margin: "4px 0",
-              minWidth: "40%",
+              gap: 10,
+              padding: "6px 10px",
+              borderRadius: 8,
+              backgroundColor: "#F5F6F8",
+              fontSize: 14,
+              fontWeight: 500,
             }}
           >
             <span
@@ -97,17 +99,21 @@ const TransactionDepartment = () => {
                 height: 10,
                 borderRadius: "50%",
                 backgroundColor: item.color,
-                marginRight: 8,
               }}
             />
-            <span style={{ fontSize: 14, fontWeight: 500 }}>
-              {item.department}
-            </span>
-            <span
-              style={{ marginLeft: "auto", color: item.color, fontWeight: 600 }}
+            <span>{item.department}</span>
+            <div
+              style={{
+                marginLeft: "auto",
+                padding: "2px 8px",
+                borderRadius: 4,
+                fontWeight: 600,
+                color: "#3399FF",
+                fontSize: 13,
+              }}
             >
               {item.count.toString().padStart(2, "0")}
-            </span>
+            </div>
           </div>
         ))}
       </div>
