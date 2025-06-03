@@ -24,10 +24,7 @@ const options = {
   container: chartRef.current,
   data: getData(),
   title: {
-    text: "Road Fuel Prices",
-  },
-  footnote: {
-    text: "Source: Department for Business, Energy & Industrial Strategy",
+    text: "Failed Transactions By Trends",
   },
   series: [
     {
@@ -35,6 +32,11 @@ const options = {
       xKey: "date",
       yKey: "petrol",
       yName: "Petrol",
+      stroke: "#001f3f",
+    marker: {
+      fill: "#001f3f", // Dot color
+      stroke: "#001f3f", // Dot border color
+    },
       tooltip,
     },
   ],
@@ -42,15 +44,15 @@ const options = {
     {
       position: "bottom",
       type: "time",
-      title: {
-        text: "Date",
-      },
+      // title: {
+      //   text: "Date",
+      // },
     },
     {
       position: "left",
       type: "number",
       title: {
-        text: "Price in Pence",
+        text: "Transaction Count",
       },
     },
   ],

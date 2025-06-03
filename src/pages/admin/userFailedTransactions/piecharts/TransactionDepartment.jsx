@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
+import { Link } from "react-router-dom";
 
 const TransactionDepartment = () => {
   const chartRef = useRef(null);
@@ -13,107 +14,64 @@ const TransactionDepartment = () => {
   ];
 
   useEffect(() => {
-    const options = {
-      container: chartRef.current,
-      autoSize: true,
-      title: {
-        text: "Failed Transactions By Departments",
-        fontSize: 16,
-        fontWeight: "bold",
-        spacing: 10,
-      },
-      data,
-      series: [
-        {
-          type: "donut",
-          angleKey: "count",
-          calloutLabelKey: "department",
-          calloutLabel: {
-            fontSize: 12,
-            color: "#333",
-          },
-          sectorLabelKey: "count",
-          sectorLabel: {
-            formatter: ({ datum }) => `${datum.count}%`,
-            fontSize: 12,
-            color: "#fff",
-          },
-          fills: data.map((d) => d.color),
-          strokes: data.map(() => "#fff"),
-          innerRadiusRatio: 0.7,
-          sectorSpacing: 2,
-          innerLabels: [
-            {
-              text: "",
-              fontSize: 18,
-              color: "#888",
-            },
-          ],
+  const options = {
+    container: chartRef.current,
+    autoSize: true,
+    title: {
+      text: "Failed Transactions By Departments",
+      fontSize: 16,
+      fontWeight: "bold",
+      spacing: 10,
+    },
+    data,
+    series: [
+      {
+        type: "donut",
+        angleKey: "count",
+        calloutLabelKey: "department",
+        calloutLabel: {
+          formatter: ({ datum }) => `${datum.department} (${datum.count}%)`,
+          fontSize: 13,
+          color: "#333",
         },
-      ],
-      legend: {
-        enabled: false,
+        // Disable sector labels
+        sectorLabel: {
+          enabled: false,
+        },
+        fills: data.map((d) => d.color),
+        strokes: data.map(() => "#fff"),
+        innerRadiusRatio: 0.7,
+        sectorSpacing: 2,
       },
-    };
+    ],
+    legend: {
+      enabled: false,
+    },
+  };
 
-    AgCharts.create(options);
-  }, []);
+  AgCharts.create(options);
+}, []);
+
 
   return (
-    <div
-      style={{
-        width: 500,
-        margin: "10px",
-        background: "#fff",
-        borderRadius: 12,
-        padding: 20,
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-      }}
-    >
-      <div ref={chartRef} style={{ width: "100%", height: 300 }} />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "12px",
-          marginTop: 20,
-        }}
-      >
+    <div className="w-[475px] m-2 bg-white rounded-xl p-5 shadow-md">
+      <div ref={chartRef} className="w-full h-[300px]" />
+      <div className="grid grid-cols-2 gap-3 mt-5">
         {data.map((item) => (
           <div
             key={item.department}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "6px 10px",
-              borderRadius: 8,
-              backgroundColor: "#F5F6F8",
-              fontSize: 14,
-              fontWeight: 500,
-            }}
+            className="flex items-center gap-2 bg-[#F5F6F8] rounded-md px-3 py-2 text-sm font-medium"
           >
             <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                backgroundColor: item.color,
-              }}
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: item.color }}
             />
             <span>{item.department}</span>
-            <div
-              style={{
-                marginLeft: "auto",
-                padding: "2px 8px",
-                borderRadius: 4,
-                fontWeight: 600,
-                color: "#3399FF",
-                fontSize: 13,
-              }}
-            >
-              {item.count.toString().padStart(2, "0")}
-            </div>
+            
+             <span className="ml-auto text-[#3399FF] font-semibold text-sm underline">
+             <Link>{String(item.count).padStart(2, "0")}</Link> 
+            </span>
+           
           </div>
         ))}
       </div>
