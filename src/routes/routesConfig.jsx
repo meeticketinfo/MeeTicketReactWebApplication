@@ -68,6 +68,7 @@ import UserTransactionReport from "../components/payments_management/UserTransac
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
+import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 
 export const routes = [
   {
@@ -189,6 +190,10 @@ export const routes = [
    {
     path: "/transactions-dashboard",
     element: <ProtectedRoute element={<TransactionsDashboard />} />,
+  },
+   {
+    path: "/failed-transactions",
+    element: <ProtectedRoute element={<FailedTransactions />} />,
   },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   // -----
