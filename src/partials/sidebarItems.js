@@ -153,6 +153,11 @@ const sidebarItems = [
         icon: FaUsers,
         path: "/metro-bookings",
       },
+       {
+        title: "User Failed Transactions",
+        icon: FaUsers,
+        path: "/transactions-dashboard",
+      },
     ],
   },
   // facilities

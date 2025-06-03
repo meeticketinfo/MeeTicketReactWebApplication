@@ -67,6 +67,7 @@ import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDa
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
+import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 
 export const routes = [
   {
@@ -184,6 +185,10 @@ export const routes = [
   {
     path: "/bank-transactions",
     element: <ProtectedRoute element={<BankTransactions />} />,
+  },
+   {
+    path: "/transactions-dashboard",
+    element: <ProtectedRoute element={<TransactionsDashboard />} />,
   },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   // -----
