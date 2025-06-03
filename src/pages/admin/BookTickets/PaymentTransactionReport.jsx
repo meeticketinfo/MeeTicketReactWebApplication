@@ -11,19 +11,24 @@ import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
 import Select from "react-select";
 import { HiArrowPathRoundedSquare } from "react-icons/hi2";
+import { ImTicket } from "react-icons/im";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 function PaymentTransactionReport() {
   const [openModal, setOpenModal] = useState(false);
   const [reGenerateData, setreGenerateData] = useState({});
-  
+  const [verifyData,setVerifyData]=useState("")
+  const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const {
     isTransactionPaymentReportsLoading,
     allTransactionPaymentReports,
     fetchPaymentTransactions,
     FetchReGenerateTicket,
     isReGenerateTicketLoading,
+    FetchVerifyTicket,
+    isVerifyTicketLoading,
   } = useBookingsStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -139,19 +144,42 @@ function PaymentTransactionReport() {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         return (
-          <div className="flex justify-center">
-            <span
-            className="cursor-pointer"
-              onClick={() => {
-                setOpenModal(true);
-                setreGenerateData({
-                  paymentOrderId: params.data.orderId,
-                  mobileNumber: params.data.phonE_NUMBER,
-                });
-              }}
+          <div className="flex justify-center gap-2">
+            <Tippy
+              content={
+                <div className="max-w-xs break-words p-2">
+                  <div>
+                    <h1 className="text-xs">Generate-Ticket</h1>
+                  </div>
+                </div>
+              }
+              placement="top"
+              animation="fade"
+              maxWidth={400}
+              theme="custom" // Apply the custom theme
             >
-              <HiArrowPathRoundedSquare className="text-[24px] text-green-400  mt-2.5 " />
-            </span>
+              <span
+                className="cursor-pointer"
+                onClick={() => {
+                  setOpenModal(true);
+                  setreGenerateData({
+                    paymentOrderId: params.data.orderId,
+                    mobileNumber: params.data.phonE_NUMBER,
+                  });
+                }}
+              >
+                <ImTicket className="text-[24px] text-blue-v2  mt-2.5 " />
+              </span>
+            </Tippy>
+            <button
+              className={`${"bg-blue-v2"} text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+               onClick={()=>{
+                setVerifyData(params.data.orderId)
+                setOpenVerifyModal(true)
+               }}
+            >
+              Verify Status
+            </button>
           </div>
         );
       },
@@ -159,12 +187,11 @@ function PaymentTransactionReport() {
   ]);
 
   const handleReGenerateTicket = async () => {
-   
     try {
       const res = await FetchReGenerateTicket(reGenerateData);
-      console.log(res)
+      console.log(res);
       if (res.response.data.status == 200) {
-        setOpenModal(false)
+        setOpenModal(false);
         Swal.fire({
           title: "Success!",
           html: `Ticket Re-generated Succesusfully`,
@@ -179,28 +206,65 @@ function PaymentTransactionReport() {
           // Call the API after the SweetAlert modal closes
         });
       } else {
-         setOpenModal(false)
+        setOpenModal(false);
         Swal.fire({
-          title: "Failed!",
-          text: `Regeneration failed. Please try again.`,
+          title: "oops!",
+          text: res.response.data.message,
           icon: "error",
           confirmButtonText: "OK",
-        }).then(() => {
-         
-        });
+        }).then(() => {});
       }
-    } catch {
-       setOpenModal(false)
+    } catch(err) {
+      // console.log("err",err)
+      setOpenModal(false);
       Swal.fire({
         title: "Failed!",
         text: `Regeneration failed. Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {
-       
-      });
+      }).then(() => {});
     }
   };
+ const handleVerifyTicket=async()=>{
+  console.log("verifyData",verifyData)
+       try {
+      const res = await FetchVerifyTicket(verifyData);
+      console.log(res);
+      if (res.response.data.status == 200) {
+        setOpenVerifyModal(false);
+        Swal.fire({
+          title: "Success!",
+          html: res.response.data.data.resultMsg,
+          icon: "success",
+          confirmButtonText: "OK",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+          },
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          // Call the API after the SweetAlert modal closes
+        });
+      } else {
+        setOpenVerifyModal(false);
+        Swal.fire({
+          title: "oops!",
+          text: res.response.data.data.resultMsg,
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then(() => {});
+      }
+    } catch(err) {
+      // console.log("err",err)
+      setOpenVerifyModal(false);
+      Swal.fire({
+        title: "Failed!",
+        text: `Verify failed. Please try again.`,
+        icon: "error",
+        confirmButtonText: "OK",
+      }).then(() => {});
+    }
+  }
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -471,6 +535,51 @@ function PaymentTransactionReport() {
 
               <button
                 onClick={() => setOpenModal(false)}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+              >
+                Deny
+              </button>
+            </div>
+          </div>
+        </PopupModal>
+        {/* verify */}
+         <PopupModal
+          popupModalId="first-modal"
+          isOpen={openVerifyModal}
+          onClose={() => openVerifyModal(false)}
+          size="small"
+          overlayClassName="bg-gray-800 bg-opacity-60"
+          contentClassName="bg-white"
+          defaultBodyPadding={true}
+        >
+          <div className="px-10 py-14">
+            <h1 className="text-blue-v1 font-semibold">
+              Are you sure you want to Verify the ticket status for this booking?
+            </h1>
+
+            <div className="flex justify-center gap-8 mt-4 z-30">
+              <button
+                onClick={async () => {
+                  await handleVerifyTicket();
+                }}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              >
+                {isVerifyTicketLoading ? (
+                  <span className="px-8">
+                    <l-tailspin
+                      size="15"
+                      stroke="5"
+                      speed="0.9"
+                      color="white"
+                    ></l-tailspin>
+                  </span>
+                ) : (
+                  "Proceed"
+                )}
+              </button>
+
+              <button
+                onClick={() => setOpenVerifyModal(false)}
                 className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
               >
                 Deny

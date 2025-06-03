@@ -411,6 +411,24 @@ export const useBookingsStore = create(
           });
         }
       },
+
+       FetchVerifyTicket: async (VerifyDetails) => {
+        set({ isVerifyTicketLoading: true });
+        try {
+          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`;
+          const method = "post";
+          const response = await apiService[method](url);
+          set({
+            isVerifyTicketLoading: false,
+          });
+          return{response:response}
+        } catch (error) {
+          set({
+            error: error.message,
+            isVerifyTicketLoading: false,
+          });
+        }
+      },
     }),
     {
       name: "booking-process-store",

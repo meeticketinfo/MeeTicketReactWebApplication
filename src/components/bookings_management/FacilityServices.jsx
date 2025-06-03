@@ -166,7 +166,8 @@ export const FacilityServices = () => {
         departmentId: LocationDetails?.departmentId,
         parkId: decodedTokenData?.data?.ParkId,
       };
-      const res = await Generate_deep_link(PosBookingPayload);
+       const redefinedPayload={...PosBookingPayload,bookingReqDTOs:bookingPaylod}
+      const res = await Generate_deep_link(redefinedPayload);
       if (res.data.data.status === 200) {
         launchPaytmPOS(res.data.data.deeplink);
         setSubmitting(false);
@@ -216,7 +217,8 @@ export const FacilityServices = () => {
       sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
 
       try {
-        const result = await saveFirstBookingDetails(bookingDetailsPayload);
+        const redefinedPayload={...bookingDetailsPayload,bookingReqDTOs:bookingPaylod}
+        const result = await saveFirstBookingDetails(redefinedPayload);
 
         if (result.data.data.status != 200) {
           toast.error(result.data.data.message);

@@ -13,7 +13,7 @@ const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // testing
 // export const API_BASE_URL =
-//   "https://s37shpxx-7237.inc1.devtunnels.ms/api/"; 
+//   "https://g681gc3l-7237.inc1.devtunnels.ms/api/"; 
 
 const api = axios.create({
   baseURL: API_BASE_URL,
