@@ -22,7 +22,8 @@ export const superAdminPermissions = [
   // "tourism-payment-transaction",
   // "tourism-individual",
   // "toursim-bank-payments",
-  "user-transaction"
+  "user-transaction",
+  "transactions-dashboard"
 ];
 
 export const parkAdminPermissions = [
