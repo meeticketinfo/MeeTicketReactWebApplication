@@ -23,6 +23,7 @@ function TransactionQr() {
   const storedBookingPayload = JSON.parse(
     sessionStorage.getItem("bookingPayload")
   );
+  const [Loader, setLoader] = useState(false);
   const [counter, setCounter] = useState(240);
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
@@ -61,8 +62,6 @@ function TransactionQr() {
     }
   }, [counter]);
 
-  
-
   // for generate booking details qr
   useEffect(() => {
     async function handleSaveBookingDetails() {
@@ -78,18 +77,27 @@ function TransactionQr() {
             bookingDate: formatBookingDate(currentDate),
           });
           if (result && result.data && result.data.status === 200) {
+            setLoader(true);
             setPaymentStatus({});
             const newBookingId = result?.data?.data?.data;
-           
+
             navigate(`/entity-bookings/view-details/${newBookingId}`);
-           
           } else {
             toast.error("Unexpected response from the server.");
+            console.log("got error");
+            setIsTransactionFailed(true);
+            setPaymentStatus({});
           }
         } catch (xhr) {
           handleApiError(xhr);
+          setIsTransactionFailed(true);
+          setPaymentStatus({});
         } finally {
-          setSubmitting(false);
+          // setSubmitting(false);
+          //  setIsFirstStepTransaction(false);
+          //         setPaymentStatus({});
+          setIsTransactionFailed(true);
+          setPaymentStatus({});
         }
       } else if (PaymentStatus.resultStatus === "TXN_FAILURE") {
         setIsTransactionFailed(true);
@@ -136,7 +144,9 @@ function TransactionQr() {
         <h3 className="text-lg font-bold">Scan the QR Code for Payment</h3>
         <canvas className="border" ref={canvasRef}></canvas>
         <div className="text-center text-gray-600">
-          {PaymentStatus.resultStatus !== "TXN_SUCCESS" ? (
+          {Loader == true ? (
+            <TransactionQrLoader />
+          ) : (
             <p>
               Transaction Timeout in:{" "}
               <span className="font-medium text-blue-v2">
@@ -144,8 +154,6 @@ function TransactionQr() {
               </span>
               <span>sec</span>
             </p>
-          ) : (
-            <TransactionQrLoader />
           )}
         </div>
       </div>

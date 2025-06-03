@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
   //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -47,9 +47,9 @@ export const RTC_API_BASE_URL =
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
-// PARK PROD
+// PARK test
 // export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
+//   "https://s37shpxx-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {

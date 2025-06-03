@@ -141,6 +141,7 @@ function PaymentTransactionReport() {
         return (
           <div className="flex justify-center">
             <span
+            className="cursor-pointer"
               onClick={() => {
                 setOpenModal(true);
                 setreGenerateData({
