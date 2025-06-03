@@ -4,13 +4,13 @@ import FailedTransactionsDashboard from "./FailedTransactionsDashboard";
 import { getThisMonthRange, getThisWeekRange, getThisYearRange, getTodayRange } from "../../../../utils/Helper";
 
 const TransactionsDashboard = () => {
-  const [activeTab, setActiveTab] = useState("week");
+  const [activeTab, setActiveTab] = useState("today");
   const [Filter, setFilter] = useState("week");
   const tabs = [
-    { label: "Today", value: "today",today: getTodayRange(), },
-    { label: "This Week", value: "week",week: getThisWeekRange(), },
-    { label: "This Month", value: "month",month: getThisMonthRange(), },
-    { label: "This Year", value: "year",year: getThisYearRange(), },
+    { label: "today", value: "today",today: getTodayRange(), },
+    { label: "week", value: "week",week: getThisWeekRange(), },
+    { label: "month", value: "month",month: getThisMonthRange(), },
+    { label: "year", value: "year",year: getThisYearRange(), },
   ];
 
   return (
@@ -41,7 +41,7 @@ const TransactionsDashboard = () => {
             ))}
           </div>
         </div>
-        <FailedTransactionsDashboard filter={activeTab} />
+        <FailedTransactionsDashboard Rangefilter={activeTab} />
       </div>
     </AdminLayout>
   );

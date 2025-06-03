@@ -8,7 +8,7 @@ import useAuthStore from "../store/authStore";
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
-  //  paynow UAT
+//  paynow UAT
 export const PAYNOW_API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkapi/";
 
@@ -48,8 +48,7 @@ export const RTC_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // PARK test
-export const API_BASE_URL =
-  "https://swv3t33v-7237.inc1.devtunnels.ms/api/";
+export const API_BASE_URL = "https://swv3t33v-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -182,8 +181,8 @@ export const API_ENDPOINTS = {
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
-      GET_RE_GENERATE_TICKET:`${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
-       POST_VERIFY_TICKET:`${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
+      GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
+      POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
@@ -204,10 +203,10 @@ export const API_ENDPOINTS = {
       UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
       ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
     },
-    PARK_BANK_PAYMENT:{
-      PAYMENT_VERIFY:`${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
-      PAYMENT_INITIAT:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
-      PAYMENT_REFRESH:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
+    PARK_BANK_PAYMENT: {
+      PAYMENT_VERIFY: `${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
+      PAYMENT_INITIAT: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
+      PAYMENT_REFRESH: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
@@ -234,7 +233,7 @@ export const API_ENDPOINTS = {
     USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
-    }
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -268,7 +267,11 @@ export const API_ENDPOINTS = {
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
 
-  FAILED_TRANSACTIONS:{
-    GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
-  }
+  FAILED_TRANSACTIONS: {
+    GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
+    GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
+  },
 };

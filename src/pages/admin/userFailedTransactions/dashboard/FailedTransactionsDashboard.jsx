@@ -8,55 +8,116 @@ import TransactionPieChart from "../piecharts/TransactionPieChart";
 import TransactionGraph from "../piecharts/TransactionGraph";
 import TransactionDepartment from "../piecharts/TransactionDepartment";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
+import TransactionByLocation from "../piecharts/TransactionByLocation";
+import { useParkStore } from "../../../../store/masters/parksStore";
+import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
+import Select from "react-select";
+import { Link } from "react-router-dom";
 
-function FailedTransactionsDashboard({ filter }) {
+function FailedTransactionsDashboard({ Rangefilter }) {
   superballs.register();
-  const {
-    fetchallPassData,
-    fetchallPassTypeData,
-    allPassTypeData,
-    fetchallbuspasses,
-    fetchallDashboardReportData,
-    allDashboardReportData,
-  } = useRtcDashboardStore();
+  
+  const [filters, setfilters] = useState({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
   // console.log("allDashboardReportData", allDashboardReportData);
+  const { allParks, fetchAllParks } = useParkStore();
+
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
   const {
-      fetchFailedTransactionByReason,
-      FailedTransactionByReasonData,
+    fetchFailedTransactionByReason,
+    FailedTransactionByReasonData,
+    fetchFailedTransactionByLocation,
+    FailedTransactionByLocationData,
+    fetchFailedTransactionBydepartment,
+    FailedTransactionByDepartmentData,
+    fetchFailedTransactionByLocationCategory,
+    FailedTransactionByLocationCategoryData,
+    fetchFailedTransactionTrendGraph,
+    FailedTransactionByGraphData,
   } = useTransactionsStore();
-  console.log("FailedTransactionByReasonData", FailedTransactionByReasonData);
+  console.log(
+    "FailedTransactionByDepartmentData",
+    FailedTransactionByDepartmentData
+  );
+
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+    fetchAllParks();
+  }, []);
+  useEffect(() => {
+    fetchFailedTransactionByReason({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
+    fetchFailedTransactionByLocation({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
+    fetchFailedTransactionBydepartment({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
+    fetchFailedTransactionByLocationCategory({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
+    fetchFailedTransactionTrendGraph({
+      fromDate: "",
+      toDate: "",
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    });
+  }, [Rangefilter]);
   const initialValues = {
     fromDate: "",
     toDate: "",
+    departmentId: "",
+    entityId: "",
+    ParkId: "",
   };
-  
-   useEffect(()=>{
-    fetchFailedTransactionByReason()
-   },[])
-
-  useEffect(() => {
-    fetchallPassData({
-      fromDate: "",
-      toDate: "",
-      active: false,
-    });
-    fetchallPassTypeData({
-      fromDate: "",
-      toDate: "",
-      active: false,
-    });
-    fetchallDashboardReportData({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
-      passTypeId: "",
-      active: false,
-    });
-    fetchallbuspasses();
-  }, []);
-
   // overAll on submit
   const overAllOnSubmit = (values) => {
-    fetchallPassData({ ...values, active: true });
+    // fetchallPassData({ ...values, active: true });
+    const payload = {
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      locationId: values.ParkId,
+      categoryId: values.entityId,
+      departmentId: values.departmentId,
+      durationType: Rangefilter,
+    };
+    console.log("payload", payload);
+    //  localStorage.setItem('transactionPayload', JSON.stringify(payload));
+    setfilters(payload)
+    fetchFailedTransactionTrendGraph(payload);
   };
 
   return (
@@ -75,10 +136,10 @@ function FailedTransactionsDashboard({ filter }) {
                       From Date
                     </label>
                     <Field
-                      type="date"
+                      type="datetime-local"
                       name="fromDate"
                       className={`mt-1 block w-full px-2 py-1 border
-                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       // min={getCurrentDate()}
                       onChange={(e) => {
                         const fromDateValue = e.target.value;
@@ -98,71 +159,186 @@ function FailedTransactionsDashboard({ filter }) {
                       To Date
                     </label>
                     <Field
-                      type="date"
+                      type="datetime-local"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      // min={values.fromDate || getCurrentDateStartTime()}
                       onChange={(e) => {
                         const toDateValue = e.target.value;
                         setFieldValue("toDate", toDateValue);
                       }}
                     />
                   </div>
+                  {/* department */}
                   <div>
-                    <label
-                      htmlFor="locationCategory"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Location Category
-                    </label>
-                    <Field
-                      type="date"
-                      name="toDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // Ensure toDate can't be earlier than fromDate
-                      onChange={(e) => {
-                        const toDateValue = e.target.value;
-                        setFieldValue("toDate", toDateValue);
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="Department"
-                      className="block text-xs font-medium text-gray-700"
-                    >
+                    <label className="block text-xs font-medium text-gray-700">
                       Department
                     </label>
-                    <Field
-                      type="date"
-                      name="toDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // Ensure toDate can't be earlier than fromDate
-                      onChange={(e) => {
-                        const toDateValue = e.target.value;
-                        setFieldValue("toDate", toDateValue);
+
+                    <Select
+                      name="departmentId"
+                      value={
+                        allDepartmentTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.departmentId,
+                            label: dept.departmentName,
+                          }))
+                          .find(
+                            (option) => option.value === values.departmentId
+                          ) || null // Set the selected value
+                      }
+                      options={allDepartmentTypes
+                        ?.filter((dept) => dept.isActive)
+                        .map((dept) => ({
+                          value: dept.departmentId,
+                          label: dept.departmentName,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue(
+                          "departmentId",
+                          selectedOption?.value || ""
+                        )
+                      }
+                      isClearable
+                      placeholder="Department"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#000",
+                          cursor: "pointer",
+                        }),
                       }}
                     />
                   </div>
+                  {/* location category */}
                   <div>
-                    <label
-                      htmlFor="Location"
-                      className="block text-xs font-medium text-gray-700"
-                    >
+                    <label className="block text-xs font-medium text-gray-700">
+                      Location Category
+                    </label>
+
+                    <Select
+                      name="entityId"
+                      value={
+                        allEntityTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.entityTypeId,
+                            label: dept.entityTypeName,
+                          }))
+                          .find((option) => option.value === values.entityId) ||
+                        null // Use values.entityId
+                      }
+                      options={allEntityTypes
+                        ?.filter((entity) => entity.isActive)
+                        .map((entity) => ({
+                          value: entity.entityTypeId,
+                          label: entity.entityTypeName,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue("entityId", selectedOption?.value || "")
+                      }
+                      isClearable
+                      placeholder="Location Category"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#6D7072",
+                          cursor: "pointer",
+                        }),
+                      }}
+                    />
+                  </div>
+                  {/* location */}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">
                       Location
                     </label>
-                    <Field
-                      type="date"
-                      name="toDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // Ensure toDate can't be earlier than fromDate
-                      onChange={(e) => {
-                        const toDateValue = e.target.value;
-                        setFieldValue("toDate", toDateValue);
+
+                    <Select
+                      name="ParkId"
+                      value={
+                        allParks
+                          ?.filter((park) => park.isActive)
+                          .map((park) => ({
+                            value: park.id,
+                            label: park.name,
+                          }))
+                          .find((option) => option.value === values.ParkId) ||
+                        null
+                      }
+                      options={allParks
+                        ?.filter((park) => park.isActive)
+                        .map((park) => ({
+                          value: park.id,
+                          label: park.name,
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue("ParkId", selectedOption?.value || "")
+                      }
+                      isClearable
+                      placeholder="Location"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
+
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#6D7072",
+                          cursor: "pointer",
+                        }),
                       }}
                     />
                   </div>
@@ -184,18 +360,26 @@ function FailedTransactionsDashboard({ filter }) {
         {/* Transactions by reason chart */}
         <DashboardCard07>
           <div className="flex">
-            <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
+            <Link
+            onClick={()=>{
+               localStorage.setItem('transactionPayload', JSON.stringify(filters));
+            }}
+            >
+            <div className="flex-1 m-1 px-4 rounded-lg overflow-hidden shadow-md">
               <TransactionPieChart
-                data={allPassTypeData}
+                data={FailedTransactionByReasonData}
                 title="Failed Transactions By Reason"
-                angleKey="totalPasses"
+                angleKey="percentage"
+                calloutLabelKey="failureReason"
               />
             </div>
-            <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-              <TransactionPieChart
-                data={allPassTypeData}
+            </Link>
+            <div className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md">
+              <TransactionByLocation
+                data={FailedTransactionByLocationData}
                 title="Failed Transactions By Location "
-                angleKey="totalAmount"
+                angleKey="percentage"
+                calloutLabelKey="locationName"
               />
             </div>
           </div>
@@ -203,13 +387,14 @@ function FailedTransactionsDashboard({ filter }) {
         <DashboardCard07>
           <div>
             <TransactionGraph
-              data={allPassTypeData}
+              data={FailedTransactionByGraphData}
               title="Total Amount "
-              angleKey="totalAmount"
+              angleKey="percentage"
+              calloutLabelKey="timeSlot"
             />
           </div>
         </DashboardCard07>
-        <DashboardCard07>
+        {/* <DashboardCard07>
            <div className="flex justify-center items-center h-full">
               <TransactionPieChart
                 data={allPassTypeData}
@@ -217,21 +402,23 @@ function FailedTransactionsDashboard({ filter }) {
                 angleKey="totalPasses"
               />
             </div>
-        </DashboardCard07>
+        </DashboardCard07> */}
         <DashboardCard07>
           <div className="flex gap-4">
             <div className="flex-1 ">
               <TransactionDepartment
-                data={allPassTypeData}
-                title="Total Passes"
-                angleKey="totalPasses"
+                data={FailedTransactionByDepartmentData || []}
+                title="Failed Transactions By Department"
+                angleKey="percentage"
+                calloutLabelKey="departmentName"
               />
             </div>
             <div className="flex-1">
               <TransactionDepartment
-                data={allPassTypeData}
-                title="Total Amount "
-                angleKey="totalAmount"
+                data={FailedTransactionByLocationCategoryData || []}
+                title="Failed Transactions By Location category "
+                angleKey="percentage"
+                calloutLabelKey="locationCategory"
               />
             </div>
           </div>

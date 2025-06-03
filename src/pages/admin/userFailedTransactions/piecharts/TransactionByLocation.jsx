@@ -11,7 +11,8 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
+
+const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -28,26 +29,23 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 9, // Reduced font size
-            color: "black",
-            // fontWeight: "normal",
+            fontSize: 9, // Reduced font size for better readability
+             color: "black",
+            fontWeight: "normal",
             formatter: ({ datum }) =>
-              `${datum[calloutLabelKey]?.substring(0, 20)}\n${
-                datum[angleKey]
-              }%`, // Truncate text if needed
-            offset: 15, // Increased offset for better spacing
+              `${datum[calloutLabelKey]?.substring(0, 20)}\n${datum[angleKey]}%`, // Truncate text if needed
+            offset: 12, // Increased offset to provide more space
             minAngle: 0, // ensures small slices still show labels
           },
-
           sectorLabel: {
             enabled: true,
-            fontSize: 9, // Reduced font size for sector labels
+            fontSize: 10, // Adjusted font size for better readability
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum }) => `${datum[angleKey]}%`,
           },
           fills: Object.values(reasonStyles).map((s) => s.color),
-          stroke: "#fffff",
+          stroke: "#ffffff",
           calloutLine: {
             colors: Object.values(reasonStyles).map((s) => s.color),
           },
@@ -73,8 +71,8 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs  text-gray-800">
-                {item.failureReason ? item.failureReason : "N/A"}
+              <span className="text-xs text-gray-800">
+                {item.locationName ? item.locationName : "N/A"}
               </span>
             </div>
             <Link to={"/bank-transactions"}>
@@ -89,4 +87,4 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
   );
 };
 
-export default TransactionPieChart;
+export default TransactionByLocation;

@@ -1,67 +1,59 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 
-const TransactionGraph = () => {
-const chartRef = useRef(null);
+const TransactionGraph = ({ data, title, angleKey, calloutLabelKey }) => {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null); // store chart instance
 
-const getData = () => [
-{ date: new Date("2023-01-01"), petrol: 145.3, diesel: 149.2 },
-{ date: new Date("2023-02-01"), petrol: 148.0, diesel: 150.1 },
-{ date: new Date("2023-03-01"), petrol: 147.1, diesel: 151.5 },
-{ date: new Date("2023-04-01"), petrol: 144.2, diesel: 148.8 },
-{ date: new Date("2023-05-01"), petrol: 143.9, diesel: 147.3 },
-];
+  useEffect(() => {
+    if (!data || data.length === 0) return;
 
-useEffect(() => {
-const dateFormatter = new Intl.DateTimeFormat("en-US");
-const tooltip = {
-  renderer: ({ datum, xKey }) => ({
-    title: dateFormatter.format(datum[xKey]),
-  }),
-};
+    const tooltip = {
+      renderer: ({ datum, xKey, yKey }) => ({
+        title: datum[xKey],
+        content: `${datum[yKey]}`,
+      }),
+    };
 
-const options = {
-  container: chartRef.current,
-  data: getData(),
-  title: {
-    text: "Failed Transactions By Trends",
-  },
-  series: [
-    {
-      type: "line",
-      xKey: "date",
-      yKey: "petrol",
-      yName: "Petrol",
-      stroke: "#001f3f",
-    marker: {
-      fill: "#001f3f", // Dot color
-      stroke: "#001f3f", // Dot border color
-    },
-      tooltip,
-    },
-  ],
-  axes: [
-    {
-      position: "bottom",
-      type: "time",
-      // title: {
-      //   text: "Date",
-      // },
-    },
-    {
-      position: "left",
-      type: "number",
-      title: {
-        text: "Transaction Count",
-      },
-    },
-  ],
-};
+    const options = {
+      container: chartRef.current,
+      data,
+      title: { text: title },
+      series: [
+        {
+          type: "line",
+          xKey: calloutLabelKey,
+          yKey: angleKey,
+          yName: angleKey,
+          stroke: "#001f3f",
+          marker: { fill: "#001f3f", stroke: "#001f3f" },
+          tooltip,
+        },
+      ],
+      axes: [
+        { position: "bottom", type: "category" },
+        { position: "left", type: "number", title: { text: "Transaction Count" } },
+      ],
+    };
 
-AgCharts.create(options);
-}, []);
+    // If chart already exists, update it
+    if (chartInstance.current) {
+      chartInstance.current.update(options);
+    } else {
+      // Otherwise, create a new chart
+      chartInstance.current = AgCharts.create(options);
+    }
 
-return <div id="myChart" ref={chartRef} style={{ width: "100%", height: "500px" }} />;
+    // Optional: clean up on unmount
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+        chartInstance.current = null;
+      }
+    };
+  }, [data, title, angleKey, calloutLabelKey]);
+
+  return <div ref={chartRef} style={{ width: "100%", height: "500px" }} />;
 };
 
 export default TransactionGraph;
