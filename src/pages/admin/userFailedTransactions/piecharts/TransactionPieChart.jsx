@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
+import { Link } from "react-router-dom";
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -32,7 +33,13 @@ const TransactionPieChart = ({ data, title, angleKey }) => {
             formatter: ({ datum }) =>
               `${datum.passTypeName}\n${datum[angleKey]}%`,
           },
-          sectorLabel: { enabled: false },
+          sectorLabel: {
+          enabled: true,
+          fontSize: 18,
+          fontWeight: "bold", // should apply after upgrading
+          color: "#000",
+          formatter: ({ datum }) => `${datum[angleKey]}%`,
+        },
           fills: Object.values(reasonStyles).map((s) => s.color),
           stroke: "#ffffff",
           calloutLine: {
@@ -48,12 +55,12 @@ const TransactionPieChart = ({ data, title, angleKey }) => {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div ref={chartRef} className="w-full h-[400px]" />
-      <div className="flex flex-wrap gap-3 mt-4">
+      <div ref={chartRef} className="w-[500px] h-[500px]" />
+      <div className="flex flex-wrap gap-3 mt-4 p-3">
         {Object.entries(reasonStyles).map(([label, { color, count }]) => (
           <div
             key={label}
-            className="flex justify-between items-center bg-[#f8f9fb] rounded-lg px-4 py-2 shadow-sm w-[calc(50%-6px)]"
+            className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-4 py-2 shadow-sm "
           >
             <div className="flex items-center gap-2">
               <div
@@ -62,9 +69,11 @@ const TransactionPieChart = ({ data, title, angleKey }) => {
               />
               <span className="text-sm text-gray-800">{label}</span>
             </div>
-            <span className="font-bold text-sm text-[#205375]">
+            <Link to={"/bank-transactions"}>
+              <span className="font-bold text-sm text-[#57a4d8] ml-2 underline">
               {String(count).padStart(2, "0")}
             </span>
+            </Link>
           </div>
         ))}
       </div>

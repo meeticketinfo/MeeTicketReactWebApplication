@@ -78,7 +78,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="fromDate"
                       className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       // min={getCurrentDate()}
                       onChange={(e) => {
                         const fromDateValue = e.target.value;
@@ -101,7 +101,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
@@ -120,7 +120,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       // Ensure toDate can't be earlier than fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
@@ -139,7 +139,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       // Ensure toDate can't be earlier than fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
@@ -158,7 +158,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       // Ensure toDate can't be earlier than fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
@@ -187,14 +187,14 @@ function FailedTransactionsDashboard({ filter }) {
             <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
               <TransactionPieChart
                 data={allPassTypeData}
-                title="Total Passes"
+                title="Failed Transactions By Reason"
                 angleKey="totalPasses"
               />
             </div>
             <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
               <TransactionPieChart
                 data={allPassTypeData}
-                title="Total Amount "
+                title="Failed Transactions By Location "
                 angleKey="totalAmount"
               />
             </div>
@@ -210,13 +210,13 @@ function FailedTransactionsDashboard({ filter }) {
           </div>
         </DashboardCard07>
         <DashboardCard07>
-          <div className="flex justify-center items-center h-full">
-            <TransactionPieChart
-              data={allPassTypeData}
-              title="Total Passes"
-              angleKey="totalPasses"
-            />
-          </div>
+           <div className="flex justify-center items-center h-full">
+              <TransactionPieChart
+                data={allPassTypeData}
+                title="Failed Transactions By Type Of Device"
+                angleKey="totalPasses"
+              />
+            </div>
         </DashboardCard07>
         <DashboardCard07>
           <div className="flex gap-4">
