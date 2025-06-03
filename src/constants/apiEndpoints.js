@@ -5,8 +5,8 @@ import useAuthStore from "../store/authStore";
 //   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
   //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -48,8 +48,8 @@ export const RTC_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // PARK test
-// export const API_BASE_URL =
-//   "https://g681gc3l-7237.inc1.devtunnels.ms/api/";
+export const API_BASE_URL =
+  "https://swv3t33v-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -267,4 +267,8 @@ export const API_ENDPOINTS = {
     GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
+
+  FAILED_TRANSACTIONS:{
+    GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
+  }
 };

@@ -7,6 +7,7 @@ import { useRtcDashboardStore } from "../../../../store/rtc/RtcDashboardStore";
 import TransactionPieChart from "../piecharts/TransactionPieChart";
 import TransactionGraph from "../piecharts/TransactionGraph";
 import TransactionDepartment from "../piecharts/TransactionDepartment";
+import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 
 function FailedTransactionsDashboard({ filter }) {
   superballs.register();
@@ -18,11 +19,20 @@ function FailedTransactionsDashboard({ filter }) {
     fetchallDashboardReportData,
     allDashboardReportData,
   } = useRtcDashboardStore();
-  console.log("allDashboardReportData", allDashboardReportData);
+  // console.log("allDashboardReportData", allDashboardReportData);
+  const {
+      fetchFailedTransactionByReason,
+      FailedTransactionByReasonData,
+  } = useTransactionsStore();
+  console.log("FailedTransactionByReasonData", FailedTransactionByReasonData);
   const initialValues = {
     fromDate: "",
     toDate: "",
   };
+  
+   useEffect(()=>{
+    fetchFailedTransactionByReason()
+   },[])
 
   useEffect(() => {
     fetchallPassData({
@@ -91,7 +101,7 @@ function FailedTransactionsDashboard({ filter }) {
                       type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
@@ -200,13 +210,13 @@ function FailedTransactionsDashboard({ filter }) {
           </div>
         </DashboardCard07>
         <DashboardCard07>
-           <div className="flex justify-center items-center h-full">
-              <TransactionPieChart
-                data={allPassTypeData}
-                title="Total Passes"
-                angleKey="totalPasses"
-              />
-            </div>
+          <div className="flex justify-center items-center h-full">
+            <TransactionPieChart
+              data={allPassTypeData}
+              title="Total Passes"
+              angleKey="totalPasses"
+            />
+          </div>
         </DashboardCard07>
         <DashboardCard07>
           <div className="flex gap-4">

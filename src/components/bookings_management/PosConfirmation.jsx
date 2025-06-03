@@ -8,6 +8,7 @@ import TransactionQrLoader from "./TransactionQrLoader";
 import { launchPaytmPOS } from "../../utils/Helper";
 import PosTransactionFailed from "./PosTransactionFailed";
 import { toast, ToastContainer } from "react-toastify";
+import BackButton from "../BackButton";
 
 function formatBookingDate(date) {
   const year = date.getFullYear();
@@ -61,7 +62,7 @@ const PosConfirmation = () => {
   }, [counter]);
 
   // for generate booking details qr
-  console.log("Generate_deep_link_data", Generate_deep_link_data);
+  // console.log("Generate_deep_link_data", Generate_deep_link_data);
   useEffect(() => {
     async function handleSaveBookingDetails() {
       if (CheckPosTsxStatusData.resultStatus === "TXN_SUCCESS") {

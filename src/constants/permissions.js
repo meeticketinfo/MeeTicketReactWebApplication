@@ -23,7 +23,7 @@ export const superAdminPermissions = [
   // "tourism-individual",
   // "toursim-bank-payments",
   "user-transaction",
-  "transactions-dashboard"
+  "transactions-dashboard",
 ];
 
 export const parkAdminPermissions = [
@@ -99,7 +99,7 @@ export const SupportAdmin = [
   "transaction-report",
   "booking-details",
   "pending-transaction-details",
-   "Grievance-consolidate",
+  "Grievance-consolidate",
   "Grievance-Incident",
 ];
 
