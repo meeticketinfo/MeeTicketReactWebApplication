@@ -66,18 +66,21 @@ const AddPackage = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/*  Package Name */}
                 <div className="">
-                  <label htmlFor="User" className="block text-xs font-medium">
-                    Package Name <span className="text-red-500">*</span>
+                 <label
+                    htmlFor="openTime"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Package
                   </label>
                   <Field
                     name="package.packageName"
                     type="text"
                     maxlength={5}
-                    className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Package Name"
                   />
                   {/* <ErrorMessage
-                    name="facilityDto.facilitySequenceNumber"
+                    name="package.packageName"
                     component="div"
                     className="text-red-500 text-xs absolute"
                   /> */}
@@ -86,7 +89,7 @@ const AddPackage = () => {
                 {/* Open Time */}
                 <div className="">
                   <label
-                    htmlFor="openTime"
+                    htmlFor="package.checkInTime"
                     className="block text-sm font-semibold text-gray-700"
                   >
                     Check-in
@@ -94,11 +97,11 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkInTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
+                     className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Check-in Time"
                   />
                   {/* <ErrorMessage
-                      name="openTime"
+                      name="package.checkInTime"
                      component="div"
                      className="text-red-500 text-xs mt-1"
                      /> */}
@@ -107,7 +110,7 @@ const AddPackage = () => {
                 {/* Close Time */}
                 <div className="">
                   <label
-                    htmlFor="closeTime"
+                    htmlFor="package.checkOutTime"
                     className="block text-sm font-semibold text-gray-700"
                   >
                     Checkout Time
@@ -115,11 +118,11 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkOutTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
+                     className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Checkout Time"
                   />
                   {/* <ErrorMessage
-                      name="closeTime"
+                      name="package.checkOutTime"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                      /> */}
@@ -133,12 +136,12 @@ const AddPackage = () => {
                   <Field
                     as="textarea"
                     maxlength={100}
-                    name="package.guidelines"
+                    name="package.description"
                     className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Description"
                   />
                   {/* <ErrorMessage
-                        name="package.guidelines"
+                        name="package.description"
                         component="div"
                         className="text-red-500 text-xs absolute"
                         /> */}
@@ -188,16 +191,17 @@ const AddPackage = () => {
                   <Field
                     name="package.guidelines"
                     type="text"
-                    maxlength={5}
+                    maxlength={50}
                     className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Guidelines"
                   />
                   {/* <ErrorMessage
-                    name="facilityDto.guidelines"
+                    name="package.guidelines"
                     component="div"
                     className="text-red-500 text-xs absolute"
                   /> */}
                 </div>
+                
                 {/* ---------------------------------------------------------------------------------------------------------------------- */}
                 {/* has sub facility */}
                 {/* <div className="flex items-center mt-5">
