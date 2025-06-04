@@ -17,15 +17,18 @@ import { Link } from "react-router-dom";
 
 function FailedTransactionsDashboard({ Rangefilter }) {
   superballs.register();
-  
+  localStorage.setItem("range-filter", Rangefilter);
+   const UserTransactionReportFilter = JSON.parse(
+    localStorage.getItem("transactionPayload")
+  );
   const [filters, setfilters] = useState({
-      fromDate: "",
-      toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
-      durationType: Rangefilter,
-    });
+    fromDate: "",
+    toDate: "",
+    locationId: "",
+    categoryId: "",
+    departmentId: "",
+    durationType: Rangefilter,
+  });
   // console.log("allDashboardReportData", allDashboardReportData);
   const { allParks, fetchAllParks } = useParkStore();
 
@@ -58,50 +61,50 @@ function FailedTransactionsDashboard({ Rangefilter }) {
     fetchFailedTransactionByReason({
       fromDate: "",
       toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
+       locationId:  UserTransactionReportFilter.locationId||"",
+      categoryId: UserTransactionReportFilter.categoryId||"",
+      departmentId: UserTransactionReportFilter.departmentId||"",
       durationType: Rangefilter,
     });
     fetchFailedTransactionByLocation({
       fromDate: "",
       toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
+      locationId:  UserTransactionReportFilter.locationId||"",
+      categoryId: UserTransactionReportFilter.categoryId||"",
+      departmentId: UserTransactionReportFilter.departmentId||"",
       durationType: Rangefilter,
     });
     fetchFailedTransactionBydepartment({
       fromDate: "",
       toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
+       locationId:  UserTransactionReportFilter.locationId||"",
+      categoryId: UserTransactionReportFilter.categoryId||"",
+      departmentId: UserTransactionReportFilter.departmentId||"",
       durationType: Rangefilter,
     });
     fetchFailedTransactionByLocationCategory({
       fromDate: "",
       toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
+       locationId:  UserTransactionReportFilter.locationId||"",
+      categoryId: UserTransactionReportFilter.categoryId||"",
+      departmentId: UserTransactionReportFilter.departmentId||"",
       durationType: Rangefilter,
     });
     fetchFailedTransactionTrendGraph({
       fromDate: "",
       toDate: "",
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
+       locationId:  UserTransactionReportFilter.locationId||"",
+      categoryId: UserTransactionReportFilter.categoryId||"",
+      departmentId: UserTransactionReportFilter.departmentId||"",
       durationType: Rangefilter,
     });
   }, [Rangefilter]);
   const initialValues = {
     fromDate: "",
     toDate: "",
-    departmentId: "",
-    entityId: "",
-    ParkId: "",
+    departmentId: UserTransactionReportFilter.departmentId||"",
+    entityId: UserTransactionReportFilter.categoryId||"",
+    ParkId: UserTransactionReportFilter.locationId||"",
   };
   // overAll on submit
   const overAllOnSubmit = (values) => {
@@ -116,8 +119,13 @@ function FailedTransactionsDashboard({ Rangefilter }) {
     };
     console.log("payload", payload);
     //  localStorage.setItem('transactionPayload', JSON.stringify(payload));
-    setfilters(payload)
+    setfilters(payload);
     fetchFailedTransactionTrendGraph(payload);
+    fetchFailedTransactionByReason(payload)
+    fetchFailedTransactionByLocation(payload)
+    fetchFailedTransactionBydepartment(payload)
+    fetchFailedTransactionByLocationCategory(payload)
+
   };
 
   return (
@@ -361,34 +369,46 @@ function FailedTransactionsDashboard({ Rangefilter }) {
         <DashboardCard07>
           <div className="flex">
             <Link
-            onClick={()=>{
-               localStorage.setItem('transactionPayload', JSON.stringify(filters));
-            }}
+              className="flex-1 m-1 px-4 rounded-lg overflow-hidden shadow-md"
+              to="/failed-transactions"
+              onClick={() => {
+                localStorage.setItem(
+                  "transactionPayload",
+                  JSON.stringify(filters)
+                );
+              }}
             >
-            <div className="flex-1 m-1 px-4 rounded-lg overflow-hidden shadow-md">
               <TransactionPieChart
                 data={FailedTransactionByReasonData}
                 title="Failed Transactions By Reason"
                 angleKey="percentage"
                 calloutLabelKey="failureReason"
               />
-            </div>
             </Link>
-            <div className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md">
+
+            <Link className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md"
+             to="/failed-transactions"
+              onClick={() => {
+                localStorage.setItem(
+                  "transactionPayload",
+                  JSON.stringify(filters)
+                );
+              }}
+            >
               <TransactionByLocation
                 data={FailedTransactionByLocationData}
                 title="Failed Transactions By Location "
                 angleKey="percentage"
                 calloutLabelKey="locationName"
               />
-            </div>
+            </Link>
           </div>
         </DashboardCard07>
         <DashboardCard07>
           <div>
             <TransactionGraph
               data={FailedTransactionByGraphData}
-              title="Total Amount "
+              title="Failed Transactions By Trends"
               angleKey="percentage"
               calloutLabelKey="timeSlot"
             />
@@ -405,22 +425,38 @@ function FailedTransactionsDashboard({ Rangefilter }) {
         </DashboardCard07> */}
         <DashboardCard07>
           <div className="flex gap-4">
-            <div className="flex-1 ">
+            <Link className="flex-1 "
+            to="/failed-transactions"
+              onClick={() => {
+                localStorage.setItem(
+                  "transactionPayload",
+                  JSON.stringify(filters)
+                );
+              }}
+            >
               <TransactionDepartment
                 data={FailedTransactionByDepartmentData || []}
                 title="Failed Transactions By Department"
                 angleKey="percentage"
                 calloutLabelKey="departmentName"
               />
-            </div>
-            <div className="flex-1">
+            </Link>
+            <Link className="flex-1"
+            to="/failed-transactions"
+              onClick={() => {
+                localStorage.setItem(
+                  "transactionPayload",
+                  JSON.stringify(filters)
+                );
+              }}
+            >
               <TransactionDepartment
                 data={FailedTransactionByLocationCategoryData || []}
                 title="Failed Transactions By Location category "
                 angleKey="percentage"
                 calloutLabelKey="locationCategory"
               />
-            </div>
+            </Link>
           </div>
         </DashboardCard07>
       </div>

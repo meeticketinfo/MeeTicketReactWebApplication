@@ -11,13 +11,18 @@ import {
 } from "../../../../utils/TypographyHelper";
 import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore"
+import { useParkStore } from "../../../../store/masters/parksStore";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
+import { getDateRange } from "../../../../utils/Helper";
 const FailedTransactions = () => {
   const UserTransactionReportFilter = JSON.parse(
-    localStorage.getItem("UserTransactionReportFilter")
+    localStorage.getItem("transactionPayload")
   );
-  const {allParks, fetchAllParks } = useParkStore();
+  const range = localStorage.getItem("range-filter");
+
+   const [FilterData, setFilterData] = useState({});
+  const { fromDate, toDate } = getDateRange(range);
+  const { allParks, fetchAllParks } = useParkStore();
   const navigate = useNavigate();
   const {
     failureUserTransactionReport,
@@ -70,6 +75,20 @@ const FailedTransactions = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+     {
+      field: "categoryName",
+      headerName: "Location Category",
+      maxWidth: "200",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+      {
+      field: "departmentName",
+      headerName: "Department",
+      maxWidth: "200",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "status",
       headerName: "Status",
@@ -99,36 +118,39 @@ const FailedTransactions = () => {
     },
   ]);
 
-  useEffect(() => {
-    const getParksByResponse = async () => {
-      try {
-        const response = await fetchFailureUserTransactionReport({
-          ...initialValues,
-        //   mobileNumber,
-          status,
-        });
+  // useEffect(() => {
+  //   const getParksByResponse = async () => {
+  //     try {
+  //       const response = await fetchFailureUserTransactionReport({
+  //         ...initialValues,
+  //         //   mobileNumber,
+  //         status,
+  //       });
 
-        const parks = response?.response
-          ?.map((item) => ({
-            id: item.parkId,
-            name: item.parkName,
-          }))
-          .filter(
-            (item, index, self) =>
-              index === self.findIndex((t) => t.id === item.id)
-          );
-      } catch (error) {
-        console.error("Failed to fetch user status transaction report", error);
-      }
-    };
+  //       const parks = response?.response
+  //         ?.map((item) => ({
+  //           id: item.parkId,
+  //           name: item.parkName,
+  //         }))
+  //         .filter(
+  //           (item, index, self) =>
+  //             index === self.findIndex((t) => t.id === item.id)
+  //         );
+  //     } catch (error) {
+  //       console.error("Failed to fetch user status transaction report", error);
+  //     }
+  //   };
 
-    getParksByResponse();
-  }, []);
+  //   getParksByResponse();
+  // }, []);
+
   useEffect(() => {
     fetchFailureUserTransactionReport({
-      ...initialValues,
-    //   mobileNumber,
-      status,
+      fromDate: fromDate,
+      toDate: toDate,
+      status: status || "",
+      parkId: UserTransactionReportFilter.locationId || "",
+      status: "",
     });
   }, []);
   useEffect(() => {
@@ -137,22 +159,41 @@ const FailedTransactions = () => {
     fetchAllParks();
   }, []);
   const initialValues = {
-    fromDate:
-      UserTransactionReportFilter?.fromDate || getCurrentDateStartTime(),
-    toDate: UserTransactionReportFilter?.toDate || getCurrentDateEndTime(),
+    fromDate: UserTransactionReportFilter?.fromDate || fromDate,
+    toDate: UserTransactionReportFilter?.toDate || toDate,
     status: status || "",
-    parkId: UserTransactionReportFilter?.parkId || "",
+    ParkId: UserTransactionReportFilter?.locationId || "",
+    departmentId:UserTransactionReportFilter?.departmentId || "",
+    entityId:UserTransactionReportFilter?.categoryId || "",
   };
 
   const onSubmit = (values) => {
     fetchFailureUserTransactionReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
-    //   mobileNumber: mobileNumber,
-      parkId: values.parkId,
+      parkId: values.ParkId,
       status: values.status || "",
     });
+    setFilterData({
+      departmentId:departmentId,
+      categoryId:entityId
+    })
   };
+const filteredData = failureUserTransactionReport.filter((transaction) => {
+  // Check if departmentId or categoryId exists in the filter and compare with transaction data
+  const filterByDepartmentId = UserTransactionReportFilter?.departmentId
+    ? transaction.departmentId === (FilterData.departmentId||UserTransactionReportFilter.departmentId)
+    : true; // If departmentId is not in filter, don't filter by it
+
+  const filterByCategoryId = UserTransactionReportFilter?.categoryId
+    ? transaction.entityTypeId === (FilterData.categoryId||UserTransactionReportFilter.categoryId)
+    : true; // If categoryId is not in filter, don't filter by it
+
+  return filterByDepartmentId && filterByCategoryId;
+});
+
+// Set rowData based on the condition
+const rowData = filteredData.length > 0 ? filteredData : failureUserTransactionReport;
   return (
     <>
       <AdminLayout>
@@ -165,7 +206,7 @@ const FailedTransactions = () => {
             </div>
             <div className="">
               <button
-                onClick={() => navigate("/user-transaction")}
+                onClick={() => navigate("/transactions-dashboard")}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -422,10 +463,10 @@ const FailedTransactions = () => {
               )}
             </Formik>
             <AgGridTable
-            ExportName="UserStatusTransactionReport"
-            rowData={failureUserTransactionReport}
-            columnDefs={columnDefs}
-            isFetchLoading={isFetchFailureUserTransactionReport}
+              ExportName="UserStatusTransactionReport"
+              rowData={rowData}
+              columnDefs={columnDefs}
+              isFetchLoading={isFetchFailureUserTransactionReport}
             />
           </div>
         </div>

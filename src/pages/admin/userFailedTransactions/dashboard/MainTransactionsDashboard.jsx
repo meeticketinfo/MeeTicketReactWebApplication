@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import FailedTransactionsDashboard from "./FailedTransactionsDashboard";
-import { getThisMonthRange, getThisWeekRange, getThisYearRange, getTodayRange } from "../../../../utils/Helper";
+
 
 const TransactionsDashboard = () => {
-  const [activeTab, setActiveTab] = useState("today");
+  const range = 
+      localStorage.getItem("range-filter")
+  const [activeTab, setActiveTab] = useState(range||"today");
   const [Filter, setFilter] = useState("week");
   const tabs = [
-    { label: "today", value: "today",today: getTodayRange(), },
-    { label: "week", value: "week",week: getThisWeekRange(), },
-    { label: "month", value: "month",month: getThisMonthRange(), },
-    { label: "year", value: "year",year: getThisYearRange(), },
+    { label: "today", value: "today", },
+    { label: "week", value: "week", },
+    { label: "month", value: "month", },
+    { label: "year", value: "year", },
   ];
 
   return (
@@ -36,7 +38,7 @@ const TransactionsDashboard = () => {
                     : "bg-white text-black border border-gray-300"
                 }`}
               >
-                {tab.label}
+                <spn className="capitalize">{tab.label}</spn>
               </button>
             ))}
           </div>
