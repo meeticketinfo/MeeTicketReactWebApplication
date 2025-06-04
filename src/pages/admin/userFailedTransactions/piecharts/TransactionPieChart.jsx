@@ -77,7 +77,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
                 {item.failureReason ? item.failureReason : "N/A"}
               </span>
             </div>
-            <Link to={"/bank-transactions"}>
+            <Link to={""}>
               <span className="font-bold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}
               </span>

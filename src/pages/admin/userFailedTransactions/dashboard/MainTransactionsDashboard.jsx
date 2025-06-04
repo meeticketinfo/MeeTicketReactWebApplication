@@ -43,7 +43,7 @@ const TransactionsDashboard = () => {
             ))}
           </div>
         </div>
-        <FailedTransactionsDashboard Rangefilter={activeTab} />
+        <FailedTransactionsDashboard Rangefilter={activeTab} setActiveTab={setActiveTab} />
       </div>
     </AdminLayout>
   );

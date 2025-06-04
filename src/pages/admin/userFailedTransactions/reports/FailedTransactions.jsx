@@ -20,9 +20,13 @@ const FailedTransactions = () => {
   );
   const range = localStorage.getItem("range-filter");
 
-   const [FilterData, setFilterData] = useState({});
+  const [FilterData, setFilterData] = useState({});
   const { fromDate, toDate } = getDateRange(range);
   const { allParks, fetchAllParks } = useParkStore();
+  const [DepartmentId, setdepartmentId] = useState(UserTransactionReportFilter.departmentId||"");
+  const [LocationCatgoryId, setLocationCatgoryId] = useState( UserTransactionReportFilter.categoryId||"");
+  console.log("DepartmentId",DepartmentId)
+  console.log("LocationCatgoryId",LocationCatgoryId)
   const navigate = useNavigate();
   const {
     failureUserTransactionReport,
@@ -71,18 +75,18 @@ const FailedTransactions = () => {
     {
       field: "parkName",
       headerName: "Park Name",
-      maxWidth: "200",
+      minWidth: "200",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-     {
+    {
       field: "categoryName",
       headerName: "Location Category",
       maxWidth: "200",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-      {
+    {
       field: "departmentName",
       headerName: "Department",
       maxWidth: "200",
@@ -163,8 +167,8 @@ const FailedTransactions = () => {
     toDate: UserTransactionReportFilter?.toDate || toDate,
     status: status || "",
     ParkId: UserTransactionReportFilter?.locationId || "",
-    departmentId:UserTransactionReportFilter?.departmentId || "",
-    entityId:UserTransactionReportFilter?.categoryId || "",
+    departmentId: UserTransactionReportFilter?.departmentId || "",
+    entityId: UserTransactionReportFilter?.categoryId || "",
   };
 
   const onSubmit = (values) => {
@@ -175,25 +179,28 @@ const FailedTransactions = () => {
       status: values.status || "",
     });
     setFilterData({
-      departmentId:departmentId,
-      categoryId:entityId
-    })
+      departmentId: departmentId,
+      categoryId: entityId,
+    });
   };
-const filteredData = failureUserTransactionReport.filter((transaction) => {
-  // Check if departmentId or categoryId exists in the filter and compare with transaction data
-  const filterByDepartmentId = UserTransactionReportFilter?.departmentId
-    ? transaction.departmentId === (FilterData.departmentId||UserTransactionReportFilter.departmentId)
-    : true; // If departmentId is not in filter, don't filter by it
 
-  const filterByCategoryId = UserTransactionReportFilter?.categoryId
-    ? transaction.entityTypeId === (FilterData.categoryId||UserTransactionReportFilter.categoryId)
-    : true; // If categoryId is not in filter, don't filter by it
+  const filteredData = failureUserTransactionReport.filter((transaction) => {
+    // Check if departmentId or categoryId exists in the filter and compare with transaction data
+    const filterByDepartmentId = DepartmentId
+      ? transaction.departmentId ===
+        (FilterData.departmentId || DepartmentId)
+      : true; // If departmentId is not in filter, don't filter by it
 
-  return filterByDepartmentId && filterByCategoryId;
-});
+    const filterByCategoryId = LocationCatgoryId
+      ? transaction.entityTypeId ===
+        (FilterData.categoryId || LocationCatgoryId)
+      : true; // If categoryId is not in filter, don't filter by it
 
-// Set rowData based on the condition
-const rowData = filteredData.length > 0 ? filteredData : failureUserTransactionReport;
+    return filterByDepartmentId && filterByCategoryId;
+  });
+
+  // Set rowData based on the condition
+  const rowData = filteredData.length > 0 ? filteredData : [];
   return (
     <>
       <AdminLayout>
@@ -285,12 +292,13 @@ const rowData = filteredData.length > 0 ? filteredData : failureUserTransactionR
                           value: dept.departmentId,
                           label: dept.departmentName,
                         }))}
-                      onChange={(selectedOption) =>
+                      onChange={(selectedOption) =>{
                         setFieldValue(
                           "departmentId",
                           selectedOption?.value || ""
                         )
-                      }
+                        setdepartmentId(selectedOption?.value || "")
+                      }}
                       isClearable
                       placeholder="Department"
                       className="mt-[4px] text-sm"
@@ -344,9 +352,10 @@ const rowData = filteredData.length > 0 ? filteredData : failureUserTransactionR
                           value: entity.entityTypeId,
                           label: entity.entityTypeName,
                         }))}
-                      onChange={(selectedOption) =>
-                        setFieldValue("entityId", selectedOption?.value || "")
-                      }
+                      onChange={(selectedOption) => {
+                        setFieldValue("entityId", selectedOption?.value || ""),
+                          setLocationCatgoryId(selectedOption?.value || "");
+                      }}
                       isClearable
                       placeholder="Location Category"
                       className="mt-[4px] text-sm"

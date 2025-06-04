@@ -15,10 +15,10 @@ import { useDepartmentTypesStore } from "../../../../store/masters/departmentTyp
 import Select from "react-select";
 import { Link } from "react-router-dom";
 
-function FailedTransactionsDashboard({ Rangefilter }) {
+function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
   superballs.register();
   localStorage.setItem("range-filter", Rangefilter);
-   const UserTransactionReportFilter = JSON.parse(
+  const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
   const [filters, setfilters] = useState({
@@ -61,50 +61,50 @@ function FailedTransactionsDashboard({ Rangefilter }) {
     fetchFailedTransactionByReason({
       fromDate: "",
       toDate: "",
-       locationId:  UserTransactionReportFilter.locationId||"",
-      categoryId: UserTransactionReportFilter.categoryId||"",
-      departmentId: UserTransactionReportFilter.departmentId||"",
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
       durationType: Rangefilter,
     });
     fetchFailedTransactionByLocation({
       fromDate: "",
       toDate: "",
-      locationId:  UserTransactionReportFilter.locationId||"",
-      categoryId: UserTransactionReportFilter.categoryId||"",
-      departmentId: UserTransactionReportFilter.departmentId||"",
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
       durationType: Rangefilter,
     });
     fetchFailedTransactionBydepartment({
       fromDate: "",
       toDate: "",
-       locationId:  UserTransactionReportFilter.locationId||"",
-      categoryId: UserTransactionReportFilter.categoryId||"",
-      departmentId: UserTransactionReportFilter.departmentId||"",
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
       durationType: Rangefilter,
     });
     fetchFailedTransactionByLocationCategory({
       fromDate: "",
       toDate: "",
-       locationId:  UserTransactionReportFilter.locationId||"",
-      categoryId: UserTransactionReportFilter.categoryId||"",
-      departmentId: UserTransactionReportFilter.departmentId||"",
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
       durationType: Rangefilter,
     });
     fetchFailedTransactionTrendGraph({
       fromDate: "",
       toDate: "",
-       locationId:  UserTransactionReportFilter.locationId||"",
-      categoryId: UserTransactionReportFilter.categoryId||"",
-      departmentId: UserTransactionReportFilter.departmentId||"",
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
       durationType: Rangefilter,
     });
   }, [Rangefilter]);
   const initialValues = {
     fromDate: "",
     toDate: "",
-    departmentId: UserTransactionReportFilter.departmentId||"",
-    entityId: UserTransactionReportFilter.categoryId||"",
-    ParkId: UserTransactionReportFilter.locationId||"",
+    departmentId: UserTransactionReportFilter?.departmentId || "",
+    entityId: UserTransactionReportFilter?.categoryId || "",
+    ParkId: UserTransactionReportFilter?.locationId || "",
   };
   // overAll on submit
   const overAllOnSubmit = (values) => {
@@ -121,11 +121,10 @@ function FailedTransactionsDashboard({ Rangefilter }) {
     //  localStorage.setItem('transactionPayload', JSON.stringify(payload));
     setfilters(payload);
     fetchFailedTransactionTrendGraph(payload);
-    fetchFailedTransactionByReason(payload)
-    fetchFailedTransactionByLocation(payload)
-    fetchFailedTransactionBydepartment(payload)
-    fetchFailedTransactionByLocationCategory(payload)
-
+    fetchFailedTransactionByReason(payload);
+    fetchFailedTransactionByLocation(payload);
+    fetchFailedTransactionBydepartment(payload);
+    fetchFailedTransactionByLocationCategory(payload);
   };
 
   return (
@@ -133,7 +132,7 @@ function FailedTransactionsDashboard({ Rangefilter }) {
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-full ">
           <Formik initialValues={initialValues} onSubmit={overAllOnSubmit}>
-            {({ values, setFieldValue }) => (
+            {({ values, setFieldValue, setValues }) => (
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                   <div>
@@ -350,13 +349,73 @@ function FailedTransactionsDashboard({ Rangefilter }) {
                       }}
                     />
                   </div>
-                  <div className="flex items-end">
+                  <div className="flex gap-2 items-end">
                     <button
                       type="submit"
                       className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                       // disabled={isFetchEntityBookingsLoading}
                     >
                       Search
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                      onClick={() => {
+                        console.log("test");
+                        localStorage.removeItem("UserTransactionReportFilter");
+                        localStorage.setItem("range-filter", "today");
+                        localStorage.removeItem("transactionPayload")
+                        setValues({
+                          fromDate: "",
+                          toDate: "",
+                          departmentId: "",
+                          entityId: "",
+                          ParkId: "",
+                        });
+                        setActiveTab("today");
+                        fetchFailedTransactionByReason({
+                          fromDate: "",
+                          toDate: "",
+                          locationId: "",
+                          categoryId: "",
+                          departmentId: "",
+                          durationType: Rangefilter,
+                        });
+                        fetchFailedTransactionByLocation({
+                          fromDate: "",
+                          toDate: "",
+                          locationId: "",
+                          categoryId: "",
+                          departmentId: "",
+                          durationType: Rangefilter,
+                        });
+                        fetchFailedTransactionBydepartment({
+                          fromDate: "",
+                          toDate: "",
+                          locationId: "",
+                          categoryId: "",
+                          departmentId: "",
+                          durationType: Rangefilter,
+                        });
+                        fetchFailedTransactionByLocationCategory({
+                          fromDate: "",
+                          toDate: "",
+                          locationId: "",
+                          categoryId: "",
+                          departmentId: "",
+                          durationType: Rangefilter,
+                        });
+                        fetchFailedTransactionTrendGraph({
+                          fromDate: "",
+                          toDate: "",
+                          locationId: "",
+                          categoryId: "",
+                          departmentId: "",
+                          durationType: Rangefilter,
+                        });
+                      }}
+                    >
+                      Reset
                     </button>
                   </div>
                 </div>
@@ -386,8 +445,9 @@ function FailedTransactionsDashboard({ Rangefilter }) {
               />
             </Link>
 
-            <Link className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md"
-             to="/failed-transactions"
+            <Link
+              className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md"
+              to="/failed-transactions"
               onClick={() => {
                 localStorage.setItem(
                   "transactionPayload",
@@ -425,8 +485,9 @@ function FailedTransactionsDashboard({ Rangefilter }) {
         </DashboardCard07> */}
         <DashboardCard07>
           <div className="flex gap-4">
-            <Link className="flex-1 "
-            to="/failed-transactions"
+            <Link
+              className="flex-1 "
+              to="/failed-transactions"
               onClick={() => {
                 localStorage.setItem(
                   "transactionPayload",
@@ -441,8 +502,9 @@ function FailedTransactionsDashboard({ Rangefilter }) {
                 calloutLabelKey="departmentName"
               />
             </Link>
-            <Link className="flex-1"
-            to="/failed-transactions"
+            <Link
+              className="flex-1"
+              to="/failed-transactions"
               onClick={() => {
                 localStorage.setItem(
                   "transactionPayload",
