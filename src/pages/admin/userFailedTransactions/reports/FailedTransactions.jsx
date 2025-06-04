@@ -23,10 +23,14 @@ const FailedTransactions = () => {
   const [FilterData, setFilterData] = useState({});
   const { fromDate, toDate } = getDateRange(range);
   const { allParks, fetchAllParks } = useParkStore();
-  const [DepartmentId, setdepartmentId] = useState(UserTransactionReportFilter.departmentId||"");
-  const [LocationCatgoryId, setLocationCatgoryId] = useState( UserTransactionReportFilter.categoryId||"");
-  console.log("DepartmentId",DepartmentId)
-  console.log("LocationCatgoryId",LocationCatgoryId)
+  const [DepartmentId, setdepartmentId] = useState(
+    UserTransactionReportFilter.departmentId || ""
+  );
+  const [LocationCatgoryId, setLocationCatgoryId] = useState(
+    UserTransactionReportFilter.categoryId || ""
+  );
+  // console.log("DepartmentId",DepartmentId)
+  // console.log("LocationCatgoryId",LocationCatgoryId)
   const navigate = useNavigate();
   const {
     failureUserTransactionReport,
@@ -187,8 +191,7 @@ const FailedTransactions = () => {
   const filteredData = failureUserTransactionReport.filter((transaction) => {
     // Check if departmentId or categoryId exists in the filter and compare with transaction data
     const filterByDepartmentId = DepartmentId
-      ? transaction.departmentId ===
-        (FilterData.departmentId || DepartmentId)
+      ? transaction.departmentId === (FilterData.departmentId || DepartmentId)
       : true; // If departmentId is not in filter, don't filter by it
 
     const filterByCategoryId = LocationCatgoryId
@@ -292,12 +295,12 @@ const FailedTransactions = () => {
                           value: dept.departmentId,
                           label: dept.departmentName,
                         }))}
-                      onChange={(selectedOption) =>{
+                      onChange={(selectedOption) => {
                         setFieldValue(
                           "departmentId",
                           selectedOption?.value || ""
-                        )
-                        setdepartmentId(selectedOption?.value || "")
+                        );
+                        setdepartmentId(selectedOption?.value || "");
                       }}
                       isClearable
                       placeholder="Department"
