@@ -62,23 +62,24 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div ref={chartRef} className="w-[500px] h-[500px]" />
-      <div className="flex flex-wrap gap-3 mt-4 p-3">
+      <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
         {data?.map((item, index) => (
           <div
             key={item.failureReason}
-            className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-4 py-2 shadow-sm "
+            title={item.failureReason}
+            className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
           >
             <div className="flex items-center gap-2">
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs  text-gray-800">
-                {item.failureReason ? item.failureReason : "N/A"}
+              <span className="text-xs text-gray-800 max-w-[150px] truncate">
+                {item.failureReason ? item.failureReason : "Reason not updated"}
               </span>
             </div>
             <Link to={""}>
-              <span className="font-bold text-sm text-[#57a4d8] ml-2 underline">
+              <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}
               </span>
             </Link>

@@ -60,16 +60,16 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title }) 
   }, [coloredData, angleKey, calloutLabelKey, title]);
 
   return (
-    <div className="w-[475px] m-2 bg-white rounded-xl p-2 shadow-md">
+    <div className="m-2 pb-3 bg-white rounded-xl p-2 shadow-md">
       <div ref={chartRef} className="w-full h-[300px]" />
-      <div className="grid grid-cols-2 gap-3 mt-5">
+      <div className="grid grid-cols-2 gap-2 mt-5">
         {coloredData.map((item) => (
           <div
             key={item[calloutLabelKey]}
             className="flex items-center gap-2 bg-[#F5F6F8] rounded-md px-3 py-2 text-xs font-thin"
           >
             <span
-              className="w-3 h-3 rounded-full"
+              className="w-3 h-3 rounded-full flex-shrink-0"
               style={{ backgroundColor: item.color }}
             />
             <span className="text-xs">{item[calloutLabelKey]}</span>

@@ -428,7 +428,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
         <DashboardCard07>
           <div className="flex">
             <Link
-              className="flex-1 m-1 px-4 rounded-lg overflow-hidden shadow-md"
+              className="flex-1 p-1 m-1 rounded-lg overflow-hidden shadow-md"
               to="/failed-transactions"
               onClick={() => {
                 localStorage.setItem(
@@ -446,7 +446,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
             </Link>
 
             <Link
-              className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md"
+              className="flex-1  p-1 m-1 rounded-lg overflow-hidden shadow-md"
               to="/failed-transactions"
               onClick={() => {
                 localStorage.setItem(
