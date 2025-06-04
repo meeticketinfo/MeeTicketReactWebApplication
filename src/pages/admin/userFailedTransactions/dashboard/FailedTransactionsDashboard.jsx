@@ -14,13 +14,20 @@ import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore"
 import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
 import Select from "react-select";
 import { Link } from "react-router-dom";
+import { getDateRange } from "../../../../utils/Helper";
 
 function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
   superballs.register();
+
   localStorage.setItem("range-filter", Rangefilter);
   const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
+  const range = localStorage.getItem("range-filter");
+  console.log("Rangefilter", Rangefilter);
+  const { fromDate, toDate } = getDateRange(Rangefilter);
+  console.log("fromDate",fromDate)
+  console.log("toDate",toDate)
   const [filters, setfilters] = useState({
     fromDate: "",
     toDate: "",
@@ -117,7 +124,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
       departmentId: values.departmentId,
       durationType: Rangefilter,
     };
-    console.log("payload", payload);
+    // console.log("payload", payload);
     //  localStorage.setItem('transactionPayload', JSON.stringify(payload));
     setfilters(payload);
     fetchFailedTransactionTrendGraph(payload);
@@ -145,14 +152,13 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                     <Field
                       type="datetime-local"
                       name="fromDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // min={getCurrentDate()}
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      min={fromDate} // Restricts the minimum value to fromDate
+                      max={values.toDate} // Restricts the maximum value to the selected toDate
                       onChange={(e) => {
                         const fromDateValue = e.target.value;
                         setFieldValue("fromDate", fromDateValue);
                         if (new Date(fromDateValue) > new Date(values.toDate)) {
-                          // Automatically update toDate if it's earlier than fromDate
                           setFieldValue("toDate", fromDateValue);
                         }
                       }}
@@ -168,9 +174,8 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                     <Field
                       type="datetime-local"
                       name="toDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // min={values.fromDate || getCurrentDateStartTime()}
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      min={values.fromDate} // Restricts the minimum value to the selected fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
                         setFieldValue("toDate", toDateValue);
@@ -359,55 +364,57 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                     </button>
                     <button
                       type="button"
-                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                      className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                       onClick={() => {
-                        console.log("test");
+                        // Reset form values and filters
                         localStorage.removeItem("UserTransactionReportFilter");
                         localStorage.setItem("range-filter", "today");
-                        localStorage.removeItem("transactionPayload")
+                        localStorage.removeItem("transactionPayload");
                         setValues({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate: fromDate,
+                          toDate: toDate,
                           departmentId: "",
                           entityId: "",
                           ParkId: "",
                         });
                         setActiveTab("today");
+
+                        // Reset chart data by clearing relevant stores
                         fetchFailedTransactionByReason({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate,
+                          toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionByLocation({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate,
+                          toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionBydepartment({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate,
+                          toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionByLocationCategory({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate,
+                          toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionTrendGraph({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate,
+                          toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
