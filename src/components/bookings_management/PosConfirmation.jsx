@@ -9,6 +9,7 @@ import { launchPaytmPOS } from "../../utils/Helper";
 import PosTransactionFailed from "./PosTransactionFailed";
 import { toast, ToastContainer } from "react-toastify";
 import BackButton from "../BackButton";
+import useOnlineStatus from "../../utils/useOnlineStatus";
 
 function formatBookingDate(date) {
   const year = date.getFullYear();
@@ -21,8 +22,12 @@ function formatBookingDate(date) {
   return `${year}-${month}-${day}T${hours}:00:00.000`;
 }
 const PosConfirmation = () => {
+  const isOnline = useOnlineStatus();
+  console.log("isOnline", isOnline);
   const [counter, setCounter] = useState(120);
+
   const [isPosTransactionFailed, setIsPosTransactionFailed] = useState(false);
+  const [Loader, setLoader] = useState(false);
   const navigate = useNavigate();
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
@@ -44,7 +49,15 @@ const PosConfirmation = () => {
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
-  const role = roleDetails?.name;
+  // const role = roleDetails?.name;
+
+  if (!isOnline) {
+    launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
+    navigate(`/book-tickets`);
+    sessionStorage.removeItem("bookingPayload");
+    setPaymentStatus({});
+    localStorage.removeItem("booking-process-store");
+  }
 
   useEffect(() => {
     if (counter > 0 && CheckPosTsxStatusData.resultStatus !== "TXN_SUCCESS") {
@@ -81,20 +94,27 @@ const PosConfirmation = () => {
           }, 1000);
 
           if (result && result.data && result.data.status === 200) {
+            setLoader(true);
             const newBookingId = result?.data?.data?.data;
 
             navigate(`/entity-bookings/view-details/${newBookingId}`);
           } else {
             toast.error("Unexpected response from the server.");
+            setIsPosTransactionFailed(true);
           }
         } catch (xhr) {
           //  toast.error("Unexpected response from the server.");
           handleApiError(xhr);
+          setIsPosTransactionFailed(true);
+          launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
         } finally {
           //   setSubmitting(false);
+          setIsPosTransactionFailed(true);
+          launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
         }
       } else if (CheckPosTsxStatusData.resultStatus === "TXN_FAILURE") {
         setIsPosTransactionFailed(true);
+        launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
       }
     }
 
@@ -102,7 +122,7 @@ const PosConfirmation = () => {
   }, [CheckPosTsxStatusData.resultStatus]);
   return (
     <AdminLayout>
-      <ToastContainer/>
+      <ToastContainer />
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
@@ -110,29 +130,31 @@ const PosConfirmation = () => {
               POS CONFIRMATION
             </h1>
           </div>
+          {true && (
+            <div className="flex justify-end">
+              <BackButton
+                label="Back"
+                onClick={() => {
+                  console.log("logged");
+                  launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
+                  navigate(`/book-tickets`);
+                  sessionStorage.removeItem("bookingPayload");
+                  setPaymentStatus({});
+                  localStorage.removeItem("booking-process-store");
+                }}
+                className="bg-blue-600 hover:bg-blue-700 flex items-end"
+                //  disabled={isSubmitting}
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {role === "ROLE_ZOOPARKADMIN" && (
-        <div className="flex justify-end">
-          <BackButton
-            label="Back"
-            onClick={() => {
-              setIsBookingFormVisible(false);
-              setIsFirstStepTransaction(false);
-              setPaymentStatus({});
-              localStorage.removeItem("booking-process-store");
-            }}
-            className="bg-blue-600 hover:bg-blue-700 flex items-end"
-            // disabled={isSubmitting}
-          />
-        </div>
-      )}
       <div className="flex flex-col items-center gap-4">
         <div className="text-center text-gray-600">
           {isPosTransactionFailed ? (
             <PosTransactionFailed />
-          ) : CheckPosTsxStatusData.resultStatus !== "TXN_SUCCESS" ? (
+          ) : !Loader ? (
             <div className="flex flex-col items-center justify-center text-center text-gray-700">
               {/* <img
                 src="/assets/images/processing-timer.gif" 

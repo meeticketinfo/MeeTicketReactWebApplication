@@ -800,7 +800,7 @@ export const FacilityServices = () => {
                               </label>
                             </div>
                             {/* POS Device */}
-                            {role === "ROLE_ZOOPARKADMIN"&&<div className="flex items-center">
+                            {true&&<div className="flex items-center">
                               <Field
                                 id="pos-radio"
                                 name="paymentMethod"

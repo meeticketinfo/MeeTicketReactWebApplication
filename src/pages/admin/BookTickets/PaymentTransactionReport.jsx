@@ -17,9 +17,13 @@ import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 
 function PaymentTransactionReport() {
+  const storedUser = localStorage.getItem("PaymentTransactions");
   const [openModal, setOpenModal] = useState(false);
-  const [reGenerateData, setreGenerateData] = useState({});
-  const [verifyData,setVerifyData]=useState("")
+  const [reGenerateData, setreGenerateData] = useState(null);
+  const [isUpi, setisUpi] = useState(null);
+  console.log("reGenerateData", reGenerateData);
+  const [verifyData, setVerifyData] = useState("");
+  const [ReGenerateOrderId, setReGenerateOrderId] = useState("");
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const {
     isTransactionPaymentReportsLoading,
@@ -71,6 +75,20 @@ function PaymentTransactionReport() {
       phoneNumber: values.phoneNumber ? values.phoneNumber : null,
       parkId: null,
     });
+    localStorage.setItem(
+      "PaymentTransactions",
+      JSON.stringify({
+        startDate: values.fromDate,
+        endDate: values.toDate,
+        departmentId: values.departmentId,
+        entityTypeId: values.entityId,
+        currentTransactionStatus: values.typeOfBooking
+          ? values.typeOfBooking
+          : null,
+        phoneNumber: values.phoneNumber ? values.phoneNumber : null,
+        parkId: null,
+      })
+    );
   };
 
   const [columnDefs] = useState([
@@ -131,20 +149,55 @@ function PaymentTransactionReport() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    // {
-    //   field: "refundStatus",
-    //   headerName: "Refund Status",
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
+    {
+      field: "refundStatus",
+      headerName: "Refund Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Confirmed Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
     {
       field: "Re-grnerateTicket",
-      headerName: "Re-grnerate Ticket",
-      maxWidth: 160,
+      headerName: "Re-generate Ticket",
+      maxWidth: 180,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         return (
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-4">
+            {
+              <button
+                className={`${
+                  params.data.resultStatus === "TXN_SUCCESS"
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-v1"
+                } text-white text-xs leading-normal px-1.5 font-semibold py-1 mt-1.5 rounded-md`}
+                onClick={() => {
+                  setVerifyData(params.data.orderId);
+                  setOpenVerifyModal(true);
+                  setisUpi(params.data.isPaymentTransaction);
+                }}
+                disabled={params.data.resultStatus === "TXN_SUCCESS"}
+              >
+                Verify Status
+              </button>
+            }
+          </div>
+        );
+      },
+    },
+    {
+      field: "Re-grnerateTicket",
+      headerName: "Re-generate Ticket",
+      maxWidth: 180,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => {
+        return (
+          <div className="flex justify-center gap-4">
             <Tippy
               content={
                 <div className="max-w-xs break-words p-2">
@@ -162,24 +215,17 @@ function PaymentTransactionReport() {
                 className="cursor-pointer"
                 onClick={() => {
                   setOpenModal(true);
-                  setreGenerateData({
-                    paymentOrderId: params.data.orderId,
-                    mobileNumber: params.data.phonE_NUMBER,
-                  });
+                  setreGenerateData(
+                    // paymentOrderId: params.data.orderId,
+                    // mobileNumber: params.data.phonE_NUMBER,
+                    params.data.requestDto
+                  );
+                  setReGenerateOrderId(params.data.orderId);
                 }}
               >
                 <ImTicket className="text-[24px] text-blue-v2  mt-2.5 " />
               </span>
             </Tippy>
-            <button
-              className={`${"bg-blue-v2"} text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
-               onClick={()=>{
-                setVerifyData(params.data.orderId)
-                setOpenVerifyModal(true)
-               }}
-            >
-              Verify Status
-            </button>
           </div>
         );
       },
@@ -187,8 +233,14 @@ function PaymentTransactionReport() {
   ]);
 
   const handleReGenerateTicket = async () => {
+    const requestData = JSON.parse(reGenerateData);
+
+    const finalData = { ...requestData, TransactionId: ReGenerateOrderId };
+    console.log(requestData);
+
     try {
-      const res = await FetchReGenerateTicket(reGenerateData);
+      const res = await FetchReGenerateTicket(finalData);
+
       console.log(res);
       if (res.response.data.status == 200) {
         setOpenModal(false);
@@ -204,17 +256,34 @@ function PaymentTransactionReport() {
           showConfirmButton: false,
         }).then(() => {
           // Call the API after the SweetAlert modal closes
+          fetchPaymentTransactions({
+            fromDate: userObject.startDate || getCurrentDate(),
+            toDate: userObject.endDate || getCurrentDate(),
+            typeOfBooking: userObject.currentTransactionStatus || "",
+            phoneNumber: userObject.phoneNumber || "",
+            entityId: userObject.entityTypeId || null,
+            departmentId: userObject.departmentId || null,
+          });
         });
       } else {
         setOpenModal(false);
         Swal.fire({
           title: "oops!",
           text: res.response.data.message,
-          icon: "error",
+          icon: "info",
           confirmButtonText: "OK",
-        }).then(() => {});
+        }).then(() => {
+          fetchPaymentTransactions({
+            fromDate: userObject.startDate || getCurrentDate(),
+            toDate: userObject.endDate || getCurrentDate(),
+            typeOfBooking: userObject.currentTransactionStatus || "",
+            phoneNumber: userObject.phoneNumber || "",
+            entityId: userObject.entityTypeId || null,
+            departmentId: userObject.departmentId || null,
+          });
+        });
       }
-    } catch(err) {
+    } catch (err) {
       // console.log("err",err)
       setOpenModal(false);
       Swal.fire({
@@ -222,49 +291,207 @@ function PaymentTransactionReport() {
         text: `Regeneration failed. Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {});
+      }).then(() => {
+        fetchPaymentTransactions({
+          fromDate: userObject.startDate || getCurrentDate(),
+          toDate: userObject.endDate || getCurrentDate(),
+          typeOfBooking: userObject.currentTransactionStatus || "",
+          phoneNumber: userObject.phoneNumber || "",
+          entityId: userObject.entityTypeId || null,
+          departmentId: userObject.departmentId || null,
+        });
+      });
     }
   };
- const handleVerifyTicket=async()=>{
-  console.log("verifyData",verifyData)
-       try {
-      const res = await FetchVerifyTicket(verifyData);
-      console.log(res);
-      if (res.response.data.status == 200) {
-        setOpenVerifyModal(false);
-        Swal.fire({
-          title: "Success!",
-          html: res.response.data.data.resultMsg,
-          icon: "success",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "swal-custom-btn",
-          },
-          timer: 2000,
-          showConfirmButton: false,
-        }).then(() => {
-          // Call the API after the SweetAlert modal closes
-        });
+  // const handleVerifyTicket = async () => {
+  //   console.log("isUpi", isUpi);
+  //   try {
+  //     const res = await FetchVerifyTicket(verifyData, isUpi);
+  //     console.log("API Response:", res); // Log the full response
+
+  //     if (res.response?.data?.status === 200) {
+  //       const resultMsg = res.response?.data?.data?.resultMsg;
+  //       if (resultMsg) {
+  //         setOpenVerifyModal(false);
+  //         Swal.fire({
+  //           title: "Success!",
+  //           html: resultMsg,
+  //           icon: "success",
+  //           confirmButtonText: "OK",
+  //           customClass: {
+  //             confirmButton: "swal-custom-btn",
+  //           },
+  //           timer: 2000,
+  //           showConfirmButton: false,
+  //         }).then(() => {
+  //           // Call the API after the SweetAlert modal closes
+  //           fetchPaymentTransactions({
+  //             fromDate: userObject.startDate || getCurrentDate(),
+  //             toDate: userObject.endDate || getCurrentDate(),
+  //             typeOfBooking: userObject.currentTransactionStatus || "",
+  //             phoneNumber: userObject.phoneNumber || "",
+  //             entityId: userObject.entityTypeId || null,
+  //             departmentId: userObject.departmentId || null,
+  //           });
+  //         });
+  //       } else {
+  //         setOpenVerifyModal(false);
+  //         Swal.fire({
+  //           title: "Oops!",
+  //           text: "Result message not found.",
+  //           icon: "info",
+  //           confirmButtonText: "OK",
+  //         }).then(() => {
+  //           // Call the API after the SweetAlert modal closes
+  //           fetchPaymentTransactions({
+  //             fromDate: userObject.startDate || getCurrentDate(),
+  //             toDate: userObject.endDate || getCurrentDate(),
+  //             typeOfBooking: userObject.currentTransactionStatus || "",
+  //             phoneNumber: userObject.phoneNumber || "",
+  //             entityId: userObject.entityTypeId || null,
+  //             departmentId: userObject.departmentId || null,
+  //           });
+  //         });
+  //       }
+  //     } else {
+  //       setOpenVerifyModal(false);
+  //       Swal.fire({
+  //         title: "Oops!",
+  //         text:
+  //           res.response?.data?.data?.resultMsg || res.response?.data?.message,
+  //         icon: "info",
+  //         confirmButtonText: "OK",
+  //       }).then(() => {
+  //         // Call the API after the SweetAlert modal closes
+  //         fetchPaymentTransactions({
+  //           fromDate: userObject.startDate || getCurrentDate(),
+  //           toDate: userObject.endDate || getCurrentDate(),
+  //           typeOfBooking: userObject.currentTransactionStatus || "",
+  //           phoneNumber: userObject.phoneNumber || "",
+  //           entityId: userObject.entityTypeId || null,
+  //           departmentId: userObject.departmentId || null,
+  //         });
+  //       });
+  //     }
+  //   } catch (err) {
+  //     console.error("Error during verify:", err);
+  //     setOpenVerifyModal(false);
+  //     Swal.fire({
+  //       title: "Failed!",
+  //       text: `Verify failed. Please try again.`,
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     }).then(() => {
+  //       // Call the API after the SweetAlert modal closes
+  //       fetchPaymentTransactions({
+  //         fromDate: userObject.startDate || getCurrentDate(),
+  //         toDate: userObject.endDate || getCurrentDate(),
+  //         typeOfBooking: userObject.currentTransactionStatus || "",
+  //         phoneNumber: userObject.phoneNumber || "",
+  //         entityId: userObject.entityTypeId || null,
+  //         departmentId: userObject.departmentId || null,
+  //       });
+  //     });
+  //   }
+  // };
+
+  const handleVerifyTicket = async () => {
+    console.log("isUpi", isUpi);
+    try {
+      const res = await FetchVerifyTicket(verifyData, isUpi);
+      console.log("API Response:", res); // Log the full response
+
+      if (res.response?.data?.status === 200) {
+        const resultMsg = res.response?.data?.data?.resultMsg;
+        if (resultMsg) {
+          setOpenVerifyModal(false);
+          Swal.fire({
+            title: "Success!",
+            html: resultMsg,
+            icon: "success",
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton: "swal-custom-btn",
+            },
+            timer: 2000,
+            showConfirmButton: false,
+          }).then(() => {
+            // Delay API call to ensure SweetAlert has closed
+            setTimeout(() => {
+              fetchPaymentTransactions({
+                fromDate: userObject.startDate || getCurrentDate(),
+                toDate: userObject.endDate || getCurrentDate(),
+                typeOfBooking: userObject.currentTransactionStatus || "",
+                phoneNumber: userObject.phoneNumber || "",
+                entityId: userObject.entityTypeId || null,
+                departmentId: userObject.departmentId || null,
+              });
+            }, 2100); // Slightly after the timer ends
+          });
+        } else {
+          setOpenVerifyModal(false);
+          Swal.fire({
+            title: "Oops!",
+            text: "Result message not found.",
+            icon: "info",
+            confirmButtonText: "OK",
+          }).then(() => {
+            setTimeout(() => {
+              fetchPaymentTransactions({
+                fromDate: userObject.startDate || getCurrentDate(),
+                toDate: userObject.endDate || getCurrentDate(),
+                typeOfBooking: userObject.currentTransactionStatus || "",
+                phoneNumber: userObject.phoneNumber || "",
+                entityId: userObject.entityTypeId || null,
+                departmentId: userObject.departmentId || null,
+              });
+            }, 2100); // Delay to ensure API is called after modal
+          });
+        }
       } else {
         setOpenVerifyModal(false);
         Swal.fire({
-          title: "oops!",
-          text: res.response.data.data.resultMsg,
-          icon: "error",
+          title: "Oops!",
+          text:
+            res.response?.data?.data?.resultMsg || res.response?.data?.message,
+          icon: "info",
           confirmButtonText: "OK",
-        }).then(() => {});
+        }).then(() => {
+          setTimeout(() => {
+            fetchPaymentTransactions({
+              fromDate: userObject.startDate || getCurrentDate(),
+              toDate: userObject.endDate || getCurrentDate(),
+              typeOfBooking: userObject.currentTransactionStatus || "",
+              phoneNumber: userObject.phoneNumber || "",
+              entityId: userObject.entityTypeId || null,
+              departmentId: userObject.departmentId || null,
+            });
+          }, 2100); // Delay for the API call after modal closure
+        });
       }
-    } catch(err) {
-      // console.log("err",err)
+    } catch (err) {
+      console.error("Error during verify:", err);
       setOpenVerifyModal(false);
       Swal.fire({
         title: "Failed!",
         text: `Verify failed. Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {});
+      }).then(() => {
+        setTimeout(() => {
+          fetchPaymentTransactions({
+            fromDate: userObject.startDate || getCurrentDate(),
+            toDate: userObject.endDate || getCurrentDate(),
+            typeOfBooking: userObject.currentTransactionStatus || "",
+            phoneNumber: userObject.phoneNumber || "",
+            entityId: userObject.entityTypeId || null,
+            departmentId: userObject.departmentId || null,
+          });
+        }, 2100); // Delay for the API call after modal closure
+      });
     }
-  }
+  };
+
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -279,7 +506,7 @@ function PaymentTransactionReport() {
         </div>
         <div className="mb-8">
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
-            {({ values, setFieldValue }) => (
+            {({ values, setFieldValue, setValues }) => (
               <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                 <div>
                   <label
@@ -476,13 +703,37 @@ function PaymentTransactionReport() {
                     }}
                   />
                 </div>
-                <div className="flex items-end">
+                <div className="flex items-end gap-2">
                   <button
                     type="submit"
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                     // disabled={isFetchAllMetroSummaryReportsLoading}
                   >
                     Search
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                    // disabled={isFetchAllMetroSummaryReportsLoading}
+                    onClick={() => {
+                      setValues({
+                        fromDate: getCurrentDate(),
+                        toDate: getCurrentDate(),
+                        typeOfBooking: "",
+                        phoneNumber: "",
+                        entityId: null,
+                        departmentId: null,
+                      });
+                      fetchPaymentTransactions({
+                        startDate: getCurrentDate(),
+                        endDate: getCurrentDate(),
+                        currentTransactionStatus: null,
+                        phoneNumber: null,
+                        parkId: null,
+                      });
+                    }}
+                  >
+                    Reset
                   </button>
                 </div>
               </Form>
@@ -543,10 +794,10 @@ function PaymentTransactionReport() {
           </div>
         </PopupModal>
         {/* verify */}
-         <PopupModal
+        <PopupModal
           popupModalId="first-modal"
           isOpen={openVerifyModal}
-          onClose={() => openVerifyModal(false)}
+          onClose={() => setOpenVerifyModal(false)}
           size="small"
           overlayClassName="bg-gray-800 bg-opacity-60"
           contentClassName="bg-white"
@@ -554,7 +805,8 @@ function PaymentTransactionReport() {
         >
           <div className="px-10 py-14">
             <h1 className="text-blue-v1 font-semibold">
-              Are you sure you want to Verify the ticket status for this booking?
+              Are you sure you want to Verify the ticket status for this
+              booking?
             </h1>
 
             <div className="flex justify-center gap-8 mt-4 z-30">

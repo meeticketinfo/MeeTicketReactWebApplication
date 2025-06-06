@@ -412,10 +412,11 @@ export const useBookingsStore = create(
         }
       },
 
-       FetchVerifyTicket: async (VerifyDetails) => {
+       FetchVerifyTicket: async (VerifyDetails,isUpi) => {
+        console.log("isUpi",isUpi)
         set({ isVerifyTicketLoading: true });
         try {
-          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`;
+          const url = isUpi?`${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`:`${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${VerifyDetails}`;
           const method = "post";
           const response = await apiService[method](url);
           set({
