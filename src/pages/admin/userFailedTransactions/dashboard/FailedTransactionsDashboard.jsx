@@ -15,6 +15,7 @@ import { useDepartmentTypesStore } from "../../../../store/masters/departmentTyp
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import { getDateRange } from "../../../../utils/Helper";
+import Loader from "../../../../web_app_loaders/Loader";
 
 function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
   superballs.register();
@@ -24,10 +25,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     localStorage.getItem("transactionPayload")
   );
   const range = localStorage.getItem("range-filter");
-  console.log("Rangefilter", Rangefilter);
-  const { fromDate, toDate } = getDateRange(Rangefilter);
-  console.log("fromDate",fromDate)
-  console.log("toDate",toDate)
   const [filters, setfilters] = useState({
     fromDate: "",
     toDate: "",
@@ -36,7 +33,57 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     departmentId: "",
     durationType: Rangefilter,
   });
-  // console.log("allDashboardReportData", allDashboardReportData);
+
+  const { fromDate, toDate } = getDateRange(Rangefilter);
+  const [formInitialValues, setFormInitialValues] = useState({
+    fromDate: UserTransactionReportFilter?.fromDate || fromDate,
+    toDate: UserTransactionReportFilter?.toDate || toDate,
+    departmentId: "",
+    entityId: "",
+    ParkId: "",
+  });
+
+  // Initial load effect
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+    fetchAllParks();
+  }, []);
+
+  // Effect for updating form values and fetching data when Rangefilter changes
+  useEffect(() => {
+    const { fromDate, toDate } = getDateRange(Rangefilter);
+    const newInitialValues = {
+      fromDate: fromDate,
+      toDate: toDate,
+      departmentId: "",
+      entityId: "",
+      ParkId: "",
+    };
+    setFormInitialValues(newInitialValues);
+    setfilters(prev => ({
+      ...prev,
+      fromDate: fromDate,
+      toDate: toDate,
+      durationType: Rangefilter
+    }));
+
+    const payload = {
+      fromDate: fromDate,
+      toDate: toDate,
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
+      durationType: Rangefilter,
+    };
+
+    fetchFailedTransactionByReason(payload);
+    fetchFailedTransactionByLocation(payload);
+    fetchFailedTransactionBydepartment(payload);
+    fetchFailedTransactionByLocationCategory(payload);
+    fetchFailedTransactionTrendGraph(payload);
+  }, [Rangefilter]);
+
   const { allParks, fetchAllParks } = useParkStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -44,78 +91,24 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     useDepartmentTypesStore();
   const {
     fetchFailedTransactionByReason,
+    isFailedTransactionByReasonLoading,
     FailedTransactionByReasonData,
+    isFailedTransactionByLocationCategoryLoading,
     fetchFailedTransactionByLocation,
+    isFailedTransactionByLocationLoading,
     FailedTransactionByLocationData,
     fetchFailedTransactionBydepartment,
     FailedTransactionByDepartmentData,
+    isFailedTransactionByDepartmentLoading,
     fetchFailedTransactionByLocationCategory,
     FailedTransactionByLocationCategoryData,
     fetchFailedTransactionTrendGraph,
     FailedTransactionByGraphData,
+    isFailedTransactionByGraphLoading,
   } = useTransactionsStore();
-  console.log(
-    "FailedTransactionByDepartmentData",
-    FailedTransactionByDepartmentData
-  );
 
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-    fetchAllParks();
-  }, []);
-  useEffect(() => {
-    fetchFailedTransactionByReason({
-      fromDate: "",
-      toDate: "",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      durationType: Rangefilter,
-    });
-    fetchFailedTransactionByLocation({
-      fromDate: "",
-      toDate: "",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      durationType: Rangefilter,
-    });
-    fetchFailedTransactionBydepartment({
-      fromDate: "",
-      toDate: "",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      durationType: Rangefilter,
-    });
-    fetchFailedTransactionByLocationCategory({
-      fromDate: "",
-      toDate: "",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      durationType: Rangefilter,
-    });
-    fetchFailedTransactionTrendGraph({
-      fromDate: "",
-      toDate: "",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      durationType: Rangefilter,
-    });
-  }, [Rangefilter]);
-  const initialValues = {
-    fromDate: "",
-    toDate: "",
-    departmentId: UserTransactionReportFilter?.departmentId || "",
-    entityId: UserTransactionReportFilter?.categoryId || "",
-    ParkId: UserTransactionReportFilter?.locationId || "",
-  };
   // overAll on submit
   const overAllOnSubmit = (values) => {
-    // fetchallPassData({ ...values, active: true });
     const payload = {
       fromDate: values.fromDate,
       toDate: values.toDate,
@@ -124,8 +117,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
       departmentId: values.departmentId,
       durationType: Rangefilter,
     };
-    // console.log("payload", payload);
-    //  localStorage.setItem('transactionPayload', JSON.stringify(payload));
     setfilters(payload);
     fetchFailedTransactionTrendGraph(payload);
     fetchFailedTransactionByReason(payload);
@@ -138,7 +129,11 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     <>
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-full ">
-          <Formik initialValues={initialValues} onSubmit={overAllOnSubmit}>
+          <Formik 
+            enableReinitialize={true}
+            initialValues={formInitialValues} 
+            onSubmit={overAllOnSubmit}
+          >
             {({ values, setFieldValue, setValues }) => (
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -153,8 +148,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                       type="datetime-local"
                       name="fromDate"
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                      min={fromDate} // Restricts the minimum value to fromDate
-                      max={values.toDate} // Restricts the maximum value to the selected toDate
                       onChange={(e) => {
                         const fromDateValue = e.target.value;
                         setFieldValue("fromDate", fromDateValue);
@@ -175,7 +168,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                       type="datetime-local"
                       name="toDate"
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                      min={values.fromDate} // Restricts the minimum value to the selected fromDate
                       onChange={(e) => {
                         const toDateValue = e.target.value;
                         setFieldValue("toDate", toDateValue);
@@ -371,50 +363,50 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                         localStorage.setItem("range-filter", "today");
                         localStorage.removeItem("transactionPayload");
                         setValues({
-                          fromDate: fromDate,
-                          toDate: toDate,
+                          fromDate: "",
+                          toDate: "",
                           departmentId: "",
                           entityId: "",
                           ParkId: "",
                         });
                         setActiveTab("today");
-
+ 
                         // Reset chart data by clearing relevant stores
                         fetchFailedTransactionByReason({
-                          fromDate,
-                          toDate,
+                          fromDate: "",
+                          toDate: "",
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionByLocation({
-                          fromDate,
-                          toDate,
+                          fromDate: "",
+                          toDate: "",
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionBydepartment({
-                          fromDate,
-                          toDate,
+                          fromDate: "",
+                          toDate: "",
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionByLocationCategory({
-                          fromDate,
-                          toDate,
+                          fromDate: "",
+                          toDate: "",
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
                           durationType: Rangefilter,
                         });
                         fetchFailedTransactionTrendGraph({
-                          fromDate,
-                          toDate,
+                          fromDate: "",
+                          toDate: "",
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
@@ -434,49 +426,54 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
         {/* Transactions by reason chart */}
         <DashboardCard07>
           <div className="flex">
-            <Link
-              className="flex-1 m-1 px-4 rounded-lg overflow-hidden shadow-md"
-              to="/failed-transactions"
-              onClick={() => {
-                localStorage.setItem(
-                  "transactionPayload",
-                  JSON.stringify(filters)
-                );
-              }}
+            <div
+              className="flex-1 p-1 m-1 rounded-lg overflow-hidden shadow-md relative"
             >
+              {/* <Loader/> */}
+              
+                { isFailedTransactionByReasonLoading && (
+                  <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                    <div className="loader"></div>
+                  </div>
+                )}
               <TransactionPieChart
                 data={FailedTransactionByReasonData}
                 title="Failed Transactions By Reason"
                 angleKey="percentage"
                 calloutLabelKey="failureReason"
+                filters={filters}
               />
-            </Link>
+            </div>
 
-            <Link
-              className="flex-1  px-4 m-1 rounded-lg overflow-hidden shadow-md"
-              to="/failed-transactions"
-              onClick={() => {
-                localStorage.setItem(
-                  "transactionPayload",
-                  JSON.stringify(filters)
-                );
-              }}
+            <div
+              className="flex-1  p-1 m-1 rounded-lg overflow-hidden shadow-md relative"
             >
+              { isFailedTransactionByLocationLoading && (
+                  <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                    <div className="loader"></div>
+                  </div>
+                )}
               <TransactionByLocation
                 data={FailedTransactionByLocationData}
                 title="Failed Transactions By Location "
                 angleKey="percentage"
                 calloutLabelKey="locationName"
+                filters={filters}
               />
-            </Link>
+            </div>
           </div>
         </DashboardCard07>
         <DashboardCard07>
           <div>
+            {isFailedTransactionByGraphLoading && (
+              <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                <div className="loader"></div>
+              </div>
+            )}
             <TransactionGraph
               data={FailedTransactionByGraphData}
               title="Failed Transactions By Trends"
-              angleKey="percentage"
+              angleKey="failedCount"
               calloutLabelKey="timeSlot"
             />
           </div>
@@ -492,40 +489,37 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
         </DashboardCard07> */}
         <DashboardCard07>
           <div className="flex gap-4">
-            <Link
-              className="flex-1 "
-              to="/failed-transactions"
-              onClick={() => {
-                localStorage.setItem(
-                  "transactionPayload",
-                  JSON.stringify(filters)
-                );
-              }}
+            <div
+              className="flex-1 relative"
             >
+              {isFailedTransactionByDepartmentLoading  && (
+                <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                  <div className="loader"></div>
+                </div>
+              )}
               <TransactionDepartment
                 data={FailedTransactionByDepartmentData || []}
                 title="Failed Transactions By Department"
-                angleKey="percentage"
+                angleKey="failedCount"
                 calloutLabelKey="departmentName"
+                filters={filters}
               />
-            </Link>
-            <Link
-              className="flex-1"
-              to="/failed-transactions"
-              onClick={() => {
-                localStorage.setItem(
-                  "transactionPayload",
-                  JSON.stringify(filters)
-                );
-              }}
+            </div>
+            <div
+              className="flex-1 relative"
             >
+              {isFailedTransactionByLocationCategoryLoading && (
+                <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                  <div className="loader"></div>
+                </div>
+              )}
               <TransactionDepartment
                 data={FailedTransactionByLocationCategoryData || []}
                 title="Failed Transactions By Location category "
-                angleKey="percentage"
+                angleKey="failedCount"
                 calloutLabelKey="locationCategory"
               />
-            </Link>
+            </div>
           </div>
         </DashboardCard07>
       </div>

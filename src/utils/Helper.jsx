@@ -53,31 +53,33 @@ export const getDateRange = (rangeType) => {
 
   switch (rangeType) {
     case "today":
-      // For today, set fromDate to 12:00 AM and toDate to 12:00 PM
-      fromDate = new Date(currentDate.setHours(0, 0, 0, 0)); // 12:00 AM today
-      toDate = new Date(currentDate.setHours(12, 0, 0, 0)); // 12:00 PM today
+      // For today, set fromDate to 12:00 AM and toDate to 11:59 PM using UTC
+      const now = new Date();
+      fromDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0));
+      toDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));
       break;
 
     case "week":
-      // For week, calculate start and end of the current week
-      fromDate = getStartOfWeek(currentDate);
-      toDate = getEndOfWeek(currentDate);
+      // For week, calculate start and end of the current week using UTC
+      const weekStart = new Date();
+      const dayOfWeek = weekStart.getUTCDay();
+      const diff = weekStart.getUTCDate() - dayOfWeek;
+      fromDate = new Date(Date.UTC(weekStart.getUTCFullYear(), weekStart.getUTCMonth(), diff, 0, 0, 0, 0));
+      toDate = new Date(Date.UTC(weekStart.getUTCFullYear(), weekStart.getUTCMonth(), diff + 6, 23, 59, 59, 999));
       break;
 
     case "month":
-      // For month, calculate start and end of the current month
-      fromDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of the current month
-      toDate = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth() + 1,
-        0
-      ); // Last day of the current month
+      // For month, calculate start and end of the current month using UTC
+      const monthStart = new Date();
+      fromDate = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth(), 1, 0, 0, 0, 0));
+      toDate = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 0, 23, 59, 59, 999));
       break;
 
     case "year":
-      // For year, calculate start and end of the current year
-      fromDate = new Date(currentDate.getFullYear(), 0, 1); // First day of the current year
-      toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of the current year
+      // For year, calculate start and end of the current year using UTC
+      const yearStart = new Date();
+      fromDate = new Date(Date.UTC(yearStart.getUTCFullYear(), 0, 1, 0, 0, 0, 0));
+      toDate = new Date(Date.UTC(yearStart.getUTCFullYear(), 11, 31, 23, 59, 59, 999));
       break;
 
     default:

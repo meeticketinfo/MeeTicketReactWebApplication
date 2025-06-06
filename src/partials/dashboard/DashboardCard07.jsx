@@ -14,7 +14,7 @@ function DashboardCard07({ header, title, children }) {
       ) : (
         ""
       )}
-      <div className="p-3 rounded">
+      <div className="p-3 rounded relative">
         {/* Table */}
         <div className="overflow-x-auto">{children}</div>
       </div>
