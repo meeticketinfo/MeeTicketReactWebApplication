@@ -29,8 +29,6 @@ const FailedTransactions = () => {
   const [LocationCatgoryId, setLocationCatgoryId] = useState(
     UserTransactionReportFilter.categoryId || ""
   );
-  // console.log("DepartmentId",DepartmentId)
-  // console.log("LocationCatgoryId",LocationCatgoryId)
   const navigate = useNavigate();
   const {
     failureUserTransactionReport,
@@ -119,46 +117,22 @@ const FailedTransactions = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "resultMsg",
+      field: "filteredResultMsg",
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
   ]);
 
-  // useEffect(() => {
-  //   const getParksByResponse = async () => {
-  //     try {
-  //       const response = await fetchFailureUserTransactionReport({
-  //         ...initialValues,
-  //         //   mobileNumber,
-  //         status,
-  //       });
-
-  //       const parks = response?.response
-  //         ?.map((item) => ({
-  //           id: item.parkId,
-  //           name: item.parkName,
-  //         }))
-  //         .filter(
-  //           (item, index, self) =>
-  //             index === self.findIndex((t) => t.id === item.id)
-  //         );
-  //     } catch (error) {
-  //       console.error("Failed to fetch user status transaction report", error);
-  //     }
-  //   };
-
-  //   getParksByResponse();
-  // }, []);
-
   useEffect(() => {
     fetchFailureUserTransactionReport({
-      fromDate: fromDate,
-      toDate: toDate,
-      status: status || "",
-      parkId: UserTransactionReportFilter.locationId || "",
-      status: "",
+      fromDate: UserTransactionReportFilter?.fromDate || fromDate,
+      toDate: UserTransactionReportFilter?.toDate || toDate,
+      status: 'failed',
+      parkId: UserTransactionReportFilter?.locationId || "",
+      resultMsg: UserTransactionReportFilter?.resultMsg || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
     });
   }, []);
   useEffect(() => {
@@ -169,7 +143,7 @@ const FailedTransactions = () => {
   const initialValues = {
     fromDate: UserTransactionReportFilter?.fromDate || fromDate,
     toDate: UserTransactionReportFilter?.toDate || toDate,
-    status: status || "",
+    status: "FAILED",
     ParkId: UserTransactionReportFilter?.locationId || "",
     departmentId: UserTransactionReportFilter?.departmentId || "",
     entityId: UserTransactionReportFilter?.categoryId || "",

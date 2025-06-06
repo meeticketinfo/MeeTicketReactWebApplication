@@ -26,9 +26,8 @@ export const useTransactionsStore = create((set) => ({
   // Failed Transactions By reason
 
   fetchFailedTransactionByReason: async (payload) => {
-    console.log("test");
     set({ isFailedTransactionByReasonLoading: true });
-    const param = `?durationType=${payload.durationType}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_FAILED_TRANSACTIONS_BY_REASON}${param}`
@@ -44,9 +43,8 @@ export const useTransactionsStore = create((set) => ({
   },
   //
   fetchFailedTransactionByLocation: async (payload) => {
-    console.log("test");
     set({ isFailedTransactionByLocationLoading: true });
-    const param = `?durationType=${payload.durationType}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_FAILED_TRANSACTIONS_BY_LOCATION}${param}`
@@ -65,9 +63,8 @@ export const useTransactionsStore = create((set) => ({
   },
   //
   fetchFailedTransactionByLocationCategory: async (payload) => {
-    console.log("test");
     set({ isFailedTransactionByLocationCategoryLoading: true });
-   const param = `?durationType=${payload.durationType}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+   const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY}${param}`
@@ -86,9 +83,8 @@ export const useTransactionsStore = create((set) => ({
   },
   //
   fetchFailedTransactionBydepartment: async (payload) => {
-    console.log("test");
     set({ isFailedTransactionByReasonLoading: true });
-    const param = `?durationType=${payload.durationType}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_FAILED_TRANSACTIONS_BY_DEPARTMENT}${param}`
@@ -104,9 +100,8 @@ export const useTransactionsStore = create((set) => ({
   },
   //
   fetchFailedTransactionTrendGraph: async (payload) => {
-    console.log("test");
     set({ isFailedTransactionByGraphLoading: true });
-    const param = `?durationType=${payload.durationType}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
    
     try {
       const response = await apiService.get(

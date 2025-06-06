@@ -12,7 +12,7 @@ const reasonStyles = {
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
 
-const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey }) => {
+const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey }) => {
              color: "black",
             fontWeight: "normal",
             formatter: ({ datum }) =>
-              `${datum[calloutLabelKey]?.substring(0, 20)}\n${datum[angleKey]}%`, // Truncate text if needed
+              `${datum[calloutLabelKey]?.substring(0, 110)}\n${datum[angleKey]}%`, // Truncate text if needed
             offset: 12, // Increased offset to provide more space
             minAngle: 0, // ensures small slices still show labels
           },
@@ -76,7 +76,14 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey }) => {
                 {item.locationName ? item.locationName : "N/A"}
               </span>
             </div>
-            <Link to={""}>
+            
+            <Link 
+              to={"/failed-transactions"} 
+              onClick={() => 
+                localStorage.setItem("transactionPayload", 
+                  JSON.stringify({...filters, locationId: item.parkId}))
+              }
+            >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}
               </span>

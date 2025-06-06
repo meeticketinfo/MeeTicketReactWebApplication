@@ -13,7 +13,7 @@ const getRandomColorData = (data, palette) => {
   }));
 };
 
-const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title }) => {
+const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title, filters }) => {
   const chartRef = useRef(null);
 
   // Assign random colors only once using useMemo
@@ -37,7 +37,7 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title }) 
           calloutLabelKey,
           calloutLabel: {
             // Truncate the callout label if it exceeds 20 characters for better readability
-            formatter: ({ datum }) => `${datum[calloutLabelKey]?.substring(0, 20)}\n(${datum[angleKey]}%)`,
+            formatter: ({ datum }) => `${datum[calloutLabelKey]}\n(${datum[angleKey]})`,
             fontSize: 9,
             color: "black",
           },
@@ -74,7 +74,13 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title }) 
             />
             <span className="text-xs">{item[calloutLabelKey]}</span>
             <span className="ml-auto text-[#3399FF] font-semibold text-sm underline">
-              <Link to="#">{String(item[angleKey]).padStart(2, "0")}</Link>
+              <Link  
+                to={"/failed-transactions"} 
+                onClick={() => 
+                  localStorage.setItem("transactionPayload", 
+                    JSON.stringify({...filters, resultMsg: "", parkId: "", departmentId: item?.departmentId ?? "", categoryId: item?.entityTypeId ?? ""}))
+                }
+              >{String(item[angleKey]).padStart(2, "0")}</Link>
             </span>
           </div>
         ))}

@@ -11,7 +11,8 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
+const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+  // const [newFilters, setNewFilters] = useState(...filters);
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
             color: "black",
             // fontWeight: "normal",
             formatter: ({ datum }) =>
-              `${datum[calloutLabelKey]?.substring(0, 20)}\n${
+              `${datum[calloutLabelKey]?.substring(0, 120)}\n${
                 datum[angleKey]
               }%`, // Truncate text if needed
             offset: 15, // Increased offset for better spacing
@@ -66,7 +67,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
         {data?.map((item, index) => (
           <div
             key={item.failureReason}
-            title={item.failureReason}
+            title={item.failureReason ? item.failureReason : "Paytm reason yet to be updated."}
             className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
           >
             <div className="flex items-center gap-2">
@@ -75,10 +76,16 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey }) => {
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
               <span className="text-xs text-gray-800 max-w-[150px] truncate">
-                {item.failureReason ? item.failureReason : "Reason not updated"}
+                {item.failureReason}
               </span>
             </div>
-            <Link to={""}>
+            <Link 
+              to={"/failed-transactions"} 
+              onClick={() => 
+                localStorage.setItem("transactionPayload", 
+                  JSON.stringify({...filters, resultMsg: item.failureReason, parkId: ""}))
+              }
+            >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}
               </span>
