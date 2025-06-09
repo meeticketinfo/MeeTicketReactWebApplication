@@ -7,14 +7,19 @@ import { useServiceStore } from "../../../../store/masters/servicesStore";
 import { useServiceVariantStore } from "../../../../store/masters/serviceVariantsStore";
 import { useUnifiedFacilityStore } from "../../../../store/masters/unifiedFacilityStore";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
 const PackageNestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
-
+ 
+ 
   useEffect(() => {
     fetchAllDropdownFacilities();
+    
   }, []);
 
+
+console.log("data",data)
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -23,8 +28,8 @@ const PackageNestedTable = ({ data }) => {
             <th className="p-3 text-center">S.No</th>
             <th className="p-3 text-center">Package Name</th>
             <th className="p-3 text-center">Description</th>
-            <th className="p-3 text-center">Sequence</th>
-            <th className="p-3 text-center">User Status</th>
+            {/* <th className="p-3 text-center">Sequence</th> */}
+            <th className="p-3 text-center">Package Status</th>
             <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
@@ -49,6 +54,7 @@ const AccordionRow = ({ serial, row }) => {
       <tr
         className={`cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white `}
       >
+        {/* S.NO */}
         <td
           className="p-2 flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
@@ -56,13 +62,17 @@ const AccordionRow = ({ serial, row }) => {
           <IoIosArrowDown className={` ${isExpanded ? "rotate-180" : ""}`} />
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
+        {/* PACKAGE NAME */}
         <td className="p-2 text-center">{row.name || "N/A"}</td>
+        {/* DESCRIPTION */}
         <td className="p-2 text-center">
           {row.description ? row.description : "N/A"}
         </td>
-        <td className="p-2 text-center">
+        {/* SEQUENCE */}
+        {/* <td className="p-2 text-center">
           {row.sequenceNumber ? row.sequenceNumber : "N/A"}
-        </td>
+        </td> */}
+        {/* USER STATUS */}
         <td className="p-2 text-center">
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
@@ -77,6 +87,7 @@ const AccordionRow = ({ serial, row }) => {
             </span>
           </div>
         </td>
+        {/* ACTIONS */}
         <td className="p-2 text-center ">
           <div className="flex justify-center">
             <button
@@ -90,6 +101,7 @@ const AccordionRow = ({ serial, row }) => {
           </div>
         </td>
       </tr>
+
       {isExpanded && row.services.length > 0 && (
         <tr>
           <td colSpan="5" className="p-4 bg-blue-50">
@@ -99,15 +111,15 @@ const AccordionRow = ({ serial, row }) => {
                   row.services.length === 1 ? "hidden" : ""
                 }`}
               >
-                {/* <tr>
+                <tr>
                   <th className="p-2 text-center">S.No</th>
-                  <th className="p-2 text-center">Sub Facility Name</th>
-                  <th className="p-2 text-center">Description</th>
-                  <th className="p-2 text-center">Limit</th>
-                  <th className="p-3 text-center">Sequence</th>
-                  <th className="p-2 text-center">Status</th>
+                  <th className="p-2 text-center">Room Name</th>
+                  <th className="p-2 text-center">Tarrif Per Day</th>
+                  <th className="p-2 text-center">No of Rooms Available</th>
+                  {/* <th className="p-3 text-center">Sequence</th> */}
+                  <th className="p-2 text-center">House Status</th>
                   <th className="p-2 text-center">Actions</th>
-                </tr> */}
+                </tr>
               </thead>
               <tbody>
                 {row.services.map((subRow, subIndex) => (
@@ -148,21 +160,28 @@ const AccordionSubRow = ({
   return (
     <>
       <tr className={`bg-white ${hasMultipleSubFacilities ? "hidden" : ""}`}>
+        {/* S.NO */}
         <td
           className="p-2 text-center cursor-pointer flex items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="flex justify-center">
-            <IoIosArrowDown className={`${isExpanded ? "rotate-180" : ""}`} />
-          </div>
           <div className="w-9/10 text-center">{`${
             subRowSerial + 1
           }.${String.fromCharCode(97 + subRowIndex)}`}</div>
         </td>
+        {/* ROOM NAME */}
         <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
+        {/* TARRIF PER DAY */}
         <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
-        <td className="p-2 text-center">{(subRow.limit<0)&&(subRow.limit!=null) ? "No Limit":subRow.limit}</td>
-        <td className="p-2 text-center">{subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}</td>
+        {/* NO OF ROOMS AVAILABLE */}
+        <td className="p-2 text-center">
+          {subRow.limit < 0 && subRow.limit != null ? "No Limit" : subRow.limit}
+        </td>
+        {/* SEQUENCE */}
+              {/* <td className="p-2 text-center">
+                {subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}
+              </td> */}
+        {/* USER STATUS */}
         <td className="p-2 text-center">
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
@@ -178,6 +197,7 @@ const AccordionSubRow = ({
             </span>
           </div>
         </td>
+        {/* ACTIONS */}
         <td className="p-2 text-center">
           <span className="flex justify-center">
             <button
@@ -195,71 +215,6 @@ const AccordionSubRow = ({
           </span>
         </td>
       </tr>
-      {isExpanded && subRow.serviceVariants.length > 0 && (
-        <tr>
-          <td colSpan="5" className="p-4 bg-gray-200">
-            <table className="table-auto w-full ">
-              <thead className="bg-[#f8f8f8] text-blue-v1">
-                <tr>
-                  <th className="p-2 text-center">Room Name</th>
-                  <th className="p-2 text-center">Tarrif Per Day</th>
-                  <th className="p-3 text-center">No of Rooms Available</th>
-                  <th className="p-2 text-center">Sequence</th>
-                  <th className="p-2 text-center">User Status</th>
-                  <th className="p-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {subRow.serviceVariants.map((detail, detailIndex) => (
-                  <tr key={detailIndex} className="bg-white">
-                    <td className="p-2 text-center">{detail.name ?? "N/A"}</td>
-                    <td className="p-2 text-center">
-                      {formatToCurrency(detail?.amount) || "N/A"}
-                    </td>
-                    <td className="p-2 text-center">{detail.sequenceNumber ? detail.sequenceNumber : "N/A"}</td>
-                    <td className="p-2 text-center">
-                      <div
-                        style={{
-                          display: "flex align-center",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <span
-                          className={`${
-                            !detail.isPriceFixed
-                              ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                              : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-                          } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-                        >
-                          {" "}
-                          {!detail.isPriceFixed ? "Yes" : "No"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="p-2 text-center">{detail.sequenceNumber ? detail.sequenceNumber : "N/A"}</td>
-                    <td className="p-2 text-center">
-                      <span className="flex justify-center">
-                        {/*  */}
-                        <button
-                          onClick={() => {
-                            setCurrentServiceVariantEditDetails({
-                              ...detail,
-                              serviceId: subRow.id,
-                            });
-                            setOpenModalId("type-of-ticket-modal");
-                          }}
-                        >
-                          <LuClipboardEdit className="text-[24px] text-blue-600 " />
-                        </button>
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      )}
     </>
   );
 };

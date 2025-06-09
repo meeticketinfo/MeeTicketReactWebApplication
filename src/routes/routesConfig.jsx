@@ -300,7 +300,7 @@ export const routes = [
   },
   // amrabad
    {
-    path: "/packages",
+    path: "/amrabad-packages",
     element: <ProtectedRoute element={<MainPackages/>} />,
   },
 ];
