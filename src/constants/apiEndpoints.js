@@ -8,7 +8,7 @@ export const API_BASE_URL =
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
-  //  paynow UAT
+//  paynow UAT
 export const PAYNOW_API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkapi/";
 
@@ -46,6 +46,10 @@ export const RTC_API_BASE_URL =
 // METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
+
+// Amarabad dev
+// export const AMRABAD_API_BASE_URL =
+// "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
 // export const API_BASE_URL =
@@ -182,7 +186,7 @@ export const API_ENDPOINTS = {
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
-      GET_RE_GENERATE_TICKET:`${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
+      GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
@@ -203,10 +207,10 @@ export const API_ENDPOINTS = {
       UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
       ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
     },
-    PARK_BANK_PAYMENT:{
-      PAYMENT_VERIFY:`${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
-      PAYMENT_INITIAT:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
-      PAYMENT_REFRESH:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
+    PARK_BANK_PAYMENT: {
+      PAYMENT_VERIFY: `${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
+      PAYMENT_INITIAT: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
+      PAYMENT_REFRESH: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
@@ -233,7 +237,7 @@ export const API_ENDPOINTS = {
     USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
-    }
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -266,4 +270,13 @@ export const API_ENDPOINTS = {
     GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
+
+  AMRABAD:{
+    MASTERS:{
+      
+    },
+    USER:{
+
+    }
+  }
 };
