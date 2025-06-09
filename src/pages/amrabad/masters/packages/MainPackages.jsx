@@ -3,13 +3,15 @@ import AdminLayout from "../../../../layouts/AdminLayout";
 import { ToastContainer } from "react-toastify";
 import PackagesList from "./PackagesList";
 import AddPackage from "./AddPackage";
+import HouseCreate from "./HouseCreate";
+import BackButton from "../../../../components/BackButton";
 
 const MainPackages = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const TabConfig = {
     0: <PackagesList />,
     1: <AddPackage />,
-    // 2:<AddRoom/>
+    2: <HouseCreate />
   };
   return (
     <AdminLayout>
@@ -43,25 +45,24 @@ const MainPackages = () => {
             </div>
           ) : currentTab == 1 ? (
             <div>
-              <button
-                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+              <BackButton
+                label="Back"
                 onClick={() => {
                   setCurrentTab(0);
                 }}
-              >
-                <span className="max-xs:sr-only ">back</span>
-              </button>
+                className="bg-blue-600 hover:bg-blue-700"
+              />
+              
             </div>
           ) : currentTab == 2 ? (
             <div>
-              <button
-                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+               <BackButton
+                label="Back"
                 onClick={() => {
                   setCurrentTab(0);
                 }}
-              >
-                <span className="max-xs:sr-only ">back</span>
-              </button>
+                className="bg-blue-600 hover:bg-blue-700"
+              />
             </div>
           ) : null}
         </div>
