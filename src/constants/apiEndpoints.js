@@ -47,8 +47,13 @@ export const RTC_API_BASE_URL =
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
-// PARK test
-export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
+// Amarabad dev
+// export const AMRABAD_API_BASE_URL =
+// "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+
+// PARK PROD
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -274,7 +279,6 @@ export const API_ENDPOINTS = {
     GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
-
   FAILED_TRANSACTIONS: {
     GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
@@ -282,4 +286,12 @@ export const API_ENDPOINTS = {
     GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
     GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
   },
+  AMRABAD:{
+    MASTERS:{
+      
+    },
+    USER:{
+
+    }
+  }
 };

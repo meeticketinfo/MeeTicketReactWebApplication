@@ -374,6 +374,22 @@ const sidebarItems = [
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
   },
+
+   {
+    title: "Masters",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Packages",
+        icon: TbReportSearch,
+        path: "/packages",
+      },
+     
+    ],
+  },
 ];
 
 export default sidebarItems;
