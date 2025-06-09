@@ -6,16 +6,25 @@ const HouseCreate = () => {
     houseName: "",
     tarrifPerDay: "",
     discounts: "",
-    discountType:"",
-    discountValue:"",
-    amountAfterDiscount:"",
-    discountApplicable:"",
+    discountType: "",
+    discountValue: "",
+    amountAfterDiscount: "",
+    discountApplicable: "",
     noOfHouseApplicable: "",
     roomLimit: "",
     blockOut: "",
     remarks: "",
     sequence: "",
-    images: "",
+    images: [],
+  };
+  // Function to convert files to base64 strings
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file); // Convert to base64
+    });
   };
   const validationSchema = Yup.object().shape({
     packages: Yup.string().required("Package selection is required."),
@@ -29,23 +38,39 @@ const HouseCreate = () => {
     discounts: Yup.string().required(
       "Please select if discounts are available."
     ),
-    discountType: Yup.string().required(
-      "Discount Type is required."
-    ),
-    discountValue: Yup.string().required(
-      "Discount Value is required."
-    ),
-    discountApplicable: Yup.string().required(
-      "Discount Applicable is required."
-    ),
-    noOfHouseApplicable: Yup.number()
-      .typeError("Number of houses must be a number.")
-      .required("Number of houses is required.")
-      .min(1, "At least one house must be applicable."),
+
+    discountValue: Yup.string().when("discounts", {
+      is: "yes",
+      then: Yup.string().required("Discount Value is required."),
+      otherwise: Yup.string().nullable(),
+    }),
+
+    discountApplicable: Yup.string().when("discounts", {
+      is: "yes",
+      then: Yup.string().required("Discount Applicable is required."),
+      otherwise: Yup.string().nullable(),
+    }),
+
+    noOfHouseApplicable: Yup.number().when("discounts", {
+      is: "yes",
+      then: Yup.number()
+        .typeError("Number of houses must be a number.")
+        .required("Number of houses is required.")
+        .min(1, "At least one house must be applicable."),
+      otherwise: Yup.number().nullable(),
+    }),
     roomLimit: Yup.string().required("Room Limit is required."),
     blockOut: Yup.string().required("Block Out is required."),
     sequence: Yup.string().required("Sequence is required."),
-    images: Yup.string().required("Image is required."),
+    images: Yup.array()
+      .of(
+        Yup.string().test("is-valid-image", "Invalid image type", (value) => {
+          // Regular expression for checking valid image data URI format
+          return /^data:image\/(jpeg|png|gif);base64,/.test(value);
+        })
+      )
+      .min(1, "You must upload at least one image")
+      .max(5, "You can upload up to 5 images only"),
   });
 
   const handleSubmit = (values, actions) => {
@@ -60,7 +85,7 @@ const HouseCreate = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ values ,isSubmitting }) => (
+          {({ values, isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-3">
                 {/* User Select */}
@@ -152,7 +177,7 @@ const HouseCreate = () => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                 {values.discounts === "Yes" && (
+                {values.discounts === "Yes" && (
                   <>
                     {/* Discount Type */}
                     <div>
@@ -326,40 +351,75 @@ const HouseCreate = () => {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="col-md-2">
                   <label
                     htmlFor="images"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Images Upload <span className="text-red-500">*</span>
+                    Upload Images
                   </label>
-                  <Field name="images">
-                    {({ field, form }) => (
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={(event) => {
-                          form.setFieldValue(
-                            "images",
-                            event.currentTarget.files
-                          );
-                        }}
-                        className="mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
-                      />
-                    )}
-                  </Field>
+                  <input
+                    id="images"
+                    name="images"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    type="file"
+                    // accept="image/*"
+                    multiple
+                    onChange={async (event) => {
+                      const files = event.currentTarget.files;
+                      if (files) {
+                        const base64Images = [];
+                        for (let i = 0; i < files.length; i++) {
+                          const base64 = await convertToBase64(files[i]);
+                          base64Images.push(base64);
+                        }
+                        setFieldValue("images", base64Images); // Store base64 images in Formik state
+                      }
+                    }}
+                  />
                   <ErrorMessage
                     name="images"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
+
+                <div className="col-md-10">
+                  <h4 className="block text-xs font-medium text-gray-700">
+                    Selected Image Previews:
+                  </h4>
+                  <div className="flex gap-4 mt-2">
+                    {values.images.map((base64Image, index) => (
+                      <div key={index} className="relative w-[100px] h-[100px]">
+                        {/* Delete button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedImages = values.images.filter(
+                              (_, i) => i !== index
+                            );
+                            setFieldValue("images", updatedImages);
+                          }}
+                          className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                        >
+                          ×
+                        </button>
+
+                        {/* Image preview */}
+                        <img
+                          src={base64Image}
+                          alt={`preview-${index}`}
+                          className="w-full h-full object-cover rounded shadow-md"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Submit Button */}
               <div className="flex justify-center mt-4 mb-4">
-                <div className="">
+                <div>
                   <button
                     type="submit"
                     disabled={isSubmitting}

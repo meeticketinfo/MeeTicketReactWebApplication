@@ -28,7 +28,7 @@ const PackageTable = ({ setIsServiceEditVisible }) => {
   };
 
   return (
-    <>
+    <> 
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl">
         <PackageNestedTable

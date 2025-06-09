@@ -14,7 +14,7 @@ export const PAYNOW_API_BASE_URL =
 
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/"; 
 
 // METRO UAT
 export const METRO_API_BASE_URL =
@@ -48,8 +48,8 @@ export const RTC_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // Amarabad dev
-// export const AMRABAD_API_BASE_URL =
-// "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+export const AMRABAD_API_BASE_URL =
+"https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
 // export const API_BASE_URL =
@@ -273,7 +273,7 @@ export const API_ENDPOINTS = {
 
   AMRABAD:{
     MASTERS:{
-      
+      ADD_HOUSE:`${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
     },
     USER:{
 
