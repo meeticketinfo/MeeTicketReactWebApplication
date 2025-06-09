@@ -70,6 +70,8 @@ import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_pr
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
+import Packages from "../pages/amrabad/user/packages/packages";
+import Houses from "../pages/amrabad/user/houses/Houses";
 
 export const routes = [
   {
@@ -307,6 +309,19 @@ export const routes = [
   {
     path: "/user-status-transaction",
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
+  },
+  //amarabad-user
+  {
+    path: "/amarabad",
+    element: <Packages/>,
+  },
+  {
+    path: "/amarabad/packages",
+    element: <Packages/>,
+  },
+  {
+    path: "/amarabad/packages/:house",
+    element: <Houses/>,
   },
   // amrabad
    {

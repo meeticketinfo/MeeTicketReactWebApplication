@@ -1,8 +1,8 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
 // export const API_BASE_URL =
