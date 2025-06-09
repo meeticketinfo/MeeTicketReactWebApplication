@@ -9,23 +9,17 @@ import ServiceCreate from "../../../../components/service_management/serviceCrea
 import ServiceVarientCreate from "../../../../components/service_variant_management/serviceVarientCreate";
 import useAuthStore from "../../../../store/authStore";
 import PackageNestedTable from "./PackageNestedTable";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
-const PackageTable = ({ setIsServiceEditVisible }) => { 
-  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
-    useAuthStore();
-  const role = roleDetails?.name;
+const PackageTable = ({ setIsServiceEditVisible }) => {
   const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
     useUnifiedFacilityStore();
-
+    const { PackagesWithRooms, isPackagesWithRoomsLoading, fetchPackagesWithRooms } = usePackagesStore();
+    console.log("PackagesWithRooms",PackagesWithRooms)
   useEffect(() => {
-    fetchAllUnifiedFacilities(role);
+    fetchAllUnifiedFacilities();
+    fetchPackagesWithRooms();
   }, []);
-  const { openModalId, setOpenModalId, closeModal } = useModalStore();
-
-  const handleDataAdded = () => {
-    fetchAllUnifiedFacilities(role);
-    closeModal(); // Optionally close the modal after success
-  };
 
   return (
     <>
@@ -36,49 +30,6 @@ const PackageTable = ({ setIsServiceEditVisible }) => {
           setIsServiceEditVisible={setIsServiceEditVisible}
         />
       </div>
-
-      <PopupModal
-        popupModalId="first-modal"
-        isOpen={openModalId === "facility-modal"}
-        onClose={closeModal}
-        title={"Edit Facility"}
-        size="medium"
-        overlayClassName="bg-gray-800 bg-opacity-60"
-        contentClassName="bg-white"
-        defaultBodyPadding={true}
-      >
-        <div>
-          <FacilityCreate onDataAdded={handleDataAdded} />
-        </div>
-      </PopupModal>
-      <PopupModal
-        popupModalId="first-modal"
-        isOpen={openModalId === "sub-facility-modal"}
-        onClose={closeModal}
-        title={"Edit Sub-Facility"}
-        size="medium"
-        overlayClassName="bg-gray-800 bg-opacity-60"
-        contentClassName="bg-white"
-        defaultBodyPadding={true}
-      >
-        <div>
-          <ServiceCreate onDataAdded={handleDataAdded} />
-        </div>
-      </PopupModal>
-      <PopupModal
-        popupModalId="first-modal"
-        isOpen={openModalId === "type-of-ticket-modal"}
-        onClose={closeModal}
-        title={"Edit Type of Ticket"}
-        size="medium"
-        overlayClassName="bg-gray-800 bg-opacity-60"
-        contentClassName="bg-white"
-        defaultBodyPadding={true}
-      >
-        <div>
-          <ServiceVarientCreate onDataAdded={handleDataAdded} />
-        </div>
-      </PopupModal>
     </>
   );
 };

@@ -380,7 +380,7 @@ const sidebarItems = [
       {
         title: "Packages",
         icon: TbReportSearch,
-        path: "/packages",
+        path: "/amrabad-packages",
       },
      
     ],
