@@ -128,7 +128,7 @@ export const useTransactionsStore = create((set) => ({
   //Get Payment Transaction PieChart Data
   fetchPaymentTransactionPieChartData: async (payload) => {
     set({ isPaymentTransactionPieChartLoading: true });
-    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}&phoneNumber=${payload.phoneNumber}`;
    
     try {
       const response = await apiService.get(
@@ -147,7 +147,7 @@ export const useTransactionsStore = create((set) => ({
   //GetSuccessButNotConfirmedPieChart
   fetchSuccessButNotConfirmedPieChartData: async (payload) => {
     set({ isSuccessButNotConfirmedPieChartLoading: true });
-    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}&phoneNumber=${payload.phoneNumber}`;
    
     try {
       const response = await apiService.get(

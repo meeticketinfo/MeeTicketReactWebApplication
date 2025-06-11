@@ -168,7 +168,8 @@ const FailedTransactions = () => {
       resultMsg: UserTransactionReportFilter?.resultMsg || "",
       departmentId: UserTransactionReportFilter?.departmentId || "",
       categoryId: UserTransactionReportFilter?.categoryId || "",
-      category: UserTransactionReportFilter?.category || ""
+      category: UserTransactionReportFilter?.category || "",
+      mobileNumber:UserTransactionReportFilter?.phoneNumber || "",
     });
   }, []);
 
@@ -185,6 +186,7 @@ const FailedTransactions = () => {
     ParkId: UserTransactionReportFilter?.locationId || "",
     departmentId: UserTransactionReportFilter?.departmentId || "",
     entityId: UserTransactionReportFilter?.categoryId || "",
+    phoneNumber:UserTransactionReportFilter?.phoneNumber || "",
   };
 
   const onSubmit = (values) => {
@@ -195,6 +197,7 @@ const FailedTransactions = () => {
       status: values.status || "",
       departmentId: values.departmentId,
       categoryId: values.entityId,
+      mobileNumber:values.phoneNumber,
       category: values.status == "" ? "" : values.status == "CONFIRMED" ? "" : UserTransactionReportFilter?.category
     });
     localStorage.setItem("transactionPayload", 
@@ -484,6 +487,27 @@ const FailedTransactions = () => {
                       <option value="FAILED">Failed</option>
                     </Field>
                   </div>
+                  {/* mobile number */}
+                  <div>
+                  <label
+                    htmlFor="phoneNumber"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Phone Number
+                  </label>
+                  <Field
+                    type="text"
+                    maxLength="10"
+                    name="phoneNumber"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                    placeholder="Enter phone number"
+                    onKeyPress={(e) => {
+                      if (!/^\d$/.test(e.key)) {
+                        e.preventDefault(); // Prevent non-numeric characters
+                      }
+                    }}
+                  />
+                </div>
                   <div className="flex items-end">
                     <button
                       type="submit"

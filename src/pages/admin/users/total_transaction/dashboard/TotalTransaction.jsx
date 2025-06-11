@@ -26,30 +26,24 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
 
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
 
   localStorage.setItem("range-filter", Rangefilter);
   const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
-  
-  const [filters, setfilters] = useState({
-    fromDate: "",
-    toDate: "",
-    locationId: "",
-    categoryId: "",
-    departmentId: "",
-    durationType: Rangefilter,
-  });
 
   const { fromDate, toDate } = getDateRange(Rangefilter);
-  const [formInitialValues, setFormInitialValues] = useState({
-    fromDate: UserTransactionReportFilter?.fromDate || fromDate,
-    toDate: UserTransactionReportFilter?.toDate || toDate,
-    departmentId: "",
-    entityId: "",
-    ParkId: "",
-  });
+
+  const newformInitialValues = {
+    fromDate: fromDate || UserTransactionReportFilter?.fromDate,
+    toDate: toDate || UserTransactionReportFilter?.toDate,
+    departmentId: UserTransactionReportFilter?.departmentId || "",
+    entityId: UserTransactionReportFilter?.categoryId || "",
+    ParkId: UserTransactionReportFilter?.locationId || "",
+    phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
+  };
 
   // Initial load effect
   useEffect(() => {
@@ -61,32 +55,25 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
   // Effect for updating form values and fetching data when Rangefilter changes
   useEffect(() => {
     const { fromDate, toDate } = getDateRange(Rangefilter);
-    const newInitialValues = {
-      fromDate: fromDate,
-      toDate: toDate,
-      departmentId: "",
-      entityId: "",
-      ParkId: "",
-    };
-    setFormInitialValues(newInitialValues);
-    setfilters(prev => ({
-      ...prev,
-      fromDate: fromDate,
-      toDate: toDate,
-      durationType: Rangefilter
-    }));
-
+    localStorage.setItem(
+      "transactionPayload",
+      JSON.stringify({
+        ...UserTransactionReportFilter,
+        fromDate: fromDate,
+        toDate: toDate,
+      })
+    );
     const payload = {
       fromDate: fromDate,
       toDate: toDate,
-      locationId: "",
-      categoryId: "",
-      departmentId: "",
-      durationType: Rangefilter,
+      locationId: UserTransactionReportFilter?.locationId || "",
+      categoryId: UserTransactionReportFilter?.categoryId || "",
+      departmentId: UserTransactionReportFilter?.departmentId || "",
+      phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
     };
 
     fetchPaymentTransactionPieChartData(payload);
-    fetchSuccessButNotConfirmedPieChartData(payload)
+    fetchSuccessButNotConfirmedPieChartData(payload);
   }, [Rangefilter]);
 
   // overAll on submit
@@ -98,11 +85,18 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
       categoryId: values.entityId,
       departmentId: values.departmentId,
       durationType: Rangefilter,
+      phoneNumber: values.phoneNumber,
     };
-    setfilters(payload);
+
+    localStorage.setItem("transactionPayload", JSON.stringify(payload));
     fetchPaymentTransactionPieChartData(payload);
     fetchSuccessButNotConfirmedPieChartData(payload);
   };
+  const totalCount =
+    PaymentTransactionPieChartData?.reduce(
+      (sum, item) => sum + item.count,
+      0
+    ) || 0;
 
   return (
     <>
@@ -110,7 +104,7 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
         <div className="col-span-full ">
           <Formik
             enableReinitialize={true}
-            initialValues={formInitialValues}
+            initialValues={newformInitialValues}
             onSubmit={overAllOnSubmit}
           >
             {({ values, setFieldValue, setValues }) => (
@@ -325,11 +319,32 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
                       }}
                     />
                   </div>
+                  {/* mobile number */}
+                  <div>
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Phone Number
+                    </label>
+                    <Field
+                      type="text"
+                      maxLength="10"
+                      name="phoneNumber"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                      placeholder="Enter phone number"
+                      onKeyPress={(e) => {
+                        if (!/^\d$/.test(e.key)) {
+                          e.preventDefault(); // Prevent non-numeric characters
+                        }
+                      }}
+                    />
+                  </div>
                   <div className="flex gap-2 items-end">
                     <button
                       type="submit"
                       className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                    // disabled={isFetchEntityBookingsLoading}
+                      // disabled={isFetchEntityBookingsLoading}
                     >
                       Search
                     </button>
@@ -337,13 +352,15 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
                       type="button"
                       className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                       onClick={() => {
+                        const { fromDate: resetFromDate, toDate: resetToDate } =
+                          getDateRange("today");
                         // Reset form values and filters
                         localStorage.removeItem("UserTransactionReportFilter");
                         localStorage.setItem("range-filter", "today");
                         localStorage.removeItem("transactionPayload");
                         setValues({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate: resetFromDate,
+                          toDate: resetToDate,
                           departmentId: "",
                           entityId: "",
                           ParkId: "",
@@ -352,20 +369,20 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
 
                         // Reset chart data by clearing relevant stores
                         fetchPaymentTransactionPieChartData({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate: resetFromDate,
+                          toDate: resetToDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
-                          durationType: Rangefilter,
+                          phoneNumber: "",
                         });
                         fetchSuccessButNotConfirmedPieChartData({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate: fromDate,
+                          toDate: toDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
-                          durationType: Rangefilter,
+                          phoneNumber: "",
                         });
                       }}
                     >
@@ -390,11 +407,10 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
                 </div>
               )}
               <TotalTransactionsChart
-                data={PaymentTransactionPieChartData}
+                data={totalCount !== 0 ? PaymentTransactionPieChartData : []}
                 title="Total Transactions"
                 angleKey="count"
                 calloutLabelKey="category"
-                filters={filters}
               />
             </div>
 
@@ -409,7 +425,6 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
                 title="Payment Success and Ticket not generated"
                 angleKey="count"
                 calloutLabelKey="subCategory"
-                filters={filters}
               />
             </div>
           </div>
