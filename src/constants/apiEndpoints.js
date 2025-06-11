@@ -14,7 +14,7 @@ export const PAYNOW_API_BASE_URL =
 
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/"; 
 
 // METRO UAT
 export const METRO_API_BASE_URL =
