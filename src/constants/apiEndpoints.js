@@ -47,9 +47,6 @@ export const RTC_API_BASE_URL =
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
-// PARK test
-// export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
-
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${API_BASE_URL}/auth/login`,

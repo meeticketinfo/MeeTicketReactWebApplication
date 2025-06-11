@@ -37,15 +37,16 @@ export const useBookingsStore = create(
       isTransactionPaymentReportsLoading: false,
       isCompleteBookings: false,
       bookingMessage: "",
-
+       isPaymentTransactionNAvigate:false,
       Generate_deep_link_data: [],
       isGenerate_deep_linkLoading: false,
       //
       CheckPosTsxStatusData: [],
       isTransactionPaymentReportsLoading: false,
       // regenerate ticket
-      isReGenerateTicketLoading:false,
-
+      isReGenerateTicketLoading: false,
+      //  cgg
+      isCggLoading: false,
       serializeFilters: (filters) =>
         Object.entries(filters)
           .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -58,7 +59,9 @@ export const useBookingsStore = create(
       setCheckPosTsxStatusData: (CheckPosTsxStatusData) => {
         set({ CheckPosTsxStatusData });
       },
-
+      setPaymentTransactionNAvigate: (PaymentTransactionNAvigate) => {
+        set({ PaymentTransactionNAvigate });
+      },
       setIsBookingFormVisible: (isBookingFormVisible) => {
         set({ isBookingFormVisible });
       },
@@ -299,7 +302,7 @@ export const useBookingsStore = create(
           endDate: payload.endDate,
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
-          mobileNumber:payload.mobileNumber
+          mobileNumber: payload.mobileNumber,
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });
@@ -377,33 +380,40 @@ export const useBookingsStore = create(
           });
         }
       },
-      
+
       // cgg toggle
 
       saveCggDetails: async (CggPayload) => {
+        set({ isCggLoading: true });
         try {
           const url = `${API_ENDPOINTS.MASTERS.BOOKING.CGG_TOGGLE}?IsCggEnable=${CggPayload.IsCggEnable}`;
           const method = "put";
 
           const response = await apiService[method](url);
-
+          set({
+            isCggLoading: false,
+          });
           return { success: true, data: response };
         } catch ({ error, xhr }) {
+          set({
+            error: error.message,
+            isCggLoading: false,
+          });
           return { error: error.response.data.message };
         }
       },
       // regenerate park ticket
 
-       FetchReGenerateTicket: async (reGenerateDetails) => {
+      FetchReGenerateTicket: async (reGenerateDetails) => {
         set({ isReGenerateTicketLoading: true });
         try {
           const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_RE_GENERATE_TICKET}`;
           const method = "post";
-          const response = await apiService[method](url,reGenerateDetails);
+          const response = await apiService[method](url, reGenerateDetails);
           set({
             isReGenerateTicketLoading: false,
           });
-          return{response:response}
+          return { response: response };
         } catch (error) {
           set({
             error: error.message,
@@ -412,17 +422,19 @@ export const useBookingsStore = create(
         }
       },
 
-       FetchVerifyTicket: async (VerifyDetails,isUpi) => {
-        console.log("isUpi",isUpi)
+      FetchVerifyTicket: async (VerifyDetails, isUpi) => {
+        console.log("isUpi", isUpi);
         set({ isVerifyTicketLoading: true });
         try {
-          const url = isUpi?`${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`:`${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${VerifyDetails}`;
+          const url = isUpi
+            ? `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`
+            : `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${VerifyDetails}`;
           const method = "post";
           const response = await apiService[method](url);
           set({
             isVerifyTicketLoading: false,
           });
-          return{response:response}
+          return { response: response };
         } catch (error) {
           set({
             error: error.message,

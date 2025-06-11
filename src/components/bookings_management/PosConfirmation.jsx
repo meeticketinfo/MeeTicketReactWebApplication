@@ -10,6 +10,7 @@ import PosTransactionFailed from "./PosTransactionFailed";
 import { toast, ToastContainer } from "react-toastify";
 import BackButton from "../BackButton";
 import useOnlineStatus from "../../utils/useOnlineStatus";
+import PosLoader from "../../web_app_loaders/PosLoader";
 
 function formatBookingDate(date) {
   const year = date.getFullYear();
@@ -25,10 +26,12 @@ const PosConfirmation = () => {
   const isOnline = useOnlineStatus();
   console.log("isOnline", isOnline);
   const [counter, setCounter] = useState(120);
-
+  const [Timercounter, setTimercounter] = useState(120);
   const [isPosTransactionFailed, setIsPosTransactionFailed] = useState(false);
   const [Loader, setLoader] = useState(false);
+  const [IsLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const formatCounter = () => {
     const minutes = Math.floor(counter / 60);
     const seconds = counter % 60;
@@ -37,6 +40,14 @@ const PosConfirmation = () => {
   const storedBookingPayload = JSON.parse(
     sessionStorage.getItem("bookingPayload")
   );
+
+  // for timer
+
+  const TimerformatCounter = () => {
+    const minutes = Math.floor(Timercounter / 60);
+    const seconds = Timercounter % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
   const {
     setIsFirstStepTransaction,
@@ -64,7 +75,7 @@ const PosConfirmation = () => {
       const timer = setTimeout(() => {
         setCounter((prev) => prev - 1);
         CheckPosTsxStatus(Generate_deep_link_data?.orderId);
-      }, 1000);
+      }, 10000);
 
       return () => clearTimeout(timer);
     } else if (counter === 0) {
@@ -74,11 +85,30 @@ const PosConfirmation = () => {
     }
   }, [counter]);
 
+  // for Timmer
+  useEffect(() => {
+    if (
+      Timercounter > 0 &&
+      CheckPosTsxStatusData.resultStatus !== "TXN_SUCCESS"
+    ) {
+      const timer = setTimeout(() => {
+        setTimercounter((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (Timercounter === 0) {
+      launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
+      navigate(`/book-tickets`);
+      sessionStorage.removeItem("bookingPayload");
+    }
+  }, [Timercounter]);
+
   // for generate booking details qr
   // console.log("Generate_deep_link_data", Generate_deep_link_data);
   useEffect(() => {
     async function handleSaveBookingDetails() {
       if (CheckPosTsxStatusData.resultStatus === "TXN_SUCCESS") {
+        setIsLoading(true);
         try {
           const currentDate = new Date();
           const result = await savePosBookingDetails({
@@ -88,13 +118,13 @@ const PosConfirmation = () => {
               : "CounterUpi",
             bookingDate: formatBookingDate(currentDate),
           });
-          launchPaytmPOS(CheckPosTsxStatusData.successDeeplink);
-          setTimeout(() => {
-            launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
-          }, 1000);
-
+          setIsLoading(false);
+          setLoader(true);
           if (result && result.data && result.data.status === 200) {
-            setLoader(true);
+            launchPaytmPOS(CheckPosTsxStatusData.successDeeplink);
+            setTimeout(() => {
+              launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
+            }, 1000);
             const newBookingId = result?.data?.data?.data;
 
             navigate(`/entity-bookings/view-details/${newBookingId}`);
@@ -106,6 +136,7 @@ const PosConfirmation = () => {
           //  toast.error("Unexpected response from the server.");
           handleApiError(xhr);
           setIsPosTransactionFailed(true);
+          navigate(`/book-tickets`);
           launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
         } finally {
           //   setSubmitting(false);
@@ -135,7 +166,7 @@ const PosConfirmation = () => {
               <BackButton
                 label="Back"
                 onClick={() => {
-                  console.log("logged");
+                  // console.log("logged");
                   launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
                   navigate(`/book-tickets`);
                   sessionStorage.removeItem("bookingPayload");
@@ -154,13 +185,9 @@ const PosConfirmation = () => {
         <div className="text-center text-gray-600">
           {isPosTransactionFailed ? (
             <PosTransactionFailed />
-          ) : !Loader ? (
+          ) : (
             <div className="flex flex-col items-center justify-center text-center text-gray-700">
-              {/* <img
-                src="/assets/images/processing-timer.gif" 
-                alt="Processing Transaction"
-                className="w-24 h-24 mb-4"
-              /> */}
+              {IsLoading && <PosLoader />}
               <p className="text-lg font-semibold">
                 Hang tight! We're waiting for the transaction to complete.
               </p>
@@ -168,13 +195,11 @@ const PosConfirmation = () => {
               <p className="mt-1 text-sm text-gray-500">
                 Auto timeout in{" "}
                 <span className="font-bold text-blue-v2">
-                  {formatCounter()}
+                  {TimerformatCounter()}
                 </span>{" "}
                 seconds.
               </p>
             </div>
-          ) : (
-            <TransactionQrLoader />
           )}
         </div>
       </div>
