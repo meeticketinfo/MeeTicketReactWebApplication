@@ -5,13 +5,14 @@ import PackagesList from "./PackagesList";
 import AddPackage from "./AddPackage";
 import HouseCreate from "./HouseCreate";
 import BackButton from "../../../../components/BackButton";
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 const MainPackages = () => {
-  const [currentTab, setCurrentTab] = useState(0);
+  const { currentTab, setCurrentTab } = usePackagesCommonStore();
   const TabConfig = {
     0: <PackagesList />,
     1: <AddPackage />,
-    2: <HouseCreate />
+    2: <HouseCreate />,
   };
   return (
     <AdminLayout>
@@ -52,11 +53,10 @@ const MainPackages = () => {
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
               />
-              
             </div>
           ) : currentTab == 2 ? (
             <div>
-               <BackButton
+              <BackButton
                 label="Back"
                 onClick={() => {
                   setCurrentTab(0);

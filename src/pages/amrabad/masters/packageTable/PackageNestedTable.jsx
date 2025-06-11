@@ -3,7 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
 
 const PackageNestedTable = ({ data }) => {
-  console.log("data", data);
+  
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
