@@ -1,25 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
-import { useFacilityStore } from "../../../../store/masters/facilitiesStore";
-import { useModalStore } from "../../../../store/modalStore";
-import { useServiceStore } from "../../../../store/masters/servicesStore";
-import { useServiceVariantStore } from "../../../../store/masters/serviceVariantsStore";
-import { useUnifiedFacilityStore } from "../../../../store/masters/unifiedFacilityStore";
-import { formatToCurrency } from "../../../../utils/TypographyHelper";
-import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
 const PackageNestedTable = ({ data }) => {
-  const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
- 
- 
-  useEffect(() => {
-    fetchAllDropdownFacilities();
-    
-  }, []);
-
-
-console.log("data",data)
+  console.log("data", data);
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -46,9 +30,7 @@ console.log("data",data)
 
 const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { openModalId, setOpenModalId, closeModal } = useModalStore();
-  const { allFacilities, fetchAllFacilities, setCurrentFacilityEditDetails } =
-    useFacilityStore();
+
   return (
     <>
       <tr
@@ -63,7 +45,7 @@ const AccordionRow = ({ serial, row }) => {
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
         {/* PACKAGE NAME */}
-        <td className="p-2 text-center">{row.name || "N/A"}</td>
+        <td className="p-2 text-center">{row.packageName || "N/A"}</td>
         {/* DESCRIPTION */}
         <td className="p-2 text-center">
           {row.description ? row.description : "N/A"}
@@ -102,14 +84,12 @@ const AccordionRow = ({ serial, row }) => {
         </td>
       </tr>
 
-      {isExpanded && row.services.length > 0 && (
+      {isExpanded && row.rooms.length > 0 && (
         <tr>
           <td colSpan="5" className="p-4 bg-blue-50">
             <table className="table-auto w-full ">
               <thead
-                className={`bg-[#f8f8f8] text-blue-v1 ${
-                  row.services.length === 1 ? "hidden" : ""
-                }`}
+                className={`bg-[#f8f8f8] text-blue-v1`}
               >
                 <tr>
                   <th className="p-2 text-center">S.No</th>
@@ -122,14 +102,11 @@ const AccordionRow = ({ serial, row }) => {
                 </tr>
               </thead>
               <tbody>
-                {row.services.map((subRow, subIndex) => (
+                {row.rooms.map((subRow, subIndex) => (
                   <AccordionSubRow
                     key={subIndex}
                     subRow={subRow}
                     facilityId={row.id}
-                    hasMultipleSubFacilities={
-                      row.services.length === 1 ? true : false
-                    }
                     subRowSerial={serial}
                     subRowIndex={subIndex}
                   />
@@ -143,23 +120,10 @@ const AccordionRow = ({ serial, row }) => {
   );
 };
 
-const AccordionSubRow = ({
-  subRow,
-  facilityId,
-  hasMultipleSubFacilities,
-  subRowSerial,
-  subRowIndex,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(
-    hasMultipleSubFacilities ? true : false
-  );
-  const { setOpenModalId } = useModalStore();
-  const { setCurrentServiceEditDetails } = useServiceStore();
-  const { setCurrentServiceVariantEditDetails } = useServiceVariantStore();
-  const { setIsCreateServiceEnabled } = useUnifiedFacilityStore();
+const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
   return (
     <>
-      <tr className={`bg-white ${hasMultipleSubFacilities ? "hidden" : ""}`}>
+      <tr className={`bg-white `}>
         {/* S.NO */}
         <td
           className="p-2 text-center cursor-pointer flex items-center"
@@ -170,18 +134,18 @@ const AccordionSubRow = ({
           }.${String.fromCharCode(97 + subRowIndex)}`}</div>
         </td>
         {/* ROOM NAME */}
-        <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
+        <td className="p-2 text-center">{subRow.roomName ?? "N/A"}</td>
         {/* TARRIF PER DAY */}
-        <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
+        <td className="p-2 text-center">{subRow.tariffPerDay ?? "N/A"}</td>
         {/* NO OF ROOMS AVAILABLE */}
         <td className="p-2 text-center">
-          {subRow.limit < 0 && subRow.limit != null ? "No Limit" : subRow.limit}
+          {subRow.roomLimit ? subRow.roomLimit : "N/A"}
         </td>
         {/* SEQUENCE */}
-              {/* <td className="p-2 text-center">
+        {/* <td className="p-2 text-center">
                 {subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}
               </td> */}
-        {/* USER STATUS */}
+        {/* HOUSE STATUS */}
         <td className="p-2 text-center">
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
@@ -200,16 +164,7 @@ const AccordionSubRow = ({
         {/* ACTIONS */}
         <td className="p-2 text-center">
           <span className="flex justify-center">
-            <button
-              onClick={() => {
-                setCurrentServiceEditDetails({
-                  ...subRow,
-                  facilityId: facilityId,
-                });
-                setOpenModalId("sub-facility-modal");
-                setIsCreateServiceEnabled(false);
-              }}
-            >
+            <button>
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
             </button>
           </span>
