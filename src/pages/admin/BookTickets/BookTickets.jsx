@@ -35,6 +35,7 @@ export default function AdminBookings() {
     isBookingFormVisible,
     setPaymentStatus,
     saveCggDetails,
+    isCggLoading
   } = useBookingsStore();
 
   const [cgg, setCgg] = useState(null);
@@ -665,7 +666,18 @@ export default function AdminBookings() {
                 onClick={handleCggSubmit}
                 className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
               >
-                Proceed
+               {isCggLoading ? (
+                  <span className="px-8">
+                    <l-tailspin
+                      size="15"
+                      stroke="5"
+                      speed="0.9"
+                      color="white"
+                    ></l-tailspin>
+                  </span>
+                ) : (
+                  "Proceed"
+                )}
               </button>
               <button
                 onClick={() => {

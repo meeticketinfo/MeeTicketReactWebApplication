@@ -25,14 +25,14 @@ export default function BookingDetails() {
     setIsFirstStepTransaction,
     isCompleteBookings,
     setCheckPosTsxStatusData,
-    
+    PaymentTransactionNAvigate,
+    setPaymentTransactionNAvigate,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   useEffect(() => {
     fetchQRsForBooking(id);
-   
   }, []);
 
   const fetchQRsForBooking = async (bookingId) => {
@@ -185,7 +185,9 @@ export default function BookingDetails() {
               <NavLink
                 end
                 to={
-                  isCompleteBookings
+                  PaymentTransactionNAvigate
+                    ? "/payment-transaction-report"
+                    : isCompleteBookings
                     ? "/completed-bookings"
                     : role === "ROLE_ZOOPARKADMIN"
                     ? "/book-tickets"
@@ -315,9 +317,19 @@ export default function BookingDetails() {
                         paddingTop: 15,
                         fontWeight: 700,
                       }}
-                      dangerouslySetInnerHTML={{__html: `: ${bookingDetailsResponse?.referenceId
-                        ? bookingDetailsResponse?.referenceId.replace(/\n/g, "<br />")
-                        : bookingDetailsResponse?.id?.replace(/\n/g, "<br />") || "N/A"}`}}
+                      dangerouslySetInnerHTML={{
+                        __html: `: ${
+                          bookingDetailsResponse?.referenceId
+                            ? bookingDetailsResponse?.referenceId.replace(
+                                /\n/g,
+                                "<br />"
+                              )
+                            : bookingDetailsResponse?.id?.replace(
+                                /\n/g,
+                                "<br />"
+                              ) || "N/A"
+                        }`,
+                      }}
                     />
                   </div>
                 </div>
