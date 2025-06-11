@@ -76,7 +76,7 @@ const AddPackage = () => {
                     name="package.packageName"
                     type="text"
                     maxlength={5}
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Package Name"
                   />
                   {/* <ErrorMessage
@@ -85,25 +85,8 @@ const AddPackage = () => {
                     className="text-red-500 text-xs absolute"
                   /> */}
                 </div>
-                {/* discription */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Description
-                  </label>
-                  <Field
-                    as="textarea"
-                    maxlength={100}
-                    name="package.description"
-                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Description"
-                  />
-                  {/* <ErrorMessage
-                        name="package.description"
-                        component="div"
-                        className="text-red-500 text-xs absolute"
-                        /> */}
-                </div>
-                {/* Open Time */}
+               
+                {/* Check In Time */}
                 <div className="">
                   <label
                     htmlFor="package.checkInTime"
@@ -114,7 +97,7 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkInTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Check-in Time"
                   />
                   {/* <ErrorMessage
@@ -124,7 +107,7 @@ const AddPackage = () => {
                      /> */}
                 </div>
 
-                {/* Close Time */}
+                {/* Check Out Time */}
                 <div className="">
                   <label
                     htmlFor="package.checkOutTime"
@@ -135,7 +118,7 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkOutTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Checkout Time"
                   />
                   {/* <ErrorMessage
@@ -153,7 +136,7 @@ const AddPackage = () => {
                     name="package.guidelines"
                     type="text"
                     maxlength={50}
-                    className={`mt-1 block w-[80%] px-2 py-1 border border-gray-300  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Guidelines"
                   />
                   {/* <ErrorMessage
@@ -162,6 +145,31 @@ const AddPackage = () => {
                     className="text-red-500 text-xs absolute"
                   /> */}
                 </div>
+
+
+
+
+
+
+                 {/* discription */}
+                 <div>
+                  <label className="block text-sm font-medium">
+                    Description
+                  </label>
+                  <Field
+                    as="textarea"
+                    maxlength={100}
+                    name="package.description"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
+                    placeholder="Enter Description"
+                  />
+                  {/* <ErrorMessage
+                        name="package.description"
+                        component="div"
+                        className="text-red-500 text-xs absolute"
+                        /> */}
+                </div>
+                
                 {/* Cancellation Policy */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -171,7 +179,7 @@ const AddPackage = () => {
                     as="textarea"
                     maxlength={100}
                     name="package.cancellationPolicy"
-                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Cancellation Policy"
                   />
                   {/* <ErrorMessage
@@ -216,6 +224,8 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
+
+                
                 {/* ---------------------------------------------------------------------------------------------------------------------- */}
                 {/* has sub facility */}
                 {/* <div className="flex items-center mt-5">
