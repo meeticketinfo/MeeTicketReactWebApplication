@@ -69,6 +69,8 @@ import UserStatusTransactionReport from "../components/payments_management/UserS
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
+import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
+import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
 
 export const routes = [
   {
@@ -187,11 +189,19 @@ export const routes = [
     path: "/bank-transactions",
     element: <ProtectedRoute element={<BankTransactions />} />,
   },
-   {
+  {
+    path: "/total-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalTransactions />} />,
+  },
+  {
+    path: "/transactions-order-tracker",
+    element: <ProtectedRoute element={<TransactionsOrderTracker />} />,
+  },
+  {
     path: "/transactions-dashboard",
     element: <ProtectedRoute element={<TransactionsDashboard />} />,
   },
-   {
+  {
     path: "/failed-transactions",
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },

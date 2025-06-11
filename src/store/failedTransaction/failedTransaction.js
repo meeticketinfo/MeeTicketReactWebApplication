@@ -5,6 +5,8 @@ import apiService from "../../services/apiService";
 export const userFailureTransaction = create((set) => ({
   failureUserTransactionReport: [],
   isFetchFailureUserTransactionReport: false,
+  TransactionTrackingStatusByOrderIdData: [],
+  isFetchTransactionTrackingStatusByOrderId: false,
   filters: {},
   
   fetchFailureUserTransactionReport: async (queryParams) => {
@@ -25,6 +27,26 @@ export const userFailureTransaction = create((set) => ({
     } finally {
       set({
         isFetchFailureUserTransactionReport: false,
+      })
+    }
+  },
+  fetchTransactionTrackingStatusByOrderId: async (orderID) => {
+    set({ isFetchTransactionTrackingStatusByOrderId: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_TRANSACTION_TRACKING_STATUS}?orderId=${orderID}`
+      );
+      set({
+        TransactionTrackingStatusByOrderIdData: response.data,
+      });
+      return {response: response.data}
+    } catch (error) {
+      set({
+        error: error.message,
+      });
+    } finally {
+      set({
+        isFetchTransactionTrackingStatusByOrderId: false,
       })
     }
   },

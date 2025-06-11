@@ -22,6 +22,14 @@ export const useTransactionsStore = create((set) => ({
   FailedTransactionByGraphData: null,
   isFailedTransactionByGraphLoading: false,
 
+  // Get Payment Transaction Pie Chart Data
+  PaymentTransactionPieChartData: null,
+  isPaymentTransactionPieChartLoading: false,
+
+  // Get SuccessButNotConfirmedPieChart
+  SuccessButNotConfirmedPieChartData: null,
+  isSuccessButNotConfirmedPieChartLoading: false,
+
   //  -----------------API CALLS------------------------------------------------------
   // Failed Transactions By reason
 
@@ -114,6 +122,44 @@ export const useTransactionsStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFailedTransactionByGraphLoading: false });
+    }
+  },
+
+  //Get Payment Transaction PieChart Data
+  fetchPaymentTransactionPieChartData: async (payload) => {
+    set({ isPaymentTransactionPieChartLoading: true });
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_ALL_PAYMENT_TRANSACTION_PIE_CHART}${param}`
+      );
+
+      set({
+        PaymentTransactionPieChartData: response.data,
+        isPaymentTransactionPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isPaymentTransactionPieChartLoading: false });
+    }
+  },
+
+  //GetSuccessButNotConfirmedPieChart
+  fetchSuccessButNotConfirmedPieChartData: async (payload) => {
+    set({ isSuccessButNotConfirmedPieChartLoading: true });
+    const param = `?fromDate=${payload.fromDate}&toDate=${payload.toDate}&locationId=${payload.locationId}&categoryId=${payload.categoryId}&departmentId=${payload.departmentId}`;
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART}${param}`
+      );
+
+      set({
+        SuccessButNotConfirmedPieChartData: response.data,
+        isSuccessButNotConfirmedPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isSuccessButNotConfirmedPieChartLoading: false });
     }
   },
 }));

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
@@ -36,7 +36,7 @@ const FailedTransactions = () => {
     fetchFailureUserTransactionReport,
   } = userFailureTransaction();
 
-  const { mobileNumber, status } = useLocation().state || {};
+  const { page } = useLocation().state || {};
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
@@ -68,6 +68,34 @@ const FailedTransactions = () => {
       },
     },
     {
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          to={"/transactions-order-tracker"}
+          state={{
+            orderId: params.data.orderId,
+            date: params.data.date,
+            mobileNumber: params.data.mobileNumber,
+            parkName: params.data.parkName,
+            status: params.data.status,
+            amount: params.data.amount
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
+    },
+    {
+      field: "orderId",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
       field: "mobileNumber",
       headerName: "Mobile No.",
       maxWidth: "120",
@@ -97,8 +125,15 @@ const FailedTransactions = () => {
     },
     {
       field: "status",
-      headerName: "Status",
-      maxWidth: "120",
+      headerName: "Payment Status",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Ticket Status",
+      width: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -128,22 +163,25 @@ const FailedTransactions = () => {
     fetchFailureUserTransactionReport({
       fromDate: UserTransactionReportFilter?.fromDate || fromDate,
       toDate: UserTransactionReportFilter?.toDate || toDate,
-      status: 'failed',
-      parkId: UserTransactionReportFilter?.locationId || "",
+      status: UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "failed",
+      locationId: UserTransactionReportFilter?.locationId || "",
       resultMsg: UserTransactionReportFilter?.resultMsg || "",
       departmentId: UserTransactionReportFilter?.departmentId || "",
       categoryId: UserTransactionReportFilter?.categoryId || "",
+      category: UserTransactionReportFilter?.category || ""
     });
   }, []);
+
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllParks();
   }, []);
+
   const initialValues = {
     fromDate: UserTransactionReportFilter?.fromDate || fromDate,
     toDate: UserTransactionReportFilter?.toDate || toDate,
-    status: "FAILED",
+    status: UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
     ParkId: UserTransactionReportFilter?.locationId || "",
     departmentId: UserTransactionReportFilter?.departmentId || "",
     entityId: UserTransactionReportFilter?.categoryId || "",
@@ -153,9 +191,19 @@ const FailedTransactions = () => {
     fetchFailureUserTransactionReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      parkId: values.ParkId,
+      locationId: values.ParkId,
       status: values.status || "",
+      departmentId: values.departmentId,
+      categoryId: values.entityId,
+      category: values.status == "" ? "" : values.status == "CONFIRMED" ? "" : UserTransactionReportFilter?.category
     });
+    localStorage.setItem("transactionPayload", 
+      JSON.stringify(
+        {...UserTransactionReportFilter, 
+          fromDate: values.fromDate,
+          toDate: values.toDate,
+          status: values.status,
+        }))
     setFilterData({
       departmentId: departmentId,
       categoryId: entityId,
@@ -190,7 +238,7 @@ const FailedTransactions = () => {
             </div>
             <div className="">
               <button
-                onClick={() => navigate("/transactions-dashboard")}
+                onClick={() => navigate( page ? page != "total-report" ? "/transactions-dashboard" : "/total-transactions-dashboard" : "/total-transactions-dashboard")}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back

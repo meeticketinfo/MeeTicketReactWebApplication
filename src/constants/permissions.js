@@ -24,6 +24,7 @@ export const superAdminPermissions = [
   // "toursim-bank-payments",
   "user-transaction",
   "transactions-dashboard",
+  "total-transactions-dashboard",
 ];
 
 export const parkAdminPermissions = [

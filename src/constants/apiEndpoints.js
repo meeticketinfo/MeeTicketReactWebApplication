@@ -5,8 +5,8 @@ import useAuthStore from "../store/authStore";
 //   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -48,7 +48,7 @@ export const RTC_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // PARK test
-export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
+// export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -240,7 +240,7 @@ export const API_ENDPOINTS = {
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
     FAILED_TRANSACTIONS:{
-      GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}UserTransactions/GetFailureDashboardInnerReport`,
+      GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
     }
   },
   ENTITIES: {
@@ -276,6 +276,9 @@ export const API_ENDPOINTS = {
   },
 
   FAILED_TRANSACTIONS: {
+    GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
+    GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
+    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId`,
     GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
