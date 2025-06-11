@@ -68,6 +68,7 @@ import UserTransactionReport from "../components/payments_management/UserTransac
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
+import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
 
 export const routes = [
   {
@@ -299,8 +300,12 @@ export const routes = [
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
   // amrabad
-   {
+   { 
     path: "/amrabad-packages",
     element: <ProtectedRoute element={<MainPackages/>} />,
+  },
+  { 
+    path: "/house-create",
+    element: <ProtectedRoute element={<HouseCreate />} />,
   },
 ];

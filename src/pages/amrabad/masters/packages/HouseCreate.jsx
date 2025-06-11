@@ -1,21 +1,32 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
 const HouseCreate = () => {
+  
+  const {
+    fetchPackagesWithRooms,
+    fetchGetAllPackages,
+    GetAllPackages,
+    saveHouseDetails,
+  } = usePackagesStore();
+
   const initialValues = {
-    packages: "",
-    houseName: "",
-    tarrifPerDay: "",
-    discounts: "",
+    packageId: "",
+    roomName: "",
+    tariffPerDay: "",
+    hasDiscount: "",
     discountType: "",
     discountValue: "",
     amountAfterDiscount: "",
     discountApplicable: "",
-    noOfHouseApplicable: "",
+    noOfHousesAvailable: "",
     roomLimit: "",
-    blockOut: "",
+    isBlockout: "",
     remarks: "",
-    sequence: "",
-    images: [],
+    sequence: 0,
+    roomImagesBase64Strings: [],
   };
   // Function to convert files to base64 strings
   const convertToBase64 = (file) => {
@@ -26,43 +37,34 @@ const HouseCreate = () => {
       reader.readAsDataURL(file); // Convert to base64
     });
   };
+  useEffect(() => {
+    fetchGetAllPackages();
+  }, []);
   const validationSchema = Yup.object().shape({
-    packages: Yup.string().required("Package selection is required."),
-    houseName: Yup.string()
+    packageId: Yup.string().required("Package selection is required."),
+    roomName: Yup.string()
       .required("House name is required.")
       .min(3, "House name must be at least 3 characters."),
-    tarrifPerDay: Yup.number()
+    tariffPerDay: Yup.number()
       .typeError("Tariff must be a number.")
       .required("Tariff per day is required.")
       .positive("Tariff must be a positive number."),
-    discounts: Yup.string().required(
+    hasDiscount: Yup.string().required(
       "Please select if discounts are available."
     ),
+    discountType: Yup.string().required("Discount Type is required"),
+    discountValue: Yup.string().required("Discount Value is required"),
+    discountApplicable: Yup.string().required(
+      "discounts Applicable is required"
+    ),
 
-    discountValue: Yup.string().when("discounts", {
-      is: "yes",
-      then: Yup.string().required("Discount Value is required."),
-      otherwise: Yup.string().nullable(),
-    }),
-
-    discountApplicable: Yup.string().when("discounts", {
-      is: "yes",
-      then: Yup.string().required("Discount Applicable is required."),
-      otherwise: Yup.string().nullable(),
-    }),
-
-    noOfHouseApplicable: Yup.number().when("discounts", {
-      is: "yes",
-      then: Yup.number()
-        .typeError("Number of houses must be a number.")
-        .required("Number of houses is required.")
-        .min(1, "At least one house must be applicable."),
-      otherwise: Yup.number().nullable(),
-    }),
+    noOfHousesAvailable: Yup.number().required(
+      "No Of House Applicable is required"
+    ),
     roomLimit: Yup.string().required("Room Limit is required."),
-    blockOut: Yup.string().required("Block Out is required."),
+    isBlockout: Yup.string().required("Block Out is required."),
     sequence: Yup.string().required("Sequence is required."),
-    images: Yup.array()
+    roomImagesBase64Strings: Yup.array()
       .of(
         Yup.string().test("is-valid-image", "Invalid image type", (value) => {
           // Regular expression for checking valid image data URI format
@@ -73,10 +75,40 @@ const HouseCreate = () => {
       .max(5, "You can upload up to 5 images only"),
   });
 
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
-    actions.setSubmitting(false);
+    const selectedPackage = GetAllPackages.find(
+      (pkg) => pkg.packageId === values.packageId
+    );
+    try {
+      const payload = {
+        ...values,
+        packageId: values.packageId, // ensure it's just ID
+        hasDiscount: values.hasDiscount === "Yes",
+        isBlockout:values.isBlockout === "Yes",
+        discountApplicable: values.discountApplicable === "true",
+        // Optional: include the name if backend requires it
+        // packageName: selectedPackage?.roomName,
+      };
+      const result = await saveHouseDetails(payload);
+      if (result.data.status === 200) {
+        toast.success("House created successfully");
+        fetchPackagesWithRooms();
+        resetForm();
+      }
+    } catch (xhr) {
+      if (xhr?.response?.data?.errors) {
+        Object.entries(xhr.response.data.errors).forEach(([key, msgs]) => {
+          toast.error(`${key}: ${msgs[0]}`);
+        });
+      } else {
+        toast.error(xhr.response?.data || "An error occurred");
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
     <>
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
@@ -91,25 +123,25 @@ const HouseCreate = () => {
                 {/* User Select */}
                 <div>
                   <label
-                    htmlFor="packages"
+                    htmlFor="packageId"
                     className="block text-xs font-medium"
                   >
                     Packages <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
-                    name="packages"
+                    name="packageId"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   >
-                    <option value="" disabled>
-                      Select a package
-                    </option>
-                    <option value="basic">Basic</option>
-                    <option value="standard">Standard</option>
-                    <option value="premium">Premium</option>
+                    <option value="">Select Packages</option>
+                    {GetAllPackages.map((pkg) => (
+                      <option key={pkg.packageId} value={pkg.packageId}>
+                        {pkg.roomName}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
-                    name="packages"
+                    name="packageId"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -117,19 +149,19 @@ const HouseCreate = () => {
 
                 <div>
                   <label
-                    htmlFor="houseName"
+                    htmlFor="roomName"
                     className="block text-xs font-medium"
                   >
                     Name of the House <span className="text-red-500">*</span>
                   </label>
                   <Field
-                    name="houseName"
+                    name="roomName"
                     type="text"
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Name of the House"
                   />
                   <ErrorMessage
-                    name="houseName"
+                    name="roomName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -138,33 +170,33 @@ const HouseCreate = () => {
                 {/* Email Id */}
                 <div>
                   <label
-                    htmlFor="tarrifPerDay"
+                    htmlFor="tariffPerDay"
                     className="block text-xs font-medium text-gray-700"
                   >
                     Tariff per day <span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="text"
-                    name="tarrifPerDay"
+                    name="tariffPerDay"
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Tariff per day"
                   />
                   <ErrorMessage
-                    name="tarrifPerDay"
+                    name="tariffPerDay"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="discounts"
+                    htmlFor="hasDiscount"
                     className="block text-xs font-medium text-gray-700"
                   >
                     Discounts <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
-                    name="discounts"
+                    name="hasDiscount"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   >
                     <option value="" label="Select option" />
@@ -172,12 +204,12 @@ const HouseCreate = () => {
                     <option value="No" label="No" />
                   </Field>
                   <ErrorMessage
-                    name="discounts"
+                    name="hasDiscount"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                {values.discounts === "Yes" && (
+                {values.hasDiscount === "Yes" && (
                   <>
                     {/* Discount Type */}
                     <div>
@@ -200,7 +232,6 @@ const HouseCreate = () => {
                       />
                     </div>
 
-                    {/* Discount Value */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700">
                         Discount Value <span className="text-red-500">*</span>
@@ -216,7 +247,6 @@ const HouseCreate = () => {
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-
                     {/* Amount after Discount */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700">
@@ -240,8 +270,8 @@ const HouseCreate = () => {
                         className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                       >
                         <option value="">Select option</option>
-                        <option value="Weekdays">Weekdays</option>
-                        <option value="Weekends">Weekends</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
                       </Field>
                       <ErrorMessage
                         name="discountApplicable"
@@ -253,7 +283,7 @@ const HouseCreate = () => {
                 )}
                 <div>
                   <label
-                    htmlFor="noOfHouseApplicable"
+                    htmlFor="noOfHousesAvailable"
                     className="block text-xs font-medium text-gray-700"
                   >
                     No of Houses Available{" "}
@@ -262,12 +292,12 @@ const HouseCreate = () => {
                   <Field
                     type="text"
                     maxLength="10"
-                    name="noOfHouseApplicable"
+                    name="noOfHousesAvailable"
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter No of Houses Available"
                   />
                   <ErrorMessage
-                    name="noOfHouseApplicable"
+                    name="noOfHousesAvailable"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -294,14 +324,14 @@ const HouseCreate = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="blockOut"
+                    htmlFor="isBlockout"
                     className="block text-xs font-medium text-gray-700"
                   >
                     Block out <span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="select"
-                    name="blockOut"
+                    name="isBlockout"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   >
                     <option value="">Select option</option>
@@ -309,7 +339,7 @@ const HouseCreate = () => {
                     <option value="No">No</option>
                   </Field>
                   <ErrorMessage
-                    name="blockOut"
+                    name="isBlockout"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -353,17 +383,17 @@ const HouseCreate = () => {
 
                 <div className="col-md-2">
                   <label
-                    htmlFor="images"
+                    htmlFor="roomImagesBase64Strings"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Upload Images
+                    Upload Images<span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="images"
-                    name="images"
+                    id="roomImagesBase64Strings"
+                    name="roomImagesBase64Strings"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     type="file"
-                    // accept="image/*"
+                    accept="image/*"
                     multiple
                     onChange={async (event) => {
                       const files = event.currentTarget.files;
@@ -373,12 +403,12 @@ const HouseCreate = () => {
                           const base64 = await convertToBase64(files[i]);
                           base64Images.push(base64);
                         }
-                        setFieldValue("images", base64Images); // Store base64 images in Formik state
+                        setFieldValue("roomImagesBase64Strings", base64Images); // Store base64 images in Formik state
                       }
                     }}
                   />
                   <ErrorMessage
-                    name="images"
+                    name="roomImagesBase64Strings"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
@@ -389,30 +419,39 @@ const HouseCreate = () => {
                     Selected Image Previews:
                   </h4>
                   <div className="flex gap-4 mt-2">
-                    {values.images.map((base64Image, index) => (
-                      <div key={index} className="relative w-[100px] h-[100px]">
-                        {/* Delete button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updatedImages = values.images.filter(
-                              (_, i) => i !== index
-                            );
-                            setFieldValue("images", updatedImages);
-                          }}
-                          className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                    {values.roomImagesBase64Strings.map(
+                      (base64Image, index) => (
+                        <div
+                          key={index}
+                          className="relative w-[100px] h-[100px]"
                         >
-                          ×
-                        </button>
+                          {/* Delete button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updatedImages =
+                                values.roomImagesBase64Strings.filter(
+                                  (_, i) => i !== index
+                                );
+                              setFieldValue(
+                                "roomImagesBase64Strings",
+                                updatedImages
+                              );
+                            }}
+                            className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                          >
+                            ×
+                          </button>
 
-                        {/* Image preview */}
-                        <img
-                          src={base64Image}
-                          alt={`preview-${index}`}
-                          className="w-full h-full object-cover rounded shadow-md"
-                        />
-                      </div>
-                    ))}
+                          {/* Image preview */}
+                          <img
+                            src={base64Image}
+                            alt={`preview-${index}`}
+                            className="w-full h-full object-cover rounded shadow-md"
+                          />
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -423,7 +462,7 @@ const HouseCreate = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                    className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 hover:cursor-pointer "
                   >
                     Create House
                   </button>
