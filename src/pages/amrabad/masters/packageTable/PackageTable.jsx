@@ -21,7 +21,7 @@ const PackageTable = ({ isHouseEditVisible ,setIsHouseEditVisible }) => {
       <ToastContainer position="top-right" autoClose={3000} />
       {isPackagesWithRoomsLoading ? <PackageTableLoader /> : (
       <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl">
-        <PackageNestedTable data={PackagesWithRooms} />
+        <PackageNestedTable data={PackagesWithRooms} isHouseEditVisible={isHouseEditVisible} setIsHouseEditVisible={setIsHouseEditVisible} />
       </div>)}
     </>
   );

@@ -168,6 +168,8 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
           <span className="flex justify-center">
             <button onClick={()=>{
               setCurrentTab(2)
+              isHouseEditVisible={isHouseEditVisible}
+              setIsHouseEditVisible={setIsHouseEditVisible}
             }}>
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
             </button>

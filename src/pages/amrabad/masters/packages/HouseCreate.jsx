@@ -3,31 +3,29 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect, useState } from "react";
-const HouseCreate = ({ isHouseEditVisible, setIsHouseEditVisible }) => {
+const HouseCreate = ({}) => {
   const {
     fetchPackagesWithRooms,
     fetchGetAllPackages,
     GetAllPackages,
     saveHouseDetails,
-    isSaveHouseDetailsLoading,
-    houseEditDetails,
   } = usePackagesStore();
   const [isValidation, setIsValidation] = useState("");
-const initialValues = {
-    packageId: isHouseEditVisible ? houseEditDetails?.packageId || "" : "",
-    roomName: isHouseEditVisible ? houseEditDetails?.roomName || "" : "",
-    tariffPerDay: isHouseEditVisible ? houseEditDetails?.tariffPerDay || "" : "",
-    hasDiscount: isHouseEditVisible ? (houseEditDetails?.hasDiscount ? "Yes" : "No") : "",
-    discountType: isHouseEditVisible ? houseEditDetails?.discountType || "" : "",
-    discountValue: isHouseEditVisible ? houseEditDetails?.discountValue || "" : "",
-    amountAfterDiscount: isHouseEditVisible ? houseEditDetails?.amountAfterDiscount || "" : "",
-    discountApplicable: isHouseEditVisible ? (houseEditDetails?.discountApplicable ? "true" : "false") : "",
-    noOfHousesAvailable: isHouseEditVisible ? houseEditDetails?.noOfHousesAvailable || "" : "",
-    roomLimit: isHouseEditVisible ? houseEditDetails?.roomLimit || "" : "",
-    isBlockout: isHouseEditVisible ? (houseEditDetails?.isBlockout ? "Yes" : "No") : "",
-    remarks: isHouseEditVisible ? houseEditDetails?.remarks || "" : "",
-    sequence: isHouseEditVisible ? houseEditDetails?.sequence || 0 : 0,
-    roomImagesBase64Strings: isHouseEditVisible ? houseEditDetails?.roomImagesBase64Strings || [] : [],
+  const initialValues = {
+    packageId:"",
+    roomName: "",
+    tariffPerDay:"",
+    hasDiscount:"",
+    discountType:"",
+    discountValue:"",
+    amountAfterDiscount:"",
+    discountApplicable:"",
+    noOfHousesAvailable:"",
+    roomLimit:"",
+    isBlockout:"",
+    remarks:"",
+    sequence:null,
+    roomImagesBase64Strings:[],
   };
   // Function to convert files to base64 strings
   const convertToBase64 = (file) => {
@@ -79,29 +77,28 @@ const initialValues = {
       .max(5, "You can upload up to 5 images only"),
   });
 
-   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    console.log("Form Submitted:", values);
     try {
       const payload = {
         ...values,
-        packageId: values.packageId,
+        packageId: values.packageId, // ensure it's just ID
         hasDiscount: values.hasDiscount === "Yes",
         isBlockout: values.isBlockout === "Yes",
         discountApplicable: values.discountApplicable === "true",
+        // Optional: include the name if backend requires it
+        // packageName: selectedPackage?.roomName,
       };
-
-      const result = await saveHouseDetails(payload, isHouseEditVisible);
-      if (result?.data?.status === 200) {
+      const result = await saveHouseDetails(payload);
+      if (result.data.status === 200) {
+        toast.success("House created successfully");
         fetchPackagesWithRooms();
-        toast.success(isHouseEditVisible ? "House updated successfully" : "House created successfully");
-        setIsHouseEditVisible(false);
         resetForm();
       }
     } catch (xhr) {
-      if (xhr && xhr.response && typeof xhr.response.data.errors === "object") {
-        Object.keys(xhr.response.data.errors).forEach((key) => {
-          if (Array.isArray(xhr.response.data.errors[key]) && xhr.response.data.errors[key].length > 0) {
-            toast.error(`${key}: ${xhr.response.data.errors[key][0]}`);
-          }
+      if (xhr?.response?.data?.errors) {
+        Object.entries(xhr.response.data.errors).forEach(([key, msgs]) => {
+          toast.error(`${key}: ${msgs[0]}`);
         });
       } else {
         toast.error(xhr.response?.data || "An error occurred");
@@ -111,16 +108,14 @@ const initialValues = {
     }
   };
 
-
   return (
     <>
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
-         <Formik
-        initialValues={initialValues}
-        enableReinitialize={true} 
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
           {({ values, isSubmitting, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-3">
@@ -469,15 +464,11 @@ const initialValues = {
                 <div>
                   <button
                     type="submit"
-                    // disabled={isSubmitting}
+                    disabled={isSubmitting}
                     className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 hover:cursor-pointer "
                   >
+                    Create House
                   </button>
-                   {isSaveHouseDetailsLoading
-                    ? "Saving..."
-                    : isHouseEditVisible
-                    ? "Update House"
-                    : "Create House"}
                 </div>
               </div>
             </Form>

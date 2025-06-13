@@ -26,6 +26,7 @@ const AddPackage = () => {
       privacyPolicy: "",
       latitude: null,
       longitude: null,
+      activeStatus: true,
       packageImageUrls: [""],
     },
     rooms: [
@@ -85,7 +86,7 @@ const AddPackage = () => {
                     className="text-red-500 text-xs absolute"
                   /> */}
                 </div>
-               
+
                 {/* Check In Time */}
                 <div className="">
                   <label
@@ -133,8 +134,8 @@ const AddPackage = () => {
                     Guidelines <span className="text-red-500">*</span>
                   </label>
                   <Field
+                    as="textarea"
                     name="package.guidelines"
-                    type="text"
                     maxlength={50}
                     className={`mt-1 block w-full px-2 py-1border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Guidelines"
@@ -146,13 +147,8 @@ const AddPackage = () => {
                   /> */}
                 </div>
 
-
-
-
-
-
-                 {/* discription */}
-                 <div>
+                {/* discription */}
+                <div>
                   <label className="block text-sm font-medium">
                     Description
                   </label>
@@ -169,7 +165,7 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
-                
+
                 {/* Cancellation Policy */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -224,8 +220,47 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
-
-                
+                <div>
+                  <label
+                    htmlFor="latitude"
+                    className="block text-xs font-medium"
+                  >
+                    Latitude <span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="package.latitude"
+                    type="text"
+                    maxlength={50}
+                    className={`mt-1 block w-full px-2 py-1border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  />
+                  {/* <ErrorMessage
+                    name="package.latitude"
+                    component="div"
+                    className="text-red-500 text-xs absolute"
+                  /> */}
+                </div>
+                <div>
+                  <label
+                    htmlFor="activeStatus"
+                    className="block text-xs font-medium"
+                  >
+                    Active Status <span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    as="select"
+                    name="package.activeStatus"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">InActive</option>
+                  </Field>
+                  {/* <ErrorMessage
+                        name="package.activeStatus"
+                        component="div"
+                        className="text-red-500 text-xs absolute"
+                      /> */}
+                </div>
                 {/* ---------------------------------------------------------------------------------------------------------------------- */}
                 {/* has sub facility */}
                 {/* <div className="flex items-center mt-5">
