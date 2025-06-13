@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 const PackageNestedTable = ({ data }) => {
   
@@ -121,6 +122,7 @@ const AccordionRow = ({ serial, row }) => {
 };
 
 const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
+  const { currentTab, setCurrentTab } = usePackagesCommonStore();
   return (
     <>
       <tr className={`bg-white `}>
@@ -164,7 +166,9 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
         {/* ACTIONS */}
         <td className="p-2 text-center">
           <span className="flex justify-center">
-            <button>
+            <button onClick={()=>{
+              setCurrentTab(2)
+            }}>
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
             </button>
           </span>

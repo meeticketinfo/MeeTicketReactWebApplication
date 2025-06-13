@@ -304,8 +304,4 @@ export const routes = [
     path: "/amrabad-packages",
     element: <ProtectedRoute element={<MainPackages/>} />,
   },
-  { 
-    path: "/house-create",
-    element: <ProtectedRoute element={<HouseCreate />} />,
-  },
 ];

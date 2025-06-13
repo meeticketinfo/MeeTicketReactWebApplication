@@ -4,7 +4,7 @@ import { useUnifiedFacilityStore } from "../../../../store/masters/unifiedFacili
 import PackageNestedTable from "./PackageNestedTable";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
-const PackageTable = ({ setIsServiceEditVisible }) => {
+const PackageTable = ({ isHouseEditVisible ,setIsHouseEditVisible }) => {
   const {
     PackagesWithRooms,
     isPackagesWithRoomsLoading,

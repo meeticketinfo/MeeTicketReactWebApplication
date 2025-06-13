@@ -275,6 +275,7 @@ export const API_ENDPOINTS = {
     MASTERS:{
        GET_PACKAGES_WITH_ROOMS: `${AMRABAD_API_BASE_URL}Master/GetPackagesWithRooms`,
        ADD_HOUSE:`${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
+       UPDATE_HOUSE:`${AMRABAD_API_BASE_URL}Master/UpdateRoom`,
        GET_ALL_PACKAGES:`${AMRABAD_API_BASE_URL}Master/GetAllPackageRooms`,
     },
     USER:{
