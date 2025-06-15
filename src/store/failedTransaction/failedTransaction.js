@@ -7,8 +7,13 @@ export const userFailureTransaction = create((set) => ({
   isFetchFailureUserTransactionReport: false,
   TransactionTrackingStatusByOrderIdData: [],
   isFetchTransactionTrackingStatusByOrderId: false,
+  isTotalTransactionPage: false,
   filters: {},
   
+  setIsTotalTransactionPage: (isTotalTransactionPage) => {
+    set({isTotalTransactionPage: isTotalTransactionPage})
+  },
+
   fetchFailureUserTransactionReport: async (queryParams) => {
     const queryString = new URLSearchParams(queryParams).toString();
     set({ isFetchFailureUserTransactionReport: true });

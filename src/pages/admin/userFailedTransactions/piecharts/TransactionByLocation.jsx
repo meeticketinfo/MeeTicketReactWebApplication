@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
+import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -13,6 +14,10 @@ const reasonStyles = {
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
 
 const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+  const UserTransactionReportFilter = JSON.parse(
+    localStorage.getItem("transactionPayload")
+  );
+  const { setIsTotalTransactionPage } = userFailureTransaction();
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -61,6 +66,30 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
     <div className="w-full max-w-2xl mx-auto pb-3">
       <div ref={chartRef} className="w-[500px] h-[500px]" />
       <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
+        <div
+          title="Total Failed Transactions"
+          className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-white" />
+            <span className="text-xs text-white">Total</span>
+          </div>
+          <Link
+            to={"/failed-transactions"}
+            state={{ page: "total-report" }}
+            onClick={() => {
+              setIsTotalTransactionPage(false)
+              localStorage.setItem(
+                "transactionPayload",
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed" })
+              )
+            }}
+          >
+            <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
+              {String(data?.reduce((sum, item) => sum + item.failedCount, 0)).padStart(2, "0")}
+            </span>
+          </Link>
+        </div>
         {data?.map((item, index) => (
           <div
             key={index}
@@ -79,10 +108,11 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
             
             <Link 
               to={"/failed-transactions"} 
-              onClick={() => 
+              onClick={() => {
+                setIsTotalTransactionPage(false)
                 localStorage.setItem("transactionPayload", 
-                  JSON.stringify({...filters, locationId: item.parkId}))
-              }
+                  JSON.stringify({...UserTransactionReportFilter, locationId: item.parkId, status: "Failed"}))
+              }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}

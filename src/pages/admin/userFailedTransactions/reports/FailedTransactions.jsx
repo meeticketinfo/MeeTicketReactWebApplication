@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import {
   formatToCurrency,
-  getCurrentDateEndTime,
-  getCurrentDateStartTime,
 } from "../../../../utils/TypographyHelper";
 import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
@@ -34,9 +32,9 @@ const FailedTransactions = () => {
     failureUserTransactionReport,
     isFetchFailureUserTransactionReport,
     fetchFailureUserTransactionReport,
+    isTotalTransactionPage
   } = userFailureTransaction();
 
-  const { page } = useLocation().state || {};
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
@@ -156,6 +154,7 @@ const FailedTransactions = () => {
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
+      cellRenderer: (params) => (<span title={params.value}>{params.value  ?? "N/A"}</span>)
     },
   ]);
 
@@ -163,7 +162,7 @@ const FailedTransactions = () => {
     fetchFailureUserTransactionReport({
       fromDate: UserTransactionReportFilter?.fromDate || fromDate,
       toDate: UserTransactionReportFilter?.toDate || toDate,
-      status: UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "failed",
+      status: UserTransactionReportFilter?.status == "Failed" ? "FAILED" : UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
       locationId: UserTransactionReportFilter?.locationId || "",
       resultMsg: UserTransactionReportFilter?.resultMsg || "",
       departmentId: UserTransactionReportFilter?.departmentId || "",
@@ -182,7 +181,7 @@ const FailedTransactions = () => {
   const initialValues = {
     fromDate: UserTransactionReportFilter?.fromDate || fromDate,
     toDate: UserTransactionReportFilter?.toDate || toDate,
-    status: UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
+    status: UserTransactionReportFilter?.status == "Failed" ? "FAILED" : UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
     ParkId: UserTransactionReportFilter?.locationId || "",
     departmentId: UserTransactionReportFilter?.departmentId || "",
     entityId: UserTransactionReportFilter?.categoryId || "",
@@ -241,7 +240,7 @@ const FailedTransactions = () => {
             </div>
             <div className="">
               <button
-                onClick={() => navigate( page ? page != "total-report" ? "/transactions-dashboard" : "/total-transactions-dashboard" : "/total-transactions-dashboard")}
+                onClick={() => navigate( isTotalTransactionPage ? "/total-transactions-dashboard" : "/transactions-dashboard")}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
