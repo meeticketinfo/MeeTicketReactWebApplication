@@ -264,10 +264,11 @@ function PaymentTransactionReport() {
             <Link
               to={`/entity-bookings/view-details/${params.data?.bookingId}`}
               className={`px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
+                isDisabled 
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none"
                   : "bg-blue-v2 text-white hover:bg-blue-700"
               }`}
+              onClick={()=>{setPaymentTransactionNAvigate(true)}}
             >
               View Booking
             </Link>
@@ -301,12 +302,14 @@ function PaymentTransactionReport() {
       if (res.response.data.status == 200) {
         setOpenModal(false);
         Swal.fire({
-          title: "Success!",
           html: `Ticket Re-generated Succesusfully`,
-          icon: "success",
           confirmButtonText: "OK",
+          width: "360px",
+           icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+           icon: 'small-swal-icon',
           },
           timer: 2000,
           showConfirmButton: false,
@@ -314,10 +317,16 @@ function PaymentTransactionReport() {
       } else {
         setOpenModal(false);
         Swal.fire({
-          title: "oops!",
-          text: res.response.data.message,
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${res.response.data.message}
+         </div>`,
           icon: "info",
           confirmButtonText: "OK",
+           width: "360px",
+          customClass: {
+            popup: "elegant-swal-popup",
+            icon: "elegant-swal-icon",
+          },
         });
       }
     } catch (err) {
@@ -345,7 +354,7 @@ function PaymentTransactionReport() {
     }
   };
 
-  const handleVerifyTicket = async () => {
+  const handleVerifyTicket = async () => { 
     console.log("isUpi", isUpi);
     try {
       const res = await FetchVerifyTicket(verifyData, isUpi);
@@ -359,23 +368,39 @@ function PaymentTransactionReport() {
 
         Swal.fire({
           title: "Success!",
-          html: resultMsg,
-          icon: "success",
+
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${resultMsg}
+         </div>`,
+         
           confirmButtonText: "OK",
+           icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+           icon: 'small-swal-icon',
           },
           timer: 2000,
+          width: "360px",
           showConfirmButton: false,
         });
       } else {
         setOpenVerifyModal(false);
         Swal.fire({
-          title: "Oops!",
-          text:
-            res.response?.data?.data?.resultMsg || res.response?.data?.message,
+          // title: "Oops!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${res.response?.data?.data?.resultMsg || res.response?.data?.message}
+         </div>`,
           icon: "info",
+          width: "360px",
+
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+             icon: 'small-swal-icon',
+          },
           confirmButtonText: "OK",
+          background: "#ffffff",
         });
       }
     } catch (err) {

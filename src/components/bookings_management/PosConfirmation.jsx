@@ -75,7 +75,7 @@ const PosConfirmation = () => {
       const timer = setTimeout(() => {
         setCounter((prev) => prev - 1);
         CheckPosTsxStatus(Generate_deep_link_data?.orderId);
-      }, 10000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     } else if (counter === 0) {
@@ -133,10 +133,8 @@ const PosConfirmation = () => {
             setIsPosTransactionFailed(true);
           }
         } catch (xhr) {
-          //  toast.error("Unexpected response from the server.");
-          handleApiError(xhr);
           setIsPosTransactionFailed(true);
-          navigate(`/book-tickets`);
+           
           launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
         } finally {
           //   setSubmitting(false);
