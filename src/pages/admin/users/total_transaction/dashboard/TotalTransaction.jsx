@@ -37,11 +37,11 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
   const { fromDate, toDate } = getDateRange(Rangefilter);
 
   const newformInitialValues = {
-    fromDate: fromDate || UserTransactionReportFilter?.fromDate,
-    toDate: toDate || UserTransactionReportFilter?.toDate,
-    departmentId: UserTransactionReportFilter?.departmentId || "",
-    entityId: UserTransactionReportFilter?.categoryId || "",
-    ParkId: UserTransactionReportFilter?.locationId || "",
+    fromDate: UserTransactionReportFilter?.fromDate || fromDate,
+    toDate: UserTransactionReportFilter?.toDate || toDate,
+    departmentId: "",
+    entityId: "",
+    ParkId: "",
     phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
   };
 
@@ -64,11 +64,11 @@ function TotalTransactions({ Rangefilter, setActiveTab }) {
       })
     );
     const payload = {
-      fromDate: fromDate,
-      toDate: toDate,
-      locationId: UserTransactionReportFilter?.locationId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
+      fromDate: UserTransactionReportFilter?.fromDate || fromDate,
+      toDate: UserTransactionReportFilter?.toDate || toDate,
+      locationId: "",
+      categoryId: "",
+      departmentId: "",
       phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
     };
 

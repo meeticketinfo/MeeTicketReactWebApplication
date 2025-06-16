@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
+import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -12,6 +13,10 @@ const reasonStyles = {
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
 const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+  const { setIsTotalTransactionPage } = userFailureTransaction();
+  const UserTransactionReportFilter = JSON.parse(
+    localStorage.getItem("transactionPayload")
+  );
   // const [newFilters, setNewFilters] = useState(...filters);
   const chartRef = useRef(null);
 
@@ -33,9 +38,8 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
             color: "black",
             // fontWeight: "normal",
             formatter: ({ datum }) =>
-              `${datum[calloutLabelKey]?.substring(0, 120)}\n${
-                datum[angleKey]
-              }%`, // Truncate text if needed
+              `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum.failedCount
+              } (${datum[angleKey]}%)`, // Swapped order to show failedCount first
             offset: 15, // Increased offset for better spacing
             minAngle: 0, // ensures small slices still show labels
           },
@@ -45,7 +49,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
             fontSize: 9, // Reduced font size for sector labels
             fontWeight: "bold",
             color: "#000",
-            formatter: ({ datum }) => `${datum[angleKey]}%`,
+            formatter: ({ datum }) => `${datum.failedCount}`,
           },
           fills: Object.values(reasonStyles).map((s) => s.color),
           stroke: "#fffff",
@@ -64,6 +68,30 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
     <div className="w-full max-w-2xl mx-auto">
       <div ref={chartRef} className="w-[500px] h-[500px]" />
       <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
+        <div
+          title="Total Failed Transactions"
+          className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-white" />
+            <span className="text-xs text-white">Total</span>
+          </div>
+          <Link
+            to={"/failed-transactions"}
+            onClick={() => {
+              setIsTotalTransactionPage(false)
+              localStorage.setItem(
+                "transactionPayload",
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", parkId: "", status: "Failed" })
+              )
+            }}
+          >
+            <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
+              {String(data?.reduce((sum, item) => sum + item.failedCount, 0)).padStart(2, "0")}
+            </span>
+          </Link>
+        </div>
+        
         {data?.map((item, index) => (
           <div
             key={item.failureReason}
@@ -79,12 +107,13 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
                 {item.failureReason}
               </span>
             </div>
-            <Link 
-              to={"/failed-transactions"} 
-              onClick={() => 
-                localStorage.setItem("transactionPayload", 
-                  JSON.stringify({...filters, resultMsg: item.failureReason, parkId: ""}))
-              }
+            <Link
+              to={"/failed-transactions"}
+              onClick={() => {
+                setIsTotalTransactionPage(false)
+                localStorage.setItem("transactionPayload",
+                  JSON.stringify({ ...UserTransactionReportFilter, resultMsg: item.failureReason, parkId: "", status: "Failed" }))
+              }}  
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.failedCount).padStart(2, "0")}

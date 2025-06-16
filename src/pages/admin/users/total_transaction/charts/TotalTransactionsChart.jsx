@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
+import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -18,7 +20,8 @@ const TotalTransactionsChart = ({
   calloutLabelKey,
   // filters,
 }) => {
-  const filters = JSON.parse(
+  const { setIsTotalTransactionPage } = userFailureTransaction();
+  const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
   // const [newFilters, setNewFilters] = useState(...filters);
@@ -46,9 +49,8 @@ const TotalTransactionsChart = ({
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${
-                datum[angleKey]
-              } (${percentage}%)`;
+              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]
+                } (${percentage}%)`;
             },
             offset: 15,
             minAngle: 0,
@@ -92,12 +94,13 @@ const TotalTransactionsChart = ({
           <Link
             to={"/failed-transactions"}
             state={{ page: "total-report" }}
-            onClick={() =>
+            onClick={() => {
+              setIsTotalTransactionPage(true)
               localStorage.setItem(
                 "transactionPayload",
-                JSON.stringify({ ...filters, resultMsg: "", category: "" })
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "" })
               )
-            }
+            }}
           >
             <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
               {totalCount}
@@ -118,24 +121,25 @@ const TotalTransactionsChart = ({
               <span className="text-xs text-gray-800">{item.category}</span>
             </div>
             <Link
-              to={"/failed-transactions"}
+              to={item.category == "Failed Transactions" ? "/transactions-dashboard" : "/failed-transactions"}
               state={{ page: "total-report" }}
-              onClick={() =>
+              onClick={() => {
+                setIsTotalTransactionPage(true)
                 localStorage.setItem(
                   "transactionPayload",
                   JSON.stringify({
-                    ...filters,
+                    ...UserTransactionReportFilter,
                     resultMsg: "",
                     category:
                       item.category == "Sucessful Transactions"
                         ? "ConfirmedSuccess"
                         : item.category ==
                           "Payment done but Ticket Not generated"
-                        ? "SuccessButNotConfirmed"
-                        : "Failed",
+                          ? "SuccessButNotConfirmed"
+                          : "Failed",
                   })
                 )
-              }
+              }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.count).padStart(2, "0")}

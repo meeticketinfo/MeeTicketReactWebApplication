@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
+import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -12,6 +13,10 @@ const reasonStyles = {
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
 const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+  const UserTransactionReportFilter = JSON.parse(
+    localStorage.getItem("transactionPayload")
+  );
+  const { setIsTotalTransactionPage } = userFailureTransaction();
   // const [newFilters, setNewFilters] = useState(...filters);
   const chartRef = useRef(null);
   const totalCount = data?.reduce((sum, item) => sum + item.count, 0) || 0;
@@ -83,14 +88,15 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
             <Link 
               to={"/failed-transactions"} 
               state={{page:"total-report"}}
-              onClick={() => 
+              onClick={() => {
+                setIsTotalTransactionPage(true)
                 localStorage.setItem("transactionPayload", 
                   JSON.stringify(
-                    {...filters, 
+                    {...UserTransactionReportFilter, 
                       resultMsg: "",
                       category: "SuccessButNotConfirmed"
                     }))
-              }
+              }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {totalCount}
@@ -115,17 +121,18 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
             <Link 
               to={"/failed-transactions"} 
               state={{page:"total-report"}}
-              onClick={() => 
+              onClick={() => {
+                setIsTotalTransactionPage(true)
                 localStorage.setItem("transactionPayload", 
                   JSON.stringify(
-                    {...filters, 
+                    {...UserTransactionReportFilter, 
                       resultMsg: "", 
                       parkId: "", 
                       category: item.subCategory == "Ticket Re-generated" ? "SuccessButNotConfirmedWithBooking" 
                                   : item.subCategory == "Ticket NOT Re-generated" ? "SuccessButNotConfirmedWithoutBooking" 
                                   : "SuccessButNotConfirmedWithBooking"
                     }))
-              }
+              }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.count).padStart(2, "0")}

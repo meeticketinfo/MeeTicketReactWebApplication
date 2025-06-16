@@ -25,23 +25,16 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     localStorage.getItem("transactionPayload")
   );
   const range = localStorage.getItem("range-filter");
-  const [filters, setfilters] = useState({
-    fromDate: "",
-    toDate: "",
-    locationId: "",
-    categoryId: "",
-    departmentId: "",
-    durationType: Rangefilter,
-  });
 
   const { fromDate, toDate } = getDateRange(Rangefilter);
-  const [formInitialValues, setFormInitialValues] = useState({
+  const newformInitialValues = {
     fromDate: UserTransactionReportFilter?.fromDate || fromDate,
     toDate: UserTransactionReportFilter?.toDate || toDate,
     departmentId: "",
     entityId: "",
     ParkId: "",
-  });
+    phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
+  };
 
   // Initial load effect
   useEffect(() => {
@@ -53,28 +46,22 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
   // Effect for updating form values and fetching data when Rangefilter changes
   useEffect(() => {
     const { fromDate, toDate } = getDateRange(Rangefilter);
-    const newInitialValues = {
-      fromDate: fromDate,
-      toDate: toDate,
-      departmentId: "",
-      entityId: "",
-      ParkId: "",
-    };
-    setFormInitialValues(newInitialValues);
-    setfilters(prev => ({
-      ...prev,
-      fromDate: fromDate,
-      toDate: toDate,
-      durationType: Rangefilter
-    }));
-
+    localStorage.setItem(
+      "transactionPayload",
+      JSON.stringify({
+        ...UserTransactionReportFilter,
+        fromDate: fromDate,
+        toDate: toDate,
+      })
+    );
+    
     const payload = {
       fromDate: fromDate,
       toDate: toDate,
       locationId: "",
       categoryId: "",
       departmentId: "",
-      durationType: Rangefilter,
+      phoneNumber: UserTransactionReportFilter?.phoneNumber || "",
     };
 
     fetchFailedTransactionByReason(payload);
@@ -116,13 +103,16 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
       categoryId: values.entityId,
       departmentId: values.departmentId,
       durationType: Rangefilter,
+      phoneNumber: values.phoneNumber,
     };
-    setfilters(payload);
-    fetchFailedTransactionTrendGraph(payload);
+
+    localStorage.setItem("transactionPayload", JSON.stringify(payload));
+    
     fetchFailedTransactionByReason(payload);
     fetchFailedTransactionByLocation(payload);
     fetchFailedTransactionBydepartment(payload);
     fetchFailedTransactionByLocationCategory(payload);
+    fetchFailedTransactionTrendGraph(payload);
   };
 
   return (
@@ -131,7 +121,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
         <div className="col-span-full ">
           <Formik 
             enableReinitialize={true}
-            initialValues={formInitialValues} 
+            initialValues={newformInitialValues} 
             onSubmit={overAllOnSubmit}
           >
             {({ values, setFieldValue, setValues }) => (
@@ -346,6 +336,27 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                       }}
                     />
                   </div>
+                  {/* phone number */}
+                  <div>
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Phone Number
+                    </label>
+                    <Field
+                      type="text"
+                      maxLength="10"
+                      name="phoneNumber"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      placeholder="Enter phone number"
+                      onKeyPress={(e) => {
+                        if (!/^\d$/.test(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
+                  </div>
                   <div className="flex gap-2 items-end">
                     <button
                       type="submit"
@@ -358,60 +369,38 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                       type="button"
                       className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                       onClick={() => {
-                        // Reset form values and filters
+                        const { fromDate: resetFromDate, toDate: resetToDate } =
+                          getDateRange("today");
+                        
                         localStorage.removeItem("UserTransactionReportFilter");
                         localStorage.setItem("range-filter", "today");
                         localStorage.removeItem("transactionPayload");
+                        
                         setValues({
-                          fromDate: "",
-                          toDate: "",
+                          fromDate: resetFromDate,
+                          toDate: resetToDate,
                           departmentId: "",
                           entityId: "",
                           ParkId: "",
+                          phoneNumber: "",
                         });
+                        
                         setActiveTab("today");
- 
-                        // Reset chart data by clearing relevant stores
-                        fetchFailedTransactionByReason({
-                          fromDate: "",
-                          toDate: "",
+
+                        const resetPayload = {
+                          fromDate: resetFromDate,
+                          toDate: resetToDate,
                           locationId: "",
                           categoryId: "",
                           departmentId: "",
-                          durationType: Rangefilter,
-                        });
-                        fetchFailedTransactionByLocation({
-                          fromDate: "",
-                          toDate: "",
-                          locationId: "",
-                          categoryId: "",
-                          departmentId: "",
-                          durationType: Rangefilter,
-                        });
-                        fetchFailedTransactionBydepartment({
-                          fromDate: "",
-                          toDate: "",
-                          locationId: "",
-                          categoryId: "",
-                          departmentId: "",
-                          durationType: Rangefilter,
-                        });
-                        fetchFailedTransactionByLocationCategory({
-                          fromDate: "",
-                          toDate: "",
-                          locationId: "",
-                          categoryId: "",
-                          departmentId: "",
-                          durationType: Rangefilter,
-                        });
-                        fetchFailedTransactionTrendGraph({
-                          fromDate: "",
-                          toDate: "",
-                          locationId: "",
-                          categoryId: "",
-                          departmentId: "",
-                          durationType: Rangefilter,
-                        });
+                          phoneNumber: "",
+                        };
+
+                        fetchFailedTransactionByReason(resetPayload);
+                        fetchFailedTransactionByLocation(resetPayload);
+                        fetchFailedTransactionBydepartment(resetPayload);
+                        fetchFailedTransactionByLocationCategory(resetPayload);
+                        fetchFailedTransactionTrendGraph(resetPayload);
                       }}
                     >
                       Reset
@@ -441,7 +430,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                 title="Failed Transactions By Reason"
                 angleKey="percentage"
                 calloutLabelKey="failureReason"
-                filters={filters}
               />
             </div>
 
@@ -458,7 +446,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                 title="Failed Transactions By Location "
                 angleKey="percentage"
                 calloutLabelKey="locationName"
-                filters={filters}
               />
             </div>
           </div>
@@ -502,7 +489,6 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                 title="Failed Transactions By Department"
                 angleKey="failedCount"
                 calloutLabelKey="departmentName"
-                filters={filters}
               />
             </div>
             <div
