@@ -17,3 +17,12 @@ export function formatDate(dateTimeString) {
   return dateTimeString?.split("T")[0] || "";
 }
 
+
+export const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file); // Convert to base64
+  });
+};

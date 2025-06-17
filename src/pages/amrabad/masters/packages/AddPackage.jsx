@@ -1,15 +1,19 @@
 import { Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { convertToBase64 } from "../../../../utils/Helper";
+import SelectInput from "../../../../components/facilities_management/SelectInput";
+import CheckboxInput from "../../../../components/facilities_management/CheckboxInput";
 
 const AddPackage = () => {
+  const [isSubfacility, setIsSubfacility] = useState(false);
   const initialValues = {
     // facilityDto: {
     //   facilityMasterId: "",
     //   facilitySequenceNumber: null,
     //   description: "",
     // },
-    // hasSubFacility: false,
+   
     // subFacilities: [{ name: "", Limit: null, subFacilitySequenceNumber: null }],
 
     package: {
@@ -26,8 +30,10 @@ const AddPackage = () => {
       privacyPolicy: "",
       latitude: null,
       longitude: null,
-      packageImageUrls: [""],
+      packageImageUrls: [],
+      isActive: true,
     },
+    hasSubFacility: false,
     rooms: [
       {
         roomName: "string",
@@ -68,15 +74,15 @@ const AddPackage = () => {
                 <div className="">
                   <label
                     htmlFor="openTime"
-                    className="block text-sm font-semibold text-gray-700"
+                    className="block text-sm font-medium"
                   >
-                    Name of the Package
+                    Name of the Package<span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="package.packageName"
                     type="text"
                     maxlength={5}
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Package Name"
                   />
                   {/* <ErrorMessage
@@ -85,19 +91,19 @@ const AddPackage = () => {
                     className="text-red-500 text-xs absolute"
                   /> */}
                 </div>
-               
+
                 {/* Check In Time */}
                 <div className="">
                   <label
                     htmlFor="package.checkInTime"
-                    className="block text-sm font-semibold text-gray-700"
+                    className="block text-sm font-medium"
                   >
-                    Check-in
+                    Check-in<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="time"
                     name="package.checkInTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Check-in Time"
                   />
                   {/* <ErrorMessage
@@ -111,14 +117,14 @@ const AddPackage = () => {
                 <div className="">
                   <label
                     htmlFor="package.checkOutTime"
-                    className="block text-sm font-semibold text-gray-700"
+                    className="block text-sm font-medium"
                   >
-                    Checkout Time
+                    Checkout Time<span className="text-red-500">*</span>
                   </label>
                   <Field
                     type="time"
                     name="package.checkOutTime"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Checkout Time"
                   />
                   {/* <ErrorMessage
@@ -129,14 +135,14 @@ const AddPackage = () => {
                 </div>
                 {/*  Guidelines */}
                 <div>
-                  <label htmlFor="User" className="block text-xs font-medium">
+                  <label htmlFor="User" className="block text-sm font-medium">
                     Guidelines <span className="text-red-500">*</span>
                   </label>
                   <Field
                     name="package.guidelines"
                     type="text"
                     maxlength={50}
-                    className={`mt-1 block w-full px-2 py-1border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Guidelines"
                   />
                   {/* <ErrorMessage
@@ -146,15 +152,75 @@ const AddPackage = () => {
                   /> */}
                 </div>
 
+                {/*  Latitude */}
+                <div className="">
+                  <label
+                    htmlFor="latitude"
+                    className="block text-sm font-medium"
+                  >
+                    Latitude<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="package.latitude"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Latitude"
+                  />
+                  {/* <ErrorMessage
+                    name="package.latitude"
+                    component="div"
+                    className="text-red-500 text-xs absolute"
+                  /> */}
+                </div>
 
-
-
-
-
-                 {/* discription */}
-                 <div>
+                {/*  Longitude */}
+                <div className="">
+                  <label
+                    htmlFor="longitude"
+                    className="block text-sm font-medium"
+                  >
+                    Longitude<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    name="package.longitude"
+                    type="text"
+                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter longitude"
+                  />
+                  {/* <ErrorMessage
+                    name="package.longitude"
+                    component="div"
+                    className="text-red-500 text-xs absolute"
+                  /> */}
+                </div>
+                {/* status */}
+                <div className="form-group">
+                  <label
+                    className="block text-sm font-medium"
+                    htmlFor="isActive"
+                  >
+                    Status<span className="text-red-500">*</span>
+                  </label>
+                  <Field
+                    as="select"
+                    id="isActive"
+                    name="isActive"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select</option>
+                    <option value="Active">Active</option>
+                    <option value="InActive">In Active</option>
+                  </Field>
+                  {/* <ErrorMessage
+                    name="isActive"
+                    component="span"
+                    className="text-red-500 text-xs absolute"
+                  /> */}
+                </div>
+                {/* discription */}
+                <div>
                   <label className="block text-sm font-medium">
-                    Description
+                    Description<span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="textarea"
@@ -169,7 +235,7 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
-                
+
                 {/* Cancellation Policy */}
                 <div>
                   <label className="block text-sm font-medium">
@@ -191,13 +257,13 @@ const AddPackage = () => {
                 {/* Terms & Conditions */}
                 <div>
                   <label className="block text-sm font-medium">
-                    Terms & Conditions
+                    Terms & Conditions<span className="text-red-500">*</span>
                   </label>
                   <Field
                     as="textarea"
                     maxlength={100}
                     name="package.termsConditions"
-                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Terms & Conditions"
                   />
                   {/* <ErrorMessage
@@ -215,7 +281,7 @@ const AddPackage = () => {
                     as="textarea"
                     maxlength={100}
                     name="package.privacyPolicy"
-                    className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Privacy Policy"
                   />
                   {/* <ErrorMessage
@@ -224,11 +290,87 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
+                {/* upload Image */}
+                <div className="col-md-2">
+                  <label
+                    htmlFor="packageImageUrls"
+                    className="block text-sm font-medium"
+                  >
+                    Upload Images<span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="packageImageUrls"
+                    name="package.packageImageUrls"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={async (event) => {
+                      const files = event.currentTarget.files;
+                      if (files) {
+                        const base64Images = [];
+                        for (let i = 0; i < files.length; i++) {
+                          const base64 = await convertToBase64(files[i]);
+                          base64Images.push(base64);
+                        }
+                        setFieldValue("package.packageImageUrls", base64Images); // Store base64 images in Formik state
+                      }
+                    }}
+                  />
+                  {/* <ErrorMessage
+                    name="roomImagesBase64Strings"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  /> */}
+                  {/* preview */}
+                  {values.package.packageImageUrls.length !== 0 && (
+                    <div className="col-md-10 border p-2 mt-2">
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2">
+                        Selected Image Previews:
+                      </h4>
 
-                
+                      <div className="flex flex-wrap gap-4 h-20 overflow-auto ">
+                        {values.package.packageImageUrls.map(
+                          (base64Image, index) => (
+                            <div
+                              key={index}
+                              className="relative w-[120px]  rounded overflow-hidden shadow-md border border-gray-200"
+                            >
+                              {/* Delete button */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updatedImages =
+                                    values.package.packageImageUrls.filter(
+                                      (_, i) => i !== index
+                                    );
+                                  setFieldValue(
+                                    "package.packageImageUrls",
+                                    updatedImages
+                                  );
+                                }}
+                                className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 hover:text-white transition-all"
+                              >
+                                ×
+                              </button>
+
+                              {/* Image preview */}
+                              <img
+                                src={base64Image}
+                                alt={`preview-${index}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 {/* ---------------------------------------------------------------------------------------------------------------------- */}
                 {/* has sub facility */}
-                {/* <div className="flex items-center mt-5">
+                <div className="flex items-center mt-5">
                   <Field
                     type="checkbox"
                     id="hasSubFacility"
@@ -243,10 +385,7 @@ const AddPackage = () => {
                         setFieldValue("subFacilities", [
                           values.subFacilities[0],
                         ]);
-                        setFieldValue(
-                          "subFacilities[0].name",
-                          Selectedfacility.facilityName
-                        );
+                       
                       }
                     }}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
@@ -255,28 +394,10 @@ const AddPackage = () => {
                     htmlFor="hasSubFacility"
                     className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                   >
-                    Has Rooms
+                    Has House
                   </label>
-                </div> */}
-
-                {/* <CheckboxInput name="hasSubFacility" label="Has Sub-Facility" onChange={handleSubFacilityName} /> */}
+                </div>
               </div>
-
-              {/* discription */}
-              {/* <div className="col-span-3">
-                <label className="block text-sm font-medium">Description</label>
-                <Field
-                  as="textarea"
-                  maxlength={100}
-                  name="facilityDto.description"
-                  onChange={(e) => {
-                    setFieldValue("facilityDto.description", e.target.value);
-                  }}
-                  className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  placeholder="Enter description"
-                />
-              </div> */}
-              {/* <hr className="py-2"></hr> */}
 
               <div className="flex justify-center mt-3">
                 <button
