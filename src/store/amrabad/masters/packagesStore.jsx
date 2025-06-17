@@ -4,12 +4,22 @@ import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 
 export const usePackagesStore = create((set) => ({
   PackagesWithRooms: [],
-  GetAllPackages:[],
+  GetAllPackages: [],
   isPackagesWithRoomsLoading: false,
   isSaveBookingDetailsLoading: false,
-  isGetAllPackagesLoading:false,
+  isGetAllPackagesLoading: false,
+  isSaveHouseDetailsLoading: false,
+  HouseDetails: {},
+  houseEditDetails: {},
   saveHouseDetailsError: null,
-  // Save Facility details
+
+  setHouseEditDetails: (houseEditDetails) => {
+    set({ houseEditDetails });
+  },
+  setHouseDetails: (newHouseDetails) => {
+    set({ HouseDetails: newHouseDetails });
+  },
+
   fetchPackagesWithRooms: async () => {
     set({ isPackagesWithRoomsLoading: true });
     try {
@@ -27,19 +37,24 @@ export const usePackagesStore = create((set) => ({
       });
     }
   },
-  saveHouseDetails: async (houseDetailsPayload) => {
+  saveHouseDetails: async (houseDetailsPayload, isUpdate = false) => {
     set({ isSaveHouseDetailsLoading: true });
     try {
-      const url = API_ENDPOINTS.AMRABAD.MASTERS.ADD_HOUSE;
-      const method = "post";
+      const url = isUpdate
+        ? API_ENDPOINTS.AMRABAD.MASTERS.UPDATE_HOUSE
+        : API_ENDPOINTS.AMRABAD.MASTERS.ADD_HOUSE;
+      const method = isUpdate ? "put" : "post";
       const response = await apiService[method](url, houseDetailsPayload);
-      return { success: true, data: response };
-    } catch ({ error, xhr }) {
       set({
-        saveHouseDetailsError: error.response.data.message,
         isSaveHouseDetailsLoading: false,
       });
-      return { error: error.response.data.message };
+      set({ houseEditDetails: {} });
+      return { success: true, data: response };
+    } catch ({ error }) {
+      set({
+        saveHouseDetailsError: error.message,
+        isSaveHouseDetailsLoading: false,
+      });
       throw error;
     }
   },
@@ -56,7 +71,7 @@ export const usePackagesStore = create((set) => ({
       });
     } catch (error) {
       set({
-        isPackagesWithRoomsLoading: false,
+        isGetAllPackagesLoading: false,
       });
     }
   },

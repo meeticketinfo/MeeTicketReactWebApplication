@@ -2,31 +2,30 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
-import { useEffect } from "react";
-const HouseCreate = () => {
-  
+import { useEffect, useState } from "react";
+const HouseCreate = ({}) => {
   const {
     fetchPackagesWithRooms,
     fetchGetAllPackages,
     GetAllPackages,
     saveHouseDetails,
   } = usePackagesStore();
-
+  const [isValidation, setIsValidation] = useState("");
   const initialValues = {
-    packageId: "",
+    packageId:"",
     roomName: "",
-    tariffPerDay: "",
-    hasDiscount: "",
-    discountType: "",
-    discountValue: "",
-    amountAfterDiscount: "",
-    discountApplicable: "",
-    noOfHousesAvailable: "",
-    roomLimit: "",
-    isBlockout: "",
-    remarks: "",
-    sequence: 0,
-    roomImagesBase64Strings: [],
+    tariffPerDay:"",
+    hasDiscount:"",
+    discountType:"",
+    discountValue:"",
+    amountAfterDiscount:"",
+    discountApplicable:"",
+    noOfHousesAvailable:"",
+    roomLimit:"",
+    isBlockout:"",
+    remarks:"",
+    sequence:null,
+    roomImagesBase64Strings:[],
   };
   // Function to convert files to base64 strings
   const convertToBase64 = (file) => {
@@ -52,12 +51,15 @@ const HouseCreate = () => {
     hasDiscount: Yup.string().required(
       "Please select if discounts are available."
     ),
-    discountType: Yup.string().required("Discount Type is required"),
-    discountValue: Yup.string().required("Discount Value is required"),
-    discountApplicable: Yup.string().required(
-      "discounts Applicable is required"
-    ),
-
+    discountType:
+      isValidation === "Yes" &&
+      Yup.string().required("Discount Type is required"),
+    discountValue:
+      isValidation === "Yes" &&
+      Yup.string().required("Discount Value is required"),
+    discountApplicable:
+      isValidation === "Yes" &&
+      Yup.string().required("discounts Applicable is required"),
     noOfHousesAvailable: Yup.number().required(
       "No Of House Applicable is required"
     ),
@@ -68,7 +70,7 @@ const HouseCreate = () => {
       .of(
         Yup.string().test("is-valid-image", "Invalid image type", (value) => {
           // Regular expression for checking valid image data URI format
-          return /^data:image\/(jpeg|png|gif);base64,/.test(value);
+          return /^data:image\/(jpeg|png|gif|svg);base64,/.test(value);
         })
       )
       .min(1, "You must upload at least one image")
@@ -77,15 +79,12 @@ const HouseCreate = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
-    const selectedPackage = GetAllPackages.find(
-      (pkg) => pkg.packageId === values.packageId
-    );
     try {
       const payload = {
         ...values,
         packageId: values.packageId, // ensure it's just ID
         hasDiscount: values.hasDiscount === "Yes",
-        isBlockout:values.isBlockout === "Yes",
+        isBlockout: values.isBlockout === "Yes",
         discountApplicable: values.discountApplicable === "true",
         // Optional: include the name if backend requires it
         // packageName: selectedPackage?.roomName,
@@ -198,6 +197,10 @@ const HouseCreate = () => {
                     as="select"
                     name="hasDiscount"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    onChange={(e) => {
+                      setIsValidation(e.target.value);
+                      setFieldValue("hasDiscount", e.target.value);
+                    }}
                   >
                     <option value="" label="Select option" />
                     <option value="Yes" label="Yes" />
@@ -356,7 +359,7 @@ const HouseCreate = () => {
                     maxLength="10"
                     name="sequence"
                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Sequence"
+                    placeholder="Enter Sequence Number"
                   />
                   <ErrorMessage
                     name="sequence"

@@ -92,6 +92,7 @@ const AddPackage = () => {
                   /> */}
                 </div>
 
+
                 {/* Check In Time */}
                 <div className="">
                   <label
@@ -139,8 +140,8 @@ const AddPackage = () => {
                     Guidelines <span className="text-red-500">*</span>
                   </label>
                   <Field
+                    as="textarea"
                     name="package.guidelines"
-                    type="text"
                     maxlength={50}
                     className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Guidelines"
@@ -235,6 +236,7 @@ const AddPackage = () => {
                         className="text-red-500 text-xs absolute"
                         /> */}
                 </div>
+
 
                 {/* Cancellation Policy */}
                 <div>
