@@ -82,7 +82,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
               setIsTotalTransactionPage(false)
               localStorage.setItem(
                 "transactionPayload",
-                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", parkId: "", status: "Failed" })
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed", departmentId: "", categoryId: "" })
               )
             }}
           >
@@ -112,7 +112,7 @@ const TransactionPieChart = ({ data, title, angleKey, calloutLabelKey, filters }
               onClick={() => {
                 setIsTotalTransactionPage(false)
                 localStorage.setItem("transactionPayload",
-                  JSON.stringify({ ...UserTransactionReportFilter, resultMsg: item.failureReason, parkId: "", status: "Failed" }))
+                  JSON.stringify({ ...UserTransactionReportFilter, resultMsg: item.failureReason, locationId: "", status: "Failed", departmentId: "", categoryId: "" }))
               }}  
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">

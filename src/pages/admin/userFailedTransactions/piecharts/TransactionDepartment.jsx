@@ -108,7 +108,7 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title, fi
                 onClick={() => {
                   setIsTotalTransactionPage(false)
                   localStorage.setItem("transactionPayload", 
-                    JSON.stringify({...UserTransactionReportFilter, resultMsg: "", parkId: "", departmentId: item?.departmentId ?? "", categoryId: item?.entityTypeId ?? "", status: "Failed" }))
+                    JSON.stringify({...UserTransactionReportFilter, resultMsg: "", locationId: "", departmentId: item?.departmentId ?? "", categoryId: item?.entityTypeId ?? "", status: "Failed" }))
                 }}
               >{String(item[angleKey]).padStart(2, "0")}</Link>
             </span>
