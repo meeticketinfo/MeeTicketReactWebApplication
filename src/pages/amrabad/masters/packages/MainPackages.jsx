@@ -8,7 +8,7 @@ import BackButton from "../../../../components/BackButton";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 const MainPackages = () => {
-  const { currentTab, setCurrentTab } = usePackagesCommonStore();
+  const { currentTab, setCurrentTab ,setIsHouseEditVisible } = usePackagesCommonStore();
   const TabConfig = {
     0: <PackagesList />,
     1: <AddPackage />,
@@ -31,6 +31,7 @@ const MainPackages = () => {
                 className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
                 onClick={() => {
                   setCurrentTab(1);
+                  setIsHouseEditVisible(true)
                 }}
               >
                 <span className="max-xs:sr-only ">Add Package</span>
@@ -39,6 +40,7 @@ const MainPackages = () => {
                 className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
                 onClick={() => {
                   setCurrentTab(2);
+                  setIsHouseEditVisible(false)
                 }}
               >
                 <span className="max-xs:sr-only ">Add House</span>
@@ -50,6 +52,7 @@ const MainPackages = () => {
                 label="Back"
                 onClick={() => {
                   setCurrentTab(0);
+                  setIsHouseEditVisible(false)
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
               />
@@ -60,6 +63,7 @@ const MainPackages = () => {
                 label="Back"
                 onClick={() => {
                   setCurrentTab(0);
+                  setIsHouseEditVisible(false)
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
               />

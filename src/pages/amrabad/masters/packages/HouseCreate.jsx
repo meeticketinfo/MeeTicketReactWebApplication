@@ -3,29 +3,59 @@ import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect, useState } from "react";
-const HouseCreate = ({}) => {
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+const HouseCreate = () => {
   const {
     fetchPackagesWithRooms,
     fetchGetAllPackages,
     GetAllPackages,
     saveHouseDetails,
+    isSaveHouseDetailsLoading,
+    houseEditDetails,
   } = usePackagesStore();
+  const {
+    isHouseEditVisible,
+    setIsHouseEditVisible,
+    selectedSubRowData,
+    setCurrentTab,
+  } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
   const initialValues = {
-    packageId:"",
-    roomName: "",
-    tariffPerDay:"",
-    hasDiscount:"",
-    discountType:"",
-    discountValue:"",
-    amountAfterDiscount:"",
-    discountApplicable:"",
-    noOfHousesAvailable:"",
-    roomLimit:"",
-    isBlockout:"",
-    remarks:"",
-    sequence:null,
-    roomImagesBase64Strings:[],
+    packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
+    // packageName: isHouseEditVisible ? selectedSubRowData?.packageName : "",
+    roomName: isHouseEditVisible ? selectedSubRowData?.roomName : "",
+    tariffPerDay: isHouseEditVisible ? selectedSubRowData?.tariffPerDay : "",
+    hasDiscount: isHouseEditVisible
+      ? selectedSubRowData?.hasDiscount
+        ? "Yes"
+        : "No"
+      : "",
+    discountType: isHouseEditVisible ? selectedSubRowData?.discountType : null,
+    discountValue: isHouseEditVisible
+      ? selectedSubRowData?.discountValue
+      : null,
+    amountAfterDiscount: isHouseEditVisible
+      ? selectedSubRowData?.amountAfterDiscount
+      : null,
+    discountApplicable: isHouseEditVisible
+      ? selectedSubRowData?.discountApplicable
+        ? "true"
+        : "false"
+      : null,
+    noOfHousesAvailable: isHouseEditVisible
+      ? selectedSubRowData?.noOfHousesAvailable
+      : null,
+    roomLimit: isHouseEditVisible ? selectedSubRowData?.roomLimit : "",
+    isBlockout: isHouseEditVisible
+      ? selectedSubRowData?.isBlockout
+        ? "Yes"
+        : "No"
+      : "",
+    remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
+    sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
+    roomImagesBase64Strings: isHouseEditVisible
+      ? selectedSubRowData?.roomImages
+      : [],
   };
   // Function to convert files to base64 strings
   const convertToBase64 = (file) => {
@@ -39,6 +69,7 @@ const HouseCreate = ({}) => {
   useEffect(() => {
     fetchGetAllPackages();
   }, []);
+  
   const validationSchema = Yup.object().shape({
     packageId: Yup.string().required("Package selection is required."),
     roomName: Yup.string()
@@ -79,6 +110,7 @@ const HouseCreate = ({}) => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
+     const isEdit = isHouseEditVisible;
     try {
       const payload = {
         ...values,
@@ -89,11 +121,21 @@ const HouseCreate = ({}) => {
         // Optional: include the name if backend requires it
         // packageName: selectedPackage?.roomName,
       };
-      const result = await saveHouseDetails(payload);
+     if (!payload.hasDiscount) {
+      payload.discountType = null;
+      payload.discountValue = null;
+      payload.amountAfterDiscount = null;
+      payload.discountApplicable = null;
+    }
+      const result = await saveHouseDetails(payload, isEdit);
       if (result.data.status === 200) {
-        toast.success("House created successfully");
+        toast.success(
+          isEdit ? "House updated successfully" : "House created successfully"
+        );
         fetchPackagesWithRooms();
         resetForm();
+        setCurrentTab(0);
+        setIsHouseEditVisible(false);
       }
     } catch (xhr) {
       if (xhr?.response?.data?.errors) {
@@ -105,6 +147,7 @@ const HouseCreate = ({}) => {
       }
     } finally {
       setSubmitting(false);
+      setIsHouseEditVisible(false);
     }
   };
 
@@ -135,7 +178,7 @@ const HouseCreate = ({}) => {
                     <option value="">Select Packages</option>
                     {GetAllPackages.map((pkg) => (
                       <option key={pkg.packageId} value={pkg.packageId}>
-                        {pkg.roomName}
+                        {pkg.packageName}
                       </option>
                     ))}
                   </Field>
@@ -416,47 +459,48 @@ const HouseCreate = ({}) => {
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-
-                <div className="col-md-10">
-                  <h4 className="block text-xs font-medium text-gray-700">
-                    Selected Image Previews:
-                  </h4>
-                  <div className="flex gap-4 mt-2">
-                    {values.roomImagesBase64Strings.map(
-                      (base64Image, index) => (
-                        <div
-                          key={index}
-                          className="relative w-[100px] h-[100px]"
-                        >
-                          {/* Delete button */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updatedImages =
-                                values.roomImagesBase64Strings.filter(
-                                  (_, i) => i !== index
-                                );
-                              setFieldValue(
-                                "roomImagesBase64Strings",
-                                updatedImages
-                              );
-                            }}
-                            className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                {values.roomImagesBase64Strings.length !== 0 && (
+                  <div className="col-md-10 border p-2">
+                    <h4 className="block text-xs font-medium text-gray-700">
+                      Selected Image Previews:
+                    </h4>
+                    <div className="flex flex-wrap gap-4 h-28 p-2 overflow-auto ">
+                      {values.roomImagesBase64Strings.map(
+                        (base64Image, index) => (
+                          <div
+                            key={index}
+                            className="relative w-[140px] h-[100px]"
                           >
-                            ×
-                          </button>
+                            {/* Delete button */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updatedImages =
+                                  values.roomImagesBase64Strings.filter(
+                                    (_, i) => i !== index
+                                  );
+                                setFieldValue(
+                                  "roomImagesBase64Strings",
+                                  updatedImages
+                                );
+                              }}
+                              className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                            >
+                              ×
+                            </button>
 
-                          {/* Image preview */}
-                          <img
-                            src={base64Image}
-                            alt={`preview-${index}`}
-                            className="w-full h-full object-cover rounded shadow-md"
-                          />
-                        </div>
-                      )
-                    )}
+                            {/* Image preview */}
+                            <img
+                              src={base64Image}
+                              alt={`preview-${index}`}
+                              className="w-full h-full object-cover rounded shadow-md"
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Submit Button */}
@@ -467,7 +511,11 @@ const HouseCreate = ({}) => {
                     disabled={isSubmitting}
                     className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 hover:cursor-pointer "
                   >
-                    Create House
+                    {isSaveHouseDetailsLoading
+                      ? "Saving..."
+                      : isHouseEditVisible
+                      ? "Update House"
+                      : "Create House"}
                   </button>
                 </div>
               </div>

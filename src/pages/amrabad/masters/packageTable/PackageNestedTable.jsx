@@ -4,7 +4,6 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 const PackageNestedTable = ({ data }) => {
-  
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
@@ -89,9 +88,7 @@ const AccordionRow = ({ serial, row }) => {
         <tr>
           <td colSpan="5" className="p-4 bg-blue-50">
             <table className="table-auto w-full ">
-              <thead
-                className={`bg-[#f8f8f8] text-blue-v1`}
-              >
+              <thead className={`bg-[#f8f8f8] text-blue-v1`}>
                 <tr>
                   <th className="p-2 text-center">S.No</th>
                   <th className="p-2 text-center">Room Name</th>
@@ -122,7 +119,13 @@ const AccordionRow = ({ serial, row }) => {
 };
 
 const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
-  const { currentTab, setCurrentTab } = usePackagesCommonStore();
+  const {
+    currentTab,
+    setCurrentTab,
+    setIsHouseEditVisible,
+    setSelectedSubRow,
+  } = usePackagesCommonStore();
+
   return (
     <>
       <tr className={`bg-white `}>
@@ -166,11 +169,13 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
         {/* ACTIONS */}
         <td className="p-2 text-center">
           <span className="flex justify-center">
-            <button onClick={()=>{
-              setCurrentTab(2)
-              isHouseEditVisible={isHouseEditVisible}
-              setIsHouseEditVisible={setIsHouseEditVisible}
-            }}>
+            <button
+              onClick={() => {
+                setCurrentTab(2);
+                setIsHouseEditVisible(true);
+                setSelectedSubRow(subRow);
+              }}
+            >
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
             </button>
           </span>
