@@ -147,6 +147,7 @@ const HouseCreate = () => {
       }
     } finally {
       setSubmitting(false);
+      setCurrentTab(0);
       setIsHouseEditVisible(false);
     }
   };
@@ -438,7 +439,7 @@ const HouseCreate = () => {
                     id="roomImagesBase64Strings"
                     name="roomImagesBase64Strings"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                    type="file"
+                    type="file" 
                     accept="image/*"
                     multiple
                     onChange={async (event) => {
@@ -491,7 +492,7 @@ const HouseCreate = () => {
 
                             {/* Image preview */}
                             <img
-                              src={base64Image}
+                              src={isHouseEditVisible?base64Image.imageUrl:base64Image}
                               alt={`preview-${index}`}
                               className="w-full h-full object-cover rounded shadow-md"
                             />
