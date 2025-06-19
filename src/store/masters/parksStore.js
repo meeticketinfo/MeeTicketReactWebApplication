@@ -46,15 +46,12 @@ export const useParkStore = create((set) => ({
       .join("&"),
 
   // Fetch all parks
-  fetchAllParks: async (pageIndex = 1, pageSize = 10, filters = {}) => {
+  fetchAllParks: async (Statusfilters) => {
     set({ isFetchAllParksLoading: true });
     try {
-      //   const filterString = useParkStore.getState().serializeFilters(filters);
       const response = await apiService.get(
-        // `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-        `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}`
+        `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}?departmentId=${Statusfilters.departmentId}&entityTypeId=${Statusfilters.entityTypeId}&isActive=${Statusfilters.UserStatus}&isCounter=${Statusfilters.WebStatus}`
       );
-      console.log(response);
 
       set({
         allParks: response.data,
@@ -65,9 +62,12 @@ export const useParkStore = create((set) => ({
     }
   },
 
-  fetchParkBankTransactions: async (
-    { fromDate, toDate,departmentId,entityTypeId }
-  ) => {
+  fetchParkBankTransactions: async ({
+    fromDate,
+    toDate,
+    departmentId,
+    entityTypeId,
+  }) => {
     set({ isFetchAllParkBankTransactionsLoading: true });
     try {
       const response = await apiService.get(
@@ -78,7 +78,10 @@ export const useParkStore = create((set) => ({
         isFetchAllParkBankTransactionsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchAllParkBankTransactionsLoading: false });
+      set({
+        error: error.message,
+        isFetchAllParkBankTransactionsLoading: false,
+      });
     }
   },
 
@@ -113,7 +116,10 @@ export const useParkStore = create((set) => ({
   saveParkDetails: async (ParkData, isUpdate = false, role) => {
     set({ isSaveParkDetailsLoading: true });
     try {
-      const locationEditEndPoint = (role === "ROLE_NODALOFFICER" ? API_ENDPOINTS.MASTERS.PARK.UPDATE_NODAL_OFFICER_PARK_DETAILS :API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS)
+      const locationEditEndPoint =
+        role === "ROLE_NODALOFFICER"
+          ? API_ENDPOINTS.MASTERS.PARK.UPDATE_NODAL_OFFICER_PARK_DETAILS
+          : API_ENDPOINTS.MASTERS.PARK.UPDATE_PARK_DETAILS;
       const url = isUpdate
         ? locationEditEndPoint
         : API_ENDPOINTS.MASTERS.PARK.ADD_NEW_PARK;
@@ -146,7 +152,7 @@ export const useParkStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
-      set({  isSaveParkDetailsLoading: false });
+      set({ isSaveParkDetailsLoading: false });
       throw error;
     }
   },
