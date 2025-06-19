@@ -81,7 +81,7 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
               setIsTotalTransactionPage(false)
               localStorage.setItem(
                 "transactionPayload",
-                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed" })
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed", resultMsg: "", departmentId: "", categoryId: "" })
               )
             }}
           >
@@ -111,7 +111,7 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
               onClick={() => {
                 setIsTotalTransactionPage(false)
                 localStorage.setItem("transactionPayload", 
-                  JSON.stringify({...UserTransactionReportFilter, locationId: item.parkId, status: "Failed"}))
+                  JSON.stringify({...UserTransactionReportFilter, locationId: item.parkId, status: "Failed", resultMsg: "", departmentId: "", categoryId: ""}))
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
