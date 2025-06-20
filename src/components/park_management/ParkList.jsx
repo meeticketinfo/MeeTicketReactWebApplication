@@ -382,7 +382,7 @@ const ParkList = ({
                     ? ""
                     : Statusfilters.WebStatus
                 }
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border border-[#ced4da] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-500 text-sm"
               >
                 <option value="">Select Status</option>
                 <option value="true">Active</option>
@@ -405,7 +405,7 @@ const ParkList = ({
                     ? ""
                     : Statusfilters.UserStatus
                 }
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border border-[#ced4da] text-gray-500 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">Select Status</option>
                 <option value="true">Active</option>
