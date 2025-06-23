@@ -71,6 +71,8 @@ import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboa
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import RefundDashboard from "../pages/refund_report_dashboard/MainRefundDashboard";
+import RefundReport from "../pages/refund_report_dashboard/RefundReport";
 
 export const routes = [
   {
@@ -316,6 +318,17 @@ export const routes = [
   {
     path: "/user-status-transaction",
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
+  },
+
+  // refund Dashboard
+  {
+    path: "/refund-dashboard",
+    element: <ProtectedRoute element={<RefundDashboard/>} />,
+  },
+
+   {
+    path: "/refund-report",
+    element: <ProtectedRoute element={<RefundReport/>} />,
   },
   
 ];

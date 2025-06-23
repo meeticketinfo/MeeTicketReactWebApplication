@@ -236,9 +236,9 @@ export const API_ENDPOINTS = {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
-     USER_REPORTS: {
-      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
-      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+     REFUND_REPORTS: {
+      GET_REFUND_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
+      GET_STATUS_REFUND_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
     FAILED_TRANSACTIONS:{
       GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,

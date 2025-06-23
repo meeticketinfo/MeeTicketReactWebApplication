@@ -153,16 +153,21 @@ const sidebarItems = [
         icon: FaUsers,
         path: "/metro-bookings",
       },
-       {
+      {
         title: "Failed Transactions",
         icon: FaUsers,
         path: "/transactions-dashboard",
       },
       {
-       title: "Total Transactions",
-       icon: FaUsers,
-       path: "/total-transactions-dashboard",
-     },
+        title: "Total Transactions",
+        icon: FaUsers,
+        path: "/total-transactions-dashboard",
+      },
+      {
+        title: "Refunds Report",
+        icon: FaUsers,
+        path: "/refund-dashboard",
+      },
     ],
   },
   // facilities
