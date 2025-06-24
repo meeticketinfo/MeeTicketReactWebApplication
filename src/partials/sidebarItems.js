@@ -163,6 +163,11 @@ const sidebarItems = [
        icon: FaUsers,
        path: "/total-transactions-dashboard",
      },
+     {
+       title: "User Reports",
+       icon: FaUsers,
+       path: "/user-report",
+     },
     ],
   },
   // facilities

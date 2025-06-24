@@ -71,6 +71,8 @@ import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboa
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import UserReport from "../pages/user_report_dashboard/UserDashboard";
+import UserDetailedReport from "../pages/user_report_dashboard/UserDetailedReport";
 
 export const routes = [
   {
@@ -317,5 +319,13 @@ export const routes = [
     path: "/user-status-transaction",
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
-  
+  //user reports
+  {
+    path: "/user-report",
+    element: <ProtectedRoute element={<UserReport />} />,
+  },
+  {
+    path:"/user-detailed-report",
+     element: <ProtectedRoute element={<UserDetailedReport />} />
+  }
 ];

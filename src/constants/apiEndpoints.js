@@ -236,13 +236,13 @@ export const API_ENDPOINTS = {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
-     USER_REPORTS: {
-      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
-      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+    USER_TRANSATION_REPORTS: {
+      GET_USER_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/GetAllUsers`,
+      GET_USER_DETAILED_TRANSACTIONS_REPORTS:`${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
     },
     FAILED_TRANSACTIONS:{
       GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
-    }
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
