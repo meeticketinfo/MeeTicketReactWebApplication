@@ -76,6 +76,7 @@ import UserReport from "../pages/admin/users/user_report/UserReport";
 import UserDetailedReport from "../pages/admin/users/user_detailed_report/UserDetailedReport";
 import MainRefundTransactions from "../pages/admin/users/refund_transactions/dashboard/MainRefundTransactions";
 import RefundTransactionsReport from "../pages/admin/users/refund_transactions_report/RefundTransactionsReport";
+import UserTransactionsOrderTracker from "../pages/admin/users/user_detailed_report/UserTransactionsOrderTracker";
 
 export const routes = [
   {
@@ -209,6 +210,10 @@ export const routes = [
   {
     path: "/user-detailed-report",
     element: <ProtectedRoute element={<UserDetailedReport />} />,
+  },
+  {
+    path:"/user-transactions-order-tracker",
+    element:<ProtectedRoute element={<UserTransactionsOrderTracker />} />,
   },
   {
     path: "/refund-transactions",

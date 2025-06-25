@@ -22,9 +22,8 @@ const TotalTransactionsForm = () => {
   } = useTransactionsStore();
 
   const {
-    refundTransactionsReport,
-    isFetchRefundTransactionsReport,
-    fetchRefundTransactionsReport,
+    isFetchRefundTransactions,
+    fetchRefundTransactions
   } = userReports();
 
   const startOfDay = getStartOfCurrentDay();
@@ -73,7 +72,7 @@ const TotalTransactionsForm = () => {
       phoneNumber: values.phoneNumber,
     };
 
-    fetchRefundTransactionsReport(payload);
+    fetchRefundTransactions(payload);
   };
 
   const resetForm = (setValues) => {
@@ -90,7 +89,7 @@ const TotalTransactionsForm = () => {
     setSearchParams(new URLSearchParams());
 
     setValues(payload);
-    fetchRefundTransactionsReport(payload);
+    fetchRefundTransactions(payload);
   };
 
   return (
@@ -343,7 +342,7 @@ const TotalTransactionsForm = () => {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  disabled={isFetchRefundTransactionsReport}
+                  disabled={isFetchRefundTransactions}
                 >
                   Search
                 </button>
@@ -351,7 +350,7 @@ const TotalTransactionsForm = () => {
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
-                  disabled={isFetchRefundTransactionsReport}
+                  disabled={isFetchRefundTransactions}
                 >
                   Reset
                 </button>

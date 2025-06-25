@@ -60,14 +60,14 @@ const UserDetailedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/transactions-order-tracker"}
+          to={"/user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.date,
-            mobileNumber: params.data.mobileNumber,
-            parkName: params.data.parkName,
-            status: params.data.status,
-            amount: params.data.amount
+            date: params.data.createdDate,
+            mobileNumber: params.data.phonE_NUMBER,
+            parkName: params.data.locationName,
+            status: params.data.resultStatus,
+            amount: params.data.initiateTxnAmount
           }}
         >
           View Track Order
