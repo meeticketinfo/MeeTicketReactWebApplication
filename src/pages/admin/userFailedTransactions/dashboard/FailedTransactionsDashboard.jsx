@@ -99,7 +99,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
     const payload = {
       fromDate: values.fromDate,
       toDate: values.toDate,
-      locationId: values.ParkId,
+      locationId: values.locationId,
       categoryId: values.entityId,
       departmentId: values.departmentId,
       durationType: Rangefilter,
@@ -287,7 +287,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                     </label>
 
                     <Select
-                      name="ParkId"
+                      name="locationId"
                       value={
                         allParks
                           ?.filter((park) => park.isActive)
@@ -295,7 +295,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                             value: park.id,
                             label: park.name,
                           }))
-                          .find((option) => option.value === values.ParkId) ||
+                          .find((option) => option.value === values.locationId) ||
                         null
                       }
                       options={allParks
@@ -305,7 +305,7 @@ function FailedTransactionsDashboard({ Rangefilter, setActiveTab }) {
                           label: park.name,
                         }))}
                       onChange={(selectedOption) =>
-                        setFieldValue("ParkId", selectedOption?.value || "")
+                        setFieldValue("locationId", selectedOption?.value || "")
                       }
                       isClearable
                       placeholder="Location"
