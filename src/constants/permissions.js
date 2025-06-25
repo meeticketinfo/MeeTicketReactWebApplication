@@ -25,6 +25,8 @@ export const superAdminPermissions = [
   "user-transaction",
   "transactions-dashboard",
   "total-transactions-dashboard",
+  "user-report",
+  "refund-transactions",
 ];
 
 export const parkAdminPermissions = [

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 
 
 // Define reason styles (color + count)
@@ -20,11 +21,9 @@ const TotalTransactionsChart = ({
   calloutLabelKey,
   // filters,
 }) => {
-  const { setIsTotalTransactionPage } = userFailureTransaction();
-  const UserTransactionReportFilter = JSON.parse(
-    localStorage.getItem("transactionPayload")
-  );
-  // const [newFilters, setNewFilters] = useState(...filters);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { setTotalTransactionSearchParams } = useTransactionsStore();
+  
   const chartRef = useRef(null);
 
   // Calculate total count
@@ -33,9 +32,6 @@ const TotalTransactionsChart = ({
   useEffect(() => {
     const chart = AgCharts.create({
       container: chartRef.current,
-      title: {
-        text: title,
-      },
       series: [
         {
           type: "pie",
@@ -44,7 +40,7 @@ const TotalTransactionsChart = ({
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 9,
+            fontSize: 12,
             color: "black",
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
@@ -57,7 +53,7 @@ const TotalTransactionsChart = ({
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -80,65 +76,35 @@ const TotalTransactionsChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div ref={chartRef} className="w-[500px] h-[500px]" />
-      <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
-        <div
-          title="Total Bookings"
-          className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
-        >
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-white" />
-            <span className="text-xs text-white">Total</span>
-          </div>
-          <Link
-            to={"/failed-transactions"}
-            state={{ page: "total-report" }}
-            onClick={() => {
-              setIsTotalTransactionPage(true)
-              localStorage.setItem(
-                "transactionPayload",
-                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "" })
-              )
-            }}
-          >
-            <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
-              {totalCount}
-            </span>
+    <div className="w-full mx-auto p-6">
+      <div className="flex justify-between">
+        <h2 className="text-lg font-bold">{title}</h2>
+        <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-4 py-3 shadow-sm">
+          <span className="text-lg text-[#404040] font-semibold">Total Transactions</span>
+          <Link to={`/total-payment-transaction-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
+            {totalCount}
           </Link>
         </div>
+      </div>
+      <div ref={chartRef} className="w-[800px] h-[400px] mx-auto" />
+      <div className="grid grid-cols-12 p-3 max-h-[350px] overflow-auto max-w-[600px] mx-auto gap-2">
         {data?.map((item, index) => (
           <div
             key={item.failureReason}
-            title={item.category}
-            className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
+            title={item.paymentCategory}
+            className="flex justify-between items-center rounded-lg px-2 py-1 col-span-6"
           >
             <div className="flex items-center gap-2">
               <div
-                className="w-3 h-3 rounded-full"
+                className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs text-gray-800">{item.category}</span>
+              <span className="text-xs text-gray-800">{item.paymentCategory}</span>
             </div>
             <Link
-              to={item.category == "Failed Transactions" ? "/transactions-dashboard" : "/failed-transactions"}
-              state={{ page: "total-report" }}
+              to={`/total-payment-transaction-report?${searchParams.toString()}&category=${item.paymentCategoryKey}`}
               onClick={() => {
-                setIsTotalTransactionPage(true)
-                localStorage.setItem(
-                  "transactionPayload",
-                  JSON.stringify({
-                    ...UserTransactionReportFilter,
-                    resultMsg: "",
-                    category:
-                      item.category == "Sucessful Transactions"
-                        ? "ConfirmedSuccess"
-                        : item.category ==
-                          "Payment done but Ticket Not generated"
-                          ? "SuccessButNotConfirmed"
-                          : "Failed",
-                  })
-                )
+                setTotalTransactionSearchParams(`${searchParams.toString()}&category=${item.paymentCategoryKey}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">

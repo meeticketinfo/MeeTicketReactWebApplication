@@ -19,59 +19,78 @@ function TotalTransactions() {
   const [searchParams] = useSearchParams();
 
   const {
-    PaymentTransactionSummaryPieChartData,
-    isPaymentTransactionSummaryPieChartLoading,
-    fetchPaymentTransactionSummaryPieChartData,
+    PaymentTransactionPieChartData,
+    isPaymentTransactionPieChartLoading,
+    fetchPaymentTransactionPieChartData,
+    SuccessButNotConfirmedPieChartData,
+    isSuccessButNotConfirmedPieChartLoading,
+    fetchSuccessButNotConfirmedPieChartData,
   } = useTransactionsStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
     const payload = {
-      startDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-      endDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
       locationId: searchParams.get("locationId") || "",
       categoryId: +searchParams.get("entityId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
     };
-    fetchPaymentTransactionSummaryPieChartData(payload);
+
+    fetchPaymentTransactionPieChartData(payload);
+    fetchSuccessButNotConfirmedPieChartData(payload);
   }, []);
 
   // overAll on submit
   const totalCount =
-    PaymentTransactionSummaryPieChartData?.reduce(
+    PaymentTransactionPieChartData?.reduce(
       (sum, item) => sum + item.count,
       0
     ) || 0;
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-3">
+      <div className="grid grid-cols-12 gap-6">
         <div className="col-span-full ">
           <TotalTransactionsForm/>
         </div>
 
         {/* Transactions by reason chart */}
-        <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+        <DashboardCard07>
           <div className="flex">
-            <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
+            <div className="flex-1 p-1 m-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isPaymentTransactionSummaryPieChartLoading && (
+              {isPaymentTransactionPieChartLoading && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
               <TotalTransactionsChart
-                data={totalCount !== 0 ? PaymentTransactionSummaryPieChartData : []}
+                data={totalCount !== 0 ? PaymentTransactionPieChartData : []}
                 title="Total Transactions"
                 angleKey="count"
-                calloutLabelKey="paymentCategory"
+                calloutLabelKey="category"
+              />
+            </div>
+
+            <div className="flex-1  p-1 m-1 rounded-lg overflow-hidden shadow-md relative">
+              {isSuccessButNotConfirmedPieChartLoading && (
+                <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                  <div className="loader"></div>
+                </div>
+              )}
+              <TicketNotGenerated
+                data={SuccessButNotConfirmedPieChartData}
+                title="Payment Success and Ticket not generated"
+                angleKey="count"
+                calloutLabelKey="subCategory"
               />
             </div>
           </div>
-        </div>
+        </DashboardCard07>
       </div>
     </>
   );

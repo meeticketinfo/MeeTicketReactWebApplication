@@ -46,6 +46,35 @@ const getEndOfWeek = (date) => {
   return endOfWeek;
 };
 
+export const getStartOfCurrentDay = () => {
+  const currentDate = new Date();
+  const startOfDay = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0, 0));
+  return getFormattedDate(startOfDay);
+};
+
+export const getEndOfCurrentDay = () => {
+  const currentDate = new Date();
+  const endOfDay = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 23, 59, 59, 999));
+  return getFormattedDate(endOfDay);
+};
+
+export const cleanString = (str, symbol1, symbol2) => {
+  return typeof str === "string" ? str ? str.replace(symbol1, symbol2) : str : str;
+}
+
+export const getValueFromQuery = (queryString, key) => {
+  const pairs = queryString.split('&');
+
+  for (const pair of pairs) {
+    const [k, v] = pair.split('=');
+    if (k === key) {
+      return v;
+    }
+  }
+
+  return null; // or undefined, or throw error if key not found
+}
+
 export const getDateRange = (rangeType) => {
   const currentDate = new Date();
   let fromDate = currentDate;

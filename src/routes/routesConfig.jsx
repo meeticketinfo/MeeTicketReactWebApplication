@@ -71,6 +71,11 @@ import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboa
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import TotalPaymentTransactionReport from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionReport";
+import UserReport from "../pages/admin/users/user_report/UserReport";
+import UserDetailedReport from "../pages/admin/users/user_detailed_report/UserDetailedReport";
+import MainRefundTransactions from "../pages/admin/users/refund_transactions/dashboard/MainRefundTransactions";
+import RefundTransactionsReport from "../pages/admin/users/refund_transactions_report/RefundTransactionsReport";
 
 export const routes = [
   {
@@ -192,6 +197,26 @@ export const routes = [
   {
     path: "/total-transactions-dashboard",
     element: <ProtectedRoute element={<MainTotalTransactions />} />,
+  },
+  {
+    path: "/total-payment-transaction-report",
+    element: <ProtectedRoute element={<TotalPaymentTransactionReport />} />,
+  },
+  {
+    path: "/user-report",
+    element: <ProtectedRoute element={<UserReport />} />,
+  },
+  {
+    path: "/user-detailed-report",
+    element: <ProtectedRoute element={<UserDetailedReport />} />,
+  },
+  {
+    path: "/refund-transactions",
+    element: <ProtectedRoute element={<MainRefundTransactions />} />,
+  },
+  {
+    path: "/refund-transactions-report",
+    element: <ProtectedRoute element={<RefundTransactionsReport />} />,
   },
   {
     path: "/transactions-order-tracker",

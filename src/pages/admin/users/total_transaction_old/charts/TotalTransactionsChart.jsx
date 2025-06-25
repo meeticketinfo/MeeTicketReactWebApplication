@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
-import { Link } from "react-router-dom";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
+import { Link, useSearchParams } from "react-router-dom";
+import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
+
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -12,13 +14,24 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-
-const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+const TotalTransactionsChart = ({
+  data,
+  title,
+  angleKey,
+  calloutLabelKey,
+  // filters,
+}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { setIsTotalTransactionPage, resetPayloads } = userFailureTransaction();
+  const { totalTransactionSearchParams, setTotalTransactionSearchParams } = useTransactionsStore();
   const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
-  const { setIsTotalTransactionPage } = userFailureTransaction();
+  // const [newFilters, setNewFilters] = useState(...filters);
   const chartRef = useRef(null);
+
+  // Calculate total count
+  const totalCount = data?.reduce((sum, item) => sum + item.count, 0) || 0;
 
   useEffect(() => {
     const chart = AgCharts.create({
@@ -34,23 +47,30 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 9, // Reduced font size for better readability
-             color: "black",
-            fontWeight: "normal",
-            formatter: ({ datum }) =>
-              `${datum[calloutLabelKey]?.substring(0, 110)}\n${datum[angleKey]}%`, // Truncate text if needed
-            offset: 12, // Increased offset to provide more space
-            minAngle: 0, // ensures small slices still show labels
+            fontSize: 9,
+            color: "black",
+            formatter: ({ datum, angleKey, calloutLabelKey }) => {
+              const total = data.reduce((sum, item) => sum + item[angleKey], 0);
+              const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
+              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]
+                } (${percentage}%)`;
+            },
+            offset: 15,
+            minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 10, // Adjusted font size for better readability
+            fontSize: 9,
             fontWeight: "bold",
             color: "#000",
-            formatter: ({ datum }) => `${datum[angleKey]}%`,
+            formatter: ({ datum, angleKey }) => {
+              const total = data.reduce((sum, item) => sum + item[angleKey], 0);
+              const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
+              return `${datum[angleKey]} (${percentage}%)`;
+            },
           },
           fills: Object.values(reasonStyles).map((s) => s.color),
-          stroke: "#ffffff",
+          stroke: "#fffff",
           calloutLine: {
             colors: Object.values(reasonStyles).map((s) => s.color),
           },
@@ -63,11 +83,11 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
   }, [data, title, angleKey, calloutLabelKey]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto pb-3">
+    <div className="w-full max-w-2xl mx-auto">
       <div ref={chartRef} className="w-[500px] h-[500px]" />
       <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
         <div
-          title="Total Failed Transactions"
+          title="Total Bookings"
           className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
         >
           <div className="flex items-center gap-2">
@@ -75,25 +95,24 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
             <span className="text-xs text-white">Total</span>
           </div>
           <Link
-            to={"/failed-transactions"}
-            state={{ page: "total-report" }}
+            to={`/failed-transactions?${searchParams.toString()}`}
             onClick={() => {
-              setIsTotalTransactionPage(false)
+              setIsTotalTransactionPage(true)
               localStorage.setItem(
                 "transactionPayload",
-                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed", resultMsg: "", departmentId: "", categoryId: "" })
+                JSON.stringify({ ...UserTransactionReportFilter, category: "", resultMsg: "" })
               )
             }}
           >
             <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
-              {String(data?.reduce((sum, item) => sum + item.failedCount, 0)).padStart(2, "0")}
+              {totalCount}
             </span>
           </Link>
         </div>
         {data?.map((item, index) => (
           <div
-            key={index}
-            title={item.locationName}
+            key={item.failureReason}
+            title={item.category}
             className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
           >
             <div className="flex items-center gap-2">
@@ -101,21 +120,21 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs text-gray-800 max-w-[150px] truncate">
-                {item.locationName ? item.locationName : "N/A"}
-              </span>
+              <span className="text-xs text-gray-800">{item.category}</span>
             </div>
-            
-            <Link 
-              to={"/failed-transactions"} 
+            <Link
+              to={
+                item.category == "Failed Transactions" ? 
+                `/transactions-dashboard?${searchParams.toString()}` : 
+                `/failed-transactions?${searchParams.toString()}&category=${item.category == "Sucessful Transactions" ? "ConfirmedSuccess" : item.category == "Payment done but Ticket Not generated" ? "SuccessButNotConfirmed" : "Failed"}`
+              }
               onClick={() => {
-                setIsTotalTransactionPage(false)
-                localStorage.setItem("transactionPayload", 
-                  JSON.stringify({...UserTransactionReportFilter, locationId: item.parkId, status: "Failed", resultMsg: "", departmentId: "", categoryId: "", category: ""}))
+                setIsTotalTransactionPage(true); 
+                setTotalTransactionSearchParams(`${searchParams.toString()}&category=${item.category == "Sucessful Transactions" ? "ConfirmedSuccess" : item.category == "Payment done but Ticket Not generated" ? "SuccessButNotConfirmed" : "Failed"}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
-                {String(item.failedCount).padStart(2, "0")}
+                {String(item.count).padStart(2, "0")}
               </span>
             </Link>
           </div>
@@ -125,4 +144,4 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
   );
 };
 
-export default TransactionByLocation;
+export default TotalTransactionsChart;

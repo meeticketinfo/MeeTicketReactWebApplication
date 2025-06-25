@@ -153,16 +153,26 @@ const sidebarItems = [
         icon: FaUsers,
         path: "/metro-bookings",
       },
-       {
-        title: "Failed Transactions",
-        icon: FaUsers,
-        path: "/transactions-dashboard",
-      },
+      //  {
+      //   title: "Failed Transactions",
+      //   icon: FaUsers,
+      //   path: "/transactions-dashboard",
+      // },
       {
        title: "Total Transactions",
        icon: FaUsers,
        path: "/total-transactions-dashboard",
-     },
+      },
+      {
+        title: "User Report",
+        icon: FaUsers,
+        path: "/user-report",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiBankFill,
+        path: "/refund-transactions",
+      },
     ],
   },
   // facilities

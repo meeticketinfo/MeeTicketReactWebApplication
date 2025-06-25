@@ -30,6 +30,15 @@ export const useTransactionsStore = create((set) => ({
   SuccessButNotConfirmedPieChartData: null,
   isSuccessButNotConfirmedPieChartLoading: false,
 
+  // Get Payment Transaction Summary Pie Chart Data
+  PaymentTransactionSummaryPieChartData: null,
+  isPaymentTransactionSummaryPieChartLoading: false,
+
+  totalTransactionSearchParams: {},
+  
+  setTotalTransactionSearchParams: (params) => set({ totalTransactionSearchParams: params }),
+  clearTotalTransactionSearchParams: () => set({ totalTransactionSearchParams: {} }),
+
   //  -----------------API CALLS------------------------------------------------------
   // Failed Transactions By reason
 
@@ -160,6 +169,25 @@ export const useTransactionsStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isSuccessButNotConfirmedPieChartLoading: false });
+    }
+  },
+
+  //GetPaymentTransactionSummaryPieChart
+  fetchPaymentTransactionSummaryPieChartData: async (queryParams) => {
+    const queryString = new URLSearchParams(queryParams).toString();
+    set({ isPaymentTransactionSummaryPieChartLoading: true });
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART}?${queryString}`
+      );
+
+      set({
+        PaymentTransactionSummaryPieChartData: response.data,
+        isPaymentTransactionSummaryPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isPaymentTransactionSummaryPieChartLoading: false });
     }
   },
 }));

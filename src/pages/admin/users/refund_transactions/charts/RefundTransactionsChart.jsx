@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link, useSearchParams } from "react-router-dom";
 import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
+
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -12,20 +14,24 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+const RefundTransactionsChart = ({
+  data,
+  title,
+  angleKey,
+  calloutLabelKey,
+  // filters,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { setIsTotalTransactionPage } = userFailureTransaction();
-  // const [newFilters, setNewFilters] = useState(...filters);
+  const { setTotalTransactionSearchParams } = useTransactionsStore();
+  
   const chartRef = useRef(null);
+
+  // Calculate total count
   const totalCount = data?.reduce((sum, item) => sum + item.count, 0) || 0;
 
   useEffect(() => {
     const chart = AgCharts.create({
       container: chartRef.current,
-      title: {
-        text: title,
-      },
       series: [
         {
           type: "pie",
@@ -34,19 +40,20 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 9,
+            fontSize: 12,
             color: "black",
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]} (${percentage}%)`;
+              return `${datum[calloutLabelKey]?.substring(0, 220)}\n${datum[angleKey]
+                } (${percentage}%)`;
             },
             offset: 15,
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -69,53 +76,35 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
   }, [data, title, angleKey, calloutLabelKey]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div ref={chartRef} className="w-[500px] h-[500px]" />
-      <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
-          <div
-            title="Total Bookings"
-            className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
-          >
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full bg-white"
-              />
-              <span className="text-xs text-white">
-                Total
-              </span>
-            </div>
-            <Link 
-              to={`/failed-transactions?${searchParams.toString()}&category=SuccessButNotConfirmed`} 
-              state={{page:"total-report"}}
-              onClick={() => {
-                setIsTotalTransactionPage(true)
-              }}
-            >
-              <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
-                {totalCount}
-              </span>
-            </Link>
-          </div>
+    <div className="w-full mx-auto p-6">
+      <div className="flex justify-between">
+        <h2 className="text-lg font-bold">Payment success & Ticket Not Generated</h2>
+        <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-4 py-3 shadow-sm">
+          <span className="text-lg text-[#404040] font-semibold">Total Transactions</span>
+          <Link to={`/refund-transactions-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
+            {totalCount}
+          </Link>
+        </div>
+      </div>
+      <div ref={chartRef} className="w-[800px] h-[400px] mx-auto" />
+      <div className="grid grid-cols-12 p-3 max-h-[350px] overflow-auto max-w-[600px] mx-auto gap-2">
         {data?.map((item, index) => (
           <div
-            key={item.failureReason}
-            title={item.subCategory}
-            className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
+            key={index}
+            title={item.status}
+            className="flex justify-between items-center rounded-lg px-2 py-1 col-span-6"
           >
             <div className="flex items-center gap-2">
               <div
-                className="w-3 h-3 rounded-full"
+                className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs text-gray-800">
-                {item.subCategory}
-              </span>
+              <span className="text-xs text-gray-800">{item.status}</span>
             </div>
-            <Link 
-              to={`/failed-transactions?${searchParams.toString()}&category=${item.subCategory == "Ticket Re-generated" ? "SuccessButNotConfirmedWithBooking" : item.subCategory == "Ticket NOT Re-generated" ? "SuccessButNotConfirmedWithoutBooking" : "SuccessButNotConfirmedWithBooking"}`} 
-              state={{page:"total-report"}}
+            <Link
+              to={`/refund-transactions-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
-                setIsTotalTransactionPage(true)
+                setTotalTransactionSearchParams(`${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
@@ -129,4 +118,4 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
   );
 };
 
-export default TicketNotGenerated;
+export default RefundTransactionsChart;

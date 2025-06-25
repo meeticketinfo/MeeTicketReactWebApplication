@@ -236,9 +236,16 @@ export const API_ENDPOINTS = {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
-     USER_REPORTS: {
+    USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+      GET_USER_REPORT: `${API_BASE_URL}UserTransactions/GetAllUsers`,
+      GET_USER_DETAILED_REPORT: `${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
+      GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
+      GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetRefundInnerReport`,
+    },
+    USER_TRANSACTIONS:{
+      GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatusResult`,
     },
     FAILED_TRANSACTIONS:{
       GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
@@ -285,5 +292,6 @@ export const API_ENDPOINTS = {
     GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
     GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
     GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
+    GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetailResult`,
   },
 };
