@@ -23,11 +23,11 @@ const AgGridTable = ({
   tableHeight,
   isPagination=true,
   IsReactPaginate=false,
-  setPageLimt,
-  pageLimt,
+  setPageLimit,
+  pageLimit,
   handlePageClick,
   currentPage,
-  TotalCount
+  totalCount
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
@@ -203,11 +203,11 @@ const AgGridTable = ({
           </div>
         )}
       </div>
-       {IsReactPaginate && <div className="mt-4 flex justify-end items-center gap-4">
+       {(IsReactPaginate && !isFetchLoading && rowData?.length > 0) && <div className="mt-4 flex justify-end items-center gap-4">
           <div>
             <span className="">Page Size:</span>
             <select className=" py-1 border border-gray-300 rounded-lg"
-            onChange={(e)=>{setPageLimt(e.target.value)}}
+            onChange={(e)=>{setPageLimit(e.target.value)}}
             >
               <option>20</option>
               <option>50</option>
@@ -218,7 +218,7 @@ const AgGridTable = ({
             previousLabel={"←"}
             nextLabel={"→"}
             breakLabel={"..."}
-            pageCount={Math.ceil(100 / pageLimt)}
+            pageCount={Math.ceil(totalCount / pageLimit)}
             marginPagesDisplayed={1}
             pageRangeDisplayed={2}
             onPageChange={handlePageClick}
