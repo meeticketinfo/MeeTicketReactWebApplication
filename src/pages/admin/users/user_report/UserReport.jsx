@@ -9,9 +9,6 @@ import {
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
-import ReactPaginate from "react-paginate";
-
-const PAGE_LIMIT = 15;
 
 const UserReport = () => {
   const [searchParams] = useSearchParams();
@@ -24,7 +21,7 @@ const UserReport = () => {
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
-  const [columnDefs] = useState([
+  const columnDefs = [
     {
       headerName: "S.No",
       valueGetter: (params) =>
@@ -35,7 +32,7 @@ const UserReport = () => {
     {
       field: "phoneNumber",
       // maxWidth: 120,
-      flex:1,
+      flex: 1,
       headerName: "Mobile No.",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -43,7 +40,7 @@ const UserReport = () => {
     {
       field: "createdDate",
       // maxWidth: 200,
-      flex:1,
+      flex: 1,
       headerName: "Registration Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -64,7 +61,7 @@ const UserReport = () => {
     {
       field: "viewTransaction",
       headerName: "Action",
-      flex:1,
+      flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <Link
@@ -79,7 +76,7 @@ const UserReport = () => {
         </Link>
       ),
     },
-  ]);
+  ]
 
   const loadUserReport = (page = 0) => {
     fetchUserReport({
@@ -93,7 +90,7 @@ const UserReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage,PAGE_LIMIT, searchParams]);
+  }, [currentPage, PAGE_LIMIT, searchParams]);
 
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
@@ -109,20 +106,21 @@ const UserReport = () => {
             </h1>
           </div>
         </div>
-        <UserReportForm />
-        <div >
+        <UserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
+        <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={userReport}
+            rowData={userReport?.data}
             columnDefs={columnDefs}
             isFetchLoading={isFetchUserReport}
             isPagination={false}
-            tableHeight={userReport.length > 10 ? 560 : 330 }
+            tableHeight={userReport?.data?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
-            setPageLimt={setPAGE_LIMIT}
-            pageLimt={PAGE_LIMIT}
+            setPageLimit={setPAGE_LIMIT}
+            pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
+            totalCount={userReport?.totalCount}
           />
         </div>
       </div>

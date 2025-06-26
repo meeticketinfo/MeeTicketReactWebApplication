@@ -10,7 +10,7 @@ import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuer
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 
-const UserDetailedReportForm = () => {
+const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {totalTransactionSearchParams} = useTransactionsStore();
 
@@ -56,7 +56,10 @@ const UserDetailedReportForm = () => {
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
       mobileNumber: values.phoneNumber,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
+    setcurrentPage(0);
   };
 
   return (
