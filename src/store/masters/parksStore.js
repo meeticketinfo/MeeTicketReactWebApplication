@@ -50,7 +50,8 @@ export const useParkStore = create((set) => ({
     set({ isFetchAllParksLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}?departmentId=${Statusfilters.departmentId}&entityTypeId=${Statusfilters.entityTypeId}&isActive=${Statusfilters.UserStatus}&isCounter=${Statusfilters.WebStatus}`
+        // `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}?departmentId=${Statusfilters.departmentId}&entityTypeId=${Statusfilters.entityTypeId}&isActive=${Statusfilters.UserStatus}&isCounter=${Statusfilters.WebStatus}`
+        `${API_ENDPOINTS.MASTERS.PARK.GET_PARKS}`
       );
 
       set({
