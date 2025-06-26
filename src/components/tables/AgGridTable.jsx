@@ -18,7 +18,9 @@ const AgGridTable = ({
   isFetchLoading,
   pinnedBottomRowData,
   ExportName,
-  gridOptions
+  gridOptions,
+  tableHeight,
+  isPagination=true
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
@@ -27,8 +29,8 @@ const AgGridTable = ({
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 10;
-  const gridHeight = isPaginationEnabled ? 550 : 300;
+  const isPaginationEnabled = rowData.length > 10&&isPagination;
+  const gridHeight = tableHeight || (isPaginationEnabled ? 550 : 300);
 
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {

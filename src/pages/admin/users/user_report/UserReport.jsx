@@ -3,45 +3,56 @@ import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import UserReportForm from "./UserReportForm";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
+import ReactPaginate from "react-paginate";
+
+const PAGE_LIMIT = 15;
 
 const UserReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
-  const {
-    userReport,
-    isFetchUserReport,
-    fetchUserReport
-  } = userReports();
+
+  const { userReport, isFetchUserReport, fetchUserReport } = userReports();
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      maxWidth: "80",
+      valueGetter: (params) =>
+        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
       field: "phoneNumber",
-      maxWidth: "120",
+      // maxWidth: 120,
+      flex:1,
       headerName: "Mobile No.",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "createdDate",
-      maxWidth: "200",
+      // maxWidth: 200,
+      flex:1,
       headerName: "Registration Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
@@ -53,50 +64,93 @@ const UserReport = () => {
     {
       field: "viewTransaction",
       headerName: "Action",
+      flex:1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/user-detailed-report?phoneNumber=${params.data.phoneNumber}&fromDate=${searchParams?.get("fromDate") || fromDate}&toDate=${searchParams?.get("toDate") || toDate }`}>
+          to={`/user-detailed-report?phoneNumber=${
+            params.data.phoneNumber
+          }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${
+            searchParams.get("toDate") || toDate
+          }`}
+        >
           View Transaction
         </Link>
       ),
     },
   ]);
 
-  useEffect(() => {
+  const loadUserReport = (page = 0) => {
     fetchUserReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      phoneNumber: searchParams.get("phoneNumber") || "",
+      mobileNumber: searchParams.get("phoneNumber") || "",
+      pageNumber: page + 1, // convert zero-indexed to 1-indexed
+      pageSize: PAGE_LIMIT,
     });
-  }, []);
+  };
+
+  useEffect(() => {
+    loadUserReport(currentPage);
+  }, [currentPage,PAGE_LIMIT, searchParams]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
 
   return (
-    <>
-      <AdminLayout>
-        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <div className="sm:flex sm:justify-between sm:items-center mb-2">
-            <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                User Report
-              </h1>
-            </div>
-          </div>
-          <div>
-            <UserReportForm />
-            <div className="max-w-[650px]">
-              <AgGridTable
-                ExportName="UserStatusTransactionReport"
-                rowData={userReport}
-                columnDefs={columnDefs}
-                isFetchLoading={isFetchUserReport}
-              />
-            </div>
+    <AdminLayout>
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <div className="sm:flex sm:justify-between sm:items-center mb-2">
+          <div className="mb-4 sm:mb-0">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+              User Report
+            </h1>
           </div>
         </div>
-      </AdminLayout>
-    </>
+        <UserReportForm />
+        <div >
+          <AgGridTable
+            ExportName="UserStatusTransactionReport"
+            rowData={userReport}
+            columnDefs={columnDefs}
+            isFetchLoading={isFetchUserReport}
+            isPagination={false}
+            tableHeight={userReport.length > 10 ? 560 : 330 }
+          />
+        </div>
+
+        <div className="mt-4 flex justify-end items-center gap-4">
+          <div>
+            <span className="">Page Size:</span>
+            <select className=" py-1 border border-gray-300 rounded-lg"
+            onChange={(e)=>{setPAGE_LIMIT(e.target.value)}}
+            >
+              <option>20</option>
+              <option>50</option>
+              <option>100</option>
+            </select>
+          </div>
+          <ReactPaginate
+            previousLabel={"←"}
+            nextLabel={"→"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(100 / PAGE_LIMIT)}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={2}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination flex gap-2"}
+            activeClassName={"text-white bg-blue-v2 px-3 py-1 rounded "}
+            pageClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
+            previousClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
+            nextClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
+            breakClassName={"px-2"}
+            forcePage={currentPage}
+          />
+        </div>
+      </div>
+    </AdminLayout>
   );
 };
 
