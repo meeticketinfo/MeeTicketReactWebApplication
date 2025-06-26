@@ -118,35 +118,11 @@ const UserReport = () => {
             isFetchLoading={isFetchUserReport}
             isPagination={false}
             tableHeight={userReport.length > 10 ? 560 : 330 }
-          />
-        </div>
-
-        <div className="mt-4 flex justify-end items-center gap-4">
-          <div>
-            <span className="">Page Size:</span>
-            <select className=" py-1 border border-gray-300 rounded-lg"
-            onChange={(e)=>{setPAGE_LIMIT(e.target.value)}}
-            >
-              <option>20</option>
-              <option>50</option>
-              <option>100</option>
-            </select>
-          </div>
-          <ReactPaginate
-            previousLabel={"←"}
-            nextLabel={"→"}
-            breakLabel={"..."}
-            pageCount={Math.ceil(100 / PAGE_LIMIT)}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={2}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination flex gap-2"}
-            activeClassName={"text-white bg-blue-v2 px-3 py-1 rounded "}
-            pageClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
-            previousClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
-            nextClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
-            breakClassName={"px-2"}
-            forcePage={currentPage}
+            IsReactPaginate={true}
+            setPageLimt={setPAGE_LIMIT}
+            pageLimt={PAGE_LIMIT}
+            handlePageClick={handlePageClick}
+            currentPage={currentPage}
           />
         </div>
       </div>
