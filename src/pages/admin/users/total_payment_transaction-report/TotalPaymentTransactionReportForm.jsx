@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 
-const TotalPaymentTransactionReportForm = () => {
+const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {totalTransactionSearchParams} = useTransactionsStore();
 
@@ -57,6 +57,8 @@ const TotalPaymentTransactionReportForm = () => {
       phoneNumber: values.phoneNumber,
       bookingSource: values.bookingSource,
       status: getValueFromQuery(totalTransactionSearchParams, "category") || "",
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
   };
 

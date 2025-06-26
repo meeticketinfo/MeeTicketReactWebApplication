@@ -15,7 +15,12 @@ const TotalPaymentTransactionReport = () => {
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
 
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };  
   
   const {
     paymentTransactionDetailsByStatusResult,
@@ -23,10 +28,13 @@ const TotalPaymentTransactionReport = () => {
     fetchPaymentTransactionDetailsByStatusResult
   } = userFailureTransaction();
 
-  const [columnDefs] = useState([
+  const columnDefs = [
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        const pageOffset = currentPage * PAGE_LIMIT;
+        return pageOffset + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -165,9 +173,9 @@ const TotalPaymentTransactionReport = () => {
         </span>
       ),
     },
-  ]);
+  ];
 
-  useEffect(() => {
+  const loadPaymentTransactionDetailsByStatusResult = () => {
     fetchPaymentTransactionDetailsByStatusResult({
       startDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       endDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
@@ -176,8 +184,14 @@ const TotalPaymentTransactionReport = () => {
       categoryId: +searchParams.get("entityId") || "",
       status: searchParams.get("category") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
+      pageNumber: currentPage + 1,
+      pageSize: PAGE_LIMIT,
     });
-  }, []);
+  }
+
+  useEffect(() => {
+    loadPaymentTransactionDetailsByStatusResult();
+  }, [currentPage, PAGE_LIMIT]);
 
   return (
     <>
@@ -201,12 +215,20 @@ const TotalPaymentTransactionReport = () => {
             </div>
           </div>
           <div>
-            <TotalPaymentTransactionReportForm />
+            <TotalPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
               rowData={paymentTransactionDetailsByStatusResult}
               columnDefs={columnDefs}
               isFetchLoading={isFetchPaymentTransactionDetailsByStatusResult}
+              isPagination={false}
+              IsReactPaginate={true}
+              setPageLimit={setPAGE_LIMIT}
+              pageLimit={PAGE_LIMIT}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+              totalCount={paymentTransactionDetailsByStatusResult[0]?.totalCount}
+              tableHeight={paymentTransactionDetailsByStatusResult.length > 10 ? 550 : 300}
             />
           </div>
         </div>
