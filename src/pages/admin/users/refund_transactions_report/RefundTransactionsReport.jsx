@@ -9,6 +9,7 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import RefundTransactionsReportForm from "./RefundTransactionsReportForm";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
+import { userReports } from "../../../../store/userTransaction/UserReports";
 
 const RefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
@@ -16,167 +17,143 @@ const RefundTransactionsReport = () => {
   const toDate = getEndOfCurrentDay();
 
   const navigate = useNavigate();
-  const {totalTransactionSearchParams} = useTransactionsStore();
+  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams");
   
   const {
-    paymentTransactionDetailsByStatusResult,
-    isFetchPaymentTransactionDetailsByStatusResult,
-    fetchPaymentTransactionDetailsByStatusResult
-  } = userFailureTransaction();
+    isFetchRefundTransactionsReport,
+    refundTransactionsReport,
+    fetchRefundTransactionsReport,
+  } = userReports();
 
   const [columnDefs] = useState([
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
+ 
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
+ 
     {
-      field: "createdDate",
-      maxWidth: "200",
-      headerName: "Transaction Date & Time",
+      field: "travelDate",
+      headerName: "Date of Transaction",
+      maxWidth: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      maxWidth: "100",
+      //   hide: email === "esdadmin@gmail.com",
+      cellRenderer: (params) => {
+        return (
+          <div className="flex align-center gap-2">
+            <>
+              <button
+                className={`bg-green-400text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+              >
+                Pay Now
+              </button>
+            </>
+          </div>
+        );
       },
-    },
-    {
-      field: "action",
-      maxWidth: "180",
-      headerName: "Action",
+      flex: 1,
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <Link
-          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/transactions-order-tracker"}
-          state={{
-            orderId: params.data.orderId,
-            date: params.data.date,
-            mobileNumber: params.data.mobileNumber,
-            parkName: params.data.parkName,
-            status: params.data.status,
-            amount: params.data.amount
-          }}
-        >
-          View Track Order
-        </Link>
-      ),
     },
     {
-      field: "mobileNumber",
-      headerName: "Mobile No.",
-      maxWidth: "120",
+      field: "utr",
+      headerName: "RefundStatus",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
     },
     {
-      field: "departmentName",
+      field: "noOfCancelTickets",
+      minWidth: 100,
+      headerName: "Mobile Number of user",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "0",
+    },
+ 
+    {
+      field: "noOfConfirmTickets",
       headerName: "Department",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "entityTypeName",
-      headerName: "Location Category",
-      maxWidth: "160",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "locationName",
-      headerName: "Park Name",
-      minWidth: "200",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
       field: "noOfTickets",
+      headerName: "Location Category",
+     
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "0",
+    },
+    {
+      field: "totalTicketFare",
+      headerName: "Location name",
+     
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "0",
+    },
+    {
+      field: "totalCancelledTicketFare",
+      headerName: "Amount",
+      maxWidth: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "0",
+    },
+    {
+      field: "totalConfirmedTicketFare",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "bookingSource",
+      field: "paytM_CONFIRMED_AMOUNT",
       headerName: "Mode of Transaction",
-      maxWidth: "170",
+       maxWidth: "170",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "0",
+    },
+    {
+      field: "verifiedAmount",
+      headerName: "Payment mode",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "paymentMode",
-      headerName: "Payment Mode",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "transactionStatus",
-      headerName: "Transaction Status",
-      maxWidth: "220",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
-      ),
-    },
-    {
-      field: "orderId",
+      field: "pendingVerifiedAmount",
       headerName: "Order ID",
+      Width: "390",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "bookingId",
+      field: "settledPaymentAMount",
       headerName: "Booking ID",
+      Width: "260",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "resultMessage",
-      hide: searchParams.get("category") == "Success",
-      headerName: "Result Message",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
-      ),
     },
   ]);
 
   useEffect(() => {
-    fetchPaymentTransactionDetailsByStatusResult({
-      startDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-      endDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+    fetchRefundTransactionsReport({
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
       status: searchParams.get("category") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
+      pageNumber: 1,
+      pageSize: 20,
     });
   }, []);
 
@@ -193,21 +170,21 @@ const RefundTransactionsReport = () => {
               </h1>
             </div>
             <div className="">
-              <button
-                onClick={() => navigate(`/total-transactions-dashboard?${totalTransactionSearchParams.toString()}`)}
+              <Link
+                to={`/refund-transactions?${refundTransactionSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
-              </button>
+              </Link>
             </div>
           </div>
           <div>
             <RefundTransactionsReportForm />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
-              rowData={paymentTransactionDetailsByStatusResult}
+              rowData={refundTransactionsReport}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchPaymentTransactionDetailsByStatusResult}
+              isFetchLoading={isFetchRefundTransactionsReport}
             />
           </div>
         </div>

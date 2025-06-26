@@ -14,7 +14,6 @@ const UserReportForm = () => {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     phoneNumber: searchParams.get("phoneNumber") || "",
-    bookingSource: "",
   };
 
   const onSubmit = (values) => {
@@ -27,6 +26,7 @@ const UserReportForm = () => {
       }
     });
     setSearchParams(newSearchParams);
+    localStorage.setItem("userReportSearchParams", newSearchParams);
 
     fetchUserReport({
       fromDate: values.fromDate,

@@ -242,7 +242,7 @@ export const API_ENDPOINTS = {
       GET_USER_REPORT: `${API_BASE_URL}UserTransactions/GetAllUsers`,
       GET_USER_DETAILED_REPORT: `${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
       GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
-      GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetRefundInnerReport`,
+      GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetParkRefundInnerReport`,
     },
     USER_TRANSACTIONS:{
       GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatusResult`,

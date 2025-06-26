@@ -15,11 +15,6 @@ const TotalTransactionsForm = () => {
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
-  const {
-    totalTransactionSearchParams,
-    setTotalTransactionSearchParams,
-    clearTotalTransactionSearchParams,
-  } = useTransactionsStore();
 
   const {
     isFetchRefundTransactions,
@@ -31,7 +26,6 @@ const TotalTransactionsForm = () => {
 
   // Initial load effect
   useEffect(() => {
-    setSearchParams(totalTransactionSearchParams);
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllParks();
@@ -61,7 +55,7 @@ const TotalTransactionsForm = () => {
       }
     });
     setSearchParams(newSearchParams);
-    setTotalTransactionSearchParams(newSearchParams);
+    localStorage.setItem("refundTransactionSearchParams", newSearchParams);
 
     const payload = {
       fromDate: values.fromDate,

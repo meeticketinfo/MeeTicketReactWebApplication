@@ -14,9 +14,8 @@ const TotalPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
 
-  const navigate = useNavigate();
-  const {totalTransactionSearchParams} = useTransactionsStore();
   
   const {
     paymentTransactionDetailsByStatusResult,
@@ -193,12 +192,12 @@ const TotalPaymentTransactionReport = () => {
               </h1>
             </div>
             <div className="">
-              <button
-                onClick={() => navigate(`/total-transactions-dashboard?${totalTransactionSearchParams.toString()}`)}
+              <Link
+                to={`/total-transactions-dashboard?${totalTransactionSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
-              </button>
+              </Link>
             </div>
           </div>
           <div>

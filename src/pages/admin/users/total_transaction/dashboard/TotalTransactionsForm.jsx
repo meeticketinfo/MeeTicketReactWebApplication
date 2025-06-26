@@ -54,7 +54,7 @@ const TotalTransactionsForm = () => {
       }
     });
     setSearchParams(newSearchParams);
-    setTotalTransactionSearchParams(newSearchParams);
+    localStorage.setItem("totalTransactionSearchParams", newSearchParams);
 
     const payload = {
       startDate: values.fromDate,

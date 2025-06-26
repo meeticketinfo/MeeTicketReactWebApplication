@@ -10,15 +10,16 @@ import UserDetailedReportForm from "./UserDetailedReportForm";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
+import ReactPaginate from "react-paginate";
 
 const UserDetailedReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(1);
+  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
 
-  const navigate = useNavigate();
-  const {totalTransactionSearchParams} = useTransactionsStore();
-  
   const {
     userDetailedReport,
     isFetchUserDetailedReport,
@@ -28,7 +29,10 @@ const UserDetailedReport = () => {
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        const pageOffset = currentPage * PAGE_LIMIT;
+        return pageOffset + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -158,7 +162,7 @@ const UserDetailedReport = () => {
     },
   ]);
 
-  useEffect(() => {
+  const loadUserReport = (page = 0) => {
     fetchUserDetailedReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
@@ -166,8 +170,18 @@ const UserDetailedReport = () => {
       departmentId: +searchParams.get("departmentId") || "",
       entityTypeId: +searchParams.get("entityId") || "",
       mobileNumber: searchParams.get("phoneNumber") || "",
+      pageNumber: page + 1, // convert zero-indexed to 1-indexed
+      pageSize: PAGE_LIMIT,
     });
-  }, []);
+  };
+
+  useEffect(() => {
+    loadUserReport(currentPage);
+  }, [currentPage,PAGE_LIMIT, searchParams]);
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
 
   return (
     <>
@@ -180,12 +194,12 @@ const UserDetailedReport = () => {
               </h1>
             </div>
             <div className="">
-              <button
-                onClick={() => navigate(`/user-report?phoneNumber=${searchParams.get("phoneNumber")}&fromDate=${searchParams.get("fromDate")}&toDate=${searchParams.get("toDate")}`)}
+              <Link
+                to={`/user-report?${userReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
-              </button>
+              </Link>
             </div>
           </div>
           <div>
@@ -196,6 +210,39 @@ const UserDetailedReport = () => {
               columnDefs={columnDefs}
               isFetchLoading={isFetchUserDetailedReport}
             />
+          </div>
+          <div className="mt-4 flex justify-end items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Page Size:</span>
+              <select 
+                className="border w-20 border-gray-300 rounded-lg px-2 py-1 text-sm bg-white focus:outline-none focus:border-blue-v2"
+                onChange={(e) => { setPAGE_LIMIT(Number(e.target.value)) }}
+                value={PAGE_LIMIT}
+              >
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+            <div className="bg-white/30 backdrop-blur-md p-2 border rounded-lg shadow-sm">
+              <ReactPaginate
+                previousLabel={"←"}
+                nextLabel={"→"}
+                breakLabel={"..."}
+                pageCount={Math.ceil(100 / PAGE_LIMIT)}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination flex gap-1 items-center"}
+                activeClassName={"text-white bg-blue-v2 px-3 py-1.5 rounded-lg font-medium"}
+                pageClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
+                previousClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
+                nextClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
+                breakClassName={"px-2 py-1.5 text-gray-500"}
+                disabledClassName={"opacity-50 cursor-not-allowed"}
+                forcePage={currentPage}
+              />
+            </div>
           </div>
         </div>
       </AdminLayout>
