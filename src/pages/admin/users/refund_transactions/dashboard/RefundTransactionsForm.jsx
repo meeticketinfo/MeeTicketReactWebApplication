@@ -82,6 +82,7 @@ const TotalTransactionsForm = () => {
     // Clear URL search params
     setSearchParams(new URLSearchParams());
 
+    localStorage.setItem("refundTransactionSearchParams", "");
     setValues(payload);
     fetchRefundTransactions(payload);
   };

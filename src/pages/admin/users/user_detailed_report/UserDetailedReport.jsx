@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import {
-  formatToCurrency,
-} from "../../../../utils/TypographyHelper";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import UserDetailedReportForm from "./UserDetailedReportForm";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 import ReactPaginate from "react-paginate";
@@ -17,16 +19,16 @@ const UserDetailedReport = () => {
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const userReportSearchParams = localStorage.getItem("userReportSearchParams");
 
   const {
     userDetailedReport,
     isFetchUserDetailedReport,
-    fetchUserDetailedReport
+    fetchUserDetailedReport,
   } = userReports();
-
-  const [columnDefs] = useState([
+  
+  const columnDefs =[
     {
       headerName: "S.No",
       valueGetter: (params) => {
@@ -71,7 +73,7 @@ const UserDetailedReport = () => {
             mobileNumber: params.data.phonE_NUMBER,
             parkName: params.data.locationName,
             status: params.data.resultStatus,
-            amount: params.data.initiateTxnAmount
+            amount: params.data.initiateTxnAmount,
           }}
         >
           View Track Order
@@ -121,9 +123,7 @@ const UserDetailedReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
+        <span title={params.value}>{params.value}</span>
       ),
     },
     {
@@ -133,9 +133,7 @@ const UserDetailedReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
+        <span title={params.value}>{params.value}</span>
       ),
     },
     {
@@ -155,12 +153,10 @@ const UserDetailedReport = () => {
       headerName: "Result Message",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value || "N/A"}
-        </span>
+        <span title={params.value}>{params.value || "N/A"}</span>
       ),
     },
-  ]);
+  ]
 
   const loadUserReport = (page = 0) => {
     fetchUserDetailedReport({
@@ -177,7 +173,7 @@ const UserDetailedReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage,PAGE_LIMIT, searchParams]);
+  }, [currentPage, PAGE_LIMIT, searchParams]);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -203,46 +199,19 @@ const UserDetailedReport = () => {
             </div>
           </div>
           <div>
-            <UserDetailedReportForm />
+            <UserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
               rowData={userDetailedReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchUserDetailedReport}
+              IsReactPaginate={true}
+              setPageLimt={setPAGE_LIMIT}
+              pageLimt={PAGE_LIMIT}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+              totalCount={userDetailedReport?.[0]?.totalCount}
             />
-          </div>
-          <div className="mt-4 flex justify-end items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Page Size:</span>
-              <select 
-                className="border w-20 border-gray-300 rounded-lg px-2 py-1 text-sm bg-white focus:outline-none focus:border-blue-v2"
-                onChange={(e) => { setPAGE_LIMIT(Number(e.target.value)) }}
-                value={PAGE_LIMIT}
-              >
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
-            <div className="bg-white/30 backdrop-blur-md p-2 border rounded-lg shadow-sm">
-              <ReactPaginate
-                previousLabel={"←"}
-                nextLabel={"→"}
-                breakLabel={"..."}
-                pageCount={Math.ceil(100 / PAGE_LIMIT)}
-                marginPagesDisplayed={1}
-                pageRangeDisplayed={2}
-                onPageChange={handlePageClick}
-                containerClassName={"pagination flex gap-1 items-center"}
-                activeClassName={"text-white bg-blue-v2 px-3 py-1.5 rounded-lg font-medium"}
-                pageClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
-                previousClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
-                nextClassName={"border border-gray-300 px-3 py-1.5 rounded-lg hover:bg-blue-v2 hover:text-white transition-colors text-sm"}
-                breakClassName={"px-2 py-1.5 text-gray-500"}
-                disabledClassName={"opacity-50 cursor-not-allowed"}
-                forcePage={currentPage}
-              />
-            </div>
           </div>
         </div>
       </AdminLayout>

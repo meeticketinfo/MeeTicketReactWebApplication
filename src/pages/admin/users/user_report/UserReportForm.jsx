@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 
-const UserReportForm = () => {
+const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {isFetchUserReport, fetchUserReport} = userReports();
 
@@ -32,7 +32,10 @@ const UserReportForm = () => {
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.phoneNumber,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
+    SetcurrentPage(0)
   };
 
   return (
