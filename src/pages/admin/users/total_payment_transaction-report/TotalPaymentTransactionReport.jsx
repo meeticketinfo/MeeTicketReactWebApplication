@@ -66,13 +66,13 @@ const TotalPaymentTransactionReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/transactions-order-tracker"}
+          to={"/total-payment-transaction-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.date,
+            date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
-            parkName: params.data.parkName,
-            status: params.data.status,
+            parkName: params.data.locationName,
+            status: params.data.transactionStatus,
             amount: params.data.amount
           }}
         >
@@ -227,6 +227,7 @@ const TotalPaymentTransactionReport = () => {
               pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
+              showTotalCount={true}
               totalCount={paymentTransactionDetailsByStatusResult[0]?.totalCount}
               tableHeight={paymentTransactionDetailsByStatusResult.length > 10 ? 550 : 300}
             />

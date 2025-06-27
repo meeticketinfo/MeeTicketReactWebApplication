@@ -18,23 +18,24 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   const { allParks, fetchAllParks } = useParkStore();
   const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
 
-  const loadSearchParamsInLocalStorage = () => {
-    const newSearchParams = new URLSearchParams();
-    Object.keys(searchParams)?.forEach(key => {
-      console.log(key, "key");
-      if (searchParams[key]) {
-        newSearchParams?.set(key, cleanString(searchParams[key], ":", "_"));
-      }
-    });
-    localStorage.setItem("userDetailedReportSearchParams", newSearchParams);
-  }
-
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllParks();
-    // loadSearchParamsInLocalStorage();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+      
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("userDetailedReportSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -42,14 +43,13 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    parkId: searchParams.get("locationId") || "",
+    parkId: searchParams.get("parkId") || "",
     departmentId: +searchParams.get("departmentId") || "",
     entityId: +searchParams.get("entityId") || "",
-    phoneNumber: searchParams.get("phoneNumber") || "",
+    mobileNumber: searchParams.get("mobileNumber") || "",
   };
 
   const onSubmit = (values) => {
-    // Update URL search params with form values
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach(key => {
       if (values[key]) {
@@ -65,7 +65,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
       parkId: values.parkId,
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
-      mobileNumber: values.phoneNumber,
+      mobileNumber: values.mobileNumber,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -298,7 +298,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
               <Field
                 type="text"
                 maxLength="10"
-                name="phoneNumber"
+                name="mobileNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -307,7 +307,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("phoneNumber", e.target.value);
+                  setFieldValue("mobileNumber", e.target.value);
                 }}
               />
             </div>

@@ -40,6 +40,10 @@ const AgGridTable = ({
   const isPaginationEnabled = rowData.length > 10 && isPagination;
   const gridHeight = tableHeight || (isPaginationEnabled ? 550 : 300);
 
+  useEffect(() => {
+    setQuickFilterText("")
+  }, []);
+
   // Function to handle quick search input change
   const handleQuickFilterChange = (e) => {
     const filterText = e.target.value;
@@ -118,16 +122,6 @@ const AgGridTable = ({
       console.error("Grid API not available for Excel export.");
     }
   };
-
-  
-
-  useEffect(() => {
-    // Load the saved quickFilterText from localStorage on component mount
-    const savedQuickFilterText = localStorage.getItem("quickFilterText");
-    if (savedQuickFilterText) {
-      setQuickFilterText(savedQuickFilterText);
-    }
-  }, []);
 
   useEffect(() => {
     // Whenever activePage changes, update the grid's pagination
@@ -212,10 +206,11 @@ const AgGridTable = ({
           <span className="">Page Size:</span>
           <select className=" py-1 border border-gray-300 rounded-lg"
             onChange={(e) => { setPageLimit(e.target.value) }}
+            value={pageLimit}
           >
-            <option>20</option>
-            <option>50</option>
-            <option>100</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
           </select>
         </div>
         <ReactPaginate

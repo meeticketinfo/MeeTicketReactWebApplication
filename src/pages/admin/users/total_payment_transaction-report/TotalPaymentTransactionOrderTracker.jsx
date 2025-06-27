@@ -7,10 +7,10 @@ import {
 } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 
-const UserTransactionsOrderTracker = () => {
+const TotalPaymentTransactionOrderTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount } = location.state || {};
-  const userDetailedReportSearchParams = localStorage.getItem("userDetailedReportSearchParams");
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   
   const {
     TransactionTrackingStatusByOrderIdData,
@@ -73,8 +73,7 @@ const UserTransactionsOrderTracker = () => {
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
-        : params.value == "INPROCESS" ? "Deep Link Status" : 
-        "Payment Status Check"
+        : params.value == "INPROCESS" ? "Deep Link Status" : "Payment Status Check"
     },
     {
       field: "resultMsg",
@@ -120,7 +119,7 @@ const UserTransactionsOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/user-detailed-report?${userDetailedReportSearchParams}`}
+                to={`/total-payment-transaction-report?${totalTransactionSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -168,4 +167,4 @@ const UserTransactionsOrderTracker = () => {
   );
 };
 
-export default UserTransactionsOrderTracker;
+export default TotalPaymentTransactionOrderTracker;

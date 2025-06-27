@@ -13,12 +13,10 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    phoneNumber: searchParams.get("phoneNumber") || "",
+    mobileNumber: searchParams.get("mobileNumber") || "",
   };
 
   const onSubmit = (values) => {
-    console.log(values);
-    // Update URL search params with form values
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach(key => {
       if (values[key]) {
@@ -31,18 +29,32 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
     fetchUserReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.phoneNumber,
+      mobileNumber: values.mobileNumber,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
     SetcurrentPage(0)
   };
 
+  const resetForm = (setValues) => {
+    const payload = {
+      fromDate: startOfDay,
+      toDate: endOfDay,
+      mobileNumber: "",
+    };
+
+    // Clear URL search params
+    setSearchParams(new URLSearchParams());
+
+    setValues(payload);
+    fetchUserReport({...payload, pageNumber: pageNumber, pageSize: pageSize} );
+  };
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
+        {({ values, setFieldValue, setValues }) => (
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 pb-3">
             <div>
               <label
                 htmlFor="fromDate"
@@ -94,7 +106,7 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
               <Field
                 type="text"
                 maxLength="10"
-                name="phoneNumber"
+                name="mobileNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -103,17 +115,24 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("phoneNumber", e.target.value);
+                  setFieldValue("mobileNumber", e.target.value);
                 }}
               />
             </div>
-            <div className="flex items-end">
+            <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 disabled={isFetchUserReport}
               >
                 Search
+              </button>
+              <button
+                type="button"
+                onClick={() => resetForm(setValues)}
+                className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
+              >
+                Reset
               </button>
             </div>
           </Form>
