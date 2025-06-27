@@ -15,8 +15,8 @@ const RefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
-
-  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams");
   
   const {
@@ -29,13 +29,12 @@ const RefundTransactionsReport = () => {
     {
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
- 
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
  
     {
-      field: "travelDate",
+      field: "dateandTimeofTransaction",
       headerName: "Date of Transaction",
       maxWidth: "160",
       headerClass: "text-blue-v2",
@@ -63,7 +62,7 @@ const RefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "utr",
+      field: "refundStatus",
       headerName: "RefundStatus",
       maxWidth: "130",
       headerClass: "text-blue-v2",
@@ -71,36 +70,36 @@ const RefundTransactionsReport = () => {
         params.value || params.value === " " ? params.value : "N/A",
     },
     {
-      field: "noOfCancelTickets",
+      field: "mobileNumberofuser",
       minWidth: 100,
       headerName: "Mobile Number of user",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
     },
  
     {
-      field: "noOfConfirmTickets",
+      field: "department",
       headerName: "Department",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "noOfTickets",
+      field: "locationCategory",
       headerName: "Location Category",
      
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "totalTicketFare",
+      field: "locationName",
       headerName: "Location name",
      
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "totalCancelledTicketFare",
+      field: "amount",
       headerName: "Amount",
       maxWidth: "100",
       headerClass: "text-blue-v2",
@@ -114,28 +113,28 @@ const RefundTransactionsReport = () => {
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "paytM_CONFIRMED_AMOUNT",
+      field: "modeofTransaction",
       headerName: "Mode of Transaction",
        maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "0",
     },
     {
-      field: "verifiedAmount",
+      field: "paymentMode",
       headerName: "Payment mode",
       maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "pendingVerifiedAmount",
+      field: "orderId",
       headerName: "Order ID",
       Width: "390",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "settledPaymentAMount",
+      field: "bookingID",
       headerName: "Booking ID",
       Width: "260",
       headerClass: "text-blue-v2",
@@ -143,19 +142,26 @@ const RefundTransactionsReport = () => {
     },
   ]);
 
-  useEffect(() => {
+  const loadRefundTransactionsReport = (page = 0) => {
     fetchRefundTransactionsReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
-      status: searchParams.get("category") || "",
+      refundStatus: searchParams.get("RefundStatus") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
-      pageNumber: 1,
-      pageSize: 20,
+      pageNumber: page + 1,
+      pageSize: PAGE_LIMIT,
     });
-  }, []);
+  };
+  useEffect(() => {
+    loadRefundTransactionsReport(currentPage);
+  }, [currentPage, PAGE_LIMIT ]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
 
   return (
     <>
@@ -179,12 +185,21 @@ const RefundTransactionsReport = () => {
             </div>
           </div>
           <div>
-            <RefundTransactionsReportForm />
+            <RefundTransactionsReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
               rowData={refundTransactionsReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchRefundTransactionsReport}
+              tableHeight={refundTransactionsReport?.length > 10 ? 560 : 330}
+              isPagination={false}
+              IsReactPaginate={true}
+              setPageLimit={setPAGE_LIMIT}
+              pageLimit={PAGE_LIMIT}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+              showTotalCount={true}
+              totalCount={refundTransactionsReport[0]?.totalCount}
             />
           </div>
         </div>

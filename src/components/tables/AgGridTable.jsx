@@ -12,7 +12,7 @@ import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 import ReactPaginate from "react-paginate";
 
 ModuleRegistry.registerModules([ExcelExportModule]);
- 
+
 const AgGridTable = ({
   rowData = [],
   columnDefs,
@@ -21,12 +21,13 @@ const AgGridTable = ({
   ExportName,
   gridOptions,
   tableHeight,
-  isPagination=true,
-  IsReactPaginate=false,
+  isPagination = true,
+  IsReactPaginate = false,
   setPageLimit,
   pageLimit,
   handlePageClick,
   currentPage,
+  showTotalCount = false,
   totalCount
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
@@ -36,7 +37,7 @@ const AgGridTable = ({
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
 
-  const isPaginationEnabled = rowData.length > 10&&isPagination;
+  const isPaginationEnabled = rowData.length > 10 && isPagination;
   const gridHeight = tableHeight || (isPaginationEnabled ? 550 : 300);
 
   // Function to handle quick search input change
@@ -153,10 +154,13 @@ const AgGridTable = ({
             className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
           />
         </div>
-        <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
-          <button onClick={handleExportExcel} className="ag-grid-button">
-            <FaFileCsv className="text-blue-v2 text-xl" />
-          </button>
+        <div className="flex items-center gap-4">
+          {showTotalCount && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
+          <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
+            <button onClick={handleExportExcel} className="ag-grid-button">
+              <FaFileCsv className="text-blue-v2 text-xl" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -203,34 +207,34 @@ const AgGridTable = ({
           </div>
         )}
       </div>
-       {(IsReactPaginate && !isFetchLoading && rowData?.length > 0) && <div className="mt-4 flex justify-end items-center gap-4">
-          <div>
-            <span className="">Page Size:</span>
-            <select className=" py-1 border border-gray-300 rounded-lg"
-            onChange={(e)=>{setPageLimit(e.target.value)}}
-            >
-              <option>20</option>
-              <option>50</option>
-              <option>100</option>
-            </select>
-          </div>
-          <ReactPaginate
-            previousLabel={"←"}
-            nextLabel={"→"}
-            breakLabel={"..."}
-            pageCount={Math.ceil(totalCount / pageLimit)}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={2}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination border px-2 py-1 rounded-lg flex gap-2"}
-            activeClassName={"text-white bg-blue-v2 px-3 py-1 rounded "}
-            pageClassName={"border px-3 py-1 rounded hover:bg-blue-v2 hover:text-white"}
-            previousClassName={"border px-3 py-1 ml-2 rounded hover:bg-blue-v2"}
-            nextClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
-            breakClassName={"px-2"}
-            forcePage={currentPage}
-          />
-        </div>}
+      {(IsReactPaginate && !isFetchLoading && rowData?.length > 0) && <div className="mt-4 flex justify-end items-center gap-4">
+        <div>
+          <span className="">Page Size:</span>
+          <select className=" py-1 border border-gray-300 rounded-lg"
+            onChange={(e) => { setPageLimit(e.target.value) }}
+          >
+            <option>20</option>
+            <option>50</option>
+            <option>100</option>
+          </select>
+        </div>
+        <ReactPaginate
+          previousLabel={"←"}
+          nextLabel={"→"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(totalCount / pageLimit)}
+          marginPagesDisplayed={1}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination border px-2 py-1 rounded-lg flex gap-2"}
+          activeClassName={"text-white bg-blue-v2 px-3 py-1 rounded "}
+          pageClassName={"border px-3 py-1 rounded hover:bg-blue-v2 hover:text-white"}
+          previousClassName={"border px-3 py-1 ml-2 rounded hover:bg-blue-v2"}
+          nextClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
+          breakClassName={"px-2"}
+          forcePage={currentPage}
+        />
+      </div>}
     </div>
   );
 };

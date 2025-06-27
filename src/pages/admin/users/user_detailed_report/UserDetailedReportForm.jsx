@@ -12,18 +12,28 @@ import { userReports } from "../../../../store/userTransaction/UserReports";
 
 const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {totalTransactionSearchParams} = useTransactionsStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
   const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
+
+  const loadSearchParamsInLocalStorage = () => {
+    const newSearchParams = new URLSearchParams();
+    Object.keys(searchParams)?.forEach(key => {
+      console.log(key, "key");
+      if (searchParams[key]) {
+        newSearchParams?.set(key, cleanString(searchParams[key], ":", "_"));
+      }
+    });
+    localStorage.setItem("userDetailedReportSearchParams", newSearchParams);
+  }
 
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllParks();
+    // loadSearchParamsInLocalStorage();
   }, []);
 
   const startOfDay = getStartOfCurrentDay();
@@ -39,7 +49,6 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   };
 
   const onSubmit = (values) => {
-    console.log(values);
     // Update URL search params with form values
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach(key => {
@@ -48,6 +57,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
       }
     });
     setSearchParams(newSearchParams);
+    localStorage.setItem("userDetailedReportSearchParams", newSearchParams);
 
     fetchUserDetailedReport({
       fromDate: values.fromDate,

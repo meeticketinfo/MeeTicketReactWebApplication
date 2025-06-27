@@ -9,14 +9,15 @@ import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 
-const RefundTransactionsReportForm = () => {
+const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {totalTransactionSearchParams} = useTransactionsStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
   const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
+  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams");
+  
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -44,7 +45,7 @@ const RefundTransactionsReportForm = () => {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    setSearchParams(newSearchParams + "&RefundStatus=" + getValueFromQuery(refundTransactionSearchParams, "RefundStatus"));
 
     fetchPaymentTransactionDetailsByStatusResult({
       startDate: values.fromDate,
@@ -54,7 +55,9 @@ const RefundTransactionsReportForm = () => {
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
       bookingSource: values.bookingSource,
-      status: getValueFromQuery(totalTransactionSearchParams, "category") || "",
+      refundStatus: getValueFromQuery(refundTransactionSearchParams, "RefundStatus") || "",
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
   };
 

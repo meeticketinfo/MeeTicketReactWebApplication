@@ -70,7 +70,7 @@ const UserDetailedReport = () => {
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
-            mobileNumber: params.data.phonE_NUMBER,
+            mobileNumber: params.data.mobileNumber,
             parkName: params.data.locationName,
             status: params.data.resultStatus,
             amount: params.data.initiateTxnAmount,
@@ -81,7 +81,7 @@ const UserDetailedReport = () => {
       ),
     },
     {
-      field: "phonE_NUMBER",
+      field: "mobileNumber",
       headerName: "Mobile No.",
       maxWidth: "120",
       headerClass: "text-blue-v2",
@@ -109,7 +109,7 @@ const UserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "confirmedTxnAmount",
+      field: "initiateTxnAmount",
       headerName: "Amount",
       maxWidth: "120",
       headerClass: "text-blue-v2",
@@ -137,7 +137,7 @@ const UserDetailedReport = () => {
       ),
     },
     {
-      field: "transactionId",
+      field: "orderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -149,7 +149,7 @@ const UserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "resultMsg",
+      field: "resultMessage",
       headerName: "Result Message",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
@@ -206,8 +206,10 @@ const UserDetailedReport = () => {
               columnDefs={columnDefs}
               isFetchLoading={isFetchUserDetailedReport}
               IsReactPaginate={true}
-              setPageLimt={setPAGE_LIMIT}
-              pageLimt={PAGE_LIMIT}
+              isPagination={false}
+              tableHeight={userDetailedReport?.length > 10 ? 550 : 300}
+              setPageLimit={setPAGE_LIMIT}
+              pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
               totalCount={userDetailedReport?.[0]?.totalCount}

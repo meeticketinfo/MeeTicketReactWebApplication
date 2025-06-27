@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Field, Form, Formik } from "formik";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Select from "react-select";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
@@ -66,14 +66,13 @@ const UserTransactionsOrderTracker = () => {
     isFetchTransactionTrackingStatusByOrderId,
     fetchTransactionTrackingStatusByOrderId,
   } = userFailureTransaction();
- const fromDate = getStartOfCurrentDay();
+  const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({});
-  const UserTransactionReportFilter = JSON.parse(
-    localStorage.getItem("transactionPayload")
-  );
- const {
+  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
+  const userDetailedReportSearchParams = localStorage.getItem("userDetailedReportSearchParams");
+  const {
     userDetailedReport,
     isFetchUserDetailedReport,
     fetchUserDetailedReport
@@ -142,8 +141,8 @@ const UserTransactionsOrderTracker = () => {
       maxWidth: "180",
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent" 
-                                  : params.value == "INPROCESS" ? "Deep Link Status" : "Payment Status Check"
+      valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
+        : params.value == "INPROCESS" ? "Deep Link Status" : "Payment Status Check"
     },
     // {
     //   field: "action",
@@ -164,7 +163,7 @@ const UserTransactionsOrderTracker = () => {
     // },
     {
       field: "resultMsg",
-      width: 350,
+      flex: 1,
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -204,12 +203,12 @@ const UserTransactionsOrderTracker = () => {
               </h1>
             </div>
             <div className="">
-              <button
-                 onClick={() => navigate(`/user-detailed-report`)}
+              <Link
+                to={`/user-detailed-report?${JSON.parse(userDetailedReportSearchParams)}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -232,17 +231,6 @@ const UserTransactionsOrderTracker = () => {
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Park Name</h3>
               <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Order Category</h3>
-              <p className="text-sm font-semibold text-gray-900">
-                {UserTransactionReportFilter.category == "ConfirmedSuccess" ? "Sucessful Transactions" 
-                  : UserTransactionReportFilter.category == "SuccessButNotConfirmed" ? "Payment done but Ticket Not generated" 
-                  : UserTransactionReportFilter.category == "Failed" ? "Failed Transactions" 
-                  : UserTransactionReportFilter.category == "SuccessButNotConfirmedWithBooking" ? "Ticket Re-generated" 
-                  : UserTransactionReportFilter.category == "SuccessButNotConfirmedWithoutBooking" ? "Ticket NOT Re-generated" 
-                  : 'N/A'}
-              </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
