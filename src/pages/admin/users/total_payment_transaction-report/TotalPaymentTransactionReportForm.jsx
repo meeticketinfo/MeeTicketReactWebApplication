@@ -24,6 +24,19 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
     fetchAllParks();
   }, []);
 
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+      
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("totalTransactionSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
+
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -47,6 +60,7 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
       }
     });
     setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    localStorage.setItem("totalTransactionSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
 
     fetchPaymentTransactionDetailsByStatusResult({
       startDate: values.fromDate,

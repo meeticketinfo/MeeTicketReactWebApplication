@@ -53,6 +53,7 @@ const UserReport = () => {
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           hour12: true,
         });
         return `${formattedDate} ${formattedTime}`;
@@ -66,7 +67,7 @@ const UserReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/user-detailed-report?phoneNumber=${
+          to={`/user-detailed-report?mobileNumber=${
             params.data.phoneNumber
           }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${
             searchParams.get("toDate") || toDate
@@ -82,7 +83,7 @@ const UserReport = () => {
     fetchUserReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNumber: searchParams.get("phoneNumber") || "",
+      mobileNumber: searchParams.get("mobileNumber") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -121,6 +122,7 @@ const UserReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             totalCount={userReport?.totalCount}
+            showTotalCount={true}
           />
         </div>
       </div>

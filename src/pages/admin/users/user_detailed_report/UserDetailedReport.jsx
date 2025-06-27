@@ -53,6 +53,7 @@ const UserDetailedReport = () => {
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           hour12: true,
         });
         return `${formattedDate} ${formattedTime}`;
@@ -165,7 +166,7 @@ const UserDetailedReport = () => {
       parkId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       entityTypeId: +searchParams.get("entityId") || "",
-      mobileNumber: searchParams.get("phoneNumber") || "",
+      mobileNumber: searchParams.get("mobileNumber") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -173,7 +174,7 @@ const UserDetailedReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage, PAGE_LIMIT, searchParams]);
+  }, [currentPage, PAGE_LIMIT]);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -209,6 +210,7 @@ const UserDetailedReport = () => {
               isPagination={false}
               tableHeight={userDetailedReport?.length > 10 ? 550 : 300}
               setPageLimit={setPAGE_LIMIT}
+              showTotalCount={true}
               pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
