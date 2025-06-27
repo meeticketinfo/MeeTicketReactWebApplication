@@ -293,5 +293,6 @@ export const API_ENDPOINTS = {
     GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
     GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
     GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetailResult`,
+     INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
   },
 };

@@ -18,6 +18,8 @@ export const userReports = create((set) => ({
   refundTransactionsReport: [],
   isFetchRefundTransactionsReport: false,
 
+  isInitiateRefund: false,
+
   fetchUserReport: async (queryParams) => {
     const queryString = new URLSearchParams(queryParams).toString();
     set({ isFetchUserReport: true });
@@ -28,7 +30,7 @@ export const userReports = create((set) => ({
       set({
         userReport: response.data,
       });
-      return {response: response.data}
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
@@ -36,7 +38,7 @@ export const userReports = create((set) => ({
     } finally {
       set({
         isFetchUserReport: false,
-      })
+      });
     }
   },
 
@@ -50,7 +52,7 @@ export const userReports = create((set) => ({
       set({
         userDetailedReport: response.data,
       });
-      return {response: response.data}
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
@@ -58,7 +60,7 @@ export const userReports = create((set) => ({
     } finally {
       set({
         isFetchUserDetailedReport: false,
-      })
+      });
     }
   },
 
@@ -71,7 +73,7 @@ export const userReports = create((set) => ({
       set({
         TransactionTrackingStatusByOrderIdData: response.data,
       });
-      return {response: response.data}
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
@@ -79,11 +81,11 @@ export const userReports = create((set) => ({
     } finally {
       set({
         isFetchTransactionTrackingStatusByOrderId: false,
-      })
+      });
     }
   },
   fetFilters: (filters) => {
-    set({filters: filters})
+    set({ filters: filters });
   },
   fetchRefundTransactions: async (queryParams) => {
     const queryString = new URLSearchParams(queryParams).toString();
@@ -95,7 +97,7 @@ export const userReports = create((set) => ({
       set({
         refundTransactions: response.data,
       });
-      return {response: response.data}
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
@@ -103,7 +105,7 @@ export const userReports = create((set) => ({
     } finally {
       set({
         isFetchRefundTransactions: false,
-      })
+      });
     }
   },
   fetchRefundTransactionsReport: async (queryParams) => {
@@ -116,7 +118,7 @@ export const userReports = create((set) => ({
       set({
         refundTransactionsReport: response.data,
       });
-      return {response: response.data}
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
@@ -124,8 +126,31 @@ export const userReports = create((set) => ({
     } finally {
       set({
         isFetchRefundTransactionsReport: false,
-      })
+      });
     }
-  }
+  },
 
-}))
+  // initiate Refund
+  fetchInitiateRefundOrderId: async (orderID) => {
+    set({ isInitiateRefund: true });
+    try {
+      const url =  `${API_ENDPOINTS.FAILED_TRANSACTIONS.INITIATE_REFUND}`;
+          const method = "post";
+          const response = await apiService[method](url, {orderId:orderID});
+
+     
+      set({
+        InitiateRefundByOrderIdData: response.data,
+      });
+      return { response: response };
+    } catch (error) {
+      set({
+        error: error.message,
+      });
+    } finally {
+      set({
+        isInitiateRefund: false,
+      });
+    }
+  },
+}));
