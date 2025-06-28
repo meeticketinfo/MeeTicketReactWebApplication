@@ -63,10 +63,10 @@ export const cleanString = (str, symbol1, symbol2) => {
 }
 
 export const getValueFromQuery = (queryString, key) => {
-  const pairs = queryString.split('&');
+  const pairs = queryString?.split('&');
 
   for (const pair of pairs) {
-    const [k, v] = pair.split('=');
+    const [k, v] = pair?.split('=');
     if (k === key) {
       return v;
     }

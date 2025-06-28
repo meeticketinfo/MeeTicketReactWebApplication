@@ -28,7 +28,8 @@ const AgGridTable = ({
   handlePageClick,
   currentPage,
   showTotalCount = false,
-  totalCount
+  totalCount,
+  SetcurrentPage
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
@@ -205,7 +206,10 @@ const AgGridTable = ({
         <div>
           <span className="">Page Size:</span>
           <select className=" py-1 border border-gray-300 rounded-lg"
-            onChange={(e) => { setPageLimit(e.target.value) }}
+            onChange={(e) => { 
+              setPageLimit(e.target.value) 
+              SetcurrentPage(0)
+            }}
             value={pageLimit}
           >
             <option value={20}>20</option>

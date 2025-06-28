@@ -27,7 +27,8 @@ function RefundTransactions() {
       locationCategoryId: +searchParams.get("entityId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
-      
+      modeOfTransaction:searchParams.get("bookingSource") || "",
+      paymentMode:searchParams.get("PaymentMode") || "",
     };
     fetchRefundTransactions(payload);
   }, []);

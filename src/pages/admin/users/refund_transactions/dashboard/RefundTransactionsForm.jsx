@@ -1,7 +1,12 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import {
+  cleanString,
+  getDateRange,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../utils/Helper";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
@@ -14,12 +19,10 @@ const TotalTransactionsForm = () => {
 
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
 
-  const {
-    isFetchRefundTransactions,
-    fetchRefundTransactions
-  } = userReports();
+  const { isFetchRefundTransactions, fetchRefundTransactions } = userReports();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -37,19 +40,21 @@ const TotalTransactionsForm = () => {
     setSearchParams(newSearchParams);
   }, [searchParams]);
 
-  const initialValues =  {
+  const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     departmentId: +searchParams.get("departmentId") || "",
     entityId: +searchParams.get("entityId") || "",
     locationId: searchParams.get("locationId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
-  }  
+    bookingSource:searchParams.get("bookingSource") || "",
+    PaymentMode:searchParams.get("PaymentMode") || "",
+  };
 
   const overAllOnSubmit = (values) => {
     // Update URL search params with form values
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
@@ -64,6 +69,8 @@ const TotalTransactionsForm = () => {
       locationCategoryId: values.entityId,
       departmentId: values.departmentId,
       phoneNumber: values.phoneNumber,
+      modeOfTransaction:values.bookingSource,
+      paymentMode:values.PaymentMode
     };
 
     fetchRefundTransactions(payload);
@@ -149,9 +156,8 @@ const TotalTransactionsForm = () => {
                         value: dept.departmentId,
                         label: dept.departmentName,
                       }))
-                      .find(
-                        (option) => option.value === values.departmentId
-                      ) || null
+                      .find((option) => option.value === values.departmentId) ||
+                    null
                   }
                   options={allDepartmentTypes
                     ?.filter((dept) => dept.isActive)
@@ -160,10 +166,7 @@ const TotalTransactionsForm = () => {
                       label: dept.departmentName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "departmentId",
-                      selectedOption?.value || ""
-                    )
+                    setFieldValue("departmentId", selectedOption?.value || "");
                   }}
                   isClearable
                   placeholder="Department"
@@ -218,10 +221,7 @@ const TotalTransactionsForm = () => {
                       label: entity.entityTypeName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "entityId",
-                      selectedOption?.value || ""
-                    )
+                    setFieldValue("entityId", selectedOption?.value || "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -276,10 +276,7 @@ const TotalTransactionsForm = () => {
                       label: park.name,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "locationId",
-                      selectedOption?.value || ""
-                    )
+                    setFieldValue("locationId", selectedOption?.value || "");
                   }}
                   isClearable
                   placeholder="Location"
@@ -329,10 +326,57 @@ const TotalTransactionsForm = () => {
                     }
                   }}
                   onChange={(e) => {
-                    setFieldValue("phoneNumber",e.target.value)
+                    setFieldValue("phoneNumber", e.target.value);
                   }}
                 />
               </div>
+
+              {/* mode of transaction */}
+
+              <div>
+                <label
+                  htmlFor="bookingSource"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Mode of Transaction
+                </label>
+                <Field
+                  as="select"
+                  name="bookingSource"
+                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("bookingSource", e.target.value);
+                  }}
+                >
+                  <option value="">Select Mode</option>
+                  <option value="meeTicket">MeeTicketApp</option>
+                  <option value="counter">COUNTER</option>
+                </Field>
+              </div>
+              {/*Payment Mode */}
+               <div>
+                <label
+                  htmlFor="PaymentMode"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Payment Mode
+                </label>
+                <Field
+                  as="select"
+                  name="PaymentMode"
+                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("PaymentMode", e.target.value);
+                  }}
+                >
+                  <option value="">Select Mode</option>
+                  <option value="upi">UPI</option>
+                  <option value="creditCard">Credit Card</option>
+                  <option value="debitCard">Debit Card</option>
+                  <option value="netBanking">Net Banking</option>
+                </Field>
+              </div>
+
               <div className="flex gap-2 items-end">
                 <button
                   type="submit"
