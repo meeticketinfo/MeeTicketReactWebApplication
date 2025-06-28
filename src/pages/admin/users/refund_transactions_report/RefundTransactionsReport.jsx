@@ -34,10 +34,11 @@ const RefundTransactionsReport = () => {
     isInitiateRefund,
   } = userReports();
 
-  const [columnDefs] = useState([
+  const columnDefs = [
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) =>
+        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -159,7 +160,7 @@ const RefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-  ]);
+  ];
 
   const loadRefundTransactionsReport = (page = 0) => {
     fetchRefundTransactionsReport({
@@ -170,6 +171,8 @@ const RefundTransactionsReport = () => {
       categoryId: +searchParams.get("entityId") || "",
       refundStatus: searchParams.get("RefundStatus") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
+      modeOfTransaction: searchParams.get("bookingSource") || "",
+      paymentMode: searchParams.get("PaymentMode") || "",
       pageNumber: page + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -268,6 +271,7 @@ const RefundTransactionsReport = () => {
             <RefundTransactionsReportForm
               pageNumber={currentPage + 1}
               pageSize={PAGE_LIMIT}
+              setCurrentPage={setCurrentPage}
             />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
@@ -283,6 +287,7 @@ const RefundTransactionsReport = () => {
               currentPage={currentPage}
               showTotalCount={true}
               totalCount={refundTransactionsReport[0]?.totalCount}
+              SetcurrentPage={setCurrentPage}
             />
           </div>
         </div>

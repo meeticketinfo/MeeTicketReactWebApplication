@@ -6,18 +6,28 @@ import { useEffect } from "react";
 import Select from "react-select";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+  getValueFromQuery,
+} from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
+import { userReports } from "../../../../store/userTransaction/UserReports";
 
-const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
+const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
-  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams");
-  
+
+  const { isFetchRefundTransactionsReport, fetchRefundTransactionsReport } =
+    userReports();
+  const refundTransactionSearchParams = localStorage.getItem(
+    "refundTransactionSearchParams"
+  );
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -35,30 +45,34 @@ const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
     departmentId: +searchParams.get("departmentId") || "",
     entityId: +searchParams.get("entityId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
-    bookingSource: "",
+    bookingSource: searchParams.get("bookingSource") || "",
+    PaymentMode:searchParams.get("PaymentMode") || "",
+    refundStatus: searchParams.get("RefundStatus") || "",
   };
 
   const onSubmit = (values) => {
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams + "&RefundStatus=" + getValueFromQuery(refundTransactionSearchParams, "RefundStatus"));
+    // setSearchParams(newSearchParams + "&RefundStatus=" + getValueFromQuery(refundTransactionSearchParams, "RefundStatus"));
 
-    fetchPaymentTransactionDetailsByStatusResult({
-      startDate: values.fromDate,
-      endDate: values.toDate,
+    fetchRefundTransactionsReport({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
       locationId: values.parkId,
       departmentId: values.departmentId,
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
-      bookingSource: values.bookingSource,
-      refundStatus: getValueFromQuery(refundTransactionSearchParams, "RefundStatus") || "",
+      modeOfTransaction: values.bookingSource,
+      paymentMode:values.PaymentMode,
+      refundStatus: values.refundStatus,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
+     setCurrentPage(0);
   };
 
   return (
@@ -122,9 +136,8 @@ const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
                       value: dept.departmentId,
                       label: dept.departmentName,
                     }))
-                    .find(
-                      (option) => option.value === values.departmentId
-                    ) || null
+                    .find((option) => option.value === values.departmentId) ||
+                  null
                 }
                 options={allDepartmentTypes
                   ?.filter((dept) => dept.isActive)
@@ -165,61 +178,60 @@ const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
               />
             </div>
             {/* location category */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Location Category
-                </label>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Location Category
+              </label>
 
-                <Select
-                  name="entityId"
-                  value={
-                    allEntityTypes
-                      ?.filter((entity) => entity.isActive)
-                      .map((entity) => ({
-                        value: entity.entityTypeId,
-                        label: entity.entityTypeName,
-                      }))
-                      .find((option) => option.value === values.entityId) ||
-                    null
-                  }
-                  options={allEntityTypes
+              <Select
+                name="entityId"
+                value={
+                  allEntityTypes
                     ?.filter((entity) => entity.isActive)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
-                    }))}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption?.value || "";
-                    setFieldValue("entityId", value);
-                  }}
-                  isClearable
-                  placeholder="Location Category"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
+                    }))
+                    .find((option) => option.value === values.entityId) || null
+                }
+                options={allEntityTypes
+                  ?.filter((entity) => entity.isActive)
+                  .map((entity) => ({
+                    value: entity.entityTypeId,
+                    label: entity.entityTypeName,
+                  }))}
+                onChange={(selectedOption) => {
+                  const value = selectedOption?.value || "";
+                  setFieldValue("entityId", value);
+                }}
+                isClearable
+                placeholder="Location Category"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
 
-                    menu: (base) => ({
-                      ...base,
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#6D7072",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>
+                  menu: (base) => ({
+                    ...base,
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
             {/* location */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -235,8 +247,7 @@ const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
                       value: park.id,
                       label: park.name,
                     }))
-                    .find((option) => option.value === values.parkId) ||
-                  null
+                    .find((option) => option.value === values.parkId) || null
                 }
                 options={allParks
                   ?.filter((park) => park.isActive)
@@ -316,15 +327,60 @@ const RefundTransactionsReportForm = ({pageNumber, pageSize}) => {
                 }}
               >
                 <option value="">Select Mode</option>
-                <option value="MeeTicketApp">MeeTicketApp</option>
-                <option value="COUNTER">COUNTER</option>
+                <option value="meeTicket">MeeTicketApp</option>
+                <option value="counter">COUNTER</option>
+              </Field>
+            </div>
+            {/* Payment Mode */}
+            {/*Payment Mode */}
+            <div>
+              <label
+                htmlFor="PaymentMode"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Payment Mode
+              </label>
+              <Field
+                as="select"
+                name="PaymentMode"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("PaymentMode", e.target.value);
+                }}
+              >
+                <option value="">Select Mode</option>
+                <option value="upi">UPI</option>
+                <option value="creditCard">Credit Card</option>
+                <option value="debitCard">Debit Card</option>
+                <option value="netBanking">Net Banking</option>
+              </Field>
+            </div>
+            {/* status */}
+            <div>
+              <label
+                htmlFor="refundStatus"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Status
+              </label>
+              <Field
+                as="select"
+                name="refundStatus"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("refundStatus", e.target.value);
+                }}
+              >
+                <option value="">Select Mode</option>
+                <option value="Refund">Refunded</option>
+                <option value="NotRefund">Not Refunded</option>
               </Field>
             </div>
             <div className="flex items-end">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchPaymentTransactionDetailsByStatusResult}
+                disabled={isFetchRefundTransactionsReport}
               >
                 Search
               </button>

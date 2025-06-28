@@ -123,6 +123,7 @@ const UserReport = () => {
             currentPage={currentPage}
             totalCount={userReport?.totalCount}
             showTotalCount={true}
+            SetcurrentPage={setCurrentPage}
           />
         </div>
       </div>
