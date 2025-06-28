@@ -286,7 +286,7 @@ export const API_ENDPOINTS = {
   FAILED_TRANSACTIONS: {
     GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
     GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
-    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId`,
+    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId-Updated`,
     GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,

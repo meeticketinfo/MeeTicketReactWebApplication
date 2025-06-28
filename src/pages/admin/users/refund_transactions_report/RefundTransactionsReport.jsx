@@ -261,12 +261,7 @@ const RefundTransactionsReport = () => {
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                {searchParams.get("category") == "Success"
-                  ? "Success Transactions"
-                  : searchParams.get("category") ==
-                    "PaymentSuccessButTicketNotGenerated"
-                  ? "Ticket not Generated"
-                  : "Failed Transactions"}
+                Refund Transactions
               </h1>
             </div>
             <div className="">
