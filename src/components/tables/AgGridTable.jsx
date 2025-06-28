@@ -149,7 +149,7 @@ const AgGridTable = ({
           />
         </div>
         <div className="flex items-center gap-4">
-          {showTotalCount && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
+          {(showTotalCount && rowData.length > 0) && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
           <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
             <button onClick={handleExportExcel} className="ag-grid-button">
               <FaFileCsv className="text-blue-v2 text-xl" />
