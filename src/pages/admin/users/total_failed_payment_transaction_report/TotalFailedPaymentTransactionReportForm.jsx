@@ -10,7 +10,7 @@ import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuer
 
 const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
@@ -25,6 +25,19 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+      
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("totalFailedTransactionReportSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
 
   const initialValues = {
     startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
@@ -44,9 +57,8 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    console.log(totalTransactionSearchParams, "totalTransactionSearchParams")
-    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
-    localStorage.setItem("totalPaymentTransactionSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category"));
+    localStorage.setItem("totalFailedTransactionReportSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category"));
 
     fetchPaymentTransactionDetailsByStatusResult({
       startDate: values.startDate,
@@ -56,7 +68,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
       bookingSource: values.bookingSource,
-      status: getValueFromQuery(totalTransactionSearchParams, "category") || "",
+      status: getValueFromQuery(totalFailedTransactionSearchParams, "category") || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });

@@ -4,14 +4,14 @@ import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import TotalPaymentTransactionReportForm from "./TotalPaymentTransactionReportForm";
+import TotalTicketNotGeneratedPaymentTransactionReportForm from "./TotalTicketNotGeneratedPaymentTransactionReportForm";
 import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 
-const TotalPaymentTransactionReport = () => {
+const TotalTicketNotGeneratedPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
-  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalTicketNotGeneratedTransactionSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionSearchParams");
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -183,23 +183,7 @@ const TotalPaymentTransactionReport = () => {
   }, [currentPage, PAGE_LIMIT]);
 
   const backLink = () => {
-    if (searchParams.get("subCategory") === "PaymentSuccessOnTime") {
-      return `/ticket-not-generated-transactions-dashboard?${totalTransactionSearchParams}`
-    }
-    if (searchParams.get("subCategory")) {
-      return `/failed-transactions-dashboard?${searchParams.toString()}&category=${searchParams.get("subCategory")}`
-    } 
-    return `/total-transactions-dashboard?${totalTransactionSearchParams}`
-  }
-
-  const title = () => {
-    if (searchParams.get("subCategory")) {
-      return "Failed Transactions"
-    }
-    return searchParams.get("category") == "Success" ? "Success Transactions" 
-      : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
-      : searchParams.get("category") == "FailedFromGateway" ? "Failed Transactions"
-      : "Total Transactions"
+    return `/ticket-not-generated-transactions-dashboard?${totalTicketNotGeneratedTransactionSearchParams}`
   }
 
   return (
@@ -209,7 +193,7 @@ const TotalPaymentTransactionReport = () => {
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                {title()}
+                Ticket Not Generated Payment Transaction Report
               </h1>
             </div>
             <div className="">
@@ -222,7 +206,7 @@ const TotalPaymentTransactionReport = () => {
             </div>
           </div>
           <div>
-            <TotalPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} />
+            <TotalTicketNotGeneratedPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
               rowData={paymentTransactionDetailsByStatusResult}
@@ -245,4 +229,4 @@ const TotalPaymentTransactionReport = () => {
   );
 };
 
-export default TotalPaymentTransactionReport;
+export default TotalTicketNotGeneratedPaymentTransactionReport;

@@ -26,7 +26,7 @@ const TotalTicketNotGeneratedPaymentTransactionOrderTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const totalPaymentTransactionSearchParams = localStorage.getItem("totalPaymentTransactionSearchParams");
+  const totalTicketNotGeneratedTransactionReportSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionReportSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
@@ -126,7 +126,7 @@ const TotalTicketNotGeneratedPaymentTransactionOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/total-ticket-not-generated-payment-transaction-report?${totalPaymentTransactionSearchParams}`}
+                to={`/total-ticket-not-generated-payment-transaction-report?${totalTicketNotGeneratedTransactionReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back

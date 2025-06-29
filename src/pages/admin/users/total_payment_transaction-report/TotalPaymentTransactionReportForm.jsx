@@ -26,6 +26,19 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+      
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("totalPaymentTransactionSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
+
   const initialValues = {
     startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
     endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,

@@ -72,7 +72,7 @@ const TotalTicketNotGeneratedTransactionsChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
   const redirectionLink = (item) => {
-    return `/total-payment-transaction-report?${searchParams.toString()}&subCategory=${item.subCategory}`
+    return `/total-ticket-not-generated-payment-transaction-report?${searchParams.toString()}&subCategory=${item.subCategory}`
   }
 
   return (
@@ -82,7 +82,7 @@ const TotalTicketNotGeneratedTransactionsChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Ticket Not Generated Transactions&nbsp;
           <Link
-            to={`/total-payment-transaction-report?${searchParams.toString()}`}
+            to={`/total-ticket-not-generated-payment-transaction-report?${searchParams.toString()}`}
             className="text-[#007AFF] font-bold underline ml-1"
           >
             {totalCount}
@@ -118,6 +118,9 @@ const TotalTicketNotGeneratedTransactionsChart = ({
                         <Link
                           to={redirectionLink(item)}
                           className="text-[#000] hover:underline text-xs"
+                          onClick={() => {
+                            localStorage.setItem("totalTicketNotGeneratedTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.subCategory}`);
+                          }}
                         >
                           {item.subCategory}
                         </Link>
@@ -127,6 +130,9 @@ const TotalTicketNotGeneratedTransactionsChart = ({
                       <Link
                         to={redirectionLink(item)}
                         className="text-[#4A90E2] font-semibold hover:underline text-sm"
+                        onClick={() => {
+                          localStorage.setItem("totalTicketNotGeneratedTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.subCategory}`);
+                        }}
                       >
                         {item.subCategoryCount}
                       </Link>

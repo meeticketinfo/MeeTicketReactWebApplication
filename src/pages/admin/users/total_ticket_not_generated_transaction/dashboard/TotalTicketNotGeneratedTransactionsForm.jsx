@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 
 const TotalTicketNotGeneratedTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const totalTicketNotGeneratedTransactionSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionSearchParams");
 
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -18,6 +19,19 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+      
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("totalTicketNotGeneratedTransactionReportSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
 
   // Initial load effect
   useEffect(() => {
@@ -43,8 +57,8 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams);
-    localStorage.setItem("totalTransactionSearchParams", newSearchParams);
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "category"));
+    localStorage.setItem("totalTicketNotGeneratedTransactionReportSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "category"));
 
     const payload = {
       startDate: values.startDate,

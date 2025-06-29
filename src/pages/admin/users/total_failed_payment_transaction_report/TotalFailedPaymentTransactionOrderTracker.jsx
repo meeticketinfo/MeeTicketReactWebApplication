@@ -26,7 +26,7 @@ const TotalFailedPaymentTransactionOrderTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const totalPaymentTransactionSearchParams = localStorage.getItem("totalPaymentTransactionSearchParams");
+  const totalFailedTransactionReportSearchParams = localStorage.getItem("totalFailedTransactionReportSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
@@ -126,7 +126,7 @@ const TotalFailedPaymentTransactionOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/total-payment-transaction-report?${totalPaymentTransactionSearchParams}`}
+                to={`/total-failed-payment-transactions-report?${totalFailedTransactionReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back

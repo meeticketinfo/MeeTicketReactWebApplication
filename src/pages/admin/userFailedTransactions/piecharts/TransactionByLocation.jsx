@@ -81,7 +81,7 @@ const TransactionByLocation = ({ data, title, angleKey, calloutLabelKey, filters
               setIsTotalTransactionPage(false)
               localStorage.setItem(
                 "transactionPayload",
-                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed", resultMsg: "", departmentId: "", categoryId: "" })
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", status: "Failed", departmentId: "", categoryId: "" })
               )
             }}
           >

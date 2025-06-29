@@ -72,7 +72,6 @@ const TotalFailedTransactionsChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
   const redirectionLink = (item) => {
-    localStorage.setItem("totalFailedTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.subCategory}`);
     return `/total-failed-payment-transactions-report?${searchParams.toString()}&subCategory=${item.subCategory}`
   }
 
@@ -119,6 +118,9 @@ const TotalFailedTransactionsChart = ({
                         <Link
                           to={redirectionLink(item)}
                           className="text-[#000] hover:underline text-xs"
+                          onClick={() => {
+                            localStorage.setItem("totalFailedTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.subCategory}`);
+                          }}
                         >
                           {item.subCategory}
                         </Link>
@@ -128,6 +130,9 @@ const TotalFailedTransactionsChart = ({
                       <Link
                         to={redirectionLink(item)}
                         className="text-[#4A90E2] font-semibold hover:underline text-sm"
+                        onClick={() => {
+                          localStorage.setItem("totalFailedTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.subCategory}`);
+                        }}
                       >
                         {item.subCategoryCount}
                       </Link>

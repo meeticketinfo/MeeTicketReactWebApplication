@@ -8,20 +8,33 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 
-const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
+const TotalTicketNotGeneratedPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalTicketNotGeneratedTransactionSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionSearchParams");
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
+  const { isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult } = userFailureTransaction();
 
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
     fetchAllParks();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.toString()) {
+      const newSearchParams = new URLSearchParams();
+
+      for (const [key, value] of searchParams.entries()) {
+        if (value) {
+          newSearchParams.set(key, cleanString(value, ":", "_"));
+        }
+      }
+      localStorage.setItem("totalTicketNotGeneratedTransactionReportSearchParams", newSearchParams.toString());
+    }
+  }, [searchParams]);
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -44,8 +57,12 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
-    localStorage.setItem("totalPaymentTransactionSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    setSearchParams(newSearchParams +
+      "&category=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "category")
+      + "&subCategory=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "subCategory"));
+    localStorage.setItem("totalTicketNotGeneratedTransactionReportSearchParams", newSearchParams.toString()
+      + "&category=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "category")
+      + "&subCategory=" + getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "subCategory"));
 
     fetchPaymentTransactionDetailsByStatusResult({
       startDate: values.startDate,
@@ -55,7 +72,8 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
       bookingSource: values.bookingSource,
-      status: getValueFromQuery(totalTransactionSearchParams, "category") || "",
+      status: getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "category") || "",
+      subCategory: getValueFromQuery(totalTicketNotGeneratedTransactionSearchParams, "subCategory") || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -165,61 +183,61 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
               />
             </div>
             {/* location category */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Location Category
-                </label>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Location Category
+              </label>
 
-                <Select
-                  name="entityId"
-                  value={
-                    allEntityTypes
-                      ?.filter((entity) => entity.isActive)
-                      .map((entity) => ({
-                        value: entity.entityTypeId,
-                        label: entity.entityTypeName,
-                      }))
-                      .find((option) => option.value === values.entityId) ||
-                    null
-                  }
-                  options={allEntityTypes
+              <Select
+                name="entityId"
+                value={
+                  allEntityTypes
                     ?.filter((entity) => entity.isActive)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
-                    }))}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption?.value || "";
-                    setFieldValue("entityId", value);
-                  }}
-                  isClearable
-                  placeholder="Location Category"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
+                    }))
+                    .find((option) => option.value === values.entityId) ||
+                  null
+                }
+                options={allEntityTypes
+                  ?.filter((entity) => entity.isActive)
+                  .map((entity) => ({
+                    value: entity.entityTypeId,
+                    label: entity.entityTypeName,
+                  }))}
+                onChange={(selectedOption) => {
+                  const value = selectedOption?.value || "";
+                  setFieldValue("entityId", value);
+                }}
+                isClearable
+                placeholder="Location Category"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
 
-                    menu: (base) => ({
-                      ...base,
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#6D7072",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>
+                  menu: (base) => ({
+                    ...base,
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
             {/* location */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -336,4 +354,4 @@ const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
   );
 };
 
-export default TotalPaymentTransactionReportForm;
+export default TotalTicketNotGeneratedPaymentTransactionReportForm;
