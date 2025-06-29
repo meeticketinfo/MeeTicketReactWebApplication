@@ -47,7 +47,7 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
     phoneNumber: searchParams.get("phoneNumber") || "",
     bookingSource: searchParams.get("bookingSource") || "",
     PaymentMode:searchParams.get("PaymentMode") || "",
-    refundStatus: searchParams.get("RefundStatus") || "",
+    refundStatus: (searchParams.get("RefundStatus") !== "null" && searchParams.get("RefundStatus")) || "",
   };
 
   const onSubmit = (values) => {
@@ -57,7 +57,7 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    // setSearchParams(newSearchParams + "&RefundStatus=" + getValueFromQuery(refundTransactionSearchParams, "RefundStatus"));
+    setSearchParams(newSearchParams );
 
     fetchRefundTransactionsReport({
       fromDate: values.fromDate,

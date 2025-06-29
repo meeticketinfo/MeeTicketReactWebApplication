@@ -180,7 +180,7 @@ const RefundTransactionsReport = () => {
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
-      refundStatus: searchParams.get("RefundStatus") || "",
+      refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
       modeOfTransaction: searchParams.get("bookingSource") || "",
       paymentMode: searchParams.get("PaymentMode") || "",
