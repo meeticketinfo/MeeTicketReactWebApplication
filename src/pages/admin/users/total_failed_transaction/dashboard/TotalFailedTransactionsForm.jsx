@@ -1,25 +1,29 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
 
-const TotalTransactionsForm = () => {
+const TotalFailedTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
-  const {
-    fetchPaymentTransactionSummaryPieChartData,
-  } = useTransactionsStore();
+  const { fetchPaymentFailedTransactionSummaryPieChartData } = useTransactionsStore();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("subCategory");
+    setSearchParams(newSearchParams);
+  }, [searchParams]);
 
   // Initial load effect
   useEffect(() => {
@@ -27,13 +31,6 @@ const TotalTransactionsForm = () => {
     fetchAllDepartmentTypes();
     fetchAllParks();
   }, []);
-  
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete("category");
-    newSearchParams.delete("subCategory");
-    setSearchParams(newSearchParams);
-  }, [searchParams]);
 
   const initialValues =  {
     startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
@@ -52,8 +49,8 @@ const TotalTransactionsForm = () => {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams);
-    localStorage.setItem("totalTransactionSearchParams", newSearchParams);
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    localStorage.setItem("totalFailedTransactionSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
 
     const payload = {
       startDate: values.startDate,
@@ -64,7 +61,7 @@ const TotalTransactionsForm = () => {
       phoneNumber: values.phoneNumber,
     };
 
-    fetchPaymentTransactionSummaryPieChartData(payload);
+    fetchPaymentFailedTransactionSummaryPieChartData(payload);
   };
 
   const resetForm = (setValues) => {
@@ -76,13 +73,13 @@ const TotalTransactionsForm = () => {
       departmentId: "",
       phoneNumber: "",
     };
+    const newSearchParams = new URLSearchParams();
 
     // Clear URL search params
-    setSearchParams(new URLSearchParams());
-    
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+
     setValues(payload);
-    fetchPaymentTransactionSummaryPieChartData(payload);
-    localStorage.setItem("totalTransactionSearchParams", "");
+    fetchPaymentFailedTransactionSummaryPieChartData(payload);
   };
 
   return (
@@ -354,4 +351,4 @@ const TotalTransactionsForm = () => {
   );
 };
 
-export default TotalTransactionsForm;
+export default TotalFailedTransactionsForm;

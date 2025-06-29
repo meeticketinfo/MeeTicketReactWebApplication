@@ -120,3 +120,18 @@ export const getDateRange = (rangeType) => {
     toDate: getFormattedDate(toDate),
   };
 };
+
+export const formatDateTime = (dateTimeString) => {
+  const date = new Date(dateTimeString);
+  const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+  const year = date.getFullYear(); // Get year
+  const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  return `${formattedDate} ${formattedTime}`;
+};

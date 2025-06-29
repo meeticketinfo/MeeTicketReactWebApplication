@@ -245,7 +245,7 @@ export const API_ENDPOINTS = {
       GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetParkRefundInnerReport`,
     },
     USER_TRANSACTIONS:{
-      GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatusResult`,
+      GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatus_V2Result`,
     },
     FAILED_TRANSACTIONS:{
       GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
@@ -292,7 +292,10 @@ export const API_ENDPOINTS = {
     GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
     GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
     GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
-    GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetailResult`,
-     INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
+    GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetail_V3`,
+    GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    
+    INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
   },
 };

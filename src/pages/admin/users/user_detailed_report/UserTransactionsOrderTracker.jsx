@@ -6,12 +6,49 @@ import {
   formatToCurrency,
 } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
+import { useBookingsStore } from "../../../../store/masters/bookingsStore";
+import { formatDateTime } from "../../../../utils/Helper";
+
+const SimpleModal = ({ open, onClose, children }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
+        >×</button>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const UserTransactionsOrderTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, parkName, date, amount } = location.state || {};
+  const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
+  const { isFetchCurrentBookingDetailsLoading, fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userDetailedReportSearchParams = localStorage.getItem("userDetailedReportSearchParams");
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState([]);
+  const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
+
+  const fetchQRsForBooking = async (bookingId) => {
+    try {
+      const result = await fetchCurrentBookingDetailsByBookingId(bookingId);
+      if (result && result.data && result.data.status === 200) {
+        setBookingDetails(result.data.data.data.bookingDetails);
+        setBookingDetailsResponse(result.data.data.data);
+        setIsModalOpen(true);
+      } else {
+        toast.error("Unexpected response from the server.");
+      }
+    } catch (xhr) {
+      handleApiError(xhr);
+    }
+  };
+
   const {
     TransactionTrackingStatusByOrderIdData,
     isFetchTransactionTrackingStatusByOrderId,
@@ -31,19 +68,8 @@ const UserTransactionsOrderTracker = () => {
       headerName: "Request Time Stamp",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
+        if (!params.value) return " ";
+        return formatDateTime(params.value);
       },
     },
     {
@@ -52,29 +78,25 @@ const UserTransactionsOrderTracker = () => {
       headerName: "Response Time Stamp",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
+        if (!params.value) return " ";
+        return formatDateTime(params.value);
       },
     },
     {
       field: "transactionStatus",
-      maxWidth: "180",
+      flex: 1,
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
-        : params.value == "INPROCESS" ? "Deep Link Status" : 
-        "Payment Status Check"
+        : params.value == "INPROCESS" ? "Deep Link Status"
+          : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check",
+      cellRenderer: (params) => (
+        <span title={params.value}>
+          {params.value == "INITIATE" ? "Request Sent"
+            : params.value == "INPROCESS" ? "Deep Link Status"
+              : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check"}
+        </span>
+      ),
     },
     {
       field: "resultMsg",
@@ -152,6 +174,20 @@ const UserTransactionsOrderTracker = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
             </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {bookingId || 'N/A'}
+                {bookingId && bookingId != "Not Generated" && (
+                  <button
+                    className="ml-2 text-blue-600 underline"
+                    onClick={() => fetchQRsForBooking(bookingId)}
+                  >
+                    View Ticket Details
+                  </button>
+                )}
+              </p>
+            </div>
           </div>
 
           <div>
@@ -164,6 +200,37 @@ const UserTransactionsOrderTracker = () => {
           </div>
         </div>
       </AdminLayout>
+      <SimpleModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        {bookingDetailsResponse && (
+          <div className="text-center max-h-[500px] overflow-y-auto">
+            <img
+              src={`data:image/png;base64,${bookingDetailsResponse.binaryQRCode}`}
+              alt="Booking QR"
+              className="w-[250px] mx-auto"
+            />
+            <div className="mt-2 text-left">
+              <b>Booking Date</b>: {bookingDetailsResponse.bookingDate}<br />
+              <b>Booking ID</b>: {bookingDetailsResponse.id}
+            </div>
+            <div className="mt-2 text-left">
+              {bookingDetails.map((item, idx) => (
+                <>
+                  <div key={idx} className="mb-2.5">
+                    <b>Facility</b>: {item.facilityName}<br />
+                    <b>Ticket Type</b>: {item.serviceVariantName}<br />
+                    <b>Qty</b>: {item.quantity}<br />
+                    <b>Total</b>: ₹{item.totalAmount.toFixed(2)}
+                  </div>
+                  {idx !== bookingDetails.length - 1 && <hr className="my-2" />}
+                </>
+              ))}
+              <div className="font-bold bg-gray-200 p-1.5">
+                Grand Total: ₹{bookingDetailsResponse.totalAmount.toFixed(2)}
+              </div>
+            </div>
+          </div>
+        )}
+      </SimpleModal>
     </>
   );
 };

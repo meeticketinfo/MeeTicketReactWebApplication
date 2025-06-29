@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import {
-  formatToCurrency,
-} from "../../../../utils/TypographyHelper";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import TotalPaymentTransactionReportForm from "./TotalPaymentTransactionReportForm";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
-import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
+import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 
 const TotalPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
@@ -45,17 +42,7 @@ const TotalPaymentTransactionReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
+        return formatDateTime(params.value);
       },
     },
     {
@@ -73,7 +60,8 @@ const TotalPaymentTransactionReport = () => {
             mobileNumber: params.data.mobileNumber,
             parkName: params.data.locationName,
             status: params.data.transactionStatus,
-            amount: params.data.amount
+            amount: params.data.amount,
+            bookingId: params.data.bookingId
           }}
         >
           View Track Order
@@ -177,12 +165,13 @@ const TotalPaymentTransactionReport = () => {
 
   const loadPaymentTransactionDetailsByStatusResult = () => {
     fetchPaymentTransactionDetailsByStatusResult({
-      startDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-      endDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+      startDate: cleanString(searchParams.get("startDate"), "_", ":") || fromDate,
+      endDate: cleanString(searchParams.get("endDate"), "_", ":") || toDate,
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
       status: searchParams.get("category") || "",
+      subCategory: searchParams.get("subCategory") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
@@ -193,6 +182,26 @@ const TotalPaymentTransactionReport = () => {
     loadPaymentTransactionDetailsByStatusResult();
   }, [currentPage, PAGE_LIMIT]);
 
+  const backLink = () => {
+    if (searchParams.get("subCategory") === "PaymentSuccessOnTime") {
+      return `/ticket-not-generated-transactions-dashboard?${totalTransactionSearchParams}`
+    }
+    if (searchParams.get("subCategory")) {
+      return `/failed-transactions-dashboard?${searchParams.toString()}&category=${searchParams.get("subCategory")}`
+    } 
+    return `/total-transactions-dashboard?${totalTransactionSearchParams}`
+  }
+
+  const title = () => {
+    if (searchParams.get("subCategory")) {
+      return "Failed Transactions"
+    }
+    return searchParams.get("category") == "Success" ? "Success Transactions" 
+      : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
+      : searchParams.get("category") == "FailedFromGateway" ? "Failed Transactions"
+      : "Total Transactions"
+  }
+
   return (
     <>
       <AdminLayout>
@@ -200,14 +209,12 @@ const TotalPaymentTransactionReport = () => {
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                {searchParams.get("category") == "Success" ? "Success Transactions" 
-                  : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
-                  : "Failed Transactions"}
+                {title()}
               </h1>
             </div>
             <div className="">
               <Link
-                to={`/total-transactions-dashboard?${totalTransactionSearchParams}`}
+                to={backLink()}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back

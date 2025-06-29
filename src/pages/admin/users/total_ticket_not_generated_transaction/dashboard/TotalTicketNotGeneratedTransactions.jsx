@@ -1,20 +1,21 @@
 import React, { useEffect } from "react";
 import { superballs } from "ldrs";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
-import TotalTransactionsChart from "../charts/TotalTransactionsChart";
-import TotalTransactionsForm from "./TotalTransactionsForm";
+import TotalTicketNotGeneratedTransactionsChart from "../charts/TotalTicketNotGeneratedTransactionsChart";
+import TotalTicketNotGeneratedTransactionsForm from "./TotalTicketNotGeneratedTransactionsForm";
 import { useSearchParams } from "react-router-dom";
 
-function TotalTransactions() {
+function TotalTicketNotGeneratedTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
 
   const {
-    PaymentTransactionSummaryPieChartData,
-    isPaymentTransactionSummaryPieChartLoading,
-    fetchPaymentTransactionSummaryPieChartData,
+    TicketNotGeneratedTransactionSummaryPieChartData,
+    isTicketNotGeneratedTransactionSummaryPieChartLoading,
+    fetchTicketNotGeneratedTransactionSummaryPieChartData,
   } = useTransactionsStore();
+  
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
@@ -27,13 +28,13 @@ function TotalTransactions() {
       departmentId: +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
     };
-    fetchPaymentTransactionSummaryPieChartData(payload);
+    fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   }, []);
 
   // overAll on submit
   const totalCount =
-    PaymentTransactionSummaryPieChartData?.reduce(
-      (sum, item) => sum + item.count,
+    TicketNotGeneratedTransactionSummaryPieChartData?.reduce(
+      (sum, item) => sum + item.subCategoryCount,
       0
     ) || 0;
 
@@ -41,7 +42,7 @@ function TotalTransactions() {
     <>
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-full ">
-          <TotalTransactionsForm/>
+          <TotalTicketNotGeneratedTransactionsForm/>
         </div>
 
         {/* Transactions by reason chart */}
@@ -50,16 +51,16 @@ function TotalTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isPaymentTransactionSummaryPieChartLoading && (
+              {isTicketNotGeneratedTransactionSummaryPieChartLoading && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
-              <TotalTransactionsChart
-                data={totalCount !== 0 ? PaymentTransactionSummaryPieChartData : []}
-                title="Total Transactions"
-                angleKey="count"
-                calloutLabelKey="paymentCategory"
+              <TotalTicketNotGeneratedTransactionsChart
+                data={totalCount !== 0 ? TicketNotGeneratedTransactionSummaryPieChartData : []}
+                title="Ticket Not Generated Transactions"
+                angleKey="subCategoryCount"
+                calloutLabelKey="subCategory"
               />
             </div>
           </div>
@@ -69,4 +70,4 @@ function TotalTransactions() {
   );
 }
 
-export default TotalTransactions;
+export default TotalTicketNotGeneratedTransactions;

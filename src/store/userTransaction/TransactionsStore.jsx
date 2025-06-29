@@ -34,6 +34,14 @@ export const useTransactionsStore = create((set) => ({
   PaymentTransactionSummaryPieChartData: null,
   isPaymentTransactionSummaryPieChartLoading: false,
 
+  // Get Payment Failed Transaction Summary Pie Chart Data
+  PaymentFailedTransactionSummaryPieChartData: null,
+  isPaymentFailedTransactionSummaryPieChartLoading: false,
+
+  // Get Ticket Not Generated Transaction Summary Pie Chart Data
+  TicketNotGeneratedTransactionSummaryPieChartData: null,
+  isTicketNotGeneratedTransactionSummaryPieChartLoading: false,
+
   totalTransactionSearchParams: {},
   
   setTotalTransactionSearchParams: (params) => set({ totalTransactionSearchParams: params }),
@@ -188,6 +196,42 @@ export const useTransactionsStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isPaymentTransactionSummaryPieChartLoading: false });
+    }
+  },
+
+  fetchPaymentFailedTransactionSummaryPieChartData: async (queryParams) => {
+    const queryString = new URLSearchParams(queryParams).toString();
+    set({ isPaymentFailedTransactionSummaryPieChartLoading: true });
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART}?${queryString}`
+      );
+
+      set({
+        PaymentFailedTransactionSummaryPieChartData: response.data,
+        isPaymentFailedTransactionSummaryPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isPaymentFailedTransactionSummaryPieChartLoading: false });
+    }
+  },
+
+  fetchTicketNotGeneratedTransactionSummaryPieChartData: async (queryParams) => {
+    const queryString = new URLSearchParams(queryParams).toString();
+    set({ isTicketNotGeneratedTransactionSummaryPieChartLoading: true });
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART}?${queryString}`
+      );
+
+      set({
+        TicketNotGeneratedTransactionSummaryPieChartData: response.data,
+        isTicketNotGeneratedTransactionSummaryPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isTicketNotGeneratedTransactionSummaryPieChartLoading: false });
     }
   },
 }));

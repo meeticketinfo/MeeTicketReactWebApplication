@@ -1,22 +1,20 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { useEffect, useState } from "react";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
 
-const TotalTransactionsForm = () => {
+const TotalTicketNotGeneratedTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
-  const {
-    fetchPaymentTransactionSummaryPieChartData,
-  } = useTransactionsStore();
+  const { fetchTicketNotGeneratedTransactionSummaryPieChartData} = useTransactionsStore();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -28,13 +26,6 @@ const TotalTransactionsForm = () => {
     fetchAllParks();
   }, []);
   
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete("category");
-    newSearchParams.delete("subCategory");
-    setSearchParams(newSearchParams);
-  }, [searchParams]);
-
   const initialValues =  {
     startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
     endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
@@ -64,7 +55,7 @@ const TotalTransactionsForm = () => {
       phoneNumber: values.phoneNumber,
     };
 
-    fetchPaymentTransactionSummaryPieChartData(payload);
+    fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   };
 
   const resetForm = (setValues) => {
@@ -79,10 +70,9 @@ const TotalTransactionsForm = () => {
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-    
+
     setValues(payload);
-    fetchPaymentTransactionSummaryPieChartData(payload);
-    localStorage.setItem("totalTransactionSearchParams", "");
+    fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   };
 
   return (
@@ -354,4 +344,4 @@ const TotalTransactionsForm = () => {
   );
 };
 
-export default TotalTransactionsForm;
+export default TotalTicketNotGeneratedTransactionsForm;

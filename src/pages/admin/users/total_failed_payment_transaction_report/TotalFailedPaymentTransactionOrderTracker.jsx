@@ -22,7 +22,7 @@ const SimpleModal = ({ open, onClose, children }) => {
   );
 };
 
-const TotalPaymentTransactionOrderTracker = () => {
+const TotalFailedPaymentTransactionOrderTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
@@ -219,4 +219,4 @@ const TotalPaymentTransactionOrderTracker = () => {
   );
 };
 
-export default TotalPaymentTransactionOrderTracker;
+export default TotalFailedPaymentTransactionOrderTracker;

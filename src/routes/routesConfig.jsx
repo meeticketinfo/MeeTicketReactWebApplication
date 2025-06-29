@@ -78,6 +78,11 @@ import MainRefundTransactions from "../pages/admin/users/refund_transactions/das
 import RefundTransactionsReport from "../pages/admin/users/refund_transactions_report/RefundTransactionsReport";
 import UserTransactionsOrderTracker from "../pages/admin/users/user_detailed_report/UserTransactionsOrderTracker";
 import TotalPaymentTransactionOrderTracker from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionOrderTracker";
+import MainTotalFailedTransactions from "../pages/admin/users/total_failed_transaction/dashboard/MainTotalFailedTransactions";
+import MainTotalTicketNotGeneratedTransactions from "../pages/admin/users/total_ticket_not_generated_transaction/dashboard/MainTotalTicketNotGeneratedTransactions";
+import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionReport";
+import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
+import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
 
 export const routes = [
   {
@@ -203,6 +208,26 @@ export const routes = [
   {
     path: "/total-payment-transaction-report",
     element: <ProtectedRoute element={<TotalPaymentTransactionReport />} />,
+  },
+  {
+    path: "/failed-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedTransactions />} />,
+  },
+  {
+    path: "/total-failed-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedPaymentTransactionOrderTracker />} />,
+  },
+  {
+    path: "/total-failed-payment-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedPaymentTransactionReport />} />,
+  },
+  {
+    path: "/ticket-not-generated-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalTicketNotGeneratedTransactions />} />,
+  },
+  {
+    path: "/total-ticket-not-generated-payment-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalTicketNotGeneratedPaymentTransactionOrderTracker />} />,
   },
   {
     path: "/user-report",

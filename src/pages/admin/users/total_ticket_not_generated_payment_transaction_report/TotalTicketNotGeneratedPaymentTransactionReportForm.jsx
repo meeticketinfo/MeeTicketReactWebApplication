@@ -8,14 +8,14 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 
-const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
+const TotalPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const { isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult } = userFailureTransaction();
+  const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -165,61 +165,61 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
               />
             </div>
             {/* location category */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Location Category
-              </label>
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Location Category
+                </label>
 
-              <Select
-                name="entityId"
-                value={
-                  allEntityTypes
+                <Select
+                  name="entityId"
+                  value={
+                    allEntityTypes
+                      ?.filter((entity) => entity.isActive)
+                      .map((entity) => ({
+                        value: entity.entityTypeId,
+                        label: entity.entityTypeName,
+                      }))
+                      .find((option) => option.value === values.entityId) ||
+                    null
+                  }
+                  options={allEntityTypes
                     ?.filter((entity) => entity.isActive)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
-                    }))
-                    .find((option) => option.value === values.entityId) ||
-                  null
-                }
-                options={allEntityTypes
-                  ?.filter((entity) => entity.isActive)
-                  .map((entity) => ({
-                    value: entity.entityTypeId,
-                    label: entity.entityTypeName,
-                  }))}
-                onChange={(selectedOption) => {
-                  const value = selectedOption?.value || "";
-                  setFieldValue("entityId", value);
-                }}
-                isClearable
-                placeholder="Location Category"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
+                    }))}
+                  onChange={(selectedOption) => {
+                    const value = selectedOption?.value || "";
+                    setFieldValue("entityId", value);
+                  }}
+                  isClearable
+                  placeholder="Location Category"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
 
-                  menu: (base) => ({
-                    ...base,
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#6D7072",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
+                    menu: (base) => ({
+                      ...base,
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#6D7072",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
             {/* location */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
