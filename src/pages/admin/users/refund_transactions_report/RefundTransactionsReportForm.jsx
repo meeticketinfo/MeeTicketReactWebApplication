@@ -250,7 +250,7 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
                     .find((option) => option.value === values.parkId) || null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive)
+                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,

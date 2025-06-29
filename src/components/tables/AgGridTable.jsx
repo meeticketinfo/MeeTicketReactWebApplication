@@ -204,7 +204,7 @@ const AgGridTable = ({
       </div>
       {(IsReactPaginate && !isFetchLoading && rowData?.length > 0) && <div className="mt-4 flex justify-end items-center gap-4">
         <div>
-          <span className="">Page Size:</span>
+          <span className="">Page Size: &nbsp;</span>
           <select className=" py-1 border border-gray-300 rounded-lg"
             onChange={(e) => { 
               setPageLimit(e.target.value) 
@@ -226,11 +226,11 @@ const AgGridTable = ({
           pageRangeDisplayed={2}
           onPageChange={handlePageClick}
           containerClassName={"pagination border px-2 py-1 rounded-lg flex gap-2"}
-          activeClassName={"text-white bg-blue-v2 px-3 py-1 rounded "}
-          pageClassName={"border px-3 py-1 rounded hover:bg-blue-v2 hover:text-white"}
-          previousClassName={"border px-3 py-1 ml-2 rounded hover:bg-blue-v2"}
-          nextClassName={"border px-3 py-1 rounded hover:bg-blue-v2"}
-          breakClassName={"px-2"}
+          activeLinkClassName={"text-white bg-blue-v2 px-3 py-1 rounded inline-block"}
+          breakLinkClassName={"border px-3 py-1 rounded hover:bg-blue-v2 inline-block hover:text-white"}
+          pageLinkClassName={"border px-3 py-1 rounded hover:bg-blue-v2 hover:text-white inline-block"}
+          previousLinkClassName={"border px-3 py-1 ml-2 rounded hover:bg-blue-v2 inline-block hover:text-white"}
+          nextLinkClassName={"border px-3 py-1 rounded hover:bg-blue-v2 inline-block hover:text-white"}
           forcePage={currentPage}
         />
       </div>}

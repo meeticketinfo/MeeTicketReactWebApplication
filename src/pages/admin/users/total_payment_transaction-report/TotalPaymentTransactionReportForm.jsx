@@ -8,7 +8,7 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 
-const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
+const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
 
@@ -72,6 +72,7 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
+    SetcurrentPage(1);
   };
 
   return (
@@ -252,7 +253,7 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize }) => {
                   null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive)
+                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,

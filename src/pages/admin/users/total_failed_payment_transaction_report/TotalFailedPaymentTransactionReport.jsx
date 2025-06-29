@@ -216,7 +216,7 @@ const TotalFailedPaymentTransactionReport = () => {
             </div>
           </div>
           <div>
-            <TotalFailedPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} />
+            <TotalFailedPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
               rowData={paymentTransactionDetailsByStatusResult}
@@ -231,6 +231,7 @@ const TotalFailedPaymentTransactionReport = () => {
               showTotalCount={true}
               totalCount={paymentTransactionDetailsByStatusResult[0]?.totalCount}
               tableHeight={paymentTransactionDetailsByStatusResult.length > 10 ? 550 : 300}
+              SetcurrentPage={setCurrentPage}
             />
           </div>
         </div>

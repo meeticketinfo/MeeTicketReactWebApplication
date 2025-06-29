@@ -216,6 +216,7 @@ const UserDetailedReport = () => {
               handlePageClick={handlePageClick}
               currentPage={currentPage}
               totalCount={userDetailedReport?.[0]?.totalCount}
+              SetcurrentPage={setCurrentPage}
             />
           </div>
         </div>

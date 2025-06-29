@@ -8,7 +8,7 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 
-const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
+const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
 
@@ -72,6 +72,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
+    SetcurrentPage(1);
   };
 
   return (
@@ -252,7 +253,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize}) => {
                   null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive)
+                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,
