@@ -44,11 +44,22 @@ const RefundTransactionsReport = () => {
     },
 
     {
-      field: "dateandTimeofTransaction",
+      field: "createdDate",
       headerName: "Date of Transaction",
-      maxWidth: "160",
+      maxWidth: "180",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
     },
     {
       headerName: "Actions",
@@ -90,7 +101,7 @@ const RefundTransactionsReport = () => {
         params.value || params.value === " " ? params.value : "N/A",
     },
     {
-      field: "mobileNumberofuser",
+      field: "mobileNumber",
       minWidth: 100,
       headerName: "Mobile Number of user",
       headerClass: "text-blue-v2",
@@ -126,18 +137,18 @@ const RefundTransactionsReport = () => {
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "totalConfirmedTicketFare",
+      field: "noOfTickets",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "modeofTransaction",
+      field: "modeOfTransaction",
       headerName: "Mode of Transaction",
       maxWidth: "170",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "0",
+      valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "paymentMode",
@@ -169,7 +180,7 @@ const RefundTransactionsReport = () => {
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
-      refundStatus: searchParams.get("RefundStatus") || "",
+      refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
       modeOfTransaction: searchParams.get("bookingSource") || "",
       paymentMode: searchParams.get("PaymentMode") || "",
