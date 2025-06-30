@@ -77,7 +77,7 @@ const TotalTicketNotGeneratedPaymentTransactionReportForm = ({ pageNumber, pageS
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    SetcurrentPage(1);
+    SetcurrentPage(0);
   };
 
   return (

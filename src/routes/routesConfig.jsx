@@ -84,6 +84,9 @@ import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_fail
 import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionReport from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionReport";
+import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_failed_payment_gateway_transaction/dashboard/MainTotalFailedGatewayTransactions";
+import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
+import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
 
 export const routes = [
   {
@@ -221,6 +224,18 @@ export const routes = [
   {
     path: "/total-failed-payment-transactions-report",
     element: <ProtectedRoute element={<TotalFailedPaymentTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />,
   },
   {
     path: "/ticket-not-generated-transactions-dashboard",

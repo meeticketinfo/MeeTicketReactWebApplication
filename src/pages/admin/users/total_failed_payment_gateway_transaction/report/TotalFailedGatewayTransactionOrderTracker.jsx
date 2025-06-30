@@ -1,24 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../components/tables/AgGridTable";
-import AdminLayout from "../../../../layouts/AdminLayout";
-import { formatToCurrency } from "../../../../utils/TypographyHelper";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import { useBookingsStore } from "../../../../store/masters/bookingsStore";
-import { formatDateTime } from "../../../../utils/Helper";
-import Breadcrumb from "../../../../components/Breadcrumb";
+import AgGridTable from "../../../../../components/tables/AgGridTable";
+import AdminLayout from "../../../../../layouts/AdminLayout";
+import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
+import { formatDateTime } from "../../../../../utils/Helper";
+import Breadcrumb from "../../../../../components/Breadcrumb";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
   return (
-    <div 
-      className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50"
-      onClick={onClose}
-    >
-      <div 
-        className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
@@ -29,11 +23,13 @@ const SimpleModal = ({ open, onClose, children }) => {
   );
 };
 
-const TotalPaymentTransactionOrderTracker = () => {
+const TotalFailedGatewayTransactionOrderTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const totalPaymentTransactionSearchParams = localStorage.getItem("totalPaymentTransactionSearchParams");
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalFailedGatewayTransactionSearchParams = localStorage.getItem("totalFailedGatewayTransactionSearchParams");
+  const totalFailedGatewayTransactionReportSearchParams = localStorage.getItem("totalFailedGatewayTransactionReportSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
@@ -124,11 +120,15 @@ const TotalPaymentTransactionOrderTracker = () => {
   const breadcrumbItems = [
     {
       label: 'Total Transactions Report',
-      // path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+    },
+    {
+      label: 'Total Failed (Payment Gateway)',
+      path: `/failed-gateway-transactions-dashboard?${totalFailedGatewayTransactionSearchParams}`
     },
     {
       label: backTitle,
-      path: `/total-payment-transaction-report?${totalPaymentTransactionSearchParams}`
+      path: `/failed-gateway-transactions-report?${totalFailedGatewayTransactionReportSearchParams}`
     },
     {
       label: 'Transaction Order Tracking Report',
@@ -149,7 +149,7 @@ const TotalPaymentTransactionOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/total-payment-transaction-report?${totalPaymentTransactionSearchParams}`}
+                to={`/failed-gateway-transactions-report?${totalFailedGatewayTransactionReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -242,4 +242,4 @@ const TotalPaymentTransactionOrderTracker = () => {
   );
 };
 
-export default TotalPaymentTransactionOrderTracker;
+export default TotalFailedGatewayTransactionOrderTracker;

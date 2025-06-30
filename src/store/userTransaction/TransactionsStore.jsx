@@ -42,6 +42,10 @@ export const useTransactionsStore = create((set) => ({
   TicketNotGeneratedTransactionSummaryPieChartData: null,
   isTicketNotGeneratedTransactionSummaryPieChartLoading: false,
 
+  // Get Payment Failed Gateway Transaction Summary Pie Chart Data
+  PaymentFailedGatewayTransactionSummaryPieChartData: null,
+  isPaymentFailedGatewayTransactionSummaryPieChartLoading: false,
+
   totalTransactionSearchParams: {},
   
   setTotalTransactionSearchParams: (params) => set({ totalTransactionSearchParams: params }),
@@ -232,6 +236,23 @@ export const useTransactionsStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isTicketNotGeneratedTransactionSummaryPieChartLoading: false });
+    }
+  },
+  fetchPaymentFailedGatewayTransactionSummaryPieChartData: async (queryParams) => {
+    const queryString = new URLSearchParams(queryParams).toString();
+    set({ isPaymentFailedGatewayTransactionSummaryPieChartLoading: true });
+   
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.FAILED_TRANSACTIONS.GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART}?${queryString}`
+      );
+
+      set({
+        PaymentFailedGatewayTransactionSummaryPieChartData: response.data,
+        isPaymentFailedGatewayTransactionSummaryPieChartLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isPaymentFailedGatewayTransactionSummaryPieChartLoading: false });
     }
   },
 }));

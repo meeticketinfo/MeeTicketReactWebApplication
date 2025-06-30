@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link, useSearchParams } from "react-router-dom";
-import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 
 
@@ -21,8 +20,7 @@ const RefundTransactionsChart = ({
   calloutLabelKey,
   // filters,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { setTotalTransactionSearchParams } = useTransactionsStore();
+  const [searchParams] = useSearchParams();
   
   const chartRef = useRef(null);
 
@@ -78,9 +76,9 @@ const RefundTransactionsChart = ({
   return (
     <div className="w-full mx-auto p-6">
       <div className="flex justify-between">
-        <h2 className="text-lg font-bold">Payment success & Ticket Not Generated</h2>
+        <h2 className="text-lg font-bold">Refund Transactions</h2>
         <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-4 py-3 shadow-sm">
-          <span className="text-lg text-[#404040] font-semibold">Total Transactions</span>
+          <span className="text-lg text-[#404040] font-semibold">Total Refund Transactions</span>
           <Link to={`/refund-transactions-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
             {totalCount}
           </Link>
@@ -104,7 +102,7 @@ const RefundTransactionsChart = ({
             <Link
               to={`/refund-transactions-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
-                setTotalTransactionSearchParams(`${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
+                localStorage.setItem("refundTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">

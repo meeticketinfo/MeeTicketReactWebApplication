@@ -6,6 +6,7 @@ import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import TotalPaymentTransactionReportForm from "./TotalPaymentTransactionReportForm";
 import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const TotalPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
@@ -24,6 +25,13 @@ const TotalPaymentTransactionReport = () => {
     isFetchPaymentTransactionDetailsByStatusResult,
     fetchPaymentTransactionDetailsByStatusResult
   } = userFailureTransaction();
+
+  const title = () => {
+    return searchParams.get("category") == "Success" ? "Success Transactions" 
+      : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
+      : searchParams.get("category") == "FailedFromGateway" ? "Failed Transactions"
+      : "Total Transactions"
+  }
 
   const columnDefs = [
     {
@@ -61,7 +69,8 @@ const TotalPaymentTransactionReport = () => {
             parkName: params.data.locationName,
             status: params.data.transactionStatus,
             amount: params.data.amount,
-            bookingId: params.data.bookingId
+            bookingId: params.data.bookingId,
+            backTitle: title()
           }}
         >
           View Track Order
@@ -183,29 +192,25 @@ const TotalPaymentTransactionReport = () => {
   }, [currentPage, PAGE_LIMIT]);
 
   const backLink = () => {
-    if (searchParams.get("subCategory") === "PaymentSuccessOnTime") {
-      return `/ticket-not-generated-transactions-dashboard?${totalTransactionSearchParams}`
-    }
-    if (searchParams.get("subCategory")) {
-      return `/failed-transactions-dashboard?${searchParams.toString()}&category=${searchParams.get("subCategory")}`
-    } 
     return `/total-transactions-dashboard?${totalTransactionSearchParams}`
   }
 
-  const title = () => {
-    if (searchParams.get("subCategory")) {
-      return "Failed Transactions"
-    }
-    return searchParams.get("category") == "Success" ? "Success Transactions" 
-      : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
-      : searchParams.get("category") == "FailedFromGateway" ? "Failed Transactions"
-      : "Total Transactions"
-  }
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: backLink()
+    },
+    {
+      label: title(),
+      isLast: true
+    },
+  ];
 
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">

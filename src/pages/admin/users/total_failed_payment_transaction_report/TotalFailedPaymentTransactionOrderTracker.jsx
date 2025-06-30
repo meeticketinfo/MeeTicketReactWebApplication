@@ -6,6 +6,7 @@ import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
@@ -24,8 +25,10 @@ const SimpleModal = ({ open, onClose, children }) => {
 
 const TotalFailedPaymentTransactionOrderTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
+  const { orderId, mobileNumber, parkName, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
   const totalFailedTransactionReportSearchParams = localStorage.getItem("totalFailedTransactionReportSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,10 +117,30 @@ const TotalFailedPaymentTransactionOrderTracker = () => {
     fetchTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+    },
+    {
+      label: 'Total Failed (Other Reasons)',
+      path: `/failed-transactions-dashboard?${totalFailedTransactionSearchParams}`
+    },
+    {
+      label: backTitle,
+      path: `/total-failed-payment-transactions-report?${totalFailedTransactionReportSearchParams}`
+    },
+    {
+      label: 'Transaction Order Tracking Report',
+      isLast: true
+    },
+  ];
+
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">

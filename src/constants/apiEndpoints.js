@@ -295,6 +295,7 @@ export const API_ENDPOINTS = {
     GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetail_V3`,
     GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDueToOtherReasons_SubCategoryReportResult`,
     GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureFromGateway_SubCategoryReportResult`,
     
     INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
   },

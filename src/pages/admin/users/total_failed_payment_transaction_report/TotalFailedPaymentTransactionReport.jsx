@@ -6,11 +6,13 @@ import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import TotalFailedPaymentTransactionReportForm from "./TotalFailedPaymentTransactionReportForm";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const TotalFailedPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
@@ -61,7 +63,8 @@ const TotalFailedPaymentTransactionReport = () => {
             parkName: params.data.locationName,
             status: params.data.transactionStatus,
             amount: params.data.amount,
-            bookingId: params.data.bookingId
+            bookingId: params.data.bookingId,
+            backTitle: searchParams.get("subCategory"),
           }}
         >
           View Track Order
@@ -186,24 +189,30 @@ const TotalFailedPaymentTransactionReport = () => {
       return `/failed-transactions-dashboard?${totalFailedTransactionSearchParams}`
   }
 
-  const title = () => {
-    if (searchParams.get("subCategory")) {
-      return "Failed Transactions"
-    }
-    return searchParams.get("category") == "Success" ? "Success Transactions" 
-      : searchParams.get("category") == "PaymentSuccessButTicketNotGenerated" ? "Ticket not Generated" 
-      : searchParams.get("category") == "FailedFromGateway" ? "Failed Transactions"
-      : "Total Transactions"
-  }
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+    },
+    {
+      label: 'Total Failed (Other Reasons)',
+      path: `/failed-transactions-dashboard?${totalFailedTransactionSearchParams}`
+    },
+    {
+      label: searchParams.get("subCategory") || "Total Failed (Other Reasons) Report",
+      isLast: true
+    },
+  ];
 
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                {title()}
+                Total Failed (Other Reasons) Report {searchParams.get("subCategory") ? `- ${searchParams.get("subCategory")}` : ""}
               </h1>
             </div>
             <div className="">

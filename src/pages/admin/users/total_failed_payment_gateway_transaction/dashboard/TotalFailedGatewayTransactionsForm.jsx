@@ -1,35 +1,27 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import {
-  cleanString,
-  getDateRange,
-  getEndOfCurrentDay,
-  getStartOfCurrentDay,
-} from "../../../../../utils/Helper";
+import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
-import { userReports } from "../../../../../store/userTransaction/UserReports";
 
-const TotalTransactionsForm = () => {
+const TotalFailedGatewayTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-
-  const { isFetchRefundTransactions, fetchRefundTransactions } = userReports();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
+  const { fetchPaymentFailedGatewayTransactionSummaryPieChartData } = useTransactionsStore();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  
+
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.delete("RefundStatus");
+    newSearchParams.delete("subCategory");
     setSearchParams(newSearchParams);
   }, [searchParams]);
 
@@ -40,58 +32,54 @@ const TotalTransactionsForm = () => {
     fetchAllParks();
   }, []);
 
-  const initialValues = {
-    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+  const initialValues =  {
+    startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
+    endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
     departmentId: +searchParams.get("departmentId") || "",
     entityId: +searchParams.get("entityId") || "",
     locationId: searchParams.get("locationId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
-    bookingSource:searchParams.get("bookingSource") || "",
-    PaymentMode:searchParams.get("PaymentMode") || "",
-  };
+  }  
 
   const overAllOnSubmit = (values) => {
     // Update URL search params with form values
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach((key) => {
+    Object.keys(values).forEach(key => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams);
-    localStorage.setItem("refundTransactionSearchParams", newSearchParams);
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
+    localStorage.setItem("totalFailedGatewayTransactionSearchParams", newSearchParams.toString() + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
 
     const payload = {
-      fromDate: values.fromDate,
-      toDate: values.toDate,
+      startDate: values.startDate,
+      endDate: values.endDate,
       locationId: values.locationId,
-      locationCategoryId: values.entityId,
+      categoryId: values.entityId,
       departmentId: values.departmentId,
       phoneNumber: values.phoneNumber,
-      modeOfTransaction:values.bookingSource,
-      paymentMode:values.PaymentMode
     };
 
-    fetchRefundTransactions(payload);
+    fetchPaymentFailedGatewayTransactionSummaryPieChartData(payload);
   };
 
   const resetForm = (setValues) => {
     const payload = {
-      fromDate: startOfDay,
-      toDate: endOfDay,
+      startDate: startOfDay,
+      endDate: endOfDay,
       locationId: "",
-      locationCategoryId: "",
+      categoryId: "",
       departmentId: "",
       phoneNumber: "",
     };
+    const newSearchParams = new URLSearchParams();
 
     // Clear URL search params
-    setSearchParams(new URLSearchParams());
+    setSearchParams(newSearchParams + "&category=" + getValueFromQuery(totalTransactionSearchParams, "category"));
 
-    localStorage.setItem("refundTransactionSearchParams", "");
     setValues(payload);
-    fetchRefundTransactions(payload);
+    fetchPaymentFailedGatewayTransactionSummaryPieChartData(payload);
   };
 
   return (
@@ -106,38 +94,38 @@ const TotalTransactionsForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
                 <label
-                  htmlFor="fromDate"
+                  htmlFor="startDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   From Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="fromDate"
+                  name="startDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const fromDateValue = e.target.value;
-                    setFieldValue("fromDate", fromDateValue);
-                    if (new Date(fromDateValue) > new Date(values.toDate)) {
-                      setFieldValue("toDate", fromDateValue);
+                    setFieldValue("startDate", fromDateValue);
+                    if (new Date(fromDateValue) > new Date(values.endDate)) {
+                      setFieldValue("endDate", fromDateValue);
                     }
                   }}
                 />
               </div>
               <div>
                 <label
-                  htmlFor="toDate"
+                  htmlFor="endDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   To Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="toDate"
+                  name="endDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const toDateValue = e.target.value;
-                    setFieldValue("toDate", toDateValue);
+                    setFieldValue("endDate", toDateValue);
                   }}
                 />
               </div>
@@ -156,8 +144,9 @@ const TotalTransactionsForm = () => {
                         value: dept.departmentId,
                         label: dept.departmentName,
                       }))
-                      .find((option) => option.value === values.departmentId) ||
-                    null
+                      .find(
+                        (option) => option.value === values.departmentId
+                      ) || null
                   }
                   options={allDepartmentTypes
                     ?.filter((dept) => dept.isActive)
@@ -166,7 +155,10 @@ const TotalTransactionsForm = () => {
                       label: dept.departmentName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("departmentId", selectedOption?.value || "");
+                    setFieldValue(
+                      "departmentId",
+                      selectedOption?.value || ""
+                    )
                   }}
                   isClearable
                   placeholder="Department"
@@ -221,7 +213,10 @@ const TotalTransactionsForm = () => {
                       label: entity.entityTypeName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("entityId", selectedOption?.value || "");
+                    setFieldValue(
+                      "entityId",
+                      selectedOption?.value || ""
+                    )
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -276,7 +271,10 @@ const TotalTransactionsForm = () => {
                       label: park.name,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("locationId", selectedOption?.value || "");
+                    setFieldValue(
+                      "locationId",
+                      selectedOption?.value || ""
+                    )
                   }}
                   isClearable
                   placeholder="Location"
@@ -326,62 +324,14 @@ const TotalTransactionsForm = () => {
                     }
                   }}
                   onChange={(e) => {
-                    setFieldValue("phoneNumber", e.target.value);
+                    setFieldValue("phoneNumber",e.target.value)
                   }}
                 />
               </div>
-
-              {/* mode of transaction */}
-
-              <div>
-                <label
-                  htmlFor="bookingSource"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Mode of Transaction
-                </label>
-                <Field
-                  as="select"
-                  name="bookingSource"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("bookingSource", e.target.value);
-                  }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="meeTicket">MeeTicketApp</option>
-                  <option value="counter">COUNTER</option>
-                </Field>
-              </div>
-              {/*Payment Mode */}
-               <div>
-                <label
-                  htmlFor="PaymentMode"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Payment Mode
-                </label>
-                <Field
-                  as="select"
-                  name="PaymentMode"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("PaymentMode", e.target.value);
-                  }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="upi">UPI</option>
-                  <option value="creditCard">Credit Card</option>
-                  <option value="debitCard">Debit Card</option>
-                  <option value="netBanking">Net Banking</option>
-                </Field>
-              </div>
-
               <div className="flex gap-2 items-end">
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  disabled={isFetchRefundTransactions}
                 >
                   Search
                 </button>
@@ -389,7 +339,6 @@ const TotalTransactionsForm = () => {
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
-                  disabled={isFetchRefundTransactions}
                 >
                   Reset
                 </button>
@@ -402,4 +351,4 @@ const TotalTransactionsForm = () => {
   );
 };
 
-export default TotalTransactionsForm;
+export default TotalFailedGatewayTransactionsForm;
