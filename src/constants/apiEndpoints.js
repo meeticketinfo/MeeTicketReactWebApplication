@@ -246,12 +246,12 @@ export const API_ENDPOINTS = {
       GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
       GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetParkRefundInnerReport`,
     },
-    USER_TRANSACTIONS:{
+    USER_TRANSACTIONS: {
       GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatus_V2Result`,
     },
-    FAILED_TRANSACTIONS:{
-      GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
-    }
+    FAILED_TRANSACTIONS: {
+      GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -298,8 +298,16 @@ export const API_ENDPOINTS = {
     GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetail_V3`,
     GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDueToOtherReasons_SubCategoryReportResult`,
     GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+
     GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureFromGateway_SubCategoryReportResult`,
     
     INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
+  },
+  METRO_TRANSACTIONS_REPORT: {
+    GET_METRO_TRANSACTIONS_BY_REASON: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentTotalTransactionSummary`,
+    GET_METRO_TOTAL_TRANSACTIONS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroPaymentTransactionInnerDetails`,
+    GET_OTHER_REASON_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_GATEWAY_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureFromGateway_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
   },
 };

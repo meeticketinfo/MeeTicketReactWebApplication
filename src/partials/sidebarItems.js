@@ -292,6 +292,12 @@ const sidebarItems = [
       //   icon: RiDashboard3Fill,
       //   path: "/summary-report",
       // },
+
+       {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/metro-total-transaction",
+      },
     ],
   },
   // griveance
