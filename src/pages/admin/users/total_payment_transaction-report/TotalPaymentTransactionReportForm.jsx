@@ -72,7 +72,7 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize, SetcurrentPag
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    SetcurrentPage(1);
+    SetcurrentPage(0);
   };
 
   return (

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 // import AdminLayout from "../../../layouts/AdminLayout";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import TotalFailedTransactions from "./TotalFailedTransactions";
+import TotalFailedGatewayTransactions from "./TotalFailedGatewayTransactions";
 import { Link } from "react-router-dom";
 import Breadcrumb from "../../../../../components/Breadcrumb";
+import { IoHomeOutline } from "react-icons/io5";
 
-const MainTotalFailedTransactions = () => {
+const MainTotalFailedGatewayTransactions = () => {
   const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   
   // Custom breadcrumb items for this specific page
@@ -15,7 +16,7 @@ const MainTotalFailedTransactions = () => {
       path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
     },
     {
-      label: 'Total Failed (Other Reasons)',
+      label: 'Failed (Payment Gateway)',  
       isLast: true
     }
   ];
@@ -34,7 +35,7 @@ const MainTotalFailedTransactions = () => {
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total Failed (Other Reasons)
+              Failed (Payment Gateway)
             </h1>
           </div>
           <Link
@@ -44,10 +45,10 @@ const MainTotalFailedTransactions = () => {
             Back
           </Link>
         </div>
-        <TotalFailedTransactions />
+        <TotalFailedGatewayTransactions />
       </div>
     </AdminLayout>
   );
 };
 
-export default MainTotalFailedTransactions;
+export default MainTotalFailedGatewayTransactions;

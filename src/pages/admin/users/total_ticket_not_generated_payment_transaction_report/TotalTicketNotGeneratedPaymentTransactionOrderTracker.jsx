@@ -6,12 +6,19 @@ import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative">
+    <div 
+      className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
@@ -27,7 +34,8 @@ const TotalTicketNotGeneratedPaymentTransactionOrderTracker = () => {
   const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const totalTicketNotGeneratedTransactionReportSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionReportSearchParams");
-
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
+  const totalTicketNotGeneratedTransactionSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionSearchParams");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
@@ -114,10 +122,33 @@ const TotalTicketNotGeneratedPaymentTransactionOrderTracker = () => {
     fetchTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+    },
+    {
+      label: 'Ticket Not Generated Transactions',
+      path: `/ticket-not-generated-transactions-dashboard?${totalTicketNotGeneratedTransactionSearchParams}`
+    },
+    {
+      label: 'Ticket Not Generated Payment Transaction Report',
+      path: `/total-ticket-not-generated-payment-transaction-report?${totalTicketNotGeneratedTransactionReportSearchParams}`
+    },
+    {
+      label: 'Transaction Order Tracking Report', 
+      isLast: true
+    }
+  ];
+
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">

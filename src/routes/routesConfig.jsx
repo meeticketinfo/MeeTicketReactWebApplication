@@ -93,6 +93,9 @@ import MetroNotGenerated from "../pages/metro_transaction_reports/metro_total_tr
 import FailedOtherReasonReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/failed_other_reason/FailedOtherReasonReport";
 import MetroNotGeneratedReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_not_generated/MetroNotGeneratedReport";
 import MetroFailedGatewayReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_failed_gateway/MetroFailedGatewayReport";
+import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_failed_payment_gateway_transaction/dashboard/MainTotalFailedGatewayTransactions";
+import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
+import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
 
 export const routes = [
   {
@@ -237,6 +240,18 @@ export const routes = [
     element: (
       <ProtectedRoute element={<TotalFailedPaymentTransactionReport />} />
     ),
+  },
+  {
+    path: "/failed-gateway-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />,
   },
   {
     path: "/ticket-not-generated-transactions-dashboard",

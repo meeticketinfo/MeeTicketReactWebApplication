@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { superballs } from "ldrs";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import RefundTransactionsChart from "../charts/RefundTransactionsChart";
-import RefundTransactionsForm from "./RefundTransactionsForm";
+import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
-import { userReports } from "../../../../../store/userTransaction/UserReports";
+import TotalFailedGatewayTransactionsForm from "./TotalFailedGatewayTransactionsForm";
+import TotalFailedGatewayTransactionsChart from "../charts/TotalFailedGatewayTransactionsChart";
 
-function RefundTransactions() {
+
+function TotalFailedGatewayTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
 
   const {
-    refundTransactions,
-    isFetchRefundTransactions,
-    fetchRefundTransactions,
-  } = userReports();
-
+    PaymentFailedGatewayTransactionSummaryPieChartData,
+    isPaymentFailedGatewayTransactionSummaryPieChartLoading,
+    fetchPaymentFailedGatewayTransactionSummaryPieChartData,
+  } = useTransactionsStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
-    localStorage.removeItem("refundTransactionSearchParams");
     const payload = {
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+      startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
+      endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
       locationId: searchParams.get("locationId") || "",
-      locationCategoryId: +searchParams.get("entityId") || "",
+      categoryId: +searchParams.get("entityId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
-      modeOfTransaction:searchParams.get("bookingSource") || "",
-      paymentMode:searchParams.get("PaymentMode") || "",
     };
-    fetchRefundTransactions(payload);
+    fetchPaymentFailedGatewayTransactionSummaryPieChartData(payload);
   }, []);
 
   // overAll on submit
   const totalCount =
-    refundTransactions?.reduce(
-      (sum, item) => sum + item.count,
+    PaymentFailedGatewayTransactionSummaryPieChartData?.reduce(
+      (sum, item) => sum + item.reasonCount,
       0
     ) || 0;
 
@@ -45,7 +42,7 @@ function RefundTransactions() {
     <>
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-full ">
-          <RefundTransactionsForm/>
+          <TotalFailedGatewayTransactionsForm/>
         </div>
 
         {/* Transactions by reason chart */}
@@ -54,16 +51,15 @@ function RefundTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isFetchRefundTransactions && (
+              {isPaymentFailedGatewayTransactionSummaryPieChartLoading && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
-              <RefundTransactionsChart
-                data={totalCount !== 0 ? refundTransactions : []}
-                title="Payment success & Ticket Not Generated"
-                angleKey="count"
-                calloutLabelKey="status"
+              <TotalFailedGatewayTransactionsChart
+                data={totalCount !== 0 ? PaymentFailedGatewayTransactionSummaryPieChartData : []}
+                angleKey="reasonCount"
+                calloutLabelKey="failureReason"
               />
             </div>
           </div>
@@ -73,4 +69,4 @@ function RefundTransactions() {
   );
 }
 
-export default RefundTransactions;
+export default TotalFailedGatewayTransactions;

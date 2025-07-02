@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import RefundTransactionsReportForm from "./RefundTransactionsReportForm";
 import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
-import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
+import Breadcrumb from "../../../../components/Breadcrumb";
 const RefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -22,9 +21,7 @@ const RefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const refundTransactionSearchParams = localStorage.getItem(
-    "refundTransactionSearchParams"
-  );
+  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams") || "";
 
   const {
     isFetchRefundTransactionsReport,
@@ -134,7 +131,8 @@ const RefundTransactionsReport = () => {
       headerName: "Amount",
       maxWidth: "100",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "noOfTickets",
@@ -254,14 +252,29 @@ const RefundTransactionsReport = () => {
     }
   };
 
+  const breadcrumbItems = [
+    {
+      label: 'Refund Transactions',
+      path: `/refund-transactions?${refundTransactionSearchParams}`
+    },
+    {
+      label: `Refund Transactions Report ${searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}`,
+      isLast: true
+    }
+  ];
+
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                Refund Transactions
+                Refund Transactions Report {searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}
               </h1>
             </div>
             <div className="">

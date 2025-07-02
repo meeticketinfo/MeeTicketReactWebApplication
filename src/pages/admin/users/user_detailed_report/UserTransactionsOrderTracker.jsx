@@ -8,12 +8,19 @@ import {
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative">
+    <div 
+      className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
@@ -29,6 +36,7 @@ const UserTransactionsOrderTracker = () => {
   const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
   const { isFetchCurrentBookingDetailsLoading, fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userDetailedReportSearchParams = localStorage.getItem("userDetailedReportSearchParams");
+  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
@@ -130,10 +138,30 @@ const UserTransactionsOrderTracker = () => {
     });
     return `${formattedDate} ${formattedTime}`;
   }
+
+  const breadcrumbItems = [
+    {
+      label: 'User Report',
+      path: `/user-report?${userReportSearchParams}`
+    },
+    {
+      label: 'User Detailed Report',
+      path: `/user-detailed-report?${userDetailedReportSearchParams}`
+    },
+    {
+      label: 'Transaction Order Tracking Report',
+      isLast: true
+    }
+  ];
+
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -163,18 +191,6 @@ const UserTransactionsOrderTracker = () => {
               <p className="text-sm font-semibold text-gray-900">{orderId || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
-              <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Park Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
-              <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
               <p className="text-sm font-semibold text-gray-900">
                 {bookingId || 'N/A'}
@@ -187,6 +203,18 @@ const UserTransactionsOrderTracker = () => {
                   </button>
                 )}
               </p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
+              <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Park Name</h3>
+              <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
+              <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
             </div>
           </div>
 

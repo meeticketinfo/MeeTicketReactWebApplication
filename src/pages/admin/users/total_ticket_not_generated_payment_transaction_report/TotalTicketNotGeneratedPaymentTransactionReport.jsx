@@ -6,12 +6,14 @@ import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import TotalTicketNotGeneratedPaymentTransactionReportForm from "./TotalTicketNotGeneratedPaymentTransactionReportForm";
 import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import Breadcrumb from "../../../../components/Breadcrumb";
 
 const TotalTicketNotGeneratedPaymentTransactionReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const totalTicketNotGeneratedTransactionSearchParams = localStorage.getItem("totalTicketNotGeneratedTransactionSearchParams");
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -186,10 +188,29 @@ const TotalTicketNotGeneratedPaymentTransactionReport = () => {
     return `/ticket-not-generated-transactions-dashboard?${totalTicketNotGeneratedTransactionSearchParams}`
   }
 
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+    },
+    {
+      label: 'Ticket Not Generated Transactions',
+      path: `/ticket-not-generated-transactions-dashboard?${totalTicketNotGeneratedTransactionSearchParams}`
+    },
+    {
+      label: 'Ticket Not Generated Payment Transaction Report',
+      isLast: true
+    }
+  ];
+
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <Breadcrumb
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">

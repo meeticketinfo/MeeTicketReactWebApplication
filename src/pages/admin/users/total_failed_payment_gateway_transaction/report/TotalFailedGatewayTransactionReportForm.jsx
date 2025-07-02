@@ -1,16 +1,16 @@
 import { Formik, Form, Field } from "formik";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore";
+import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
+import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEffect } from "react";
 import Select from "react-select";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
+import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
 
-const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
+const TotalFailedGatewayTransactionReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
+  const totalFailedGatewayTransactionSearchParams = localStorage.getItem("totalFailedGatewayTransactionSearchParams");
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
@@ -35,7 +35,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
           newSearchParams.set(key, cleanString(value, ":", "_"));
         }
       }
-      localStorage.setItem("totalFailedTransactionReportSearchParams", newSearchParams.toString());
+      localStorage.setItem("totalFailedGatewayTransactionReportSearchParams", newSearchParams.toString());
     }
   }, [searchParams]);
 
@@ -58,14 +58,13 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
       }
     });
     setSearchParams(newSearchParams 
-      + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category")
-      + "&subCategory=" + getValueFromQuery(totalFailedTransactionSearchParams, "subCategory")
-    );
-    
-    localStorage.setItem("totalFailedTransactionReportSearchParams", 
+        + "&category=" + getValueFromQuery(totalFailedGatewayTransactionSearchParams, "category")
+        + "&subCategory=" + getValueFromQuery(totalFailedGatewayTransactionSearchParams, "subCategory")
+      );
+    localStorage.setItem("totalFailedGatewayTransactionReportSearchParams", 
       newSearchParams.toString()
-      + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category")
-      + "&subCategory=" + getValueFromQuery(totalFailedTransactionSearchParams, "subCategory")
+      + "&category=" + getValueFromQuery(totalFailedGatewayTransactionSearchParams, "category")
+      + "&subCategory=" + getValueFromQuery(totalFailedGatewayTransactionSearchParams, "subCategory")
     );
 
     fetchPaymentTransactionDetailsByStatusResult({
@@ -76,8 +75,8 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
       bookingSource: values.bookingSource,
-      status: getValueFromQuery(totalFailedTransactionSearchParams, "category") || "",
-      subCategory: getValueFromQuery(totalFailedTransactionSearchParams, "subCategory") || "",
+      status: getValueFromQuery(totalFailedGatewayTransactionSearchParams, "category") || "",
+      subCategory: getValueFromQuery(totalFailedGatewayTransactionSearchParams, "subCategory") || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -359,4 +358,4 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
   );
 };
 
-export default TotalFailedPaymentTransactionReportForm;
+export default TotalFailedGatewayTransactionReportForm;
