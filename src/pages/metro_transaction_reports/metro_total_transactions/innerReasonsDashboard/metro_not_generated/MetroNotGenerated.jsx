@@ -1,22 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import { Link } from "react-router-dom";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import { Field, Form, Formik } from "formik";
+import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
+import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
+import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 
-const MetroNotGenerated = () => {
-   const { setOuterFilters, outerFilters, resetOuterFilters } =
+const MetroFailedGateway = () => {
+  const { setOuterFilters, outerFilters, resetOuterFilters } =
     useMetroTotalCommonStore();
+  const {
+    fetchOtherReasonsPieChart,
+    OtherReasonsPieChartData,
+    isOtherReasonsPieChartLoading,
+  } = useMetroTotalTransactionsStore();
+  console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
+  useEffect(() => {
+    fetchOtherReasonsPieChart({
+      fromDate: outerFilters.fromDate || "",
+      toDate: outerFilters.toDate || "",
+      mobileNumber: outerFilters.mobileNumber || "",
+    });
+  }, []);
+
   const initialValues = {
     fromDate: outerFilters.fromDate || "",
     toDate: outerFilters.toDate || "",
     mobileNumber: outerFilters.mobileNumber || "",
   };
   const onSubmit = (values) => {
-    
     // setOuterFilters(values);
     // fetchMetroTransactionByReason(values);
   };
+  const totalCount =
+    OtherReasonsPieChartData?.reduce((sum, item) => sum + item.totalCount, 0) ||
+    0;
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
@@ -50,7 +68,7 @@ const MetroNotGenerated = () => {
                     type="datetime-local"
                     name="fromDate"
                     className={`mt-1 block w-full px-2 py-1 border
-                                                border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const fromDateValue = e.target.value;
                       setFieldValue("fromDate", fromDateValue);
@@ -72,7 +90,7 @@ const MetroNotGenerated = () => {
                     type="datetime-local"
                     name="toDate"
                     className={`mt-1 block w-full px-2 py-1 border
-                                                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const toDateValue = e.target.value;
                       setFieldValue("toDate", toDateValue);
@@ -124,10 +142,17 @@ const MetroNotGenerated = () => {
               </Form>
             )}
           </Formik>
+
+          <FailedOtherReasonChart
+            data={totalCount !== 0 ? OtherReasonsPieChartData : []}
+            title="Payment Successful but Ticket not Generated"
+            angleKey="subCategoryCount"
+            calloutLabelKey="subCategory"
+          />
         </div>
       </div>
     </AdminLayout>
   );
 };
 
-export default MetroNotGenerated;
+export default MetroFailedGateway;
