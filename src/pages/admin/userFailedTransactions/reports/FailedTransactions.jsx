@@ -1,33 +1,23 @@
 import { useEffect, useState } from "react";
-import { Field, Form, Formik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
-import Select from "react-select";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import {
   formatToCurrency,
 } from "../../../../utils/TypographyHelper";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import { getDateRange } from "../../../../utils/Helper";
-const FailedTransactions = () => {
-  const UserTransactionReportFilter = JSON.parse(
-    localStorage.getItem("transactionPayload")
-  );
-  const range = localStorage.getItem("range-filter");
+import FailedTransactionsForm from "./FailedTransactionsForm";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 
-  const [FilterData, setFilterData] = useState({});
-  const { fromDate, toDate } = getDateRange(range);
-  const { allParks, fetchAllParks } = useParkStore();
-  const [DepartmentId, setdepartmentId] = useState(
-    UserTransactionReportFilter.departmentId || ""
-  );
-  const [LocationCatgoryId, setLocationCatgoryId] = useState(
-    UserTransactionReportFilter.categoryId || ""
-  );
+const FailedTransactions = () => {
+  const [searchParams] = useSearchParams();
+  const fromDate = getStartOfCurrentDay();
+  const toDate = getEndOfCurrentDay();
+
   const navigate = useNavigate();
+  const {totalTransactionSearchParams} = useTransactionsStore();
+  console.log(totalTransactionSearchParams, "totalTransactionSearchParams");
   const {
     failureUserTransactionReport,
     isFetchFailureUserTransactionReport,
@@ -35,9 +25,6 @@ const FailedTransactions = () => {
     isTotalTransactionPage
   } = userFailureTransaction();
 
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -154,80 +141,24 @@ const FailedTransactions = () => {
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (<span title={params.value}>{params.value  ?? "N/A"}</span>)
+      cellRenderer: (params) => (<span title={params.value}>{params.value ?? "N/A"}</span>)
     },
   ]);
 
   useEffect(() => {
     fetchFailureUserTransactionReport({
-      fromDate: UserTransactionReportFilter?.fromDate || fromDate,
-      toDate: UserTransactionReportFilter?.toDate || toDate,
-      status: UserTransactionReportFilter?.status == "Failed" ? "FAILED" : UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
-      locationId: UserTransactionReportFilter?.locationId || "",
-      resultMsg: UserTransactionReportFilter?.resultMsg || "",
-      departmentId: UserTransactionReportFilter?.departmentId || "",
-      categoryId: UserTransactionReportFilter?.categoryId || "",
-      category: UserTransactionReportFilter?.category || "",
-      mobileNumber:UserTransactionReportFilter?.phoneNumber || "",
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+      status: searchParams.get("status") == "Failed" ? "FAILED" : searchParams.get("category") == "" ? "" : searchParams.get("category") == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
+      parkId: searchParams.get("locationId") || "",
+      resultMsg: searchParams.get("resultMsg") || "",
+      departmentId: +searchParams.get("departmentId") || "",
+      categoryId: +searchParams.get("entityId") || "",
+      category: searchParams.get("category") || "",
+      mobileNumber: searchParams.get("phoneNumber") || "",
     });
   }, []);
 
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-    fetchAllParks();
-  }, []);
-
-  const initialValues = {
-    fromDate: UserTransactionReportFilter?.fromDate || fromDate,
-    toDate: UserTransactionReportFilter?.toDate || toDate,
-    status: UserTransactionReportFilter?.status == "Failed" ? "FAILED" : UserTransactionReportFilter?.category == "" ? "" : UserTransactionReportFilter?.category == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
-    ParkId: UserTransactionReportFilter?.locationId || "",
-    departmentId: UserTransactionReportFilter?.departmentId || "",
-    entityId: UserTransactionReportFilter?.categoryId || "",
-    phoneNumber:UserTransactionReportFilter?.phoneNumber || "",
-  };
-
-  const onSubmit = (values) => {
-    fetchFailureUserTransactionReport({
-      fromDate: values.fromDate,
-      toDate: values.toDate,
-      locationId: values.ParkId,
-      status: values.status || "",
-      departmentId: values.departmentId,
-      categoryId: values.entityId,
-      mobileNumber:values.phoneNumber,
-      category: values.status == "" ? "" : values.status == "CONFIRMED" ? "" : UserTransactionReportFilter?.category
-    });
-    localStorage.setItem("transactionPayload", 
-      JSON.stringify(
-        {...UserTransactionReportFilter, 
-          fromDate: values.fromDate,
-          toDate: values.toDate,
-          status: values.status,
-        }))
-    setFilterData({
-      departmentId: departmentId,
-      categoryId: entityId,
-    });
-  };
-
-  const filteredData = failureUserTransactionReport.filter((transaction) => {
-    // Check if departmentId or categoryId exists in the filter and compare with transaction data
-    const filterByDepartmentId = DepartmentId
-      ? transaction.departmentId === (FilterData.departmentId || DepartmentId)
-      : true; // If departmentId is not in filter, don't filter by it
-
-    const filterByCategoryId = LocationCatgoryId
-      ? transaction.entityTypeId ===
-        (FilterData.categoryId || LocationCatgoryId)
-      : true; // If categoryId is not in filter, don't filter by it
-
-    return filterByDepartmentId && filterByCategoryId;
-  });
-
-  // Set rowData based on the condition
-  const rowData = filteredData.length > 0 ? filteredData : [];
   return (
     <>
       <AdminLayout>
@@ -240,7 +171,7 @@ const FailedTransactions = () => {
             </div>
             <div className="">
               <button
-                onClick={() => navigate( isTotalTransactionPage ? "/total-transactions-dashboard" : "/transactions-dashboard")}
+                onClick={() => navigate(isTotalTransactionPage ? `/total-transactions-dashboard?${totalTransactionSearchParams.toString()}` : `/transactions-dashboard?${totalTransactionSearchParams.toString()}`)}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -248,280 +179,10 @@ const FailedTransactions = () => {
             </div>
           </div>
           <div>
-            <Formik initialValues={initialValues} onSubmit={onSubmit}>
-              {({ values, setFieldValue }) => (
-                <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
-                  <div>
-                    <label
-                      htmlFor="fromDate"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      From Date
-                    </label>
-                    <Field
-                      type="datetime-local"
-                      name="fromDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // min={getCurrentDate()}
-                      onChange={(e) => {
-                        const fromDateValue = e.target.value;
-                        setFieldValue("fromDate", fromDateValue);
-                        if (new Date(fromDateValue) > new Date(values.toDate)) {
-                          // Automatically update toDate if it's earlier than fromDate
-                          setFieldValue("toDate", fromDateValue);
-                        }
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="toDate"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      To Date
-                    </label>
-                    <Field
-                      type="datetime-local"
-                      name="toDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // min={values.fromDate || getCurrentDateStartTime()}
-                      onChange={(e) => {
-                        const toDateValue = e.target.value;
-                        setFieldValue("toDate", toDateValue);
-                      }}
-                    />
-                  </div>
-
-                  {/* department */}
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Department
-                    </label>
-
-                    <Select
-                      name="departmentId"
-                      value={
-                        allDepartmentTypes
-                          ?.filter((dept) => dept.isActive)
-                          .map((dept) => ({
-                            value: dept.departmentId,
-                            label: dept.departmentName,
-                          }))
-                          .find(
-                            (option) => option.value === values.departmentId
-                          ) || null // Set the selected value
-                      }
-                      options={allDepartmentTypes
-                        ?.filter((dept) => dept.isActive)
-                        .map((dept) => ({
-                          value: dept.departmentId,
-                          label: dept.departmentName,
-                        }))}
-                      onChange={(selectedOption) => {
-                        setFieldValue(
-                          "departmentId",
-                          selectedOption?.value || ""
-                        );
-                        setdepartmentId(selectedOption?.value || "");
-                      }}
-                      isClearable
-                      placeholder="Department"
-                      className="mt-[4px] text-sm"
-                      classNamePrefix="react-select"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          outline: "none",
-                          boxShadow: "none",
-                          borderColor: "#ced4da",
-                          borderRadius: "6px",
-                          height: "30px",
-                          minHeight: "33px",
-                        }),
-
-                        menu: (base) => ({
-                          ...base,
-                          // padding: "4px 0",
-                        }),
-                        option: (base, { isFocused }) => ({
-                          ...base,
-                          fontSize: "0.775rem",
-                          backgroundColor: isFocused ? "#F8F8F8" : "white",
-                          color: isFocused ? "#0C3771" : "#000",
-                          cursor: "pointer",
-                        }),
-                      }}
-                    />
-                  </div>
-                  {/* location category */}
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Location Category
-                    </label>
-
-                    <Select
-                      name="entityId"
-                      value={
-                        allEntityTypes
-                          ?.filter((dept) => dept.isActive)
-                          .map((dept) => ({
-                            value: dept.entityTypeId,
-                            label: dept.entityTypeName,
-                          }))
-                          .find((option) => option.value === values.entityId) ||
-                        null // Use values.entityId
-                      }
-                      options={allEntityTypes
-                        ?.filter((entity) => entity.isActive)
-                        .map((entity) => ({
-                          value: entity.entityTypeId,
-                          label: entity.entityTypeName,
-                        }))}
-                      onChange={(selectedOption) => {
-                        setFieldValue("entityId", selectedOption?.value || ""),
-                          setLocationCatgoryId(selectedOption?.value || "");
-                      }}
-                      isClearable
-                      placeholder="Location Category"
-                      className="mt-[4px] text-sm"
-                      classNamePrefix="react-select"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          outline: "none",
-                          boxShadow: "none",
-                          borderColor: "#ced4da",
-                          borderRadius: "6px",
-                          height: "30px",
-                          minHeight: "33px",
-                        }),
-
-                        menu: (base) => ({
-                          ...base,
-                          // padding: "4px 0",
-                        }),
-                        option: (base, { isFocused }) => ({
-                          ...base,
-                          fontSize: "0.775rem",
-                          backgroundColor: isFocused ? "#F8F8F8" : "white",
-                          color: isFocused ? "#0C3771" : "#6D7072",
-                          cursor: "pointer",
-                        }),
-                      }}
-                    />
-                  </div>
-                  {/* location */}
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Location
-                    </label>
-
-                    <Select
-                      name="ParkId"
-                      value={
-                        allParks
-                          ?.filter((park) => park.isActive)
-                          .map((park) => ({
-                            value: park.id,
-                            label: park.name,
-                          }))
-                          .find((option) => option.value === values.ParkId) ||
-                        null
-                      }
-                      options={allParks
-                        ?.filter((park) => park.isActive)
-                        .map((park) => ({
-                          value: park.id,
-                          label: park.name,
-                        }))}
-                      onChange={(selectedOption) =>
-                        setFieldValue("ParkId", selectedOption?.value || "")
-                      }
-                      isClearable
-                      placeholder="Location"
-                      className="mt-[4px] text-sm"
-                      classNamePrefix="react-select"
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          outline: "none",
-                          boxShadow: "none",
-                          borderColor: "#ced4da",
-                          borderRadius: "6px",
-                          height: "30px",
-                          minHeight: "33px",
-                        }),
-
-                        menu: (base) => ({
-                          ...base,
-                          // padding: "4px 0",
-                        }),
-                        option: (base, { isFocused }) => ({
-                          ...base,
-                          fontSize: "0.775rem",
-                          backgroundColor: isFocused ? "#F8F8F8" : "white",
-                          color: isFocused ? "#0C3771" : "#6D7072",
-                          cursor: "pointer",
-                        }),
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="mobileNumber"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Status
-                    </label>
-                    <Field
-                      as="select"
-                      name="status"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    >
-                      <option value="">Select Status</option>
-                      <option value="CONFIRMED">Success</option>
-                      <option value="INPROCESS">In Process</option>
-                      <option value="FAILED">Failed</option>
-                    </Field>
-                  </div>
-                  {/* mobile number */}
-                  <div>
-                  <label
-                    htmlFor="phoneNumber"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Phone Number
-                  </label>
-                  <Field
-                    type="text"
-                    maxLength="10"
-                    name="phoneNumber"
-                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                    placeholder="Enter phone number"
-                    onKeyPress={(e) => {
-                      if (!/^\d$/.test(e.key)) {
-                        e.preventDefault(); // Prevent non-numeric characters
-                      }
-                    }}
-                  />
-                </div>
-                  <div className="flex items-end">
-                    <button
-                      type="submit"
-                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                      disabled={isFetchFailureUserTransactionReport}
-                    >
-                      Search
-                    </button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
+            <FailedTransactionsForm />
             <AgGridTable
               ExportName="UserStatusTransactionReport"
-              rowData={rowData}
+              rowData={failureUserTransactionReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchFailureUserTransactionReport}
             />

@@ -74,6 +74,22 @@ import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/repo
 import PosConsolidatedBookingReports from "../pages/admin/BookTickets/pos_reports/PosConsolidatedBookingReports";
 import PosIndividualBookingReports from "../pages/admin/BookTickets/pos_reports/PosIndividualBookingReports";
 import PosPaymentTransactionsReport from "../pages/admin/BookTickets/pos_reports/PosPaymentTransactionsReport";
+import TotalPaymentTransactionReport from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionReport";
+import UserReport from "../pages/admin/users/user_report/UserReport";
+import UserDetailedReport from "../pages/admin/users/user_detailed_report/UserDetailedReport";
+import MainRefundTransactions from "../pages/admin/users/refund_transactions/dashboard/MainRefundTransactions";
+import RefundTransactionsReport from "../pages/admin/users/refund_transactions_report/RefundTransactionsReport";
+import UserTransactionsOrderTracker from "../pages/admin/users/user_detailed_report/UserTransactionsOrderTracker";
+import TotalPaymentTransactionOrderTracker from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionOrderTracker";
+import MainTotalFailedTransactions from "../pages/admin/users/total_failed_transaction/dashboard/MainTotalFailedTransactions";
+import MainTotalTicketNotGeneratedTransactions from "../pages/admin/users/total_ticket_not_generated_transaction/dashboard/MainTotalTicketNotGeneratedTransactions";
+import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionReport";
+import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
+import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
+import TotalTicketNotGeneratedPaymentTransactionReport from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionReport";
+import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_failed_payment_gateway_transaction/dashboard/MainTotalFailedGatewayTransactions";
+import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
+import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
 
 export const routes = [
   {
@@ -195,6 +211,70 @@ export const routes = [
   {
     path: "/total-transactions-dashboard",
     element: <ProtectedRoute element={<MainTotalTransactions />} />,
+  },
+  {
+    path: "/total-payment-transaction-report",
+    element: <ProtectedRoute element={<TotalPaymentTransactionReport />} />,
+  },
+  {
+    path: "/failed-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedTransactions />} />,
+  },
+  {
+    path: "/total-failed-payment-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedPaymentTransactionOrderTracker />} />,
+  },
+  {
+    path: "/total-failed-payment-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedPaymentTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />,
+  },
+  {
+    path: "/ticket-not-generated-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalTicketNotGeneratedTransactions />} />,
+  },
+  {
+    path: "/total-ticket-not-generated-payment-transaction-report",
+    element: <ProtectedRoute element={<TotalTicketNotGeneratedPaymentTransactionReport />} />,
+  },
+  {
+    path: "/total-ticket-not-generated-payment-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalTicketNotGeneratedPaymentTransactionOrderTracker />} />,
+  },
+  {
+    path: "/user-report",
+    element: <ProtectedRoute element={<UserReport />} />,
+  },
+  {
+    path: "/user-detailed-report",
+    element: <ProtectedRoute element={<UserDetailedReport />} />,
+  },
+  {
+    path:"/user-transactions-order-tracker",
+    element:<ProtectedRoute element={<UserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/total-payment-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalPaymentTransactionOrderTracker />} />,
+  },
+  {
+    path: "/refund-transactions",
+    element: <ProtectedRoute element={<MainRefundTransactions />} />,
+  },
+  {
+    path: "/refund-transactions-report",
+    element: <ProtectedRoute element={<RefundTransactionsReport />} />,
   },
   {
     path: "/transactions-order-tracker",

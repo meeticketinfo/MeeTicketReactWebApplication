@@ -125,4 +125,6 @@ ul:not(.browser-default) li {
   margin: 10px auto !important;
 }
 
-
+.react-select__placeholder {
+  white-space: nowrap;
+}
