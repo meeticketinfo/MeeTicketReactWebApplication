@@ -71,6 +71,9 @@ import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboa
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import PosConsolidatedBookingReports from "../pages/admin/BookTickets/pos_reports/PosConsolidatedBookingReports";
+import PosIndividualBookingReports from "../pages/admin/BookTickets/pos_reports/PosIndividualBookingReports";
+import PosPaymentTransactionsReport from "../pages/admin/BookTickets/pos_reports/PosPaymentTransactionsReport";
 
 export const routes = [
   {
@@ -250,6 +253,19 @@ export const routes = [
   {
     path: "/privacy-policy-meeticket-app",
     element: <PrivacyPolicyMeeticketApp />,
+  },
+  //pos-zoo-park-reports
+  {
+    path: "/pos-consolidated-booking-reports",
+    element: <PosConsolidatedBookingReports />,
+  },
+  {
+    path: "/pos-individual-booking-reports",
+    element: <PosIndividualBookingReports />,
+  },
+  {
+    path: "/pos-payment-transactions-reports",
+    element: <PosPaymentTransactionsReport />,
   },
   // Grievance
   {

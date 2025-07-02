@@ -184,6 +184,8 @@ export const API_ENDPOINTS = {
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
       GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
       POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
+      GET_COMPLETED_ZOO_COUNTER_BOOKINGS:`${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
+      GET_NEHRU_USER_WISE_PAYMENT_DETAILS:`${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
       // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
@@ -251,6 +253,7 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
+    GET_ALL_NEHRU_COUNTER_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetNehruCounterBookings`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
     GET_ALL_DAY_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseBookingSummaryReport`,
     GET_ALL_APPLICATION_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseReportWithBookingSource`,
