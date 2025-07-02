@@ -27,6 +27,7 @@ export const superAdminPermissions = [
   "total-transactions-dashboard",
   "user-report",
   "refund-transactions",
+  "metro-total-transaction",
 ];
 
 export const parkAdminPermissions = [
