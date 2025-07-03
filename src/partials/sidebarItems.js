@@ -303,6 +303,11 @@ const sidebarItems = [
         icon: FaUsers,
         path: "/metro-user-report",
       },
+        {
+        title: "Refund Transactions",
+        icon: FaUsers,
+        path: "/metro-refund-transactions",
+      },
     ],
   },
   // griveance

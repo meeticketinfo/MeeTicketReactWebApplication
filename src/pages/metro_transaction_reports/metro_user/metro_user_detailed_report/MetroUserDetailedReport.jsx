@@ -214,7 +214,7 @@ const MetroUserDetailedReport = () => {
           <div>
             <MetroUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
             <AgGridTable
-              ExportName="UserStatusTransactionReport"
+              ExportName="UserDetailedReport"
               rowData={metroUserDetailedReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchMetroUserDetailedReport}

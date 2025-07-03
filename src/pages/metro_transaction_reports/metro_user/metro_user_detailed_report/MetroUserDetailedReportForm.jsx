@@ -4,11 +4,9 @@ import { useDepartmentTypesStore } from "../../../../store/masters/departmentTyp
 import { useParkStore } from "../../../../store/masters/parksStore";
 import { useEffect } from "react";
 import Select from "react-select";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
-import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
-import { userReports } from "../../../../store/userTransaction/UserReports";
+
 import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 
 const MetroUserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
@@ -17,7 +15,6 @@ const MetroUserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  // const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
 const {isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport} = metroUserReports();
   useEffect(() => {
     fetchAllEntityTypes();
