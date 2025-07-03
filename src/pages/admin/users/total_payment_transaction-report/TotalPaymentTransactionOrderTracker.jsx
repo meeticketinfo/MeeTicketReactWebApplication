@@ -34,6 +34,7 @@ const TotalPaymentTransactionOrderTracker = () => {
   const { orderId, mobileNumber, parkName, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const totalPaymentTransactionSearchParams = localStorage.getItem("totalPaymentTransactionSearchParams");
+  const totalTransactionSearchParams = localStorage.getItem("totalTransactionSearchParams");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
@@ -124,7 +125,7 @@ const TotalPaymentTransactionOrderTracker = () => {
   const breadcrumbItems = [
     {
       label: 'Total Transactions Report',
-      // path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
+      path: `/total-transactions-dashboard?${totalTransactionSearchParams}`
     },
     {
       label: backTitle,
@@ -199,6 +200,7 @@ const TotalPaymentTransactionOrderTracker = () => {
 
           <div>
             <AgGridTable
+              showSearch={false}
               ExportName="UserStatusTransactionReport"
               rowData={TransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}

@@ -135,3 +135,15 @@ export const formatDateTime = (dateTimeString) => {
   });
   return `${formattedDate} ${formattedTime}`;
 };
+
+// Hardcoded department to location category mapping
+export const departmentToCategoryMapping = {
+  "Metro": ["Metro"],
+  "Telangana Tourism Development Corporation Limited": ["Parks", "Boating"],
+  "Endowments Department": ["Temples"],
+  "Forest Department": ["WaterFalls", "Parks"],
+  "HMDA": ["Parks", "Boating"],
+  "GHMC": ["GHMC Park"],
+  "CDMA": ["Parks", "Boating"],
+  "ASI": ["Parks"]
+};

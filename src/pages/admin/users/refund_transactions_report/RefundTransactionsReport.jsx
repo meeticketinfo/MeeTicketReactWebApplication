@@ -293,6 +293,7 @@ const RefundTransactionsReport = () => {
               setCurrentPage={setCurrentPage}
             />
             <AgGridTable
+              showSearch={false}
               ExportName="UserStatusTransactionReport"
               rowData={refundTransactionsReport}
               columnDefs={columnDefs}

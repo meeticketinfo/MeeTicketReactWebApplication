@@ -203,6 +203,7 @@ const TotalFailedPaymentTransactionOrderTracker = () => {
               rowData={TransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}
               isFetchLoading={isFetchTransactionTrackingStatusByOrderId}
+              showSearch={false}
             />
           </div>
         </div>

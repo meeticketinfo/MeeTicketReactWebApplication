@@ -232,6 +232,7 @@ const UserDetailedReport = () => {
               currentPage={currentPage}
               totalCount={userDetailedReport?.[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
+              showSearch={false}
             />
           </div>
         </div>

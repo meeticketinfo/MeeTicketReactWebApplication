@@ -207,6 +207,7 @@ const TotalTicketNotGeneratedPaymentTransactionOrderTracker = () => {
 
           <div>
             <AgGridTable
+              showSearch={false}
               ExportName="UserStatusTransactionReport"
               rowData={TransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}

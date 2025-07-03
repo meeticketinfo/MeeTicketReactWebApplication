@@ -3,6 +3,7 @@ import { useEntityTypesStore } from "../../../../../store/masters/entityTypesSto
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
 import {
   cleanString,
+  departmentToCategoryMapping,
   getDateRange,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
@@ -26,7 +27,7 @@ const TotalTransactionsForm = () => {
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  
+
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.delete("RefundStatus");
@@ -47,8 +48,8 @@ const TotalTransactionsForm = () => {
     entityId: +searchParams.get("entityId") || "",
     locationId: searchParams.get("locationId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
-    bookingSource:searchParams.get("bookingSource") || "",
-    PaymentMode:searchParams.get("PaymentMode") || "",
+    bookingSource: searchParams.get("bookingSource") || "",
+    PaymentMode: searchParams.get("PaymentMode") || "",
   };
 
   const overAllOnSubmit = (values) => {
@@ -69,14 +70,15 @@ const TotalTransactionsForm = () => {
       locationCategoryId: values.entityId,
       departmentId: values.departmentId,
       phoneNumber: values.phoneNumber,
-      modeOfTransaction:values.bookingSource,
-      paymentMode:values.PaymentMode
+      modeOfTransaction: values.bookingSource,
+      paymentMode: values.PaymentMode
     };
 
     fetchRefundTransactions(payload);
   };
 
-  const resetForm = (setValues) => {
+  const resetHandler = (resetForm) => {
+    resetForm();
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
@@ -90,8 +92,25 @@ const TotalTransactionsForm = () => {
     setSearchParams(new URLSearchParams());
 
     localStorage.setItem("refundTransactionSearchParams", "");
-    setValues(payload);
+    // setValues(payload);
     fetchRefundTransactions(payload);
+  };
+
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
   };
 
   return (
@@ -101,7 +120,7 @@ const TotalTransactionsForm = () => {
         initialValues={initialValues}
         onSubmit={overAllOnSubmit}
       >
-        {({ values, setFieldValue, setValues }) => (
+        {({ values, setFieldValue, setValues, resetForm }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
@@ -139,8 +158,10 @@ const TotalTransactionsForm = () => {
                     const toDateValue = e.target.value;
                     setFieldValue("toDate", toDateValue);
                   }}
+                  min={values.fromDate || startOfDay}
                 />
               </div>
+
               {/* department */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
@@ -151,22 +172,27 @@ const TotalTransactionsForm = () => {
                   name="departmentId"
                   value={
                     allDepartmentTypes
-                      ?.filter((dept) => dept.isActive)
+                      ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                       .map((dept) => ({
                         value: dept.departmentId,
                         label: dept.departmentName,
                       }))
-                      .find((option) => option.value === values.departmentId) ||
-                    null
+                      .find(
+                        (option) => option.value === values.departmentId
+                      ) || null
                   }
                   options={allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("departmentId", selectedOption?.value || "");
+                    const value = selectedOption?.value || "";
+                    setFieldValue("departmentId", value);
+                    // Clear entity and location when department changes
+                    setFieldValue("entityId", "");
+                    setFieldValue("parkId", "");
                   }}
                   isClearable
                   placeholder="Department"
@@ -205,23 +231,24 @@ const TotalTransactionsForm = () => {
                 <Select
                   name="entityId"
                   value={
-                    allEntityTypes
-                      ?.filter((dept) => dept.isActive)
-                      .map((dept) => ({
-                        value: dept.entityTypeId,
-                        label: dept.entityTypeName,
+                    getFilteredEntityTypes(values.departmentId)
+                      .map((entity) => ({
+                        value: entity.entityTypeId,
+                        label: entity.entityTypeName,
                       }))
                       .find((option) => option.value === values.entityId) ||
                     null
                   }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  options={getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("entityId", selectedOption?.value || "");
+                    const value = selectedOption?.value || "";
+                    setFieldValue("entityId", value);
+                    // Clear location when entity changes
+                    setFieldValue("parkId", "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -261,7 +288,7 @@ const TotalTransactionsForm = () => {
                   name="locationId"
                   value={
                     allParks
-                      ?.filter((park) => park.isActive)
+                      ?.filter((park) => park.departmentName !== "Metro")
                       .map((park) => ({
                         value: park.id,
                         label: park.name,
@@ -270,13 +297,14 @@ const TotalTransactionsForm = () => {
                     null
                   }
                   options={allParks
-                    ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                    ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue("locationId", selectedOption?.value || "");
+                    const value = selectedOption?.value || "";
+                    setFieldValue("locationId", value);
                   }}
                   isClearable
                   placeholder="Location"
@@ -354,7 +382,7 @@ const TotalTransactionsForm = () => {
                 </Field>
               </div>
               {/*Payment Mode */}
-               <div>
+              <div>
                 <label
                   htmlFor="PaymentMode"
                   className="block text-xs font-medium text-gray-700"
@@ -388,7 +416,7 @@ const TotalTransactionsForm = () => {
                 <button
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
-                  onClick={() => resetForm(setValues)}
+                  onClick={() => resetHandler(resetForm)}
                   disabled={isFetchRefundTransactions}
                 >
                   Reset
