@@ -8,6 +8,7 @@ import { userFailureTransaction } from "../../../../store/failedTransaction/fail
 import { useSearchParams } from "react-router-dom";
 import {
   cleanString,
+  departmentToCategoryMapping,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
   getValueFromQuery,
@@ -15,7 +16,7 @@ import {
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 
-const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) => {
+const RefundTransactionsReportForm = ({ pageNumber, pageSize, setCurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -46,7 +47,7 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
     entityId: +searchParams.get("entityId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
     bookingSource: searchParams.get("bookingSource") || "",
-    PaymentMode:searchParams.get("PaymentMode") || "",
+    PaymentMode: searchParams.get("PaymentMode") || "",
     refundStatus: (searchParams.get("RefundStatus") !== "null" && searchParams.get("RefundStatus")) || "",
   };
 
@@ -57,7 +58,7 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams );
+    setSearchParams(newSearchParams);
 
     fetchRefundTransactionsReport({
       fromDate: values.fromDate,
@@ -67,13 +68,31 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
       categoryId: values.entityId,
       phoneNumber: values.phoneNumber,
       modeOfTransaction: values.bookingSource,
-      paymentMode:values.PaymentMode,
+      paymentMode: values.PaymentMode,
       refundStatus: values.refundStatus,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-     setCurrentPage(0);
+    setCurrentPage(0);
   };
+
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
+  };
+
 
   return (
     <>
@@ -132,16 +151,17 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
                 name="departmentId"
                 value={
                   allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
                     }))
-                    .find((option) => option.value === values.departmentId) ||
-                  null
+                    .find(
+                      (option) => option.value === values.departmentId
+                    ) || null
                 }
                 options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
+                  ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                   .map((dept) => ({
                     value: dept.departmentId,
                     label: dept.departmentName,
@@ -149,6 +169,9 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
                 onChange={(selectedOption) => {
                   const value = selectedOption?.value || "";
                   setFieldValue("departmentId", value);
+                  // Clear entity and location when department changes
+                  setFieldValue("entityId", "");
+                  setFieldValue("parkId", "");
                 }}
                 isClearable
                 placeholder="Department"
@@ -187,16 +210,15 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
               <Select
                 name="entityId"
                 value={
-                  allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
                     }))
-                    .find((option) => option.value === values.entityId) || null
+                    .find((option) => option.value === values.entityId) ||
+                  null
                 }
-                options={allEntityTypes
-                  ?.filter((entity) => entity.isActive)
+                options={getFilteredEntityTypes(values.departmentId)
                   .map((entity) => ({
                     value: entity.entityTypeId,
                     label: entity.entityTypeName,
@@ -204,6 +226,8 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
                 onChange={(selectedOption) => {
                   const value = selectedOption?.value || "";
                   setFieldValue("entityId", value);
+                  // Clear location when entity changes
+                  setFieldValue("parkId", "");
                 }}
                 isClearable
                 placeholder="Location Category"
@@ -243,15 +267,16 @@ const RefundTransactionsReportForm = ({ pageNumber, pageSize,setCurrentPage }) =
                 name="parkId"
                 value={
                   allParks
-                    ?.filter((park) => park.isActive)
+                    ?.filter((park) => park.departmentName !== "Metro")
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
                     }))
-                    .find((option) => option.value === values.parkId) || null
+                    .find((option) => option.value === values.parkId) ||
+                  null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                  ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,

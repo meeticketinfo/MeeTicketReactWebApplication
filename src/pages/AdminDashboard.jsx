@@ -6,7 +6,7 @@ import Header from "../partials/Header";
 import Datepicker from "../components/Datepicker";
 import DashboardCard01 from "../partials/dashboard/DashboardCard01";
 import DashboardCard07 from "../partials/dashboard/DashboardCard07";
-import { IoTicketSharp } from "react-icons/io5";
+import { IoReloadCircle, IoTicketSharp } from "react-icons/io5";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { FaChildren } from "react-icons/fa6";
 import { HiCurrencyRupee } from "react-icons/hi";
@@ -34,6 +34,8 @@ import { useEntityTypesStore } from "../store/masters/entityTypesStore";
 import { Link } from "react-router-dom";
 import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
 import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
+import { departmentToCategoryMapping } from "../utils/Helper";
+
 function AdminDashboard() {
   superballs.register();
 
@@ -48,7 +50,6 @@ function AdminDashboard() {
     fetchAllParks,
     fetchAllNodalOfficerParks,
     allNodalOfficerParks,
-
   } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
@@ -76,6 +77,8 @@ function AdminDashboard() {
     isFetchZooDashboardTicketWiseLoading,
     allZooDashboardTicketWise,
     fetchAllZooDashBoardCountsTicketWise,
+    isFetchCountsLoading,
+    isFetchPieChartsLoading,
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
@@ -169,13 +172,13 @@ function AdminDashboard() {
   };
   const dashboardCards = [
     {
-      lableName: "Total Tickets",
+      lableName: "Total Bookings",
       count: allCounts?.totalCountById || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
-      lableName: "Total Bookings",
+      lableName: "Total Tickets",
       count: allCounts?.totalTickets || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
@@ -325,6 +328,23 @@ function AdminDashboard() {
     fetchAllZooDashBoardCountsTicketWise({ ...values, active: true });
   };
 
+  // Function to get filtered location categories based on selected department
+  const getFilteredLocationCategories = (selectedDepartmentName) => {
+    if (!selectedDepartmentName) return allEntityTypes?.filter(entity => entity.isActive) || [];
+    
+    const allowedCategories = departmentToCategoryMapping[selectedDepartmentName] || [];
+    
+    return allEntityTypes?.filter(entity => 
+      entity.isActive && allowedCategories.includes(entity.entityTypeName)
+    ) || [];
+  };
+
+  // Function to get department name by ID
+  const getDepartmentNameById = (departmentId) => {
+    const department = allDepartmentTypes?.find(dept => dept.departmentId === departmentId);
+    return department?.departmentName || "";
+  };
+
   return (
     <>
       {/* Cards */}
@@ -407,6 +427,9 @@ function AdminDashboard() {
                         onChange={(selectedOption) => {
                           const value = selectedOption?.value || "";
                           setFieldValue("departmentId", value);
+                          // Clear location category and location when department changes
+                          setFieldValue("entityId", "");
+                          setFieldValue("locationId", "");
                         }}
                         isClearable
                         placeholder="Department"
@@ -444,25 +467,24 @@ function AdminDashboard() {
                       <Select
                         name="entityId"
                         value={
-                          allEntityTypes
-                            ?.filter((dept) => dept.isActive)
-                            .map((dept) => ({
-                              value: dept.entityTypeId,
-                              label: dept.entityTypeName,
+                          getFilteredLocationCategories(getDepartmentNameById(values.departmentId))
+                          .map((entity) => ({
+                            value: entity.entityTypeId,
+                            label: entity.entityTypeName,
                             }))
-                            .find(
-                              (option) => option.value === values.entityId
-                            ) || null // Use values.entityId
+                            .find((option) => option.value === values.entityId) || null
                         }
-                        options={allEntityTypes
-                          ?.filter((entity) => entity.isActive)
+                        options={getFilteredLocationCategories(getDepartmentNameById(values.departmentId))
                           .map((entity) => ({
                             value: entity.entityTypeId,
                             label: entity.entityTypeName,
                           }))}
-                        onChange={(selectedOption) =>
-                          setFieldValue("entityId", selectedOption?.value || "")
-                        }
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value || "";
+                          setFieldValue("entityId", value);
+                          // Clear location when location category changes
+                          setFieldValue("locationId", "");
+                        }}
                         isClearable
                         placeholder="Location Category"
                         className="mt-[4px] text-sm"
@@ -480,7 +502,6 @@ function AdminDashboard() {
 
                           menu: (base) => ({
                             ...base,
-                            // padding: "4px 0",
                           }),
                           option: (base, { isFocused }) => ({
                             ...base,
@@ -501,8 +522,7 @@ function AdminDashboard() {
                         name="locationId"
                         value={
                           allParks
-                            ?.filter((park) => park.isActive)
-                            .map((park) => ({
+                            ?.map((park) => ({
                               value: park.id,
                               label: park.name,
                             }))
@@ -510,7 +530,7 @@ function AdminDashboard() {
                           null
                         }
                         options={allParks
-                          ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                          ?.filter((park) => (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                           .map((park) => ({
                             value: park.id,
                             label: park.name,
@@ -570,6 +590,7 @@ function AdminDashboard() {
               count={card.count}
               percentageChange={card.percentageChange}
               icon={card.icon}
+              isLoading={isFetchCountsLoading}
             />
           ))}
 
@@ -799,6 +820,7 @@ function AdminDashboard() {
             <div className="flex">
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                 <PieChart
+                  isLoading={isFetchPieChartsLoading}
                   data={allPieCharts}
                   title="Total Bookings"
                   angleKey="entityWiseTotalBookings"
@@ -806,6 +828,7 @@ function AdminDashboard() {
               </div>
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                 <PieChart
+                  isLoading={isFetchPieChartsLoading}
                   data={allPieCharts}
                   title="Total Amount"
                   angleKey="entityWiseTotalAmount"

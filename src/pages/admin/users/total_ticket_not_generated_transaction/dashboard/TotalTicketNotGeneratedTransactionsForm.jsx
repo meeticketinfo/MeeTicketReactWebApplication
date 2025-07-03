@@ -1,7 +1,7 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { cleanString, departmentToCategoryMapping, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
 import { useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
@@ -15,7 +15,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
   const { allParks, fetchAllParks } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
-  const { fetchTicketNotGeneratedTransactionSummaryPieChartData} = useTransactionsStore();
+  const { fetchTicketNotGeneratedTransactionSummaryPieChartData } = useTransactionsStore();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -90,6 +90,23 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
     fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   };
 
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
+  };
+
   return (
     <>
       <Formik
@@ -148,7 +165,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                   name="departmentId"
                   value={
                     allDepartmentTypes
-                      ?.filter((dept) => dept.isActive)
+                      ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                       .map((dept) => ({
                         value: dept.departmentId,
                         label: dept.departmentName,
@@ -158,7 +175,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                       ) || null
                   }
                   options={allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
@@ -167,7 +184,10 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                     setFieldValue(
                       "departmentId",
                       selectedOption?.value || ""
-                    )
+                    );
+                    // Clear entity and location when department changes
+                    setFieldValue("entityId", "");
+                    setFieldValue("locationId", "");
                   }}
                   isClearable
                   placeholder="Department"
@@ -206,17 +226,15 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                 <Select
                   name="entityId"
                   value={
-                    allEntityTypes
-                      ?.filter((dept) => dept.isActive)
-                      .map((dept) => ({
-                        value: dept.entityTypeId,
-                        label: dept.entityTypeName,
+                    getFilteredEntityTypes(values.departmentId)
+                      .map((entity) => ({
+                        value: entity.entityTypeId,
+                        label: entity.entityTypeName,
                       }))
                       .find((option) => option.value === values.entityId) ||
                     null
                   }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  options={getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
@@ -225,7 +243,9 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                     setFieldValue(
                       "entityId",
                       selectedOption?.value || ""
-                    )
+                    );
+                    // Clear location when entity changes
+                    setFieldValue("locationId", "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -265,8 +285,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                   name="locationId"
                   value={
                     allParks
-                      ?.filter((park) => park.isActive)
-                      .map((park) => ({
+                      ?.map((park) => ({
                         value: park.id,
                         label: park.name,
                       }))
@@ -274,7 +293,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                     null
                   }
                   options={allParks
-                    ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                    ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                     .map((park) => ({
                       value: park.id,
                       label: park.name,

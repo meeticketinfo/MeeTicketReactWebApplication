@@ -6,16 +6,16 @@ import { useEffect } from "react";
 import Select from "react-select";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
+import { cleanString, departmentToCategoryMapping, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 
-const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
+const TotalFailedPaymentTransactionReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const totalFailedTransactionSearchParams = localStorage.getItem("totalFailedTransactionSearchParams");
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-  const {isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult} = userFailureTransaction();
+  const { isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult } = userFailureTransaction();
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -29,7 +29,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
   useEffect(() => {
     if (searchParams.toString()) {
       const newSearchParams = new URLSearchParams();
-      
+
       for (const [key, value] of searchParams.entries()) {
         if (value) {
           newSearchParams.set(key, cleanString(value, ":", "_"));
@@ -57,12 +57,12 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
-    setSearchParams(newSearchParams 
+    setSearchParams(newSearchParams
       + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category")
       + "&subCategory=" + getValueFromQuery(totalFailedTransactionSearchParams, "subCategory")
     );
-    
-    localStorage.setItem("totalFailedTransactionReportSearchParams", 
+
+    localStorage.setItem("totalFailedTransactionReportSearchParams",
       newSearchParams.toString()
       + "&category=" + getValueFromQuery(totalFailedTransactionSearchParams, "category")
       + "&subCategory=" + getValueFromQuery(totalFailedTransactionSearchParams, "subCategory")
@@ -82,6 +82,23 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
       pageSize: pageSize,
     });
     SetcurrentPage(0);
+  };
+
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
   };
 
   return (
@@ -141,7 +158,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
                 name="departmentId"
                 value={
                   allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
@@ -151,7 +168,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
                     ) || null
                 }
                 options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
+                  ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                   .map((dept) => ({
                     value: dept.departmentId,
                     label: dept.departmentName,
@@ -159,6 +176,9 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
                 onChange={(selectedOption) => {
                   const value = selectedOption?.value || "";
                   setFieldValue("departmentId", value);
+                  // Clear entity and location when department changes
+                  setFieldValue("entityId", "");
+                  setFieldValue("parkId", "");
                 }}
                 isClearable
                 placeholder="Department"
@@ -189,61 +209,61 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
               />
             </div>
             {/* location category */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Location Category
-                </label>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Location Category
+              </label>
 
-                <Select
-                  name="entityId"
-                  value={
-                    allEntityTypes
-                      ?.filter((entity) => entity.isActive)
-                      .map((entity) => ({
-                        value: entity.entityTypeId,
-                        label: entity.entityTypeName,
-                      }))
-                      .find((option) => option.value === values.entityId) ||
-                    null
-                  }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+              <Select
+                name="entityId"
+                value={
+                  getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
-                    }))}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption?.value || "";
-                    setFieldValue("entityId", value);
-                  }}
-                  isClearable
-                  placeholder="Location Category"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
+                    }))
+                    .find((option) => option.value === values.entityId) ||
+                  null
+                }
+                options={getFilteredEntityTypes(values.departmentId)
+                  .map((entity) => ({
+                    value: entity.entityTypeId,
+                    label: entity.entityTypeName,
+                  }))}
+                onChange={(selectedOption) => {
+                  const value = selectedOption?.value || "";
+                  setFieldValue("entityId", value);
+                  // Clear location when entity changes
+                  setFieldValue("parkId", "");
+                }}
+                isClearable
+                placeholder="Location Category"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
 
-                    menu: (base) => ({
-                      ...base,
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#6D7072",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>
+                  menu: (base) => ({
+                    ...base,
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
             {/* location */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -254,7 +274,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
                 name="locationId"
                 value={
                   allParks
-                    ?.filter((park) => park.isActive)
+                    ?.filter((park) => park.departmentName !== "Metro")
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
@@ -263,7 +283,7 @@ const TotalFailedPaymentTransactionReportForm = ({pageNumber, pageSize, Setcurre
                   null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                  ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,

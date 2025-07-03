@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import Select from "react-select";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
+import { cleanString, departmentToCategoryMapping, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 
@@ -17,6 +17,9 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
   const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
+
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -36,9 +39,6 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
       localStorage.setItem("userDetailedReportSearchParams", newSearchParams.toString());
     }
   }, [searchParams]);
-
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
@@ -72,11 +72,28 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
     setcurrentPage(0);
   };
 
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+    
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
+  };
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
             <div>
               <label
                 htmlFor="fromDate"
@@ -129,7 +146,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                 name="departmentId"
                 value={
                   allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
@@ -139,7 +156,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                     ) || null
                 }
                 options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
+                  ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                   .map((dept) => ({
                     value: dept.departmentId,
                     label: dept.departmentName,
@@ -147,6 +164,9 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                 onChange={(selectedOption) => {
                   const value = selectedOption?.value || "";
                   setFieldValue("departmentId", value);
+                  // Clear entity and location when department changes
+                  setFieldValue("entityId", "");
+                  setFieldValue("parkId", "");
                 }}
                 isClearable
                 placeholder="Department"
@@ -185,8 +205,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                 <Select
                   name="entityId"
                   value={
-                    allEntityTypes
-                      ?.filter((entity) => entity.isActive)
+                    getFilteredEntityTypes(values.departmentId)
                       .map((entity) => ({
                         value: entity.entityTypeId,
                         label: entity.entityTypeName,
@@ -194,8 +213,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                       .find((option) => option.value === values.entityId) ||
                     null
                   }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  options={getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
@@ -203,6 +221,8 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                   onChange={(selectedOption) => {
                     const value = selectedOption?.value || "";
                     setFieldValue("entityId", value);
+                    // Clear location when entity changes
+                    setFieldValue("parkId", "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -242,7 +262,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                 name="parkId"
                 value={
                   allParks
-                    ?.filter((park) => park.isActive)
+                    ?.filter((park) => park.departmentName !== "Metro")
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
@@ -251,7 +271,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                   null
                 }
                 options={allParks
-                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                  ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                   .map((park) => ({
                     value: park.id,
                     label: park.name,

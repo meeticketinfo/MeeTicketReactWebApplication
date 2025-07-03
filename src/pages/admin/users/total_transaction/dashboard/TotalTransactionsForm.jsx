@@ -1,7 +1,7 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { cleanString, departmentToCategoryMapping, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
@@ -85,6 +85,23 @@ const TotalTransactionsForm = () => {
     localStorage.setItem("totalTransactionSearchParams", "");
   };
 
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+    
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
+  };
+
   return (
     <>
       <Formik
@@ -143,7 +160,7 @@ const TotalTransactionsForm = () => {
                   name="departmentId"
                   value={
                     allDepartmentTypes
-                      ?.filter((dept) => dept.isActive)
+                      ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                       .map((dept) => ({
                         value: dept.departmentId,
                         label: dept.departmentName,
@@ -153,7 +170,7 @@ const TotalTransactionsForm = () => {
                       ) || null
                   }
                   options={allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
@@ -162,7 +179,10 @@ const TotalTransactionsForm = () => {
                     setFieldValue(
                       "departmentId",
                       selectedOption?.value || ""
-                    )
+                    );
+                    // Clear entity and location when department changes
+                    setFieldValue("entityId", "");
+                    setFieldValue("locationId", "");
                   }}
                   isClearable
                   placeholder="Department"
@@ -201,17 +221,15 @@ const TotalTransactionsForm = () => {
                 <Select
                   name="entityId"
                   value={
-                    allEntityTypes
-                      ?.filter((dept) => dept.isActive)
-                      .map((dept) => ({
-                        value: dept.entityTypeId,
-                        label: dept.entityTypeName,
+                    getFilteredEntityTypes(values.departmentId)
+                      .map((entity) => ({
+                        value: entity.entityTypeId,
+                        label: entity.entityTypeName,
                       }))
                       .find((option) => option.value === values.entityId) ||
                     null
                   }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  options={getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
@@ -220,7 +238,9 @@ const TotalTransactionsForm = () => {
                     setFieldValue(
                       "entityId",
                       selectedOption?.value || ""
-                    )
+                    );
+                    // Clear location when entity changes
+                    setFieldValue("locationId", "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -260,8 +280,7 @@ const TotalTransactionsForm = () => {
                   name="locationId"
                   value={
                     allParks
-                      ?.filter((park) => park.isActive)
-                      .map((park) => ({
+                      ?.map((park) => ({
                         value: park.id,
                         label: park.name,
                       }))
@@ -269,7 +288,7 @@ const TotalTransactionsForm = () => {
                     null
                   }
                   options={allParks
-                    ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                    ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
