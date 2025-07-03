@@ -300,7 +300,7 @@ const sidebarItems = [
       },
        {
         title: "User Report",
-        icon: RiDashboard3Fill,
+        icon: FaUsers,
         path: "/metro-user-report",
       },
     ],

@@ -7,7 +7,7 @@ import { metroUserReports } from "../../../../store/metro_user_reports_store/Met
 const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {isFetchUserReport, fetchUserReport} = userReports();
-const { isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
+  const { isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -46,7 +46,7 @@ const { isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-
+    localStorage.setItem("userReportSearchParams", "");
     setValues(payload);
     fetchMetroUserReport({...payload, PageIndex: PageIndex, pageSize: pageSize} );
   };

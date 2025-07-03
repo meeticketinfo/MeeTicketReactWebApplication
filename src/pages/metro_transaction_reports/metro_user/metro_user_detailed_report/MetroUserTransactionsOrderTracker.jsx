@@ -208,10 +208,10 @@ const MetroUserTransactionsOrderTracker = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
               <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
             </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+            {/* <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Park Name</h3>
               <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
-            </div>
+            </div> */}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
