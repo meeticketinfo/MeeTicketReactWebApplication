@@ -142,7 +142,25 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/payment-transaction-report",
       },
-
+       {
+        title: "Consolidated Booking Details",
+        icon: TbReportSearch,
+        path: "/pos-consolidated-booking-reports",
+      },
+      {
+        title: "Individual Booking Details",
+        icon: RiDashboard3Fill,
+        path: "/pos-individual-booking-reports",
+        gradientClass:
+          "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+        subItems: [],
+        roles: ["Admin", "Super Admin"],
+      },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/pos-payment-transactions-reports",
+      },
       {
         title: "Bank Payments",
         icon: RiBankFill,
@@ -279,6 +297,11 @@ const sidebarItems = [
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/metro-total-transaction",
+      },
+       {
+        title: "User Report",
+        icon: RiDashboard3Fill,
+        path: "/metro-user-report",
       },
     ],
   },

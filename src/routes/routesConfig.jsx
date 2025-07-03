@@ -71,6 +71,9 @@ import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboa
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import PosConsolidatedBookingReports from "../pages/admin/BookTickets/pos_reports/PosConsolidatedBookingReports";
+import PosIndividualBookingReports from "../pages/admin/BookTickets/pos_reports/PosIndividualBookingReports";
+import PosPaymentTransactionsReport from "../pages/admin/BookTickets/pos_reports/PosPaymentTransactionsReport";
 import TotalPaymentTransactionReport from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionReport";
 import UserReport from "../pages/admin/users/user_report/UserReport";
 import UserDetailedReport from "../pages/admin/users/user_detailed_report/UserDetailedReport";
@@ -97,6 +100,9 @@ import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_faile
 import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
 import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
 import MetroTotalTracker from "../pages/metro_transaction_reports/metro_total_transactions/metro_track_order/MetroTotalTracker";
+import MetroUserReport from "../pages/metro_transaction_reports/metro_user/metro_user_report/MetroUserReport";
+import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserDetailedReport";
+import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
 
 export const routes = [
   {
@@ -289,6 +295,18 @@ export const routes = [
     element: <ProtectedRoute element={<UserTransactionsOrderTracker />} />,
   },
   {
+    path: "/metro-user-report",
+    element: <ProtectedRoute element={<MetroUserReport />} />,
+  },
+  {
+    path: "/metro-user-detailed-report",
+    element: <ProtectedRoute element={<MetroUserDetailedReport />} />,
+  },
+   {
+    path: "/metro-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<MetroUserTransactionsOrderTracker />} />,
+  },
+  {
     path: "/total-payment-transaction-order-tracker",
     element: (
       <ProtectedRoute element={<TotalPaymentTransactionOrderTracker />} />
@@ -359,6 +377,19 @@ export const routes = [
   {
     path: "/privacy-policy-meeticket-app",
     element: <PrivacyPolicyMeeticketApp />,
+  },
+  //pos-zoo-park-reports
+  {
+    path: "/pos-consolidated-booking-reports",
+    element: <PosConsolidatedBookingReports />,
+  },
+  {
+    path: "/pos-individual-booking-reports",
+    element: <PosIndividualBookingReports />,
+  },
+  {
+    path: "/pos-payment-transactions-reports",
+    element: <PosPaymentTransactionsReport />,
   },
   // Grievance
   {

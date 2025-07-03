@@ -32,17 +32,21 @@ export const useBookingsStore = create(
       pageSize: 10,
       isLoading: false,
       allCompleteBookingsReports: [],
+      allCompletedZooCounterBookingsReport:[],
       allTransactionPaymentReports: [],
+      allNehruUserWisePaymentDetailsReports:[],
       isCompleteBookingsReportsLoading: false,
+      isCompletedZooCounterBookingsReportLoading: false,
       isTransactionPaymentReportsLoading: false,
       isCompleteBookings: false,
+      isCompletedZooCounterBookings:false,
       bookingMessage: "",
        isPaymentTransactionNAvigate:false,
+       isPosPaymentTransactionNAvigate:false,
       Generate_deep_link_data: [],
       isGenerate_deep_linkLoading: false,
       //
       CheckPosTsxStatusData: [],
-      isTransactionPaymentReportsLoading: false,
       // regenerate ticket
       isReGenerateTicketLoading: false,
       //  cgg
@@ -62,6 +66,9 @@ export const useBookingsStore = create(
       setPaymentTransactionNAvigate: (PaymentTransactionNAvigate) => {
         set({ PaymentTransactionNAvigate });
       },
+      setPosPaymentTransactionNAvigate: (PosPaymentTransactionNAvigate) => {
+        set({ PosPaymentTransactionNAvigate });
+      },
       setIsBookingFormVisible: (isBookingFormVisible) => {
         set({ isBookingFormVisible });
       },
@@ -74,7 +81,9 @@ export const useBookingsStore = create(
       setisCompleteBookings: (isCompleteBookings) => {
         set({ isCompleteBookings });
       },
-
+      setisCompletedZooCounterBookings: (isCompletedZooCounterBookings) => {
+        set({ isCompletedZooCounterBookings });
+      },
       setSelectedBookingsList: (selectedBookingsList) => {
         set({ selectedBookingsList });
       },
@@ -322,6 +331,33 @@ export const useBookingsStore = create(
           });
         }
       },
+      //new zoo reports
+       fetchCompletedZooCounterBookingsReport: async (payload) => {
+        const Payload1 = {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          departmentId: payload.departmentId,
+          entityTypeId: payload.entityTypeId,
+          mobileNumber: payload.mobileNumber,
+        };
+        const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
+        set({ isCompletedZooCounterBookingsReportLoading: true });
+        try {
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETED_ZOO_COUNTER_BOOKINGS;
+          const method = "get";
+          const response = await apiService[method](url, finalPyload);
+          set({
+            allCompletedZooCounterBookingsReport: response.data,
+            isCompletedZooCounterBookingsReportLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isCompletedZooCounterBookingsReportLoading: false,
+          });
+        }
+      },
 
       // Payment transactions
       fetchPaymentTransactions: async (payload) => {
@@ -339,6 +375,25 @@ export const useBookingsStore = create(
           set({
             error: error.message,
             isTransactionPaymentReportsLoading: false,
+          });
+        }
+      },
+      //NEW POS Payment transactions
+        fetchNehruUserWisePaymentDetailsReports: async (payload) => {
+        set({ isNehruUserWisePaymentDetailsReportsLoading: true });
+        try {
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_NEHRU_USER_WISE_PAYMENT_DETAILS;
+          const method = "get";
+          const response = await apiService[method](url, payload);
+          set({
+            allNehruUserWisePaymentDetailsReports: response.data,
+            isNehruUserWisePaymentDetailsReportsLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isNehruUserWisePaymentDetailsReportsLoading: false,
           });
         }
       },
