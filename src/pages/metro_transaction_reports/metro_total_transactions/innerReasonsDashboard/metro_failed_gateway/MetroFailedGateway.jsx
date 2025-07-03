@@ -5,18 +5,20 @@ import { Field, Form, Formik } from "formik";
 import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
 import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+import MetroFailedGatewayChart from "../../charts/MetroFailedGatewayChart";
 
 const MetroFailedGateway = () => {
-  const { setOuterFilters, outerFilters, resetOuterFilters } =
+ 
+     const { setInnerFilters, outerFilters, resetInnerFilters } =
     useMetroTotalCommonStore();
   const {
-    fetchOtherReasonsPieChart,
-    OtherReasonsPieChartData,
-    isOtherReasonsPieChartLoading,
+    fetchGateWayPieChart,
+    PaymentGatewayPieChartData,
+    isPaymentGatewayPieChartLoading,
   } = useMetroTotalTransactionsStore();
-  console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
+  console.log("PaymentGatewayPieChartData", PaymentGatewayPieChartData);
   useEffect(() => {
-    fetchOtherReasonsPieChart({
+    fetchGateWayPieChart({
       fromDate: outerFilters.fromDate || "",
       toDate: outerFilters.toDate || "",
       mobileNumber: outerFilters.mobileNumber || "",
@@ -29,12 +31,15 @@ const MetroFailedGateway = () => {
     mobileNumber: outerFilters.mobileNumber || "",
   };
   const onSubmit = (values) => {
-    // setOuterFilters(values);
-    // fetchMetroTransactionByReason(values);
+    setInnerFilters(values);
+    fetchGateWayPieChart(values);
   };
   const totalCount =
-    OtherReasonsPieChartData?.reduce((sum, item) => sum + item.totalCount, 0) ||
-    0;
+    PaymentGatewayPieChartData?.reduce(
+      (sum, item) => sum + item.totalCount,
+      0
+    ) || 0;
+
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
@@ -128,8 +133,8 @@ const MetroFailedGateway = () => {
                         toDate: "",
                         mobileNumber: "",
                       });
-                      resetOuterFilters();
-                      fetchMetroTransactionByReason({
+                      resetInnerFilters();
+                      fetchGateWayPieChart({
                         fromDate: "",
                         toDate: "",
                         mobileNumber: "",
@@ -143,11 +148,11 @@ const MetroFailedGateway = () => {
             )}
           </Formik>
 
-          <FailedOtherReasonChart
-            data={totalCount !== 0 ? OtherReasonsPieChartData : []}
+          <MetroFailedGatewayChart
+            data={totalCount !== 0 ? PaymentGatewayPieChartData : []}
             title="Failed (Payment Gateway)"
-            angleKey="subCategoryCount"
-            calloutLabelKey="subCategory"
+            angleKey="reasonCount"
+            calloutLabelKey="failureReason" 
           />
         </div>
       </div>

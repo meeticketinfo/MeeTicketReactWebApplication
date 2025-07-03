@@ -1,17 +1,5 @@
 import { Formik, Form, Field } from "formik";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore";
-import { useEffect } from "react";
-import Select from "react-select";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import { useSearchParams } from "react-router-dom";
-import {
-  cleanString,
-  getEndOfCurrentDay,
-  getStartOfCurrentDay,
-  getValueFromQuery,
-} from "../../../../utils/Helper";
+
 import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 
@@ -20,14 +8,9 @@ const OuterTotalTransactionForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
-  const { setOuterFilters, outerFilters, resetOuterFilters } =
-    useMetroTotalCommonStore();
+  const { outerFilters } = useMetroTotalCommonStore();
   console.log("outerFilters", outerFilters);
-  const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
   const initialValues = {
     startDate: outerFilters.fromDate || "",
     endDate: outerFilters.toDate || "",
@@ -39,9 +22,10 @@ const OuterTotalTransactionForm = ({
     console.log("values", values);
     fetchMetroTotalTransactions({
       ...values,
-      status:outerFilters.status,
-      pageNumber:pageNumber,
-      pageSize:pageSize
+      status: outerFilters.status,
+      subCategory: "",
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
     SetcurrentPage(1);
   };

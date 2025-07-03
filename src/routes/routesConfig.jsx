@@ -96,6 +96,7 @@ import MetroFailedGatewayReport from "../pages/metro_transaction_reports/metro_t
 import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_failed_payment_gateway_transaction/dashboard/MainTotalFailedGatewayTransactions";
 import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
 import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
+import MetroTotalTracker from "../pages/metro_transaction_reports/metro_total_transactions/metro_track_order/MetroTotalTracker";
 
 export const routes = [
   {
@@ -463,5 +464,9 @@ export const routes = [
   {
     path: "/metro-not-generated-report",
     element: <ProtectedRoute element={<MetroNotGeneratedReport />} />,
+  },
+  {
+    path: "/metro-total-traker",
+    element: <ProtectedRoute element={<MetroTotalTracker />} />,
   },
 ];

@@ -7,14 +7,14 @@ import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
 import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 
 const FailedOtherReason = () => {
-  const { setOuterFilters, outerFilters, resetOuterFilters } =
+  const { setInnerFilters, outerFilters, resetInnerFilters } =
     useMetroTotalCommonStore();
   const {
     fetchOtherReasonsPieChart,
     OtherReasonsPieChartData,
     isOtherReasonsPieChartLoading,
   } = useMetroTotalTransactionsStore();
-  console.log("OtherReasonsPieChartData",OtherReasonsPieChartData)
+  console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
   useEffect(() => {
     fetchOtherReasonsPieChart({
       fromDate: outerFilters.fromDate || "",
@@ -29,11 +29,12 @@ const FailedOtherReason = () => {
     mobileNumber: outerFilters.mobileNumber || "",
   };
   const onSubmit = (values) => {
-    // setOuterFilters(values);
-    // fetchMetroTransactionByReason(values);
+    setInnerFilters(values);
+    fetchOtherReasonsPieChart(values);
   };
   const totalCount =
-    OtherReasonsPieChartData?.reduce((sum, item) => sum + item.totalCount, 0) || 0;
+    OtherReasonsPieChartData?.reduce((sum, item) => sum + item.totalCount, 0) ||
+    0;
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
@@ -127,8 +128,8 @@ const FailedOtherReason = () => {
                         toDate: "",
                         mobileNumber: "",
                       });
-                      resetOuterFilters();
-                      fetchMetroTransactionByReason({
+                      resetInnerFilters();
+                      fetchOtherReasonsPieChart({
                         fromDate: "",
                         toDate: "",
                         mobileNumber: "",

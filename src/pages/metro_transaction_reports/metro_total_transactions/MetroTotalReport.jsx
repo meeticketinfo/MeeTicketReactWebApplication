@@ -27,10 +27,10 @@ const MetroTotalReport = () => {
       startDate: outerFilters.fromDate || "",
       endDate: outerFilters.toDate || "",
       phoneNumber: outerFilters.mobileNumber || "",
-      status: outerFilters.status||"",
-      subCategory:outerFilters.subCategory||"",
+      status: outerFilters.status || "",
+      subCategory: "",
       PaymentMode: "",
-      pageNumber: currentPage+1,
+      pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
@@ -62,7 +62,7 @@ const MetroTotalReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/total-payment-transaction-order-tracker"}
+          to={"/metro-total-traker"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -165,7 +165,12 @@ const MetroTotalReport = () => {
             </h1>
           </div>
           <div className="">
-            <Link to="/metro-total-transaction" className="bg-black text-white font-semibold px-4 py-1.5 rounded">Back</Link>
+            <Link
+              to="/metro-total-transaction"
+              className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+            >
+              Back
+            </Link>
           </div>
         </div>
 

@@ -19,12 +19,13 @@ const FailedOtherReasonChart = ({
   calloutLabelKey,
   // filters,
 }) => {
- 
- const { innerFilters,setInnerFilters,outerFilters } =useMetroTotalCommonStore();
+  const { innerFilters, setInnerFilters, outerFilters } =
+    useMetroTotalCommonStore();
   const chartRef = useRef(null);
 
   // Calculate total count
-  const totalCount = data?.reduce((sum, item) => sum + item.subCategoryCount, 0) || 0;
+  const totalCount =
+    data?.reduce((sum, item) => sum + item.subCategoryCount, 0) || 0;
 
   useEffect(() => {
     const chart = AgCharts.create({
@@ -42,8 +43,9 @@ const FailedOtherReasonChart = ({
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]
-                } (${percentage}%)`;
+              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${
+                datum[angleKey]
+              } (${percentage}%)`;
             },
             offset: 15,
             minAngle: 0,
@@ -72,7 +74,6 @@ const FailedOtherReasonChart = ({
     return () => chart.destroy();
   }, [data, title, angleKey, calloutLabelKey]);
 
- 
   return (
     <div className="gap-8 w-full p-6">
       <div className="flex flex-row gap-2 items-center justify-between">
@@ -80,9 +81,13 @@ const FailedOtherReasonChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-             to="/metro-failed-other-reason-report"
+            to="/metro-failed-other-reason-report"
             onClick={() => {
-              setInnerFilters({ ...outerFilters, status: outerFilters.status,subCategory:"" });
+              setInnerFilters({
+                ...innerFilters,
+                status: outerFilters.status,
+                subCategory: "",
+              });
             }}
             className="text-[#007AFF] font-bold underline ml-1"
           >
@@ -97,14 +102,17 @@ const FailedOtherReasonChart = ({
         </div>
 
         <div className="min-w-[340px]">
-          <div className="flex justify-end mb-2">
-          </div>
+          <div className="flex justify-end mb-2"></div>
           <div className="border-l-[#B7B7B7] border-r-[#B7B7B7]">
             <table className="w-full">
               <thead>
                 <tr className="bg-[#D9E4FF]">
-                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">Locations</th>
-                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">Count</th>
+                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">
+                    Locations
+                  </th>
+                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">
+                    Count
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -114,16 +122,18 @@ const FailedOtherReasonChart = ({
                       <div className="flex items-center gap-2">
                         <div
                           className="w-3 h-3 rounded-full shrink-0"
-                          style={{ backgroundColor: colors[index % colors.length] }}
+                          style={{
+                            backgroundColor: colors[index % colors.length],
+                          }}
                         />
                         <Link
-                           to="/metro-total-report"
+                          to="/metro-total-report"
                           className="text-[#000] hover:underline text-xs"
                           onClick={() => {
                             setInnerFilters({
-                              ...outerFilters,
+                              ...innerFilters,
                               status: item.mainCategory,
-                              subCategory:item.subCategory 
+                              subCategory: item.subCategory,
                             });
                           }}
                         >
@@ -134,15 +144,14 @@ const FailedOtherReasonChart = ({
                     <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                       <Link
                         to="/metro-failed-other-reason-report"
-                          onClick={() => {
-                            setInnerFilters({
-                              ...outerFilters,
-                              status: item.mainCategory,
-                              subCategory:item.subCategory 
-                            });
-                          }}
+                        onClick={() => {
+                          setInnerFilters({
+                            ...innerFilters,
+                            status: item.mainCategory,
+                            subCategory: item.subCategory,
+                          });
+                        }}
                         className="text-[#4A90E2] font-semibold hover:underline text-sm"
-                        
                       >
                         {item.subCategoryCount}
                       </Link>
