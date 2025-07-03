@@ -28,6 +28,8 @@ export const superAdminPermissions = [
   "user-report",
   "refund-transactions",
   "metro-total-transaction",
+  "metro-user-report",
+  "metro-user-detailed-report"
 ];
 
 export const parkAdminPermissions = [
