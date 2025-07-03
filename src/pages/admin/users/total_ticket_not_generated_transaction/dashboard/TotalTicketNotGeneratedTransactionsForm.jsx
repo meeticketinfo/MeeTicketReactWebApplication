@@ -72,7 +72,8 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
     fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   };
 
-  const resetForm = (setValues) => {
+  const resetHandler = (resetForm) => {
+    resetForm();
     const payload = {
       startDate: startOfDay,
       endDate: endOfDay,
@@ -85,7 +86,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
     // Clear URL search params
     setSearchParams(new URLSearchParams());
 
-    setValues(payload);
+    // setValues(payload);
     fetchTicketNotGeneratedTransactionSummaryPieChartData(payload);
   };
 
@@ -96,7 +97,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
         initialValues={initialValues}
         onSubmit={overAllOnSubmit}
       >
-        {({ values, setFieldValue, setValues }) => (
+        {({ values, setFieldValue, setValues, resetForm }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
@@ -134,6 +135,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                     const toDateValue = e.target.value;
                     setFieldValue("endDate", toDateValue);
                   }}
+                  min={values.startDate || startOfDay}
                 />
               </div>
               {/* department */}
@@ -345,7 +347,7 @@ const TotalTicketNotGeneratedTransactionsForm = () => {
                 <button
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
-                  onClick={() => resetForm(setValues)}
+                  onClick={() => resetHandler(resetForm)}
                 >
                   Reset
                 </button>

@@ -76,7 +76,8 @@ const TotalTransactionsForm = () => {
     fetchRefundTransactions(payload);
   };
 
-  const resetForm = (setValues) => {
+  const resetHandler = (resetForm) => {
+    resetForm();
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
@@ -90,7 +91,7 @@ const TotalTransactionsForm = () => {
     setSearchParams(new URLSearchParams());
 
     localStorage.setItem("refundTransactionSearchParams", "");
-    setValues(payload);
+    // setValues(payload);
     fetchRefundTransactions(payload);
   };
 
@@ -101,7 +102,7 @@ const TotalTransactionsForm = () => {
         initialValues={initialValues}
         onSubmit={overAllOnSubmit}
       >
-        {({ values, setFieldValue, setValues }) => (
+        {({ values, setFieldValue, setValues, resetForm }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
@@ -139,6 +140,7 @@ const TotalTransactionsForm = () => {
                     const toDateValue = e.target.value;
                     setFieldValue("toDate", toDateValue);
                   }}
+                  min={values.fromDate || startOfDay}
                 />
               </div>
               {/* department */}
@@ -388,7 +390,7 @@ const TotalTransactionsForm = () => {
                 <button
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
-                  onClick={() => resetForm(setValues)}
+                  onClick={() => resetHandler(resetForm)}
                   disabled={isFetchRefundTransactions}
                 >
                   Reset

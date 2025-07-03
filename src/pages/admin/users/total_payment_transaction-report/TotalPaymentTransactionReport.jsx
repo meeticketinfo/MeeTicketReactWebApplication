@@ -243,6 +243,7 @@ const TotalPaymentTransactionReport = () => {
               totalCount={paymentTransactionDetailsByStatusResult[0]?.totalCount}
               tableHeight={paymentTransactionDetailsByStatusResult.length > 10 ? 550 : 300}
               SetcurrentPage={setCurrentPage}
+              showSearch={false}
             />
           </div>
         </div>

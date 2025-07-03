@@ -126,6 +126,7 @@ const TotalFailedGatewayTransactionReportForm = ({pageNumber, pageSize, Setcurre
                   const toDateValue = e.target.value;
                   setFieldValue("endDate", toDateValue);
                 }}
+                min={values.startDate || startOfDay}
               />
             </div>
 

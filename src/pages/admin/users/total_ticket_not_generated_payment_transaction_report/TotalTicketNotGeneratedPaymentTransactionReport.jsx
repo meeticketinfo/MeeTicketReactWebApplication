@@ -229,6 +229,7 @@ const TotalTicketNotGeneratedPaymentTransactionReport = () => {
           <div>
             <TotalTicketNotGeneratedPaymentTransactionReportForm pageNumber={currentPage + 1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
             <AgGridTable
+              showSearch={false}
               ExportName="UserStatusTransactionReport"
               rowData={paymentTransactionDetailsByStatusResult}
               columnDefs={columnDefs}

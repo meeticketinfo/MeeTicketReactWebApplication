@@ -124,6 +124,7 @@ const UserReport = () => {
             totalCount={userReport?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
+            showSearch={false}
           />
         </div>
       </div>

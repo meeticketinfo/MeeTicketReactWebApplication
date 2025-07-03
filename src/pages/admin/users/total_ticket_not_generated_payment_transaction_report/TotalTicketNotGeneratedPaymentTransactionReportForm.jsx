@@ -123,6 +123,7 @@ const TotalTicketNotGeneratedPaymentTransactionReportForm = ({ pageNumber, pageS
                   const toDateValue = e.target.value;
                   setFieldValue("endDate", toDateValue);
                 }}
+                min={values.startDate || startOfDay}
               />
             </div>
 

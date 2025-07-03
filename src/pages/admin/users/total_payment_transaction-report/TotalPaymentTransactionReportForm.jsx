@@ -118,6 +118,7 @@ const TotalPaymentTransactionReportForm = ({ pageNumber, pageSize, SetcurrentPag
                   const toDateValue = e.target.value;
                   setFieldValue("endDate", toDateValue);
                 }}
+                min={values.startDate || startOfDay}
               />
             </div>
 

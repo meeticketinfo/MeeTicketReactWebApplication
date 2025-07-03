@@ -33,12 +33,13 @@ import Select from "react-select";
 import { useEntityTypesStore } from "../store/masters/entityTypesStore";
 import { Link } from "react-router-dom";
 import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
+import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 function AdminDashboard() {
   superballs.register();
 
   const [DashboardDate, setDashboardDate] = useState("");
   const [pieChartData, setPieChartData] = useState([]);
-  
+
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
@@ -47,9 +48,10 @@ function AdminDashboard() {
     fetchAllParks,
     fetchAllNodalOfficerParks,
     allNodalOfficerParks,
-   
+
   } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   // console.log("allEntityTypes", allEntityTypes);
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
     useAuthStore();
@@ -82,9 +84,12 @@ function AdminDashboard() {
     fromDate: getCurrentDate(),
     toDate: "",
     entityId: "",
+    departmentId: "",
+    locationId: "",
   };
 
   useEffect(() => {
+    fetchAllDepartmentTypes();
     fetchAllEntityTypes();
     fetchAllDashboardCounts(roleDetails, {
       fromDate: "",
@@ -170,6 +175,12 @@ function AdminDashboard() {
       icon: IoTicketSharp,
     },
     {
+      lableName: "Total Bookings",
+      count: allCounts?.totalTickets || "0",
+      percentageChange: 49,
+      icon: IoTicketSharp,
+    },
+    {
       lableName: "Total Income",
       // count: allCounts?.totalAmount,
       count: allCounts?.totalAmount || "0",
@@ -206,7 +217,7 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-    roleDetails?.name === "ROLE_ZOOPARKADMIN"
+      roleDetails?.name === "ROLE_ZOOPARKADMIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
 
@@ -304,6 +315,8 @@ function AdminDashboard() {
     fromDate: "",
     toDate: "",
     entityId: "",
+    departmentId: "",
+    locationId: "",
   };
   const overAllOnSubmit = (values) => {
     console.log("values", values);
@@ -315,12 +328,12 @@ function AdminDashboard() {
   return (
     <>
       {/* Cards */}
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-5">
         <div className="col-span-full ">
           <Formik initialValues={EsdInitialValues} onSubmit={overAllOnSubmit}>
             {({ values, setFieldValue }) => (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
                   <div>
                     <label
                       htmlFor="fromDate"
@@ -366,7 +379,63 @@ function AdminDashboard() {
                   {!(
                     roleDetails?.name === "ROLE_ADMIN" ||
                     roleDetails?.name === "ROLE_ZOOPARKADMIN"
-                  ) && (
+                  ) && (<>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700">
+                        Department
+                      </label>
+
+                      <Select
+                        name="departmentId"
+                        value={
+                          allDepartmentTypes
+                            ?.filter((dept) => dept.isActive)
+                            .map((dept) => ({
+                              value: dept.departmentId,
+                              label: dept.departmentName,
+                            }))
+                            .find(
+                              (option) => option.value === values.departmentId
+                            ) || null
+                        }
+                        options={allDepartmentTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.departmentId,
+                            label: dept.departmentName,
+                          }))}
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value || "";
+                          setFieldValue("departmentId", value);
+                        }}
+                        isClearable
+                        placeholder="Department"
+                        className="mt-[4px] text-sm"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            outline: "none",
+                            boxShadow: "none",
+                            borderColor: "#ced4da",
+                            borderRadius: "6px",
+                            height: "30px",
+                            minHeight: "33px",
+                          }),
+
+                          menu: (base) => ({
+                            ...base,
+                          }),
+                          option: (base, { isFocused }) => ({
+                            ...base,
+                            fontSize: "0.775rem",
+                            backgroundColor: isFocused ? "#F8F8F8" : "white",
+                            color: isFocused ? "#0C3771" : "#000",
+                            cursor: "pointer",
+                          }),
+                        }}
+                      />
+                    </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-700">
                         Location Category
@@ -423,12 +492,67 @@ function AdminDashboard() {
                         }}
                       />
                     </div>
-                  )}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700">
+                        Location
+                      </label>
+
+                      <Select
+                        name="locationId"
+                        value={
+                          allParks
+                            ?.filter((park) => park.isActive)
+                            .map((park) => ({
+                              value: park.id,
+                              label: park.name,
+                            }))
+                            .find((option) => option.value === values.locationId) ||
+                          null
+                        }
+                        options={allParks
+                          ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                          .map((park) => ({
+                            value: park.id,
+                            label: park.name,
+                          }))}
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value || "";
+                          setFieldValue("locationId", value);
+                        }}
+                        isClearable
+                        placeholder="Location"
+                        className="mt-[4px] text-sm"
+                        classNamePrefix="react-select"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            outline: "none",
+                            boxShadow: "none",
+                            borderColor: "#ced4da",
+                            borderRadius: "6px",
+                            height: "30px",
+                            minHeight: "33px",
+                          }),
+
+                          menu: (base) => ({
+                            ...base,
+                          }),
+                          option: (base, { isFocused }) => ({
+                            ...base,
+                            fontSize: "0.775rem",
+                            backgroundColor: isFocused ? "#F8F8F8" : "white",
+                            color: isFocused ? "#0C3771" : "#6D7072",
+                            cursor: "pointer",
+                          }),
+                        }}
+                      />
+                    </div>
+                  </>)}
                   <div className="flex items-end">
                     <button
                       type="submit"
                       className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                      // disabled={isFetchEntityBookingsLoading}
+                    // disabled={isFetchEntityBookingsLoading}
                     >
                       Search
                     </button>
@@ -521,154 +645,154 @@ function AdminDashboard() {
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {
-        roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-        roleDetails?.name === "ROLE_ADMIN" ? (
-          <>
-            <div className="col-span-full ">
-              <h1 className=" text-xl font-bold">
-                Facilities and Ticket Details
-              </h1>
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
-                <div>
-                  <label
-                    htmlFor="fromDate"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Search By Date
-                  </label>
-                  <input
-                    type="date"
-                    name="fromDate"
-                    className={`mt-1 block px-2 py-1 border w-full
+          roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
+            roleDetails?.name === "ROLE_ADMIN" ? (
+            <>
+              <div className="col-span-full ">
+                <h1 className=" text-xl font-bold">
+                  Facilities and Ticket Details
+                </h1>
+                <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
+                  <div>
+                    <label
+                      htmlFor="fromDate"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Search By Date
+                    </label>
+                    <input
+                      type="date"
+                      name="fromDate"
+                      className={`mt-1 block px-2 py-1 border w-full
                border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    // min={getCurrentDate()}
-                    value={DashboardDate}
-                    onChange={(e) => {
-                      setDashboardDate(e.target.value);
-                    }}
-                  />
+                      // min={getCurrentDate()}
+                      value={DashboardDate}
+                      onChange={(e) => {
+                        setDashboardDate(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button
+                      onClick={() => {
+                        fetchAllZooDashBoardCounts(DashboardDate);
+                      }}
+                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                    >
+                      Search
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-end">
-                  <button
-                    onClick={() => {
-                      fetchAllZooDashBoardCounts(DashboardDate);
-                    }}
-                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+              </div>
+              {isFetchZooDashboardLoading ? (
+                <div className="px-96 py-20">
+                  <l-superballs
+                    size="40"
+                    speed="1.4"
+                    color="black"
+                  ></l-superballs>
+                </div>
+              ) : (
+                allZooDashboard.data?.map((services, serviceIndex, index) => (
+                  <div
+                    key={serviceIndex}
+                    className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
                   >
-                    Search
-                  </button>
-                </div>
-              </div>
-            </div>
-            {isFetchZooDashboardLoading ? (
-              <div className="px-96 py-20">
-                <l-superballs
-                  size="40"
-                  speed="1.4"
-                  color="black"
-                ></l-superballs>
-              </div>
-            ) : (
-              allZooDashboard.data?.map((services, serviceIndex, index) => (  
-                <div
-                  key={serviceIndex}
-                  className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-                >
-                  <div className="flex items-center">
-                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
-                      <img
-                        src={services.service[0].serviceImage}
-                        // src={img}
-                        className="text-3xl font-bold text-white dark:text-gray-100  w-8"
-                      />
-                    </div>
-                    <div className="flex-shrink-0 ml-3">
-                      <div
-                        // to="/dashboard-detailed-report"
-                        className="text-2xl  font-bold leading-none   "
-                        onClick={() => {
-                          setDetailedReportParams({
-                            Date: DashboardDate,
-                            ServiceId:services.service[0]?.serviceId,
-                            serviceName:services.service[0]?.serviceName
-                          });
-                        }}
-                      >
-                        <CountUp
-                          end={services.service[0]?.totalBookings}
-                          duration={2}
-                          prefix=""
-                          separator=","
+                    <div className="flex items-center">
+                      <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
+                        <img
+                          src={services.service[0].serviceImage}
+                          // src={img}
+                          className="text-3xl font-bold text-white dark:text-gray-100  w-8"
                         />
                       </div>
-                      <h1 className="text-xs font-medium">
-                        {services.service[0].serviceName}
-                      </h1>
-                      <div className="flex gap-2">
-                        {services.service.map((Variant, variantIndex) => (
-                          <div
-                            key={variantIndex}
-                            className="flex gap-[2px] items-center"
-                          >
-                            <h3 className="text-sm font-normal text-gray-500">
-                              {Variant.serviceVariantName}:
-                            </h3>
-                            <h3 className="text-base font-semibold text-gray-500">
-                              {Variant.totalBooking}
-                            </h3>
-                          </div>
-                        ))}
+                      <div className="flex-shrink-0 ml-3">
+                        <div
+                          // to="/dashboard-detailed-report"
+                          className="text-2xl  font-bold leading-none   "
+                          onClick={() => {
+                            setDetailedReportParams({
+                              Date: DashboardDate,
+                              ServiceId: services.service[0]?.serviceId,
+                              serviceName: services.service[0]?.serviceName
+                            });
+                          }}
+                        >
+                          <CountUp
+                            end={services.service[0]?.totalBookings}
+                            duration={2}
+                            prefix=""
+                            separator=","
+                          />
+                        </div>
+                        <h1 className="text-xs font-medium">
+                          {services.service[0].serviceName}
+                        </h1>
+                        <div className="flex gap-2">
+                          {services.service.map((Variant, variantIndex) => (
+                            <div
+                              key={variantIndex}
+                              className="flex gap-[2px] items-center"
+                            >
+                              <h3 className="text-sm font-normal text-gray-500">
+                                {Variant.serviceVariantName}:
+                              </h3>
+                              <h3 className="text-base font-semibold text-gray-500">
+                                {Variant.totalBooking}
+                              </h3>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-            {isFetchZooDashboardLoading ? (
-              <div className="px-96 py-20"></div>
-            ) : (
-              allZooDashboard.service?.map((service, serviceIndex, index) => (
-                <div
-                  key={serviceIndex}
-                  className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-                >
-                  <div className="flex items-center">
-                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
-                      <img
-                        src={service.serviceImage}
-                        className="text-3xl font-bold text-white dark:text-gray-100 w-8"
-                      />
-                    </div>
-                    <div className="flex-shrink-0 ml-3">
-                      <div
-                        // to="/dashboard-detailed-report"
-                        className="text-2xl font-bold leading-none "
-                        onClick={() => {
-                          setDetailedReportParams({
-                            Date: DashboardDate,
-                            ServiceId:service.serviceId,
-                            serviceName:service?.serviceName
-                          });
-                        }
-                        }
-                      >
-                        <CountUp
-                          end={service.serviceVariants[0].totalBookings}
-                          duration={2}
-                          prefix=""
-                          separator=","
+                ))
+              )}
+              {isFetchZooDashboardLoading ? (
+                <div className="px-96 py-20"></div>
+              ) : (
+                allZooDashboard.service?.map((service, serviceIndex, index) => (
+                  <div
+                    key={serviceIndex}
+                    className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                  >
+                    <div className="flex items-center">
+                      <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
+                        <img
+                          src={service.serviceImage}
+                          className="text-3xl font-bold text-white dark:text-gray-100 w-8"
                         />
                       </div>
-                      <h1 className="text-sm font-medium">
-                        {service.serviceName}
-                      </h1>
+                      <div className="flex-shrink-0 ml-3">
+                        <div
+                          // to="/dashboard-detailed-report"
+                          className="text-2xl font-bold leading-none "
+                          onClick={() => {
+                            setDetailedReportParams({
+                              Date: DashboardDate,
+                              ServiceId: service.serviceId,
+                              serviceName: service?.serviceName
+                            });
+                          }
+                          }
+                        >
+                          <CountUp
+                            end={service.serviceVariants[0].totalBookings}
+                            duration={2}
+                            prefix=""
+                            separator=","
+                          />
+                        </div>
+                        <h1 className="text-sm font-medium">
+                          {service.serviceName}
+                        </h1>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
-          </>
-        ) : null}
+                ))
+              )}
+            </>
+          ) : null}
         {/* PIE CHART */}
         {roleDetails?.name == "ROLE_SUPERADMIN" && (
           <DashboardCard07>
@@ -676,183 +800,20 @@ function AdminDashboard() {
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                 <PieChart
                   data={allPieCharts}
-                  title="Total Booking By Location"
+                  title="Total Bookings"
                   angleKey="entityWiseTotalBookings"
                 />
               </div>
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
                 <PieChart
                   data={allPieCharts}
-                  title="Total Amount By Location"
+                  title="Total Amount"
                   angleKey="entityWiseTotalAmount"
                 />
               </div>
             </div>
           </DashboardCard07>
         )}
-        {/* REPORT TABLE */}
-        <DashboardCard07 header={true} title="Location Bookings">
-          <div className="">
-            <div>
-              <Formik
-                initialValues={initialValues}
-                onSubmit={(values, actions) => onSubmit(values, actions)}
-              >
-                {({ values, setFieldValue }) => (
-                  <Form>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-                      {(role === "ROLE_SUPERADMIN" ||
-                        role === "ROLE_NODALOFFICER") && (
-                        <div>
-                          <label className="block text-xs font-medium">
-                            Location
-                          </label>
-                          <Field
-                            as="select"
-                            name="entityId"
-                            className={`mt-1 block w-full px-2 py-1 border
-                              border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          >
-                            <option value="">Location </option>
-                            {parksToRender
-                              ?.filter((park) => park.isActive)
-                              ?.map((park) => (
-                                <option key={park.id} value={park.id}>
-                                  {park.name}
-                                </option>
-                              ))}
-                          </Field>
-                        </div>
-                      )}
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Location Category
-                        </label>
-
-                        <Select
-                          name="locationCategoryId"
-                          value={
-                            allEntityTypes
-                              ?.filter((dept) => dept.isActive)
-                              .map((dept) => ({
-                                value: dept.entityTypeId,
-                                label: dept.entityTypeName,
-                              }))
-                              .find(
-                                (option) =>
-                                  option.value === values.locationCategoryId
-                              ) || null // Use values.entityId
-                          }
-                          options={allEntityTypes
-                            ?.filter((entity) => entity.isActive)
-                            .map((entity) => ({
-                              value: entity.entityTypeId,
-                              label: entity.entityTypeName,
-                            }))}
-                          onChange={(selectedOption) =>
-                            setFieldValue(
-                              "locationCategoryId",
-                              selectedOption?.value || ""
-                            )
-                          }
-                          isClearable
-                          placeholder="Location Category"
-                          className="mt-[4px] text-sm"
-                          classNamePrefix="react-select"
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              outline: "none",
-                              boxShadow: "none",
-                              borderColor: "#ced4da",
-                              borderRadius: "6px",
-                              height: "30px",
-                              minHeight: "33px",
-                            }),
-
-                            menu: (base) => ({
-                              ...base,
-                              // padding: "4px 0",
-                            }),
-                            option: (base, { isFocused }) => ({
-                              ...base,
-                              fontSize: "0.775rem",
-                              backgroundColor: isFocused ? "#F8F8F8" : "white",
-                              color: isFocused ? "#0C3771" : "#6D7072",
-                              cursor: "pointer",
-                            }),
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="fromDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          From Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="fromDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          // min={getCurrentDate()}
-                          onChange={(e) => {
-                            const fromDateValue = e.target.value;
-                            setFieldValue("fromDate", fromDateValue);
-                            if (
-                              new Date(fromDateValue) > new Date(values.toDate)
-                            ) {
-                              // Automatically update toDate if it's earlier than fromDate
-                              setFieldValue("toDate", fromDateValue);
-                            }
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="toDate"
-                          className="block text-xs font-medium text-gray-700"
-                        >
-                          To Date
-                        </label>
-                        <Field
-                          type="date"
-                          name="toDate"
-                          className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
-                          onChange={(e) => {
-                            const toDateValue = e.target.value;
-                            setFieldValue("toDate", toDateValue);
-                          }}
-                        />
-                      </div>
-                      <div className="flex items-end">
-                        <button
-                          type="submit"
-                          className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                          // disabled={isFetchEntityBookingsLoading}
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div>
-                  </Form>
-                )}
-              </Formik>
-            </div>
-            <AgGridTable
-              ExportName="Location Bookings"
-              isFetchLoading={isFetchEntityBookingsLoading}
-              rowData={allEntityBookings || []}
-              columnDefs={dashboardColumnDefs}
-              onPageChange={handlePageChange}
-              totalRecords={totalEntityBookingRecords}
-              enableAdvancedFilter={true}
-            />
-          </div>
-        </DashboardCard07>
       </div>
     </>
   );

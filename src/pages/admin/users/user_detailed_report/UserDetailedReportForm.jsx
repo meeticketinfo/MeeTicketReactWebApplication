@@ -115,6 +115,7 @@ const UserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
+                min={values.fromDate || startOfDay}
               />
             </div>
 

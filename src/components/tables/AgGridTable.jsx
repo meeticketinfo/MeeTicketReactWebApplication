@@ -29,11 +29,12 @@ const AgGridTable = ({
   currentPage,
   showTotalCount = false,
   totalCount,
-  SetcurrentPage
+  SetcurrentPage,
+  showSearch = true,
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
-   
+
   const gridRef = useRef(null);
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API
@@ -68,10 +69,10 @@ const AgGridTable = ({
           ExportName && typeof ExportName === "string"
             ? `${ExportName}.xlsx`
             : "Report.xlsx",
-            // columnKeys: gridApi
-            // .getColumnDefs()
-            // .filter(col => col.field !== "actions")
-            // .map(col => col.field),
+        // columnKeys: gridApi
+        // .getColumnDefs()
+        // .filter(col => col.field !== "actions")
+        // .map(col => col.field),
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];
@@ -140,16 +141,18 @@ const AgGridTable = ({
     <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
       {/* Search and Export Buttons */}
       <div className="ag-grid-toolbar flex justify-between items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm">
-        <div>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={quickFilterText} // Controlled input
-            onChange={handleQuickFilterChange}
-            className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
-          />
-        </div>
-        <div className="flex items-center gap-4">
+        {showSearch && (
+          <div>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={quickFilterText} // Controlled input
+              onChange={handleQuickFilterChange}
+              className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
+            />
+          </div>
+        )}
+        <div className="flex items-center gap-4 ml-auto">
           {(showTotalCount && rowData.length > 0) && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
           <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
             <button onClick={handleExportExcel} className="ag-grid-button">
@@ -171,10 +174,10 @@ const AgGridTable = ({
           gridOptions={gridOptions}
           pagination={isPaginationEnabled}
           paginationPageSize={20}
-          paginationPageSizeSelector={[20,50,100,500,1000]}
+          paginationPageSizeSelector={[20, 50, 100, 500, 1000]}
           pinnedBottomRowData={pinnedBottomRowData}
           columnDefs={columnDefs?.map((col) => ({
-            ...col, 
+            ...col,
             minWidth: 180,
             sortable: true,
           }))}
@@ -193,7 +196,7 @@ const AgGridTable = ({
           }}
         />
 
-         
+
 
         {/* Loader overlay within the table body */}
         {isFetchLoading && (
@@ -206,8 +209,8 @@ const AgGridTable = ({
         <div>
           <span className="">Page Size: &nbsp;</span>
           <select className=" py-1 border border-gray-300 rounded-lg"
-            onChange={(e) => { 
-              setPageLimit(e.target.value) 
+            onChange={(e) => {
+              setPageLimit(e.target.value)
               SetcurrentPage(0)
             }}
             value={pageLimit}

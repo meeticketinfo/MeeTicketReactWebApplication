@@ -127,6 +127,7 @@ const TotalFailedTransactionsForm = () => {
                     const toDateValue = e.target.value;
                     setFieldValue("endDate", toDateValue);
                   }}
+                  min={values.startDate || startOfDay}
                 />
               </div>
               {/* department */}
