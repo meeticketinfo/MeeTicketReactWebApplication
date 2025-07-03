@@ -7,22 +7,28 @@ const MetroFailedGateWayReportForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
-  const { innerFilters } = useMetroTotalCommonStore();
+  const {
+    innerFilters,
+    setDeepInnerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+  } = useMetroTotalCommonStore();
   console.log("outerFilters", innerFilters);
   const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
   const initialValues = {
-    startDate: innerFilters.fromDate || "",
-    endDate: innerFilters.toDate || "",
-    phoneNumber: innerFilters.mobileNumber || "",
-    PaymentMode: "",
+    startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
+    endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
+    phoneNumber: deepInnerFilters.mobileNumber || innerFilters.mobileNumber || "",
+    PaymentMode: deepInnerFilters.PaymentMode || "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
+    setDeepInnerFilters(values);
     fetchMetroTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory:innerFilters.subCategory,
+      subCategory: innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });

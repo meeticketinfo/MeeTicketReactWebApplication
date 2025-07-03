@@ -11,9 +11,16 @@ import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 
 import MetroNotGeneratedReportForm from "./MetroNotGeneratedReportForm";
+import Breadcrumb from "../../../../../components/Breadcrumb";
 
 const MetroNotGeneratedReport = () => {
-  const { innerFilters, outerFilters } = useMetroTotalCommonStore();
+  const {
+    innerFilters,
+    outerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+    resetInnerFilters
+  } = useMetroTotalCommonStore();
   const {
     fetchMetroTotalTransactions,
     MetroTotalTransactionsData,
@@ -27,12 +34,14 @@ const MetroNotGeneratedReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: innerFilters.fromDate || "",
-      endDate: innerFilters.toDate || "",
-      phoneNumber: innerFilters.mobileNumber || "",
+      startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
+      endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
+      phoneNumber:
+        innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
+      PaymentMode: deepInnerFilters.PaymentMode || "",
       status: innerFilters.status || "",
       subCategory: innerFilters.subCategory || "",
-      PaymentMode: "",
+
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -65,12 +74,11 @@ const MetroNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/total-payment-transaction-order-tracker"}
+          to={"/metro-total-traker"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
@@ -126,7 +134,7 @@ const MetroNotGeneratedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "status",
+      field: "transactionStatus",
       headerName: "Transaction Status",
       maxWidth: "220",
       headerClass: "text-blue-v2",
@@ -142,7 +150,7 @@ const MetroNotGeneratedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "bookingDetailsId",
+      field: "bookingId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -158,19 +166,43 @@ const MetroNotGeneratedReport = () => {
       ),
     },
   ];
+  const breadcrumbItems = [
+    {
+      label: 'Total Transactions',
+      path: `/metro-total-transaction`
+    },
+     {
+      label: 'Payment Successful but Ticket not Generated',  
+      path: `/metro-not-generated`,
+       onclick:()=>{resetDeepInnerFilters()
+        
+      },
+    },
+    {
+      label: 'Payment Successful but Ticket not Generated Report',  
+      isLast: true
+    }
+  ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+        <Breadcrumb 
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total Transactions Report
+              Payment Successful but Ticket not Generated  Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-failed-other-reason"
+              to="/metro-not-generated"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+              onClick={() => {
+                resetDeepInnerFilters();
+              }}
             >
               Back
             </Link>

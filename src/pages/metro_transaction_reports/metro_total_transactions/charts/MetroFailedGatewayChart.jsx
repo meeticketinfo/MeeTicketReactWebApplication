@@ -25,7 +25,7 @@ const MetroFailedGatewayChart = ({
 
   // Calculate total count
   const totalCount =
-    data?.reduce((sum, item) => sum + item.subCategoryCount, 0) || 0;
+    data?.reduce((sum, item) => sum + item.reasonCount, 0) || 0;
 
   useEffect(() => {
     const chart = AgCharts.create({
@@ -36,14 +36,21 @@ const MetroFailedGatewayChart = ({
           data: data,
           angleKey: angleKey,
           calloutLabelKey: calloutLabelKey,
-          calloutLabel: {
+         calloutLabel: {
             enabled: true,
             fontSize: 10,
             color: "black",
+            maxWidth: 150, // enables wrapping on AgCharts v8+
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${
+              const text = datum[calloutLabelKey] || "";
+              const wrapLength = 25;
+              const wrappedText = text.replace(
+                new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
+                "$1\n"
+              );
+              return `${wrappedText.trim()}\n${
                 datum[angleKey]
               } (${percentage}%)`;
             },
@@ -101,7 +108,7 @@ const MetroFailedGatewayChart = ({
           <div ref={chartRef} className="h-[400px] max-w-[90%]" />
         </div>
 
-        <div className="min-w-[340px] max-w-[500px]">
+       {data.length>0&& <div className="min-w-[340px] max-w-[500px]">
           <div className="flex justify-end mb-2"></div>
           <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
             <table className="w-full">
@@ -161,7 +168,7 @@ const MetroFailedGatewayChart = ({
               </tbody>
             </table>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );

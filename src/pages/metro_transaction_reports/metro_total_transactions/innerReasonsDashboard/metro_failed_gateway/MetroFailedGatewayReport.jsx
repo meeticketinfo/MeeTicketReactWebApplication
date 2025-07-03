@@ -10,9 +10,17 @@ import AdminLayout from "../../../../../layouts/AdminLayout";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 import MetroFailedGateWayReportForm from "./MetroFailedGateWayReportForm";
+import Breadcrumb from "../../../../../components/Breadcrumb";
 
 const MetroFailedGatewayReport = () => {
-  const { innerFilters, outerFilters } = useMetroTotalCommonStore();
+  
+   const {
+    innerFilters,
+    outerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+    resetInnerFilters,
+  } = useMetroTotalCommonStore();
   const {
     fetchMetroTotalTransactions,
     MetroTotalTransactionsData,
@@ -26,150 +34,174 @@ const MetroFailedGatewayReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: innerFilters.fromDate || "",
-      endDate: innerFilters.toDate || "",
-      phoneNumber: innerFilters.mobileNumber || "",
+      startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
+      endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
+      phoneNumber:innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
+      PaymentMode: deepInnerFilters.mobileNumber || "",
       status: innerFilters.status || "",
       subCategory: innerFilters.subCategory || "",
-      PaymentMode: "",
+     
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
   const columnDefs = [
-    {
-      headerName: "S.No",
-      valueGetter: (params) => {
-        const pageOffset = currentPage * PAGE_LIMIT;
-        return pageOffset + params.node.rowIndex + 1;
+      {
+        headerName: "S.No",
+        valueGetter: (params) => {
+          const pageOffset = currentPage * PAGE_LIMIT;
+          return pageOffset + params.node.rowIndex + 1;
+        },
+        maxWidth: "80",
+        headerClass: "text-blue-v2",
       },
-      maxWidth: "80",
-      headerClass: "text-blue-v2",
-    },
+      {
+        field: "createdDate",
+        maxWidth: "200",
+        headerName: "Transaction Date & Time",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          return formatDateTime(params.value);
+        },
+      },
+      {
+        field: "action",
+        maxWidth: "180",
+        headerName: "Action",
+        headerClass: "text-blue-v2",
+        cellRenderer: (params) => (
+          <Link
+            className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+            to={"/metro-total-traker"}
+            state={{
+              orderId: params.data.orderId,
+              date: params.data.createdDate,
+              mobileNumber: params.data.mobileNumber,
+              status: params.data.transactionStatus,
+              amount: params.data.amount,
+              bookingId: params.data.bookingId,
+            }}
+          >
+            View Track Order
+          </Link>
+        ),
+      },
+      {
+        field: "mobileNumber",
+        headerName: "Mobile No.",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "fromStationName",
+        headerName: "From Station",
+        maxWidth: "140",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "toStationName",
+        headerName: "To Station",
+        maxWidth: "160",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+  
+      {
+        field: "amount",
+        headerName: "Amount",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      },
+      {
+        field: "noOfTickets",
+        headerName: "No of Tickets",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+  
+      {
+        field: "paymentMode",
+        headerName: "Payment Mode",
+        maxWidth: "140",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "transactionStatus",
+        headerName: "Transaction Status",
+        maxWidth: "220",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+        cellRenderer: (params) => (
+          <span title={params.value}>{params.value}</span>
+        ),
+      },
+      {
+        field: "orderId",
+        headerName: "Order ID",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "bookingId",
+        headerName: "Booking ID",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "resultMessage",
+        hide: outerFilters.status === "Success",
+        headerName: "Result Message",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+        cellRenderer: (params) => (
+          <span title={params.value}>{params.value}</span>
+        ),
+      },
+    ];
+    const breadcrumbItems = [
     {
-      field: "createdDate",
-      maxWidth: "200",
-      headerName: "Transaction Date & Time",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        return formatDateTime(params.value);
+      label: 'Total Transactions',
+      path: `/metro-total-transaction`
+    },
+     {
+      label: 'Failed (Payment Gateway)',  
+      path: `/metro-failed-gateway`,
+       onclick:()=>{resetDeepInnerFilters()
+       
       },
     },
     {
-      field: "action",
-      maxWidth: "180",
-      headerName: "Action",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <Link
-          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/total-payment-transaction-order-tracker"}
-          state={{
-            orderId: params.data.orderId,
-            date: params.data.createdDate,
-            mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
-            status: params.data.transactionStatus,
-            amount: params.data.amount,
-            bookingId: params.data.bookingId,
-          }}
-        >
-          View Track Order
-        </Link>
-      ),
-    },
-    {
-      field: "mobileNumber",
-      headerName: "Mobile No.",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "fromStationName",
-      headerName: "From Station",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "toStationName",
-      headerName: "To Station",
-      maxWidth: "160",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-
-    {
-      field: "amount",
-      headerName: "Amount",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-
-    {
-      field: "paymentMode",
-      headerName: "Payment Mode",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "status",
-      headerName: "Transaction Status",
-      maxWidth: "220",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
-    },
-    {
-      field: "orderId",
-      headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "bookingDetailsId",
-      headerName: "Booking ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "resultMessage",
-      hide: outerFilters.status === "Success",
-      headerName: "Result Message",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
-    },
+      label: 'Failed (Payment Gateway)Report',  
+      isLast: true
+    }
   ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+        <Breadcrumb 
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Payment Gateway)
+              Failed (Payment Gateway)-{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()}Report
             </h1>
           </div>
           <div className="">
             <Link
               to="/metro-failed-gateway"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+               onClick={() => {
+                resetDeepInnerFilters();
+              }}
             >
               Back
             </Link>

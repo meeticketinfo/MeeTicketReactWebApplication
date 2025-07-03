@@ -298,11 +298,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/metro-total-transaction",
       },
-       {
-        title: "User Report",
-        icon: RiDashboard3Fill,
-        path: "/metro-user-report",
-      },
+      //  {
+      //   title: "User Report",
+      //   icon: RiDashboard3Fill,
+      //   path: "/metro-user-report",
+      // },
     ],
   },
   // griveance

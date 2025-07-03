@@ -3,64 +3,47 @@ import React, { useEffect } from "react";
 import MetroTotalTransactionChart from "../charts/MetroTotalTransactionChart";
 import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-
-const paymentData = [
-  {
-    paymentCategory: "Failed (Other Reasons)",
-    paymentCategoryKey: "FailedDueToOtherReasons",
-    count: 341,
-    percentage: 68.61,
-  },
-  {
-    paymentCategory: "Failed (Payment Gateway)",
-    paymentCategoryKey: "FailedFromGateway",
-    count: 0,
-    percentage: 0.0,
-  },
-  {
-    paymentCategory: "Payment Successful but Ticket not Generated",
-    paymentCategoryKey: "PaymentSuccessButTicketNotGenerated",
-    count: 3,
-    percentage: 0.6,
-  },
-  {
-    paymentCategory: "Successful",
-    paymentCategoryKey: "Success",
-    count: 153,
-    percentage: 30.78,
-  },
-  {
-    paymentCategory: "Uncategorized",
-    paymentCategoryKey: "Uncategorized",
-    count: 200,
-    percentage: 0.0,
-  },
-];
+import {
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper";
 
 const OuterTotalTransactionReport = () => {
-  const { setOuterFilters, outerFilters, resetOuterFilters,setInnerFilters,resetInnerFilters } =
-    useMetroTotalCommonStore();
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
+  const {
+    setOuterFilters,
+    outerFilters,
+    resetOuterFilters,
+    setInnerFilters,
+    resetInnerFilters,
+  } = useMetroTotalCommonStore();
   const {
     fetchMetroTransactionByReason,
     MetroTransactionByReasonData,
     isMetroTransactionByReasonLoading,
   } = useMetroTotalTransactionsStore();
   useEffect(() => {
+    setInnerFilters({
+      fromDate: outerFilters.fromDate || startOfDay,
+      toDate: outerFilters.toDate || endOfDay,
+      mobileNumber: outerFilters.mobileNumber || "",
+    });
     fetchMetroTransactionByReason({
-      fromDate: outerFilters.fromDate || "",
-      toDate: outerFilters.toDate || "",
+      fromDate: outerFilters.fromDate || startOfDay,
+      toDate: outerFilters.toDate || endOfDay,
       mobileNumber: outerFilters.mobileNumber || "",
     });
   }, []);
   console.log("outerFilters", outerFilters);
   const initialValues = {
-    fromDate: outerFilters.fromDate || "",
-    toDate: outerFilters.toDate || "",
+    fromDate: outerFilters.fromDate || startOfDay,
+    toDate: outerFilters.toDate || endOfDay,
     mobileNumber: outerFilters.mobileNumber || "",
   };
   const onSubmit = (values) => {
     setOuterFilters(values);
-    setInnerFilters(values)
+    setInnerFilters(values);
     fetchMetroTransactionByReason(values);
   };
   const totalCount =
@@ -138,15 +121,15 @@ const OuterTotalTransactionReport = () => {
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                 onClick={() => {
                   setValues({
-                    fromDate: "",
-                    toDate: "",
+                    fromDate: startOfDay,
+                    toDate: endOfDay,
                     mobileNumber: "",
                   });
                   resetOuterFilters();
                   resetInnerFilters();
                   fetchMetroTransactionByReason({
-                    fromDate: "",
-                    toDate: "",
+                    fromDate: startOfDay,
+                    toDate: endOfDay,
                     mobileNumber: "",
                   });
                 }}
@@ -158,12 +141,25 @@ const OuterTotalTransactionReport = () => {
         )}
       </Formik>
 
-      <MetroTotalTransactionChart
-        data={totalCount !== 0 ? MetroTransactionByReasonData : []}
-        title="Total Transactions"
-        angleKey="count"
-        calloutLabelKey="paymentCategory"
-      />
+      <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+        <div className="flex">
+          <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
+            {/* <Loader/> */}
+
+            {isMetroTransactionByReasonLoading && (
+              <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                <div className="loader"></div>
+              </div>
+            )}
+            <MetroTotalTransactionChart
+              data={totalCount !== 0 ? MetroTransactionByReasonData : []}
+              title="Total Transactions"
+              angleKey="count"
+              calloutLabelKey="paymentCategory"
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };

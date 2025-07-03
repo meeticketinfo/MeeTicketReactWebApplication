@@ -7,10 +7,15 @@ import OuterTotalTransactionForm from "./outer_report/OuterTotalTransactionForm"
 import { useMetroTotalTransactionsStore } from "../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 import { formatDateTime } from "../../../utils/Helper";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 const MetroTotalReport = () => {
-  const { setOuterFilters, outerFilters, resetOuterFilters } =
-    useMetroTotalCommonStore();
+  const {
+    innerFilters,
+    outerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+  } = useMetroTotalCommonStore();
   const {
     fetchMetroTotalTransactions,
     MetroTotalTransactionsData,
@@ -24,12 +29,14 @@ const MetroTotalReport = () => {
   console.log("outerFilters", outerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: outerFilters.fromDate || "",
-      endDate: outerFilters.toDate || "",
-      phoneNumber: outerFilters.mobileNumber || "",
+      startDate: deepInnerFilters.startDate || outerFilters.fromDate || "",
+      endDate: deepInnerFilters.endDate || outerFilters.toDate || "",
+      phoneNumber:
+        deepInnerFilters.mobileNumber || outerFilters.mobileNumber || "",
+      PaymentMode: deepInnerFilters.PaymentMode || "",
       status: outerFilters.status || "",
       subCategory: "",
-      PaymentMode: "",
+
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -67,7 +74,6 @@ const MetroTotalReport = () => {
             orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
@@ -123,7 +129,7 @@ const MetroTotalReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "status",
+      field: "transactionStatus",
       headerName: "Transaction Status",
       maxWidth: "220",
       headerClass: "text-blue-v2",
@@ -139,7 +145,7 @@ const MetroTotalReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "bookingDetailsId",
+      field: "bookingId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -155,19 +161,38 @@ const MetroTotalReport = () => {
       ),
     },
   ];
+    const breadcrumbItems = [
+    {
+      label: 'Total Transactions ',
+      path: `/metro-total-transaction`,
+       onclick:()=>resetDeepInnerFilters(),
+    },
+    
+    {
+      label: `Total ${outerFilters.status?outerFilters.status:"Transaction"} Report`,  
+      isLast: true
+    }
+  ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+          <div className="mb-6">
+          <Breadcrumb 
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total Transactions Report
+              Total {outerFilters.status?outerFilters.status:"Transaction"} Report
             </h1>
           </div>
           <div className="">
             <Link
               to="/metro-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+              onclick={()=>{resetDeepInnerFilters()}}
             >
               Back
             </Link>

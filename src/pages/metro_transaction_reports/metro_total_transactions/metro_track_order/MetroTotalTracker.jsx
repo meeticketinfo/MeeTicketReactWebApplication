@@ -5,12 +5,14 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import { formatDateTime } from "../../../../utils/Helper";
+import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 
 const MetroTotalTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId } =
     location.state || {};
-
+const {  outerFilters } = useMetroTotalCommonStore();
   const {
     MetroTransactionTrackingStatusByOrderIdData,
     isFetchMetroTransactionTrackingStatusByOrderId,
@@ -115,6 +117,14 @@ const MetroTotalTracker = () => {
     },
   ];
 
+  const TrackRouteConfig={
+    FailedDueToOtherReasons:"/metro-failed-other-reason-report",
+    FailedFromGateway:"/metro-failed-gateway-report",
+    PaymentSuccessButTicketNotGenerated:"/metro-not-generated-report",
+    Success:"/metro-total-report",
+    Uncategorized:"/metro-total-report"
+  }
+
   return (
     <>
       <AdminLayout>
@@ -128,7 +138,7 @@ const MetroTotalTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/metro-total-report`}
+                to={outerFilters.status!=""?TrackRouteConfig[outerFilters.status]:"/metro-total-report"}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -176,14 +186,14 @@ const MetroTotalTracker = () => {
                 {mobileNumber || "N/A"}
               </p>
             </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+            {/* <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">
                 Park Name
               </h3>
               <p className="text-sm font-semibold text-gray-900">
                 {parkName || "N/A"}
               </p>
-            </div>
+            </div> */}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">
