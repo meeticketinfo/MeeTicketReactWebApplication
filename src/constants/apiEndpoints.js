@@ -49,7 +49,7 @@ export const RTC_API_BASE_URL =
 
 //  PARK UAT testing
 // export const API_BASE_URL =
-//   "https://sl0slvn0-7237.inc1.devtunnels.ms/api/";
+//   "https://7q0xctq4-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
