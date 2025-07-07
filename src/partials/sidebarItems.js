@@ -370,7 +370,7 @@ const sidebarItems = [
     subItems: [],
   },
 
-   {
+  {
     title: "Masters",
     icon: FaCalendarCheck,
     path: "",
@@ -382,24 +382,32 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/amrabad-packages",
       },
-     
     ],
   },
-    {
+  {
     title: "Reports",
-    icon: FaCalendarCheck,
+    icon: HiOutlineDocumentReport,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Packages",
+        title: "Consolidated Reports",
         icon: TbReportSearch,
-        path: "/amrabad-packages",
+        path: "/amrabad-consolidated-reports",
       },
-     
+      {
+        title: "Individual Reports",
+        icon: RiDashboard3Fill,
+        path: "/amrabad-individual-reports",
+      },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/amrabad-payment-transactions",
+      },
     ],
-  }
+  },
 ];
 
 export default sidebarItems;

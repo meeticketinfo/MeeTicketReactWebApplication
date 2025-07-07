@@ -69,7 +69,9 @@ import UserStatusTransactionReport from "../components/payments_management/UserS
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
 import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
-
+import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
+import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
+import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
 export const routes = [
   {
     path: "*",
@@ -303,5 +305,17 @@ export const routes = [
    { 
     path: "/amrabad-packages",
     element: <ProtectedRoute element={<MainPackages/>} />,
+  },
+  { 
+    path: "/amrabad-consolidated-reports",
+    element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
+  },
+    { 
+    path: "/amrabad-individual-reports",
+    element: <ProtectedRoute element={<AmrabadIndividualReports/>} />,
+  },
+   { 
+    path: "/amrabad-payment-transactions",
+    element: <ProtectedRoute element={<AmrabadPaymentTransactionsReport />} />,
   },
 ];

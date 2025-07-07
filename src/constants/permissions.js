@@ -98,7 +98,7 @@ export const SupportAdmin = [
   "transaction-report",
   "booking-details",
   "pending-transaction-details",
-   "Grievance-consolidate",
+  "Grievance-consolidate",
   "Grievance-Incident",
 ];
 
@@ -122,5 +122,8 @@ export const Toursim = [
 
 export const Amrabad = [
   "dashboard",
-  "amrabad-packages"
+  "amrabad-packages",
+  "amrabad-consolidated-reports",
+  "amrabad-individual-reports",
+  "amrabad-payment-transactions"
 ];

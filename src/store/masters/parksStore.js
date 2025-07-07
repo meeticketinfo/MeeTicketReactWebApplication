@@ -41,7 +41,7 @@ export const useParkStore = create((set) => ({
   nodalOfficerParksError: null,
 
   serializeFilters: (filters) =>
-    Object.entries(filters)
+    Object.entries(filters) 
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&"),
 
