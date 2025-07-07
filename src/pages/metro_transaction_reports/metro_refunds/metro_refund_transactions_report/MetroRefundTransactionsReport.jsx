@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import MetroRefundTransactionsReportForm from "./MetroRefundTransactionsReportForm";
 import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
+import { ToastContainer } from "react-toastify";
 const MetroRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -22,21 +23,14 @@ const MetroRefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const refundTransactionSearchParams = localStorage.getItem("refundMetroTransactionSearchParams") || "";
+  const refundTransactionSearchParams =
+    localStorage.getItem("refundMetroTransactionSearchParams") || "";
 
   const {
-    // isFetchRefundTransactionsReport,
-    refundTransactionsReport,
-    fetchRefundTransactionsReport,
-    fetchInitiateRefundOrderId,
-    isInitiateRefund,
-  } = userReports();
-  const{
-   isFetchMetroRefundTransactionsReport,
-   metroRefundTransactionsReport,
-   fetchMetroRefundTransactionsReport
+    isFetchMetroRefundTransactionsInnerReport,
+    metroRefundTransactionsInnerReport,
+    fetchMetroRefundTransactionsInnerReport,
   } = metroRefundReports();
-
   const columnDefs = [
     {
       headerName: "S.No",
@@ -64,37 +58,37 @@ const MetroRefundTransactionsReport = () => {
         });
       },
     },
-    {
-      headerName: "Actions",
-      field: "actions",
-      maxWidth: "100",
-      //   hide: email === "esdadmin@gmail.com",
-      cellRenderer: (params) => {
-        // console.log("params",params)
-        return (
-          <div className="flex align-center gap-2">
-            <>
-              <button
-                className={` ${
-                  params.data.refundStatus === "Not Refunded"
-                    ? "bg-green-400"
-                    : "bg-green-100 cursor-not-allowed "
-                } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                disabled={params.data.refundStatus != "Not Refunded"}
-                onClick={() => {
-                  setRefundOrderId(params.data.orderId);
-                  setInitiatRefundModal(true);
-                }}
-              >
-                Initiate
-              </button>
-            </>
-          </div>
-        );
-      },
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
+    // {
+    //   headerName: "Actions",
+    //   field: "actions",
+    //   maxWidth: "100",
+    //   //   hide: email === "esdadmin@gmail.com",
+    //   cellRenderer: (params) => {
+    //     // console.log("params",params)
+    //     return (
+    //       <div className="flex align-center gap-2">
+    //         <>
+    //           <button
+    //             className={` ${
+    //               params.data.refundStatus === "Not Refunded"
+    //                 ? "bg-green-400"
+    //                 : "bg-green-100 cursor-not-allowed "
+    //             } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
+    //             disabled={params.data.refundStatus != "Not Refunded"}
+    //             onClick={() => {
+    //               setRefundOrderId(params.data.orderId);
+    //               setInitiatRefundModal(true);
+    //             }}
+    //           >
+    //             Initiate
+    //           </button>
+    //         </>
+    //       </div>
+    //     );
+    //   },
+    //   flex: 1,
+    //   headerClass: "text-blue-v2",
+    // },
     {
       field: "refundStatus",
       headerName: "RefundStatus",
@@ -112,18 +106,18 @@ const MetroRefundTransactionsReport = () => {
     },
 
     {
-      field: "fromStation",
+      field: "fromStationName",
       headerName: "From Station",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "toStation",
+      field: "toStationName",
       headerName: "To Station",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => params.value || "N/A",
     },
     // {
     //   field: "locationName",
@@ -145,7 +139,7 @@ const MetroRefundTransactionsReport = () => {
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "modeOfTransaction",
@@ -178,11 +172,15 @@ const MetroRefundTransactionsReport = () => {
   ];
 
   const loadRefundTransactionsReport = (page = 0) => {
-    fetchMetroRefundTransactionsReport({
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+    fetchMetroRefundTransactionsInnerReport({
+      fromDate:
+        cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       phoneNumber: searchParams.get("phoneNumber") || "",
-      refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
+      refundStatus:
+        searchParams.get("RefundStatus") === "null"
+          ? ""
+          : searchParams.get("RefundStatus") || "",
       pageNumber: page + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -195,87 +193,34 @@ const MetroRefundTransactionsReport = () => {
     setCurrentPage(selectedItem.selected);
   };
 
-  const handleInitiateRefund = async () => {
-    console.log("RefundOrderId", RefundOrderId);
-    try {
-      const res = await fetchInitiateRefundOrderId(RefundOrderId);
-      console.log("API Response:", res);
-      setInitiatRefundModal(false);
-      if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
-
-        Swal.fire({
-          title: "Success!",
-
-          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-              ${resultMsg}
-            </div>`,
-
-          confirmButtonText: "OK",
-          icon: "success",
-          customClass: {
-            confirmButton: "swal-custom-btn",
-            popup: "elegant-swal-popup",
-            icon: "small-swal-icon",
-          },
-          timer: 2000,
-          width: "360px",
-          showConfirmButton: false,
-        });
-      } else {
-        setOpenVerifyModal(false);
-        Swal.fire({
-          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-              ${res.response?.data?.message}
-            </div>`,
-          icon: "info",
-          width: "360px",
-
-          customClass: {
-            popup: "custom-swal-popup",
-            confirmButton: "swal-custom-btn",
-            icon: "small-swal-icon",
-          },
-          confirmButtonText: "OK",
-          background: "#ffffff",
-        });
-      }
-    } catch (err) {
-      Swal.fire({
-        title: "Failed!",
-        text: `Refund failed. Please try again.`,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
-    } finally {
-      // Delay API call to ensure SweetAlert has closed
-      loadRefundTransactionsReport(currentPage);
-    }
-  };
-
   const breadcrumbItems = [
     {
-      label: 'Refund Transactions',
-      path: `/metro-refund-transactions?${refundTransactionSearchParams}`
+      label: "Refund Transactions",
+      path: `/metro-refund-transactions?${refundTransactionSearchParams}`,
     },
     {
-      label: `Refund Transactions Report ${searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}`,
-      isLast: true
-    }
+      label: `Refund Transactions Report ${
+        searchParams.get("RefundStatus")
+          ? `(${searchParams.get("RefundStatus")})`
+          : ""
+      }`,
+      isLast: true,
+    },
   ];
 
   return (
     <>
       <AdminLayout>
+        <ToastContainer/>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                Refund Transactions Report {searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}
+                Refund Transactions Report{" "}
+                {searchParams.get("RefundStatus")
+                  ? `(${searchParams.get("RefundStatus")})`
+                  : ""}
               </h1>
             </div>
             <div className="">
@@ -295,10 +240,12 @@ const MetroRefundTransactionsReport = () => {
             />
             <AgGridTable
               ExportName="RefundTransactionsReport"
-              rowData={metroRefundTransactionsReport}
+              rowData={metroRefundTransactionsInnerReport}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchMetroRefundTransactionsReport}
-              tableHeight={metroRefundTransactionsReport?.length > 10 ? 560 : 330}
+              isFetchLoading={isFetchMetroRefundTransactionsInnerReport}
+              tableHeight={
+                metroRefundTransactionsInnerReport?.length > 10 ? 560 : 330
+              }
               isPagination={false}
               IsReactPaginate={true}
               setPageLimit={setPAGE_LIMIT}
@@ -306,13 +253,13 @@ const MetroRefundTransactionsReport = () => {
               handlePageClick={handlePageClick}
               currentPage={currentPage}
               showTotalCount={true}
-              totalCount={metroRefundTransactionsReport[0]?.totalCount}
+              totalCount={metroRefundTransactionsInnerReport[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
             />
           </div>
         </div>
         {/* Initiate Refund */}
-        <PopupModal
+        {/* <PopupModal
           popupModalId="first-modal"
           isOpen={InitiatRefundModal}
           onClose={() => setInitiatRefundModal(false)}
@@ -355,7 +302,7 @@ const MetroRefundTransactionsReport = () => {
               </button>
             </div>
           </div>
-        </PopupModal>
+        </PopupModal> */}
       </AdminLayout>
     </>
   );

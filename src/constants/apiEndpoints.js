@@ -314,6 +314,7 @@ export const API_ENDPOINTS = {
     GET_USER_TRANSACTION_DETAILS:`${METRO_API_BASE_URL}v1/MetroReport/GetUserTransactionDetails`,
     GET_METRO_TRANSACTION_TRACKING_STATUS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroTransactionTrackingStatusByOrderId`,
     GET_METRO_REFUND_TRANSACTIONS_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundSummaryOuterReport`,
+    GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
     }
   },
 };

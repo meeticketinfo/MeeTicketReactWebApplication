@@ -14,6 +14,7 @@ import {
 } from "../../../../utils/Helper";
 import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
+import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
 
 const MetroRefundTransactionsReportForm = ({
   pageNumber,
@@ -26,9 +27,10 @@ const MetroRefundTransactionsReportForm = ({
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
-
-  const { isFetchRefundTransactionsReport, fetchRefundTransactionsReport } =
-    userReports();
+  const{
+     isFetchMetroRefundTransactionsInnerReport,
+     fetchMetroRefundTransactionsInnerReport
+    } = metroRefundReports();
   const refundTransactionSearchParams = localStorage.getItem(
     "refundMetroTransactionSearchParams"
   );
@@ -58,7 +60,7 @@ const MetroRefundTransactionsReportForm = ({
     });
     setSearchParams(newSearchParams);
 
-    fetchRefundTransactionsReport({
+    fetchMetroRefundTransactionsInnerReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       phoneNumber: values.phoneNumber,
@@ -163,7 +165,7 @@ const MetroRefundTransactionsReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchRefundTransactionsReport}
+                disabled={isFetchMetroRefundTransactionsInnerReport}
               >
                 Search
               </button>

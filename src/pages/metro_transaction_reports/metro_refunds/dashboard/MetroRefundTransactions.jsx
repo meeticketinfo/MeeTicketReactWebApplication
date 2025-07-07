@@ -9,11 +9,6 @@ import { metroRefundReports } from "../../../../store/metro_refund_reports_store
 function MetroRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
-  // const {
-  //   refundTransactions,
-  //   isFetchRefundTransactions,
-  //   fetchRefundTransactions,
-  // } = userReports();
  const {
     metroRefundTransactionsReport,
     isFetchRefundTransactionsReport,

@@ -36,9 +36,9 @@ const TotalTransactionsForm = () => {
   }, []);
 
   const initialValues = {
-    startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
-    endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
+    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+    phoneNumber: searchParams.get("phoneNumber") || "",
   };
 
   const overAllOnSubmit = (values) => {
@@ -53,9 +53,9 @@ const TotalTransactionsForm = () => {
     localStorage.setItem("refundMetroTransactionSearchParams", newSearchParams);
 
     const payload = {
-      startDate: values.startDate,
-      endDate: values.endDate,
-      mobileNumber: values.mobileNumber,
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      phoneNumber: values.phoneNumber,
     };
 
     fetchMetroRefundTransactionsReport(payload);
@@ -65,7 +65,7 @@ const TotalTransactionsForm = () => {
     const payload = {
       startDate: startOfDay,
       endDate: endOfDay,
-      mobileNumber: "",
+      phoneNumber: "",
     };
 
     // Clear URL search params
@@ -88,45 +88,45 @@ const TotalTransactionsForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
                 <label
-                  htmlFor="startDate"
+                  htmlFor="fromDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   From Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="startDate"
+                  name="fromDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const fromDateValue = e.target.value;
-                    setFieldValue("startDate", fromDateValue);
-                    if (new Date(fromDateValue) > new Date(values.endDate)) {
-                      setFieldValue("endDate", fromDateValue);
+                    setFieldValue("fromDate", fromDateValue);
+                    if (new Date(fromDateValue) > new Date(values.toDate)) {
+                      setFieldValue("toDate", fromDateValue);
                     }
                   }}
                 />
               </div>
               <div>
                 <label
-                  htmlFor="endDate"
+                  htmlFor="toDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   To Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="endDate"
+                  name="toDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const toDateValue = e.target.value;
-                    setFieldValue("endDate", toDateValue);
+                    setFieldValue("toDate", toDateValue);
                   }}
                 />
               </div>
               {/* mobile number */}
               <div>
                 <label
-                  htmlFor="mobileNumber"
+                  htmlFor="phoneNumber"
                   className="block text-xs font-medium text-gray-700"
                 >
                   Phone Number
@@ -134,7 +134,7 @@ const TotalTransactionsForm = () => {
                 <Field
                   type="text"
                   maxLength="10"
-                  name="mobileNumber"
+                  name="phoneNumber"
                   className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                   placeholder="Enter phone number"
                   onKeyPress={(e) => {
@@ -143,7 +143,7 @@ const TotalTransactionsForm = () => {
                     }
                   }}
                   onChange={(e) => {
-                    setFieldValue("mobileNumber", e.target.value);
+                    setFieldValue("phoneNumber", e.target.value);
                   }}
                 />
               </div>
