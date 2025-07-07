@@ -7,6 +7,7 @@ import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore"
 import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
+import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
 
 const TotalTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,8 +17,8 @@ const TotalTransactionsForm = () => {
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
 
-  const { isFetchRefundTransactions, fetchRefundTransactions } = userReports();
-
+  // const { isFetchRefundTransactions, fetchRefundTransactions } = userReports();
+  const {isFetchMetroRefundTransactionsReport,fetchMetroRefundTransactionsReport } = metroRefundReports();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
@@ -35,9 +36,9 @@ const TotalTransactionsForm = () => {
   }, []);
 
   const initialValues = {
-    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    phoneNumber: searchParams.get("phoneNumber") || "",
+    startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
+    endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
+    mobileNumber: searchParams.get("mobileNumber") || "",
   };
 
   const overAllOnSubmit = (values) => {
@@ -49,30 +50,30 @@ const TotalTransactionsForm = () => {
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("refundTransactionSearchParams", newSearchParams);
+    localStorage.setItem("refundMetroTransactionSearchParams", newSearchParams);
 
     const payload = {
-      fromDate: values.fromDate,
-      toDate: values.toDate,
-      phoneNumber: values.phoneNumber,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      mobileNumber: values.mobileNumber,
     };
 
-    fetchRefundTransactions(payload);
+    fetchMetroRefundTransactionsReport(payload);
   };
 
   const resetForm = (setValues) => {
     const payload = {
-      fromDate: startOfDay,
-      toDate: endOfDay,
-      phoneNumber: "",
+      startDate: startOfDay,
+      endDate: endOfDay,
+      mobileNumber: "",
     };
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
 
-    localStorage.setItem("refundTransactionSearchParams", "");
+    localStorage.setItem("refundMetroTransactionSearchParams", "");
     setValues(payload);
-    fetchRefundTransactions(payload);
+    fetchMetroRefundTransactionsReport(payload);
   };
 
   return (
@@ -87,45 +88,45 @@ const TotalTransactionsForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
                 <label
-                  htmlFor="fromDate"
+                  htmlFor="startDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   From Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="fromDate"
+                  name="startDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const fromDateValue = e.target.value;
-                    setFieldValue("fromDate", fromDateValue);
-                    if (new Date(fromDateValue) > new Date(values.toDate)) {
-                      setFieldValue("toDate", fromDateValue);
+                    setFieldValue("startDate", fromDateValue);
+                    if (new Date(fromDateValue) > new Date(values.endDate)) {
+                      setFieldValue("endDate", fromDateValue);
                     }
                   }}
                 />
               </div>
               <div>
                 <label
-                  htmlFor="toDate"
+                  htmlFor="endDate"
                   className="block text-xs font-medium text-gray-700"
                 >
                   To Date
                 </label>
                 <Field
                   type="datetime-local"
-                  name="toDate"
+                  name="endDate"
                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   onChange={(e) => {
                     const toDateValue = e.target.value;
-                    setFieldValue("toDate", toDateValue);
+                    setFieldValue("endDate", toDateValue);
                   }}
                 />
               </div>
               {/* mobile number */}
               <div>
                 <label
-                  htmlFor="phoneNumber"
+                  htmlFor="mobileNumber"
                   className="block text-xs font-medium text-gray-700"
                 >
                   Phone Number
@@ -133,7 +134,7 @@ const TotalTransactionsForm = () => {
                 <Field
                   type="text"
                   maxLength="10"
-                  name="phoneNumber"
+                  name="mobileNumber"
                   className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                   placeholder="Enter phone number"
                   onKeyPress={(e) => {
@@ -142,7 +143,7 @@ const TotalTransactionsForm = () => {
                     }
                   }}
                   onChange={(e) => {
-                    setFieldValue("phoneNumber", e.target.value);
+                    setFieldValue("mobileNumber", e.target.value);
                   }}
                 />
               </div>
@@ -150,7 +151,7 @@ const TotalTransactionsForm = () => {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  disabled={isFetchRefundTransactions}
+                  disabled={isFetchMetroRefundTransactionsReport}
                 >
                   Search
                 </button>
@@ -158,7 +159,7 @@ const TotalTransactionsForm = () => {
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
-                  disabled={isFetchRefundTransactions}
+                  disabled={isFetchMetroRefundTransactionsReport}
                 >
                   Reset
                 </button>

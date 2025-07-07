@@ -9,32 +9,32 @@ import { metroRefundReports } from "../../../../store/metro_refund_reports_store
 function MetroRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
-  const {
-    refundTransactions,
-    isFetchRefundTransactions,
-    fetchRefundTransactions,
-  } = userReports();
-//  const {
-//     metroRefundTransactionsReport,
-//     isFetchRefundTransactionsReport,
-//     fetchMetroRefundTransactionsReport,
-//   } = metroRefundReports();
+  // const {
+  //   refundTransactions,
+  //   isFetchRefundTransactions,
+  //   fetchRefundTransactions,
+  // } = userReports();
+ const {
+    metroRefundTransactionsReport,
+    isFetchRefundTransactionsReport,
+    fetchMetroRefundTransactionsReport,
+  } = metroRefundReports();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
-    localStorage.removeItem("refundTransactionSearchParams");
+    localStorage.removeItem("refundMetroTransactionSearchParams");
     const payload = {
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-      phoneNumber: searchParams.get("phoneNumber") || "",
+      startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
+      endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
+      mobileNumber: searchParams.get("mobileNumber") || "",
     };
-    fetchRefundTransactions(payload);
+    fetchMetroRefundTransactionsReport(payload);
   }, []);
 
   // overAll on submit
   const totalCount =
-    refundTransactions?.reduce(
+    metroRefundTransactionsReport?.reduce(
       (sum, item) => sum + item.count,
       0
     ) || 0;
@@ -52,13 +52,13 @@ function MetroRefundTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isFetchRefundTransactions && (
+              {isFetchRefundTransactionsReport && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
               <MetroRefundTransactionsChart
-                data={totalCount !== 0 ? refundTransactions : []}
+                data={totalCount !== 0 ? metroRefundTransactionsReport : []}
                 title="Payment success & Ticket Not Generated"
                 angleKey="count"
                 calloutLabelKey="status"

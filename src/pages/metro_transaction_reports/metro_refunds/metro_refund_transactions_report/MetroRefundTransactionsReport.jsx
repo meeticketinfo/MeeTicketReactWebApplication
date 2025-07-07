@@ -13,6 +13,7 @@ import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import MetroRefundTransactionsReportForm from "./MetroRefundTransactionsReportForm";
+import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
 const MetroRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -21,15 +22,20 @@ const MetroRefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams") || "";
+  const refundTransactionSearchParams = localStorage.getItem("refundMetroTransactionSearchParams") || "";
 
   const {
-    isFetchRefundTransactionsReport,
+    // isFetchRefundTransactionsReport,
     refundTransactionsReport,
     fetchRefundTransactionsReport,
     fetchInitiateRefundOrderId,
     isInitiateRefund,
   } = userReports();
+  const{
+   isFetchMetroRefundTransactionsReport,
+   metroRefundTransactionsReport,
+   fetchMetroRefundTransactionsReport
+  } = metroRefundReports();
 
   const columnDefs = [
     {
@@ -106,26 +112,26 @@ const MetroRefundTransactionsReport = () => {
     },
 
     {
-      field: "department",
-      headerName: "Department",
+      field: "fromStation",
+      headerName: "From Station",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
-      field: "locationCategory",
-      headerName: "Location Category",
+      field: "toStation",
+      headerName: "To Station",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
-    {
-      field: "locationName",
-      headerName: "Location name",
+    // {
+    //   field: "locationName",
+    //   headerName: "Location name",
 
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
-    },
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => `${params.value} ` || "0",
+    // },
     {
       field: "amount",
       headerName: "Amount",
@@ -172,7 +178,7 @@ const MetroRefundTransactionsReport = () => {
   ];
 
   const loadRefundTransactionsReport = (page = 0) => {
-    fetchRefundTransactionsReport({
+    fetchMetroRefundTransactionsReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       phoneNumber: searchParams.get("phoneNumber") || "",
@@ -289,10 +295,10 @@ const MetroRefundTransactionsReport = () => {
             />
             <AgGridTable
               ExportName="RefundTransactionsReport"
-              rowData={refundTransactionsReport}
+              rowData={metroRefundTransactionsReport}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchRefundTransactionsReport}
-              tableHeight={refundTransactionsReport?.length > 10 ? 560 : 330}
+              isFetchLoading={isFetchMetroRefundTransactionsReport}
+              tableHeight={metroRefundTransactionsReport?.length > 10 ? 560 : 330}
               isPagination={false}
               IsReactPaginate={true}
               setPageLimit={setPAGE_LIMIT}
@@ -300,7 +306,7 @@ const MetroRefundTransactionsReport = () => {
               handlePageClick={handlePageClick}
               currentPage={currentPage}
               showTotalCount={true}
-              totalCount={refundTransactionsReport[0]?.totalCount}
+              totalCount={metroRefundTransactionsReport[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
             />
           </div>

@@ -30,7 +30,7 @@ const MetroRefundTransactionsReportForm = ({
   const { isFetchRefundTransactionsReport, fetchRefundTransactionsReport } =
     userReports();
   const refundTransactionSearchParams = localStorage.getItem(
-    "refundTransactionSearchParams"
+    "refundMetroTransactionSearchParams"
   );
 
   useEffect(() => {

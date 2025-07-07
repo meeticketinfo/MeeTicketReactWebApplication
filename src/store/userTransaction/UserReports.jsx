@@ -92,7 +92,7 @@ export const userReports = create((set) => ({
     set({ isFetchRefundTransactions: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.USER_REPORTS.GET_REFUND_TRANSACTIONS}?${queryString}`
+        `${API_ENDPOINTS.REPORTS. METRO_TRANSACTIONS_REPORT.GET_REFUND_TRANSACTIONS}?${queryString}`
       );
       set({
         refundTransactions: response.data,
