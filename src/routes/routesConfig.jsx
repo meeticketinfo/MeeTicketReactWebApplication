@@ -103,6 +103,8 @@ import MetroTotalTracker from "../pages/metro_transaction_reports/metro_total_tr
 import MetroUserReport from "../pages/metro_transaction_reports/metro_user/metro_user_report/MetroUserReport";
 import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserDetailedReport";
 import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
+import MainMetroRefundTransactions from "../pages/metro_transaction_reports/metro_refunds/dashboard/MainMetroRefundTransactions";
+import MetroRefundTransactionsReport from "../pages/metro_transaction_reports/metro_refunds/metro_refund_transactions_report/MetroRefundTransactionsReport";
 
 export const routes = [
   {
@@ -495,6 +497,14 @@ export const routes = [
   {
     path: "/metro-not-generated-report",
     element: <ProtectedRoute element={<MetroNotGeneratedReport />} />,
+  },
+  {
+    path: "/metro-refund-transactions",
+    element: <ProtectedRoute element={<MainMetroRefundTransactions />} />,
+  },
+  {
+    path: "/metro-refund-transactions-report",
+    element: <ProtectedRoute element={<MetroRefundTransactionsReport />} />,
   },
   {
     path: "/metro-total-traker",

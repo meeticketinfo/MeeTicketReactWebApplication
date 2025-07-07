@@ -7,7 +7,6 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
-import { userReports } from "../../../../store/userTransaction/UserReports";
 import MetroUserReportForm from "./MetroUserReportForm";
 import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 
@@ -15,9 +14,7 @@ const MetroUserReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
-
-//   const { userReport, isFetchUserReport, fetchUserReport } = userReports();
-const { metroUserReport, isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
+  const { metroUserReport, isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
   const [currentPage, setCurrentPage] = useState(0);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);

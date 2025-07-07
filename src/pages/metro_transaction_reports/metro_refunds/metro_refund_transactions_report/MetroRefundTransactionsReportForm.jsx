@@ -1,62 +1,81 @@
 import { Formik, Form, Field } from "formik";
+import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
+import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
+import { useParkStore } from "../../../../store/masters/parksStore";
+import { useEffect } from "react";
+import Select from "react-select";
+import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+  getValueFromQuery,
+} from "../../../../utils/Helper";
+import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
 import { userReports } from "../../../../store/userTransaction/UserReports";
-import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
+import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
 
-const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
+const MetroRefundTransactionsReportForm = ({
+  pageNumber,
+  pageSize,
+  setCurrentPage,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {isFetchUserReport, fetchUserReport} = userReports();
-  const { isfetchMetroUserReport, fetchMetroUserReport } = metroUserReports();
+
+  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
+  const { allParks, fetchAllParks } = useParkStore();
+  const{
+     isFetchMetroRefundTransactionsInnerReport,
+     fetchMetroRefundTransactionsInnerReport
+    } = metroRefundReports();
+  const refundTransactionSearchParams = localStorage.getItem(
+    "refundMetroTransactionSearchParams"
+  );
+
+  useEffect(() => {
+    fetchAllEntityTypes();
+    fetchAllDepartmentTypes();
+    fetchAllParks();
+  }, []);
+
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    phoneNumber: searchParams.get("phoneNumber") || "",
+    refundStatus: (searchParams.get("RefundStatus") !== "null" && searchParams.get("RefundStatus")) || "",
   };
 
   const onSubmit = (values) => {
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userMetroReportSearchParams", newSearchParams);
 
-    fetchMetroUserReport({
+    fetchMetroRefundTransactionsInnerReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
-      PageIndex: PageIndex,
+      phoneNumber: values.phoneNumber,
+      refundStatus: values.refundStatus,
+      pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    SetcurrentPage(0)
-  };
-
-  const resetForm = (setValues) => {
-    const payload = {
-      fromDate: startOfDay,
-      toDate: endOfDay,
-      mobileNumber: "",
-    };
-
-    // Clear URL search params
-    setSearchParams(new URLSearchParams());
-    localStorage.setItem("userReportSearchParams", "");
-    setValues(payload);
-    fetchMetroUserReport({...payload, PageIndex: PageIndex, pageSize: pageSize} );
-    localStorage.setItem("userMetroReportSearchParams", "");
+    setCurrentPage(0);
   };
 
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 pb-3">
+        {({ values, setFieldValue }) => (
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
             <div>
               <label
                 htmlFor="fromDate"
@@ -95,7 +114,6 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
-                min={values.fromDate}
               />
             </div>
             {/* mobile number */}
@@ -109,7 +127,7 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNumber"
+                name="phoneNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -118,24 +136,38 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNumber", e.target.value);
+                  setFieldValue("phoneNumber", e.target.value);
                 }}
               />
             </div>
-            <div className="flex items-end gap-2">
+            {/* status */}
+            <div>
+              <label
+                htmlFor="refundStatus"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Status
+              </label>
+              <Field
+                as="select"
+                name="refundStatus"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("refundStatus", e.target.value);
+                }}
+              >
+                <option value="">Select Mode</option>
+                <option value="Refund">Refunded</option>
+                <option value="NotRefund">Not Refunded</option>
+              </Field>
+            </div>
+            <div className="flex items-end">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isfetchMetroUserReport}
+                disabled={isFetchMetroRefundTransactionsInnerReport}
               >
                 Search
-              </button>
-              <button
-                type="button"
-                onClick={() => resetForm(setValues)}
-                className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
-              >
-                Reset
               </button>
             </div>
           </Form>
@@ -145,4 +177,4 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
   );
 };
 
-export default MetroUserReportForm;
+export default MetroRefundTransactionsReportForm;

@@ -46,7 +46,7 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-
+    localStorage.setItem("userReportSearchParams", "");
     setValues(payload);
     fetchUserReport({...payload, pageNumber: pageNumber, pageSize: pageSize} );
   };

@@ -3,7 +3,6 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import {
   cleanString,
   getEndOfCurrentDay,
@@ -202,7 +201,7 @@ const MetroUserDetailedReport = () => {
           <div>
             <MetroUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
             <AgGridTable
-              ExportName="UserStatusTransactionReport"
+              ExportName="UserDetailedReport"
               rowData={metroUserDetailedReport}
               columnDefs={columnDefs}
               isFetchLoading={isFetchMetroUserDetailedReport}
