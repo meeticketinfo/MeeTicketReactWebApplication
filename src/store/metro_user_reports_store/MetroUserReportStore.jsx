@@ -12,13 +12,8 @@ export const metroUserReports = create((set) => ({
   metroUserDetailedReport: [],
   isFetchMetroUserDetailedReport: false,
 
-  refundTransactions: [],
-  isFetchRefundTransactions: false,
 
-  refundTransactionsReport: [],
-  isFetchRefundTransactionsReport: false,
-
-  isInitiateRefund: false,
+  
 
   fetchMetroUserReport: async (queryParams) => {
     const queryString = new URLSearchParams(queryParams).toString();
@@ -34,6 +29,7 @@ export const metroUserReports = create((set) => ({
     } catch (error) {
       set({
         error: error.message,
+        metroUserReport: [],
       });
     } finally {
       set({
@@ -56,6 +52,7 @@ export const metroUserReports = create((set) => ({
     } catch (error) {
       set({
         error: error.message,
+        metroUserDetailedReport: [],
       });
     } finally {
       set({
@@ -76,80 +73,12 @@ export const metroUserReports = create((set) => ({
       return { response: response.data };
     } catch (error) {
       set({
+         MetroTransactionTrackingStatusByOrderIdData: [],
         error: error.message,
       });
     } finally {
       set({
         isFetchMetroTransactionTrackingStatusByOrderId: false,
-      });
-    }
-  },
-  fetFilters: (filters) => {
-    set({ filters: filters });
-  },
-  fetchRefundTransactions: async (queryParams) => {
-    const queryString = new URLSearchParams(queryParams).toString();
-    set({ isFetchRefundTransactions: true });
-    try {
-      const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.USER_REPORTS.GET_REFUND_TRANSACTIONS}?${queryString}`
-      );
-      set({
-        refundTransactions: response.data,
-      });
-      return { response: response.data };
-    } catch (error) {
-      set({
-        error: error.message,
-      });
-    } finally {
-      set({
-        isFetchRefundTransactions: false,
-      });
-    }
-  },
-  fetchRefundTransactionsReport: async (queryParams) => {
-    const queryString = new URLSearchParams(queryParams).toString();
-    set({ isFetchRefundTransactionsReport: true });
-    try {
-      const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.USER_REPORTS.GET_REFUND_TRANSACTIONS_REPORT}?${queryString}`
-      );
-      set({
-        refundTransactionsReport: response.data,
-      });
-      return { response: response.data };
-    } catch (error) {
-      set({
-        error: error.message,
-      });
-    } finally {
-      set({
-        isFetchRefundTransactionsReport: false,
-      });
-    }
-  },
-
-  // initiate Refund
-  fetchInitiateRefundOrderId: async (orderID) => {
-    set({ isInitiateRefund: true });
-    try {
-      const url =  `${API_ENDPOINTS.FAILED_TRANSACTIONS.INITIATE_REFUND}`;
-          const method = "post";
-          const response = await apiService[method](url, {orderId:orderID});
-
-     
-      set({
-        InitiateRefundByOrderIdData: response.data,
-      });
-      return { response: response };
-    } catch (error) {
-      set({
-        error: error.message,
-      });
-    } finally {
-      set({
-        isInitiateRefund: false,
       });
     }
   },

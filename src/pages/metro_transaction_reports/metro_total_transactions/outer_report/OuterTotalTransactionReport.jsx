@@ -7,6 +7,7 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
+import { ToastContainer } from "react-toastify";
 
 const OuterTotalTransactionReport = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -51,6 +52,7 @@ const OuterTotalTransactionReport = () => {
   : 0;
   return (
     <>
+    <ToastContainer/>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
           <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">

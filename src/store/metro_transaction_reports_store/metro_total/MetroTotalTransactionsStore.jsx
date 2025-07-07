@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
+import { toast } from "react-toastify";
 
 export const useMetroTotalTransactionsStore = create((set) => ({
   // by Reason
@@ -44,7 +45,9 @@ export const useMetroTotalTransactionsStore = create((set) => ({
         isMetroTransactionByReasonLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isMetroTransactionByReasonLoading: false });
+      set({ error: error.message,MetroTransactionByReasonData:[], isMetroTransactionByReasonLoading: false });
+       toast.error(error.message)
+        
     }
   },
 
@@ -63,7 +66,8 @@ export const useMetroTotalTransactionsStore = create((set) => ({
         isMetroTotalTransactionsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isMetroTotalTransactionsLoading: false });
+      set({ error: error.message,MetroTotalTransactionsData: [], isMetroTotalTransactionsLoading: false });
+      toast.error(error.message)
     }
   },
 
@@ -82,7 +86,7 @@ export const useMetroTotalTransactionsStore = create((set) => ({
         isOtherReasonsPieChartLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isOtherReasonsPieChartLoading: false });
+      set({ error: error.message,OtherReasonsPieChartData: [], isOtherReasonsPieChartLoading: false });
     }
   },
 
@@ -101,7 +105,7 @@ export const useMetroTotalTransactionsStore = create((set) => ({
         isPaymentGatewayPieChartLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isPaymentGatewayPieChartLoading: false });
+      set({ error: error.message,PaymentGatewayPieChartData:[], isPaymentGatewayPieChartLoading: false });
     }
   },
 
@@ -120,7 +124,7 @@ export const useMetroTotalTransactionsStore = create((set) => ({
         isTicketNotGeneratedPieChartLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isTicketNotGeneratedPieChartLoading: false });
+      set({ error: error.message,TicketNotGeneratedPieChartData:[], isTicketNotGeneratedPieChartLoading: false });
     }
   },
 
@@ -137,7 +141,7 @@ export const useMetroTotalTransactionsStore = create((set) => ({
       return { response: response.data };
     } catch (error) {
       set({
-        error: error.message,
+        error: error.message,MetroTransactionTrackingStatusByOrderIdData: response.data,
       });
     } finally {
       set({

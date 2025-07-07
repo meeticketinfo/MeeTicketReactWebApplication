@@ -8,6 +8,7 @@ import { useMetroTotalTransactionsStore } from "../../../store/metro_transaction
 import { formatDateTime } from "../../../utils/Helper";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import Breadcrumb from "../../../components/Breadcrumb";
+import { ToastContainer } from "react-toastify";
 
 const MetroTotalReport = () => {
   const {
@@ -161,38 +162,41 @@ const MetroTotalReport = () => {
       ),
     },
   ];
-    const breadcrumbItems = [
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions ',
+      label: "Total Transactions ",
       path: `/metro-total-transaction`,
-       onclick:()=>resetDeepInnerFilters(),
+      onclick: () => resetDeepInnerFilters(),
     },
-    
+
     {
-      label: `Total ${outerFilters.status?outerFilters.status:"Transaction"} Report`,  
-      isLast: true
-    }
+      label: `Total ${
+        outerFilters.status ? outerFilters.status : "Transaction"
+      } Report`,
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-          <div className="mb-6">
-          <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total {outerFilters.status?outerFilters.status:"Transaction"} Report
+              Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
               to="/metro-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
-              onclick={()=>{resetDeepInnerFilters()}}
+              onClick={() => {
+                resetDeepInnerFilters();
+              }}
             >
               Back
             </Link>
