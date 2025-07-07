@@ -207,7 +207,7 @@ function PosConsolidatedBookingReports() {
           headerName: "Actual Paytm Status",
           // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => (params.value ? "Success" : "Failed"),
+          valueFormatter: (params) => (params.value ||"N/A"),
          
         },
         {

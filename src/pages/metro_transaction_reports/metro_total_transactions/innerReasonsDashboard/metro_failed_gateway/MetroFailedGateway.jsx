@@ -38,11 +38,11 @@ const MetroFailedGateway = () => {
     setInnerFilters(values);
     fetchGateWayPieChart(values);
   };
-  const totalCount =
-    PaymentGatewayPieChartData?.reduce(
-      (sum, item) => sum + item.totalCount,
-      0
-    ) || 0;
+  
+
+    const totalCount = Array.isArray(PaymentGatewayPieChartData)
+  ? PaymentGatewayPieChartData.reduce((sum, item) => sum + item.count, 0)
+  : 0;
 
        const breadcrumbItems = [
     {
@@ -156,7 +156,7 @@ const MetroFailedGateway = () => {
                         toDate: endOfDay,
                         mobileNumber: "",
                       });
-                      resetInnerFilters();
+                      // resetInnerFilters();
                       fetchGateWayPieChart({
                         fromDate: startOfDay,
                         toDate: endOfDay,

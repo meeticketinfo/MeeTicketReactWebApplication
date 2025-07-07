@@ -89,7 +89,7 @@ export default function AdminBookings() {
 
   const initialValues = {
     fromDate: getCurrentDate(),
-    toDate: "",
+    toDate: getCurrentDate(),
     entityTypeId: "",
     departmentId: "",
     entityId:
@@ -238,7 +238,7 @@ export default function AdminBookings() {
 
      
       if (result?.data?.status === 200) {
-        resetForm();
+        // resetForm();
       } else {
         // Handling a response with an unexpected status code
         toast.error(result?.data?.message);

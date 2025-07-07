@@ -157,7 +157,7 @@ const MetroFailedGateway = () => {
                         toDate: startOfDay,
                         mobileNumber: "",
                       });
-                      resetInnerFilters();
+                      // resetInnerFilters();
                       fetchTicketNotGeneratedPieChart({
                         fromDate: startOfDay,
                         toDate: endOfDay,

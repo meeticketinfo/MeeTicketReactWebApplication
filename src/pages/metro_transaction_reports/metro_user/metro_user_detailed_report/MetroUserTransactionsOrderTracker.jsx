@@ -5,58 +5,15 @@ import AdminLayout from "../../../../layouts/AdminLayout";
 import {
   formatToCurrency,
 } from "../../../../utils/TypographyHelper";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 
-const SimpleModal = ({ open, onClose, children }) => {
-  if (!open) return null;
-  return (
-    <div 
-      className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50"
-      onClick={onClose}
-    >
-      <div 
-        className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
-        >×</button>
-        {children}
-      </div>
-    </div>
-  );
-};
-
 const MetroUserTransactionsOrderTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, parkName, date, amount, bookingId } = location.state || {};
-  const { isFetchCurrentBookingDetailsLoading, fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const userDetailedReportSearchParams = localStorage.getItem("userDetailedReportSearchParams");
-  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState([]);
-  const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
-
-  const fetchQRsForBooking = async (bookingId) => {
-    try {
-      const result = await fetchCurrentBookingDetailsByBookingId(bookingId);
-      if (result && result.data && result.data.status === 200) {
-        setBookingDetails(result.data.data.data.bookingDetails);
-        setBookingDetailsResponse(result.data.data.data);
-        setIsModalOpen(true);
-      } else {
-        toast.error("Unexpected response from the server.");
-      }
-    } catch (xhr) {
-      handleApiError(xhr);
-    }
-  };
+  const { orderId, mobileNumber, date, amount, bookingId } = location.state || {};
+  const userDetailedReportSearchParams = localStorage.getItem("userMetroDetailedReportSearchParams");
+  const userReportSearchParams = localStorage.getItem("userMetroReportSearchParams");
 
  const{
   MetroTransactionTrackingStatusByOrderIdData,
@@ -194,23 +151,11 @@ const MetroUserTransactionsOrderTracker = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
               <p className="text-sm font-semibold text-gray-900">
                 {bookingId || 'N/A'}
-                {/* {bookingId && bookingId != "Not Generated" && (
-                  <button
-                    className="ml-2 text-blue-600 underline"
-                    onClick={() => fetchQRsForBooking(bookingId)}
-                  >
-                    View Ticket Details
-                  </button>
-                )} */}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
               <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Park Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
@@ -228,37 +173,6 @@ const MetroUserTransactionsOrderTracker = () => {
           </div>
         </div>
       </AdminLayout>
-      <SimpleModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        {bookingDetailsResponse && (
-          <div className="text-center max-h-[500px] overflow-y-auto">
-            <img
-              src={`data:image/png;base64,${bookingDetailsResponse.binaryQRCode}`}
-              alt="Booking QR"
-              className="w-[250px] mx-auto"
-            />
-            <div className="mt-2 text-left">
-              <b>Booking Date</b>: {bookingDetailsResponse.bookingDate}<br />
-              <b>Booking ID</b>: {bookingDetailsResponse.id}
-            </div>
-            <div className="mt-2 text-left">
-              {bookingDetails.map((item, idx) => (
-                <>
-                  <div key={idx} className="mb-2.5">
-                    <b>Facility</b>: {item.facilityName}<br />
-                    <b>Ticket Type</b>: {item.serviceVariantName}<br />
-                    <b>Qty</b>: {item.quantity}<br />
-                    <b>Total</b>: ₹{item.totalAmount.toFixed(2)}
-                  </div>
-                  {idx !== bookingDetails.length - 1 && <hr className="my-2" />}
-                </>
-              ))}
-              <div className="font-bold bg-gray-200 p-1.5">
-                Grand Total: ₹{bookingDetailsResponse.totalAmount.toFixed(2)}
-              </div>
-            </div>
-          </div>
-        )}
-      </SimpleModal>
     </>
   );
 };

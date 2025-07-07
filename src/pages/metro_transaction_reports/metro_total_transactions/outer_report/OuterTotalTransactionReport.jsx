@@ -46,9 +46,9 @@ const OuterTotalTransactionReport = () => {
     setInnerFilters(values);
     fetchMetroTransactionByReason(values);
   };
-  const totalCount =
-    MetroTransactionByReasonData?.reduce((sum, item) => sum + item.count, 0) ||
-    0;
+  const totalCount = Array.isArray(MetroTransactionByReasonData)
+  ? MetroTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
+  : 0;
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -125,8 +125,17 @@ const OuterTotalTransactionReport = () => {
                     toDate: endOfDay,
                     mobileNumber: "",
                   });
-                  resetOuterFilters();
-                  resetInnerFilters();
+                  // resetOuterFilters();
+                  // resetInnerFilters();
+                  resetOuterFilters({fromDate: startOfDay,
+                    toDate: endOfDay,
+                    mobileNumber: "",
+                  });
+                  setInnerFilters({
+                    fromDate: startOfDay,
+                    toDate: endOfDay,
+                    mobileNumber: "",
+                  });
                   fetchMetroTransactionByReason({
                     fromDate: startOfDay,
                     toDate: endOfDay,

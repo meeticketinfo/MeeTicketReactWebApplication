@@ -7,7 +7,10 @@ import AdminLayout from "../../../../layouts/AdminLayout";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import FacilityServices from "../../../../components/bookings_management/FacilityServices";
-import { formatToCurrency, getCurrentDate } from "../../../../utils/TypographyHelper";
+import {
+  formatToCurrency,
+  getCurrentDate,
+} from "../../../../utils/TypographyHelper";
 import BackButton from "../../../../components/BackButton";
 import useAuthStore from "../../../../store/authStore";
 import { useParkStore } from "../../../../store/masters/parksStore";
@@ -31,11 +34,10 @@ export default function PosIndividualBookingReports() {
     isBookingFormVisible,
     setPaymentStatus,
     saveCggDetails,
-    isCggLoading
+    isCggLoading,
   } = useBookingsStore();
   const [cgg, setCgg] = useState(null);
 
-  
   const {
     allParks,
     fetchAllParks,
@@ -48,7 +50,7 @@ export default function PosIndividualBookingReports() {
     useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
-  const {  roleDetails, decodedTokenData } = useAuthStore();
+  const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
 
@@ -70,21 +72,19 @@ export default function PosIndividualBookingReports() {
     const fetchData = async () => {
       try {
         const res = await fetchAllNehruCounterBookingsByFilters(initialValues);
-       
-        setCgg(res.data.data.data.isCggEnable)
 
+        setCgg(res.data.data.data.isCggEnable);
       } catch (err) {
         console.error("Error fetching bookings:", err);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   const initialValues = {
     fromDate: getCurrentDate(),
-    toDate: "",
+    toDate: getCurrentDate(),
     entityTypeId: "",
     departmentId: "",
     entityId:
@@ -140,7 +140,7 @@ export default function PosIndividualBookingReports() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    
+
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -174,7 +174,7 @@ export default function PosIndividualBookingReports() {
       headerName: "Quantity",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => ( params.value?? "N/A"),
+      valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "amount",
@@ -231,9 +231,8 @@ export default function PosIndividualBookingReports() {
       const filters = formattedValues;
       const result = await fetchAllNehruCounterBookingsByFilters(filters);
 
-     
       if (result?.data?.status === 200) {
-        resetForm();
+        // resetForm();
       } else {
         // Handling a response with an unexpected status code
         toast.error(result?.data?.message);
@@ -276,24 +275,26 @@ export default function PosIndividualBookingReports() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
               <div className="flex gap-2 ">
-                {parkId==="100"&&<div className="flex items-center shadow px-2 py-1">
-                  <label className="text-sm flex ">
-                    <input
-                      type="checkbox"
-                      checked={cgg}
-                      // value={cgg}
-                      onChange={(e) => {
-                        setCgg(e.target.checked);
-                        setOpenModal(true);
-                      }}
-                      className="sr-only peer "
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
-                    <span className="ms-3 text-md font-semibold text-gray-900 ">
-                      {cgg ? "CGG ON" : "CGG OFF"}
-                    </span>
-                  </label>
-                </div>}
+                {parkId === "100" && (
+                  <div className="flex items-center shadow px-2 py-1">
+                    <label className="text-sm flex ">
+                      <input
+                        type="checkbox"
+                        checked={cgg}
+                        // value={cgg}
+                        onChange={(e) => {
+                          setCgg(e.target.checked);
+                          setOpenModal(true);
+                        }}
+                        className="sr-only peer "
+                      />
+                      <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
+                      <span className="ms-3 text-md font-semibold text-gray-900 ">
+                        {cgg ? "CGG ON" : "CGG OFF"}
+                      </span>
+                    </label>
+                  </div>
+                )}
                 {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
                   isCounterEnabled?.toLowerCase() === "true" && (
                     <button
@@ -661,7 +662,7 @@ export default function PosIndividualBookingReports() {
                 onClick={handleCggSubmit}
                 className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
               >
-               {isCggLoading ? (
+                {isCggLoading ? (
                   <span className="px-8">
                     <l-tailspin
                       size="15"

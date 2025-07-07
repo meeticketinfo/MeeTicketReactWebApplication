@@ -39,9 +39,10 @@ const FailedOtherReason = () => {
     setInnerFilters(values);
     fetchOtherReasonsPieChart(values);
   };
-  const totalCount =
-    OtherReasonsPieChartData?.reduce((sum, item) => sum + item.totalCount, 0) ||
-    0;
+  
+    const totalCount = Array.isArray(OtherReasonsPieChartData)
+  ? OtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
+  : 0;
      const breadcrumbItems = [
     {
       label: 'Total Transactions ',
@@ -155,7 +156,7 @@ const FailedOtherReason = () => {
                         toDate: endOfDay,
                         mobileNumber: "",
                       });
-                      resetInnerFilters();
+                      // resetInnerFilters();
                       fetchOtherReasonsPieChart({
                         fromDate: endOfDay,
                         toDate: endOfDay,

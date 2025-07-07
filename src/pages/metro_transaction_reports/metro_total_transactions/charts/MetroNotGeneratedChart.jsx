@@ -108,7 +108,7 @@ const MetroFailedGatewayChart = ({
           <div ref={chartRef} className="h-[400px] max-w-[90%]" />
         </div>
 
-        {data.length >=0 &&<div className="min-w-[340px] max-w-[500px]">
+        {data.length>0 &&<div className="min-w-[340px] max-w-[500px]">
           <div className="flex justify-end mb-2"></div>
           <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
             <table className="w-full">
