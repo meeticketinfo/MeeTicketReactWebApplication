@@ -1,13 +1,17 @@
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import React, { useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { convertToBase64 } from "../../../../utils/Helper";
 import { MdDeleteForever } from "react-icons/md";
 import * as Yup from "yup";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 const AddPackage = () => {
   const [isHasRoom, setIsHasRoom] = useState(false);
   const [isValidation, setIsValidation] = useState("");
-
+  const { setCurrentTab } = usePackagesCommonStore();
+  const { savePackageWithRoom, isSavePackageWithRoomLoading } =
+    usePackagesStore();
   /*  Initial values                                                    */
 
   const initialValues = {
@@ -22,7 +26,7 @@ const AddPackage = () => {
       privacyPolicy: "",
       latitude: null,
       longitude: null,
-      packageImageUrls: [],
+      packageImageBase64Strings: [],
       isActive: true,
     },
     hasRooms: false,
@@ -30,16 +34,17 @@ const AddPackage = () => {
       {
         roomName: "",
         tariffPerDay: null,
-        hasDiscount: "",
+        hasDiscount: false,
         discountType: "",
-        discountValue: null,
-        discountApplicable: "",
-        noOfHousesAvailable: null,
-        roomLimit: null,
-        isBlockout: true,
-        sequence: null,
+        discountValue: 0,
+        amountAfterDiscount: 0,
+        discountApplicable: true,
+        noOfHousesAvailable: 0,
+        roomLimit: 0,
+        isBlockout: false,
+        sequence: 0,
         remarks: "",
-        roomImageUrls: [],
+        roomImageBase64Strings: [],
       },
     ],
   };
@@ -60,51 +65,54 @@ const AddPackage = () => {
       .positive()
       .required("Tariff per day is required"),
 
-    hasDiscount: Yup.string().oneOf(["Yes", "No"]).required("Required"),
+    hasDiscount: Yup.boolean().required("Required"),
 
     discountType: Yup.string().when("hasDiscount", {
-      is: "Yes",
-      then: (s) => s.required("Discount Type is required"),
-      otherwise: (s) => s.notRequired(),
+      is: true,
+      then: (schema) => schema.required("Discount Type is required"),
+      otherwise: (schema) => schema.notRequired(),
     }),
+
     discountValue: Yup.number().when("hasDiscount", {
-      is: "Yes",
-      then: (s) =>
-        s
+      is: true,
+      then: (schema) =>
+        schema
           .typeError("Must be a number")
           .positive("Must be positive")
           .required("Discount Value is required"),
-      otherwise: (s) => s.notRequired(),
+      otherwise: (schema) => schema.notRequired(),
     }),
-    discountApplicable: Yup.string().when("hasDiscount", {
-      is: "Yes",
-      then: (s) => s.required("Discount Applicable is required"),
-      otherwise: (s) => s.notRequired(),
+
+    discountApplicable: Yup.boolean().when("hasDiscount", {
+      is: true,
+      then: (schema) =>
+        schema
+          .required("Discount Applicable is required")
+          .typeError("Must be true or false"),
+      otherwise: (schema) => schema.notRequired(),
     }),
 
     noOfHousesAvailable: positiveInt().required(
       "No Of Houses Available is required"
     ),
     roomLimit: positiveInt().required("Room Limit is required"),
-    isBlockout: Yup.string()
-      .oneOf(["Yes", "No"])
-      .required("Blockout is required"),
+    isBlockout: Yup.boolean().required("Required"),
+
     sequence: positiveInt().required("Sequence is required"),
 
-    roomImageUrls: Yup.array().of(Yup.string()).min(1, "At least one image"),
+    roomImageBase64Strings: Yup.array()
+      .of(Yup.string())
+      .min(1, "At least one image"),
   });
 
-  
   /*  Main schema                                                       */
-  
+
   const addPackageValidationSchema = Yup.object().shape({
     hasRooms: Yup.boolean(),
 
     /* ---------- PACKAGE ---------- */
     package: Yup.object().shape({
-      packageName: Yup.string()
-        .max(5, "Max 5 characters")
-        .required("Package name is required"),
+      packageName: Yup.string().required("Package name is required"),
 
       description: Yup.string()
         .max(100, "Max 100 characters")
@@ -144,13 +152,11 @@ const AddPackage = () => {
         .min(-180)
         .max(180),
 
-      packageImageUrls: Yup.array()
+      packageImageBase64Strings: Yup.array()
         .of(Yup.string())
         .min(1, "At least one image is required"),
 
-      isActive: Yup.string()
-        .oneOf(["Active", "InActive"], "Select status")
-        .required("Status is required"),
+      isActive: Yup.boolean().required("Status is required"),
     }),
 
     /* ---------- ROOMS ---------- */
@@ -161,11 +167,22 @@ const AddPackage = () => {
     ),
   });
 
- 
-  /*  Submit handler                                                    */
- 
-  const onSubmit = (values) => {
-    console.log("values", values);
+  /*  Submit handler   */
+
+  const onSubmit = async (values) => {
+    const WithOutRoomspayLoad = { package: values.package };
+    const WithRoomspayLoad = values;
+    const Payload = isHasRoom ? WithRoomspayLoad : WithOutRoomspayLoad;
+    try {
+      const res = await savePackageWithRoom(Payload);
+      console.log("res", res);
+      if (res.data.status === 200) {
+        toast.success("Package Added Successfully");
+        setCurrentTab(0);
+      }
+    } catch (err) {
+      toast.error("Someting Went Wrong");
+    }
   };
   return (
     <div className="bg-white/30 p-3 rounded-2xl ">
@@ -175,6 +192,7 @@ const AddPackage = () => {
           initialValues={initialValues}
           validationSchema={addPackageValidationSchema}
           onSubmit={onSubmit}
+          enableReinitialize={true}
         >
           {({ setFieldValue, values }) => (
             <Form>
@@ -190,8 +208,7 @@ const AddPackage = () => {
                   <Field
                     name="package.packageName"
                     type="text"
-                    maxlength={5}
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Package Name"
                   />
                   <ErrorMessage
@@ -212,7 +229,7 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkInTime"
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Check-in Time"
                   />
                   <ErrorMessage
@@ -233,26 +250,13 @@ const AddPackage = () => {
                   <Field
                     type="time"
                     name="package.checkOutTime"
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Checkout Time"
                   />
                   <ErrorMessage
                     name="package.checkOutTime"
                     component="div"
                     className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                {/*  Guidelines */}
-                <div>
-                  <label htmlFor="User" className="block text-sm font-medium">
-                    Guidelines
-                  </label>
-                  <Field
-                    as="textarea"
-                    name="package.guidelines"
-                    maxlength={50}
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Guidelines"
                   />
                 </div>
 
@@ -267,7 +271,7 @@ const AddPackage = () => {
                   <Field
                     name="package.latitude"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Latitude"
                   />
                   <ErrorMessage
@@ -288,7 +292,7 @@ const AddPackage = () => {
                   <Field
                     name="package.longitude"
                     type="text"
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter longitude"
                   />
                   <ErrorMessage
@@ -309,16 +313,34 @@ const AddPackage = () => {
                     as="select"
                     id="package.isActive"
                     name="package.isActive"
-                    className={`mt-1 block w-full px-2 py-2 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onChange={(e) => {
+                      const Value = e.target.value === "true";
+                      setIsValidation(Value);
+                      setFieldValue(`package.isActive`, Value);
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select</option>
-                    <option value="Active">Active</option>
-                    <option value="InActive">In Active</option>
+                    <option value={true}>Active</option>
+                    <option value={false}>In Active</option>
                   </Field>
                   <ErrorMessage
                     name="package.isActive"
                     component="span"
                     className="text-red-500 text-xs absolute"
+                  />
+                </div>
+                {/*  Guidelines */}
+                <div>
+                  <label htmlFor="User" className="block text-sm font-medium">
+                    Guidelines
+                  </label>
+                  <Field
+                    as="textarea"
+                    name="package.guidelines"
+                    maxlength={50}
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    placeholder="Enter Guidelines"
                   />
                 </div>
                 {/* discription */}
@@ -397,15 +419,15 @@ const AddPackage = () => {
                 {/* upload Image */}
                 <div className="col-md-2">
                   <label
-                    htmlFor="package.packageImageUrls"
+                    htmlFor="package.packageImageBase64Strings"
                     className="block text-sm font-medium"
                   >
                     Upload Images<span className="text-red-500">*</span>
                   </label>
                   <input
-                    id="package.packageImageUrls"
-                    name="package.packageImageUrls"
-                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    id="package.packageImageBase64Strings"
+                    name="package.packageImageBase64Strings"
+                    className={`mt-1 block w-full px-2 py-3 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     type="file"
                     accept="image/*"
                     multiple
@@ -417,24 +439,27 @@ const AddPackage = () => {
                           const base64 = await convertToBase64(files[i]);
                           base64Images.push(base64);
                         }
-                        setFieldValue("package.packageImageUrls", base64Images); // Store base64 images in Formik state
+                        setFieldValue(
+                          "package.packageImageBase64Strings",
+                          base64Images
+                        ); // Store base64 images in Formik state
                       }
                     }}
                   />
                   <ErrorMessage
-                    name="package.packageImageUrls"
+                    name="package.packageImageBase64Strings"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
                   {/* preview */}
-                  {values.package.packageImageUrls.length !== 0 && (
+                  {values.package.packageImageBase64Strings.length !== 0 && (
                     <div className="col-md-10 border p-2 mt-2">
                       <h4 className="text-sm font-semibold text-gray-800 mb-2">
                         Selected Image Previews:
                       </h4>
 
                       <div className="flex flex-wrap gap-4 h-20 overflow-auto ">
-                        {values.package.packageImageUrls.map(
+                        {values.package.packageImageBase64Strings.map(
                           (base64Image, index) => (
                             <div
                               key={index}
@@ -445,11 +470,11 @@ const AddPackage = () => {
                                 type="button"
                                 onClick={() => {
                                   const updatedImages =
-                                    values.package.packageImageUrls.filter(
+                                    values.package.packageImageBase64Strings.filter(
                                       (_, i) => i !== index
                                     );
                                   setFieldValue(
-                                    "package.packageImageUrls",
+                                    "package.packageImageBase64Strings",
                                     updatedImages
                                   );
                                 }}
@@ -586,6 +611,7 @@ const AddPackage = () => {
                               </label>
                               <Field
                                 type="number"
+                                minlength={0}
                                 maxlength={10}
                                 placeholder="Tariff Per Day"
                                 name={`rooms[${index}].tariffPerDay`}
@@ -593,12 +619,22 @@ const AddPackage = () => {
                                 onKeyDown={(e) => {
                                   // Allow only numbers and backspace
                                   if (
-                                    !/[0-9]/.test(e.key) &&
-                                    e.key !== "Backspace"
+                                    ["-", "e", "E", "+", "."].includes(e.key) ||
+                                    (e.key.length === 1 && !/[0-9]/.test(e.key))
                                   ) {
                                     e.preventDefault(); // Block other keys
                                   }
                                 }}
+                                // onChange={(e) => {
+                                //   const value = e.target.value;
+                                //   if (value === "" || Number(value) >= 0) {
+                                   
+                                //     e.target.value = value;
+                                //   } else {
+                                    
+                                //     e.target.value = 0;
+                                //   }
+                                // }}
                               />
                               <ErrorMessage
                                 name={`rooms[${index}].tariffPerDay`}
@@ -618,18 +654,19 @@ const AddPackage = () => {
                               <Field
                                 as="select"
                                 name={`rooms[${index}].hasDiscount`}
-                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none  bg-white text-sm"
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 onChange={(e) => {
-                                  setIsValidation(e.target.value);
+                                  const Value = e.target.value === "true";
+                                  setIsValidation(Value);
                                   setFieldValue(
                                     `rooms[${index}].hasDiscount`,
-                                    e.target.value
+                                    Value
                                   );
                                 }}
                               >
                                 <option value=" " label="Select Option" />
-                                <option value="Yes" label="Yes" />
-                                <option value="No" label="No" />
+                                <option value={true} label="Yes" />
+                                <option value={false} label="No" />
                               </Field>
                               <ErrorMessage
                                 name={`rooms[${index}].hasDiscount`}
@@ -637,7 +674,7 @@ const AddPackage = () => {
                                 className="text-red-500 text-xs mt-1"
                               />
                             </div>
-                            {values.rooms[index].hasDiscount === "Yes" && (
+                            {values.rooms[index].hasDiscount === true && (
                               <>
                                 {/* Discount Type */}
                                 <div>
@@ -651,7 +688,7 @@ const AddPackage = () => {
                                   <Field
                                     as="select"
                                     name={`rooms[${index}].discountType`}
-                                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                   >
                                     <option value="">Select type</option>
                                     <option value="Amount">Amount</option>
@@ -678,7 +715,7 @@ const AddPackage = () => {
                                     type="number"
                                     placeholder="Enter Discount Value"
                                     name={`rooms[${index}].discountValue`}
-                                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].discountValue`}
@@ -692,9 +729,9 @@ const AddPackage = () => {
                                     Amount after Discount
                                   </label>
                                   <Field
-                                    name={`rooms[${index}].tariffPerDay`}
+                                    name={`rooms[${index}].amountAfterDiscount`}
                                     placeholder="Enter Amount after Discount"
-                                    className="mt-1 block w-full px-2 py-1  border border-gray-300 rounded-md text-sm"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                   />
                                 </div>
                                 {/* Discount Applicable */}
@@ -706,11 +743,19 @@ const AddPackage = () => {
                                   <Field
                                     as="select"
                                     name={`rooms[${index}].discountApplicable`}
-                                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    onChange={(e) => {
+                                      const Value = e.target.value === "true";
+
+                                      setFieldValue(
+                                        `rooms[${index}].discountApplicable`,
+                                        Value
+                                      );
+                                    }}
                                   >
                                     <option value="">Select option</option>
-                                    <option value="Weekdays">Weekdays</option>
-                                    <option value="Weekends">Weekends</option>
+                                    <option value={true}>Yes</option>
+                                    <option value={false}>No</option>
                                   </Field>
                                   <ErrorMessage
                                     name={`rooms[${index}].discountApplicable`}
@@ -733,7 +778,7 @@ const AddPackage = () => {
                                 type="number"
                                 maxLength="10"
                                 name={`rooms[${index}].noOfHousesAvailable`}
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 placeholder="Enter No of Houses Available"
                               />
                               <ErrorMessage
@@ -755,7 +800,7 @@ const AddPackage = () => {
                                 type="number"
                                 maxLength="10"
                                 name={`rooms[${index}].roomLimit`}
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 placeholder="Enter Room Limit"
                               />
                               <ErrorMessage
@@ -776,11 +821,18 @@ const AddPackage = () => {
                               <Field
                                 as="select"
                                 name={`rooms[${index}].isBlockout`}
-                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                onChange={(e) => {
+                                  const Value = e.target.value === "true";
+                                  setFieldValue(
+                                    `rooms[${index}].isBlockout`,
+                                    Value
+                                  );
+                                }}
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                               >
                                 <option value="">Select option</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
+                                <option value={true}>Yes</option>
+                                <option value={false}>No</option>
                               </Field>
                               <ErrorMessage
                                 name={`rooms[${index}].isBlockout`}
@@ -800,7 +852,7 @@ const AddPackage = () => {
                                 type="number"
                                 maxLength="10"
                                 name={`rooms[${index}].sequence`}
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 placeholder="Enter Sequence Number"
                               />
                               <ErrorMessage
@@ -822,23 +874,23 @@ const AddPackage = () => {
                                 name={`rooms[${index}].remarks`}
                                 rows="2"
                                 maxLength="250"
-                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 placeholder="Enter your remarks"
                               />
                             </div>
                             {/* images */}
                             <div className="col-md-2">
                               <label
-                                htmlFor={`rooms[${index}].roomImageUrls`}
+                                htmlFor={`rooms[${index}].roomImageBase64Strings`}
                                 className=" text-sm font-medium text-gray-900 dark:text-gray-300"
                               >
                                 Upload Images
                                 <span className="text-red-500">*</span>
                               </label>
                               <input
-                                id={`rooms[${index}].roomImageUrls`}
-                                name={`rooms[${index}].roomImageUrls`}
-                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                id={`rooms[${index}].roomImageBase64Strings`}
+                                name={`rooms[${index}].roomImageBase64Strings`}
+                                className={`mt-1 block w-full px-2 py-3 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 type="file"
                                 accept="image/*"
                                 multiple
@@ -853,26 +905,29 @@ const AddPackage = () => {
                                       base64Images.push(base64);
                                     }
                                     setFieldValue(
-                                      `rooms[${index}].roomImageUrls`,
+                                      `rooms[${index}].roomImageBase64Strings`,
                                       base64Images
                                     ); // Store base64 images in Formik state
                                   }
                                 }}
                               />
-                              {/* <ErrorMessage
-                                name="roomImagesBase64Strings"
+                              <ErrorMessage
+                                name={`rooms[${index}].roomImageBase64Strings`}
                                 component="div"
                                 className="text-red-500 text-xs mt-1"
-                              /> */}
+                              />
                             </div>
 
-                            {values.rooms[index]?.roomImageUrls?.length > 0 && (
+                            {values.rooms[index]?.roomImageBase64Strings
+                              ?.length > 0 && (
                               <div className="col-md-10">
                                 <h4 className="block text-xs font-medium text-gray-700">
                                   Selected Image Previews:
                                 </h4>
                                 <div className="flex gap-4 mt-2">
-                                  {values.rooms[index]?.roomImageUrls?.map(
+                                  {values.rooms[
+                                    index
+                                  ]?.roomImageBase64Strings?.map(
                                     (base64Image, imgIndex) => (
                                       <div
                                         key={imgIndex}
@@ -884,12 +939,12 @@ const AddPackage = () => {
                                           onClick={() => {
                                             const updatedImages = values.rooms[
                                               index
-                                            ].roomImageUrls.filter(
+                                            ].roomImageBase64Strings.filter(
                                               (_, i) => i !== imgIndex
                                             );
 
                                             setFieldValue(
-                                              `rooms[${index}].roomImageUrls`,
+                                              `rooms[${index}].roomImageBase64Strings`,
                                               updatedImages
                                             );
                                           }}
@@ -923,7 +978,7 @@ const AddPackage = () => {
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   //  disabled={isSaveUnifiedFacilityDetailsLoading}
                 >
-                  {false ? "Saving..." : "Submit"}
+                  {isSavePackageWithRoomLoading ? "Saving..." : "Submit"}
                 </button>
               </div>
             </Form>

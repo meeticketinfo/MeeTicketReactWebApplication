@@ -5,7 +5,7 @@ const PackageTableLoader = () => {
     <>
       <div
         role="status"
-        className="w-full mt-8 bg-white p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
+        className="w-full mt-8  bg-white p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-xl shadow-sm animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700"
       >
         {[1, 2, 3, 4, 5].map(() => {
           return (

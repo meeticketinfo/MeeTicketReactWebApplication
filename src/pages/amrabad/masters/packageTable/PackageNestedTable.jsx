@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuClipboardEdit } from "react-icons/lu";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
+import UpdatePackage from "../packages/UpdatePackage";
 
 const PackageNestedTable = ({ data }) => {
   return (
@@ -30,7 +32,7 @@ const PackageNestedTable = ({ data }) => {
 
 const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [OpenModal, setOpenModal] = useState(false);
   return (
     <>
       <tr
@@ -74,8 +76,7 @@ const AccordionRow = ({ serial, row }) => {
           <div className="flex justify-center">
             <button
               onClick={() => {
-                setCurrentFacilityEditDetails(row);
-                setOpenModalId("facility-modal");
+                setOpenModal(true);
               }}
             >
               <LuClipboardEdit className="text-[24px] text-blue-600 " />
@@ -114,6 +115,24 @@ const AccordionRow = ({ serial, row }) => {
           </td>
         </tr>
       )}
+
+      <PopupModal
+       
+        isOpen={OpenModal}
+        onClose={() => {
+          setOpenModal(false);
+        }}
+        title={"Update Package"}
+        size="Extralarge"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        
+        
+      >
+        <div>
+          <UpdatePackage data={row} />
+        </div>
+      </PopupModal>
     </>
   );
 };

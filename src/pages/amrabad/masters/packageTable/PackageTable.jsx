@@ -5,7 +5,7 @@ import PackageNestedTable from "./PackageNestedTable";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import PackageTableLoader from "./PackageTableLoader";
 
-const PackageTable = ({ isHouseEditVisible ,setIsHouseEditVisible }) => {
+const PackageTable = () => {
   const {
     PackagesWithRooms,
     isPackagesWithRoomsLoading,
@@ -19,10 +19,13 @@ const PackageTable = ({ isHouseEditVisible ,setIsHouseEditVisible }) => {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      {isPackagesWithRoomsLoading ? <PackageTableLoader /> : (
-      <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl">
-        <PackageNestedTable data={PackagesWithRooms} isHouseEditVisible={isHouseEditVisible} setIsHouseEditVisible={setIsHouseEditVisible} />
-      </div>)}
+      {isPackagesWithRoomsLoading ? (
+        <PackageTableLoader />
+      ) : (
+        <div className="bg-white/30 backdrop-blur-sm p-4 rounded-2xl">
+          <PackageNestedTable data={PackagesWithRooms} />
+        </div>
+      )}
     </>
   );
 };

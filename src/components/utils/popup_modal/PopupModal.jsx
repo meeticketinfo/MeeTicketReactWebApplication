@@ -24,6 +24,7 @@ const PopupModal = ({
     small: "max-w-md w-full",
     medium: "max-w-4xl w-full",
     large: "max-w-6xl w-full",
+    Extralarge: "max-w-6xl w-full  ",
   };
 
   useEffect(() => {
