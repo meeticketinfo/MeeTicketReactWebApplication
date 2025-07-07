@@ -9,7 +9,7 @@ const MainTotalTransactionReport = () => {
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total Transactions Report
+              Total Transactions
             </h1>
           </div>
         </div>

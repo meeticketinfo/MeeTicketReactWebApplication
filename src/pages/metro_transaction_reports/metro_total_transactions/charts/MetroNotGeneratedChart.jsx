@@ -12,19 +12,20 @@ const reasonStyles = {
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
 
-const FailedOtherReasonChart = ({
+const MetroFailedGatewayChart = ({
   data,
   title,
   angleKey,
   calloutLabelKey,
   // filters,
 }) => {
- 
- const { innerFilters,setInnerFilters,outerFilters } =useMetroTotalCommonStore();
+  const { innerFilters, setInnerFilters, outerFilters } =
+    useMetroTotalCommonStore();
   const chartRef = useRef(null);
 
   // Calculate total count
-  const totalCount = data?.reduce((sum, item) => sum + item.subCategoryCount, 0) || 0;
+  const totalCount =
+    data?.reduce((sum, item) => sum + item.subCategoryCount, 0) || 0;
 
   useEffect(() => {
     const chart = AgCharts.create({
@@ -39,11 +40,19 @@ const FailedOtherReasonChart = ({
             enabled: true,
             fontSize: 10,
             color: "black",
+            maxWidth: 150, // enables wrapping on AgCharts v8+
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]
-                } (${percentage}%)`;
+              const text = datum[calloutLabelKey] || "";
+              const wrapLength = 25;
+              const wrappedText = text.replace(
+                new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
+                "$1\n"
+              );
+              return `${wrappedText.trim()}\n${
+                datum[angleKey]
+              } (${percentage}%)`;
             },
             offset: 15,
             minAngle: 0,
@@ -72,7 +81,6 @@ const FailedOtherReasonChart = ({
     return () => chart.destroy();
   }, [data, title, angleKey, calloutLabelKey]);
 
- 
   return (
     <div className="gap-8 w-full p-6">
       <div className="flex flex-row gap-2 items-center justify-between">
@@ -80,9 +88,13 @@ const FailedOtherReasonChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-             to="/metro-failed-other-reason-report"
+            to="/metro-not-generated-report"
             onClick={() => {
-              setInnerFilters({ ...outerFilters, status: outerFilters.status,subCategory:"" });
+              setInnerFilters({
+                ...innerFilters,
+                status: outerFilters.status,
+                subCategory: "",
+              });
             }}
             className="text-[#007AFF] font-bold underline ml-1"
           >
@@ -96,15 +108,18 @@ const FailedOtherReasonChart = ({
           <div ref={chartRef} className="h-[400px] max-w-[90%]" />
         </div>
 
-        <div className="min-w-[340px]">
-          <div className="flex justify-end mb-2">
-          </div>
-          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7]">
+        {data.length>0 &&<div className="min-w-[340px] max-w-[500px]">
+          <div className="flex justify-end mb-2"></div>
+          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-[#D9E4FF]">
-                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">Locations</th>
-                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">Count</th>
+                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">
+                    Locations
+                  </th>
+                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">
+                    Count
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -114,35 +129,36 @@ const FailedOtherReasonChart = ({
                       <div className="flex items-center gap-2">
                         <div
                           className="w-3 h-3 rounded-full shrink-0"
-                          style={{ backgroundColor: colors[index % colors.length] }}
+                          style={{
+                            backgroundColor: colors[index % colors.length],
+                          }}
                         />
                         <Link
-                           to="/metro-total-report"
+                          to="/metro-not-generated-report"
                           className="text-[#000] hover:underline text-xs"
                           onClick={() => {
                             setInnerFilters({
-                              ...outerFilters,
-                              status: item.mainCategory,
-                              subCategory:item.subCategory 
+                              ...innerFilters,
+                              status: outerFilters.status,
+                              subCategory: item.subCategory,
                             });
                           }}
                         >
-                          {item.subCategory}
+                          {item.subCategory.replace(/([A-Z])/g, ' $1').trim()}
                         </Link>
                       </div>
                     </td>
                     <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                       <Link
-                        to="/metro-failed-other-reason-report"
-                          onClick={() => {
-                            setInnerFilters({
-                              ...outerFilters,
-                              status: item.mainCategory,
-                              subCategory:item.subCategory 
-                            });
-                          }}
+                        to="/metro-not-generated-report"
+                        onClick={() => {
+                          setInnerFilters({
+                            ...innerFilters,
+                            status: outerFilters.status,
+                            subCategory: item.subCategory,
+                          });
+                        }}
                         className="text-[#4A90E2] font-semibold hover:underline text-sm"
-                        
                       >
                         {item.subCategoryCount}
                       </Link>
@@ -152,10 +168,10 @@ const FailedOtherReasonChart = ({
               </tbody>
             </table>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
 };
 
-export default FailedOtherReasonChart;
+export default MetroFailedGatewayChart;

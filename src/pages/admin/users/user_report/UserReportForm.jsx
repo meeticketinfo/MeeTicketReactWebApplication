@@ -2,6 +2,7 @@ import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
+import { useEffect } from "react";
 
 const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -93,6 +94,7 @@ const UserReportForm = ({pageNumber, pageSize, SetcurrentPage}) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
+                min={values.fromDate || startOfDay}
               />
             </div>
             {/* mobile number */}

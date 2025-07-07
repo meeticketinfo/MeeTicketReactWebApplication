@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import {
-  formatToCurrency,
-} from "../../../../utils/TypographyHelper";
-import { formatDateTime } from "../../../../utils/Helper";
 import Breadcrumb from "../../../../components/Breadcrumb";
-import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
+import AgGridTable from "../../../../components/tables/AgGridTable";
+import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import { formatDateTime } from "../../../../utils/Helper";
+import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 
-const MetroUserTransactionsOrderTracker = () => {
+const MetroTotalTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, date, amount, bookingId } = location.state || {};
-  const userDetailedReportSearchParams = localStorage.getItem("userMetroDetailedReportSearchParams");
-  const userReportSearchParams = localStorage.getItem("userMetroReportSearchParams");
-
- const{
-  MetroTransactionTrackingStatusByOrderIdData,
+  const { orderId, mobileNumber, parkName, date, amount, bookingId } =
+    location.state || {};
+const {  outerFilters } = useMetroTotalCommonStore();
+  const {
+    MetroTransactionTrackingStatusByOrderIdData,
     isFetchMetroTransactionTrackingStatusByOrderId,
     fetchMetroTransactionTrackingStatusByOrderId,
- } = metroUserReports();
+  } = useMetroTotalTransactionsStore(); 
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -52,14 +51,23 @@ const MetroUserTransactionsOrderTracker = () => {
       flex: 1,
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
-        : params.value == "INPROCESS" ? "Deep Link Status"
-          : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check",
+      valueFormatter: (params) =>
+        params.value == "INITIATE"
+          ? "Request Sent"
+          : params.value == "INPROCESS"
+          ? "Deep Link Status"
+          : params.value == "FINAL_STATUS"
+          ? params.data.resultStatus
+          : "Payment Status Check",
       cellRenderer: (params) => (
         <span title={params.value}>
-          {params.value == "INITIATE" ? "Request Sent"
-            : params.value == "INPROCESS" ? "Deep Link Status"
-              : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check"}
+          {params.value == "INITIATE"
+            ? "Request Sent"
+            : params.value == "INPROCESS"
+            ? "Deep Link Status"
+            : params.value == "FINAL_STATUS"
+            ? params.data.resultStatus
+            : "Payment Status Check"}
         </span>
       ),
     },
@@ -70,9 +78,7 @@ const MetroUserTransactionsOrderTracker = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
+        <span title={params.value}>{params.value}</span>
       ),
     },
   ]);
@@ -94,31 +100,36 @@ const MetroUserTransactionsOrderTracker = () => {
       hour12: true,
     });
     return `${formattedDate} ${formattedTime}`;
-  }
+  };
 
   const breadcrumbItems = [
+    // {
+    //   label: "User Report",
+    //   path: `/user-report?${userReportSearchParams}`,
+    // },
+    // {
+    //   label: "User Detailed Report",
+    //   path: `/user-detailed-report?${userDetailedReportSearchParams}`,
+    // },
     {
-      label: 'User Report',
-      path: `/metro-user-report?${userReportSearchParams}`
+      label: "Transaction Order Tracking Report",
+      isLast: true,
     },
-    {
-      label: 'User Detailed Report',
-      path: `/metro-user-detailed-report?${userDetailedReportSearchParams}`
-    },
-    {
-      label: 'Transaction Order Tracking Report',
-      isLast: true
-    }
   ];
+
+  const TrackRouteConfig={
+    FailedDueToOtherReasons:"/metro-failed-other-reason-report",
+    FailedFromGateway:"/metro-failed-gateway-report",
+    PaymentSuccessButTicketNotGenerated:"/metro-not-generated-report",
+    Success:"/metro-total-report",
+    Uncategorized:"/metro-total-report"
+  }
 
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -127,7 +138,7 @@ const MetroUserTransactionsOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/metro-user-detailed-report?${userDetailedReportSearchParams}`}
+                to={outerFilters.status!=""?TrackRouteConfig[outerFilters.status]:"/metro-total-report"}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -140,26 +151,54 @@ const MetroUserTransactionsOrderTracker = () => {
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Date</h3>
               <p className="text-sm font-semibold text-gray-900">
-                {TimeFormate(date) || 'N/A'}
+                {TimeFormate(date) || "N/A"}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
-              <p className="text-sm font-semibold text-gray-900">{orderId || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Order ID
+              </h3>
               <p className="text-sm font-semibold text-gray-900">
-                {bookingId || 'N/A'}
+                {orderId || "N/A"}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
-              <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Booking ID
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {bookingId || "N/A"}
+                {/* {bookingId && bookingId != "Not Generated" && (
+                  <button
+                    className="ml-2 text-blue-600 underline"
+                    onClick={() => fetchQRsForBooking(bookingId)}
+                  >
+                    View Ticket Details
+                  </button>
+                )} */}
+              </p>
             </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Mobile Number
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {mobileNumber || "N/A"}
+              </p>
+            </div>
+            {/* <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Park Name
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {parkName || "N/A"}
+              </p>
+            </div> */}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
-              <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {amount ? formatToCurrency(amount) : "N/A"}
+              </p>
             </div>
           </div>
 
@@ -177,4 +216,4 @@ const MetroUserTransactionsOrderTracker = () => {
   );
 };
 
-export default MetroUserTransactionsOrderTracker;
+export default MetroTotalTracker;

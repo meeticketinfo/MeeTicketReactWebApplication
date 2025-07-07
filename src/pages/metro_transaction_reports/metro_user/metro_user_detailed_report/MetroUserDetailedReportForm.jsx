@@ -1,37 +1,36 @@
 import { Formik, Form, Field } from "formik";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore";
 import { useEffect } from "react";
-import Select from "react-select";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
-
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper";
 import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 
-const MetroUserDetailedReportForm = ({pageNumber, pageSize, setcurrentPage}) => {
+const MetroUserDetailedReportForm = ({
+  pageNumber,
+  pageSize,
+  setcurrentPage,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
-  const { allParks, fetchAllParks } = useParkStore();
-const {isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport} = metroUserReports();
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-    fetchAllParks();
-  }, []);
+  // const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
+  const { isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport } =
+    metroUserReports();
 
   useEffect(() => {
     if (searchParams.toString()) {
       const newSearchParams = new URLSearchParams();
-      
+
       for (const [key, value] of searchParams.entries()) {
         if (value) {
           newSearchParams.set(key, cleanString(value, ":", "_"));
         }
       }
-      localStorage.setItem("userDetailedReportSearchParams", newSearchParams.toString());
+      localStorage.setItem(
+        "userMetroDetailedReportSearchParams",
+        newSearchParams.toString()
+      );
     }
   }, [searchParams]);
 
@@ -41,28 +40,22 @@ const {isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport} = metroUser
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    parkId: searchParams.get("parkId") || "",
-    departmentId: +searchParams.get("departmentId") || "",
-    entityId: +searchParams.get("entityId") || "",
     mobileNumber: searchParams.get("mobileNumber") || "",
   };
 
   const onSubmit = (values) => {
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userDetailedReportSearchParams", newSearchParams);
+    localStorage.setItem("userMetroDetailedReportSearchParams", newSearchParams);
 
     fetchMetroUserDetailedReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      parkId: values.parkId,
-      departmentId: values.departmentId,
-      entityTypeId: values.entityId,
       mobileNumber: values.mobileNumber,
       pageNumber: pageNumber,
       pageSize: pageSize,
@@ -113,176 +106,7 @@ const {isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport} = metroUser
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
-              />
-            </div>
-
-            {/* department */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Department
-              </label>
-
-              <Select
-                name="departmentId"
-                value={
-                  allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
-                    .map((dept) => ({
-                      value: dept.departmentId,
-                      label: dept.departmentName,
-                    }))
-                    .find(
-                      (option) => option.value === values.departmentId
-                    ) || null
-                }
-                options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
-                  .map((dept) => ({
-                    value: dept.departmentId,
-                    label: dept.departmentName,
-                  }))}
-                onChange={(selectedOption) => {
-                  const value = selectedOption?.value || "";
-                  setFieldValue("departmentId", value);
-                }}
-                isClearable
-                placeholder="Department"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-
-                  menu: (base) => ({
-                    ...base,
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#000",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
-            {/* location category */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Location Category
-                </label>
-
-                <Select
-                  name="entityId"
-                  value={
-                    allEntityTypes
-                      ?.filter((entity) => entity.isActive)
-                      .map((entity) => ({
-                        value: entity.entityTypeId,
-                        label: entity.entityTypeName,
-                      }))
-                      .find((option) => option.value === values.entityId) ||
-                    null
-                  }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
-                    .map((entity) => ({
-                      value: entity.entityTypeId,
-                      label: entity.entityTypeName,
-                    }))}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption?.value || "";
-                    setFieldValue("entityId", value);
-                  }}
-                  isClearable
-                  placeholder="Location Category"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
-
-                    menu: (base) => ({
-                      ...base,
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#6D7072",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>
-            {/* location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Location
-              </label>
-
-              <Select
-                name="parkId"
-                value={
-                  allParks
-                    ?.filter((park) => park.isActive)
-                    .map((park) => ({
-                      value: park.id,
-                      label: park.name,
-                    }))
-                    .find((option) => option.value === values.parkId) ||
-                  null
-                }
-                options={allParks
-                  ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
-                  .map((park) => ({
-                    value: park.id,
-                    label: park.name,
-                  }))}
-                onChange={(selectedOption) => {
-                  const value = selectedOption?.value || "";
-                  setFieldValue("parkId", value);
-                }}
-                isClearable
-                placeholder="Location"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-
-                  menu: (base) => ({
-                    ...base,
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#6D7072",
-                    cursor: "pointer",
-                  }),
-                }}
+                min={values.fromDate}
               />
             </div>
             {/* mobile number */}

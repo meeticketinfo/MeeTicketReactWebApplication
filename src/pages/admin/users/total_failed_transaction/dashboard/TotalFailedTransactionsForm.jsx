@@ -1,7 +1,7 @@
 import { useParkStore } from "../../../../../store/masters/parksStore";
 import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import { cleanString, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
+import { cleanString, departmentToCategoryMapping, getDateRange, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../../utils/Helper";
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
@@ -32,14 +32,14 @@ const TotalFailedTransactionsForm = () => {
     fetchAllParks();
   }, []);
 
-  const initialValues =  {
+  const initialValues = {
     startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
     endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
     departmentId: +searchParams.get("departmentId") || "",
     entityId: +searchParams.get("entityId") || "",
     locationId: searchParams.get("locationId") || "",
     phoneNumber: searchParams.get("phoneNumber") || "",
-  }  
+  }
 
   const overAllOnSubmit = (values) => {
     // Update URL search params with form values
@@ -80,6 +80,23 @@ const TotalFailedTransactionsForm = () => {
 
     setValues(payload);
     fetchPaymentFailedTransactionSummaryPieChartData(payload);
+  };
+
+  // Get filtered entity types based on selected department
+  const getFilteredEntityTypes = (selectedDepartmentId) => {
+    if (!selectedDepartmentId || !allDepartmentTypes || !allEntityTypes) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const selectedDepartment = allDepartmentTypes.find(dept => dept.departmentId === selectedDepartmentId);
+    if (!selectedDepartment) {
+      return allEntityTypes?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro") || [];
+    }
+
+    const allowedCategories = departmentToCategoryMapping[selectedDepartment.departmentName] || [];
+
+    return allEntityTypes
+      ?.filter((entity) => entity.isActive && entity.entityTypeName !== "Metro" && allowedCategories.includes(entity.entityTypeName)) || [];
   };
 
   return (
@@ -127,6 +144,7 @@ const TotalFailedTransactionsForm = () => {
                     const toDateValue = e.target.value;
                     setFieldValue("endDate", toDateValue);
                   }}
+                  min={values.startDate || startOfDay}
                 />
               </div>
               {/* department */}
@@ -139,7 +157,7 @@ const TotalFailedTransactionsForm = () => {
                   name="departmentId"
                   value={
                     allDepartmentTypes
-                      ?.filter((dept) => dept.isActive)
+                      ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                       .map((dept) => ({
                         value: dept.departmentId,
                         label: dept.departmentName,
@@ -149,16 +167,17 @@ const TotalFailedTransactionsForm = () => {
                       ) || null
                   }
                   options={allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
+                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "departmentId",
-                      selectedOption?.value || ""
-                    )
+                    const value = selectedOption?.value || "";
+                    setFieldValue("departmentId", value);
+                    // Clear entity and location when department changes
+                    setFieldValue("entityId", "");
+                    setFieldValue("parkId", "");
                   }}
                   isClearable
                   placeholder="Department"
@@ -197,26 +216,24 @@ const TotalFailedTransactionsForm = () => {
                 <Select
                   name="entityId"
                   value={
-                    allEntityTypes
-                      ?.filter((dept) => dept.isActive)
-                      .map((dept) => ({
-                        value: dept.entityTypeId,
-                        label: dept.entityTypeName,
+                    getFilteredEntityTypes(values.departmentId)
+                      .map((entity) => ({
+                        value: entity.entityTypeId,
+                        label: entity.entityTypeName,
                       }))
                       .find((option) => option.value === values.entityId) ||
                     null
                   }
-                  options={allEntityTypes
-                    ?.filter((entity) => entity.isActive)
+                  options={getFilteredEntityTypes(values.departmentId)
                     .map((entity) => ({
                       value: entity.entityTypeId,
                       label: entity.entityTypeName,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "entityId",
-                      selectedOption?.value || ""
-                    )
+                    const value = selectedOption?.value || "";
+                    setFieldValue("entityId", value);
+                    // Clear location when entity changes
+                    setFieldValue("parkId", "");
                   }}
                   isClearable
                   placeholder="Location Category"
@@ -256,7 +273,7 @@ const TotalFailedTransactionsForm = () => {
                   name="locationId"
                   value={
                     allParks
-                      ?.filter((park) => park.isActive)
+                      ?.filter((park) => park.departmentName !== "Metro")
                       .map((park) => ({
                         value: park.id,
                         label: park.name,
@@ -265,16 +282,14 @@ const TotalFailedTransactionsForm = () => {
                     null
                   }
                   options={allParks
-                    ?.filter((park) => park.isActive && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
+                    ?.filter((park) => park.departmentName !== "Metro" && (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
                     }))}
                   onChange={(selectedOption) => {
-                    setFieldValue(
-                      "locationId",
-                      selectedOption?.value || ""
-                    )
+                    const value = selectedOption?.value || "";
+                    setFieldValue("locationId", value);
                   }}
                   isClearable
                   placeholder="Location"
@@ -324,7 +339,7 @@ const TotalFailedTransactionsForm = () => {
                     }
                   }}
                   onChange={(e) => {
-                    setFieldValue("phoneNumber",e.target.value)
+                    setFieldValue("phoneNumber", e.target.value)
                   }}
                 />
               </div>

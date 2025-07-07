@@ -15,11 +15,11 @@ const useMetroTotalCommonStore = create(
         toDate: "",
         mobileNumber: "",
         status: "",
-        subCategory:""
+        subCategory: "",
       },
       deepInnerFilters: {
-        fromDate: "",
-        toDate: "",
+        startDate: "",
+        endDate: "",
         mobileNumber: "",
         status: "",
       },
@@ -55,6 +55,7 @@ const useMetroTotalCommonStore = create(
             toDate: "",
             mobileNumber: "",
             status: "",
+            subCategory: "",
           },
         }),
 
@@ -68,8 +69,8 @@ const useMetroTotalCommonStore = create(
       resetDeepInnerFilters: () =>
         set({
           deepInnerFilters: {
-            fromDate: "",
-            toDate: "",
+            startDate: "",
+            endDate: "",
             mobileNumber: "",
             status: "",
           },
@@ -81,6 +82,5 @@ const useMetroTotalCommonStore = create(
     }
   )
 );
-
 
 export default useMetroTotalCommonStore;

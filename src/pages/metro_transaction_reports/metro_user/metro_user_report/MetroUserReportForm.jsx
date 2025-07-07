@@ -25,7 +25,7 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userReportSearchParams", newSearchParams);
+    localStorage.setItem("userMetroReportSearchParams", newSearchParams);
 
     fetchMetroUserReport({
       fromDate: values.fromDate,
@@ -49,6 +49,7 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
     localStorage.setItem("userReportSearchParams", "");
     setValues(payload);
     fetchMetroUserReport({...payload, PageIndex: PageIndex, pageSize: pageSize} );
+    localStorage.setItem("userMetroReportSearchParams", "");
   };
 
   return (
@@ -94,6 +95,7 @@ const MetroUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
+                min={values.fromDate}
               />
             </div>
             {/* mobile number */}

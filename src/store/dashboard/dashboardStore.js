@@ -65,10 +65,10 @@ export const useDashboardStore = create((set) => ({
 
   fetchAllDashboardCounts: async (
     roleDetails,
-    { fromDate, toDate, entityId, active }
+    { fromDate, toDate, entityId, active, departmentId, locationId }
   ) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
       : "";
     set({ isFetchCountsLoading: true });
     try {
@@ -95,9 +95,9 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active }) => {
+  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active, departmentId, locationId }) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
       : "";
     set({ isFetchPieChartsLoading: true });
     try {

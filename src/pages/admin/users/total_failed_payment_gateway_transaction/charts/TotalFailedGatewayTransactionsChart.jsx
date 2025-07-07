@@ -103,7 +103,7 @@ const TotalFailedGatewayTransactionsChart = ({
           <div ref={chartRef} className="h-[400px] max-w-[90%]" />
         </div>
 
-        <div className="min-w-[340px]">
+        <div className="min-w-[340px] max-w-[450px]">
           <div className="flex justify-end mb-2">
           </div>
           <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-y-auto">

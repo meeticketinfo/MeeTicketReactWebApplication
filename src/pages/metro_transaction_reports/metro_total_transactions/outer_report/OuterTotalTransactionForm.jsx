@@ -1,49 +1,38 @@
 import { Formik, Form, Field } from "formik";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
-import { useParkStore } from "../../../../store/masters/parksStore";
-import { useEffect } from "react";
-import Select from "react-select";
-import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
-import { useSearchParams } from "react-router-dom";
-import {
-  cleanString,
-  getEndOfCurrentDay,
-  getStartOfCurrentDay,
-  getValueFromQuery,
-} from "../../../../utils/Helper";
+
 import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 
 const OuterTotalTransactionForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
 }) => {
-  const { setOuterFilters, outerFilters, resetOuterFilters } =
-    useMetroTotalCommonStore();
+  const startOfDay = getStartOfCurrentDay();
+    const endOfDay = getEndOfCurrentDay();
+  const { outerFilters,deepInnerFilters,setDeepInnerFilters } = useMetroTotalCommonStore();
   console.log("outerFilters", outerFilters);
-  const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
   const initialValues = {
-    startDate: outerFilters.fromDate || "",
-    endDate: outerFilters.toDate || "",
-    phoneNumber: outerFilters.mobileNumber || "",
-    PaymentMode: "",
+    startDate: deepInnerFilters.startDate || outerFilters.fromDate || startOfDay,
+      endDate: deepInnerFilters.endDate || outerFilters.toDate || endOfDay,
+      phoneNumber:
+        deepInnerFilters.mobileNumber || outerFilters.mobileNumber || "",
+      PaymentMode: deepInnerFilters.PaymentMode || "",
   };
 
   const onSubmit = (values) => {
+    setDeepInnerFilters(values)
     console.log("values", values);
     fetchMetroTotalTransactions({
       ...values,
-      status:outerFilters.status,
-      pageNumber:pageNumber,
-      pageSize:pageSize
+      status: outerFilters.status,
+      subCategory: "",
+      pageNumber: pageNumber,
+      pageSize: pageSize,
     });
-    SetcurrentPage(1);
+    SetcurrentPage(0);
   };
 
   return (

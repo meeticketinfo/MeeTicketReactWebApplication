@@ -72,6 +72,9 @@ const UserReport = () => {
           }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${
             searchParams.get("toDate") || toDate
           }`}
+          onClick={() => {
+            localStorage.setItem("userReportSearchParams", `mobileNumber=${searchParams.get("mobileNumber") ? params.data.phoneNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+          }}
         >
           View Transaction
         </Link>
@@ -124,6 +127,7 @@ const UserReport = () => {
             totalCount={userReport?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
+            showSearch={false}
           />
         </div>
       </div>

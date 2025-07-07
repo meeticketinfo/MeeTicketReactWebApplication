@@ -19,7 +19,7 @@ const MetroUserDetailedReport = () => {
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
+  const userReportSearchParams = localStorage.getItem("userMetroReportSearchParams");
     const {
     metroUserDetailedReport,
     isFetchMetroUserDetailedReport,
@@ -69,7 +69,6 @@ const MetroUserDetailedReport = () => {
             orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
             status: params.data.resultStatus,
             amount: params.data.initiateTxnAmount,
             bookingId: params.data.bookingId,
@@ -87,23 +86,23 @@ const MetroUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "departmentName",
-      headerName: "Department",
+      field: "fromStationName",
+      headerName: "From Station",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "entityTypeName",
-      headerName: "Location Category",
+      field: "toStationName",
+      headerName: "To Station",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "locationName",
-      headerName: "Park Name",
-      minWidth: "200",
+      field: "noOfTickets",
+      headerName: "Total Tickets",
+      maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -125,16 +124,7 @@ const MetroUserDetailedReport = () => {
         <span title={params.value}>{params.value}</span>
       ),
     },
-    {
-      field: "transactionStatus",
-      headerName: "Ticket Status",
-      maxWidth: "220",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
-    },
+   
     {
       field: "orderId",
       headerName: "Order ID",
@@ -161,9 +151,6 @@ const MetroUserDetailedReport = () => {
     fetchMetroUserDetailedReport({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      parkId: searchParams.get("locationId") || "",
-      departmentId: +searchParams.get("departmentId") || "",
-      entityTypeId: +searchParams.get("entityId") || "",
       mobileNumber: searchParams.get("mobileNumber") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,

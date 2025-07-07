@@ -135,7 +135,16 @@ const MetroTotalTransactionChart = ({
                               backgroundColor: colors[index % colors.length],
                             }}
                           />
-                          <Link className="text-[#000] hover:underline text-xs">
+                          <Link 
+                           to={routes[item.paymentCategoryKey]}
+                          className="text-[#000] hover:underline text-xs"
+                           onClick={() => {
+                            setOuterFilters({
+                              ...outerFilters,
+                              status: item.paymentCategoryKey,
+                            });
+                          }}
+                          >
                             {item.location || item.paymentCategory}
                           </Link>
                         </div>

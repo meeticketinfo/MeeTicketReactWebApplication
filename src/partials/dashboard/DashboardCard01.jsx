@@ -1,7 +1,8 @@
 import CountUp from "react-countup";
 import PropTypes from "prop-types";
+import { IoReloadCircle } from "react-icons/io5";
 
-function DashboardCard01({ lableName, count, icon: Icon }) {
+function DashboardCard01({ lableName, count, icon: Icon, isLoading }) {
   return (
     <>
       <div className="flex flex-col justify-center col-span-full sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200">
@@ -10,10 +11,21 @@ function DashboardCard01({ lableName, count, icon: Icon }) {
             <Icon className="text-3xl font-bold text-white dark:text-gray-100" />
           </div>
           <div className="flex-shrink-0 ml-3">
-            <span className="text-2xl font-bold leading-none text-gray-600">
-              <CountUp end={count} duration={2} prefix="" separator="," />
-            </span>
-            <h3 className="text-base font-normal text-gray-500">{lableName}</h3>
+            {isLoading ? (
+              <div className="space-y-2">
+                {/* Skeleton for count */}
+                <div className="h-6 w-20 bg-gray-100 rounded animate-pulse"></div>
+                {/* Skeleton for label */}
+                <div className="h-4 w-24 bg-gray-100 rounded animate-pulse"></div>
+              </div>
+            ) : (
+              <>
+                <span className="text-2xl font-bold leading-none text-gray-600">
+                  <CountUp end={count} duration={2} prefix="" separator="," />
+                </span>
+                <h3 className="text-base font-normal text-gray-500">{lableName}</h3>
+              </>
+            )}
           </div>
           {/* <div className="flex flex-1 justify-end items-center ml-5 w-0 text-base font-bold text-green-500">
             +16%
@@ -28,5 +40,6 @@ DashboardCard01.propTypes = {
   count: PropTypes.number.isRequired,
   percentageChange: PropTypes.number,
   icon: PropTypes.elementType.isRequired,
+  isLoading: PropTypes.bool,
 };
 export default DashboardCard01;

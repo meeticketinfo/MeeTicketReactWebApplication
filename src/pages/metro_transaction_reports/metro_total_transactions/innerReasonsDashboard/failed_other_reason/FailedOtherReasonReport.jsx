@@ -7,11 +7,20 @@ import useMetroTotalCommonStore from "../../../../../store/metro_transaction_rep
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../utils/Helper";
+import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../../components/Breadcrumb";
 
 const FailedOtherReasonReport = () => {
-  const { innerFilters, outerFilters } = useMetroTotalCommonStore();
+  const startOfDay = getStartOfCurrentDay();
+      const endOfDay = getEndOfCurrentDay();
+  const {
+    innerFilters,
+    outerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+    resetInnerFilters
+  } = useMetroTotalCommonStore();
   const {
     fetchMetroTotalTransactions,
     MetroTotalTransactionsData,
@@ -23,18 +32,20 @@ const FailedOtherReasonReport = () => {
     setCurrentPage(event.selected);
   };
   console.log("outerFilters", innerFilters);
+
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: innerFilters.fromDate || "",
-      endDate: innerFilters.toDate || "",
-      phoneNumber: innerFilters.mobileNumber || "",
+      startDate: deepInnerFilters.startDate || innerFilters.fromDate || startOfDay,
+      endDate: deepInnerFilters.endDate || innerFilters.toDate || endOfDay,
+      phoneNumber:innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
+      PaymentMode: deepInnerFilters.PaymentMode || "",
       status: innerFilters.status || "",
       subCategory: innerFilters.subCategory || "",
-      PaymentMode: "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
+
   const columnDefs = [
     {
       headerName: "S.No",
@@ -63,12 +74,11 @@ const FailedOtherReasonReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/total-payment-transaction-order-tracker"}
+          to={"/metro-total-traker"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
@@ -124,7 +134,7 @@ const FailedOtherReasonReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "status",
+      field: "transactionStatus",
       headerName: "Transaction Status",
       maxWidth: "220",
       headerClass: "text-blue-v2",
@@ -140,7 +150,7 @@ const FailedOtherReasonReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "bookingDetailsId",
+      field: "bookingId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -156,19 +166,45 @@ const FailedOtherReasonReport = () => {
       ),
     },
   ];
+    const breadcrumbItems = [
+    {
+      label: 'Total Transactions',
+      path: `/metro-total-transaction`
+    },
+     {
+      label: 'Failed (Other Reasons)',  
+      path: `/metro-failed-other-reason`,
+      onclick:()=>{resetDeepInnerFilters()
+        
+      },
+    },
+    {
+      label: 'Failed (Other Reasons) Report',  
+      isLast: true
+    }
+  ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+         <div className="mb-6">
+          <Breadcrumb 
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total Transactions Report
+              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
             </h1>
           </div>
           <div className="">
             <Link
               to="/metro-failed-other-reason"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+              onClick={() => {
+                resetDeepInnerFilters();
+              }}
             >
               Back
             </Link>
