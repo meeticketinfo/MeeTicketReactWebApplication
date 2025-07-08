@@ -23,23 +23,13 @@ const MetroRefundTransactionsReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-  const { allParks, fetchAllParks } = useParkStore();
-  const{
-     isFetchMetroRefundTransactionsInnerReport,
-     fetchMetroRefundTransactionsInnerReport
-    } = metroRefundReports();
+  const {
+    isFetchMetroRefundTransactionsInnerReport,
+    fetchMetroRefundTransactionsInnerReport,
+  } = metroRefundReports();
   const refundTransactionSearchParams = localStorage.getItem(
     "refundMetroTransactionSearchParams"
   );
-
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-    fetchAllParks();
-  }, []);
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -48,7 +38,8 @@ const MetroRefundTransactionsReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     phoneNumber: searchParams.get("phoneNumber") || "",
-    refundStatus: (searchParams.get("RefundStatus") !== "null" && searchParams.get("RefundStatus")) || "",
+    refundStatus:(searchParams.get("RefundStatus") !== "null" &&  searchParams.get("RefundStatus")) || "",
+    // refundStaus:"Refund",
   };
 
   const onSubmit = (values) => {
@@ -157,8 +148,8 @@ const MetroRefundTransactionsReportForm = ({
                 }}
               >
                 <option value="">Select Mode</option>
-                <option value="Refund">Refunded</option>
-                <option value="NotRefund">Not Refunded</option>
+                <option value="Refunded">Refunded</option>
+                <option value="NotRefunded">Not Refunded</option>
               </Field>
             </div>
             <div className="flex items-end">

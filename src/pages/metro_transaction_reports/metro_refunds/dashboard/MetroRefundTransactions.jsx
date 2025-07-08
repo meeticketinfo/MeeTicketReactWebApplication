@@ -20,9 +20,9 @@ function MetroRefundTransactions() {
   useEffect(() => {
     localStorage.removeItem("refundMetroTransactionSearchParams");
     const payload = {
-      startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
-      endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
-      mobileNumber: searchParams.get("mobileNumber") || "",
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+      phoneNumber: searchParams.get("phoneNumber") || "",
     };
     fetchMetroRefundTransactionsReport(payload);
   }, []);

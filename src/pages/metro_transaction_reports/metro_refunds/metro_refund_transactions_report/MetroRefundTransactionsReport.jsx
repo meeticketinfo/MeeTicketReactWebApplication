@@ -8,9 +8,7 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
-import { userReports } from "../../../../store/userTransaction/UserReports";
-import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
-import Swal from "sweetalert2";
+
 import Breadcrumb from "../../../../components/Breadcrumb";
 import MetroRefundTransactionsReportForm from "./MetroRefundTransactionsReportForm";
 import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
@@ -21,8 +19,7 @@ const MetroRefundTransactionsReport = () => {
   const toDate = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
-  const [RefundOrderId, setRefundOrderId] = useState("");
+  
   const refundTransactionSearchParams =
     localStorage.getItem("refundMetroTransactionSearchParams") || "";
 
@@ -58,37 +55,7 @@ const MetroRefundTransactionsReport = () => {
         });
       },
     },
-    // {
-    //   headerName: "Actions",
-    //   field: "actions",
-    //   maxWidth: "100",
-    //   //   hide: email === "esdadmin@gmail.com",
-    //   cellRenderer: (params) => {
-    //     // console.log("params",params)
-    //     return (
-    //       <div className="flex align-center gap-2">
-    //         <>
-    //           <button
-    //             className={` ${
-    //               params.data.refundStatus === "Not Refunded"
-    //                 ? "bg-green-400"
-    //                 : "bg-green-100 cursor-not-allowed "
-    //             } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-    //             disabled={params.data.refundStatus != "Not Refunded"}
-    //             onClick={() => {
-    //               setRefundOrderId(params.data.orderId);
-    //               setInitiatRefundModal(true);
-    //             }}
-    //           >
-    //             Initiate
-    //           </button>
-    //         </>
-    //       </div>
-    //     );
-    //   },
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    // },
+
     {
       field: "refundStatus",
       headerName: "RefundStatus",
@@ -119,13 +86,7 @@ const MetroRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    // {
-    //   field: "locationName",
-    //   headerName: "Location name",
-
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => `${params.value} ` || "0",
-    // },
+    
     {
       field: "amount",
       headerName: "Amount",
@@ -141,13 +102,7 @@ const MetroRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "modeOfTransaction",
-      headerName: "Mode of Transaction",
-      maxWidth: "170",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+  
     {
       field: "paymentMode",
       headerName: "Payment mode",

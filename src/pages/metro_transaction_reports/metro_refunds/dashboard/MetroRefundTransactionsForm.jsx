@@ -12,11 +12,6 @@ import { metroRefundReports } from "../../../../store/metro_refund_reports_store
 const TotalTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { allParks, fetchAllParks } = useParkStore();
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-
   // const { isFetchRefundTransactions, fetchRefundTransactions } = userReports();
   const {isFetchMetroRefundTransactionsReport,fetchMetroRefundTransactionsReport } = metroRefundReports();
   const startOfDay = getStartOfCurrentDay();
@@ -28,12 +23,7 @@ const TotalTransactionsForm = () => {
     setSearchParams(newSearchParams);
   }, [searchParams]);
 
-  // Initial load effect
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-    fetchAllParks();
-  }, []);
+  
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
@@ -63,8 +53,8 @@ const TotalTransactionsForm = () => {
 
   const resetForm = (setValues) => {
     const payload = {
-      startDate: startOfDay,
-      endDate: endOfDay,
+      fromDate: startOfDay,
+      toDate: endOfDay,
       phoneNumber: "",
     };
 
