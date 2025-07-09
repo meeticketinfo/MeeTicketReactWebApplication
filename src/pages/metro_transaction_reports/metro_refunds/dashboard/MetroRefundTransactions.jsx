@@ -11,7 +11,7 @@ function MetroRefundTransactions() {
   const [searchParams] = useSearchParams();
  const {
     metroRefundTransactionsReport,
-    isFetchRefundTransactionsReport,
+    isFetchMetroRefundTransactionsReport,   
     fetchMetroRefundTransactionsReport,
   } = metroRefundReports();
   const startOfDay = getStartOfCurrentDay();
@@ -47,7 +47,7 @@ function MetroRefundTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isFetchRefundTransactionsReport && (
+              {isFetchMetroRefundTransactionsReport && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>

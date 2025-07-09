@@ -31,13 +31,15 @@ const useMetroTotalCommonStore = create(
             ...newFilters,
           },
         })),
-      resetOuterFilters: () =>
+
+      resetOuterFilters: (newFilters = {}) =>
         set({
           outerFilters: {
             fromDate: "",
             toDate: "",
             mobileNumber: "",
             status: "",
+            ...newFilters,
           },
         }),
 
@@ -48,7 +50,8 @@ const useMetroTotalCommonStore = create(
             ...newFilters,
           },
         })),
-      resetInnerFilters: () =>
+
+      resetInnerFilters: (newFilters = {}) =>
         set({
           innerFilters: {
             fromDate: "",
@@ -56,6 +59,7 @@ const useMetroTotalCommonStore = create(
             mobileNumber: "",
             status: "",
             subCategory: "",
+            ...newFilters,
           },
         }),
 
@@ -66,13 +70,15 @@ const useMetroTotalCommonStore = create(
             ...newFilters,
           },
         })),
-      resetDeepInnerFilters: () =>
+
+      resetDeepInnerFilters: (newFilters = {}) =>
         set({
           deepInnerFilters: {
             startDate: "",
             endDate: "",
             mobileNumber: "",
             status: "",
+            ...newFilters,
           },
         }),
     }),
