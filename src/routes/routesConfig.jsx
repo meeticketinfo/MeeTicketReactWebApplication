@@ -72,6 +72,8 @@ import FailedTransactions from "../pages/admin/userFailedTransactions/reports/Fa
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
 import Packages from "../pages/amrabad/user/packages/packages";
 import Houses from "../pages/amrabad/user/houses/Houses";
+import AmarabadLogin from "../pages/amrabad/user/amarabadLogin/amarabadLogin";
+import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadRegister";
 
 export const routes = [
   {
@@ -311,6 +313,14 @@ export const routes = [
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
   //amarabad-user
+  {
+    path: "/amarabad/login",
+    element: <AmarabadLogin/>,
+  },
+  {
+    path: "/amarabad/register",
+    element: <AmarabadRegister/>,
+  },
   {
     path: "/amarabad",
     element: <Packages/>,
