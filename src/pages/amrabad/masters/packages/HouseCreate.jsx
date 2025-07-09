@@ -4,6 +4,21 @@ import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect, useState } from "react";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+
+// Function to convert files to base64 strings
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file); // Convert to base64
+  });
+};
+const convertUrlToBase64 = (url) => {
+  return fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => convertToBase64(blob)); // reuse your existing helper
+};
 const HouseCreate = () => {
   const {
     fetchPackagesWithRooms,
@@ -21,6 +36,7 @@ const HouseCreate = () => {
   } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
   const initialValues = {
+    roomId: isHouseEditVisible ? selectedSubRowData?.roomId : "",
     packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
     // packageName: isHouseEditVisible ? selectedSubRowData?.packageName : "",
     roomName: isHouseEditVisible ? selectedSubRowData?.roomName : "",
@@ -53,23 +69,24 @@ const HouseCreate = () => {
       : "",
     remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
     sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
-    roomImagesBase64Strings: isHouseEditVisible
-      ? selectedSubRowData?.roomImages
+    // roomImagesBase64Strings: isHouseEditVisible
+    //   ? selectedSubRowData?.roomImages
+    //   : [],
+
+    roomImagesBase64Strings: Array.isArray(selectedSubRowData?.roomImages)
+      ? selectedSubRowData?.roomImages.map((img) => ({
+          imageId: img.imageId,
+          imageUrl: img.imageUrl,
+          isNew: false,
+          isDeleted: false,
+        }))
       : [],
   };
-  // Function to convert files to base64 strings
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file); // Convert to base64
-    });
-  };
+
   useEffect(() => {
     fetchGetAllPackages();
   }, []);
-  
+
   const validationSchema = Yup.object().shape({
     packageId: Yup.string().required("Package selection is required."),
     roomName: Yup.string()
@@ -97,45 +114,69 @@ const HouseCreate = () => {
     roomLimit: Yup.string().required("Room Limit is required."),
     isBlockout: Yup.string().required("Block Out is required."),
     sequence: Yup.string().required("Sequence is required."),
-    roomImagesBase64Strings: Yup.array()
-      .of(
-        Yup.string().test("is-valid-image", "Invalid image type", (value) => {
-          // Regular expression for checking valid image data URI format
-          return /^data:image\/(jpeg|png|gif|svg);base64,/.test(value);
-        })
-      )
-      .min(1, "You must upload at least one image")
-      .max(5, "You can upload up to 5 images only"),
+    // roomImagesBase64Strings: Yup.array()
+    //   .of(
+    //     Yup.string().test("is-valid-image", "Invalid image type", (value) => {
+    //       // Regular expression for checking valid image data URI format
+    //       return /^data:image\/(jpeg|png|gif|svg);base64,/.test(value);
+    //     })
+    //   )
+    //   .min(1, "You must upload at least one image")
+    //   .max(5, "You can upload up to 5 images only"),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
-     const isEdit = isHouseEditVisible;
+    const isEdit = isHouseEditVisible;
+
     try {
+      const roomImagesPayload = await Promise.all(
+        values.roomImagesBase64Strings
+          .filter((img) => !img.isDeleted)
+          .map(async (img) => {
+            if (!img.isNew && img.imageId) {
+              // Convert existing image URL to base64
+              const base64 = await convertUrlToBase64(img.imageUrl);
+              return {
+                imageId: img.imageId,
+                imageUrl: base64,
+                isDeleted: img.isDeleted ? 1 : 0,
+              };
+            } else {
+              // New image, already base64
+              return img.imageUrl;
+            }
+          })
+      );
+
+      console.log("test");
+
       const payload = {
         ...values,
-        packageId: values.packageId, // ensure it's just ID
+        packageId: values.packageId,
         hasDiscount: values.hasDiscount === "Yes",
         isBlockout: values.isBlockout === "Yes",
         discountApplicable: values.discountApplicable === "true",
-        // Optional: include the name if backend requires it
-        // packageName: selectedPackage?.roomName,
+        roomImagesBase64Strings: roomImagesPayload,
       };
-     if (!payload.hasDiscount) {
-      payload.discountType = null;
-      payload.discountValue = null;
-      payload.amountAfterDiscount = null;
-      payload.discountApplicable = null;
-    }
+
+      if (!payload.hasDiscount) {
+        payload.discountType = null;
+        payload.discountValue = null;
+        payload.amountAfterDiscount = null;
+        payload.discountApplicable = null;
+      }
+
       const result = await saveHouseDetails(payload, isEdit);
+
       if (result.data.status === 200) {
         toast.success(
           isEdit ? "House updated successfully" : "House created successfully"
         );
+        setIsHouseEditVisible(false);
         fetchPackagesWithRooms();
         resetForm();
         setCurrentTab(0);
-        setIsHouseEditVisible(false);
       }
     } catch (xhr) {
       if (xhr?.response?.data?.errors) {
@@ -147,8 +188,6 @@ const HouseCreate = () => {
       }
     } finally {
       setSubmitting(false);
-      setCurrentTab(0);
-      setIsHouseEditVisible(false);
     }
   };
 
@@ -439,7 +478,7 @@ const HouseCreate = () => {
                     id="roomImagesBase64Strings"
                     name="roomImagesBase64Strings"
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                    type="file" 
+                    type="file"
                     accept="image/*"
                     multiple
                     onChange={async (event) => {
@@ -448,9 +487,18 @@ const HouseCreate = () => {
                         const base64Images = [];
                         for (let i = 0; i < files.length; i++) {
                           const base64 = await convertToBase64(files[i]);
-                          base64Images.push(base64);
+                          base64Images.push({
+                            imageId: null, // Since it's a new image
+                            imageUrl: base64, // Base64 string
+                            isNew: true, // Mark as new
+                            isDeleted: false, // Mark as not deleted
+                          });
                         }
-                        setFieldValue("roomImagesBase64Strings", base64Images); // Store base64 images in Formik state
+                        // Append new uploads to existing images
+                        setFieldValue("roomImagesBase64Strings", [
+                          ...values.roomImagesBase64Strings,
+                          ...base64Images,
+                        ]);
                       }
                     }}
                   />
@@ -477,8 +525,10 @@ const HouseCreate = () => {
                               type="button"
                               onClick={() => {
                                 const updatedImages =
-                                  values.roomImagesBase64Strings.filter(
-                                    (_, i) => i !== index
+                                  values.roomImagesBase64Strings.map((img, i) =>
+                                    i === index
+                                      ? { ...img, isDeleted: true }
+                                      : img
                                   );
                                 setFieldValue(
                                   "roomImagesBase64Strings",
@@ -492,7 +542,7 @@ const HouseCreate = () => {
 
                             {/* Image preview */}
                             <img
-                              src={isHouseEditVisible?base64Image.imageUrl:base64Image}
+                              src={base64Image.imageUrl}
                               alt={`preview-${index}`}
                               className="w-full h-full object-cover rounded shadow-md"
                             />
