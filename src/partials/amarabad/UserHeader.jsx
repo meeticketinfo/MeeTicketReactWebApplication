@@ -2,10 +2,10 @@ import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../../images/user/logo.png';
 import TelanganaRising from '../../images/user/telangana-rising-logo.png';
-import { loginStore } from '../../store/amarabad/user/loginStore';
+import { amrabadAuthStore } from '../../store/amarabad/user/amrabadAuthStore';
 
 function UserHeader({ isScrolled = false }) {
-  const { isLoggedIn, setIsLoggedIn } = loginStore();
+  const { isLoggedIn, setIsLoggedIn } = amrabadAuthStore();
   const navigate = useNavigate();
   const links = [
     {

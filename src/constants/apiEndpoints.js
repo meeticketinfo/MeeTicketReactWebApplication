@@ -48,8 +48,8 @@ export const RTC_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
 // Amarabad dev
-// export const AMRABAD_API_BASE_URL =
-// "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+export const AMRABAD_API_BASE_URL =
+"https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
 // export const API_BASE_URL =
@@ -60,6 +60,9 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
     REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
+    AMRABAD:{
+      AMRABAD_LOGIN:`${AMRABAD_API_BASE_URL}Authorization/AmrabadLogin`,
+    }
   },
   MASTERS: {
     PARK: {
