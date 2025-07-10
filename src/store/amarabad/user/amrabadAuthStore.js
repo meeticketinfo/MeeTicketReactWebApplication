@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
+import { toast } from "react-toastify";
+import { handleApiError } from "../../../utils/apiErrorHandler";
 
 export const amrabadAuthStore = create(
   persist(
@@ -24,7 +26,8 @@ export const amrabadAuthStore = create(
           });
 
           return { success: true, data: response };
-        } catch (error) {
+        } catch (xhr) {
+         handleApiError(xhr);
           set({
             AmrabadLoginLoading: false,
           });

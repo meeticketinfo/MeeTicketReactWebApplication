@@ -5,6 +5,7 @@ import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
 import { amrabadAuthStore } from "../../../../store/amarabad/user/amrabadAuthStore";
+import { ToastContainer } from "react-toastify";
 
 const AmarabadLoginForm = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const AmarabadLoginForm = () => {
   };
   return (
     <>
+    <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={LoginValidationSchema}
