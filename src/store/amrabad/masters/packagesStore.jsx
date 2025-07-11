@@ -110,7 +110,7 @@ export const usePackagesStore = create((set) => ({
       set({
         isUpdatePackageLoading: false,
       });
-      return { success: true, data: response.data };
+      return { success: true, data: response };
     } catch ({ error }) {
       set({
         saveHouseDetailsError: error.message,

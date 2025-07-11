@@ -3,6 +3,7 @@ import { Field, Form, Formik } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import { convertToBase64 } from "../../../../utils/Helper";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 // helper: turn an existing image URL into a base64 string
 const urlToBase64 = async (url) => {
@@ -18,7 +19,10 @@ const urlToBase64 = async (url) => {
 };
 
 const UpdatePackage = ({ data }) => {
-  const { UpdatePackage, isUpdatePackageLoading } = usePackagesStore();
+  const { UpdatePackage, isUpdatePackageLoading, fetchPackagesWithRooms } =
+    usePackagesStore();
+
+  const { setCurrentTab } = usePackagesCommonStore();
 
   /** ---------------- initial values ---------------- */
   const initialValues = {
@@ -47,34 +51,47 @@ const UpdatePackage = ({ data }) => {
   };
 
   /** ---------------- submit handler ---------------- */
-  const onSubmit = async (values, { setSubmitting }) => {
+  const onSubmit = async (values, ) => {
+    toast.success("Package updated successfully 🎉");
     try {
-      const base64Images = [];
+      const packageImages = [];
 
-      // build a pure‑base64 array, skipping deletions
       for (const img of values.packageImages) {
-        if (img.isDeleted) continue;
+        let base64Image = "";
 
-        if (img.isNew) {
-          base64Images.push(img.imageUrl); // already base64
-        } else {
-          const b64 = await urlToBase64(img.imageUrl); // convert URL → base64
-          base64Images.push(b64);
+        if (!img.isDeleted) {
+          // If not deleted, include image data
+          if (img.isNew) {
+            base64Image = img.imageUrl; // already base64
+          } else {
+            base64Image = await urlToBase64(img.imageUrl);
+          }
         }
-      }
 
+        packageImages.push({
+          imageId: img.isNew ? 0 : img.imageId, // 0 for new images
+          base64Image, // empty string if deleted
+          isDeleted: img.isDeleted ? true : false, // 1 if deleted, 0 otherwise
+        });
+      }
       const payload = {
         ...values,
-        packageImages: base64Images,
+        packageImages,
       };
 
-      await UpdatePackage(payload);
-      toast.success("Package updated successfully 🎉");
+      const res = await UpdatePackage(payload);
+     
+      if (res.data.status === 200) {
+       
+        // setCurrentTab(0);
+        fetchPackagesWithRooms();
+      } else {
+        toast.error("Something went wrong while updating the package");
+      }
     } catch (err) {
-      console.error(err);
       toast.error("Something went wrong while updating the package");
     } finally {
-      setSubmitting(false);
+     
     }
   };
 
