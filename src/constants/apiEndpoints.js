@@ -280,6 +280,11 @@ export const API_ENDPOINTS = {
        ADD_PACKAGE_WITH_ROOM:`${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
        UPDATE_PACKAGE:`${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
     },
+    REPORTS:{
+    GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
+    GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
+    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`
+    },
     USER:{
 
     }
