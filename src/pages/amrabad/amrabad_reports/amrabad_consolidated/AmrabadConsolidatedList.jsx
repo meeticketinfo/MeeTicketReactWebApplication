@@ -230,9 +230,6 @@ function AmrabadConsolidatedList() {
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}
-          // onPageChange={handlePageChange}
-          // totalRecords={totalEntityBookingRecords}
-          // enableAdvancedFilter={true}
         />
       </div>
     </>

@@ -11,13 +11,8 @@ import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/C
 import AmrabadIndividualForm from "./AmrabadIndividualForm";
 
 export default function AdminBookings() {
-  const {
-    isFetchEntityBookingsLoading,
-  } = useDashboardStore();
-  const {
-    fetchAmrabadIndividualReports,
-    allAmrabadIndividualReports,
-  } = useAmrabadConsolidatedStore();
+  const { fetchAmrabadIndividualReports, allAmrabadIndividualReports ,isAmrabadIndividualReportsLoading} =
+    useAmrabadConsolidatedStore();
 
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-individual-report-filters")
@@ -167,7 +162,7 @@ export default function AdminBookings() {
           ExportName="Individual Booking Details"
           rowData={allAmrabadIndividualReports || []}
           columnDefs={columnDefs}
-          isFetchLoading={isFetchEntityBookingsLoading}
+          isFetchLoading={isAmrabadIndividualReportsLoading}
           isPagination={false}
           tableHeight={
             allAmrabadIndividualReports?.data?.length > 10 ? 560 : 330
