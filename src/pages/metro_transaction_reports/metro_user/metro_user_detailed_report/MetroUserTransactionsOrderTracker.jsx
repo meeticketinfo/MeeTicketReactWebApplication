@@ -54,12 +54,12 @@ const MetroUserTransactionsOrderTracker = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
         : params.value == "INPROCESS" ? "Deep Link Status"
-          : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check",
+          : params.value == "FINAL_STATUS" ? params.data.paytM_STATUS : "Payment Status Check",
       cellRenderer: (params) => (
         <span title={params.value}>
           {params.value == "INITIATE" ? "Request Sent"
             : params.value == "INPROCESS" ? "Deep Link Status"
-              : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check"}
+              : params.value == "FINAL_STATUS" ? params.data.paytM_STATUS : "Payment Status Check"}
         </span>
       ),
     },

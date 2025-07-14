@@ -57,16 +57,22 @@ const {  outerFilters } = useMetroTotalCommonStore();
           : params.value == "INPROCESS"
           ? "Deep Link Status"
           : params.value == "FINAL_STATUS"
-          ? params.data.resultStatus
+          ? params.data.paytM_STATUS
           : "Payment Status Check",
       cellRenderer: (params) => (
-        <span title={params.value}>
+        <span title={params.value == "INITIATE"
+          ? "Request Sent"
+          : params.value == "INPROCESS"
+          ? "Deep Link Status"
+          : params.value == "FINAL_STATUS"
+          ? params.data.paytM_STATUS
+          : "Payment Status Check"}>
           {params.value == "INITIATE"
             ? "Request Sent"
             : params.value == "INPROCESS"
             ? "Deep Link Status"
             : params.value == "FINAL_STATUS"
-            ? params.data.resultStatus
+            ? params.data.paytM_STATUS
             : "Payment Status Check"}
         </span>
       ),
