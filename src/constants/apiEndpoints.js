@@ -49,7 +49,7 @@ export const RTC_API_BASE_URL =
 
 //  PARK UAT testing
 // export const API_BASE_URL =
-//   "https://sl0slvn0-7237.inc1.devtunnels.ms/api/";
+//   "https://7q0xctq4-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -184,6 +184,8 @@ export const API_ENDPOINTS = {
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
       GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
       POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
+      GET_COMPLETED_ZOO_COUNTER_BOOKINGS:`${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
+      GET_NEHRU_USER_WISE_PAYMENT_DETAILS:`${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
       // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
@@ -236,13 +238,20 @@ export const API_ENDPOINTS = {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
     },
-     USER_REPORTS: {
+    USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+      GET_USER_REPORT: `${API_BASE_URL}UserTransactions/GetAllUsers`,
+      GET_USER_DETAILED_REPORT: `${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
+      GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
+      GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetParkRefundInnerReport`,
     },
-    FAILED_TRANSACTIONS:{
-      GET_FAILURE_INNER_REPORTS:`${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
-    }
+    USER_TRANSACTIONS: {
+      GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatus_V2Result`,
+    },
+    FAILED_TRANSACTIONS: {
+      GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -251,6 +260,7 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
+    GET_ALL_NEHRU_COUNTER_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetNehruCounterBookings`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
     GET_ALL_DAY_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseBookingSummaryReport`,
     GET_ALL_APPLICATION_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseReportWithBookingSource`,
@@ -279,11 +289,32 @@ export const API_ENDPOINTS = {
   FAILED_TRANSACTIONS: {
     GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
     GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
-    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId`,
+    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId-Updated`,
     GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
     GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
     GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
     GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
+    GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetail_V3`,
+    GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+
+    GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureFromGateway_SubCategoryReportResult`,
+    
+    INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
+  },
+  METRO_TRANSACTIONS_REPORT: {
+    GET_METRO_TRANSACTIONS_BY_REASON: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentTotalTransactionSummary`,
+    GET_METRO_TOTAL_TRANSACTIONS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroPaymentTransactionInnerDetails`,
+    GET_OTHER_REASON_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_GATEWAY_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureFromGateway_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    METRO_USER_TRANSACTIONS_REPORT:{
+    GET_METRO_USER_REPORT:`${METRO_API_BASE_URL}v1/BookingDetails/GetAllUsers`,
+    GET_USER_TRANSACTION_DETAILS:`${METRO_API_BASE_URL}v1/MetroReport/GetUserTransactionDetails`,
+    GET_METRO_TRANSACTION_TRACKING_STATUS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroTransactionTrackingStatusByOrderId`,
+    GET_METRO_REFUND_TRANSACTIONS_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundSummaryOuterReport`,
+    GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
+    }
   },
 };

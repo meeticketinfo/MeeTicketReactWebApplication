@@ -23,10 +23,13 @@ export default function BookingDetails() {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
     setIsFirstStepTransaction,
+    isCompletedZooCounterBookings,
     isCompleteBookings,
     setCheckPosTsxStatusData,
+    PosPaymentTransactionNAvigate,
+    setPosPaymentTransactionNAvigate,
     PaymentTransactionNAvigate,
-    setPaymentTransactionNAvigate,
+    PosIndividualNAvigate,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
@@ -167,7 +170,7 @@ export default function BookingDetails() {
       )
     );
   }, 0);
-
+  
   return (
     <AdminLayout>
       {isFetchCurrentBookingDetailsLoading ? (
@@ -184,8 +187,16 @@ export default function BookingDetails() {
               <PaymentQR />
               <NavLink
                 end
+             
+ 
                 to={
-                  PaymentTransactionNAvigate
+                  PosIndividualNAvigate
+                    ? "/pos-individual-booking-reports"
+                    : PosPaymentTransactionNAvigate
+                    ? "/pos-payment-transactions-reports"
+                    : isCompletedZooCounterBookings
+                    ? "/pos-consolidated-booking-reports"
+                    : PaymentTransactionNAvigate
                     ? "/payment-transaction-report"
                     : isCompleteBookings
                     ? "/completed-bookings"

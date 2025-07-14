@@ -173,7 +173,7 @@ export default function MetroCumulativeBookings() {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "settledPaymentAMount",
+      field: "settledPaymentAmount",
       headerName: "Amount Settled by Finance Team",
       Width: "260",
       headerClass: "text-blue-v2",
@@ -207,7 +207,7 @@ export default function MetroCumulativeBookings() {
                 <div>
                   <h1 className="text-xs">
                     Settled Amount:{" "}
-                    <span>{params.data.settledPaymentAMount ?? "N/A"}</span>
+                    <span>{params.data.settledPaymentAmount ?? "N/A"}</span>
                   </h1>
                 </div>
                 <div>

@@ -46,6 +46,35 @@ const getEndOfWeek = (date) => {
   return endOfWeek;
 };
 
+export const getStartOfCurrentDay = () => {
+  const currentDate = new Date();
+  const startOfDay = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 0, 0, 0, 0));
+  return getFormattedDate(startOfDay);
+};
+
+export const getEndOfCurrentDay = () => {
+  const currentDate = new Date();
+  const endOfDay = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate(), 23, 59, 59, 999));
+  return getFormattedDate(endOfDay);
+};
+
+export const cleanString = (str, symbol1, symbol2) => {
+  return typeof str === "string" ? str ? str.replace(symbol1, symbol2) : str : str;
+}
+
+export const getValueFromQuery = (queryString, key) => {
+  const pairs = queryString?.split('&');
+
+  for (const pair of pairs) {
+    const [k, v] = pair?.split('=');
+    if (k === key) {
+      return v;
+    }
+  }
+
+  return null; // or undefined, or throw error if key not found
+}
+
 export const getDateRange = (rangeType) => {
   const currentDate = new Date();
   let fromDate = currentDate;
@@ -90,4 +119,31 @@ export const getDateRange = (rangeType) => {
     fromDate: getFormattedDate(fromDate),
     toDate: getFormattedDate(toDate),
   };
+};
+
+export const formatDateTime = (dateTimeString) => {
+  const date = new Date(dateTimeString);
+  const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+  const year = date.getFullYear(); // Get year
+  const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  return `${formattedDate} ${formattedTime}`;
+};
+
+// Hardcoded department to location category mapping
+export const departmentToCategoryMapping = {
+  "Metro": ["Metro"],
+  "Telangana Tourism Development Corporation Limited": ["Parks", "Boating"],
+  "Endowments Department": ["Temples"],
+  "Forest Department": ["WaterFalls", "Parks"],
+  "HMDA": ["Parks", "Boating"],
+  "GHMC": ["GHMC Park"],
+  "CDMA": ["Parks", "Boating"],
+  "ASI": ["Parks"]
 };

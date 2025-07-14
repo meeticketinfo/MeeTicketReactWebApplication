@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { userFailureTransaction } from "../../../../../store/failedTransaction/failedTransaction";
+import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
+
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -12,13 +14,23 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters }) => {
+const TotalTransactionsChart = ({
+  data,
+  title,
+  angleKey,
+  calloutLabelKey,
+  // filters,
+}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { setIsTotalTransactionPage, resetPayloads } = userFailureTransaction();
+  const { totalTransactionSearchParams, setTotalTransactionSearchParams } = useTransactionsStore();
   const UserTransactionReportFilter = JSON.parse(
     localStorage.getItem("transactionPayload")
   );
-  const { setIsTotalTransactionPage } = userFailureTransaction();
   // const [newFilters, setNewFilters] = useState(...filters);
   const chartRef = useRef(null);
+
+  // Calculate total count
   const totalCount = data?.reduce((sum, item) => sum + item.count, 0) || 0;
 
   useEffect(() => {
@@ -40,7 +52,8 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]} (${percentage}%)`;
+              return `${datum[calloutLabelKey]?.substring(0, 120)}\n${datum[angleKey]
+                } (${percentage}%)`;
             },
             offset: 15,
             minAngle: 0,
@@ -73,40 +86,33 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
     <div className="w-full max-w-2xl mx-auto">
       <div ref={chartRef} className="w-[500px] h-[500px]" />
       <div className="flex flex-wrap gap-1 p-3 max-h-[350px] overflow-auto">
-          <div
-            title="Total Bookings"
-            className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
-          >
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full bg-white"
-              />
-              <span className="text-xs text-white">
-                Total
-              </span>
-            </div>
-            <Link 
-              to={"/failed-transactions"} 
-              state={{page:"total-report"}}
-              onClick={() => {
-                setIsTotalTransactionPage(true)
-                localStorage.setItem("transactionPayload", 
-                  JSON.stringify(
-                    {...UserTransactionReportFilter, 
-                      resultMsg: "",
-                      category: "SuccessButNotConfirmed"
-                    }))
-              }}
-            >
-              <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
-                {totalCount}
-              </span>
-            </Link>
+        <div
+          title="Total Bookings"
+          className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-white" />
+            <span className="text-xs text-white">Total</span>
           </div>
+          <Link
+            to={`/failed-transactions?${searchParams.toString()}`}
+            onClick={() => {
+              setIsTotalTransactionPage(true)
+              localStorage.setItem(
+                "transactionPayload",
+                JSON.stringify({ ...UserTransactionReportFilter, category: "", resultMsg: "" })
+              )
+            }}
+          >
+            <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
+              {totalCount}
+            </span>
+          </Link>
+        </div>
         {data?.map((item, index) => (
           <div
             key={item.failureReason}
-            title={item.subCategory}
+            title={item.category}
             className="flex justify-between items-center bg-[#F5F6F8] rounded-lg px-2 py-1 shadow-sm "
           >
             <div className="flex items-center gap-2">
@@ -114,24 +120,17 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs text-gray-800">
-                {item.subCategory}
-              </span>
+              <span className="text-xs text-gray-800">{item.category}</span>
             </div>
-            <Link 
-              to={"/failed-transactions"} 
-              state={{page:"total-report"}}
+            <Link
+              to={
+                item.category == "Failed Transactions" ? 
+                `/transactions-dashboard?${searchParams.toString()}` : 
+                `/failed-transactions?${searchParams.toString()}&category=${item.category == "Sucessful Transactions" ? "ConfirmedSuccess" : item.category == "Payment done but Ticket Not generated" ? "SuccessButNotConfirmed" : "Failed"}`
+              }
               onClick={() => {
-                setIsTotalTransactionPage(true)
-                localStorage.setItem("transactionPayload", 
-                  JSON.stringify(
-                    {...UserTransactionReportFilter, 
-                      resultMsg: "", 
-                      parkId: "", 
-                      category: item.subCategory == "Ticket Re-generated" ? "SuccessButNotConfirmedWithBooking" 
-                                  : item.subCategory == "Ticket NOT Re-generated" ? "SuccessButNotConfirmedWithoutBooking" 
-                                  : "SuccessButNotConfirmedWithBooking"
-                    }))
+                setIsTotalTransactionPage(true); 
+                setTotalTransactionSearchParams(`${searchParams.toString()}&category=${item.category == "Sucessful Transactions" ? "ConfirmedSuccess" : item.category == "Payment done but Ticket Not generated" ? "SuccessButNotConfirmed" : "Failed"}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
@@ -145,4 +144,4 @@ const TicketNotGenerated = ({ data, title, angleKey, calloutLabelKey, filters })
   );
 };
 
-export default TicketNotGenerated;
+export default TotalTransactionsChart;
