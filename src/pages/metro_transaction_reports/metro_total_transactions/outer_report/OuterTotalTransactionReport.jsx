@@ -26,21 +26,21 @@ const OuterTotalTransactionReport = () => {
   } = useMetroTotalTransactionsStore();
   useEffect(() => {
     setInnerFilters({
-      fromDate: outerFilters.fromDate || startOfDay,
-      toDate: outerFilters.toDate || endOfDay,
-      mobileNumber: outerFilters.mobileNumber || "",
+      fromDate: outerFilters.fromDate ?? startOfDay,
+      toDate: outerFilters.toDate ?? endOfDay,
+      mobileNumber: outerFilters.mobileNumber ?? "",
     });
     fetchMetroTransactionByReason({
-      fromDate: outerFilters.fromDate || startOfDay,
-      toDate: outerFilters.toDate || endOfDay,
-      mobileNumber: outerFilters.mobileNumber || "",
+      fromDate: outerFilters.fromDate ?? startOfDay,
+      toDate: outerFilters.toDate ?? endOfDay,
+      mobileNumber: outerFilters.mobileNumber ?? "",
     });
   }, []);
   console.log("outerFilters", outerFilters);
   const initialValues = {
-    fromDate: outerFilters.fromDate || startOfDay,
-    toDate: outerFilters.toDate || endOfDay,
-    mobileNumber: outerFilters.mobileNumber || "",
+    fromDate: outerFilters.fromDate ?? startOfDay,
+    toDate: outerFilters.toDate ?? endOfDay,
+    mobileNumber: outerFilters.mobileNumber ?? "",
   };
   const onSubmit = (values) => {
     setOuterFilters(values);

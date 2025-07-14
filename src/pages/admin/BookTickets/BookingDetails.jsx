@@ -24,9 +24,12 @@ export default function BookingDetails() {
     isFetchCurrentBookingDetailsLoading,
     setIsFirstStepTransaction,
     isCompletedZooCounterBookings,
+    isCompleteBookings,
     setCheckPosTsxStatusData,
     PosPaymentTransactionNAvigate,
     setPosPaymentTransactionNAvigate,
+    PaymentTransactionNAvigate,
+    PosIndividualNAvigate,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
@@ -167,7 +170,7 @@ export default function BookingDetails() {
       )
     );
   }, 0);
-
+  
   return (
     <AdminLayout>
       {isFetchCurrentBookingDetailsLoading ? (
@@ -184,17 +187,25 @@ export default function BookingDetails() {
               <PaymentQR />
               <NavLink
                 end
+             
+ 
                 to={
-                  PosPaymentTransactionNAvigate
+                  PosIndividualNAvigate
+                    ? "/pos-individual-booking-reports"
+                    : PosPaymentTransactionNAvigate
                     ? "/pos-payment-transactions-reports"
                     : isCompletedZooCounterBookings
                     ? "/pos-consolidated-booking-reports"
+                    : PaymentTransactionNAvigate
+                    ? "/payment-transaction-report"
+                    : isCompleteBookings
+                    ? "/completed-bookings"
                     : role === "ROLE_ZOOPARKADMIN"
                     ? "/book-tickets"
                     : "/entity-bookings"
                 }
                 onClick={() => {
-                  // setisCompleteBookings(false)  
+                  // setisCompleteBookings(false)
                   setIsFirstStepTransaction(false);
                   setPaymentStatus({});
                   setCheckPosTsxStatusData([]);

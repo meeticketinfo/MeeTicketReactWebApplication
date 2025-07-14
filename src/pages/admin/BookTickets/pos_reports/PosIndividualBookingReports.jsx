@@ -35,6 +35,7 @@ export default function PosIndividualBookingReports() {
     setPaymentStatus,
     saveCggDetails,
     isCggLoading,
+    setPosIndividualNAvigate,
   } = useBookingsStore();
   const [cgg, setCgg] = useState(null);
 
@@ -207,6 +208,9 @@ export default function PosIndividualBookingReports() {
           <NavLink
             end
             to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+            onClick={() => {
+              setPosIndividualNAvigate(true);
+            }}
             className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
           >
             <span className="text-blue-v2">View Bookings</span>
@@ -274,37 +278,38 @@ export default function PosIndividualBookingReports() {
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
-              <div className="flex gap-2 ">
-                {parkId === "100" && (
-                  <div className="flex items-center shadow px-2 py-1">
-                    <label className="text-sm flex ">
-                      <input
-                        type="checkbox"
-                        checked={cgg}
-                        // value={cgg}
-                        onChange={(e) => {
-                          setCgg(e.target.checked);
-                          setOpenModal(true);
-                        }}
-                        className="sr-only peer "
-                      />
-                      <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
-                      <span className="ms-3 text-md font-semibold text-gray-900 ">
-                        {cgg ? "CGG ON" : "CGG OFF"}
-                      </span>
-                    </label>
-                  </div>
-                )}
-                {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
-                  isCounterEnabled?.toLowerCase() === "true" && (
-                    <button
-                      className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
-                      onClick={() => setIsBookingFormVisible(true)} // Show booking form
-                    >
-                      Book Tickets
-                    </button>
-                  )}
-              </div>
+              // <div className="flex gap-2 ">
+              //   {parkId === "100" && (
+              //     <div className="flex items-center shadow px-2 py-1">
+              //       <label className="text-sm flex ">
+              //         <input
+              //           type="checkbox"
+              //           checked={cgg}
+              //           // value={cgg}
+              //           onChange={(e) => {
+              //             setCgg(e.target.checked);
+              //             setOpenModal(true);
+              //           }}
+              //           className="sr-only peer "
+              //         />
+              //         <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
+              //         <span className="ms-3 text-md font-semibold text-gray-900 ">
+              //           {cgg ? "CGG ON" : "CGG OFF"}
+              //         </span>
+              //       </label>
+              //     </div>
+              //   )}
+              //   {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
+              //     isCounterEnabled?.toLowerCase() === "true" && (
+              //       <button
+              //         className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+              //         onClick={() => setIsBookingFormVisible(true)} // Show booking form
+              //       >
+              //         Book Tickets
+              //       </button>
+              //     )}
+              // </div>
+              <></>
             ) : (
               <BackButton
                 label="Back"

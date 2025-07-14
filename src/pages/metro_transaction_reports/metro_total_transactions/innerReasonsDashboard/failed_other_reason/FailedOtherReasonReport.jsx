@@ -35,12 +35,12 @@ const FailedOtherReasonReport = () => {
 
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: deepInnerFilters.startDate || innerFilters.fromDate || startOfDay,
-      endDate: deepInnerFilters.endDate || innerFilters.toDate || endOfDay,
-      phoneNumber:innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
-      PaymentMode: deepInnerFilters.PaymentMode || "",
-      status: innerFilters.status || "",
-      subCategory: innerFilters.subCategory || "",
+      startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? startOfDay,
+      endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? endOfDay,
+      phoneNumber:(innerFilters.mobileNumber || deepInnerFilters.mobileNumber) ?? "",
+      PaymentMode: (deepInnerFilters.PaymentMode) ?? "",
+      status: innerFilters.status ?? "",
+      subCategory: innerFilters.subCategory ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });

@@ -47,7 +47,7 @@ function PaymentTransactionReport() {
 
   const initialValues = {
     fromDate: userObject?.startDate || getCurrentDate(),
-    toDate: userObject?.startDate || getCurrentDate(),
+    toDate: userObject?.endDate || getCurrentDate(),
     typeOfBooking: userObject?.currentTransactionStatus || "",
     phoneNumber: userObject?.phoneNumber || "",
     entityId: userObject?.entityTypeId || null,
@@ -61,12 +61,12 @@ function PaymentTransactionReport() {
 
   useEffect(() => {
     fetchPaymentTransactions({
-      startDate: getCurrentDate(),
-      endDate: getCurrentDate(),
-      currentTransactionStatus: null,
-      phoneNumber: null,
-      departmentId: null,
-      entityTypeId: null,
+      startDate: userObject?.startDate ||getCurrentDate(),
+      endDate: userObject?.endDate ||getCurrentDate(),
+      currentTransactionStatus:userObject?.currentTransactionStatus || null,
+      phoneNumber: userObject?.phoneNumber ||null,
+      departmentId: userObject?.entityTypeId ||null,
+      entityTypeId:userObject?.departmentId ||null,
     });
   }, [fetchPaymentTransactions]);
 

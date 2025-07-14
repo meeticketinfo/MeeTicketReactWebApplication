@@ -43,6 +43,8 @@ export const useBookingsStore = create(
       bookingMessage: "",
        isPaymentTransactionNAvigate:false,
        isPosPaymentTransactionNAvigate:false,
+      PosIndividualNAvigate:false,
+      PosPaymentTransactionNAvigate:false,
       Generate_deep_link_data: [],
       isGenerate_deep_linkLoading: false,
       //
@@ -65,6 +67,9 @@ export const useBookingsStore = create(
       },
       setPaymentTransactionNAvigate: (PaymentTransactionNAvigate) => {
         set({ PaymentTransactionNAvigate });
+      },
+      setPosIndividualNAvigate: (PosIndividualNAvigate) => {
+        set({ PosIndividualNAvigate });
       },
       setPosPaymentTransactionNAvigate: (PosPaymentTransactionNAvigate) => {
         set({ PosPaymentTransactionNAvigate });

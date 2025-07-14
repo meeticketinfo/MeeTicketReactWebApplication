@@ -30,12 +30,12 @@ const MetroTotalReport = () => {
   console.log("outerFilters", outerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: deepInnerFilters.startDate || outerFilters.fromDate || "",
-      endDate: deepInnerFilters.endDate || outerFilters.toDate || "",
+      startDate: (deepInnerFilters.startDate || outerFilters.fromDate) ?? "",
+      endDate: (deepInnerFilters.endDate || outerFilters.toDate) ?? "",
       phoneNumber:
-        deepInnerFilters.mobileNumber || outerFilters.mobileNumber || "",
-      PaymentMode: deepInnerFilters.PaymentMode || "",
-      status: outerFilters.status || "",
+        (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
+      PaymentMode: deepInnerFilters.PaymentMode ?? "",
+      status: outerFilters.status ?? "",
       subCategory: "",
 
       pageNumber: currentPage + 1,
