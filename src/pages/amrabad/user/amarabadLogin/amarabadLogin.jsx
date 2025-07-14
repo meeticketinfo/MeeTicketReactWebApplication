@@ -17,7 +17,7 @@ const AmarabadLogin = () => {
             <img src={Lock} alt="Lock" className="" />
           </div>
           <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
-            <h1 className="text-3xl font-bold text-center mb-7 text-black">LOGIN</h1>
+            <h1 className="text-3xl font-extrabold text-center mb-7 text-black">LOGIN</h1>
             <AmarabadLoginForm />
             <div className="flex items-center my-6 opacity-50">
               <div className="flex-grow border-t border-black relative">

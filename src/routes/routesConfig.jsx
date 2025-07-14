@@ -77,6 +77,8 @@ import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadReg
 import AmrabadProtectRoute from "./AmrabadProtectRoute";
 import AmrabadAuthRoute from "./AmrabadAuthRoute";
 import AmrabadTest from "../pages/amrabad/user/test/AmrabadTest";
+import Otp from "../pages/amrabad/user/amrabadOtp/Otp";
+import AmrabadForgetPinMobileNumber from "../pages/amrabad/user/amarabadLogin/AmrabadForgetPinMobileNumber";
 
 export const routes = [
   {
@@ -92,6 +94,7 @@ export const routes = [
     element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+
   // dashboard detailed report
 
   {
@@ -324,8 +327,16 @@ export const routes = [
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
   {
-    path: "/amarabad/register",
-    element: <AmarabadRegister />,
+    path: "/forget-pin-mobile",
+    element: <AmrabadForgetPinMobileNumber />,
+  },
+  {
+    path: "/amarabad-otp",
+    element: <Otp/>,
+  },
+  {
+    path: "/amarabad-otp",
+    element: <Otp/>,
   },
   {
     path: "/amarabad",
@@ -343,6 +354,9 @@ export const routes = [
     path: "/amarabad/test",
     element: <AmrabadProtectRoute element={<AmrabadTest />} />,
   },
+
+ 
+
   // amrabad
   {
     path: "/packages",

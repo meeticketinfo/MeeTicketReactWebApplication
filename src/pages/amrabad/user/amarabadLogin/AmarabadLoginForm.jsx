@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { amrabadAuthStore } from "../../../../store/amarabad/user/amrabadAuthStore";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -48,8 +48,8 @@ const AmarabadLoginForm = () => {
         {({ isSubmitting, touched, errors, values }) => (
           <Form>
             <div className="mb-4">
-              <label className="block text-base mb-2 text-black">
-                Mobile Number <span className="text-red-500">*</span>
+              <label className="block text-base mb-2 text-black font-medium">
+                Mobile Number <span className="text-red-500 ">*</span>
               </label>
               <div className="relative">
                 <Field
@@ -81,7 +81,7 @@ const AmarabadLoginForm = () => {
               />
             </div>
             <div className="mb-8">
-              <label className="block text-base mb-2 text-black">
+              <label className="block text-base mb-2 text-black font-medium">
                 4-Digit Pin <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -112,11 +112,18 @@ const AmarabadLoginForm = () => {
                     <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
                   )}
               </div>
+              <div className="flex justify-between">
               <ErrorMessage
                 name="pinNumber"
                 component="div"
                 className="text-xs font-semibold text-red-500 mt-1"
               />
+              <Link
+              to="/forget-pin-mobile"
+               className="text-[#362D86] text-sm font-normal"
+              >Forget Pin?</Link>
+              </div>
+             
             </div>
             <button
               type="submit"
