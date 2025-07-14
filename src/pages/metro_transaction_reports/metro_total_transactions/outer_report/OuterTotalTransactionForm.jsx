@@ -2,7 +2,10 @@ import { Formik, Form, Field } from "formik";
 
 import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import {
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper";
 
 const OuterTotalTransactionForm = ({
   pageNumber,
@@ -10,20 +13,22 @@ const OuterTotalTransactionForm = ({
   SetcurrentPage,
 }) => {
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
-  const { outerFilters,deepInnerFilters,setDeepInnerFilters } = useMetroTotalCommonStore();
-  console.log("outerFilters", outerFilters);
+  const endOfDay = getEndOfCurrentDay();
+  const { outerFilters, deepInnerFilters, setDeepInnerFilters } =
+    useMetroTotalCommonStore();
+  
   const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
   const initialValues = {
-    startDate: deepInnerFilters.startDate || outerFilters.fromDate || startOfDay,
-      endDate: deepInnerFilters.endDate || outerFilters.toDate || endOfDay,
-      phoneNumber:
-        deepInnerFilters.mobileNumber || outerFilters.mobileNumber || "",
-      PaymentMode: deepInnerFilters.PaymentMode || "",
+    startDate:
+      (deepInnerFilters.startDate || outerFilters.fromDate) ?? startOfDay,
+    endDate: (deepInnerFilters.endDate || outerFilters.toDate) ?? endOfDay,
+    phoneNumber:
+      (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
+    PaymentMode: deepInnerFilters.PaymentMode ?? "",
   };
 
   const onSubmit = (values) => {
-    setDeepInnerFilters(values)
+    setDeepInnerFilters(values);
     console.log("values", values);
     fetchMetroTotalTransactions({
       ...values,

@@ -42,7 +42,7 @@ console.log(allNehruUserWisePaymentDetailsReports,"allNehruUserWisePaymentDetail
 
   const initialValues = {
     fromDate: userObject?.startDate || getCurrentDate(),
-    toDate: userObject?.startDate || getCurrentDate(),
+    toDate: userObject?.endDate || getCurrentDate(),
     typeOfBooking: userObject?.currentTransactionStatus || "",
     phoneNumber: userObject?.phoneNumber || "",
     entityId: userObject?.entityTypeId || null,
@@ -56,12 +56,12 @@ console.log(allNehruUserWisePaymentDetailsReports,"allNehruUserWisePaymentDetail
 
   useEffect(() => {
     fetchNehruUserWisePaymentDetailsReports({
-      startDate: getCurrentDate(),
-      endDate: getCurrentDate(),
-      currentTransactionStatus: null,
-      phoneNumber: null,
-      departmentId: null,
-      entityTypeId: null,
+      startDate: userObject?.startDate || getCurrentDate(),
+      endDate: userObject?.endDate || getCurrentDate(),
+      currentTransactionStatus: userObject?.currentTransactionStatus ||null,
+      phoneNumber:userObject?.phoneNumber || null,
+      departmentId: userObject?.departmentId ||null,
+      entityTypeId: userObject?.entityTypeId|| null,
     });
   }, [fetchNehruUserWisePaymentDetailsReports]);
 
