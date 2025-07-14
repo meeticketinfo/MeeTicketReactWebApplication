@@ -5,8 +5,9 @@ import TelanganaRising from '../../images/user/telangana-rising-logo.png';
 import { amrabadAuthStore } from '../../store/amarabad/user/amrabadAuthStore';
 
 function UserHeader({ isScrolled = false }) {
-  const { isLoggedIn, setIsLoggedIn } = amrabadAuthStore();
+  const { isLoggedIn, setIsLoggedIn,clearAmrabadSession } = amrabadAuthStore();
   const navigate = useNavigate();
+  
   const links = [
     {
       label: 'Home',
@@ -90,7 +91,7 @@ function UserHeader({ isScrolled = false }) {
       </div>
 
       {/* Main Header/Navigation */}
-      <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 font-poppins ${isScrolled ? 'py-2 shadow-md' : 'py-4'
+      <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 font-poppins ${isScrolled ? 'py-2 shadow-md' : 'py-1'
         } px-4`}>
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -123,6 +124,8 @@ function UserHeader({ isScrolled = false }) {
                     onClick={() => {
                       setIsLoggedIn(false);
                       navigate("/amarabad/login");
+                      localStorage.removeItem("amrabadlogin-store")
+                      clearAmrabadSession()
                     }}>Logout</span>
                 </div>
                 <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center">

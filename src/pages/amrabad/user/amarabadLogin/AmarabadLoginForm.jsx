@@ -3,26 +3,23 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { amrabadAuthStore } from "../../../../store/amarabad/user/amrabadAuthStore";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 const AmarabadLoginForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPin, setShowPin] = useState(false);
-  const {
-    isLoggedIn,
-    setIsLoggedIn,
-    AmrabadLoginLoading,
-    AmrabadLogin,
-  } = amrabadAuthStore();
+  const { isLoggedIn, setIsLoggedIn, AmrabadLoginLoading, AmrabadLogin } =
+    amrabadAuthStore();
 
   // Validation schema
   const LoginValidationSchema = Yup.object().shape({
     mobileNumber: Yup.string()
       .matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
       .required("Mobile Number is required"),
-      pinNumber: Yup.string()
+    pinNumber: Yup.string()
       .matches(/^\d{4}$/, "Enter a valid 4-digit PIN")
       .required("4-Digit Pin is required"),
   });
@@ -30,19 +27,19 @@ const AmarabadLoginForm = () => {
   const initialValues = { mobileNumber: "", pinNumber: "" };
 
   const handleSubmit = async (values) => {
-    console.log("values", values);
+    
     const response = await AmrabadLogin(values);
-
-    if (response.data.status === 200) {
+    console.log("response", response);
+    if (response.data?.status === 200) {
+      const redirectTo = location.state?.from?.pathname || "/amarabad"; 
+      navigate(redirectTo, { replace: true });
       setIsLoggedIn(true);
-      navigate("/amarabad/packages");
+      // toast.success("loggedin");
     }
-
-
   };
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={LoginValidationSchema}
@@ -95,7 +92,9 @@ const AmarabadLoginForm = () => {
                   placeholder="Enter your 4-digit pin"
                   maxLength={4}
                   className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
-                    touched.pinNumber && !errors.pinNumber && values.pinNumber.length === 4
+                    touched.pinNumber &&
+                    !errors.pinNumber &&
+                    values.pinNumber.length === 4
                       ? "border-green-500 focus:border-green-500"
                       : ""
                   }`}
@@ -107,9 +106,11 @@ const AmarabadLoginForm = () => {
                   </button>
                 </span>
                 {/* Green check icon */}
-                {touched.pinNumber && !errors.pinNumber && values.pinNumber.length === 4 && (
-                  <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
-                )}
+                {touched.pinNumber &&
+                  !errors.pinNumber &&
+                  values.pinNumber.length === 4 && (
+                    <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                  )}
               </div>
               <ErrorMessage
                 name="pinNumber"
@@ -122,7 +123,7 @@ const AmarabadLoginForm = () => {
               // disabled={isSubmitting}
               className="text-lg w-full bg-[#362D86] text-white py-3 rounded-md font-semibold hover:bg-indigo-800 transition mb-4"
             >
-              LOGIN
+              {AmrabadLoginLoading ? "Loading.." : "LOGIN"}
             </button>
           </Form>
         )}

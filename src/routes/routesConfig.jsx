@@ -74,6 +74,9 @@ import Packages from "../pages/amrabad/user/packages/packages";
 import Houses from "../pages/amrabad/user/houses/Houses";
 import AmarabadLogin from "../pages/amrabad/user/amarabadLogin/amarabadLogin";
 import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadRegister";
+import AmrabadProtectRoute from "./AmrabadProtectRoute";
+import AmrabadAuthRoute from "./AmrabadAuthRoute";
+import AmrabadTest from "../pages/amrabad/user/test/AmrabadTest";
 
 export const routes = [
   {
@@ -91,7 +94,10 @@ export const routes = [
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
   // dashboard detailed report
 
-  { path: "/dashboard-detailed-report", element: <ProtectedRoute element={<DashBoardDetailed />} /> },
+  {
+    path: "/dashboard-detailed-report",
+    element: <ProtectedRoute element={<DashBoardDetailed />} />,
+  },
   {
     path: "/entities",
     element: <ProtectedRoute element={<AdminParks />} />,
@@ -192,11 +198,11 @@ export const routes = [
     path: "/bank-transactions",
     element: <ProtectedRoute element={<BankTransactions />} />,
   },
-   {
+  {
     path: "/transactions-dashboard",
     element: <ProtectedRoute element={<TransactionsDashboard />} />,
   },
-   {
+  {
     path: "/failed-transactions",
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },
@@ -315,27 +321,31 @@ export const routes = [
   //amarabad-user
   {
     path: "/amarabad/login",
-    element: <AmarabadLogin/>,
+    element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
   {
     path: "/amarabad/register",
-    element: <AmarabadRegister/>,
+    element: <AmarabadRegister />,
   },
   {
     path: "/amarabad",
-    element: <Packages/>,
+    element: <Packages />,
   },
   {
     path: "/amarabad/packages",
-    element: <Packages/>,
+    element: <Packages />,
   },
   {
     path: "/amarabad/packages/:house",
-    element: <Houses/>,
+    element: <Houses />,
+  },
+  {
+    path: "/amarabad/test",
+    element: <AmrabadProtectRoute element={<AmrabadTest />} />,
   },
   // amrabad
-   {
+  {
     path: "/packages",
-    element: <ProtectedRoute element={<MainPackages/>} />,
+    element: <ProtectedRoute element={<MainPackages />} />,
   },
 ];

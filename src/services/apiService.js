@@ -1,18 +1,19 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
+import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // dev
 
-// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 // uat
-const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
 // const API_BASE_URL =
 //  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 // testing
-// export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/"; 
+// export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -24,10 +25,14 @@ const api = axios.create({
 // Request interceptor to attach token
 api.interceptors.request.use(
   (config) => {
-    const token = useAuthStore.getState().token; // Get the token from Zustand store
-    if (token) {
+    const { token } = useAuthStore.getState();
+    const amrabadState = amrabadAuthStore.getState();
+    if (amrabadState.tokenType === "amrabad" && amrabadState.token) {
+      config.headers["Authorization"] = `Bearer ${amrabadState.token}`;
+    } else if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -92,4 +97,3 @@ const apiService = {
 };
 
 export default apiService;
-
