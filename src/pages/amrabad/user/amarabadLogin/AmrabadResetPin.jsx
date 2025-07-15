@@ -14,7 +14,7 @@ const AmrabadResetPin = () => {
   const navigate = useNavigate();
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
-  const { resetPin, isResetPinLoading, setIsResetPin } = UseOtpStore();
+  const { resetPin, isResetPinLoading,  } = UseOtpStore();
   const responseMobileNumber = localStorage.getItem("forgetPinMobileNumber");
   const initialValues = {
     pin: "",
@@ -38,7 +38,7 @@ const AmrabadResetPin = () => {
       });
 
       if (response.data.status === 200) {
-        setIsResetPin(true);
+       
         // toast.success(response.data.data.message||"PIN reset successfully");
         localStorage.removeItem("forgetPinMobileNumber");
 
