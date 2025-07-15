@@ -336,7 +336,7 @@ export const routes = [
   },
   {
     path: "/amarabad/register",
-    element: <AmarabadRegister />,
+    element: <AmrabadAuthRoute  element={<AmarabadRegister />} />,
   },
   {
     path: "/amarabad/register-otp",

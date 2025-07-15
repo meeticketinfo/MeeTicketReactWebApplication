@@ -4,15 +4,27 @@ import Lock from "../../../../images/user/lock.png";
 import Logo from "../../../../images/user/logo.png";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { Navigate, useNavigate,useLocation } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
 
 const AmarabadRegisterOtp = () => {
   const [timeLeft, setTimeLeft] = useState(180);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
   const [otpError, setOtpError] = useState("");
+  const { verifyRegisterOtp, verifyResendOtp } = UseOtpStore();
+  const RegisterdDetails = JSON.parse(localStorage.getItem("registerdDetails"));
 
-  // Replace this with your actual source of mobile number
-  const mobileNumber = "9876543321";
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+   if (location.state?.otpSent) {
+      toast.success("OTP sent successfully");
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
 
   useEffect(() => {
     let timer;
@@ -59,17 +71,46 @@ const AmarabadRegisterOtp = () => {
   };
 
   const handleSubmit = async (values) => {
-    console.log("Submitted OTP:", values.otp);
-    if (values.otp !== "123456") {
-      setOtpError("Invalid OTP");
-    } else {
-      setOtpError("");
-      // proceed with verification
+    try {
+      const response = await verifyRegisterOtp({
+        ...RegisterdDetails,
+        otp: values.otp,
+      });
+      console.log("response", response);
+      if (response.data.status === 200) {
+        console.log(response.data.data.message);
+        toast.success(
+          response.data.data.message || "OTP verified successfully"
+        );
+        navigate("/amarabad/login");
+        localStorage.removeItem("registerdDetails");
+      } else {
+        toast.info(response.data?.data?.message || "something went wrong");
+      }
+    } catch (error) {
+      toast.error(error.message || "something went wrong");
+      console.log("error", error);
+    }
+  };
+  const resendOtp = async () => {
+    try {
+      const response = await verifyResendOtp({
+        mobileNumber: RegisterdDetails.mobileNumber,
+      });
+      if (response.data.status) {
+        toast.success(response.data.data.message || "OTP sent successfully");
+      } else {
+        toast.error(response.data.data.message || "something went wrong");
+      }
+    } catch (error) {
+      toast.error(error.message || "something went wrong");
+      console.log("error", error);
     }
   };
 
   return (
     <UserLayout>
+      <ToastContainer />
       <div className="container mx-auto">
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
@@ -94,10 +135,10 @@ const AmarabadRegisterOtp = () => {
                     <p>
                       Please enter the 6-digit code we have sent you to your
                       Mobile Number{" "}
-                      <span className="text-black text-xs">{`+91 ${mobileNumber.slice(
+                      <span className="text-black text-xs">{`+91 ${RegisterdDetails.mobileNumber?.slice(
                         0,
                         2
-                      )}****${mobileNumber.slice(-2)}`}</span>
+                      )}****${RegisterdDetails.mobileNumber?.slice(-2)}`}</span>
                     </p>
                   </div>
 
@@ -144,6 +185,7 @@ const AmarabadRegisterOtp = () => {
                         if (canResend) {
                           startTimer();
                           // trigger resend API
+                          resendOtp();
                         }
                       }}
                     >
