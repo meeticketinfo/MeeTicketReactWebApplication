@@ -1,6 +1,7 @@
 import UserHeader from "../partials/amarabad/UserHeader";
 import UserFooter from "../partials/amarabad/UserFooter";
 import { useEffect, useRef, useState } from "react";
+import { ToastContainer } from "react-toastify";
 
 function UserLayout({ children }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,22 +15,24 @@ function UserLayout({ children }) {
         setIsScrolled(false);
       }
     };
-    containerRef.current?.addEventListener('scroll', handleScroll);
+    containerRef.current?.addEventListener("scroll", handleScroll);
     return () => {
-      containerRef.current?.removeEventListener('scroll', handleScroll);
+      containerRef.current?.removeEventListener("scroll", handleScroll);
     };
   }, [containerRef]);
   return (
     <>
-      <div ref={containerRef} className="font-manrope overflow-auto h-screen bg-[#F6F7FB]">
+      
+      <div
+        ref={containerRef}
+        className="font-manrope overflow-auto h-screen bg-[#F6F7FB]"
+      >
         <UserHeader isScrolled={isScrolled} />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
         <UserFooter />
       </div>
     </>
-  )
+  );
 }
 
 export default UserLayout;

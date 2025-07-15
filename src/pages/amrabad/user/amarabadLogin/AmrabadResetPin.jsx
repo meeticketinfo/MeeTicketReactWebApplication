@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
+
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -7,14 +7,16 @@ import { toast, ToastContainer } from "react-toastify";
 import UserLayout from "../../../../layouts/UserLayout";
 import Lock from "../../../../images/user/lock.png";
 import Logo from "../../../../images/user/logo.png";
-
+import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
+import { useNavigate } from "react-router-dom";
 
 const AmrabadResetPin = () => {
+  const navigate = useNavigate();
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
-
+  const { resetPin, isResetPinLoading, setIsResetPin } = UseOtpStore();
+  const responseMobileNumber = localStorage.getItem("forgetPinMobileNumber");
   const initialValues = {
-    
     pin: "",
     confirmPin: "",
   };
@@ -28,9 +30,28 @@ const AmrabadResetPin = () => {
       .required("Confirm 4-Digit Pin is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    alert(JSON.stringify(values, null, 2));
-    setSubmitting(false);
+  const handleSubmit = async (values) => {
+    try {
+      const response = await resetPin({
+        pinNumber: values.confirmPin,
+        mobileNumber: responseMobileNumber,
+      });
+
+      if (response.data.status === 200) {
+        setIsResetPin(true);
+        // toast.success(response.data.data.message||"PIN reset successfully");
+        localStorage.removeItem("forgetPinMobileNumber");
+
+        navigate("/amarabad/login", {
+          state: { toastMessage: "PIN reset successfully. You can login now" },
+        });
+      } else {
+        toast.info(response.data.data.message || "something went wrong");
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("something went wrong");
+    }
   };
 
   return (
@@ -47,9 +68,9 @@ const AmrabadResetPin = () => {
             </div>
             <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
               <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
-              RESET PIN
+                RESET PIN
               </h1>
-             
+
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -57,7 +78,6 @@ const AmrabadResetPin = () => {
               >
                 {({ values, touched, errors }) => (
                   <Form>
-                  
                     <div className="flex flex-col gap-4 mb-6">
                       <div className="">
                         <label className="block text-sm mb-1">
@@ -140,7 +160,7 @@ const AmrabadResetPin = () => {
                       type="submit"
                       className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
                     >
-                      REGISTER
+                      {isResetPinLoading ? "Submitting..." : "Submit"}
                     </button>
                   </Form>
                 )}

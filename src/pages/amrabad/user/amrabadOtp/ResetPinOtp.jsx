@@ -10,14 +10,15 @@ import { useNavigate } from "react-router-dom";
 
 const ResetPinOtp = () => {
   const navigate = useNavigate();
-  const [timeLeft, setTimeLeft] = useState(180);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
   const [otpError, setOtpError] = useState("");
   const { verifyForgetPinOtp } = UseOtpStore();
   const responseMobileNumber = localStorage.getItem("forgetPinMobileNumber");
   // Replace this with your actual source of mobile number
-
+  const { getForgetPinOtpFromMobile, isForgetOtpRequestLoading } =
+  UseOtpStore();
   useEffect(() => {
     let timer;
     if (timeLeft > 0) {
@@ -69,11 +70,11 @@ const ResetPinOtp = () => {
         mobileNumber: responseMobileNumber,
       });
       console.log("response", response);
-      if (response.data.status) {
+      if (response.data.status===200) {
         toast.success(response.data?.data?.message||"OTP verified successfully");
         navigate("/amarabad-reset-pin");
       } else {
-        toast.error(response.data?.data?.message||"something went wrong");
+        toast.info(response.data?.data?.message||"something went wrong");
       }
     } catch (error) {
       toast.error(error.message||"something went wrong");
@@ -188,7 +189,7 @@ const ResetPinOtp = () => {
                     type="submit"
                     className="block mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full mt-8"
                   >
-                    VERIFY
+                    {isForgetOtpRequestLoading ? "Submitting..." : "VERIFY"}
                   </button>
                 </Form>
               )}

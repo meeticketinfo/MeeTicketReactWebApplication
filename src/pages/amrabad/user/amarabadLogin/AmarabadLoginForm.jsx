@@ -26,19 +26,26 @@ const AmarabadLoginForm = () => {
 
   const initialValues = { mobileNumber: "", pinNumber: "" };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values,{resetForm}) => {
+    try{
     const response = await AmrabadLogin(values);
-    console.log("response", response);
+    console.log("responseee", response);
     if (response.data?.status === 200) {
       const redirectTo = location.state?.from?.pathname || "/amarabad";
       navigate(redirectTo, { replace: true });
       setIsLoggedIn(true);
+      resetForm();
       // toast.success("loggedin");
+    }else{
+      toast.info(response.data.data.message||"something went wrong");
+    }
+    }catch(error){
+      console.log("error", error);
     }
   };
   return (
     <>
-      <ToastContainer />
+     <ToastContainer />
       <Formik
         initialValues={initialValues}
         validationSchema={LoginValidationSchema}

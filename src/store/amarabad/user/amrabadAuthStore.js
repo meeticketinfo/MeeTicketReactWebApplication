@@ -26,22 +26,38 @@ export const amrabadAuthStore = create(
             API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_LOGIN,
             loginData
           );
-
-          set({
-            AmrabadLoginLoading: false,
-            token: response.data.token,
-            tokenType: "amrabad",
-            isLoggedIn: true,
-            isAuthenticated: true,
-          });
-          await get().fetchDecodedToken();
-          return { success: true, data: response };
-        } catch (xhr) {
-          handleApiError(xhr);
+      
+          // ✅ Check HTTP status
+          if (response.status === 200 && response.data?.token) {
+            set({
+              AmrabadLoginLoading: false,
+              token: response.data.token,
+              tokenType: "amrabad",
+              isLoggedIn: true,
+              isAuthenticated: true,
+            });
+      
+            // ✅ Safely call fetchDecodedToken
+            const fetchDecodedToken = get().fetchDecodedToken;
+            if (typeof fetchDecodedToken === "function") {
+              await fetchDecodedToken();
+            } else {
+              console.warn("fetchDecodedToken is not defined in the store.");
+            }
+      
+            return { success: true, data: response };
+          }
+      
+          // Optional: handle non-200s here
+          set({ AmrabadLoginLoading: false });
+          return { success: false, data: response };
+        } catch (error) {
+          handleApiError(error);
           set({ AmrabadLoginLoading: false });
           return { success: false };
         }
       },
+      
       AmrabadRegister: async (registerData) => {
         set({ AmrabadRegisterLoading: true });
         try {
@@ -51,7 +67,7 @@ export const amrabadAuthStore = create(
           );
           return { success: true, data: response };
         } catch (error) {
-         toast.error(error.response.data.message)
+          toast.error(error.response.data.message);
           set({ AmrabadRegisterLoading: false });
         }
       },
