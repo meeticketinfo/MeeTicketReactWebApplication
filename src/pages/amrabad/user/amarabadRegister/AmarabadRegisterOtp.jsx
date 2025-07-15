@@ -76,13 +76,13 @@ const AmarabadRegisterOtp = () => {
         ...RegisterdDetails,
         otp: values.otp,
       });
-      console.log("response", response);
       if (response.data.status === 200) {
-        console.log(response.data.data.message);
         toast.success(
           response.data.data.message || "OTP verified successfully"
         );
-        navigate("/amarabad/login");
+        navigate("/amarabad/login", {
+          state: { toastMessage: "User Registered Successfully. You can login now" },
+        });
         localStorage.removeItem("registerdDetails");
       } else {
         toast.info(response.data?.data?.message || "something went wrong");

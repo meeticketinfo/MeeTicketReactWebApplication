@@ -19,7 +19,6 @@ export const UseOtpStore = create((set, get) => ({
         API_ENDPOINTS.AUTH.AMRABAD.GET_FORGET_PIN_OTP_FROM_MOBILE,
         payload
       );
-      console.log(response.data);
 
       set({ isForgetOtpRequestLoading: false });
 
@@ -38,7 +37,6 @@ export const UseOtpStore = create((set, get) => ({
         API_ENDPOINTS.AUTH.AMRABAD.VERIFY_FORGET_PIN_OTP_FROM_MOBILE,
         payload
       );
-      console.log(response.data.mobileNumber);
       set({ isverifyForgetPinOtpLoading: false });
 
       return { success: true, data: response };
@@ -56,7 +54,6 @@ export const UseOtpStore = create((set, get) => ({
         API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_REGISTER_OTP,
         payload
       );
-      console.log(response.data.mobileNumber);
       set({ isverifyRegisterOtpLoading: false });
 
       return { success: true, data: response };
@@ -74,7 +71,6 @@ export const UseOtpStore = create((set, get) => ({
         API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_RESEND_OTP,
         payload
       );
-      console.log(response.data.mobileNumber);
       set({ isverifyResendOtpLoading: false });
 
       return { success: true, data: response };

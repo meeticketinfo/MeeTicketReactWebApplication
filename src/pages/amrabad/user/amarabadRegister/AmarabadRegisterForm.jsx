@@ -58,7 +58,6 @@ const AmarabadRegisterForm = () => {
     setSubmitting(true);
     try {
       const res = await AmrabadRegister({ mobileNumber: values.mobileNumber });
-      console.log("res", res);
       if (res.data?.status === 200) {
         resetForm();
         navigate("/amarabad/register-otp", {
