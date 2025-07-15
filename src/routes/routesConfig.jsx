@@ -83,7 +83,7 @@ import AmrabadResetPin from "../pages/amrabad/user/amarabadLogin/AmrabadResetPin
 
 import AmarabadRegisterOtp from "../pages/amrabad/user/amarabadRegister/AmarabadRegisterOtp";
 import ResetPinOtp from "../pages/amrabad/user/amrabadOtp/ResetPinOtp";
- 
+
 export const routes = [
   {
     path: "*",
@@ -98,9 +98,9 @@ export const routes = [
     element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
- 
+
   // dashboard detailed report
- 
+
   {
     path: "/dashboard-detailed-report",
     element: <ProtectedRoute element={<DashBoardDetailed />} />,
@@ -122,17 +122,17 @@ export const routes = [
     path: "/transaction-report",
     element: <ProtectedRoute element={<SummaryReport />} />,
   },
- 
+
   {
     path: "/booking-details",
     element: <ProtectedRoute element={<MetroBookingDetails />} />,
   },
- 
+
   {
     path: "/pending-transaction-details",
     element: <ProtectedRoute element={<MetroPendingTransactionDetails />} />,
   },
- 
+
   {
     path: "/transaction-general-report",
     element: <ProtectedRoute element={<TransactionGeneralReport />} />,
@@ -141,7 +141,7 @@ export const routes = [
     path: "/summary-report",
     element: <ProtectedRoute element={<TrasactionReport />} />,
   },
- 
+
   {
     path: "/rtc-bookings",
     element: <ProtectedRoute element={<RTCBookings />} />,
@@ -272,9 +272,9 @@ export const routes = [
     path: "/Grievance-individual",
     element: <ProtectedRoute element={<GrievanceIndividualReport />} />,
   },
- 
+
   // rtc Routs
- 
+
   {
     path: "/day-pass",
     element: <ProtectedRoute element={<DayPassReport />} />,
@@ -299,7 +299,7 @@ export const routes = [
     path: "/pending-pass",
     element: <ProtectedRoute element={<PendingPassesReport />} />,
   },
- 
+
   // Tourism
   {
     path: "/tourism-individual",
@@ -334,14 +334,22 @@ export const routes = [
     path: "/forget-pin-mobile",
     element: <AmrabadForgetPinMobileNumber />,
   },
-    {
-      path: "/amarabad-otp",
-      element: <ResetPinOtp/>,
-    },
-    {
-      path: "/amarabad-reset-pin",
-      element: <AmrabadResetPin/>,
-    },
+  {
+    path: "/amarabad/register",
+    element: <AmarabadRegister />,
+  },
+  {
+    path: "/amarabad/register-otp",
+    element: <AmarabadRegisterOtp />,
+  },
+  {
+    path: "/amarabad-otp",
+    element: <ResetPinOtp />,
+  },
+  {
+    path: "/amarabad-reset-pin",
+    element: <AmrabadResetPin />,
+  },
   {
     path: "/amarabad",
     element: <Packages />,
@@ -358,14 +366,10 @@ export const routes = [
     path: "/amarabad/test",
     element: <AmrabadProtectRoute element={<AmrabadTest />} />,
   },
- 
- 
- 
+
   // amrabad
   {
     path: "/packages",
     element: <ProtectedRoute element={<MainPackages />} />,
   },
 ];
- 
- 
