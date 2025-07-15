@@ -2,164 +2,244 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { amrabadAuthStore } from "../../../../store/amarabad/user/amrabadAuthStore";
+import { toast,  } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AmarabadRegisterForm = () => {
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
-
+  const { AmrabadRegisterLoading, AmrabadRegister } = amrabadAuthStore();
   const initialValues = {
-    mobile: "",
-    fullName: "",
-    pin: "",
+    mobileNumber: "",
+    firstName: "",
+    lastName: "",
+    pinNumber: "",
     confirmPin: "",
   };
-
+  const navigate = useNavigate();
   const validationSchema = Yup.object().shape({
-    mobile: Yup.string()
+    mobileNumber: Yup.string()
       .matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
       .required("Mobile Number is required"),
-    fullName: Yup.string()
-      .matches(/^\S.*$/, 'Cannot start with a space')
-      .matches(/^[a-zA-Z\s]+$/, "Full Name must contain only letters and spaces")
-      .min(3, "Full Name must be at least 3 characters")
-      .max(50, "Full Name must be less than 50 characters")
-      .required("Full Name is required"),
-    pin: Yup.string()
+    firstName: Yup.string()
+      .matches(/^\S.*$/, "Cannot start with a space")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "First Name must contain only letters and spaces"
+      )
+      .min(3, "First Name must be at least 3 characters")
+      .max(50, "First Name must be less than 50 characters")
+      .required("First Name is required"),
+    lastName: Yup.string()
+      .matches(/^\S.*$/, "Cannot start with a space")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Last Name must contain only letters and spaces"
+      )
+      .min(3, "Last Name must be at least 3 characters")
+      .max(50, "Last Name must be less than 50 characters")
+      .required("Last Name is required"),
+    pinNumber: Yup.string()
       .matches(/^\d{4}$/, "Enter a valid 4-digit PIN")
       .required("4-Digit Pin is required"),
     confirmPin: Yup.string()
-      .oneOf([Yup.ref("pin"), null], "Pins must match")
+      .oneOf([Yup.ref("pinNumber"), null], "Pins must match")
       .required("Confirm 4-Digit Pin is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    alert(JSON.stringify(values, null, 2));
-    setSubmitting(false);
-  }
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setSubmitting(true);
+    try {
+      const res = await AmrabadRegister(values);
+      console.log("res", res);
+      if (res.data?.status === 200) {
+        toast.success("OTP sent successfully");
+        resetForm();
+        navigate("/amarabad-otp", { replace: true });
+      }
+    } catch (err) {
+      console.log("err", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ values, touched, errors }) => (
-        <Form>
-          <div className="flex gap-4 mb-4">
-            <div className="w-1/2">
-              <label className="block text-sm mb-1">Mobile Number</label>
-              <div className="relative">
-                <Field
-                  name="mobile"
-                  type="text"
-                  maxLength={10}
-                  placeholder="Enter your mobile number"
-                  className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${touched.mobile && !errors.mobile && values.mobile.length === 10
-                    ? "border-green-500 focus:border-green-500"
-                    : ""
+    <>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, touched, errors }) => (
+          <Form>
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                <label className="block text-sm mb-1">Mobile Number</label>
+                <div className="relative">
+                  <Field
+                    name="mobileNumber"
+                    type="text"
+                    maxLength={10}
+                    placeholder="Enter your mobile number"
+                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                      touched.mobileNumber &&
+                      !errors.mobileNumber &&
+                      values.mobileNumber.length === 10
+                        ? "border-green-500 focus:border-green-500"
+                        : ""
                     }`}
+                  />
+                  {touched.mobileNumber &&
+                    !errors.mobileNumber &&
+                    values.mobileNumber.length === 10 && (
+                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                    )}
+                </div>
+                <ErrorMessage
+                  name="mobileNumber"
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
                 />
-                {touched.mobile && !errors.mobile && values.mobile.length === 10 && (
-                  <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
-                )}
               </div>
-              <ErrorMessage
-                name="mobile"
-                component="div"
-                className="text-xs font-semibold text-red-500 mt-1"
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="block text-sm mb-1">Full Name</label>
-              <div className="relative">
-                <Field
-                  name="fullName"
-                  type="text"
-                  placeholder="Enter your full name"
-                  className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${touched.fullName && !errors.fullName
-                    ? "border-green-500 focus:border-green-500"
-                    : ""
+              <div className="w-1/2">
+                <label className="block text-sm mb-1">First Name</label>
+                <div className="relative">
+                  <Field
+                    name="firstName"
+                    type="text"
+                    placeholder="Enter your full name"
+                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                      touched.firstName && !errors.firstName
+                        ? "border-green-500 focus:border-green-500"
+                        : ""
                     }`}
-                />
-                {touched.fullName && !errors.fullName && values.fullName.length > 0 && (
-                  <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
-                )}
-              </div>
+                  />
+                  {touched.firstName &&
+                    !errors.firstName &&
+                    values.firstName.length > 0 && (
+                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                    )}
+                </div>
 
-              <ErrorMessage
-                name="fullName"
-                component="div"
-                className="text-xs font-semibold text-red-500 mt-1"
-              />
-            </div>
-          </div>
-          <div className="flex gap-4 mb-6">
-            <div className="w-1/2">
-              <label className="block text-sm mb-1">4-Digit Pin</label>
-              <div className="relative">
-                <Field
-                  name="pin"
-                  placeholder="Enter your 4-digit pin"
-                  type={showPin ? "text" : "password"}
-                  maxLength={4}
-                  className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${touched.pin && !errors.pin && values.pin.length === 4
-                    ? "border-green-500 focus:border-green-500"
-                    : ""
-                    }`}
+                <ErrorMessage
+                  name="firstName"
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
                 />
-                {touched.pin && !errors.pin && values.pin.length === 4 && (
-                  <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
-                )}
-                <span className="absolute inset-y-0 right-3 flex items-center">
-                  <button type="button" onClick={() => setShowPin(!showPin)}>
-                    {showPin ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </span>
               </div>
-              <ErrorMessage
-                name="pin"
-                component="div"
-                className="text-xs font-semibold text-red-500 mt-1"
-              />
+              <div className="w-1/2">
+                <label className="block text-sm mb-1">Last Name</label>
+                <div className="relative">
+                  <Field
+                    name="lastName"
+                    type="text"
+                    placeholder="Enter your Last name"
+                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                      touched.lastName && !errors.lastName
+                        ? "border-green-500 focus:border-green-500"
+                        : ""
+                    }`}
+                  />
+                  {touched.lastName &&
+                    !errors.lastName &&
+                    values.lastName.length > 0 && (
+                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                    )}
+                </div>
+
+                <ErrorMessage
+                  name="lastName"
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
+                />
+              </div>
             </div>
-            <div className="w-1/2">
-              <label className="block text-sm mb-1">Confirm 4-Digit Pin</label>
-              <div className="relative">
-                <Field
+            <div className="flex gap-4 mb-6">
+              <div className="w-1/2">
+                <label className="block text-sm mb-1">4-Digit Pin</label>
+                <div className="relative">
+                  <Field
+                    name="pinNumber"
+                    placeholder="Enter your 4-digit pin"
+                    type={showPin ? "text" : "password"}
+                    maxLength={4}
+                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                      touched.pinNumber &&
+                      !errors.pinNumber &&
+                      values.pinNumber.length === 4
+                        ? "border-green-500 focus:border-green-500"
+                        : ""
+                    }`}
+                  />
+                  {touched.pinNumber &&
+                    !errors.pinNumber &&
+                    values.pinNumber.length === 4 && (
+                      <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                    )}
+                  <span className="absolute inset-y-0 right-3 flex items-center">
+                    <button type="button" onClick={() => setShowPin(!showPin)}>
+                      {showPin ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </span>
+                </div>
+                <ErrorMessage
+                  name="pinNumber"
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
+                />
+              </div>
+              <div className="w-1/2">
+                <label className="block text-sm mb-1">
+                  Confirm 4-Digit Pin
+                </label>
+                <div className="relative">
+                  <Field
+                    name="confirmPin"
+                    placeholder="Confirm your 4-digit pin"
+                    type={showConfirmPin ? "text" : "password"}
+                    maxLength={4}
+                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                      touched.confirmPin &&
+                      !errors.confirmPin &&
+                      values.confirmPin.length === 4
+                        ? "border-green-500 focus:border-green-500"
+                        : ""
+                    }`}
+                  />
+                  <span className="absolute inset-y-0 right-3 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPin(!showConfirmPin)}
+                    >
+                      {showConfirmPin ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </span>
+                  {touched.confirmPin &&
+                    !errors.confirmPin &&
+                    values.confirmPin.length === 4 && (
+                      <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                    )}
+                </div>
+                <ErrorMessage
                   name="confirmPin"
-                  placeholder="Confirm your 4-digit pin"
-                  type={showConfirmPin ? "text" : "password"}
-                  maxLength={4}
-                  className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${touched.confirmPin && !errors.confirmPin && values.confirmPin.length === 4
-                    ? "border-green-500 focus:border-green-500"
-                    : ""
-                    }`}
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
                 />
-                <span className="absolute inset-y-0 right-3 flex items-center">
-                  <button type="button" onClick={() => setShowConfirmPin(!showConfirmPin)}>
-                    {showConfirmPin ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </span>
-                {touched.confirmPin && !errors.confirmPin && values.confirmPin.length === 4 && (
-                  <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
-                )}
               </div>
-              <ErrorMessage
-                name="confirmPin"
-                component="div"
-                className="text-xs font-semibold text-red-500 mt-1"
-              />
             </div>
-          </div>
-          <button
-            type="submit"
-            className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
-          >
-            REGISTER
-          </button>
-        </Form>
-      )}
-    </Formik>
+            <button
+              type="submit"
+              // disabled={AmrabadRegisterLoading}
+              className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
+            >
+              {AmrabadRegisterLoading ? "Registering..." : "REGISTER"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };
 
