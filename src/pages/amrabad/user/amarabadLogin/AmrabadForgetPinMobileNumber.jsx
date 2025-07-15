@@ -5,7 +5,13 @@ import UserLayout from "../../../../layouts/UserLayout";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 const AmrabadForgetPinMobileNumber = () => {
+  const navigate = useNavigate();
+  const { getForgetPinOtpFromMobile, isForgetOtpRequestLoading } =
+    UseOtpStore();
   const initialValues = {
     mobile: "",
   };
@@ -16,13 +22,26 @@ const AmrabadForgetPinMobileNumber = () => {
       .required("Mobile Number is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    alert(JSON.stringify(values, null, 2));
-    setSubmitting(false);
+  const handleSubmit = async (values) => {
+    localStorage.setItem("forgetPinMobileNumber", values.mobile);
+    try {
+      const res = await getForgetPinOtpFromMobile({
+        mobileNumber: values.mobile,
+      });
+      if (res.data?.status === 200) {
+        navigate("/amarabad-otp");
+      } else {
+        toast.error(res.data.data?.message);
+      }
+    } catch (err) {
+      console.log("err", err);
+      toast.error(err?.message);
+    }
   };
   return (
     <>
       <UserLayout>
+        <ToastContainer />
         <div className="container mx-auto">
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
@@ -47,7 +66,7 @@ const AmrabadForgetPinMobileNumber = () => {
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
               >
-                {({ values, touched, errors }) => (
+                {({ values, touched, errors, isSubmiting }) => (
                   <Form>
                     <div className="flex gap-4 mb-8">
                       <div className="w-full">
@@ -86,7 +105,9 @@ const AmrabadForgetPinMobileNumber = () => {
                       type="submit"
                       className="block  mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
                     >
-                      SEND OTP
+                      {isForgetOtpRequestLoading
+                        ? "Sending Otp..."
+                        : "SEND OTP"}
                     </button>
                   </Form>
                 )}

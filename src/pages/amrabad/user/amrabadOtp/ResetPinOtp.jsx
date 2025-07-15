@@ -4,15 +4,19 @@ import Lock from "../../../../images/user/lock.png";
 import Logo from "../../../../images/user/logo.png";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const Otp = () => {
+const ResetPinOtp = () => {
+  const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(180);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
   const [otpError, setOtpError] = useState("");
-
+  const { verifyForgetPinOtp } = UseOtpStore();
+  const responseMobileNumber = localStorage.getItem("forgetPinMobileNumber");
   // Replace this with your actual source of mobile number
-  const mobileNumber = "9876543321";
 
   useEffect(() => {
     let timer;
@@ -59,17 +63,42 @@ const Otp = () => {
   };
 
   const handleSubmit = async (values) => {
-    console.log("Submitted OTP:", values.otp);
-    if (values.otp !== "123456") {
-      setOtpError("Invalid OTP");
-    } else {
-      setOtpError("");
-      // proceed with verification
+    try {
+      const response = await verifyForgetPinOtp({
+        ...values,
+        mobileNumber: responseMobileNumber,
+      });
+      console.log("response", response);
+      if (response.data.status) {
+        toast.success(response.data?.data?.message||"OTP verified successfully");
+        navigate("/amarabad-reset-pin");
+      } else {
+        toast.error(response.data?.data?.message||"something went wrong");
+      }
+    } catch (error) {
+      toast.error(error.message||"something went wrong");
+      console.log("error", error);
     }
   };
-
+    const resendOtp = async () => {
+      try {
+        const response = await getForgetPinOtpFromMobile({
+          mobileNumber: responseMobileNumber,
+        });
+        if(response.data.status){
+          toast.success(response.data.data.message||"OTP sent successfully");
+        }else{
+          toast.error(response.data.data.message||"something went wrong");
+        }
+      }catch(error){
+        toast.error(error.message||"something went wrong");
+        console.log("error", error);
+      }
+    }
+  
   return (
     <UserLayout>
+      <ToastContainer />
       <div className="container mx-auto">
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
@@ -94,10 +123,10 @@ const Otp = () => {
                     <p>
                       Please enter the 6-digit code we have sent you to your
                       Mobile Number{" "}
-                      <span className="text-black text-xs">{`+91 ${mobileNumber.slice(
+                      <span className="text-black text-xs">{`+91 ${responseMobileNumber?.slice(
                         0,
                         2
-                      )}****${mobileNumber.slice(-2)}`}</span>
+                      )}****${responseMobileNumber?.slice(-2)}`}</span>
                     </p>
                   </div>
 
@@ -144,6 +173,8 @@ const Otp = () => {
                         if (canResend) {
                           startTimer();
                           // trigger resend API
+                          resendOtp();
+
                         }
                       }}
                     >
@@ -172,4 +203,4 @@ const Otp = () => {
   );
 };
 
-export default Otp;
+export default ResetPinOtp;

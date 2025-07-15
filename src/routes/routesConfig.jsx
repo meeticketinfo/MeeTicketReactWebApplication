@@ -77,8 +77,10 @@ import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadReg
 import AmrabadProtectRoute from "./AmrabadProtectRoute";
 import AmrabadAuthRoute from "./AmrabadAuthRoute";
 import AmrabadTest from "../pages/amrabad/user/test/AmrabadTest";
-import Otp from "../pages/amrabad/user/amrabadOtp/Otp";
+
 import AmrabadForgetPinMobileNumber from "../pages/amrabad/user/amarabadLogin/AmrabadForgetPinMobileNumber";
+import AmrabadResetPin from "../pages/amrabad/user/amarabadLogin/AmrabadResetPin";
+import ResetPinOtp from "../pages/amrabad/user/amrabadOtp/ResetPinOtp";
 
 export const routes = [
   {
@@ -331,13 +333,13 @@ export const routes = [
     element: <AmrabadForgetPinMobileNumber />,
   },
   {
-    path: "/amarabad-otp",
-    element: <Otp/>,
-  },
-  {
-    path: "/amarabad-otp",
-    element: <Otp/>,
-  },
+      path: "/amarabad-otp",
+      element: <ResetPinOtp/>,
+    },
+    {
+      path: "/amarabad-reset-pin",
+      element: <AmrabadResetPin/>,
+    },
   {
     path: "/amarabad",
     element: <Packages />,
