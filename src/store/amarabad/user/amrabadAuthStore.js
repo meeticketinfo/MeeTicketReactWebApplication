@@ -8,7 +8,8 @@ import { handleApiError } from "../../../utils/apiErrorHandler";
 
 export const amrabadAuthStore = create(
   persist(
-    (set,get) => ({
+    (set, get) => ({
+      AmrabadRegisterLoading: false,
       isLoggedIn: false,
       AmrabadLoginLoading: false,
       token: null,
@@ -39,6 +40,19 @@ export const amrabadAuthStore = create(
           handleApiError(xhr);
           set({ AmrabadLoginLoading: false });
           return { success: false };
+        }
+      },
+      AmrabadRegister: async (registerData) => {
+        set({ AmrabadRegisterLoading: true });
+        try {
+          const response = await apiService.post(
+            API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_REGISTER,
+            registerData
+          );
+          return { success: true, data: response };
+        } catch (error) {
+         toast.error(error.response.data.message)
+          set({ AmrabadRegisterLoading: false });
         }
       },
 

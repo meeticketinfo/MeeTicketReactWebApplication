@@ -27,11 +27,10 @@ const AmarabadLoginForm = () => {
   const initialValues = { mobileNumber: "", pinNumber: "" };
 
   const handleSubmit = async (values) => {
-    
     const response = await AmrabadLogin(values);
     console.log("response", response);
     if (response.data?.status === 200) {
-      const redirectTo = location.state?.from?.pathname || "/amarabad"; 
+      const redirectTo = location.state?.from?.pathname || "/amarabad";
       navigate(redirectTo, { replace: true });
       setIsLoggedIn(true);
       // toast.success("loggedin");
@@ -113,17 +112,18 @@ const AmarabadLoginForm = () => {
                   )}
               </div>
               <div className="flex justify-between">
-              <ErrorMessage
-                name="pinNumber"
-                component="div"
-                className="text-xs font-semibold text-red-500 mt-1"
-              />
-              <Link
-              to="/forget-pin-mobile"
-               className="text-[#362D86] text-sm font-normal"
-              >Forget Pin?</Link>
+                <ErrorMessage
+                  name="pinNumber"
+                  component="div"
+                  className="text-xs font-semibold text-red-500 mt-1"
+                />
+                <Link
+                  to="/forget-pin-mobile"
+                  className="text-[#362D86] text-sm font-normal"
+                >
+                  Forget Pin?
+                </Link>
               </div>
-             
             </div>
             <button
               type="submit"

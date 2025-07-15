@@ -62,6 +62,7 @@ export const API_ENDPOINTS = {
     REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
     AMRABAD:{
       AMRABAD_LOGIN:`${AMRABAD_API_BASE_URL}Authorization/AmrabadLogin`,
+      AMRABAD_REGISTER:`${AMRABAD_API_BASE_URL}Authorization/RegisterOTP`,
       AMRABAD_DECODE_TOKEN:`${AMRABAD_API_BASE_URL}Authentication/GetDecodedToken`,
       GET_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ForgotPINOTP`,
       VERIFY_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ValidateForgotPINOTP`,
