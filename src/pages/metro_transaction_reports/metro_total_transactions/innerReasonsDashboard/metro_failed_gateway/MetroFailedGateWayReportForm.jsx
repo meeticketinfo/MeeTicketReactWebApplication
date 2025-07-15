@@ -16,10 +16,10 @@ const MetroFailedGateWayReportForm = ({
   console.log("outerFilters", innerFilters);
   const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
   const initialValues = {
-    startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
-    endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
-    phoneNumber: deepInnerFilters.mobileNumber || innerFilters.mobileNumber || "",
-    PaymentMode: deepInnerFilters.PaymentMode || "",
+    startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
+    endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
+    phoneNumber: (deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber) ?? "",
+    PaymentMode: deepInnerFilters.PaymentMode ?? "",
   };
 
   const onSubmit = (values) => {

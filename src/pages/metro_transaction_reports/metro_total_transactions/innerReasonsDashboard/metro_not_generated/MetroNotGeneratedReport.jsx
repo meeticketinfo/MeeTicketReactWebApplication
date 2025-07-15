@@ -34,13 +34,13 @@ const MetroNotGeneratedReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
-      endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
+      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
+      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
       phoneNumber:
-        innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
-      PaymentMode: deepInnerFilters.PaymentMode || "",
-      status: innerFilters.status || "",
-      subCategory: innerFilters.subCategory || "",
+        (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+      PaymentMode: deepInnerFilters.PaymentMode ?? "",
+      status: innerFilters.status ?? "",
+      subCategory: innerFilters.subCategory ?? "",
 
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
