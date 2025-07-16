@@ -81,6 +81,22 @@ const HouseCreate = () => {
           isDeleted: false,
         }))
       : [],
+    
+    // Add discounts array for daily discounts
+    discounts: isHouseEditVisible && selectedSubRowData?.discounts
+      ? selectedSubRowData.discounts.map(discount => ({
+          percentage: discount.percentage || "",
+          amountAfterDiscount: discount.amountAfterDiscount || "",
+        }))
+      : [
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+          { percentage: "", amountAfterDiscount: "" },
+        ],
   };
 
   useEffect(() => {
@@ -114,6 +130,12 @@ const HouseCreate = () => {
     roomLimit: Yup.string().required("Room Limit is required."),
     isBlockout: Yup.string().required("Block Out is required."),
     sequence: Yup.string().required("Sequence is required."),
+    discounts: Yup.array().of(
+      Yup.object().shape({
+        percentage: Yup.string().nullable(),
+        amountAfterDiscount: Yup.string().nullable(),
+      })
+    ),
     // roomImagesBase64Strings: Yup.array()
     //   .of(
     //     Yup.string().test("is-valid-image", "Invalid image type", (value) => {
@@ -127,6 +149,7 @@ const HouseCreate = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
+    console.log("Discounts data:", values.discounts);
     const isEdit = isHouseEditVisible;
 
     try {
@@ -158,6 +181,7 @@ const HouseCreate = () => {
         isBlockout: values.isBlockout === "Yes",
         discountApplicable: values.discountApplicable === "true",
         roomImagesBase64Strings: roomImagesPayload,
+        discounts: values.discounts, // Include the discounts array
       };
 
       if (!payload.hasDiscount) {
@@ -198,8 +222,19 @@ const HouseCreate = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          validateOnChange={true}
+          validateOnBlur={true}
         >
-          {({ values, isSubmitting, setFieldValue }) => (
+          {({ values, isSubmitting, setFieldValue, errors, touched }) => {
+            // Debug validation errors
+            if (Object.keys(errors).length > 0) {
+              console.log("Validation errors:", errors);
+              console.log("Form values:", values);
+              if (errors.discounts) {
+                console.log("Discount errors:", errors.discounts);
+              }
+            }
+            return (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-3">
                 {/* User Select */}
@@ -367,6 +402,109 @@ const HouseCreate = () => {
                     </div>
                   </>
                 )}
+                
+                {/* Discount Table */}
+                {values.hasDiscount === "Yes" && (
+                  <div className="col-span-3">
+                    <div className="bg-gray-200 border border-gray-300 rounded-lg p-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Discount applicable on */}
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-900 mb-3">
+                            Discount applicable on
+                          </h4>
+                          <div className="space-y-2">
+                            {[
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday",
+                            ].map((day, dayIndex) => (
+                              <div
+                                key={day}
+                                className="flex items-center justify-between"
+                              >
+                                <span className="text-sm text-gray-700 w-20">
+                                  {day}
+                                </span>
+                                <Field
+                                  type="number"
+                                  name={`discounts[${dayIndex}].percentage`}
+                                  placeholder="0"
+                                  className="w-20 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    setFieldValue(
+                                      `discounts[${dayIndex}].percentage`,
+                                      value
+                                    );
+
+                                    // Calculate amount after discount
+                                    const tariff = values.tariffPerDay || 0;
+                                    const percentage = parseFloat(value) || 0;
+                                    const discountAmount =
+                                      (tariff * percentage) / 100;
+                                    const amountAfterDiscount =
+                                      tariff - discountAmount;
+
+                                    setFieldValue(
+                                      `discounts[${dayIndex}].amountAfterDiscount`,
+                                      amountAfterDiscount.toFixed(2)
+                                    );
+                                  }}
+                                />
+                                <span className="text-sm text-gray-500">
+                                  %
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Amount after discount */}
+                        <div>
+                          <h4 className="text-sm font-medium text-gray-900 mb-3">
+                            Amount after discount
+                          </h4>
+                          <div className="space-y-2">
+                            {[
+                              "Monday",
+                              "Tuesday",
+                              "Wednesday",
+                              "Thursday",
+                              "Friday",
+                              "Saturday",
+                              "Sunday",
+                            ].map((day, dayIndex) => (
+                              <div
+                                key={day}
+                                className="flex items-center justify-between"
+                              >
+                                <span className="text-sm text-gray-700 w-20">
+                                  {day}
+                                </span>
+                                <Field
+                                  type="number"
+                                  name={`discounts[${dayIndex}].amountAfterDiscount`}
+                                  placeholder="0"
+                                  className="w-24 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                                  readOnly
+                                />
+                                <span className="text-sm text-gray-500">
+                                  ₹
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div>
                   <label
                     htmlFor="noOfHousesAvailable"
@@ -571,7 +709,8 @@ const HouseCreate = () => {
                 </div>
               </div>
             </Form>
-          )}
+          );
+        }}
         </Formik>
       </div>
     </>
