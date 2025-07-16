@@ -1,17 +1,20 @@
-import React from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import Logo from '../../images/user/logo.png';
-import TelanganaRising from '../../images/user/telangana-rising-logo.png';
-import { amrabadAuthStore } from '../../store/amarabad/user/amrabadAuthStore';
+import React from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import Logo from "../../images/user/logo.png";
+import TelanganaRising from "../../images/user/telangana-rising-logo.png";
+import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
+import Loader from "../../web_app_loaders/Loader";
 
 function UserHeader({ isScrolled = false }) {
-  const { isLoggedIn, setIsLoggedIn,clearAmrabadSession } = amrabadAuthStore();
+  const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } =
+    amrabadAuthStore();
+  console.log("decodedTokenData", decodedTokenData);
   const navigate = useNavigate();
-  
+
   const links = [
     {
-      label: 'Home',
-      to: '/amarabad'
+      label: "Home",
+      to: "/amarabad",
     },
     {
       label: 'Download',
@@ -103,15 +106,23 @@ function UserHeader({ isScrolled = false }) {
               // After login: show user profile section
               <div className="flex items-center gap-3">
                 <div className="flex flex-col items-end">
-                  <span className="font-bold text-black leading-tight">S.SANTHOSH KUMAR</span>
-                  <span 
-                    className="text-gray-500 text-lg hover:underline -mt-1 cursor-pointer" 
+                  {decodedTokenData ? (
+                    <span className="font-bold text-black leading-tight capitalize">{`${decodedTokenData?.FirstName} ${decodedTokenData?.LastName}`}</span>
+                  ) : (
+                    <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-24 mb-1"></div>
+                  )}
+
+                  <span
+                    className="text-gray-500 text-lg hover:underline -mt-1 cursor-pointer"
                     onClick={() => {
                       setIsLoggedIn(false);
                       navigate("/amarabad/login");
-                      localStorage.removeItem("amrabadlogin-store")
-                      clearAmrabadSession()
-                    }}>Logout</span>
+                      localStorage.removeItem("amrabadlogin-store");
+                      clearAmrabadSession();
+                    }}
+                  >
+                    Logout
+                  </span>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
                   {/* User icon SVG */}
