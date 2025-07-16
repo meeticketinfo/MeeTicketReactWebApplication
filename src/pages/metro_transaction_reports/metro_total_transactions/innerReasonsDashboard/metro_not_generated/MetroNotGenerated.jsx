@@ -22,17 +22,17 @@ const MetroFailedGateway = () => {
   console.log("TicketNotGeneratedPieChartData", TicketNotGeneratedPieChartData);
   useEffect(() => {
     fetchTicketNotGeneratedPieChart({
-      fromDate: innerFilters.fromDate || outerFilters.fromDate || startOfDay,
-      toDate: innerFilters.toDate || outerFilters.toDate || endOfDay,
+      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
       mobileNumber:
-        innerFilters.mobileNumber || outerFilters.mobileNumber || "",
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
     });
   }, []);
 
   const initialValues = {
-    fromDate: innerFilters.fromDate || outerFilters.fromDate || startOfDay,
-    toDate: innerFilters.toDate || outerFilters.toDate || endOfDay,
-    mobileNumber: innerFilters.mobileNumber || outerFilters.mobileNumber || "",
+    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);

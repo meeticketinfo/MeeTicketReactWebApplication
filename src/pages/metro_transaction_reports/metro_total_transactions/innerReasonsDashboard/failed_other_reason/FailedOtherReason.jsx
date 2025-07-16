@@ -21,9 +21,9 @@ const FailedOtherReason = () => {
   console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
 
   const filtersToUse = {
-    fromDate: (innerFilters.fromDate || outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate || outerFilters.toDate) ?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
+    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
   };
 
   useEffect(() => {
@@ -31,9 +31,9 @@ const FailedOtherReason = () => {
   }, []);
 
   const initialValues = {
-    fromDate: (innerFilters.fromDate || outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate || outerFilters.toDate )?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber || outerFilters.mobileNumber )?? "",
+    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    toDate: (innerFilters.toDate ?? outerFilters.toDate )?? endOfDay,
+    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber )?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);

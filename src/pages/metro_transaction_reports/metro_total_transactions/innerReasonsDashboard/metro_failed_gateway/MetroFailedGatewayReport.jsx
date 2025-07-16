@@ -34,12 +34,12 @@ const MetroFailedGatewayReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: deepInnerFilters.startDate || innerFilters.fromDate || "",
-      endDate: deepInnerFilters.endDate || innerFilters.toDate || "",
-      phoneNumber:innerFilters.mobileNumber || deepInnerFilters.mobileNumber || "",
-      PaymentMode: deepInnerFilters.mobileNumber || "",
-      status: innerFilters.status || "",
-      subCategory: innerFilters.subCategory || "",
+      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
+      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
+      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+      PaymentMode: deepInnerFilters.mobileNumber ?? "",
+      status: innerFilters.status ?? "",
+      subCategory: innerFilters.subCategory ?? "",
      
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,

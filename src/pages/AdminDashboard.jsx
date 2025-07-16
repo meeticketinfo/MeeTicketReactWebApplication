@@ -193,7 +193,7 @@ function AdminDashboard() {
   ];
   const dashboardCardsCountByRole = [
     {
-      lableName: "Facility Bookings",
+      lableName: "Total Bookings",
       count: allCounts?.totalBookingsByRole || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
@@ -609,7 +609,15 @@ function AdminDashboard() {
                 <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
                   <card.icon className="text-3xl font-bold text-white dark:text-gray-100" />
                 </div>
-                <div className="flex-shrink-0 ml-3">
+                
+                {isFetchZooDashboardTicketWiseLoading ?(
+                <div className="space-y-2 ml-4">
+                  {/* Skeleton for count */}
+                  <div className="h-6 w-36 bg-gray-100 rounded animate-pulse"></div>
+                  {/* Skeleton for label */}
+                  <div className="h-4 w-48 bg-gray-100 rounded animate-pulse"></div>
+                </div>) : 
+                (<div className="flex-shrink-0 ml-3">
                   <span className="text-2xl font-bold leading-none text-gray-600">
                     <CountUp
                       end={card.count}
@@ -660,7 +668,8 @@ function AdminDashboard() {
                       </h3>
                     </div>
                   )}
-                </div>
+                </div>)
+                 }
               </div>
             </div>
           ))}
@@ -740,7 +749,7 @@ function AdminDashboard() {
                           }}
                         >
                           <CountUp
-                            end={services.service[0]?.totalBookings}
+                            end={services.service[0]?.totalQuantity}
                             duration={2}
                             prefix=""
                             separator=","
@@ -759,7 +768,7 @@ function AdminDashboard() {
                                 {Variant.serviceVariantName}:
                               </h3>
                               <h3 className="text-base font-semibold text-gray-500">
-                                {Variant.totalBooking}
+                                {Variant.totalQuantitys}
                               </h3>
                             </div>
                           ))}
@@ -798,7 +807,7 @@ function AdminDashboard() {
                           }
                         >
                           <CountUp
-                            end={service.serviceVariants[0].totalBookings}
+                            end={service.totalQuantity}
                             duration={2}
                             prefix=""
                             separator=","
