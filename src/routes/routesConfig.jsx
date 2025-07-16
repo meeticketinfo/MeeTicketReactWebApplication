@@ -70,7 +70,7 @@ import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_pr
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
-import Packages from "../pages/amrabad/user/packages/packages";
+import Packages from "../pages/amrabad/user/packages/Packages";
 import Houses from "../pages/amrabad/user/houses/Houses";
 import AmarabadLogin from "../pages/amrabad/user/amarabadLogin/amarabadLogin";
 import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadRegister";
@@ -83,6 +83,7 @@ import AmrabadResetPin from "../pages/amrabad/user/amarabadLogin/AmrabadResetPin
 
 import AmarabadRegisterOtp from "../pages/amrabad/user/amarabadRegister/AmarabadRegisterOtp";
 import ResetPinOtp from "../pages/amrabad/user/amrabadOtp/ResetPinOtp";
+import PackageDetail from "../pages/amrabad/user/packages/PackageDetail";
 
 export const routes = [
   {
@@ -357,6 +358,10 @@ export const routes = [
   {
     path: "/amarabad/packages",
     element: <Packages />,
+  },
+  {
+    path: "/amarabad/packages/:packageId",
+    element: <PackageDetail />,
   },
   {
     path: "/amarabad/packages/:house",
