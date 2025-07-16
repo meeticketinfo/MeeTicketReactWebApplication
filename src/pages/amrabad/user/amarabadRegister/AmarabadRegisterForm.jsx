@@ -3,13 +3,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { amrabadAuthStore } from "../../../../store/amarabad/user/amrabadAuthStore";
-import { toast,  } from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const AmarabadRegisterForm = () => {
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
-  const { AmrabadRegisterLoading, AmrabadRegister } = amrabadAuthStore();
+  const {
+    AmrabadRegisterLoading,
+    isRegisterIn,
+    setIsRegisterIn,
+    AmrabadRegister,
+  } = amrabadAuthStore();
   const initialValues = {
     mobileNumber: "",
     firstName: "",
@@ -49,14 +54,19 @@ const AmarabadRegisterForm = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    localStorage.setItem("registerdDetails", JSON.stringify(values));
     setSubmitting(true);
     try {
-      const res = await AmrabadRegister(values);
-      console.log("res", res);
+      const res = await AmrabadRegister({ mobileNumber: values.mobileNumber });
       if (res.data?.status === 200) {
-        toast.success("OTP sent successfully");
         resetForm();
-        navigate("/amarabad-otp", { replace: true });
+        navigate("/amarabad/register-otp", {
+          replace: true,
+          state: { otpSent: true },
+        });
+
+        setIsRegisterIn(true);
+        toast.success("OTP sent successfully");
       }
     } catch (err) {
       console.log("err", err);
@@ -82,7 +92,7 @@ const AmarabadRegisterForm = () => {
                     name="mobileNumber"
                     type="text"
                     maxLength={10}
-                    placeholder="Enter your mobile number"
+                    placeholder="Enter your mobile no"
                     className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
                       touched.mobileNumber &&
                       !errors.mobileNumber &&
@@ -165,6 +175,9 @@ const AmarabadRegisterForm = () => {
                     placeholder="Enter your 4-digit pin"
                     type={showPin ? "text" : "password"}
                     maxLength={4}
+                    onCopy={(e) => e.preventDefault()}
+                    onPaste={(e) => e.preventDefault()}
+                    onCut={(e) => e.preventDefault()}
                     className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
                       touched.pinNumber &&
                       !errors.pinNumber &&
@@ -200,6 +213,9 @@ const AmarabadRegisterForm = () => {
                     placeholder="Confirm your 4-digit pin"
                     type={showConfirmPin ? "text" : "password"}
                     maxLength={4}
+                    onCopy={(e) => e.preventDefault()}
+                    onPaste={(e) => e.preventDefault()}
+                    onCut={(e) => e.preventDefault()}
                     className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
                       touched.confirmPin &&
                       !errors.confirmPin &&
@@ -234,7 +250,7 @@ const AmarabadRegisterForm = () => {
               // disabled={AmrabadRegisterLoading}
               className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
             >
-              {AmrabadRegisterLoading ? "Registering..." : "REGISTER"}
+              {AmrabadRegisterLoading ? "Registering..." : "Register"}
             </button>
           </Form>
         )}

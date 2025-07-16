@@ -11,6 +11,7 @@ export const amrabadAuthStore = create(
     (set, get) => ({
       AmrabadRegisterLoading: false,
       isLoggedIn: false,
+      isRegisterIn: false,
       AmrabadLoginLoading: false,
       token: null,
       tokenType: null, // ✅ add tokenType here
@@ -18,7 +19,7 @@ export const amrabadAuthStore = create(
       isAuthenticated: false,
 
       setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
-
+      setIsRegisterIn: (isRegisterIn) => set({ isRegisterIn }),
       AmrabadLogin: async (loginData) => {
         set({ AmrabadLoginLoading: true });
         try {
@@ -26,32 +27,49 @@ export const amrabadAuthStore = create(
             API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_LOGIN,
             loginData
           );
-
-          set({
-            AmrabadLoginLoading: false,
-            token: response.data.token,
-            tokenType: "amrabad",
-            isLoggedIn: true,
-            isAuthenticated: true,
-          });
-          await get().fetchDecodedToken();
-          return { success: true, data: response };
-        } catch (xhr) {
-          handleApiError(xhr);
+      
+          // ✅ Check HTTP status
+          if (response.status === 200 && response.data?.token) {
+            set({
+              AmrabadLoginLoading: false,
+              token: response.data.token,
+              tokenType: "amrabad",
+              isLoggedIn: true,
+              isAuthenticated: true,
+            });
+      
+            // ✅ Safely call fetchDecodedToken
+            const fetchDecodedToken = get().fetchDecodedToken;
+            if (typeof fetchDecodedToken === "function") {
+              await fetchDecodedToken();
+            } else {
+              console.warn("fetchDecodedToken is not defined in the store.");
+            }
+      
+            return { success: true, data: response };
+          }
+      
+          // Optional: handle non-200s here
+          set({ AmrabadLoginLoading: false });
+          return { success: false, data: response };
+        } catch (error) {
+          handleApiError(error);
           set({ AmrabadLoginLoading: false });
           return { success: false };
         }
       },
+      
       AmrabadRegister: async (registerData) => {
-        set({ AmrabadRegisterLoading: true });
+        set({ AmrabadRegisterLoading: true, isRegisterIn: true });
         try {
           const response = await apiService.post(
             API_ENDPOINTS.AUTH.AMRABAD.AMRABAD_REGISTER,
             registerData
           );
+          set({ AmrabadRegisterLoading: false });
           return { success: true, data: response };
         } catch (error) {
-         toast.error(error.response.data.message)
+          toast.error(error.response.data.message);
           set({ AmrabadRegisterLoading: false });
         }
       },
