@@ -193,7 +193,7 @@ function AdminDashboard() {
   ];
   const dashboardCardsCountByRole = [
     {
-      lableName: "Facility Bookings",
+      lableName: "Total Bookings",
       count: allCounts?.totalBookingsByRole || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
@@ -749,7 +749,7 @@ function AdminDashboard() {
                           }}
                         >
                           <CountUp
-                            end={services.service[0]?.totalBookings}
+                            end={services.service[0]?.totalQuantity}
                             duration={2}
                             prefix=""
                             separator=","
@@ -768,7 +768,7 @@ function AdminDashboard() {
                                 {Variant.serviceVariantName}:
                               </h3>
                               <h3 className="text-base font-semibold text-gray-500">
-                                {Variant.totalBooking}
+                                {Variant.totalQuantitys}
                               </h3>
                             </div>
                           ))}
@@ -807,7 +807,7 @@ function AdminDashboard() {
                           }
                         >
                           <CountUp
-                            end={service.serviceVariants[0].totalBookings}
+                            end={service.totalQuantity}
                             duration={2}
                             prefix=""
                             separator=","
