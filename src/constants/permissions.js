@@ -24,6 +24,13 @@ export const superAdminPermissions = [
   // "toursim-bank-payments",
   "user-transaction",
   "transactions-dashboard",
+  "total-transactions-dashboard",
+  "user-report",
+  "refund-transactions",
+  "metro-total-transaction",
+  "metro-user-report",
+  "metro-user-detailed-report",
+  "metro-refund-transactions"
 ];
 
 export const parkAdminPermissions = [
@@ -85,9 +92,12 @@ export const MetroReports = [
 
 export const NehruZooPark = [
   "dashboard",
-  "entity-bookings",
-  "completed-bookings",
-  "payment-transaction-report",
+  // "entity-bookings",
+  // "completed-bookings",
+  // "payment-transaction-report",
+  "pos-consolidated-booking-reports",
+  "pos-individual-booking-reports",
+  "pos-payment-transactions-reports",
   "book-tickets",
   // "Grievance-consolidate",
   "Grievance-Incident",

@@ -12,18 +12,22 @@ import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesS
 import Select from "react-select";
 import { HiArrowPathRoundedSquare } from "react-icons/hi2";
 import { ImTicket } from "react-icons/im";
+import { GrTicket } from "react-icons/gr";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
+import { Link } from "react-router-dom";
 
 function PaymentTransactionReport() {
-  const storedUser = localStorage.getItem("PaymentTransactions");
+  const userObject = JSON.parse(localStorage.getItem("PaymentTransactions"));
+  console.log("userObject", userObject);
   const [openModal, setOpenModal] = useState(false);
   const [reGenerateData, setreGenerateData] = useState(null);
   const [isUpi, setisUpi] = useState(null);
-  console.log("reGenerateData", reGenerateData);
+  // console.log("reGenerateData", reGenerateData);
   const [verifyData, setVerifyData] = useState("");
   const [ReGenerateOrderId, setReGenerateOrderId] = useState("");
+  const [ReGeneratePosOrderId, setReGeneratePosOrderId] = useState("");
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const {
     isTransactionPaymentReportsLoading,
@@ -33,6 +37,8 @@ function PaymentTransactionReport() {
     isReGenerateTicketLoading,
     FetchVerifyTicket,
     isVerifyTicketLoading,
+    setPaymentTransactionNAvigate,
+    PaymentTransactionNAvigate,
   } = useBookingsStore();
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
@@ -40,12 +46,12 @@ function PaymentTransactionReport() {
     useDepartmentTypesStore();
 
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
-    typeOfBooking: "",
-    phoneNumber: "",
-    entityId: null,
-    departmentId: null,
+    fromDate: userObject?.startDate || getCurrentDate(),
+    toDate: userObject?.endDate || getCurrentDate(),
+    typeOfBooking: userObject?.currentTransactionStatus || "",
+    phoneNumber: userObject?.phoneNumber || "",
+    entityId: userObject?.entityTypeId || null,
+    departmentId: userObject?.departmentId || null,
   };
 
   useEffect(() => {
@@ -55,11 +61,12 @@ function PaymentTransactionReport() {
 
   useEffect(() => {
     fetchPaymentTransactions({
-      startDate: getCurrentDate(),
-      endDate: getCurrentDate(),
-      currentTransactionStatus: null,
-      phoneNumber: null,
-      parkId: null,
+      startDate: userObject?.startDate ||getCurrentDate(),
+      endDate: userObject?.endDate ||getCurrentDate(),
+      currentTransactionStatus:userObject?.currentTransactionStatus || null,
+      phoneNumber: userObject?.phoneNumber ||null,
+      departmentId: userObject?.entityTypeId ||null,
+      entityTypeId:userObject?.departmentId ||null,
     });
   }, [fetchPaymentTransactions]);
 
@@ -73,7 +80,6 @@ function PaymentTransactionReport() {
         ? values.typeOfBooking
         : null,
       phoneNumber: values.phoneNumber ? values.phoneNumber : null,
-      parkId: null,
     });
     localStorage.setItem(
       "PaymentTransactions",
@@ -86,7 +92,6 @@ function PaymentTransactionReport() {
           ? values.typeOfBooking
           : null,
         phoneNumber: values.phoneNumber ? values.phoneNumber : null,
-        parkId: null,
       })
     );
   };
@@ -102,7 +107,8 @@ function PaymentTransactionReport() {
     {
       field: "departmentName",
       headerName: "Department",
-      // flex: 1,
+      flex: 1,
+      minWidth: 100,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
@@ -128,104 +134,144 @@ function PaymentTransactionReport() {
     {
       field: "phonE_NUMBER",
       headerName: "Mobile No.",
+      maxWidth: "110",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "confirmedTxnAmount",
       headerName: "Amount Initiated",
+      maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "createdDate",
       headerName: "Payment Date",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "currentTransactionStatus",
       headerName: "Payment Status",
+      maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "refundStatus",
       headerName: "Refund Status",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "resultStatus",
       headerName: "Confirmed Status",
+      maxWidth: "150",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "Re-grnerateTicket",
-      headerName: "Re-generate Ticket",
-      maxWidth: 180,
+      field: "isPaymentTransaction",
+      headerName: " Status",
+      maxWidth: "100",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <span className="text-blue-v2">
+            {params.data.isPaymentTransaction ? "UPI" : "POS"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      field: "Re-generateTicket",
+      headerName: "Verify Ticket",
+      maxWidth: 140,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        const isDisabled =
+          params.data.resultStatus === "TXN_SUCCESS" ||
+          params.data.isTicketGenerated;
+
         return (
-          <div className="flex justify-center gap-4">
-            {
-              <button
-                className={`${
-                  params.data.resultStatus === "TXN_SUCCESS"
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-v1"
-                } text-white text-xs leading-normal px-1.5 font-semibold py-1 mt-1.5 rounded-md`}
-                onClick={() => {
+          <div className="flex justify-center mt-1">
+            <button
+              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                isDisabled
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-v2 text-white hover:bg-blue-v1"
+              }`}
+              onClick={() => {
+                if (!isDisabled) {
                   setVerifyData(params.data.orderId);
                   setOpenVerifyModal(true);
                   setisUpi(params.data.isPaymentTransaction);
-                }}
-                disabled={params.data.resultStatus === "TXN_SUCCESS"}
-              >
-                Verify Status
-              </button>
-            }
+                }
+              }}
+              disabled={isDisabled}
+            >
+              Verify Status
+            </button>
           </div>
         );
       },
     },
     {
-      field: "Re-grnerateTicket",
-      headerName: "Re-generate Ticket",
-      maxWidth: 180,
+      field: "Re-generateTicket",
+      headerName: "Generate Ticket",
+      maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        const isDisabled = params.data.isTicketGenerated;
+
         return (
-          <div className="flex justify-center gap-4">
-            <Tippy
-              content={
-                <div className="max-w-xs break-words p-2">
-                  <div>
-                    <h1 className="text-xs">Generate-Ticket</h1>
-                  </div>
-                </div>
-              }
-              placement="top"
-              animation="fade"
-              maxWidth={400}
-              theme="custom" // Apply the custom theme
-            >
-              <span
-                className="cursor-pointer"
-                onClick={() => {
+          <div className="flex justify-center">
+            <button
+              className={`px-6 py-1.5 mt-1 text-sm font-semibold rounded-md transition-all duration-200 ${
+                isDisabled
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-v2 text-white hover:bg-blue-v1"
+              }`}
+              onClick={() => {
+                if (!isDisabled) {
                   setOpenModal(true);
-                  setreGenerateData(
-                    // paymentOrderId: params.data.orderId,
-                    // mobileNumber: params.data.phonE_NUMBER,
-                    params.data.requestDto
-                  );
+                  setreGenerateData(params.data.requestDto);
                   setReGenerateOrderId(params.data.orderId);
-                }}
-              >
-                <ImTicket className="text-[24px] text-blue-v2  mt-2.5 " />
-              </span>
-            </Tippy>
+                  setisUpi(params.data.isPaymentTransaction);
+                }
+              }}
+              disabled={isDisabled}
+            >
+              Generate Ticket
+            </button>
+          </div>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      headerClass: "text-blue-v2",
+      flex: 1,
+      cellRenderer: (params) => {
+        const isDisabled = params.data.isTicketGenerated !== true;
+
+        return (
+          <div className="flex justify-center">
+            <Link
+              to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+              className={`px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
+                isDisabled 
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none"
+                  : "bg-blue-v2 text-white hover:bg-blue-700"
+              }`}
+              onClick={()=>{setPaymentTransactionNAvigate(true)}}
+            >
+              View Booking
+            </Link>
           </div>
         );
       },
@@ -235,52 +281,52 @@ function PaymentTransactionReport() {
   const handleReGenerateTicket = async () => {
     const requestData = JSON.parse(reGenerateData);
 
-    const finalData = { ...requestData, TransactionId: ReGenerateOrderId };
-    console.log(requestData);
+    const WithTransactionId = {
+      ...requestData,
+      TransactionId: requestData.TransactionId || ReGenerateOrderId, // Only set if it doesn't exist
+    };
+
+    const WithPosId = {
+      ...requestData,
+      posOrderId: requestData.posOrderId || ReGenerateOrderId, // Only set if it doesn't exist
+    };
+
+    const Finaldata = isUpi ? WithTransactionId : WithPosId;
+
+    // console.log(requestData);
 
     try {
-      const res = await FetchReGenerateTicket(finalData);
+      const res = await FetchReGenerateTicket(Finaldata);
 
-      console.log(res);
+      // console.log(res);
       if (res.response.data.status == 200) {
         setOpenModal(false);
         Swal.fire({
-          title: "Success!",
           html: `Ticket Re-generated Succesusfully`,
-          icon: "success",
           confirmButtonText: "OK",
+          width: "360px",
+           icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+           icon: 'small-swal-icon',
           },
           timer: 2000,
           showConfirmButton: false,
-        }).then(() => {
-          // Call the API after the SweetAlert modal closes
-          fetchPaymentTransactions({
-            fromDate: userObject.startDate || getCurrentDate(),
-            toDate: userObject.endDate || getCurrentDate(),
-            typeOfBooking: userObject.currentTransactionStatus || "",
-            phoneNumber: userObject.phoneNumber || "",
-            entityId: userObject.entityTypeId || null,
-            departmentId: userObject.departmentId || null,
-          });
         });
       } else {
         setOpenModal(false);
         Swal.fire({
-          title: "oops!",
-          text: res.response.data.message,
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${res.response.data.message}
+         </div>`,
           icon: "info",
           confirmButtonText: "OK",
-        }).then(() => {
-          fetchPaymentTransactions({
-            fromDate: userObject.startDate || getCurrentDate(),
-            toDate: userObject.endDate || getCurrentDate(),
-            typeOfBooking: userObject.currentTransactionStatus || "",
-            phoneNumber: userObject.phoneNumber || "",
-            entityId: userObject.entityTypeId || null,
-            departmentId: userObject.departmentId || null,
-          });
+           width: "360px",
+          customClass: {
+            popup: "elegant-swal-popup",
+            icon: "elegant-swal-icon",
+          },
         });
       }
     } catch (err) {
@@ -291,182 +337,70 @@ function PaymentTransactionReport() {
         text: `Regeneration failed. Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {
-        fetchPaymentTransactions({
-          fromDate: userObject.startDate || getCurrentDate(),
-          toDate: userObject.endDate || getCurrentDate(),
-          typeOfBooking: userObject.currentTransactionStatus || "",
-          phoneNumber: userObject.phoneNumber || "",
-          entityId: userObject.entityTypeId || null,
-          departmentId: userObject.departmentId || null,
-        });
       });
+    } finally {
+      // Delay API call to ensure SweetAlert has closed
+      setTimeout(() => {
+        fetchPaymentTransactions({
+          currentTransactionStatus:
+            userObject?.currentTransactionStatus || null,
+          departmentId: userObject?.departmentId || null,
+          endDate: userObject?.endDate || getCurrentDate(),
+          entityTypeId: userObject?.entityTypeId || null,
+          phoneNumber: userObject?.phoneNumber || null,
+          startDate: userObject?.startDate || getCurrentDate(),
+        });
+      }, 2100); // Wait a bit for the modal to close before calling the API
     }
   };
-  // const handleVerifyTicket = async () => {
-  //   console.log("isUpi", isUpi);
-  //   try {
-  //     const res = await FetchVerifyTicket(verifyData, isUpi);
-  //     console.log("API Response:", res); // Log the full response
 
-  //     if (res.response?.data?.status === 200) {
-  //       const resultMsg = res.response?.data?.data?.resultMsg;
-  //       if (resultMsg) {
-  //         setOpenVerifyModal(false);
-  //         Swal.fire({
-  //           title: "Success!",
-  //           html: resultMsg,
-  //           icon: "success",
-  //           confirmButtonText: "OK",
-  //           customClass: {
-  //             confirmButton: "swal-custom-btn",
-  //           },
-  //           timer: 2000,
-  //           showConfirmButton: false,
-  //         }).then(() => {
-  //           // Call the API after the SweetAlert modal closes
-  //           fetchPaymentTransactions({
-  //             fromDate: userObject.startDate || getCurrentDate(),
-  //             toDate: userObject.endDate || getCurrentDate(),
-  //             typeOfBooking: userObject.currentTransactionStatus || "",
-  //             phoneNumber: userObject.phoneNumber || "",
-  //             entityId: userObject.entityTypeId || null,
-  //             departmentId: userObject.departmentId || null,
-  //           });
-  //         });
-  //       } else {
-  //         setOpenVerifyModal(false);
-  //         Swal.fire({
-  //           title: "Oops!",
-  //           text: "Result message not found.",
-  //           icon: "info",
-  //           confirmButtonText: "OK",
-  //         }).then(() => {
-  //           // Call the API after the SweetAlert modal closes
-  //           fetchPaymentTransactions({
-  //             fromDate: userObject.startDate || getCurrentDate(),
-  //             toDate: userObject.endDate || getCurrentDate(),
-  //             typeOfBooking: userObject.currentTransactionStatus || "",
-  //             phoneNumber: userObject.phoneNumber || "",
-  //             entityId: userObject.entityTypeId || null,
-  //             departmentId: userObject.departmentId || null,
-  //           });
-  //         });
-  //       }
-  //     } else {
-  //       setOpenVerifyModal(false);
-  //       Swal.fire({
-  //         title: "Oops!",
-  //         text:
-  //           res.response?.data?.data?.resultMsg || res.response?.data?.message,
-  //         icon: "info",
-  //         confirmButtonText: "OK",
-  //       }).then(() => {
-  //         // Call the API after the SweetAlert modal closes
-  //         fetchPaymentTransactions({
-  //           fromDate: userObject.startDate || getCurrentDate(),
-  //           toDate: userObject.endDate || getCurrentDate(),
-  //           typeOfBooking: userObject.currentTransactionStatus || "",
-  //           phoneNumber: userObject.phoneNumber || "",
-  //           entityId: userObject.entityTypeId || null,
-  //           departmentId: userObject.departmentId || null,
-  //         });
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Error during verify:", err);
-  //     setOpenVerifyModal(false);
-  //     Swal.fire({
-  //       title: "Failed!",
-  //       text: `Verify failed. Please try again.`,
-  //       icon: "error",
-  //       confirmButtonText: "OK",
-  //     }).then(() => {
-  //       // Call the API after the SweetAlert modal closes
-  //       fetchPaymentTransactions({
-  //         fromDate: userObject.startDate || getCurrentDate(),
-  //         toDate: userObject.endDate || getCurrentDate(),
-  //         typeOfBooking: userObject.currentTransactionStatus || "",
-  //         phoneNumber: userObject.phoneNumber || "",
-  //         entityId: userObject.entityTypeId || null,
-  //         departmentId: userObject.departmentId || null,
-  //       });
-  //     });
-  //   }
-  // };
-
-  const handleVerifyTicket = async () => {
+  const handleVerifyTicket = async () => { 
     console.log("isUpi", isUpi);
     try {
       const res = await FetchVerifyTicket(verifyData, isUpi);
-      console.log("API Response:", res); // Log the full response
+      // console.log("API Response:", res);
 
       if (res.response?.data?.status === 200) {
-        const resultMsg = res.response?.data?.data?.resultMsg;
-        if (resultMsg) {
-          setOpenVerifyModal(false);
-          Swal.fire({
-            title: "Success!",
-            html: resultMsg,
-            icon: "success",
-            confirmButtonText: "OK",
-            customClass: {
-              confirmButton: "swal-custom-btn",
-            },
-            timer: 2000,
-            showConfirmButton: false,
-          }).then(() => {
-            // Delay API call to ensure SweetAlert has closed
-            setTimeout(() => {
-              fetchPaymentTransactions({
-                fromDate: userObject.startDate || getCurrentDate(),
-                toDate: userObject.endDate || getCurrentDate(),
-                typeOfBooking: userObject.currentTransactionStatus || "",
-                phoneNumber: userObject.phoneNumber || "",
-                entityId: userObject.entityTypeId || null,
-                departmentId: userObject.departmentId || null,
-              });
-            }, 2100); // Slightly after the timer ends
-          });
-        } else {
-          setOpenVerifyModal(false);
-          Swal.fire({
-            title: "Oops!",
-            text: "Result message not found.",
-            icon: "info",
-            confirmButtonText: "OK",
-          }).then(() => {
-            setTimeout(() => {
-              fetchPaymentTransactions({
-                fromDate: userObject.startDate || getCurrentDate(),
-                toDate: userObject.endDate || getCurrentDate(),
-                typeOfBooking: userObject.currentTransactionStatus || "",
-                phoneNumber: userObject.phoneNumber || "",
-                entityId: userObject.entityTypeId || null,
-                departmentId: userObject.departmentId || null,
-              });
-            }, 2100); // Delay to ensure API is called after modal
-          });
-        }
+        setOpenVerifyModal(false);
+        const resultMsg = isUpi
+          ? res.response?.data?.data?.resultMsg
+          : res.response?.data?.message;
+
+        Swal.fire({
+          title: "Success!",
+
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${resultMsg}
+         </div>`,
+         
+          confirmButtonText: "OK",
+           icon: "success",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+           icon: 'small-swal-icon',
+          },
+          timer: 2000,
+          width: "360px",
+          showConfirmButton: false,
+        });
       } else {
         setOpenVerifyModal(false);
         Swal.fire({
-          title: "Oops!",
-          text:
-            res.response?.data?.data?.resultMsg || res.response?.data?.message,
+          // title: "Oops!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${res.response?.data?.data?.resultMsg || res.response?.data?.message}
+         </div>`,
           icon: "info",
+          width: "360px",
+
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+             icon: 'small-swal-icon',
+          },
           confirmButtonText: "OK",
-        }).then(() => {
-          setTimeout(() => {
-            fetchPaymentTransactions({
-              fromDate: userObject.startDate || getCurrentDate(),
-              toDate: userObject.endDate || getCurrentDate(),
-              typeOfBooking: userObject.currentTransactionStatus || "",
-              phoneNumber: userObject.phoneNumber || "",
-              entityId: userObject.entityTypeId || null,
-              departmentId: userObject.departmentId || null,
-            });
-          }, 2100); // Delay for the API call after modal closure
+          background: "#ffffff",
         });
       }
     } catch (err) {
@@ -477,18 +411,20 @@ function PaymentTransactionReport() {
         text: `Verify failed. Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {
-        setTimeout(() => {
-          fetchPaymentTransactions({
-            fromDate: userObject.startDate || getCurrentDate(),
-            toDate: userObject.endDate || getCurrentDate(),
-            typeOfBooking: userObject.currentTransactionStatus || "",
-            phoneNumber: userObject.phoneNumber || "",
-            entityId: userObject.entityTypeId || null,
-            departmentId: userObject.departmentId || null,
-          });
-        }, 2100); // Delay for the API call after modal closure
       });
+    } finally {
+      // Delay API call to ensure SweetAlert has closed
+      setTimeout(() => {
+        fetchPaymentTransactions({
+          currentTransactionStatus:
+            userObject?.currentTransactionStatus || null,
+          departmentId: userObject?.departmentId || null,
+          endDate: userObject?.endDate || getCurrentDate(),
+          entityTypeId: userObject?.entityTypeId || null,
+          phoneNumber: userObject?.phoneNumber || null,
+          startDate: userObject?.startDate || getCurrentDate(),
+        });
+      }, 2100); // Wait a bit for the modal to close before calling the API
     }
   };
 
@@ -716,6 +652,7 @@ function PaymentTransactionReport() {
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                     // disabled={isFetchAllMetroSummaryReportsLoading}
                     onClick={() => {
+                      localStorage.removeItem("PaymentTransactions");
                       setValues({
                         fromDate: getCurrentDate(),
                         toDate: getCurrentDate(),
@@ -727,9 +664,6 @@ function PaymentTransactionReport() {
                       fetchPaymentTransactions({
                         startDate: getCurrentDate(),
                         endDate: getCurrentDate(),
-                        currentTransactionStatus: null,
-                        phoneNumber: null,
-                        parkId: null,
                       });
                     }}
                   >

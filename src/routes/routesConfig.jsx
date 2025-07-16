@@ -84,6 +84,42 @@ import AmrabadResetPin from "../pages/amrabad/user/amarabadLogin/AmrabadResetPin
 import AmarabadRegisterOtp from "../pages/amrabad/user/amarabadRegister/AmarabadRegisterOtp";
 import ResetPinOtp from "../pages/amrabad/user/amrabadOtp/ResetPinOtp";
 import PackageDetail from "../pages/amrabad/user/packages/PackageDetail";
+import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
+import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
+import PosConsolidatedBookingReports from "../pages/admin/BookTickets/pos_reports/PosConsolidatedBookingReports";
+import PosIndividualBookingReports from "../pages/admin/BookTickets/pos_reports/PosIndividualBookingReports";
+import PosPaymentTransactionsReport from "../pages/admin/BookTickets/pos_reports/PosPaymentTransactionsReport";
+import TotalPaymentTransactionReport from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionReport";
+import UserReport from "../pages/admin/users/user_report/UserReport";
+import UserDetailedReport from "../pages/admin/users/user_detailed_report/UserDetailedReport";
+import MainRefundTransactions from "../pages/admin/users/refund_transactions/dashboard/MainRefundTransactions";
+import RefundTransactionsReport from "../pages/admin/users/refund_transactions_report/RefundTransactionsReport";
+import UserTransactionsOrderTracker from "../pages/admin/users/user_detailed_report/UserTransactionsOrderTracker";
+import TotalPaymentTransactionOrderTracker from "../pages/admin/users/total_payment_transaction-report/TotalPaymentTransactionOrderTracker";
+import MainTotalFailedTransactions from "../pages/admin/users/total_failed_transaction/dashboard/MainTotalFailedTransactions";
+import MainTotalTicketNotGeneratedTransactions from "../pages/admin/users/total_ticket_not_generated_transaction/dashboard/MainTotalTicketNotGeneratedTransactions";
+import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionReport";
+import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
+import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
+import TotalTicketNotGeneratedPaymentTransactionReport from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionReport";
+import OuterTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/outer_report/OuterTotalTransactionReport";
+import MainTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/MainTotalTransactionReport";
+import MetroTotalReport from "../pages/metro_transaction_reports/metro_total_transactions/MetroTotalReport";
+import FailedOtherReason from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/failed_other_reason/FailedOtherReason";
+import MetroFailedGateway from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_failed_gateway/MetroFailedGateway";
+import MetroNotGenerated from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_not_generated/MetroNotGenerated";
+import FailedOtherReasonReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/failed_other_reason/FailedOtherReasonReport";
+import MetroNotGeneratedReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_not_generated/MetroNotGeneratedReport";
+import MetroFailedGatewayReport from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/metro_failed_gateway/MetroFailedGatewayReport";
+import MainTotalFailedGatewayTransactions from "../pages/admin/users/total_failed_payment_gateway_transaction/dashboard/MainTotalFailedGatewayTransactions";
+import TotalFailedGatewayTransactionReport from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionReport";
+import TotalFailedGatewayTransactionOrderTracker from "../pages/admin/users/total_failed_payment_gateway_transaction/report/TotalFailedGatewayTransactionOrderTracker";
+import MetroTotalTracker from "../pages/metro_transaction_reports/metro_total_transactions/metro_track_order/MetroTotalTracker";
+import MetroUserReport from "../pages/metro_transaction_reports/metro_user/metro_user_report/MetroUserReport";
+import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserDetailedReport";
+import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
+import MainMetroRefundTransactions from "../pages/metro_transaction_reports/metro_refunds/dashboard/MainMetroRefundTransactions";
+import MetroRefundTransactionsReport from "../pages/metro_transaction_reports/metro_refunds/metro_refund_transactions_report/MetroRefundTransactionsReport";
 
 export const routes = [
   {
@@ -207,6 +243,106 @@ export const routes = [
     element: <ProtectedRoute element={<BankTransactions />} />,
   },
   {
+    path: "/total-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalTransactions />} />,
+  },
+  {
+    path: "/total-payment-transaction-report",
+    element: <ProtectedRoute element={<TotalPaymentTransactionReport />} />,
+  },
+  {
+    path: "/failed-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedTransactions />} />,
+  },
+  {
+    path: "/total-failed-payment-transaction-order-tracker",
+    element: (
+      <ProtectedRoute element={<TotalFailedPaymentTransactionOrderTracker />} />
+    ),
+  },
+  {
+    path: "/total-failed-payment-transactions-report",
+    element: (
+      <ProtectedRoute element={<TotalFailedPaymentTransactionReport />} />
+    ),
+  },
+  {
+    path: "/failed-gateway-transactions-dashboard",
+    element: <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />,
+  },
+  {
+    path: "/failed-gateway-transactions-report",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />,
+  },
+  {
+    path: "/failed-gateway-transaction-order-tracker",
+    element: <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />,
+  },
+  {
+    path: "/ticket-not-generated-transactions-dashboard",
+    element: (
+      <ProtectedRoute element={<MainTotalTicketNotGeneratedTransactions />} />
+    ),
+  },
+  {
+    path: "/total-ticket-not-generated-payment-transaction-report",
+    element: (
+      <ProtectedRoute
+        element={<TotalTicketNotGeneratedPaymentTransactionReport />}
+      />
+    ),
+  },
+  {
+    path: "/total-ticket-not-generated-payment-transaction-order-tracker",
+    element: (
+      <ProtectedRoute
+        element={<TotalTicketNotGeneratedPaymentTransactionOrderTracker />}
+      />
+    ),
+  },
+  {
+    path: "/user-report",
+    element: <ProtectedRoute element={<UserReport />} />,
+  },
+  {
+    path: "/user-detailed-report",
+    element: <ProtectedRoute element={<UserDetailedReport />} />,
+  },
+  {
+    path: "/user-transactions-order-tracker",
+    element: <ProtectedRoute element={<UserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/metro-user-report",
+    element: <ProtectedRoute element={<MetroUserReport />} />,
+  },
+  {
+    path: "/metro-user-detailed-report",
+    element: <ProtectedRoute element={<MetroUserDetailedReport />} />,
+  },
+   {
+    path: "/metro-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<MetroUserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/total-payment-transaction-order-tracker",
+    element: (
+      <ProtectedRoute element={<TotalPaymentTransactionOrderTracker />} />
+    ),
+  },
+  {
+    path: "/refund-transactions",
+    element: <ProtectedRoute element={<MainRefundTransactions />} />,
+  },
+  {
+    path: "/refund-transactions-report",
+    element: <ProtectedRoute element={<RefundTransactionsReport />} />,
+  },
+  {
+    path: "/transactions-order-tracker",
+    element: <ProtectedRoute element={<TransactionsOrderTracker />} />,
+  },
+  {
     path: "/transactions-dashboard",
     element: <ProtectedRoute element={<TransactionsDashboard />} />,
   },
@@ -259,6 +395,19 @@ export const routes = [
   {
     path: "/privacy-policy-meeticket-app",
     element: <PrivacyPolicyMeeticketApp />,
+  },
+  //pos-zoo-park-reports
+  {
+    path: "/pos-consolidated-booking-reports",
+    element: <PosConsolidatedBookingReports />,
+  },
+  {
+    path: "/pos-individual-booking-reports",
+    element: <PosIndividualBookingReports />,
+  },
+  {
+    path: "/pos-payment-transactions-reports",
+    element: <PosPaymentTransactionsReport />,
   },
   // Grievance
   {
@@ -376,5 +525,55 @@ export const routes = [
   {
     path: "/packages",
     element: <ProtectedRoute element={<MainPackages />} />,
+  },
+  // metro transaction reports
+
+  {
+    path: "/metro-total-transaction",
+    element: <ProtectedRoute element={<MainTotalTransactionReport />} />,
+  },
+  {
+    path: "/metro-total-report",
+    element: <ProtectedRoute element={<MetroTotalReport />} />,
+  },
+  {
+    path: "/metro-failed-other-reason",
+    element: <ProtectedRoute element={<FailedOtherReason />} />,
+  },
+
+  {
+    path: "/metro-failed-gateway",
+    element: <ProtectedRoute element={<MetroFailedGateway />} />,
+  },
+  {
+    path: "/metro-not-generated",
+    element: <ProtectedRoute element={<MetroNotGenerated />} />,
+  },
+
+
+   {
+    path: "/metro-failed-other-reason-report",
+    element: <ProtectedRoute element={<FailedOtherReasonReport />} />,
+  },
+
+  {
+    path: "/metro-failed-gateway-report",
+    element: <ProtectedRoute element={<MetroFailedGatewayReport />} />,
+  },
+  {
+    path: "/metro-not-generated-report",
+    element: <ProtectedRoute element={<MetroNotGeneratedReport />} />,
+  },
+  {
+    path: "/metro-refund-transactions",
+    element: <ProtectedRoute element={<MainMetroRefundTransactions />} />,
+  },
+  {
+    path: "/metro-refund-transactions-report",
+    element: <ProtectedRoute element={<MetroRefundTransactionsReport />} />,
+  },
+  {
+    path: "/metro-total-traker",
+    element: <ProtectedRoute element={<MetroTotalTracker />} />,
   },
 ];

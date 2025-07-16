@@ -148,30 +148,52 @@ export const FacilityServices = () => {
       parkId: decodedTokenData?.data?.ParkId,
     };
 
-    if (values.paymentMethod === "pos") {
-      const bookingPaylod = {
-        mobileNumber: values.mobileNumber,
-        totalAmount: totalAmount,
-        userId: decodedTokenData?.data?.UserId,
-        parkId: decodedTokenData?.data?.ParkId,
-        transactionId: "",
-        bookingDetailsReqDTOs: values.selectedItems,
-      };
+  
 
-      sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
-      const PosBookingPayload = {
-        amount: totalAmount,
-        mobileNumber: values.mobileNumber,
-        customerId: "XYZ",
-        departmentId: LocationDetails?.departmentId,
-        parkId: decodedTokenData?.data?.ParkId,
-      };
-       const redefinedPayload={...PosBookingPayload,bookingReqDTOs:bookingPaylod}
-      const res = await Generate_deep_link(redefinedPayload);
-      if (res.data.data.status === 200) {
-        launchPaytmPOS(res.data.data.deeplink);
+    if (values.paymentMethod === "pos") {
+      try {
+        const bookingPaylod = {
+          mobileNumber: values.mobileNumber,
+          totalAmount: totalAmount,
+          userId: decodedTokenData?.data?.UserId,
+          parkId: decodedTokenData?.data?.ParkId,
+          transactionId: "",
+          bookingDetailsReqDTOs: values.selectedItems,
+        };
+
+        sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+
+        const PosBookingPayload = {
+          amount: totalAmount,
+          mobileNumber: values.mobileNumber,
+          customerId: "XYZ",
+          departmentId: LocationDetails?.departmentId,
+          parkId: decodedTokenData?.data?.ParkId,
+          bookingDate: formatBookingDate(currentDate),
+        };
+
+        const redefinedPayload = {
+          ...PosBookingPayload,
+          bookingReqDTOs: bookingPaylod,
+        };
+
+        const res = await Generate_deep_link(redefinedPayload);
+
+        if (res?.data?.data?.status === 200) {
+          launchPaytmPOS(res.data.data.deeplink);
+          navigate(`/confirm-pos`);
+        } else {
+          console.error(
+            "Unexpected response from Generate_deep_link",
+            res?.data
+          );
+          toast.error("Failed to process POS booking. please try again");
+        }
+      } catch (error) {
+        console.error("Error generating deep link or launching POS:", error);
+        toast.error("Something went wrong while processing POS booking.");
+      } finally {
         setSubmitting(false);
-        navigate(`/confirm-pos`);
       }
       return;
     }
@@ -217,7 +239,10 @@ export const FacilityServices = () => {
       sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
 
       try {
-        const redefinedPayload={...bookingDetailsPayload,bookingReqDTOs:bookingPaylod}
+        const redefinedPayload = {
+          ...bookingDetailsPayload,
+          bookingReqDTOs: bookingPaylod,
+        };
         const result = await saveFirstBookingDetails(redefinedPayload);
 
         if (result.data.data.status != 200) {
@@ -800,34 +825,36 @@ export const FacilityServices = () => {
                               </label>
                             </div>
                             {/* POS Device */}
-                            {true&&<div className="flex items-center">
-                              <Field
-                                id="pos-radio"
-                                name="paymentMethod"
-                                type="radio"
-                                value="pos"
-                                onClick={() => {
-                                  SetPos(true);
-                                }}
-                                className="hidden"
-                              />
-                              <label
-                                htmlFor="pos-radio"
-                                className={`flex items-center gap-2 p-2  border rounded-md text-xs font-semibold cursor-pointer transition-all ${
-                                  values.paymentMethod === "pos"
-                                    ? "bg-blue-v1 text-white shadow-lg"
-                                    : "bg-white text-blue-v1 shadow-custom border border-[#c0c0c0] hover:bg-blue-v1 hover:text-white hover:shadow-custom "
-                                }
-                              `}
-                              >
-                                <img
-                                  className="w-8"
-                                  src={upiIcon}
-                                  alt="UPI Icon"
+                            {role === "ROLE_ZOOPARKADMIN"&& (
+                              <div className="flex items-center">
+                                <Field
+                                  id="pos-radio"
+                                  name="paymentMethod"
+                                  type="radio"
+                                  value="pos"
+                                  onClick={() => {
+                                    SetPos(true);
+                                  }}
+                                  className="hidden"
                                 />
-                                Pos Device
-                              </label>
-                            </div>}
+                                <label
+                                  htmlFor="pos-radio"
+                                  className={`flex items-center gap-2 p-2  border rounded-md text-xs font-semibold cursor-pointer transition-all ${
+                                    values.paymentMethod === "pos"
+                                      ? "bg-blue-v1 text-white shadow-lg"
+                                      : "bg-white text-blue-v1 shadow-custom border border-[#c0c0c0] hover:bg-blue-v1 hover:text-white hover:shadow-custom "
+                                  }
+                              `}
+                                >
+                                  <img
+                                    className="w-8"
+                                    src={upiIcon}
+                                    alt="UPI Icon"
+                                  />
+                                  Pos Device
+                                </label>
+                              </div>
+                            )}
                             {/* CASH */}
                             <div className="flex items-center">
                               <Field

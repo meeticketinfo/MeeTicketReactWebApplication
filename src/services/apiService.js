@@ -11,10 +11,6 @@ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/"
 // prod
 // const API_BASE_URL =
 //  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
-
-// testing
-// export const API_BASE_URL = "https://85xpmnmw-7237.inc1.devtunnels.ms/api/";
-
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

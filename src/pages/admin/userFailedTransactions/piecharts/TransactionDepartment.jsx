@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useMemo } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
+import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 
 // Static color palette
 const colorPalette = ["#002147", "#4A90E2", "#5A6F8F", "#205375", "#D9E4FF"];
@@ -14,6 +15,10 @@ const getRandomColorData = (data, palette) => {
 };
 
 const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title, filters }) => {
+  const UserTransactionReportFilter = JSON.parse(
+    localStorage.getItem("transactionPayload")
+  );
+  const { setIsTotalTransactionPage } = userFailureTransaction();
   const chartRef = useRef(null);
 
   // Assign random colors only once using useMemo
@@ -62,7 +67,31 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title, fi
   return (
     <div className="m-2 pb-3 bg-white rounded-xl p-2 shadow-md">
       <div ref={chartRef} className="w-full h-[300px]" />
-      <div className="grid grid-cols-2 gap-2 mt-5">
+      <div className="flex flex-wrap gap-2 mt-5">
+        <div
+          title="Total Failed Transactions"
+          className="flex justify-between items-center bg-blue-v1 rounded-lg px-2 py-1 shadow-sm "
+        >
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-white" />
+            <span className="text-xs text-white">Total</span>
+          </div>
+          <Link
+            to={"/failed-transactions"}
+            state={{ page: "total-report" }}
+            onClick={() => {
+              setIsTotalTransactionPage(false)
+              localStorage.setItem(
+                "transactionPayload",
+                JSON.stringify({ ...UserTransactionReportFilter, resultMsg: "", category: "", locationId: "", departmentId: "", categoryId: "", status: "Failed"   })
+              )
+            }}
+          >
+            <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
+              {String(data?.reduce((sum, item) => sum + item.failedCount, 0)).padStart(2, "0")}
+            </span>
+          </Link>
+        </div>
         {coloredData.map((item) => (
           <div
             key={item[calloutLabelKey]}
@@ -76,10 +105,11 @@ const TransactionDepartment = ({ data = [], angleKey, calloutLabelKey, title, fi
             <span className="ml-auto text-[#3399FF] font-semibold text-sm underline">
               <Link  
                 to={"/failed-transactions"} 
-                onClick={() => 
+                onClick={() => {
+                  setIsTotalTransactionPage(false)
                   localStorage.setItem("transactionPayload", 
-                    JSON.stringify({...filters, resultMsg: "", parkId: "", departmentId: item?.departmentId ?? "", categoryId: item?.entityTypeId ?? ""}))
-                }
+                    JSON.stringify({...UserTransactionReportFilter, resultMsg: "", locationId: "", departmentId: item?.departmentId ?? "", categoryId: item?.entityTypeId ?? "", status: "Failed", category: "" }))
+                }}
               >{String(item[angleKey]).padStart(2, "0")}</Link>
             </span>
           </div>
