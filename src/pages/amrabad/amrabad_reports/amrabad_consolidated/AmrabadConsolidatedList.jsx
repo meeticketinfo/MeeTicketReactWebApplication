@@ -5,82 +5,55 @@ import {
   formatToStandardDate,
   getCurrentDate,
 } from "../../../../utils/TypographyHelper";
-import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { NavLink } from "react-router-dom";
-import { useEntityTypesStore } from "../../../../store/masters/entityTypesStore";
 import Select from "react-select";
-import { useDepartmentTypesStore } from "../../../../store/masters/departmentTypesStore";
+import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
+import AmrabadConsolidatedForm from "./AmrabadConsolidatedForm";
 function AmrabadConsolidatedList() {
   const {
-    fetchCompleteBookingsReport,
-    allCompleteBookingsReports,
-    setisCompleteBookings,
-    isCompleteBookingsReportsLoading,
-  } = useBookingsStore();
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
+    fetchAmrabadConsolidatedReports,
+    allAmrabadConsolidatedReports,
+    setisAmrabadCompleteBookings,
+    isAmrabadConsolidatedReportsLoading,
+  } = useAmrabadConsolidatedStore();
   const savedFilters = JSON.parse(
-    localStorage.getItem("completed-booking-report-filters")
+    localStorage.getItem("amrabad-consolidated-report-filters")
   );
+  console.log("savedFilters",savedFilters)
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
   useEffect(() => {
-    fetchCompleteBookingsReport({
-      startDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+     fetchAmrabadConsolidatedReports({
+      startDate: (savedFilters?.fromDate)?? getCurrentDate(),
+      endDate: (savedFilters?.toDate) ?? getCurrentDate(),
       bookingSource: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
         : "",
-      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-      entityTypeId: savedFilters?.entityTypeId ? savedFilters.entityTypeId : null,
+      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+      PaymentMode: savedFilters?.PaymentMode ? savedFilters.PaymentMode : "",
+      PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
+      pageSize: PAGE_LIMIT,
     });
-  }, [fetchCompleteBookingsReport]);
+  }, [currentPage, PAGE_LIMIT]);
 
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
-  }, []);
-  const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    entityId: savedFilters?.entityId ? savedFilters.entityId : null,
-    departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-    typeOfBooking: savedFilters?.typeOfBooking ? savedFilters.typeOfBooking: "",
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-  };
-
-  const onSubmit = (values, { resetForm }) => {
-    console.log("values",values)
-    
-    localStorage.setItem(
-      "completed-booking-report-filters",
-      JSON.stringify(values)
-    );
-    fetchCompleteBookingsReport({
-      startDate: values.fromDate,
-      endDate: values.toDate,
-      departmentId:values.departmentId,
-      entityTypeId:values.entityId,
-      bookingSource: values.typeOfBooking,
-      mobileNumber: values.phoneNumber ? values.phoneNumber : null,
-
-    });
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
   };
 
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) =>
+        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
-      field: "referencE_ID",
-      headerName: "Reference ID",
+      field: "bookingID",
+      headerName: "Booking ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -109,7 +82,7 @@ function AmrabadConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totalTicketsBooked",
+      field: "noofDays",
       headerName: "Total No Of Tickets",
       maxWidth: 170,
       headerClass: "text-blue-v2",
@@ -125,7 +98,7 @@ function AmrabadConsolidatedList() {
     // -------------------
 
     {
-      field: "mobileNumber",
+      field: "mobileNo",
       headerName: "Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -153,49 +126,49 @@ function AmrabadConsolidatedList() {
     },
 
     {
-      field: "bookinG_DATE",
+      field: "bookingDate",
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
-      field: "bookingSource",
+      field: "bookingType",
       headerName: "Booking Type",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "createD_BY",
+      field: "bookedBy",
       headerName: "Booked By",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totaL_AMOUNT",
+      field: "totalAmount",
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "paymentType",
-      headerName: "Payment Type",
+      field: "paymentMode",
+      headerName: "Payment Mode",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "paymentTransactionId",
+      field: "paymentTransactionID",
       headerName: "Payment Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "status",
+      field: "paymentStatus",
       headerName: "Payment Status",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -203,13 +176,12 @@ function AmrabadConsolidatedList() {
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-     {
-      field: "resultStatus",
+    {
+      field: "actualPaytmStatus",
       headerName: "Actual Paytm Status",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? "Success" : "Failed"),
-     
     },
     {
       headerName: "Actions",
@@ -220,7 +192,7 @@ function AmrabadConsolidatedList() {
             end
             to={`/entity-bookings/view-details/${params.data.bookingID}`}
             onClick={() => {
-              setisCompleteBookings(true);
+              setisAmrabadCompleteBookings(true);
             }}
             className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
           >
@@ -233,241 +205,34 @@ function AmrabadConsolidatedList() {
     },
   ]);
   return (
-    <div>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, resetForm }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
-            <div>
-              <label
-                htmlFor="fromDate"
-                className="block text-xs font-medium text-gray-700"
-              >
-                From Date
-              </label>
-              <Field
-                type="date"
-                name="fromDate"
-                className={`mt-1 block w-full px-2 py-1 border
-                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                // min={getCurrentDate()}
-                onChange={(e) => {
-                  const fromDateValue = e.target.value;
-                  setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
-                    setFieldValue("toDate", fromDateValue);
-                  }
-                }}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="toDate"
-                className="block text-xs font-medium text-gray-700"
-              >
-                To Date
-              </label>
-              <Field
-                type="date"
-                name="toDate"
-                className={`mt-1 block w-full px-2 py-1 border
-                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
-                onChange={(e) => {
-                  const toDateValue = e.target.value;
-                  setFieldValue("toDate", toDateValue);
-                }}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">
-                Type of Booking
-              </label>
-              <Field
-                as="select"
-                name="typeOfBooking"
-                className={` block w-full px-2 py-1 border border-gray-300
-             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              >
-                <option value="">ALL</option>
-                <option value="Counter">Counter</option>
-                <option value="MeeTicketApp">Mee TicketApp</option>
-              </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Phone Number
-              </label>
-              <Field
-                type="text"
-                maxLength="10"
-                name="phoneNumber"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
-                onKeyPress={(e) => {
-                  if (!/^\d$/.test(e.key)) {
-                    e.preventDefault(); // Prevent non-numeric characters
-                  }
-                }}
-              />
-            </div>
-            {/* department */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Department
-              </label>
-
-              <Select
-                name="departmentId"
-                value={
-                  allDepartmentTypes
-                    ?.filter((dept) => dept.isActive)
-                    .map((dept) => ({
-                      value: dept.departmentId,
-                      label: dept.departmentName,
-                    }))
-                    .find((option) => option.value === values.departmentId) ||
-                  null // Set the selected value
-                }
-                options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
-                  .map((dept) => ({
-                    value: dept.departmentId,
-                    label: dept.departmentName,
-                  }))}
-                onChange={(selectedOption) =>
-                  setFieldValue("departmentId", selectedOption?.value || null)
-                }
-                isClearable
-                placeholder="Department"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-
-                  menu: (base) => ({
-                    ...base,
-                    // padding: "4px 0",
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#000",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
-            {/* location category */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Location Category
-              </label>
-
-              <Select
-                name="entityId"
-                value={
-                  allEntityTypes
-                    ?.filter((dept) => dept.isActive)
-                    .map((dept) => ({
-                      value: dept.entityTypeId,
-                      label: dept.entityTypeName,
-                    }))
-                    .find((option) => option.value === values.entityId) || null // Use values.entityId
-                }
-                options={allEntityTypes
-                  ?.filter((entity) => entity.isActive)
-                  .map((entity) => ({
-                    value: entity.entityTypeId,
-                    label: entity.entityTypeName,
-                  }))}
-                onChange={(selectedOption) =>
-                  setFieldValue("entityId", selectedOption?.value || null)
-                }
-                isClearable
-                placeholder="Location Category"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-
-                  menu: (base) => ({
-                    ...base,
-                    // padding: "4px 0",
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#6D7072",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
-            {/* submit */}
-            <div className="flex items-end gap-2">
-              <button
-                type="submit"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
-              >
-                Search
-              </button>
-              <button
-                type="button"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
-                onClick={() => {
-                  localStorage.removeItem("completed-booking-report-filters");
-                  resetForm({
-                    values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
-                      typeOfBooking: "",
-                      phoneNumber: "",
-                      entityId:null,
-                      departmentId:null,
-                    },
-                  });
-                }}
-              >
-                Reset
-              </button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-      <AgGridTable
-        ExportName="Completed Bookings Details"
-        isFetchLoading={isCompleteBookingsReportsLoading}
-        rowData={allCompleteBookingsReports || []}
-        columnDefs={columnDefs}
-        // onPageChange={handlePageChange}
-        // totalRecords={totalEntityBookingRecords}
-        // enableAdvancedFilter={true}
+    <>
+      <AmrabadConsolidatedForm
+        PageIndex={1}
+        pageSize={PAGE_LIMIT}
+        SetcurrentPage={setCurrentPage}
       />
-    </div>
+      <div>
+        <AgGridTable
+          ExportName="Completed Bookings Details"
+          rowData={allAmrabadConsolidatedReports || []}
+          columnDefs={columnDefs}
+          isFetchLoading={isAmrabadConsolidatedReportsLoading}
+          isPagination={false}
+          tableHeight={
+            allAmrabadConsolidatedReports?.data?.length > 10 ? 560 : 330
+          }
+          IsReactPaginate={true}
+          setPageLimit={setPAGE_LIMIT}
+          pageLimit={PAGE_LIMIT}
+          handlePageClick={handlePageClick}
+          currentPage={currentPage}
+          totalCount={allAmrabadConsolidatedReports[0]?.totalCount}
+          showTotalCount={true}
+          SetcurrentPage={setCurrentPage}
+          showSearch={false}
+        />
+      </div>
+    </>
   );
 }
 

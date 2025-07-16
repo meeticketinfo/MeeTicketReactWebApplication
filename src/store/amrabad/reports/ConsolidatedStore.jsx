@@ -1,31 +1,73 @@
 import { create } from "zustand";
+import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+import apiService from "../../../services/apiService";
 
-export const useConsolidatedStore = create((set) => ({
+export const useAmrabadConsolidatedStore = create((set) => ({
+  allAmrabadConsolidatedReports: [],
+  isAmrabadConsolidatedReportsLoading: false,
 
-  fetchConsolidatedReport: async (payload) => {
-        const Payload1 = {
-          fromDate: payload.fromDate,
-          toDate: payload.toDate,
-          departmentId: payload.departmentId,
-          entityTypeId: payload.entityTypeId,
-          mobileNumber:payload.mobileNumber
-        };
-        const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
-        set({ isCompleteBookingsReportsLoading: true });
-        try {
-          const url =
-            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETE_BOOKINGS;
-          const method = "post";
-          const response = await apiService[method](url, finalPyload);
-          set({
-            allCompleteBookingsReports: response.data,
-            isCompleteBookingsReportsLoading: false,
-          });
-        } catch (error) {
-          set({
-            error: error.message,
-            isCompleteBookingsReportsLoading: false,
-          });
-        }
-      },
+  isAmrabadIndividualReportsLoading: false,
+  allAmrabadIndividualReports: [],
+
+  allAmrabadTransactionPaymentReports: [],
+  isAmrabadCompleteBookings: false,
+
+  isAmrabadTransactionPaymentReportsLoading: false,
+
+  // setisAmrabadCompleteBookings: (isAmrabadCompleteBookings) => {
+  //   set({ isAmrabadCompleteBookings });
+  // },
+  fetchAmrabadConsolidatedReports: async (payload) => {
+    console.log("payload", payload);
+    set({ isAmrabadConsolidatedReportsLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_CONSOLIDATED_BOOKING_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&bookingType=${payload.bookingSource}&mobileNumber=${payload.mobileNumber}&paymentMode=${payload.PaymentMode}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
+      const method = "get";
+      const response = await apiService[method](url);
+      set({
+        allAmrabadConsolidatedReports: response.data,
+        isAmrabadConsolidatedReportsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isAmrabadConsolidatedReportsLoading: false,
+      });
+    }
+  },
+  fetchAmrabadIndividualReports: async (payload) => {
+    set({ isAmrabadIndividualReportsLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_INDIVIDUAL_BOOKING_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
+      const method = "get";
+      const response = await apiService[method](url);
+      set({
+        allAmrabadIndividualReports: response.data,
+        isAmrabadIndividualReportsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isAmrabadIndividualReportsLoading: false,
+      });
+    }
+  },
+  fetchAmrabadPaymentTransactions: async (payload) => {
+    console.log("payload", payload);
+    set({ isAmrabadTransactionPaymentReportsLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&paymentStatus=${payload.paymentStatus}&paymentMode=${payload.paymentMode}&mobileNumber=${payload.phoneNumber}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
+      const method = "get";
+      const response = await apiService[method](url);
+      set({
+        allAmrabadTransactionPaymentReports: response.data,
+        isAmrabadTransactionPaymentReportsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isAmrabadConsolidatedReportsLoading: false,
+      });
+    }
+  },
 }));
