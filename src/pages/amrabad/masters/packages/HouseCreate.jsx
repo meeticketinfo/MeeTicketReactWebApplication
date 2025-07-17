@@ -14,11 +14,7 @@ const convertToBase64 = (file) => {
     reader.readAsDataURL(file); // Convert to base64
   });
 };
-const convertUrlToBase64 = (url) => {
-  return fetch(url)
-    .then((response) => response.blob())
-    .then((blob) => convertToBase64(blob)); // reuse your existing helper
-};
+
 const HouseCreate = () => {
   const {
     fetchPackagesWithRooms,
@@ -26,7 +22,6 @@ const HouseCreate = () => {
     GetAllPackages,
     saveHouseDetails,
     isSaveHouseDetailsLoading,
-    houseEditDetails,
   } = usePackagesStore();
   const {
     isHouseEditVisible,
@@ -36,7 +31,7 @@ const HouseCreate = () => {
   } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
   const initialValues = {
-    roomId: isHouseEditVisible ? selectedSubRowData?.roomId : "",
+    roomId: isHouseEditVisible ? selectedSubRowData?.roomId : null,
     packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
     // packageName: isHouseEditVisible ? selectedSubRowData?.packageName : "",
     roomName: isHouseEditVisible ? selectedSubRowData?.roomName : "",
@@ -73,13 +68,15 @@ const HouseCreate = () => {
     //   ? selectedSubRowData?.roomImages
     //   : [],
 
-    roomImagesBase64Strings: Array.isArray(selectedSubRowData?.roomImages)
-      ? selectedSubRowData?.roomImages.map((img) => ({
-          imageId: img.imageId,
-          imageUrl: img.imageUrl,
-          isNew: false,
-          isDeleted: false,
-        }))
+    roomImagesBase64Strings: isHouseEditVisible 
+      ? (Array.isArray(selectedSubRowData?.roomImages)
+          ? selectedSubRowData.roomImages.map((img) => ({
+              imageId: img.imageId,
+              imageUrl: img.imageUrl,
+              isNew: false,
+              isDeleted: false,
+            }))
+          : [])
       : [],
 
     // Add discountDetails array for daily discounts
@@ -137,12 +134,12 @@ const HouseCreate = () => {
     discountType:
       isValidation === "Yes" &&
       Yup.string().required("Discount Type is required"),
-    discountValue:
-      isValidation === "Yes" &&
-      Yup.string().required("Discount Value is required"),
-    discountApplicable:
-      isValidation === "Yes" &&
-      Yup.string().required("discounts Applicable is required"),
+    // discountValue:
+    //   isValidation === "Yes" &&
+    //   Yup.string().required("Discount Value is required"),
+    // discountApplicable:
+    //   isValidation === "Yes" &&
+    //   Yup.string().required("discounts Applicable is required"),
     noOfHousesAvailable: Yup.number().required(
       "No Of House Applicable is required"
     ),
@@ -156,50 +153,53 @@ const HouseCreate = () => {
         amountAfterDiscount: Yup.string().nullable(),
       })
     ),
-    roomImagesBase64Strings: Yup.array().of(
-      Yup.object().shape({
-        imageId: Yup.mixed().nullable(),
-        imageUrl: Yup.string().nullable(),
-        isNew: Yup.boolean(),
-        isDeleted: Yup.boolean(),
-      })
-    ).test('at-least-one-image', 'You must upload at least one image', function(value) {
-      if (!value || value.length === 0) return false;
-      const nonDeletedImages = value.filter(img => !img.isDeleted);
-      return nonDeletedImages.length > 0;
-    }).max(5, "You can upload up to 5 images only"),
+    roomImagesBase64Strings: Yup.array()
+      .of(
+        Yup.object().shape({
+          imageId: Yup.mixed().nullable(),
+          imageUrl: Yup.string().nullable(),
+          isNew: Yup.boolean(),
+          isDeleted: Yup.boolean(),
+        })
+      )
+      .test(
+        "at-least-one-image",
+        "You must upload at least one image",
+        function (value) {
+          if (!value || value.length === 0) return false;
+          const nonDeletedImages = value.filter((img) => !img.isDeleted);
+          return nonDeletedImages.length > 0;
+        }
+      )
+      .max(5, "You can upload up to 5 images only"),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("Form Submitted:", values);
     console.log("Discount details data:", values.discountDetails);
     const isEdit = isHouseEditVisible;
-
+ 
     try {
-      const roomImagesPayload = await Promise.all(
-        values.roomImagesBase64Strings
-          .filter((img) => !img.isDeleted)
-          .map(async (img) => {
-            if (!img.isNew && img.imageId) {
-              // Convert existing image URL to base64
-              const base64 = await convertUrlToBase64(img.imageUrl);
-              return {
-                imageId: img.imageId,
-                imageUrl: base64,
-                isDeleted: img.isDeleted ? 1 : 0,
-              };
-            } else {
-              // New image, already base64 - return as object for consistency
-              return {
-                imageId: null,
-                imageUrl: img.imageUrl,
-                isDeleted: 0,
-              };
-            }
-          })
-      );
-
-      console.log("test");
+      const roomImagesPayload = values.roomImagesBase64Strings
+        .map((img) => {
+          if (!img.isNew && img.imageId) {
+            // For existing images, send the imageId and isDeleted status
+            return {
+              imageId: img.imageId,
+              imageUrl: img.imageUrl, // Keep original URL for existing images
+              isDeleted: img.isDeleted ? true : false,
+            };
+          } else {
+            // For new images, send the base64 data
+            return {
+              imageId: null,
+              imageUrl: img.imageUrl, // This is already base64 for new images
+              isDeleted:  false,
+            };
+          }
+        });
+ 
+            console.log("roomImagesPayload:", roomImagesPayload);
 
       const payload = {
         ...values,
@@ -215,9 +215,10 @@ const HouseCreate = () => {
         payload.discountType = null;
         payload.discountValue = null;
         payload.amountAfterDiscount = null;
-        payload.discountApplicable = null;
+                payload.discountApplicable = null;
       }
-
+      
+      console.log("Final payload being sent:", payload);
       const result = await saveHouseDetails(payload, isEdit);
 
       if (result.data.status === 200) {
@@ -252,7 +253,7 @@ const HouseCreate = () => {
           validateOnChange={true}
           validateOnBlur={true}
         >
-          {({ values, isSubmitting, setFieldValue, errors, touched }) => {
+          {({ values, isSubmitting, setFieldValue, errors }) => {
             // Debug validation errors
             if (Object.keys(errors).length > 0) {
               console.log("Validation errors:", errors);
@@ -263,18 +264,25 @@ const HouseCreate = () => {
             }
             
             // Debug roomImagesBase64Strings
-            console.log("roomImagesBase64Strings:", values.roomImagesBase64Strings);
-            console.log("roomImagesBase64Strings length:", values.roomImagesBase64Strings?.length);
+            console.log(
+              "roomImagesBase64Strings:",
+              values.roomImagesBase64Strings
+            );
+            console.log(
+              "roomImagesBase64Strings length:",
+              values.roomImagesBase64Strings?.length
+            );
             return (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-3">
+                <div className="bg-[#F3F3F3] grid md:grid-cols-4 gap-5 p-6 my-4 mx-2 rounded-xl border border-gray-300">
                   {/* User Select */}
-                  <div>
+                  <div className="col-span-4">
                     <label
                       htmlFor="packageId"
                       className="block text-xs font-medium"
                     >
-                      Packages <span className="text-red-500">*</span>
+                      Name of the Package{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <Field
                       as="select"
@@ -295,7 +303,7 @@ const HouseCreate = () => {
                     />
                   </div>
 
-                  <div>
+                  <div className="col-span-2">
                     <label
                       htmlFor="roomName"
                       className="block text-xs font-medium"
@@ -315,8 +323,8 @@ const HouseCreate = () => {
                     />
                   </div>
 
-                  {/* Email Id */}
-                  <div>
+                  {/* Tarrif Per Day*/}
+                  <div className="col-span-1">
                     <label
                       htmlFor="tariffPerDay"
                       className="block text-xs font-medium text-gray-700"
@@ -335,12 +343,54 @@ const HouseCreate = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+                  {/* No of Houses available  */}
+                  <div className="col-span-1">
+                    <label
+                      htmlFor="noOfHousesAvailable"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      No of Houses Available{" "}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      type="text"
+                      maxLength="10"
+                      name="noOfHousesAvailable"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter No of Houses Available"
+                    />
+                    <ErrorMessage
+                      name="noOfHousesAvailable"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <label
+                      htmlFor="roomLimit"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Room Limit <span className="text-red-500 text-xs">*</span>
+                    </label>
+                    <Field
+                      type="text"
+                      maxLength="10"
+                      name="roomLimit"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Room Limit"
+                    />
+                    <ErrorMessage
+                      name="roomLimit"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
                   <div>
                     <label
                       htmlFor="hasDiscount"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Discounts <span className="text-red-500">*</span>
+                      Discount <span className="text-red-500">*</span>
                     </label>
                     <Field
                       as="select"
@@ -372,6 +422,16 @@ const HouseCreate = () => {
                           as="select"
                           name="discountType"
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          onChange={(e) => {
+                            setFieldValue("discountType", e.target.value);
+                            // Clear all discount values when discount type changes
+                            const clearedDiscountDetails = values.discountDetails.map(discount => ({
+                              ...discount,
+                              discountValue: "",
+                              amountAfterDiscount: ""
+                            }));
+                            setFieldValue("discountDetails", clearedDiscountDetails);
+                          }}
                         >
                           <option value="">Select type</option>
                           <option value="Amount">Amount</option>
@@ -383,252 +443,9 @@ const HouseCreate = () => {
                           className="text-red-500 text-xs mt-1"
                         />
                       </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Discount Value <span className="text-red-500">*</span>
-                        </label>
-                        <Field
-                          type="number"
-                          name="discountValue"
-                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
-                        />
-                        <ErrorMessage
-                          name="discountValue"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
-                      </div>
-                      {/* Amount after Discount */}
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Amount after Discount
-                        </label>
-                        <Field
-                          name="amountAfterDiscount"
-                          className="mt-1 block w-full px-2 py-1  border border-gray-300 rounded-md text-sm"
-                        />
-                      </div>
-
-                      {/* Discount Applicable */}
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Discount Applicable{" "}
-                          <span className="text-red-500">*</span>
-                        </label>
-                        <Field
-                          as="select"
-                          name="discountApplicable"
-                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                        >
-                          <option value="">Select option</option>
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
-                        </Field>
-                        <ErrorMessage
-                          name="discountApplicable"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
-                      </div>
                     </>
                   )}
-
-                  {/* Discount Table */}
-                  {values.hasDiscount === "Yes" && (
-                    <div className="col-span-3">
-                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-4">
-                        <div className="grid grid-cols-2 gap-4">
-                          {/* Discount applicable on */}
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">
-                              Discount applicable on
-                            </h4>
-                            <div className="space-y-2">
-                              {[
-                                "Monday",
-                                "Tuesday",
-                                "Wednesday",
-                                "Thursday",
-                                "Friday",
-                                "Saturday",
-                                "Sunday",
-                              ].map((day, dayIndex) => (
-                                <div
-                                  key={day}
-                                  className="flex items-center justify-between"
-                                >
-                                  <span className="text-sm text-gray-700 w-20">
-                                    {day}
-                                  </span>
-                                  <div className="flex items-center gap-2">
-                                    <Field
-                                      as="select"
-                                      name={`discountDetails[${dayIndex}].discountType`}
-                                      className="w-16 px-1 py-1 border border-gray-300 rounded text-xs bg-white"
-                                      onChange={(e) => {
-                                        const discountType = e.target.value;
-                                        setFieldValue(
-                                          `discountDetails[${dayIndex}].discountType`,
-                                          discountType
-                                        );
-
-                                        // Recalculate amount after discount when type changes
-                                        const tariff = values.tariffPerDay || 0;
-                                        const discountValue =
-                                          parseFloat(
-                                            values.discountDetails[dayIndex]
-                                              ?.discountValue
-                                          ) || 0;
-
-                                        let amountAfterDiscount;
-                                        if (discountType === "Percentage") {
-                                          const discountAmount =
-                                            (tariff * discountValue) / 100;
-                                          amountAfterDiscount =
-                                            tariff - discountAmount;
-                                        } else {
-                                          // Flat discount
-                                          amountAfterDiscount =
-                                            tariff - discountValue;
-                                        }
-
-                                        setFieldValue(
-                                          `discountDetails[${dayIndex}].amountAfterDiscount`,
-                                          amountAfterDiscount.toFixed(2)
-                                        );
-                                      }}
-                                    >
-                                      <option value="Percentage">%</option>
-                                      <option value="Flat">₹</option>
-                                    </Field>
-                                    <Field
-                                      type="number"
-                                      name={`discountDetails[${dayIndex}].discountValue`}
-                                      placeholder="0"
-                                      className="w-16 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
-                                      onChange={(e) => {
-                                        const value = e.target.value;
-                                        setFieldValue(
-                                          `discountDetails[${dayIndex}].discountValue`,
-                                          value
-                                        );
-
-                                        // Calculate amount after discount
-                                        const tariff = values.tariffPerDay || 0;
-                                        const discountType =
-                                          values.discountDetails[dayIndex]
-                                            ?.discountType || "Percentage";
-                                        const discountValue =
-                                          parseFloat(value) || 0;
-
-                                        let amountAfterDiscount;
-                                        if (discountType === "Percentage") {
-                                          const discountAmount =
-                                            (tariff * discountValue) / 100;
-                                          amountAfterDiscount =
-                                            tariff - discountAmount;
-                                        } else {
-                                          // Flat discount
-                                          amountAfterDiscount =
-                                            tariff - discountValue;
-                                        }
-
-                                        setFieldValue(
-                                          `discountDetails[${dayIndex}].amountAfterDiscount`,
-                                          amountAfterDiscount.toFixed(2)
-                                        );
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Amount after discount */}
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-3">
-                              Amount after discount
-                            </h4>
-                            <div className="space-y-2">
-                              {[
-                                "Monday",
-                                "Tuesday",
-                                "Wednesday",
-                                "Thursday",
-                                "Friday",
-                                "Saturday",
-                                "Sunday",
-                              ].map((day, dayIndex) => (
-                                <div
-                                  key={day}
-                                  className="flex items-center justify-between"
-                                >
-                                  <span className="text-sm text-gray-700 w-20">
-                                    {day}
-                                  </span>
-                                  <Field
-                                    type="number"
-                                    name={`discountDetails[${dayIndex}].amountAfterDiscount`}
-                                    placeholder="0"
-                                    className="w-24 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
-                                    readOnly
-                                  />
-                                  <span className="text-sm text-gray-500">
-                                    ₹
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <label
-                      htmlFor="noOfHousesAvailable"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      No of Houses Available{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="noOfHousesAvailable"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter No of Houses Available"
-                    />
-                    <ErrorMessage
-                      name="noOfHousesAvailable"
-                      component="div"
-                      className="text-red-500 text-xs mt-1"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="roomLimit"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Room Limit <span className="text-red-500 text-xs">*</span>
-                    </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="roomLimit"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Room Limit"
-                    />
-                    <ErrorMessage
-                      name="roomLimit"
-                      component="div"
-                      className="text-red-500 text-xs mt-1"
-                    />
-                  </div>
-                  <div>
+                  <div className="col-span-1">
                     <label
                       htmlFor="isBlockout"
                       className="block text-xs font-medium text-gray-700"
@@ -650,6 +467,130 @@ const HouseCreate = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+                  {/* Discount Table */}
+                  {values.hasDiscount === "Yes" && (
+                    <div className="col-span-4">
+                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-8">
+                        {/* Discount applicable on */}
+                        <div>
+                          <div className="space-y-2">
+                            <div className="flex gap-[120px]">
+                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                Discount applicable on
+                              </h4>
+                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                Amount after discount
+                              </h4>
+                            </div>
+                            {[
+                              "MONDAY",
+                              "TUESDAY",
+                              "WEDNESDAY",
+                              "THURSDAY",
+                              "FRIDAY",
+                              "SATURDAY",
+                              "SUNDAY",
+                            ].map((day, dayIndex) => (
+                              <div
+                                key={day}
+                                className="flex items-center justify-start gap-4"
+                              >
+                                {/* Day Label */}
+                                <span className="text-sm text-gray-700 w-20">
+                                  {day}
+                                </span>
+
+                                {/* Discount Input */}
+                                <div className="relative">
+                                  <Field
+                                    type="number"
+                                    name={`discountDetails[${dayIndex}].discountValue`}
+                                    placeholder="0"
+                                    className={`w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm ${
+                                      values.discountType === "Percentage" 
+                                        ? "bg-white" 
+                                        : "bg-[#DCDCDC]"
+                                    }`}
+                                    disabled={values.discountType !== "Percentage"}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setFieldValue(
+                                        `discountDetails[${dayIndex}].discountValue`,
+                                        value
+                                      );
+
+                                      const tariff = values.tariffPerDay || 0;
+                                      const discountType = values.discountType || "Percentage";
+                                      const discountValue = parseFloat(value) || 0;
+
+                                      let amountAfterDiscount;
+                                      if (discountType === "Percentage") {
+                                        const discountAmount = (tariff * discountValue) / 100;
+                                        amountAfterDiscount = tariff - discountAmount;
+                                      } else {
+                                        amountAfterDiscount = tariff - discountValue;
+                                      }
+
+                                      setFieldValue(
+                                        `discountDetails[${dayIndex}].amountAfterDiscount`,
+                                        amountAfterDiscount.toFixed(2)
+                                      );
+                                    }}
+                                  />
+                                  <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                                    {values.discountType === "Percentage" ? "%" : "₹"}
+                                  </span>
+                                </div>
+
+                                {/* Amount after Discount */}
+                                <div className="relative">
+                                  <Field
+                                    type="number"
+                                    name={`discountDetails[${dayIndex}].amountAfterDiscount`}
+                                    placeholder="0"
+                                    className={`w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm ${
+                                      values.discountType === "Amount" 
+                                        ? "bg-white" 
+                                        : "bg-[#DCDCDC]"
+                                    }`}
+                                    disabled={values.discountType !== "Amount"}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      setFieldValue(
+                                        `discountDetails[${dayIndex}].amountAfterDiscount`,
+                                        value
+                                      );
+
+                                      const tariff = values.tariffPerDay || 0;
+                                      const discountType = values.discountType || "Percentage";
+                                      const amountAfterDiscount = parseFloat(value) || 0;
+
+                                      let discountValue;
+                                      if (discountType === "Percentage") {
+                                        const discountAmount = tariff - amountAfterDiscount;
+                                        discountValue = ((discountAmount / tariff) * 100).toFixed(2);
+                                      } else {
+                                        discountValue = (tariff - amountAfterDiscount).toFixed(2);
+                                      }
+
+                                      setFieldValue(
+                                        `discountDetails[${dayIndex}].discountValue`,
+                                        discountValue
+                                      );
+                                    }}
+                                  />
+                                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                                    ₹
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {/* Sequence */}
                   <div>
                     <label
                       htmlFor="sequence"
@@ -670,7 +611,8 @@ const HouseCreate = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
-                  <div>
+                  {/* Remarks */}
+                  <div className="col-span-3">
                     <label
                       htmlFor="remarks"
                       className="block text-xs font-medium text-gray-700"
@@ -687,110 +629,47 @@ const HouseCreate = () => {
                     />
                   </div>
 
-                                  <div className="col-span-3">
-                  <label
-                    htmlFor="roomImagesBase64Strings"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Upload Images<span className="text-red-500">*</span>
-                  </label>
-                  
-                  {/* Drag and Drop Zone */}
-                  <div
-                    className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                      values.roomImagesBase64Strings.length > 0
-                        ? "border-green-300 bg-green-50"
-                        : "border-gray-300 hover:border-blue-400 bg-gray-50"
-                    }`}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.add(
-                        "border-blue-500",
-                        "bg-blue-50"
-                      );
-                    }}
-                    onDragLeave={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove(
-                        "border-blue-500",
-                        "bg-blue-50"
-                      );
-                    }}
-                    onDrop={async (e) => {
-                      e.preventDefault();
-                      e.currentTarget.classList.remove(
-                        "border-blue-500",
-                        "bg-blue-50"
-                      );
+                  <div className="col-span-4">
+                    <label
+                      htmlFor="roomImagesBase64Strings"
+                      className="block text-sm font-medium mb-2"
+                    >
+                      Upload Images<span className="text-red-500">*</span>
+                    </label>
 
-                      const files = Array.from(e.dataTransfer.files).filter(
-                        (file) => file.type.startsWith("image/")
-                      );
+                    {/* Drag and Drop Zone */}
+                    <div
+                      className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                        values.roomImagesBase64Strings.length > 0
+                          ? "border-green-300 bg-green-50"
+                          : "border-gray-300 hover:border-blue-400 bg-gray-50"
+                      }`}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
+                      }}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
 
-                      if (files.length > 0) {
-                        const base64Images = [];
-                        for (let i = 0; i < files.length; i++) {
-                          const base64 = await convertToBase64(files[i]);
-                          base64Images.push({
-                            imageId: null, // Since it's a new image
-                            imageUrl: base64, // Base64 string
-                            isNew: true, // Mark as new
-                            isDeleted: false, // Mark as not deleted
-                          });
-                        }
-                        // Append new uploads to existing images
-                        setFieldValue("roomImagesBase64Strings", [
-                          ...values.roomImagesBase64Strings,
-                          ...base64Images,
-                        ]);
-                      }
-                    }}
-                  >
-                    {/* Upload Icon */}
-                    <div className="flex justify-center mb-3">
-                      <svg
-                        className="w-8 h-8 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-                    </div>
+                        const files = Array.from(e.dataTransfer.files).filter(
+                          (file) => file.type.startsWith("image/")
+                        );
 
-                    {/* Upload Text */}
-                    <p className="text-gray-600 mb-1 text-sm">
-                      Drop your images here, or{" "}
-                      <label
-                        htmlFor="roomImagesBase64Strings"
-                        className="text-blue-600 underline cursor-pointer hover:text-blue-800"
-                      >
-                        click to browse
-                      </label>
-                    </p>
-
-                    {/* File Specifications */}
-                    <p className="text-xs text-gray-500">
-                      1600 × 1200 (4:3) recommended. PNG, JPG and GIF files
-                      are allowed
-                    </p>
-
-                    {/* Hidden File Input */}
-                    <input
-                      id="roomImagesBase64Strings"
-                      name="roomImagesBase64Strings"
-                      className="hidden"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={async (event) => {
-                        const files = event.currentTarget.files;
-                        if (files) {
+                        if (files.length > 0) {
                           const base64Images = [];
                           for (let i = 0; i < files.length; i++) {
                             const base64 = await convertToBase64(files[i]);
@@ -808,68 +687,132 @@ const HouseCreate = () => {
                           ]);
                         }
                       }}
+                    >
+                      {/* Upload Icon */}
+                      <div className="flex justify-center mb-3">
+                        <svg
+                          className="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Upload Text */}
+                      <p className="text-gray-600 mb-1 text-sm">
+                        Drop your images here, or{" "}
+                        <label
+                          htmlFor="roomImagesBase64Strings"
+                          className="text-blue-600 underline cursor-pointer hover:text-blue-800"
+                        >
+                          click to browse
+                        </label>
+                      </p>
+
+                      {/* File Specifications */}
+                      <p className="text-xs text-gray-500">
+                        1600 × 1200 (4:3) recommended. PNG, JPG and JPEG files
+                        are allowed
+                      </p>
+
+                      {/* Hidden File Input */}
+                      <input
+                        id="roomImagesBase64Strings"
+                        name="roomImagesBase64Strings"
+                        className="hidden"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={async (event) => {
+                          const files = event.currentTarget.files;
+                          if (files) {
+                            const base64Images = [];
+                            for (let i = 0; i < files.length; i++) {
+                              const base64 = await convertToBase64(files[i]);
+                              base64Images.push({
+                                imageId: null, // Since it's a new image
+                                imageUrl: base64, // Base64 string
+                                isNew: true, // Mark as new
+                                isDeleted: false, // Mark as not deleted
+                              });
+                            }
+                            // Append new uploads to existing images
+                            setFieldValue("roomImagesBase64Strings", [
+                              ...values.roomImagesBase64Strings,
+                              ...base64Images,
+                            ]);
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <ErrorMessage
+                      name="roomImagesBase64Strings"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
                     />
                   </div>
-                  
-                  <ErrorMessage
-                    name="roomImagesBase64Strings"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-                                  {values.roomImagesBase64Strings.length !== 0 && (
-                  <div className="col-span-3 border p-2 mt-2">
-                    <h4 className="text-sm font-semibold text-gray-800 mb-2">
-                      Selected Image Previews:
-                    </h4>
+                  {values.roomImagesBase64Strings.length !== 0 && (
+                    <div className="col-span-3 border p-2 mt-2">
+                      <h4 className="text-sm font-semibold text-gray-800 mb-2">
+                        Selected Image Previews:
+                      </h4>
 
-                    <div className="flex flex-wrap gap-4 h-20 overflow-auto ">
-                      {values.roomImagesBase64Strings
-                        .filter((img) => !img.isDeleted)
-                        .map((base64Image, displayIndex) => {
-                          // Find the actual index in the original array
-                          const actualIndex = values.roomImagesBase64Strings.findIndex(
-                            (img) => img === base64Image
-                          );
-                          
-                          return (
-                            <div
-                              key={actualIndex}
-                              className="relative w-[120px] rounded overflow-hidden shadow-md border border-gray-200"
-                            >
-                              {/* Delete button */}
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const updatedImages =
-                                    values.roomImagesBase64Strings.map(
-                                      (img, i) =>
-                                        i === actualIndex
-                                          ? { ...img, isDeleted: true }
-                                          : img
-                                    );
-                                  setFieldValue(
-                                    "roomImagesBase64Strings",
-                                    updatedImages
-                                  );
-                                }}
-                                className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 hover:text-white transition-all"
+                      <div className="flex flex-wrap gap-4 h-20 overflow-auto ">
+                        {values.roomImagesBase64Strings
+                          .filter((img) => !img.isDeleted)
+                          .map((base64Image) => {
+                            // Find the actual index in the original array
+                            const actualIndex =
+                              values.roomImagesBase64Strings.findIndex(
+                                (img) => img === base64Image
+                              );
+
+                            return (
+                              <div
+                                key={actualIndex}
+                                className="relative w-[120px] rounded overflow-hidden shadow-md border border-gray-200"
                               >
-                                ×
-                              </button>
+                                {/* Delete button */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updatedImages =
+                                      values.roomImagesBase64Strings.map(
+                                        (img, i) =>
+                                          i === actualIndex
+                                            ? { ...img, isDeleted: true }
+                                            : img
+                                      );
+                                    setFieldValue(
+                                      "roomImagesBase64Strings",
+                                      updatedImages
+                                    );
+                                  }}
+                                  className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 hover:text-white transition-all"
+                                >
+                                  ×
+                                </button>
 
-                              {/* Image preview */}
-                              <img
-                                src={base64Image.imageUrl}
-                                alt={`preview-${actualIndex}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          );
-                        })}
+                                {/* Image preview */}
+                                <img
+                                  src={base64Image.imageUrl}
+                                  alt={`preview-${actualIndex}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 </div>
 
                 {/* Submit Button */}
