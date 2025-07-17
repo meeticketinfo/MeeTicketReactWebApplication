@@ -1,9 +1,10 @@
 import React from "react";
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, ErrorMessage } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import { convertToBase64 } from "../../../../utils/Helper";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import * as Yup from "yup";
 
 // helper: turn an existing image URL into a base64 string
 const urlToBase64 = async (url) => {
@@ -23,6 +24,57 @@ const UpdatePackage = ({ data }) => {
     usePackagesStore();
 
   const { setCurrentTab } = usePackagesCommonStore();
+
+  /** ---------------- validation schema ---------------- */
+  const updatePackageValidationSchema = Yup.object().shape({
+    packageName: Yup.string().required("Package name is required"),
+    description: Yup.string()
+      .max(100, "Max 100 characters")
+      .required("Description is required"),
+    checkInTime: Yup.string()
+      .required("Check-in time is required"),
+      // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
+    checkOutTime: Yup.string()
+      .required("Check-out time is required")
+      // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format")
+      .test(
+        "after-check-in",
+        "Check-out must be after check-in",
+        function (value) {
+          const { checkInTime } = this.parent;
+          return !value || !checkInTime || value > checkInTime;
+        }
+      ),
+    termsConditions: Yup.string()
+      .max(100, "Max 100 characters")
+      .required("T&C are required"),
+    privacyPolicy: Yup.string().max(100),
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90)
+      .nullable(),
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180)
+      .nullable(),
+    packageImages: Yup.array()
+      .of(Yup.object().shape({
+        imageId: Yup.mixed().nullable(),
+        imageUrl: Yup.string().nullable(),
+        isNew: Yup.boolean(),
+        isDeleted: Yup.boolean(),
+      }))
+      .test('at-least-one-image', 'At least one image is required', function(value) {
+        if (!value || value.length === 0) return false;
+        const nonDeletedImages = value.filter(img => !img.isDeleted);
+        return nonDeletedImages.length > 0;
+      }),
+    isActive: Yup.boolean().required("Status is required"),
+  });
 
   /** ---------------- initial values ---------------- */
   const initialValues = {
@@ -51,8 +103,8 @@ const UpdatePackage = ({ data }) => {
   };
 
   /** ---------------- submit handler ---------------- */
-  const onSubmit = async (values, ) => {
-    toast.success("Package updated successfully 🎉");
+  const onSubmit = async (values) => {
+    
     try {
       const packageImages = [];
 
@@ -69,7 +121,7 @@ const UpdatePackage = ({ data }) => {
         }
 
         packageImages.push({
-          imageId: img.isNew ? 0 : img.imageId, // 0 for new images
+          imageId: img.isNew ? null : img.imageId, // 0 for new images
           base64Image, // empty string if deleted
           isDeleted: img.isDeleted ? true : false, // 1 if deleted, 0 otherwise
         });
@@ -80,9 +132,9 @@ const UpdatePackage = ({ data }) => {
       };
 
       const res = await UpdatePackage(payload);
-     
+
       if (res.data.status === 200) {
-       
+        toast.success("Package updated successfully 🎉");
         // setCurrentTab(0);
         fetchPackagesWithRooms();
       } else {
@@ -91,7 +143,6 @@ const UpdatePackage = ({ data }) => {
     } catch (err) {
       toast.error("Something went wrong while updating the package");
     } finally {
-     
     }
   };
 
@@ -102,8 +153,11 @@ const UpdatePackage = ({ data }) => {
       <div className="p-3">
         <Formik
           initialValues={initialValues}
+          validationSchema={updatePackageValidationSchema}
           onSubmit={onSubmit}
           enableReinitialize
+          validateOnChange={true}
+          validateOnBlur={true}
         >
           {({ values, setFieldValue, isSubmitting }) => {
             /* ---------- file input handler ---------- */
@@ -116,6 +170,8 @@ const UpdatePackage = ({ data }) => {
                 const b64 = await convertToBase64(file);
                 newObjs.push({
                   imageUrl: b64,
+                  isNew: true,
+                  isDeleted: false,
                 });
               }
 
@@ -142,6 +198,11 @@ const UpdatePackage = ({ data }) => {
                       className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md text-sm"
                       placeholder="Enter Package Name"
                     />
+                    <ErrorMessage
+                      name="packageName"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
 
                   {/* (include the rest of your fields here exactly as before) */}
@@ -159,11 +220,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Check-in Time"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="checkInTime"
                       component="div"
                       className="text-red-500 text-xs mt-1"
-                    /> */}
+                    />
                   </div>
 
                   {/* Check Out Time */}
@@ -180,11 +241,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Checkout Time"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="checkOutTime"
                       component="div"
                       className="text-red-500 text-xs mt-1"
-                    /> */}
+                    />
                   </div>
 
                   {/*  Latitude */}
@@ -201,11 +262,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Latitude"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="latitude"
                       component="div"
-                      className="text-red-500 text-xs absolute"
-                    /> */}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
 
                   {/*  Longitude */}
@@ -222,11 +283,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter longitude"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="longitude"
                       component="div"
-                      className="text-red-500 text-xs absolute"
-                    /> */}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
                   {/* status */}
                   <div className="form-group">
@@ -242,7 +303,6 @@ const UpdatePackage = ({ data }) => {
                       name="isActive"
                       onChange={(e) => {
                         const Value = e.target.value === "true";
-                        setIsValidation(Value);
                         setFieldValue(`isActive`, Value);
                       }}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -251,11 +311,11 @@ const UpdatePackage = ({ data }) => {
                       <option value={true}>Active</option>
                       <option value={false}>In Active</option>
                     </Field>
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="isActive"
                       component="span"
-                      className="text-red-500 text-xs absolute"
-                    /> */}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
                   {/*  Guidelines */}
                   <div>
@@ -285,11 +345,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
                       placeholder="Enter Description"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="description"
                       component="div"
-                      className="text-red-500 text-xs absolute"
-                    /> */}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
 
                   {/* Cancellation Policy */}
@@ -304,11 +364,6 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Cancellation Policy"
                     />
-                    {/* <ErrorMessage
-                      name="cancellationPolicy"
-                      component="div"
-                      className="text-red-500 text-xs absolute"
-                      /> */}
                   </div>
                   {/* Terms & Conditions */}
                   <div>
@@ -322,11 +377,11 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Terms & Conditions"
                     />
-                    {/* <ErrorMessage
+                    <ErrorMessage
                       name="termsConditions"
                       component="div"
-                      className="text-red-500 text-xs absolute"
-                    /> */}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
                   {/* Privacy Policy */}
                   <div>
@@ -340,63 +395,136 @@ const UpdatePackage = ({ data }) => {
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Privacy Policy"
                     />
-                    {/* <ErrorMessage
-                        name="privacyPolicy"
-                        component="div"
-                        className="text-red-500 text-xs absolute"
-                        /> */}
                   </div>
 
                   {/* ------- file upload ------- */}
-                  <div>
-                    <label className="block text-sm font-medium">
+                  <div className="col-span-full">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Upload Images<span className="text-red-500">*</span>
                     </label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleFileChange}
-                      className="mt-1 block w-full px-2 py-3 border border-gray-300 rounded-md shadow-sm text-sm"
+
+                    {/* Drag and Drop Zone */}
+                    <div
+                      className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ease-in-out ${
+                        values.packageImages.length > 0
+                          ? "border-blue-300 bg-blue-50"
+                          : "border-gray-300 hover:border-blue-400 bg-gray-50"
+                      }`}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const files = Array.from(e.dataTransfer.files).filter(
+                          (file) => file.type.startsWith("image/")
+                        );
+                        if (files.length > 0) {
+                          handleFileChange({ target: { files } });
+                        }
+                      }}
+                    >
+                      {/* Upload Icon */}
+                      <div className="flex justify-center mb-4">
+                        <svg
+                          className="w-12 h-12 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Upload Text */}
+                      <p className="text-gray-600 mb-2">
+                        Drop your images here, or{" "}
+                        <label className="text-blue-600 underline cursor-pointer hover:text-blue-800">
+                          click to browse
+                          <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileChange}
+                            className="hidden"
+                          />
+                        </label>
+                      </p>
+
+                      {/* File Specifications */}
+                      <p className="text-sm text-gray-500">
+                        1600 x 1200 (4:3) recommended. PNG, JPG
+                      </p>
+                    </div>
+
+                    {/* Image validation error */}
+                    <ErrorMessage
+                      name="packageImages"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
                     />
 
                     {/* ------- preview ------- */}
                     {values.packageImages.length > 0 && (
-                      <div className="border p-2 mt-2">
-                        <h4 className="text-sm font-semibold mb-2">
-                          Selected Image Previews:
+                      <div className="mt-4">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                          Selected Images (
+                          {
+                            values.packageImages.filter((img) => !img.isDeleted)
+                              .length
+                          }
+                          ):
                         </h4>
-                        <div className="flex flex-wrap gap-4 h-20 overflow-auto">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                           {values.packageImages.map((img, idx) =>
                             img.isDeleted ? null : (
                               <div
                                 key={img.imageId ?? idx}
-                                className="relative w-[120px] rounded overflow-hidden shadow-md border"
+                                className="relative group aspect-square rounded-lg overflow-hidden shadow-md border border-gray-200 bg-white"
                               >
-                                {/* delete / undo */}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setFieldValue(
-                                      "packageImages",
-                                      values.packageImages.map((it, i) =>
-                                        i === idx
-                                          ? { ...it, isDeleted: !it.isDeleted }
-                                          : it
-                                      )
-                                    )
-                                  }
-                                  className="absolute top-1 right-1 bg-white text-gray-600 border rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 hover:text-white"
-                                  title="Remove"
-                                >
-                                  ×
-                                </button>
-
+                                {/* Image */}
                                 <img
                                   src={img.imageUrl}
                                   alt={`preview-${idx}`}
                                   className="w-full h-full object-cover"
                                 />
+
+                                {/* Overlay with delete button */}
+                                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setFieldValue(
+                                        "packageImages",
+                                        values.packageImages.map((it, i) =>
+                                          i === idx
+                                            ? {
+                                                ...it,
+                                                isDeleted: !it.isDeleted,
+                                              }
+                                            : it
+                                        )
+                                      )
+                                    }
+                                    className="opacity-0 group-hover:opacity-100 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-red-600 transition-all duration-200 shadow-lg"
+                                    title="Remove image"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+
+                                {/* Image info overlay */}
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                                  <p className="text-white text-xs truncate">
+                                    {img.isNew ? "New Image" : "Existing Image"}
+                                  </p>
+                                </div>
                               </div>
                             )
                           )}
