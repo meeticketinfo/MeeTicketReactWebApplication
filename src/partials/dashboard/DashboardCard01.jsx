@@ -2,10 +2,23 @@ import CountUp from "react-countup";
 import PropTypes from "prop-types";
 import { IoReloadCircle } from "react-icons/io5";
 
-function DashboardCard01({ lableName, count, icon: Icon, isLoading }) {
+function DashboardCard01({
+  lableName,
+  count,
+  icon: Icon,
+  isLoading,
+  setIsHovered,
+  isPopup,
+}) {
   return (
     <>
-      <div className="flex flex-col justify-center col-span-full sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200">
+      <div
+        className="flex flex-col justify-center col-span-full sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+        onMouseEnter={() => {
+          isPopup === true && setIsHovered(true);
+        }}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <div className="flex items-center">
           <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
             <Icon className="text-3xl font-bold text-white dark:text-gray-100" />
@@ -23,7 +36,9 @@ function DashboardCard01({ lableName, count, icon: Icon, isLoading }) {
                 <span className="text-2xl font-bold leading-none text-gray-600">
                   <CountUp end={count} duration={2} prefix="" separator="," />
                 </span>
-                <h3 className="text-base font-normal text-gray-500">{lableName}</h3>
+                <h3 className="text-base font-normal text-gray-500">
+                  {lableName}
+                </h3>
               </>
             )}
           </div>

@@ -35,13 +35,14 @@ import { Link } from "react-router-dom";
 import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
 import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
+import HoverPopup from "../utils/HoverPopup";
 
 function AdminDashboard() {
   superballs.register();
 
   const [DashboardDate, setDashboardDate] = useState("");
   const [pieChartData, setPieChartData] = useState([]);
-
+  const [isHovered, setIsHovered] = useState(false);
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
@@ -52,9 +53,10 @@ function AdminDashboard() {
     allNodalOfficerParks,
   } = useParkStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    useDepartmentTypesStore();
   // console.log("allEntityTypes", allEntityTypes);
-  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+  const {  roleDetails, decodedTokenData } =
     useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
@@ -130,7 +132,8 @@ function AdminDashboard() {
     setPageSize(newPageSize);
   };
 
-  const parksToRender = role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
+  const parksToRender =
+    role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -172,18 +175,21 @@ function AdminDashboard() {
   };
   const dashboardCards = [
     {
+      isPopup: false,
       lableName: "Total Bookings",
       count: allCounts?.totalCountById || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
+      isPopup: false,
       lableName: "Total Tickets",
       count: allCounts?.totalTickets || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
+      isPopup: false,
       lableName: "Total Income",
       // count: allCounts?.totalAmount,
       count: allCounts?.totalAmount || "0",
@@ -193,14 +199,20 @@ function AdminDashboard() {
   ];
   const dashboardCardsCountByRole = [
     {
+      isPopup: false,
       lableName: "Total Bookings",
       count: allCounts?.totalBookingsByRole || "0",
+      upiCount:allCounts?.upiAmount || "0",
+      cashCount:allCounts?.cashAmount || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
     {
+      isPopup: true,
       lableName: "Total Amount",
       count: allCounts?.totalAmountByRole,
+       upiCount:allCounts?.upiAmount || "0",
+      cashCount:allCounts?.cashAmount || "0",
       percentageChange: 49,
       icon: FaIndianRupeeSign,
     },
@@ -220,7 +232,7 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-      roleDetails?.name === "ROLE_ZOOPARKADMIN"
+    roleDetails?.name === "ROLE_ZOOPARKADMIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
 
@@ -330,18 +342,25 @@ function AdminDashboard() {
 
   // Function to get filtered location categories based on selected department
   const getFilteredLocationCategories = (selectedDepartmentName) => {
-    if (!selectedDepartmentName) return allEntityTypes?.filter(entity => entity.isActive) || [];
-    
-    const allowedCategories = departmentToCategoryMapping[selectedDepartmentName] || [];
-    
-    return allEntityTypes?.filter(entity => 
-      entity.isActive && allowedCategories.includes(entity.entityTypeName)
-    ) || [];
+    if (!selectedDepartmentName)
+      return allEntityTypes?.filter((entity) => entity.isActive) || [];
+
+    const allowedCategories =
+      departmentToCategoryMapping[selectedDepartmentName] || [];
+
+    return (
+      allEntityTypes?.filter(
+        (entity) =>
+          entity.isActive && allowedCategories.includes(entity.entityTypeName)
+      ) || []
+    );
   };
 
   // Function to get department name by ID
   const getDepartmentNameById = (departmentId) => {
-    const department = allDepartmentTypes?.find(dept => dept.departmentId === departmentId);
+    const department = allDepartmentTypes?.find(
+      (dept) => dept.departmentId === departmentId
+    );
     return department?.departmentName || "";
   };
 
@@ -399,180 +418,194 @@ function AdminDashboard() {
                   {!(
                     roleDetails?.name === "ROLE_ADMIN" ||
                     roleDetails?.name === "ROLE_ZOOPARKADMIN"
-                  ) && (<>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700">
-                        Department
-                      </label>
+                  ) && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Department
+                        </label>
 
-                      <Select
-                        name="departmentId"
-                        value={
-                          allDepartmentTypes
+                        <Select
+                          name="departmentId"
+                          value={
+                            allDepartmentTypes
+                              ?.filter((dept) => dept.isActive)
+                              .map((dept) => ({
+                                value: dept.departmentId,
+                                label: dept.departmentName,
+                              }))
+                              .find(
+                                (option) => option.value === values.departmentId
+                              ) || null
+                          }
+                          options={allDepartmentTypes
                             ?.filter((dept) => dept.isActive)
                             .map((dept) => ({
                               value: dept.departmentId,
                               label: dept.departmentName,
-                            }))
-                            .find(
-                              (option) => option.value === values.departmentId
-                            ) || null
-                        }
-                        options={allDepartmentTypes
-                          ?.filter((dept) => dept.isActive)
-                          .map((dept) => ({
-                            value: dept.departmentId,
-                            label: dept.departmentName,
-                          }))}
-                        onChange={(selectedOption) => {
-                          const value = selectedOption?.value || "";
-                          setFieldValue("departmentId", value);
-                          // Clear location category and location when department changes
-                          setFieldValue("entityId", "");
-                          setFieldValue("locationId", "");
-                        }}
-                        isClearable
-                        placeholder="Department"
-                        className="mt-[4px] text-sm"
-                        classNamePrefix="react-select"
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-                            outline: "none",
-                            boxShadow: "none",
-                            borderColor: "#ced4da",
-                            borderRadius: "6px",
-                            height: "30px",
-                            minHeight: "33px",
-                          }),
+                            }))}
+                          onChange={(selectedOption) => {
+                            const value = selectedOption?.value || "";
+                            setFieldValue("departmentId", value);
+                            // Clear location category and location when department changes
+                            setFieldValue("entityId", "");
+                            setFieldValue("locationId", "");
+                          }}
+                          isClearable
+                          placeholder="Department"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
 
-                          menu: (base) => ({
-                            ...base,
-                          }),
-                          option: (base, { isFocused }) => ({
-                            ...base,
-                            fontSize: "0.775rem",
-                            backgroundColor: isFocused ? "#F8F8F8" : "white",
-                            color: isFocused ? "#0C3771" : "#000",
-                            cursor: "pointer",
-                          }),
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700">
-                        Location Category
-                      </label>
+                            menu: (base) => ({
+                              ...base,
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#000",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location Category
+                        </label>
 
-                      <Select
-                        name="entityId"
-                        value={
-                          getFilteredLocationCategories(getDepartmentNameById(values.departmentId))
-                          .map((entity) => ({
-                            value: entity.entityTypeId,
-                            label: entity.entityTypeName,
-                            }))
-                            .find((option) => option.value === values.entityId) || null
-                        }
-                        options={getFilteredLocationCategories(getDepartmentNameById(values.departmentId))
-                          .map((entity) => ({
+                        <Select
+                          name="entityId"
+                          value={
+                            getFilteredLocationCategories(
+                              getDepartmentNameById(values.departmentId)
+                            )
+                              .map((entity) => ({
+                                value: entity.entityTypeId,
+                                label: entity.entityTypeName,
+                              }))
+                              .find(
+                                (option) => option.value === values.entityId
+                              ) || null
+                          }
+                          options={getFilteredLocationCategories(
+                            getDepartmentNameById(values.departmentId)
+                          ).map((entity) => ({
                             value: entity.entityTypeId,
                             label: entity.entityTypeName,
                           }))}
-                        onChange={(selectedOption) => {
-                          const value = selectedOption?.value || "";
-                          setFieldValue("entityId", value);
-                          // Clear location when location category changes
-                          setFieldValue("locationId", "");
-                        }}
-                        isClearable
-                        placeholder="Location Category"
-                        className="mt-[4px] text-sm"
-                        classNamePrefix="react-select"
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-                            outline: "none",
-                            boxShadow: "none",
-                            borderColor: "#ced4da",
-                            borderRadius: "6px",
-                            height: "30px",
-                            minHeight: "33px",
-                          }),
+                          onChange={(selectedOption) => {
+                            const value = selectedOption?.value || "";
+                            setFieldValue("entityId", value);
+                            // Clear location when location category changes
+                            setFieldValue("locationId", "");
+                          }}
+                          isClearable
+                          placeholder="Location Category"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
 
-                          menu: (base) => ({
-                            ...base,
-                          }),
-                          option: (base, { isFocused }) => ({
-                            ...base,
-                            fontSize: "0.775rem",
-                            backgroundColor: isFocused ? "#F8F8F8" : "white",
-                            color: isFocused ? "#0C3771" : "#6D7072",
-                            cursor: "pointer",
-                          }),
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-700">
-                        Location
-                      </label>
+                            menu: (base) => ({
+                              ...base,
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Location
+                        </label>
 
-                      <Select
-                        name="locationId"
-                        value={
-                          allParks
-                            ?.map((park) => ({
+                        <Select
+                          name="locationId"
+                          value={
+                            allParks
+                              ?.map((park) => ({
+                                value: park.id,
+                                label: park.name,
+                              }))
+                              .find(
+                                (option) => option.value === values.locationId
+                              ) || null
+                          }
+                          options={allParks
+                            ?.filter(
+                              (park) =>
+                                (park.departmentId == values.departmentId ||
+                                  values.departmentId == "") &&
+                                (park.entityTypeId == values.entityId ||
+                                  values.entityId == "")
+                            )
+                            .map((park) => ({
                               value: park.id,
                               label: park.name,
-                            }))
-                            .find((option) => option.value === values.locationId) ||
-                          null
-                        }
-                        options={allParks
-                          ?.filter((park) => (park.departmentId == values.departmentId || values.departmentId == "") && (park.entityTypeId == values.entityId || values.entityId == ""))
-                          .map((park) => ({
-                            value: park.id,
-                            label: park.name,
-                          }))}
-                        onChange={(selectedOption) => {
-                          const value = selectedOption?.value || "";
-                          setFieldValue("locationId", value);
-                        }}
-                        isClearable
-                        placeholder="Location"
-                        className="mt-[4px] text-sm"
-                        classNamePrefix="react-select"
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-                            outline: "none",
-                            boxShadow: "none",
-                            borderColor: "#ced4da",
-                            borderRadius: "6px",
-                            height: "30px",
-                            minHeight: "33px",
-                          }),
+                            }))}
+                          onChange={(selectedOption) => {
+                            const value = selectedOption?.value || "";
+                            setFieldValue("locationId", value);
+                          }}
+                          isClearable
+                          placeholder="Location"
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
 
-                          menu: (base) => ({
-                            ...base,
-                          }),
-                          option: (base, { isFocused }) => ({
-                            ...base,
-                            fontSize: "0.775rem",
-                            backgroundColor: isFocused ? "#F8F8F8" : "white",
-                            color: isFocused ? "#0C3771" : "#6D7072",
-                            cursor: "pointer",
-                          }),
-                        }}
-                      />
-                    </div>
-                  </>)}
+                            menu: (base) => ({
+                              ...base,
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="flex items-end">
                     <button
                       type="submit"
                       className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                    // disabled={isFetchEntityBookingsLoading}
+                      // disabled={isFetchEntityBookingsLoading}
                     >
                       Search
                     </button>
@@ -583,16 +616,29 @@ function AdminDashboard() {
           </Formik>
         </div>
         {cardsToDisplay &&
-          cardsToDisplay.map((card, index) => (
-            <DashboardCard01
-              key={index}
-              lableName={card.lableName}
-              count={card.count}
-              percentageChange={card.percentageChange}
-              icon={card.icon}
-              isLoading={isFetchCountsLoading}
-            />
-          ))}
+          cardsToDisplay.map(
+            (card, index) => (
+              console.log("card.isPopup", card.isPopup),
+              (
+                <>
+                  <DashboardCard01
+                    setIsHovered={setIsHovered}
+                    isPopup={card.isPopup}
+                    key={index}
+                    lableName={card.lableName}
+                    count={card.count}
+                    percentageChange={card.percentageChange}
+                    icon={card.icon}
+                    isLoading={isFetchCountsLoading}
+                  />
+
+                  <div className="absolute left-60 top-72">
+                    <HoverPopup isHovered={isHovered} data={card} />
+                  </div>
+                </>
+              )
+            )
+          )}
 
         {/* ZOO DASHBOARD */}
         {(roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
@@ -609,220 +655,219 @@ function AdminDashboard() {
                 <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
                   <card.icon className="text-3xl font-bold text-white dark:text-gray-100" />
                 </div>
-                
-                {isFetchZooDashboardTicketWiseLoading ?(
-                <div className="space-y-2 ml-4">
-                  {/* Skeleton for count */}
-                  <div className="h-6 w-36 bg-gray-100 rounded animate-pulse"></div>
-                  {/* Skeleton for label */}
-                  <div className="h-4 w-48 bg-gray-100 rounded animate-pulse"></div>
-                </div>) : 
-                (<div className="flex-shrink-0 ml-3">
-                  <span className="text-2xl font-bold leading-none text-gray-600">
-                    <CountUp
-                      end={card.count}
-                      duration={2}
-                      prefix=""
-                      separator=","
-                    />
-                  </span>
-                  {!card.isCondition && (
-                    <h1 className="text-sm font-normal text-gray-500 mt-2">
-                      Total Tickets Amount
-                    </h1>
-                  )}
-                  {/* others */}
 
-                  {card.isCondition && (
-                    <div className="flex gap-2">
-                      {/* adult */}
-                      {card.isCondition && (
+                {isFetchZooDashboardTicketWiseLoading ? (
+                  <div className="space-y-2 ml-4">
+                    {/* Skeleton for count */}
+                    <div className="h-6 w-36 bg-gray-100 rounded animate-pulse"></div>
+                    {/* Skeleton for label */}
+                    <div className="h-4 w-48 bg-gray-100 rounded animate-pulse"></div>
+                  </div>
+                ) : (
+                  <div className="flex-shrink-0 ml-3">
+                    <span className="text-2xl font-bold leading-none text-gray-600">
+                      <CountUp
+                        end={card.count}
+                        duration={2}
+                        prefix=""
+                        separator=","
+                      />
+                    </span>
+                    {!card.isCondition && (
+                      <h1 className="text-sm font-normal text-gray-500 mt-2">
+                        Total Tickets Amount
+                      </h1>
+                    )}
+                    {/* others */}
+
+                    {card.isCondition && (
+                      <div className="flex gap-2">
+                        {/* adult */}
+                        {card.isCondition && (
+                          <div className="flex gap-[2px] items-center">
+                            <h3 className="text-sm font-normal text-gray-500">
+                              Adult:
+                            </h3>
+                            <h3 className="text-sm  font-semibold text-gray-500">
+                              {card.AdultCount}
+                            </h3>
+                          </div>
+                        )}
+                        {/* child */}
+
                         <div className="flex gap-[2px] items-center">
-                          <h3 className="text-sm font-normal text-gray-500">
-                            Adult:
+                          <h3 className="text-sm font-normal  text-gray-500">
+                            Child:
                           </h3>
-                          <h3 className="text-sm  font-semibold text-gray-500">
-                            {card.AdultCount}
+                          <h3 className="text-sm font-norm font-semibold text-gray-500">
+                            {card.ChildCount}
                           </h3>
                         </div>
-                      )}
-                      {/* child */}
-
+                      </div>
+                    )}
+                    {card.isCondition && (
                       <div className="flex gap-[2px] items-center">
-                        <h3 className="text-sm font-normal  text-gray-500">
-                          Child:
+                        <h3 className="text-sm font-normal text-gray-500">
+                          Other Tickets:
                         </h3>
-                        <h3 className="text-sm font-norm font-semibold text-gray-500">
-                          {card.ChildCount}
+                        <h3 className="text-sm font-semibold text-gray-500">
+                          {card.OthersCount}
                         </h3>
                       </div>
-                    </div>
-                  )}
-                  {card.isCondition && (
-                    <div className="flex gap-[2px] items-center">
-                      <h3 className="text-sm font-normal text-gray-500">
-                        Other Tickets:
-                      </h3>
-                      <h3 className="text-sm font-semibold text-gray-500">
-                        {card.OthersCount}
-                      </h3>
-                    </div>
-                  )}
-                </div>)
-                 }
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
-        {
-          roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-            roleDetails?.name === "ROLE_ADMIN" ? (
-            <>
-              <div className="col-span-full ">
-                <h1 className=" text-xl font-bold">
-                  Facilities and Ticket Details
-                </h1>
-                <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
-                  <div>
-                    <label
-                      htmlFor="fromDate"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Search By Date
-                    </label>
-                    <input
-                      type="date"
-                      name="fromDate"
-                      className={`mt-1 block px-2 py-1 border w-full
+        {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
+        roleDetails?.name === "ROLE_ADMIN" ? (
+          <>
+            <div className="col-span-full ">
+              <h1 className=" text-xl font-bold">
+                Facilities and Ticket Details
+              </h1>
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
+                <div>
+                  <label
+                    htmlFor="fromDate"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Search By Date
+                  </label>
+                  <input
+                    type="date"
+                    name="fromDate"
+                    className={`mt-1 block px-2 py-1 border w-full
                border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      // min={getCurrentDate()}
-                      value={DashboardDate}
-                      onChange={(e) => {
-                        setDashboardDate(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <button
-                      onClick={() => {
-                        fetchAllZooDashBoardCounts(DashboardDate);
-                      }}
-                      className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                    >
-                      Search
-                    </button>
-                  </div>
+                    // min={getCurrentDate()}
+                    value={DashboardDate}
+                    onChange={(e) => {
+                      setDashboardDate(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    onClick={() => {
+                      fetchAllZooDashBoardCounts(DashboardDate);
+                    }}
+                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                  >
+                    Search
+                  </button>
                 </div>
               </div>
-              {isFetchZooDashboardLoading ? (
-                <div className="px-96 py-20">
-                  <l-superballs
-                    size="40"
-                    speed="1.4"
-                    color="black"
-                  ></l-superballs>
+            </div>
+            {isFetchZooDashboardLoading ? (
+              <div className="px-96 py-20">
+                <l-superballs
+                  size="40"
+                  speed="1.4"
+                  color="black"
+                ></l-superballs>
+              </div>
+            ) : (
+              allZooDashboard.data?.map((services, serviceIndex, index) => (
+                <div
+                  key={serviceIndex}
+                  className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                >
+                  <div className="flex items-center">
+                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
+                      <img
+                        src={services.service[0].serviceImage}
+                        // src={img}
+                        className="text-3xl font-bold text-white dark:text-gray-100  w-8"
+                      />
+                    </div>
+                    <div className="flex-shrink-0 ml-3">
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl  font-bold leading-none   "
+                        onClick={() => {
+                          setDetailedReportParams({
+                            Date: DashboardDate,
+                            ServiceId: services.service[0]?.serviceId,
+                            serviceName: services.service[0]?.serviceName,
+                          });
+                        }}
+                      >
+                        <CountUp
+                          end={services.service[0]?.totalQuantity}
+                          duration={2}
+                          prefix=""
+                          separator=","
+                        />
+                      </div>
+                      <h1 className="text-xs font-medium">
+                        {services.service[0].serviceName}
+                      </h1>
+                      <div className="flex gap-2">
+                        {services.service.map((Variant, variantIndex) => (
+                          <div
+                            key={variantIndex}
+                            className="flex gap-[2px] items-center"
+                          >
+                            <h3 className="text-sm font-normal text-gray-500">
+                              {Variant.serviceVariantName}:
+                            </h3>
+                            <h3 className="text-base font-semibold text-gray-500">
+                              {Variant.totalQuantitys}
+                            </h3>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                allZooDashboard.data?.map((services, serviceIndex, index) => (
-                  <div
-                    key={serviceIndex}
-                    className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-                  >
-                    <div className="flex items-center">
-                      <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
-                        <img
-                          src={services.service[0].serviceImage}
-                          // src={img}
-                          className="text-3xl font-bold text-white dark:text-gray-100  w-8"
+              ))
+            )}
+            {isFetchZooDashboardLoading ? (
+              <div className="px-96 py-20"></div>
+            ) : (
+              allZooDashboard.service?.map((service, serviceIndex, index) => (
+                <div
+                  key={serviceIndex}
+                  className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                >
+                  <div className="flex items-center">
+                    <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
+                      <img
+                        src={service.serviceImage}
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8"
+                      />
+                    </div>
+                    <div className="flex-shrink-0 ml-3">
+                      <div
+                        // to="/dashboard-detailed-report"
+                        className="text-2xl font-bold leading-none "
+                        onClick={() => {
+                          setDetailedReportParams({
+                            Date: DashboardDate,
+                            ServiceId: service.serviceId,
+                            serviceName: service?.serviceName,
+                          });
+                        }}
+                      >
+                        <CountUp
+                          end={service.totalQuantity}
+                          duration={2}
+                          prefix=""
+                          separator=","
                         />
                       </div>
-                      <div className="flex-shrink-0 ml-3">
-                        <div
-                          // to="/dashboard-detailed-report"
-                          className="text-2xl  font-bold leading-none   "
-                          onClick={() => {
-                            setDetailedReportParams({
-                              Date: DashboardDate,
-                              ServiceId: services.service[0]?.serviceId,
-                              serviceName: services.service[0]?.serviceName
-                            });
-                          }}
-                        >
-                          <CountUp
-                            end={services.service[0]?.totalQuantity}
-                            duration={2}
-                            prefix=""
-                            separator=","
-                          />
-                        </div>
-                        <h1 className="text-xs font-medium">
-                          {services.service[0].serviceName}
-                        </h1>
-                        <div className="flex gap-2">
-                          {services.service.map((Variant, variantIndex) => (
-                            <div
-                              key={variantIndex}
-                              className="flex gap-[2px] items-center"
-                            >
-                              <h3 className="text-sm font-normal text-gray-500">
-                                {Variant.serviceVariantName}:
-                              </h3>
-                              <h3 className="text-base font-semibold text-gray-500">
-                                {Variant.totalQuantitys}
-                              </h3>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <h1 className="text-sm font-medium">
+                        {service.serviceName}
+                      </h1>
                     </div>
                   </div>
-                ))
-              )}
-              {isFetchZooDashboardLoading ? (
-                <div className="px-96 py-20"></div>
-              ) : (
-                allZooDashboard.service?.map((service, serviceIndex, index) => (
-                  <div
-                    key={serviceIndex}
-                    className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
-                  >
-                    <div className="flex items-center">
-                      <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
-                        <img
-                          src={service.serviceImage}
-                          className="text-3xl font-bold text-white dark:text-gray-100 w-8"
-                        />
-                      </div>
-                      <div className="flex-shrink-0 ml-3">
-                        <div
-                          // to="/dashboard-detailed-report"
-                          className="text-2xl font-bold leading-none "
-                          onClick={() => {
-                            setDetailedReportParams({
-                              Date: DashboardDate,
-                              ServiceId: service.serviceId,
-                              serviceName: service?.serviceName
-                            });
-                          }
-                          }
-                        >
-                          <CountUp
-                            end={service.totalQuantity}
-                            duration={2}
-                            prefix=""
-                            separator=","
-                          />
-                        </div>
-                        <h1 className="text-sm font-medium">
-                          {service.serviceName}
-                        </h1>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </>
-          ) : null}
+                </div>
+              ))
+            )}
+          </>
+        ) : null}
         {/* PIE CHART */}
         {roleDetails?.name == "ROLE_SUPERADMIN" && (
           <DashboardCard07>
