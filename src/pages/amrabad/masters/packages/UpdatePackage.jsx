@@ -194,7 +194,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
 
             return (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-4 px-3 py-2 gap-4 bg-[#F3F3F3] rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-4 px-3 py-2 gap-4 bg-[#F3F3F3] rounded-md border  border-gray-100">
                   {/* ------- simple text inputs (trimmed for brevity) ------- */}
                   <div>
                     <label className="block text-sm font-medium">
