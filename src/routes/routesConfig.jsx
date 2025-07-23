@@ -120,6 +120,10 @@ import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_us
 import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
 import MainMetroRefundTransactions from "../pages/metro_transaction_reports/metro_refunds/dashboard/MainMetroRefundTransactions";
 import MetroRefundTransactionsReport from "../pages/metro_transaction_reports/metro_refunds/metro_refund_transactions_report/MetroRefundTransactionsReport";
+import BookNow from "../pages/amrabad/user/bookNow/bookNow";
+import CheckoutDetails from "../pages/amrabad/user/checkoutDetails/checkoutDetails";
+import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/bookingDetails";
+import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
 
 export const routes = [
   {
@@ -513,8 +517,24 @@ export const routes = [
     element: <PackageDetail />,
   },
   {
-    path: "/amarabad/packages/:house",
+    path: "/amarabad/houses/:houseId",
     element: <Houses />,
+  },
+  {
+  path: "/amarabad/book-now/:houseId",
+  element: <BookNow />,
+  },
+  {
+    path: "/amarabad/checkout-details/:houseId",
+    element: <CheckoutDetails />,
+  },
+  {
+    path: "/amarabad/booking-details",
+    element: <AmarabadBookingDetails />,
+  },
+  {
+    path: "/amarabad/confirmed-details/:bookingId",
+    element: <ConfirmedDetails />,
   },
   {
     path: "/amarabad/test",

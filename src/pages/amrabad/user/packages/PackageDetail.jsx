@@ -1,6 +1,7 @@
 import React from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import PackageImage from "../../../../images/user/package-details-1.jpg";
+import { Link } from "react-router-dom";
 
 const packageData = {
   title: "Munnar Jungle Resort, The Tiger Stay Package",
@@ -53,7 +54,7 @@ const packageData = {
       schedule: [
         {
           time: "12:30 PM",
-          desc: "Arrival at Munnar Jungle resort, Munnar, and Check in.",
+          desc: "Arrival at Munnanur Jungle resort, Mannanur, and Check in. Please search for “Munnanur Jungle Resort, Mannanur” in Google maps for the precise location.",
         },
         {
           time: "1:00 PM - 2:00 PM",
@@ -61,11 +62,11 @@ const packageData = {
         },
         {
           time: "2:30 PM - 3:30 PM",
-          desc: "Visit to Environment Educational Centre, movie and picture exhibition.",
+          desc: "Visit to Environment Educational Centre, where an Introduction to Amrabad Tiger Reserve is given through movie and picture exhibition.",
         },
         {
           time: "3:40 PM - 7:00 PM",
-          desc: "All guests to leave for the Safari after orientation.",
+          desc: "All guests to leave for the Safari after completion of the wildlife orientation from the Environment Education center or shall report at reception, Munnanur Jungle resort by 3:40PM for Jungle Safari.",
         },
         {
           time: "8:00 PM - 9:00 PM",
@@ -78,7 +79,7 @@ const packageData = {
       schedule: [
         {
           time: "6:00 AM - 8:00 AM",
-          desc: "Forest trekking/hike and return back to the resort.",
+          desc: "Guests to report at Munnanur Jungle resort reception by 6:00AM for forest trekking/ hike and return back to the resort.",
         },
         {
           time: "8:00 AM - 9:00 AM",
@@ -109,7 +110,7 @@ const PackageDetail = () => {
         <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-8 backdrop-blur-sm">
           <div className="container flex gap-6 justify-between items-center mx-auto">
             <h4 className="text-white text-3xl font-bold capitalize">{packageData.title}</h4>
-            <button className="bg-white filter text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold">BOOK NOW</button>
+            <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white filter text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
       </div>
@@ -147,8 +148,8 @@ const PackageDetail = () => {
                 Accommodation Details
               </h2>
             </div>
-            <div className="overflow-x-auto lg:max-w-[50%]  rounded-lg">
-              <table className="min-w-full border border-gray-200">
+            <div className="overflow-x-auto lg:max-w-[50%]  border border-gray-200 rounded-lg">
+              <table className="min-w-full">
                 <thead>
                   <tr className="bg-indigo-50">
                     <th className="px-4 py-2 text-left font-medium">Room Type</th>
@@ -172,77 +173,127 @@ const PackageDetail = () => {
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-3">
-              Discount & Schedule Details
-            </h2>
-            {/* Discounts */}
-            <div className="mb-4">
-              <h3 className="font-semibold mb-2">Bulk Booking Discounts</h3>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                {packageData.discounts.map((d, idx) => (
-                  <li key={idx}>
-                    <span className="font-medium">{d.label}:</span> {d.value}
-                  </li>
-                ))}
-              </ul>
+            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-4 pl-10 rounded-tl-[50px] mb-5 max-w-[50%]">
+              <h2 className="text-lg font-semibold text-[#271F6E]">
+                Discount & Schedule Details
+              </h2>
             </div>
-            {/* Itinerary */}
-            <div>
-              <h3 className="font-semibold mb-2">2-Day Itinerary Schedule</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-200 rounded-lg text-sm">
-                  <thead>
-                    <tr className="bg-indigo-50">
-                      <th className="px-3 py-2 text-left">Day</th>
-                      <th className="px-3 py-2 text-left">Time</th>
-                      <th className="px-3 py-2 text-left">Schedule</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {packageData.itinerary.map((day, i) =>
-                      day.schedule.map((item, j) => (
-                        <tr key={i + "-" + j} className="border-t">
-                          {j === 0 && (
-                            <td
-                              className="px-3 py-2 font-semibold"
-                              rowSpan={day.schedule.length}
-                            >
-                              {day.day}
-                            </td>
-                          )}
-                          <td className="px-3 py-2">{item.time}</td>
-                          <td className="px-3 py-2">{item.desc}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+            <div className="bg-[#EEEDFA] p-5 rounded-xl">
 
-          {/* Notes */}
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-3">Note:</h2>
-            <ul className="list-disc list-inside text-gray-700 space-y-1">
-              {packageData.notes.map((note, idx) => (
-                <li key={idx}>{note}</li>
-              ))}
-            </ul>
+              {/* Discounts */}
+              <div className="mb-5">
+                <h3 className="font-semibold mb-2 text-black text-xl font-bold">Bulk Booking Discounts</h3>
+
+                <ul className="space-y-2">
+                  {packageData.discounts.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="text-xl">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#362D86" />
+                          <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#362D86" />
+                        </svg>
+                      </span>
+                      <span>
+                        <span className="font-semibold text-[#333333]">{item.label}:</span> &nbsp;&nbsp;
+                        <span className="text-[#79797B]">{item.value}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* Itinerary */}
+              <div>
+                <h3 className="mb-4 text-black text-xl font-bold">2-Day Itinerary Schedule</h3>
+
+                {/* Day 1 Card */}
+                <div className="bg-white rounded-lg p-5 mb-4 shadow-sm">
+                  <div className="flex items-center">
+                    <div className="">
+                      <div className="text-gray-500 text-base mb-1">Check-In Time:</div>
+                      <div className="text-base font-semibold text-gray-800">12:30 PM</div>
+                    </div>
+
+                    <div className="mx-4">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M16.0001 21.3327L21.3334 15.9993M21.3334 15.9993L16.0001 10.666M21.3334 15.9993L10.6667 15.9993M29.3334 15.9993C29.3334 23.3631 23.3639 29.3327 16.0001 29.3327C8.63628 29.3327 2.66675 23.3631 2.66675 15.9993C2.66675 8.63555 8.63628 2.66602 16.0001 2.66602C23.3639 2.66602 29.3334 8.63555 29.3334 15.9993Z" stroke="#BDBCC3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                      </div>
+                    </div>
+
+                    <div className="">
+                      <div className="text-gray-500 text-base mb-1">Check-Out Time:</div>
+                      <div className="text-base font-semibold text-gray-800">10:00 AM (Next Day)</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed Schedule Table (hidden by default, can be toggled) */}
+                <div className="mt-4">
+                  <div className="overflow-x-auto border border-gray-200 rounded-lg text-[#1B2128]">
+                    <table className="min-w-full text-sm">
+                      <thead>
+                        <tr className="bg-white">
+                          <th className="px-3 py-4 text-left font-semibold">Day</th>
+                          <th className="px-3 py-4 text-left font-semibold">Time</th>
+                          <th className="px-3 py-4 text-left font-semibold">Schedule</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-[#FFFFFF7A]">
+                        {packageData.itinerary.map((day, i) =>
+                          day.schedule.map((item, j) => (
+                            <tr key={i + "-" + j} className="border-t">
+                              {j === 0 && (
+                                <td
+                                  width="100px"
+                                  className="px-3 py-4 font-semibold"
+                                  rowSpan={day.schedule.length}
+                                >
+                                  {day.day}
+                                </td>
+                              )}
+                              <td width="150px" className="px-3 py-4">{item.time}</td>
+                              <td className="px-3 py-4">{item.desc}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              {/* Notes */}
+              <section className="mb-8 mt-4">
+                <h3 className="mb-4 text-black text-xl font-bold">Notes:</h3>
+                <ul className="list-disc list-inside text-gray-700 space-y-2 text-base">
+                  {packageData.notes.map((note, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <svg className="flex-shrink-0" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_8676_13856)">
+                          <path d="M18.0312 13.7874L20.8596 10.959C20.9533 10.8653 21.006 10.7381 21.006 10.6055C21.006 10.4729 20.9533 10.3457 20.8596 10.2519L18.0312 7.42349C17.9613 7.35334 17.8721 7.30553 17.775 7.28612C17.6779 7.2667 17.5772 7.27655 17.4857 7.31442C17.3943 7.35229 17.3161 7.41647 17.2611 7.49883C17.2061 7.58119 17.1768 7.67802 17.177 7.77704L17.1777 10.1055L0.707037 10.1048L0.707037 11.1061L17.1777 11.1054L17.177 13.4339C17.1768 13.5329 17.2061 13.6297 17.2611 13.7121C17.3161 13.7945 17.3943 13.8586 17.4857 13.8965C17.5772 13.9344 17.6779 13.9442 17.775 13.9248C17.8721 13.9054 17.9613 13.8576 18.0312 13.7874Z" fill="#362D86" />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_8676_13856">
+                            <rect width="15" height="15" fill="white" transform="translate(21.2131 10.6055) rotate(135)" />
+                          </clipPath>
+                        </defs>
+                      </svg>{note}</li>
+                  ))}
+                </ul>
+              </section>
+            </div>
           </section>
 
           {/* Bookings Open Banner */}
-          <div className="bg-indigo-700 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+          <div className="bg-indigo-700 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-8 mb-6">
             <div className="text-white text-xl font-semibold">
               BOOKINGS ARE OPEN
             </div>
             <div className="flex gap-3">
-              <button className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
+              <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
                 BOOK NOW
-              </button>
-              <button className="bg-indigo-500 text-white font-semibold px-5 py-2 rounded-lg hover:bg-indigo-600 transition">
-                GET DIRECTIONS
-              </button>
+              </Link>
             </div>
           </div>
         </div>
