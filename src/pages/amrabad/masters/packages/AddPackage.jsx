@@ -1013,8 +1013,8 @@ const AddPackage = () => {
                                                       values.rooms[index]
                                                         .discountType ===
                                                       "Amount"
-                                                        ? "0₹"
-                                                        : "0%"
+                                                        ? "0"
+                                                        : "0"
                                                     }
                                                     className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
@@ -1084,7 +1084,7 @@ const AddPackage = () => {
                                                   <Field
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`}
-                                                    placeholder="0₹"
+                                                    placeholder="0"
                                                     className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
                                                       const value =

@@ -24,7 +24,7 @@ const PopupModal = ({
     small: "max-w-md w-full",
     medium: "max-w-4xl w-full",
     large: "max-w-6xl w-full",
-    Extralarge: "max-w-6xl w-full  ",
+    Extralarge: "max-w-7xl w-full",
   };
 
   useEffect(() => {
@@ -92,6 +92,7 @@ const PopupModal = ({
               className={`${
                 defaultBodyPadding ? "" : ""
               } ${overFlow?"overflow-y-auto max-h-[60vh]":"max-h-[90vh]"}`}
+              style={size === "Extralarge" ? { maxHeight: "85vh" } : {}}
             >
               {children}
             </div>

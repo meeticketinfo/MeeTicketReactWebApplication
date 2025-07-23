@@ -126,10 +126,8 @@ const AccordionRow = ({ serial, row }) => {
         size="Extralarge"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
-        
-        
       >
-        <div>
+        <div className="px-7">
           <UpdatePackage data={row} />
         </div>
       </PopupModal>

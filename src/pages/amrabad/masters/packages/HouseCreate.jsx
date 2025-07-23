@@ -15,6 +15,23 @@ const convertToBase64 = (file) => {
   });
 };
 
+// Function to convert image URL to base64
+const convertImageUrlToBase64 = async (imageUrl) => {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error('Error converting image URL to base64:', error);
+    return imageUrl; // Fallback to original URL if conversion fails
+  }
+};
+
 const HouseCreate = () => {
   const {
     fetchPackagesWithRooms,
@@ -186,14 +203,15 @@ const HouseCreate = () => {
       
       if (isEdit) {
         // For edit: array of objects with imageId, isDeleted, and base64Image
-        roomImagesPayload = values.roomImagesBase64Strings
-          .map((img) => {
+        roomImagesPayload = await Promise.all(
+          values.roomImagesBase64Strings.map(async (img) => {
             if (!img.isNew && img.imageId) {
-              // For existing images
+              // For existing images - convert URL to base64
+              const base64Image = await convertImageUrlToBase64(img.imageUrl);
               return {
                 imageId: img.imageId,
                 isDeleted: img.isDeleted ? true : false,
-                base64Image: img.imageUrl, // Keep original URL for existing images
+                base64Image: base64Image,
               };
             } else {
               // For new images
@@ -203,7 +221,8 @@ const HouseCreate = () => {
                 base64Image: img.imageUrl, // This is already base64 for new images
               };
             }
-          });
+          })
+        );
       } else {
         // For add: array of base64 strings (only non-deleted images)
         roomImagesPayload = values.roomImagesBase64Strings

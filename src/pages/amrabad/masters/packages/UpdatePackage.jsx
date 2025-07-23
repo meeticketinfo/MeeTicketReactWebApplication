@@ -186,7 +186,7 @@ const UpdatePackage = ({ data }) => {
 
             return (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 px-3 gap-4">
                   {/* ------- simple text inputs (trimmed for brevity) ------- */}
                   <div>
                     <label className="block text-sm font-medium">
@@ -318,7 +318,7 @@ const UpdatePackage = ({ data }) => {
                     />
                   </div>
                   {/*  Guidelines */}
-                  <div>
+                  <div className="col-span-2">
                     <label
                       htmlFor="guidelines"
                       className="block text-sm font-medium"
@@ -329,12 +329,13 @@ const UpdatePackage = ({ data }) => {
                       as="textarea"
                       name="guidelines"
                       maxlength={50}
+                      rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Guidelines"
                     />
                   </div>
                   {/* discription */}
-                  <div>
+                  <div className="col-span-2">
                     <label className="block text-sm font-medium">
                       Description<span className="text-red-500">*</span>
                     </label>
@@ -342,6 +343,7 @@ const UpdatePackage = ({ data }) => {
                       as="textarea"
                       maxlength={100}
                       name="description"
+                      rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
                       placeholder="Enter Description"
                     />
@@ -353,7 +355,7 @@ const UpdatePackage = ({ data }) => {
                   </div>
 
                   {/* Cancellation Policy */}
-                  <div>
+                  <div className="col-span-2">
                     <label className="block text-sm font-medium">
                       Cancellation Policy
                     </label>
@@ -361,12 +363,13 @@ const UpdatePackage = ({ data }) => {
                       as="textarea"
                       maxlength={100}
                       name="cancellationPolicy"
+                      rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Cancellation Policy"
                     />
                   </div>
                   {/* Terms & Conditions */}
-                  <div>
+                  <div className="col-span-2">
                     <label className="block text-sm font-medium">
                       Terms & Conditions<span className="text-red-500">*</span>
                     </label>
@@ -374,6 +377,7 @@ const UpdatePackage = ({ data }) => {
                       as="textarea"
                       maxlength={100}
                       name="termsConditions"
+                      rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Terms & Conditions"
                     />
@@ -384,7 +388,7 @@ const UpdatePackage = ({ data }) => {
                     />
                   </div>
                   {/* Privacy Policy */}
-                  <div>
+                  <div className="col-span-2">
                     <label className="block text-sm font-medium">
                       Privacy Policy
                     </label>
@@ -392,6 +396,7 @@ const UpdatePackage = ({ data }) => {
                       as="textarea"
                       maxlength={100}
                       name="privacyPolicy"
+                      rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Privacy Policy"
                     />
@@ -481,12 +486,12 @@ const UpdatePackage = ({ data }) => {
                           }
                           ):
                         </h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                           {values.packageImages.map((img, idx) =>
                             img.isDeleted ? null : (
                               <div
                                 key={img.imageId ?? idx}
-                                className="relative group aspect-square rounded-lg overflow-hidden shadow-md border border-gray-200 bg-white"
+                                className="relative group aspect-square rounded-lg overflow-hidden shadow-md border border-gray-200 bg-white max-w-[120px] max-h-[120px]"
                               >
                                 {/* Image */}
                                 <img
