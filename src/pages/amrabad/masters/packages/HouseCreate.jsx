@@ -4,31 +4,25 @@ import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect, useState } from "react";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import { convertToBase64, convertImageUrlToBase64 } from "../../../../utils/Helper";
 
-// Function to convert files to base64 strings
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file); // Convert to base64
-  });
-};
 
-// Function to convert image URL to base64
-const convertImageUrlToBase64 = async (imageUrl) => {
+
+// Alternative approach: Skip base64 conversion for existing images if CORS fails
+const handleImageConversion = async (imageUrl, imageId) => {
+  // If it's a new image, it's already base64
+  if (!imageId) {
+    return imageUrl;
+  }
+
+  // For existing images, try to convert but don't fail if CORS blocks it
   try {
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+    const base64Image = await convertImageUrlToBase64(imageUrl);
+    return base64Image;
   } catch (error) {
-    console.error('Error converting image URL to base64:', error);
-    return imageUrl; // Fallback to original URL if conversion fails
+    console.warn('CORS blocked image conversion, using original URL:', error);
+    // Return a special marker to indicate this image should be skipped in conversion
+    return { originalUrl: imageUrl, skipConversion: true };
   }
 };
 
@@ -207,7 +201,19 @@ const HouseCreate = () => {
           values.roomImagesBase64Strings.map(async (img) => {
             if (!img.isNew && img.imageId) {
               // For existing images - convert URL to base64
-              const base64Image = await convertImageUrlToBase64(img.imageUrl);
+              const base64Image = await handleImageConversion(img.imageUrl, img.imageId);
+              
+              // Check if conversion was skipped due to CORS
+              if (typeof base64Image === 'object' && base64Image.skipConversion) {
+                return {
+                  imageId: img.imageId,
+                  isDeleted: img.isDeleted ? true : false,
+                  // Send original URL instead of base64 if CORS blocked conversion
+                  originalUrl: base64Image.originalUrl,
+                  skipConversion: true,
+                };
+              }
+              
               return {
                 imageId: img.imageId,
                 isDeleted: img.isDeleted ? true : false,
