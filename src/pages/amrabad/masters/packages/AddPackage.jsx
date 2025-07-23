@@ -13,7 +13,7 @@ const AddPackage = () => {
   const { savePackageWithRoom, isSavePackageWithRoomLoading } =
     usePackagesStore();
 
-  /*  Room template for new rooms                                       */
+  /*  Room template for new rooms */
   const createRoomTemplate = () => {
     const template = {
       roomName: "",
@@ -888,6 +888,26 @@ const AddPackage = () => {
                                         as="select"
                                         name={`rooms[${index}].discountType`}
                                         className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                        onChange={(e) => {
+                                          const discountType = e.target.value;
+                                          setFieldValue(
+                                            `rooms[${index}].discountType`,
+                                            discountType
+                                          );
+
+                                          // Clear all discount details when discount type changes
+                                          const updatedDiscountDetails = values.rooms[index].discountDetails.map(
+                                            (detail) => ({
+                                              ...detail,
+                                              discountValue: "",
+                                              amountAfterDiscount: "",
+                                            })
+                                          );
+                                          setFieldValue(
+                                            `rooms[${index}].discountDetails`,
+                                            updatedDiscountDetails
+                                          );
+                                        }}
                                       >
                                         <option value="">Select type</option>
                                         <option value="Amount">Amount</option>
@@ -954,30 +974,38 @@ const AddPackage = () => {
                                     </div>
                                     {/* Discount Table */}
                                     <div className="col-span-12">
-                                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-4">
-                                        <div className="grid grid-cols-2 gap-4">
-                                          {/* Discount applicable on */}
-                                          <div>
-                                            <h4 className="text-sm font-medium text-gray-900 mb-3">
-                                              Discount applicable on
-                                            </h4>
-                                            <div className="space-y-2">
-                                              {[
-                                                "Monday",
-                                                "Tuesday",
-                                                "Wednesday",
-                                                "Thursday",
-                                                "Friday",
-                                                "Saturday",
-                                                "Sunday",
-                                              ].map((day, dayIndex) => (
-                                                <div
-                                                  key={day}
-                                                  className="flex items-center justify-between"
-                                                >
-                                                  <span className="text-sm text-gray-700 w-20">
-                                                    {day}
-                                                  </span>
+                                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-8">
+                                        {/* Discount applicable on */}
+                                        <div>
+                                          <div className="space-y-2">
+                                            <div className="flex gap-[120px]">
+                                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                                Discount applicable on
+                                              </h4>
+                                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                                Amount after discount
+                                              </h4>
+                                            </div>
+                                            {[
+                                              "MONDAY",
+                                              "TUESDAY",
+                                              "WEDNESDAY",
+                                              "THURSDAY",
+                                              "FRIDAY",
+                                              "SATURDAY",
+                                              "SUNDAY",
+                                            ].map((day, dayIndex) => (
+                                              <div
+                                                key={day}
+                                                className="flex items-center justify-start gap-4"
+                                              >
+                                                {/* Day Label */}
+                                                <span className="text-sm text-gray-700 w-20">
+                                                  {day}
+                                                </span>
+
+                                                {/* Discount Input */}
+                                                <div className="relative">
                                                   <Field
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].discountValue`}
@@ -988,12 +1016,7 @@ const AddPackage = () => {
                                                         ? "0₹"
                                                         : "0%"
                                                     }
-                                                    className="w-20 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
-                                                    readOnly={
-                                                      values.rooms[index]
-                                                        .discountType ===
-                                                      "Amount"
-                                                    }
+                                                    className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
@@ -1002,22 +1025,22 @@ const AddPackage = () => {
                                                         value
                                                       );
 
-                                                      // Only calculate if discount type is Percentage
+                                                      // Calculate amount after discount based on discount type
+                                                      const tariff =
+                                                        values.rooms[index]
+                                                          .tariffPerDay || 0;
+                                                      const discountValue =
+                                                        parseFloat(value) || 0;
+
                                                       if (
                                                         values.rooms[index]
                                                           .discountType ===
                                                         "Percentage"
                                                       ) {
-                                                        // Calculate amount after discount
-                                                        const tariff =
-                                                          values.rooms[index]
-                                                            .tariffPerDay || 0;
-                                                        const percentage =
-                                                          parseFloat(value) ||
-                                                          0;
+                                                        // Calculate amount after discount for percentage
                                                         const discountAmount =
                                                           (tariff *
-                                                            percentage) /
+                                                            discountValue) /
                                                           100;
                                                         const amountAfterDiscount =
                                                           tariff -
@@ -1029,52 +1052,40 @@ const AddPackage = () => {
                                                             2
                                                           )
                                                         );
+                                                      } else if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Amount"
+                                                      ) {
+                                                        // Calculate amount after discount for amount
+                                                        const amountAfterDiscount =
+                                                          tariff -
+                                                          discountValue;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                          amountAfterDiscount.toFixed(
+                                                            2
+                                                          )
+                                                        );
                                                       }
                                                     }}
                                                   />
-                                                  <span className="text-sm text-gray-500">
+                                                  <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                                     {values.rooms[index]
                                                       .discountType === "Amount"
                                                       ? "₹"
                                                       : "%"}
                                                   </span>
                                                 </div>
-                                              ))}
-                                            </div>
-                                          </div>
 
-                                          {/* Amount after discount */}
-                                          <div>
-                                            <h4 className="text-sm font-medium text-gray-900 mb-3">
-                                              Amount after discount
-                                            </h4>
-                                            <div className="space-y-2">
-                                              {[
-                                                "Monday",
-                                                "Tuesday",
-                                                "Wednesday",
-                                                "Thursday",
-                                                "Friday",
-                                                "Saturday",
-                                                "Sunday",
-                                              ].map((day, dayIndex) => (
-                                                <div
-                                                  key={day}
-                                                  className="flex items-center justify-between"
-                                                >
-                                                  <span className="text-sm text-gray-700 w-20">
-                                                    {day}
-                                                  </span>
+                                                {/* Amount after Discount */}
+                                                <div className="relative">
                                                   <Field
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`}
                                                     placeholder="0₹"
-                                                    className="w-24 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
-                                                    readOnly={
-                                                      values.rooms[index]
-                                                        .discountType ===
-                                                      "Percentage"
-                                                    }
+                                                    className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
@@ -1083,19 +1094,19 @@ const AddPackage = () => {
                                                         value
                                                       );
 
-                                                      // Only calculate if discount type is Amount
+                                                      // Calculate discount value based on amount after discount
+                                                      const tariff =
+                                                        values.rooms[index]
+                                                          .tariffPerDay || 0;
+                                                      const amountAfterDiscount =
+                                                        parseFloat(value) || 0;
+
                                                       if (
                                                         values.rooms[index]
                                                           .discountType ===
                                                         "Amount"
                                                       ) {
-                                                        // Calculate discount amount based on amount after discount
-                                                        const tariff =
-                                                          values.rooms[index]
-                                                            .tariffPerDay || 0;
-                                                        const amountAfterDiscount =
-                                                          parseFloat(value) ||
-                                                          0;
+                                                        // Calculate discount amount for amount type
                                                         const discountAmount =
                                                           tariff -
                                                           amountAfterDiscount;
@@ -1106,15 +1117,35 @@ const AddPackage = () => {
                                                             2
                                                           )
                                                         );
+                                                      } else if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Percentage"
+                                                      ) {
+                                                        // Calculate discount percentage for percentage type
+                                                        const discountAmount =
+                                                          tariff -
+                                                          amountAfterDiscount;
+                                                        const discountPercentage =
+                                                          (discountAmount /
+                                                            tariff) *
+                                                          100;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                          discountPercentage.toFixed(
+                                                            2
+                                                          )
+                                                        );
                                                       }
                                                     }}
                                                   />
-                                                  <span className="text-sm text-gray-500">
+                                                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                                     ₹
                                                   </span>
                                                 </div>
-                                              ))}
-                                            </div>
+                                              </div>
+                                            ))}
                                           </div>
                                         </div>
                                       </div>
