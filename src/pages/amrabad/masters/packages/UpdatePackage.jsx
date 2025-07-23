@@ -137,7 +137,7 @@ const UpdatePackage = ({ data }) => {
         toast.success("Package updated successfully 🎉");
         // setCurrentTab(0);
         fetchPackagesWithRooms();
-      } else {
+      } else {  
         toast.error("Something went wrong while updating the package");
       }
     } catch (err) {
@@ -149,7 +149,7 @@ const UpdatePackage = ({ data }) => {
   /** ---------------- component ---------------- */
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       <div className="p-3">
         <Formik
           initialValues={initialValues}

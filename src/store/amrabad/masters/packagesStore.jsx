@@ -58,7 +58,7 @@ export const usePackagesStore = create((set) => ({
         saveHouseDetailsError: error.message,
         isSaveHouseDetailsLoading: false,
       });
-      throw error;
+      
     }
   },
   fetchGetAllPackages: async () => {
@@ -93,10 +93,8 @@ export const usePackagesStore = create((set) => ({
       return { success: true, data: response };
     } catch ({ error }) {
       set({
-        saveHouseDetailsError: error.message,
         isSavePackageWithRoomLoading: false,
       });
-      throw error;
     }
   },
 

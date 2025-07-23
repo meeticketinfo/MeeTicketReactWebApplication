@@ -18,7 +18,7 @@ const PackageTable = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       {isPackagesWithRoomsLoading ? (
         <PackageTableLoader />
       ) : (

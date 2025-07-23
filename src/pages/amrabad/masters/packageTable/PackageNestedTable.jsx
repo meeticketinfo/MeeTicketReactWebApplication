@@ -4,6 +4,7 @@ import { LuClipboardEdit } from "react-icons/lu";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import UpdatePackage from "../packages/UpdatePackage";
+import { ToastContainer } from "react-toastify";
 
 const PackageNestedTable = ({ data }) => {
   return (
@@ -35,6 +36,7 @@ const AccordionRow = ({ serial, row }) => {
   const [OpenModal, setOpenModal] = useState(false);
   return (
     <>
+    <ToastContainer position="top-right" autoClose={3000} />
       <tr
         className={`cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white `}
       >

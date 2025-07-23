@@ -20,9 +20,7 @@ const AddPackage = () => {
       tariffPerDay: null,
       hasDiscount: false,
       discountType: "",
-      discountValue: 0,
       amountAfterDiscount: 0,
-      discountApplicable: true,
       noOfHousesAvailable: 0,
       roomLimit: 0,
       isBlockout: false,
@@ -90,30 +88,10 @@ const AddPackage = () => {
       otherwise: (schema) => schema.notRequired(),
     }),
 
-    discountValue: Yup.number().when("hasDiscount", {
-      is: true,
-      then: (schema) =>
-        schema
-          .typeError("Must be a number")
-          .positive("Must be positive")
-          .required("Discount Value is required")
-          .nullable(),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-
-    discountApplicable: Yup.boolean().when("hasDiscount", {
-      is: true,
-      then: (schema) =>
-        schema
-          .required("Discount Applicable is required")
-          .typeError("Must be true or false"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-
     noOfHousesAvailable: positiveInt()
       .required("No Of Houses Available is required")
       .nullable(),
-    roomLimit: positiveInt().required("Room Limit is required").nullable(),
+    roomLimit: positiveInt().required("House Limit is required").nullable(),
     isBlockout: Yup.boolean().required("Required"),
 
     sequence: positiveInt().required("Sequence is required").nullable(),
@@ -223,9 +201,9 @@ const AddPackage = () => {
     }
   };
   return (
-    <div className="bg-white/30 p-3 rounded-2xl ">
+    <div className="bg-white/30 p-2 sm:p-3 rounded-2xl">
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="bg-white rounded-2xl p-3 shadow-md border border-gray-200">
+      <div className="bg-white rounded-2xl p-2 sm:p-3 shadow-md border border-gray-200">
         <Formik
           initialValues={initialValues}
           validationSchema={addPackageValidationSchema}
@@ -252,9 +230,9 @@ const AddPackage = () => {
             }
             return (
               <Form>
-                <div className="bg-[#F3F3F3] rounded-2xl mb-1 grid grid-cols-1 md:grid-cols-12 gap-4 p-3">
+                <div className="bg-[#F3F3F3] rounded-2xl mb-1 grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4 p-2 sm:p-3">
                   {/*  Package Name */}
-                  <div className="col-span-12">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
                     <label
                       htmlFor="openTime"
                       className="block text-sm font-medium"
@@ -274,7 +252,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/* discription */}
-                  <div className="col-span-12">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
                     <label className="block text-sm font-medium">
                       Description<span className="text-red-500">*</span>
                     </label>
@@ -292,7 +270,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/* Check In Time */}
-                  <div className="col-span-3">
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                     <label
                       htmlFor="package.checkInTime"
                       className="block text-sm font-medium"
@@ -313,7 +291,7 @@ const AddPackage = () => {
                   </div>
 
                   {/* Check Out Time */}
-                  <div className="col-span-3">
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                     <label
                       htmlFor="package.checkOutTime"
                       className="block text-sm font-medium"
@@ -334,7 +312,7 @@ const AddPackage = () => {
                   </div>
 
                   {/*  Latitude */}
-                  <div className="col-span-3">
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                     <label
                       htmlFor="latitude"
                       className="block text-sm font-medium"
@@ -355,7 +333,7 @@ const AddPackage = () => {
                   </div>
 
                   {/*  Longitude */}
-                  <div className="col-span-3">
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                     <label
                       htmlFor="longitude"
                       className="block text-sm font-medium"
@@ -375,7 +353,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/*  Guidelines */}
-                  <div className="col-span-6">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                     <label htmlFor="User" className="block text-sm font-medium">
                       Guidelines
                     </label>
@@ -388,7 +366,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/* Privacy Policy */}
-                  <div className="col-span-6">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                     <label className="block text-sm font-medium">
                       Privacy Policy
                     </label>
@@ -407,7 +385,7 @@ const AddPackage = () => {
                   </div>
 
                   {/* Cancellation Policy */}
-                  <div className="col-span-6">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                     <label className="block text-sm font-medium">
                       Cancellation Policy
                     </label>
@@ -425,7 +403,7 @@ const AddPackage = () => {
                       /> */}
                   </div>
                   {/* Terms & Conditions */}
-                  <div className="col-span-6">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                     <label className="block text-sm font-medium">
                       Terms & Conditions<span className="text-red-500">*</span>
                     </label>
@@ -443,7 +421,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/* status */}
-                  <div className="form-group col-span-3">
+                  <div className="form-group col-span-1 sm:col-span-3 lg:col-span-3">
                     <label
                       className="block text-sm font-medium"
                       htmlFor="package.isActive"
@@ -472,7 +450,7 @@ const AddPackage = () => {
                     />
                   </div>
                   {/* upload Image */}
-                  <div className="col-span-12">
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
                     <label
                       htmlFor="package.packageImageBase64Strings"
                       className="block text-sm font-medium mb-2"
@@ -482,7 +460,7 @@ const AddPackage = () => {
 
                     {/* Drag and Drop Zone */}
                     <div
-                      className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                      className={`relative border-2 border-dashed rounded-lg p-4 sm:p-8 text-center transition-colors ${
                         values.package.packageImageBase64Strings.length > 0
                           ? "border-green-300 bg-green-50"
                           : "border-gray-300 hover:border-blue-400 bg-gray-50"
@@ -528,7 +506,7 @@ const AddPackage = () => {
                       {/* Upload Icon */}
                       <div className="flex justify-center mb-4">
                         <svg
-                          className="w-12 h-12 text-gray-400"
+                          className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -543,7 +521,7 @@ const AddPackage = () => {
                       </div>
 
                       {/* Upload Text */}
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-gray-600 mb-2 text-sm">
                         Drop your images here, or{" "}
                         <label
                           htmlFor="package.packageImageBase64Strings"
@@ -554,7 +532,7 @@ const AddPackage = () => {
                       </p>
 
                       {/* File Specifications */}
-                      <p className="text-sm text-gray-500">
+                      <p className="text-xs sm:text-sm text-gray-500">
                         1600 × 1200 (4:3) recommended. PNG, JPG
                       </p>
 
@@ -596,12 +574,12 @@ const AddPackage = () => {
                           Selected Image Previews:
                         </h4>
 
-                        <div className="flex flex-wrap gap-4 h-20 overflow-auto ">
+                        <div className="flex flex-wrap gap-2 sm:gap-4 h-20 overflow-auto ">
                           {values.package.packageImageBase64Strings.map(
                             (base64Image, index) => (
                               <div
                                 key={index}
-                                className="relative w-[120px]  rounded overflow-hidden shadow-md border border-gray-200"
+                                className="relative w-[80px] sm:w-[120px] rounded overflow-hidden shadow-md border border-gray-200"
                               >
                                 {/* Delete button */}
                                 <button
@@ -616,7 +594,7 @@ const AddPackage = () => {
                                       updatedImages
                                     );
                                   }}
-                                  className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 hover:text-white transition-all"
+                                  className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs hover:bg-red-600 hover:text-white transition-all"
                                 >
                                   ×
                                 </button>
@@ -637,7 +615,7 @@ const AddPackage = () => {
 
                   {/* ---------------------------------------------------------------------------------------------------------------------- */}
                   {/* has sub facility */}
-                  <div className="flex items-center mt-5 col-span-12">
+                  <div className="flex items-center mt-5 col-span-1 sm:col-span-6 lg:col-span-12">
                     <Field
                       type="checkbox"
                       id="hasRooms"
@@ -689,10 +667,10 @@ const AddPackage = () => {
                           {values.rooms.map((rooms, index) => (
                             <div
                               key={index}
-                              className="card mb-3 p-3 bg-[#F3F3F3] border border-gray-100 rounded-2xl shadow-md"
+                              className="card mb-3 p-2 sm:p-3 bg-[#F3F3F3] border border-gray-100 rounded-2xl shadow-md"
                             >
                               <div className="flex items-center justify-between mb-4">
-                                <h1 className="font-medium">
+                                <h1 className="font-medium text-sm sm:text-base">
                                   House: {index + 1}
                                 </h1>
                                 {values.rooms.length > 1 && (
@@ -707,9 +685,9 @@ const AddPackage = () => {
                                           setFieldValue("hasRooms", false);
                                         }
                                       }}
-                                      className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
+                                      className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
                                     >
-                                      <MdDeleteForever className="text-white" />
+                                      <MdDeleteForever className="text-white text-sm sm:text-base" />
                                     </button>
                                   </div>
                                 )}
@@ -718,15 +696,15 @@ const AddPackage = () => {
                               <div
                                 className={`mb-6 ${
                                   values.hasRooms
-                                    ? "grid grid-cols-1 md:grid-cols-12 gap-4"
+                                    ? "grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4"
                                     : "hidden"
                                 }`}
                               >
                                 {/* House Name */}
-                                <div className="col-span-6">
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                                   <label
                                     htmlFor={`rooms[${index}].roomName`}
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     House Name{" "}
                                     <span className="text-red-500 text-xs">
@@ -749,10 +727,10 @@ const AddPackage = () => {
                                 </div>
 
                                 {/* Tariff Per Day */}
-                                <div className="col-span-3">
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor={`rooms[${index}].tariffPerDay`}
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     Tariff Per Day{" "}
                                     <span className="text-red-500 text-xs">
@@ -796,10 +774,10 @@ const AddPackage = () => {
                                   />
                                 </div>
                                 {/* No of Houses Available */}
-                                <div className="col-span-3">
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor="noOfHousesAvailable"
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     No of Houses Available{" "}
                                     <span className="text-red-500">*</span>
@@ -817,13 +795,13 @@ const AddPackage = () => {
                                     className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
-                                {/* room Limit */}
-                                <div className="col-span-3">
+                                {/* House Limit */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor="roomLimit"
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
-                                    Room Limit{" "}
+                                    House Limit{" "}
                                     <span className="text-red-500 text-xs">
                                       *
                                     </span>
@@ -833,7 +811,7 @@ const AddPackage = () => {
                                     maxLength="10"
                                     name={`rooms[${index}].roomLimit`}
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                                    placeholder="Enter Room Limit"
+                                    placeholder="Enter House Limit"
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].roomLimit`}
@@ -842,7 +820,7 @@ const AddPackage = () => {
                                   />
                                 </div>
                                 {/* discounts */}
-                                <div className="col-span-3">
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor={`rooms[${index}].hasDiscount`}
                                     className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
@@ -876,7 +854,7 @@ const AddPackage = () => {
                                 {values.rooms[index].hasDiscount === true && (
                                   <>
                                     {/* Discount Type */}
-                                    <div className="col-span-3">
+                                    <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                       <label
                                         className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                                         htmlFor={`rooms[${index}].discountType`}
@@ -921,64 +899,14 @@ const AddPackage = () => {
                                         className="text-red-500 text-xs mt-1"
                                       />
                                     </div>
-                                    {/* Discount Value */}
-                                    <div className="col-span-3">
-                                      <label
-                                        c
-                                        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                      >
-                                        Discount Value{" "}
-                                        <span className="text-red-500">*</span>
-                                      </label>
-                                      <Field
-                                        type="number"
-                                        placeholder="Enter Discount Value"
-                                        name={`rooms[${index}].discountValue`}
-                                        className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                                      />
-                                      <ErrorMessage
-                                        name={`rooms[${index}].discountValue`}
-                                        component="div"
-                                        className="text-red-500 text-xs mt-1"
-                                      />
-                                    </div>
-                                    {/* Discount Applicable */}
-                                    <div className="col-span-3">
-                                      <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                        Discount Applicable{" "}
-                                        <span className="text-red-500">*</span>
-                                      </label>
-                                      <Field
-                                        as="select"
-                                        name={`rooms[${index}].discountApplicable`}
-                                        className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                                        onChange={(e) => {
-                                          const Value =
-                                            e.target.value === "true";
 
-                                          setFieldValue(
-                                            `rooms[${index}].discountApplicable`,
-                                            Value
-                                          );
-                                        }}
-                                      >
-                                        <option value="">Select option</option>
-                                        <option value={true}>Yes</option>
-                                        <option value={false}>No</option>
-                                      </Field>
-                                      <ErrorMessage
-                                        name={`rooms[${index}].discountApplicable`}
-                                        component="div"
-                                        className="text-red-500 text-xs mt-1"
-                                      />
-                                    </div>
                                     {/* Discount Table */}
-                                    <div className="col-span-12">
-                                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-8">
+                                    <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 sm:p-8">
                                         {/* Discount applicable on */}
                                         <div>
                                           <div className="space-y-2">
-                                            <div className="flex gap-[120px]">
+                                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-[120px]">
                                               <h4 className="text-sm font-medium text-gray-900 mb-3">
                                                 Discount applicable on
                                               </h4>
@@ -997,15 +925,15 @@ const AddPackage = () => {
                                             ].map((day, dayIndex) => (
                                               <div
                                                 key={day}
-                                                className="flex items-center justify-start gap-4"
+                                                className="flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 sm:gap-4"
                                               >
                                                 {/* Day Label */}
-                                                <span className="text-sm text-gray-700 w-20">
+                                                <span className="text-sm text-gray-700 w-20 min-w-[80px]">
                                                   {day}
                                                 </span>
 
                                                 {/* Discount Input */}
-                                                <div className="relative">
+                                                <div className="relative w-full sm:w-auto">
                                                   <Field
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].discountValue`}
@@ -1016,7 +944,7 @@ const AddPackage = () => {
                                                         ? "0"
                                                         : "0"
                                                     }
-                                                    className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
+                                                    className="w-full sm:w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
@@ -1080,12 +1008,13 @@ const AddPackage = () => {
                                                 </div>
 
                                                 {/* Amount after Discount */}
-                                                <div className="relative">
+                                                <div className="relative w-full sm:w-auto">
                                                   <Field
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`}
                                                     placeholder="0"
-                                                    className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
+                                                    disabled={true}
+                                                    className="w-full sm:w-40 px-2 py-1 pl-6 bg-gray-300 border border-gray-300 rounded text-sm"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
@@ -1154,10 +1083,10 @@ const AddPackage = () => {
                                 )}
 
                                 {/* block out */}
-                                <div className="col-span-3">
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor={`rooms[${index}].isBlockout`}
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     Block out{" "}
                                     <span className="text-red-500">*</span>
@@ -1185,10 +1114,10 @@ const AddPackage = () => {
                                   />
                                 </div>
                                 {/* Sequence */}
-                                <div className="col-span-3">
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor="sequence"
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     Sequence{" "}
                                     <span className="text-red-500">*</span>
@@ -1207,10 +1136,10 @@ const AddPackage = () => {
                                   />
                                 </div>
                                 {/* Remarks */}
-                                <div className="col-span-6">
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
                                   <label
                                     htmlFor="remarks"
-                                    className=" text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
                                     Remarks
                                   </label>
@@ -1224,7 +1153,7 @@ const AddPackage = () => {
                                   />
                                 </div>
                                 {/* images */}
-                                <div className="col-span-12">
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-12">
                                   <label
                                     htmlFor={`rooms[${index}].roomImageBase64Strings`}
                                     className="block text-sm font-medium mb-2"
@@ -1235,7 +1164,7 @@ const AddPackage = () => {
 
                                   {/* Drag and Drop Zone */}
                                   <div
-                                    className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                                    className={`relative border-2 border-dashed rounded-lg p-4 sm:p-6 text-center transition-colors ${
                                       values.rooms[index]
                                         ?.roomImageBase64Strings?.length > 0
                                         ? "border-green-300 bg-green-50"
@@ -1271,9 +1200,10 @@ const AddPackage = () => {
                                       if (files.length > 0) {
                                         const base64Images = [];
                                         for (let i = 0; i < files.length; i++) {
-                                          const base64 = await convertToBase64(
-                                            files[i]
-                                          );
+                                          const base64 =
+                                            await convertToBase64(
+                                              files[i]
+                                            );
                                           base64Images.push(base64);
                                         }
                                         setFieldValue(
@@ -1286,7 +1216,7 @@ const AddPackage = () => {
                                     {/* Upload Icon */}
                                     <div className="flex justify-center mb-3">
                                       <svg
-                                        className="w-8 h-8 text-gray-400"
+                                        className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -1358,14 +1288,14 @@ const AddPackage = () => {
                                       <h4 className="block text-xs font-medium text-gray-700">
                                         Selected Image Previews:
                                       </h4>
-                                      <div className="flex gap-4 mt-2">
+                                      <div className="flex gap-2 sm:gap-4 mt-2">
                                         {values.rooms[
                                           index
                                         ]?.roomImageBase64Strings?.map(
                                           (base64Image, imgIndex) => (
                                             <div
                                               key={imgIndex}
-                                              className="relative w-[100px] h-[100px]"
+                                              className="relative w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]"
                                             >
                                               {/* Delete button */}
                                               <button
@@ -1383,7 +1313,7 @@ const AddPackage = () => {
                                                     updatedImages
                                                   );
                                                 }}
-                                                className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                                                className="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs hover:bg-red-600"
                                               >
                                                 ×
                                               </button>
@@ -1413,7 +1343,7 @@ const AddPackage = () => {
                   <button
                     type="submit"
                     className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                    //  disabled={isSaveUnifiedFacilityDetailsLoading}
+                     disabled={isSavePackageWithRoomLoading}
                   >
                     {isSavePackageWithRoomLoading ? "Saving..." : "Submit"}
                   </button>
