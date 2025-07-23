@@ -614,7 +614,8 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].amountAfterDiscount`}
                                     placeholder="0"
-                                    className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
+                                    disabled={true}
+                                    className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-gray-300"
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       // Convert empty string to null
@@ -891,7 +892,7 @@ const HouseCreate = () => {
                   <div>
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSaveHouseDetailsLoading}
                       className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 hover:cursor-pointer "
                     >
                       {isSaveHouseDetailsLoading

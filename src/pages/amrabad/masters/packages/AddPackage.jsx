@@ -255,6 +255,7 @@ const AddPackage = () => {
                     <Field
                       name="package.packageName"
                       type="text"
+                      maxLength={300}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Package Name"
                     />
@@ -271,7 +272,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={500}
                       name="package.description"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
                       placeholder="Enter Description"
@@ -373,7 +374,7 @@ const AddPackage = () => {
                     <Field
                       as="textarea"
                       name="package.guidelines"
-                      maxlength={50}
+                      maxlength={500}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Guidelines"
                     />
@@ -385,7 +386,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={1000}
                       name="package.privacyPolicy"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Privacy Policy"
@@ -404,7 +405,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={500}
                       name="package.cancellationPolicy"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Cancellation Policy"
@@ -422,7 +423,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={1000}
                       name="package.termsConditions"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Terms & Conditions"

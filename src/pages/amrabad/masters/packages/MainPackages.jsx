@@ -14,6 +14,11 @@ const MainPackages = () => {
     1: <AddPackage />,
     2: <HouseCreate />,
   };
+  const TitleConfig = {
+    0: "Packages",
+    1: "Add Package",
+    2: "Add House",
+  };
   return (
     <AdminLayout>
       
@@ -21,7 +26,7 @@ const MainPackages = () => {
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Packages
+            {TitleConfig[currentTab]}
             </h1>
           </div>
           {/* buttons */}
