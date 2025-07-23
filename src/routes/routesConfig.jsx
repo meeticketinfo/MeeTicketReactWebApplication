@@ -74,7 +74,6 @@ import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_i
 import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
-import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
 import Packages from "../pages/amrabad/user/packages/Packages";
 import Houses from "../pages/amrabad/user/houses/Houses";
 import AmarabadLogin from "../pages/amrabad/user/amarabadLogin/amarabadLogin";
