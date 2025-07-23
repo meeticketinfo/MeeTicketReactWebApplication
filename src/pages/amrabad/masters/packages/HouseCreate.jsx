@@ -42,12 +42,12 @@ const HouseCreate = () => {
         : "No"
       : "",
     discountType: isHouseEditVisible ? selectedSubRowData?.discountType : null,
-    discountValue: isHouseEditVisible
-      ? selectedSubRowData?.discountValue
-      : null,
-    amountAfterDiscount: isHouseEditVisible
-      ? selectedSubRowData?.amountAfterDiscount
-      : null,
+    // discountValue: isHouseEditVisible
+    //   ? selectedSubRowData?.discountValue
+    //   : null,
+    // amountAfterDiscount: isHouseEditVisible
+    //   ? selectedSubRowData?.amountAfterDiscount
+    //   : null,
     discountApplicable: isHouseEditVisible
       ? selectedSubRowData?.discountApplicable
         ? "true"
@@ -68,16 +68,17 @@ const HouseCreate = () => {
     //   ? selectedSubRowData?.roomImages
     //   : [],
 
-    roomImagesBase64Strings: isHouseEditVisible 
-      ? (Array.isArray(selectedSubRowData?.roomImages)
-          ? selectedSubRowData.roomImages.map((img) => ({
-              imageId: img.imageId,
-              imageUrl: img.imageUrl,
-              isNew: false,
-              isDeleted: false,
-            }))
-          : [])
-      : [],
+  roomImagesBase64Strings: isHouseEditVisible
+  ? (Array.isArray(selectedSubRowData?.roomImages)
+      ? selectedSubRowData.roomImages.map((img) => ({
+          imageId: img.imageId,
+          imageUrl: img.imageUrl,
+          isNew: false,
+          isDeleted: false,
+        }))
+      : [])
+  : [],
+
 
     // Add discountDetails array for daily discounts
     discountDetails:
@@ -180,26 +181,37 @@ const HouseCreate = () => {
     const isEdit = isHouseEditVisible;
  
     try {
-      const roomImagesPayload = values.roomImagesBase64Strings
-        .map((img) => {
-          if (!img.isNew && img.imageId) {
-            // For existing images, send the imageId and isDeleted status
-            return {
-              imageId: img.imageId,
-              imageUrl: img.imageUrl, // Keep original URL for existing images
-              isDeleted: img.isDeleted ? true : false,
-            };
-          } else {
-            // For new images, send the base64 data
-            return {
-              imageId: null,
-              imageUrl: img.imageUrl, // This is already base64 for new images
-              isDeleted:  false,
-            };
-          }
-        });
+      // Handle roomImagesBase64Strings based on add vs edit
+      let roomImagesPayload;
+      
+      if (isEdit) {
+        // For edit: array of objects with imageId, isDeleted, and base64Image
+        roomImagesPayload = values.roomImagesBase64Strings
+          .map((img) => {
+            if (!img.isNew && img.imageId) {
+              // For existing images
+              return {
+                imageId: img.imageId,
+                isDeleted: img.isDeleted ? true : false,
+                base64Image: img.imageUrl, // Keep original URL for existing images
+              };
+            } else {
+              // For new images
+              return {
+                imageId: null,
+                isDeleted: img.isDeleted ? true : false,
+                base64Image: img.imageUrl, // This is already base64 for new images
+              };
+            }
+          });
+      } else {
+        // For add: array of base64 strings (only non-deleted images)
+        roomImagesPayload = values.roomImagesBase64Strings
+          .filter((img) => !img.isDeleted)
+          .map((img) => img.imageUrl);
+      }
  
-            console.log("roomImagesPayload:", roomImagesPayload);
+      console.log("roomImagesPayload:", roomImagesPayload);
 
       const payload = {
         ...values,
