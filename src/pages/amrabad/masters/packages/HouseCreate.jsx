@@ -518,12 +518,7 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].discountValue`}
                                     placeholder="0"
-                                    className={`w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm ${
-                                      values.discountType === "Percentage" 
-                                        ? "bg-white" 
-                                        : "bg-[#DCDCDC]"
-                                    }`}
-                                    disabled={values.discountType !== "Percentage"}
+                                    className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       setFieldValue(
@@ -560,12 +555,7 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].amountAfterDiscount`}
                                     placeholder="0"
-                                    className={`w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm ${
-                                      values.discountType === "Amount" 
-                                        ? "bg-white" 
-                                        : "bg-[#DCDCDC]"
-                                    }`}
-                                    disabled={values.discountType !== "Amount"}
+                                    className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
                                     onChange={(e) => {
                                       const value = e.target.value;
                                       setFieldValue(
