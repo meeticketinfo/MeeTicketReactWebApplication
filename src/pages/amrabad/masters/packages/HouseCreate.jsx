@@ -568,9 +568,30 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].discountValue`}
                                     placeholder="0"
+                                    min="0"
+                                    step="0.01"
                                     className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
+                                    onKeyDown={(e) => {
+                                      // Prevent negative values and invalid characters
+                                      if (
+                                        ["-", "e", "E", "+"].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      
+                                      // Prevent negative values
+                                      if (parseFloat(value) < 0) {
+                                        e.target.value = "";
+                                        return;
+                                      }
+                                      
                                       // Convert empty string to null
                                       const processedValue = value === "" ? null : value;
                                       setFieldValue(
@@ -600,6 +621,17 @@ const HouseCreate = () => {
                                         amountAfterDiscount.toFixed(2)
                                       );
                                     }}
+                                    onBlur={(e) => {
+                                      // Additional check on blur to prevent negative values
+                                      const value = parseFloat(e.target.value);
+                                      if (value < 0) {
+                                        e.target.value = "";
+                                        setFieldValue(
+                                          `discountDetails[${dayIndex}].discountValue`,
+                                          null
+                                        );
+                                      }
+                                    }}
                                   />
                                   <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                     {values.discountType === "Percentage"
@@ -614,10 +646,31 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].amountAfterDiscount`}
                                     placeholder="0"
+                                    min="0"
+                                    step="0.01"
                                     disabled={true}
                                     className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-gray-300"
+                                    onKeyDown={(e) => {
+                                      // Prevent negative values and invalid characters
+                                      if (
+                                        ["-", "e", "E", "+"].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      
+                                      // Prevent negative values
+                                      if (parseFloat(value) < 0) {
+                                        e.target.value = "";
+                                        return;
+                                      }
+                                      
                                       // Convert empty string to null
                                       const processedValue = value === "" ? null : value;
                                       setFieldValue(
@@ -649,6 +702,17 @@ const HouseCreate = () => {
                                         `discountDetails[${dayIndex}].discountValue`,
                                         discountValue
                                       );
+                                    }}
+                                    onBlur={(e) => {
+                                      // Additional check on blur to prevent negative values
+                                      const value = parseFloat(e.target.value);
+                                      if (value < 0) {
+                                        e.target.value = "";
+                                        setFieldValue(
+                                          `discountDetails[${dayIndex}].amountAfterDiscount`,
+                                          null
+                                        );
+                                      }
                                     }}
                                   />
                                   <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">

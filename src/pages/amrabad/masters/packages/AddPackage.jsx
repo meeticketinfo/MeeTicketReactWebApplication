@@ -839,7 +839,7 @@ const AddPackage = () => {
                                     htmlFor={`rooms[${index}].hasDiscount`}
                                     className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
-                                    Discounts
+                                    Discount
                                     <span className="text-red-500">*</span>
                                   </label>
                                   <Field
@@ -965,10 +965,31 @@ const AddPackage = () => {
                                                         dayIndex
                                                       ].discountValue || ""
                                                     }
+                                                    min="0"
+                                                    step="0.01"
                                                     className="w-full sm:w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
+                                                    onKeyDown={(e) => {
+                                                      // Prevent negative values and invalid characters
+                                                      if (
+                                                        ["-", "e", "E", "+"].includes(
+                                                          e.key
+                                                        ) ||
+                                                        (e.key.length === 1 &&
+                                                          !/[0-9]/.test(e.key))
+                                                      ) {
+                                                        e.preventDefault();
+                                                      }
+                                                    }}
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
+                                                      
+                                                      // Prevent negative values
+                                                      if (parseFloat(value) < 0) {
+                                                        e.target.value = "";
+                                                        return;
+                                                      }
+                                                      
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1024,6 +1045,17 @@ const AddPackage = () => {
                                                         );
                                                       }
                                                     }}
+                                                    onBlur={(e) => {
+                                                      // Additional check on blur to prevent negative values
+                                                      const value = parseFloat(e.target.value);
+                                                      if (value < 0) {
+                                                        e.target.value = "";
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                          null
+                                                        );
+                                                      }
+                                                    }}
                                                   />
                                                   <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                                     {values.rooms[index]
@@ -1046,11 +1078,32 @@ const AddPackage = () => {
                                                       ].amountAfterDiscount ||
                                                       ""
                                                     }
+                                                    min="0"
+                                                    step="0.01"
                                                     disabled={true}
                                                     className="w-full sm:w-40 px-2 py-1 pl-6 bg-gray-300 border border-gray-300 rounded text-sm"
+                                                    onKeyDown={(e) => {
+                                                      // Prevent negative values and invalid characters
+                                                      if (
+                                                        ["-", "e", "E", "+"].includes(
+                                                          e.key
+                                                        ) ||
+                                                        (e.key.length === 1 &&
+                                                          !/[0-9]/.test(e.key))
+                                                      ) {
+                                                        e.preventDefault();
+                                                      }
+                                                    }}
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
+                                                      
+                                                      // Prevent negative values
+                                                      if (parseFloat(value) < 0) {
+                                                        e.target.value = "";
+                                                        return;
+                                                      }
+                                                      
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1103,6 +1156,17 @@ const AddPackage = () => {
                                                           discountPercentage.toFixed(
                                                             2
                                                           )
+                                                        );
+                                                      }
+                                                    }}
+                                                    onBlur={(e) => {
+                                                      // Additional check on blur to prevent negative values
+                                                      const value = parseFloat(e.target.value);
+                                                      if (value < 0) {
+                                                        e.target.value = "";
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                          null
                                                         );
                                                       }
                                                     }}
