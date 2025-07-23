@@ -61,6 +61,8 @@ const ParkCreate = ({
     Area: isParkEditVisible ? parkEditDetails.city : "",
     State: "Telangana",
     ZipCode: isParkEditVisible ? parkEditDetails.zipCode : "",
+    Latitude:isParkEditVisible ? parkEditDetails.latitude : "",
+    Longitude:isParkEditVisible ? parkEditDetails.longitude : "",
     IsActive: isParkEditVisible ? parkEditDetails.isActive : "",
     IsCounter: isParkEditVisible ? parkEditDetails.isCounter : "",
     Description: isParkEditVisible ? parkEditDetails.description : "",
@@ -107,6 +109,17 @@ const ParkCreate = ({
       .nullable()
       .matches(/^\d+$/, "Pincode must be a number")
       .length(6, "Pincode must be exactly 6 digits"),
+      Latitude: Yup.number()
+        .typeError("Latitude must be a number")
+        .required("Latitude is required")
+        .min(-90,"Must be in decimal")
+        .max(90,"Must be in decimal"),
+
+      Longitude: Yup.number()
+        .typeError("Longitude must be a number")
+        .required("Longitude is required")
+        .min(-180,"Must be in decimal")
+        .max(180,"Must be in decimal"),
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
@@ -156,6 +169,17 @@ const ParkCreate = ({
       .nullable()
       .matches(/^\d+$/, "Zip Code must be a number")
       .length(6, "Pincode must be exactly 5 digits"),
+      Latitude: Yup.number()
+        .typeError("Latitude must be a number")
+        .required("Latitude is required")
+        .min(-90,"must be in decimal")
+        .max(90,"must be in decimal"),
+
+      Longitude: Yup.number()
+        .typeError("Longitude must be a number")
+        .required("Longitude is required")
+        .min(-180,"must be in decimal")
+        .max(180,"must be in decimal"),
     Description: Yup.string()
       .nullable()
       .min(10, "Description must be at least 10 characters long")
@@ -443,7 +467,47 @@ const ParkCreate = ({
                     className="text-red-500 text-xs"
                   />
                 </div>
+                {/*  Latitude */}
+                  <div className="">
+                    <label
+                      htmlFor="Latitude"
+                      className="block text-sm font-medium"
+                    >
+                      Latitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="Latitude"
+                      type="text"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Latitude"
+                    />
+                    <ErrorMessage
+                      name="Latitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
 
+                  {/*  Longitude */}
+                  <div className="">
+                    <label
+                      htmlFor="Longitude"
+                      className="block text-sm font-medium"
+                    >
+                      Longitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="Longitude"
+                      type="text"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter longitude"
+                    />
+                    <ErrorMessage
+                      name="Longitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
                 {/* Status */}
                 <div>
                   <label className="block text-sm font-medium">

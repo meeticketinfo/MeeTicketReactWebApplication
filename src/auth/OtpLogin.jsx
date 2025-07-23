@@ -37,7 +37,8 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
   const login = async (values) => {
     setLoading(true);
     setError(null);
-
+    localStorage.setItem("login_id", values.mobileNumber);
+onOtpSent(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}Authentication/SendLoginOTP`,

@@ -188,55 +188,7 @@ const FacilityCreate = ({ onDataAdded }) => {
                   />
                 </div>
 
-                {/* Open Time */}
-                <div className="">
-                  <label
-                    htmlFor="openTime"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Open Time
-                  </label>
-                  <Field
-                    type="time"
-                    name="openTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.openTime && touched.openTime
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none placeholder:transition-all text-gray-700 placeholder:duration-500 placeholder:ease-in-out focus:placeholder:translate-x-2 bg-white text-sm`}
-                    placeholder="Enter Open Time"
-                  />
-                  <ErrorMessage
-                    name="openTime"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
-
-                {/* Close Time */}
-                <div className="">
-                  <label
-                    htmlFor="closeTime"
-                    className="block text-sm font-semibold text-gray-700"
-                  >
-                    Close Time
-                  </label>
-                  <Field
-                    type="time"
-                    name="closeTime"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.closeTime && touched.closeTime
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    placeholder="Enter Close Time"
-                  />
-                  <ErrorMessage
-                    name="closeTime"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
+                
 
                 {/* Description */}
                 <div className="col-span-1">
