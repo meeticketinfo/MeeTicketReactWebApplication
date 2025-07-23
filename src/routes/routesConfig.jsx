@@ -67,6 +67,11 @@ import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDa
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
+import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
+import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
+import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
+import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
+import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
@@ -540,11 +545,26 @@ export const routes = [
     path: "/amarabad/test",
     element: <AmrabadProtectRoute element={<AmrabadTest />} />,
   },
-
-  // amrabad
+  // amrabad admin routes
   {
     path: "/packages",
     element: <ProtectedRoute element={<MainPackages />} />,
+  },
+   { 
+    path: "/amrabad-packages",
+    element: <ProtectedRoute element={<MainPackages/>} />,
+  },
+  { 
+    path: "/amrabad-consolidated-reports",
+    element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
+  },
+    { 
+    path: "/amrabad-individual-reports",
+    element: <ProtectedRoute element={<AmrabadIndividualReports/>} />,
+  },
+   { 
+    path: "/amrabad-payment-transactions",
+    element: <ProtectedRoute element={<AmrabadPaymentTransactionsReport />} />,
   },
   // metro transaction reports
 

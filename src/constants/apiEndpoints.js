@@ -14,7 +14,7 @@ export const PAYNOW_API_BASE_URL =
 
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/"; 
 
 // METRO UAT
 export const METRO_API_BASE_URL =
@@ -52,6 +52,7 @@ export const AMRABAD_API_BASE_URL =
 "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
+//  PARK UAT testing
 // export const API_BASE_URL =
 //   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
@@ -299,6 +300,25 @@ export const API_ENDPOINTS = {
     GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
+
+  AMRABAD:{
+    MASTERS:{
+       GET_PACKAGES_WITH_ROOMS: `${AMRABAD_API_BASE_URL}Master/GetPackagesWithRooms`,
+       ADD_HOUSE:`${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
+       UPDATE_HOUSE:`${AMRABAD_API_BASE_URL}Master/UpdateRoom`,
+       GET_ALL_PACKAGES:`${AMRABAD_API_BASE_URL}Master/GetAllPackages`,
+       ADD_PACKAGE_WITH_ROOM:`${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
+       UPDATE_PACKAGE:`${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
+    },
+    REPORTS:{
+    GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
+    GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
+    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`
+    },
+    USER:{
+
+    }
+  },
   FAILED_TRANSACTIONS: {
     GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
     GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
@@ -330,12 +350,4 @@ export const API_ENDPOINTS = {
     GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
     }
   },
-  AMRABAD:{
-    MASTERS:{
-      
-    },
-    USER:{
-
-    }
-  }
 };
