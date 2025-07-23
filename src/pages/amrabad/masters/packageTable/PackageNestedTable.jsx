@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 const PackageNestedTable = ({ data }) => {
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
+      
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
         <thead className="bg-[#f8f8f8] text-blue-v1 text-sm">
           <tr>
@@ -34,9 +35,15 @@ const PackageNestedTable = ({ data }) => {
 const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [OpenModal, setOpenModal] = useState(false);
+  
+  // Callback function to close modal after successful update
+  const handleUpdateSuccess = () => {
+    setOpenModal(false);
+  };
+  
   return (
     <>
-    <ToastContainer position="top-right" autoClose={3000} />
+   
       <tr
         className={`cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white `}
       >
@@ -130,7 +137,7 @@ const AccordionRow = ({ serial, row }) => {
         contentClassName="bg-white"
       >
         <div className="px-7">
-          <UpdatePackage data={row} />
+          <UpdatePackage data={row} onUpdateSuccess={handleUpdateSuccess} />
         </div>
       </PopupModal>
     </>

@@ -28,16 +28,32 @@ const AddPackage = () => {
       remarks: "",
       roomImageBase64Strings: [],
       discountDetails: [
-        { dayOfWeek: "Monday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Tuesday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Wednesday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Thursday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Friday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Saturday", discountValue: "", amountAfterDiscount: "" },
-        { dayOfWeek: "Sunday", discountValue: "", amountAfterDiscount: "" },
+        { dayOfWeek: "Monday", discountValue: null, amountAfterDiscount: null },
+        {
+          dayOfWeek: "Tuesday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        {
+          dayOfWeek: "Wednesday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        {
+          dayOfWeek: "Thursday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        { dayOfWeek: "Friday", discountValue: null, amountAfterDiscount: null },
+        {
+          dayOfWeek: "Saturday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        { dayOfWeek: "Sunday", discountValue: null, amountAfterDiscount: null },
       ],
     };
-    console.log("Creating room template:", template);
+  
     return template;
   };
 
@@ -73,7 +89,7 @@ const AddPackage = () => {
 
   /*  ONE room schema (uses Yup.when)                                   */
   const roomSchema = Yup.object().shape({
-    roomName: Yup.string().max(10).required("House name is required"),
+    roomName: Yup.string().max(100).required("House name is required"),
     tariffPerDay: Yup.number()
       .typeError("Must be a number")
       .positive()
@@ -177,21 +193,18 @@ const AddPackage = () => {
   /*  Submit handler   */
 
   const onSubmit = async (values, { setSubmitting, setErrors }) => {
-    console.log("Form values:", values);
-    console.log("isHasRoom:", isHasRoom);
-
     const WithOutRoomspayLoad = { package: values.package };
     const WithRoomspayLoad = values;
     const Payload = isHasRoom ? WithRoomspayLoad : WithOutRoomspayLoad;
 
-    console.log("Payload being sent:", Payload);
-
     try {
       const res = await savePackageWithRoom(Payload);
-      console.log("res", res);
+
       if (res.data.status === 200) {
         toast.success("Package Added Successfully");
-        setCurrentTab(0);
+        setTimeout(() => {
+          setCurrentTab(0);
+        }, 1000);
       }
     } catch (err) {
       console.error("Submit error:", err);
@@ -622,16 +635,16 @@ const AddPackage = () => {
                       name="hasRooms"
                       onChange={(e) => {
                         const isChecked = e.target.checked;
-                        console.log("Has House checkbox changed:", isChecked);
+                     
                         setIsHasRoom(isChecked);
                         setFieldValue("hasRooms", isChecked);
                         if (isChecked) {
                           // Ensure the first room has the complete structure
                           const firstRoom = createRoomTemplate();
-                          console.log("Setting first room:", firstRoom);
+                         
                           replace([firstRoom]);
                         } else {
-                          console.log("Clearing rooms array");
+                          
                           replace([]);
                         }
                       }}
@@ -654,7 +667,7 @@ const AddPackage = () => {
                           type="button"
                           onClick={() => {
                             const newRoom = createRoomTemplate();
-                            console.log("Adding new room:", newRoom);
+                            
                             push(newRoom);
                           }}
                           className={`${
@@ -713,7 +726,7 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="text"
-                                    maxLength="10"
+                                    maxLength="100"
                                     id={`rooms[${index}].roomName`}
                                     name={`rooms[${index}].roomName`}
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -874,13 +887,14 @@ const AddPackage = () => {
                                           );
 
                                           // Clear all discount details when discount type changes
-                                          const updatedDiscountDetails = values.rooms[index].discountDetails.map(
-                                            (detail) => ({
+                                          const updatedDiscountDetails =
+                                            values.rooms[
+                                              index
+                                            ].discountDetails.map((detail) => ({
                                               ...detail,
-                                              discountValue: "",
-                                              amountAfterDiscount: "",
-                                            })
-                                          );
+                                              discountValue: null,
+                                              amountAfterDiscount: null,
+                                            }));
                                           setFieldValue(
                                             `rooms[${index}].discountDetails`,
                                             updatedDiscountDetails
@@ -944,13 +958,24 @@ const AddPackage = () => {
                                                         ? "0"
                                                         : "0"
                                                     }
+                                                    value={
+                                                      values.rooms[index]
+                                                        .discountDetails[
+                                                        dayIndex
+                                                      ].discountValue || ""
+                                                    }
                                                     className="w-full sm:w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
+                                                      // Convert empty string to null
+                                                      const finalValue =
+                                                        value === ""
+                                                          ? null
+                                                          : value;
                                                       setFieldValue(
                                                         `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
-                                                        value
+                                                        finalValue
                                                       );
 
                                                       // Calculate amount after discount based on discount type
@@ -1013,14 +1038,26 @@ const AddPackage = () => {
                                                     type="number"
                                                     name={`rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`}
                                                     placeholder="0"
+                                                    value={
+                                                      values.rooms[index]
+                                                        .discountDetails[
+                                                        dayIndex
+                                                      ].amountAfterDiscount ||
+                                                      ""
+                                                    }
                                                     disabled={true}
                                                     className="w-full sm:w-40 px-2 py-1 pl-6 bg-gray-300 border border-gray-300 rounded text-sm"
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
+                                                      // Convert empty string to null
+                                                      const finalValue =
+                                                        value === ""
+                                                          ? null
+                                                          : value;
                                                       setFieldValue(
                                                         `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
-                                                        value
+                                                        finalValue
                                                       );
 
                                                       // Calculate discount value based on amount after discount
@@ -1200,10 +1237,9 @@ const AddPackage = () => {
                                       if (files.length > 0) {
                                         const base64Images = [];
                                         for (let i = 0; i < files.length; i++) {
-                                          const base64 =
-                                            await convertToBase64(
-                                              files[i]
-                                            );
+                                          const base64 = await convertToBase64(
+                                            files[i]
+                                          );
                                           base64Images.push(base64);
                                         }
                                         setFieldValue(
@@ -1343,7 +1379,7 @@ const AddPackage = () => {
                   <button
                     type="submit"
                     className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                     disabled={isSavePackageWithRoomLoading}
+                    disabled={isSavePackageWithRoomLoading}
                   >
                     {isSavePackageWithRoomLoading ? "Saving..." : "Submit"}
                   </button>

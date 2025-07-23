@@ -58,7 +58,6 @@ export const usePackagesStore = create((set) => ({
         saveHouseDetailsError: error.message,
         isSaveHouseDetailsLoading: false,
       });
-      
     }
   },
   fetchGetAllPackages: async () => {
@@ -114,7 +113,6 @@ export const usePackagesStore = create((set) => ({
         saveHouseDetailsError: error.message,
         isUpdatePackageLoading: false,
       });
-      throw error;
     }
   },
 }));

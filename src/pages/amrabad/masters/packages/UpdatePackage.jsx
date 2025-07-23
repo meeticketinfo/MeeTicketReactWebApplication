@@ -19,7 +19,7 @@ const urlToBase64 = async (url) => {
   });
 };
 
-const UpdatePackage = ({ data }) => {
+const UpdatePackage = ({ data, onUpdateSuccess }) => {
   const { UpdatePackage, isUpdatePackageLoading, fetchPackagesWithRooms } =
     usePackagesStore();
 
@@ -31,9 +31,8 @@ const UpdatePackage = ({ data }) => {
     description: Yup.string()
       .max(100, "Max 100 characters")
       .required("Description is required"),
-    checkInTime: Yup.string()
-      .required("Check-in time is required"),
-      // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
+    checkInTime: Yup.string().required("Check-in time is required"),
+    // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
     checkOutTime: Yup.string()
       .required("Check-out time is required")
       // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format")
@@ -62,17 +61,23 @@ const UpdatePackage = ({ data }) => {
       .max(180)
       .nullable(),
     packageImages: Yup.array()
-      .of(Yup.object().shape({
-        imageId: Yup.mixed().nullable(),
-        imageUrl: Yup.string().nullable(),
-        isNew: Yup.boolean(),
-        isDeleted: Yup.boolean(),
-      }))
-      .test('at-least-one-image', 'At least one image is required', function(value) {
-        if (!value || value.length === 0) return false;
-        const nonDeletedImages = value.filter(img => !img.isDeleted);
-        return nonDeletedImages.length > 0;
-      }),
+      .of(
+        Yup.object().shape({
+          imageId: Yup.mixed().nullable(),
+          imageUrl: Yup.string().nullable(),
+          isNew: Yup.boolean(),
+          isDeleted: Yup.boolean(),
+        })
+      )
+      .test(
+        "at-least-one-image",
+        "At least one image is required",
+        function (value) {
+          if (!value || value.length === 0) return false;
+          const nonDeletedImages = value.filter((img) => !img.isDeleted);
+          return nonDeletedImages.length > 0;
+        }
+      ),
     isActive: Yup.boolean().required("Status is required"),
   });
 
@@ -104,7 +109,6 @@ const UpdatePackage = ({ data }) => {
 
   /** ---------------- submit handler ---------------- */
   const onSubmit = async (values) => {
-    
     try {
       const packageImages = [];
 
@@ -134,22 +138,26 @@ const UpdatePackage = ({ data }) => {
       const res = await UpdatePackage(payload);
 
       if (res.data.status === 200) {
+        
+      
         toast.success("Package updated successfully 🎉");
-        // setCurrentTab(0);
-        fetchPackagesWithRooms();
-      } else {  
+        // Close the modal after successful update
+        setTimeout(() => {
+          onUpdateSuccess(); // close modal
+          fetchPackagesWithRooms(); // refresh table
+        }, 1000);
+      } else {
         toast.error("Something went wrong while updating the package");
       }
     } catch (err) {
       toast.error("Something went wrong while updating the package");
-    } finally {
-    }
+    } 
   };
 
   /** ---------------- component ---------------- */
   return (
     <>
-      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="p-3">
         <Formik
           initialValues={initialValues}
@@ -543,7 +551,7 @@ const UpdatePackage = ({ data }) => {
                 <div className="flex justify-center mt-4">
                   <button
                     type="submit"
-                    // disabled={isSubmitting || isUpdatePackageLoading}
+                    disabled={ isUpdatePackageLoading}
                     className="bg-blue-v1 text-white rounded-lg px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1"
                   >
                     {isUpdatePackageLoading ? "Updating..." : "Update"}

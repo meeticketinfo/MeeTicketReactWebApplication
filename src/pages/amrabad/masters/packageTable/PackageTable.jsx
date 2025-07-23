@@ -11,14 +11,14 @@ const PackageTable = () => {
     isPackagesWithRoomsLoading,
     fetchPackagesWithRooms,
   } = usePackagesStore();
-  console.log("PackagesWithRooms", PackagesWithRooms);
+ 
   useEffect(() => {
     fetchPackagesWithRooms();
   }, []);
 
   return (
     <>
-      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
+   
       {isPackagesWithRoomsLoading ? (
         <PackageTableLoader />
       ) : (

@@ -1,12 +1,13 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect, useState } from "react";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
-import { convertToBase64, convertImageUrlToBase64 } from "../../../../utils/Helper";
-
-
+import {
+  convertToBase64,
+  convertImageUrlToBase64,
+} from "../../../../utils/Helper";
 
 // Alternative approach: Skip base64 conversion for existing images if CORS fails
 const handleImageConversion = async (imageUrl, imageId) => {
@@ -20,7 +21,7 @@ const handleImageConversion = async (imageUrl, imageId) => {
     const base64Image = await convertImageUrlToBase64(imageUrl);
     return base64Image;
   } catch (error) {
-    console.warn('CORS blocked image conversion, using original URL:', error);
+    console.warn("CORS blocked image conversion, using original URL:", error);
     // Return a special marker to indicate this image should be skipped in conversion
     return { originalUrl: imageUrl, skipConversion: true };
   }
@@ -79,51 +80,61 @@ const HouseCreate = () => {
     //   ? selectedSubRowData?.roomImages
     //   : [],
 
-  roomImagesBase64Strings: isHouseEditVisible
-  ? (Array.isArray(selectedSubRowData?.roomImages)
-      ? selectedSubRowData.roomImages.map((img) => ({
-          imageId: img.imageId,
-          imageUrl: img.imageUrl,
-          isNew: false,
-          isDeleted: false,
-        }))
-      : [])
-  : [],
-
+    roomImagesBase64Strings: isHouseEditVisible
+      ? Array.isArray(selectedSubRowData?.roomImages)
+        ? selectedSubRowData.roomImages.map((img) => ({
+            imageId: img.imageId,
+            imageUrl: img.imageUrl,
+            isNew: false,
+            isDeleted: false,
+          }))
+        : []
+      : [],
 
     // Add discountDetails array for daily discounts
     discountDetails:
       isHouseEditVisible && selectedSubRowData?.discountDetails
         ? selectedSubRowData.discountDetails.map((discount) => ({
             dayOfWeek: discount.dayOfWeek || "",
-
-            discountValue: discount.discountValue || "",
-            amountAfterDiscount: discount.amountAfterDiscount || "",
+            discountValue: discount.discountValue || null,
+            amountAfterDiscount: discount.amountAfterDiscount || null,
           }))
         : [
-            { dayOfWeek: "Monday", discountValue: "", amountAfterDiscount: "" },
+            {
+              dayOfWeek: "Monday",
+              discountValue: null,
+              amountAfterDiscount: null,
+            },
             {
               dayOfWeek: "Tuesday",
-              discountValue: "",
-              amountAfterDiscount: "",
+              discountValue: null,
+              amountAfterDiscount: null,
             },
             {
               dayOfWeek: "Wednesday",
-              discountValue: "",
-              amountAfterDiscount: "",
+              discountValue: null,
+              amountAfterDiscount: null,
             },
             {
               dayOfWeek: "Thursday",
-              discountValue: "",
-              amountAfterDiscount: "",
+              discountValue: null,
+              amountAfterDiscount: null,
             },
-            { dayOfWeek: "Friday", discountValue: "", amountAfterDiscount: "" },
+            {
+              dayOfWeek: "Friday",
+              discountValue: null,
+              amountAfterDiscount: null,
+            },
             {
               dayOfWeek: "Saturday",
-              discountValue: "",
-              amountAfterDiscount: "",
+              discountValue: null,
+              amountAfterDiscount: null,
             },
-            { dayOfWeek: "Sunday", discountValue: "", amountAfterDiscount: "" },
+            {
+              dayOfWeek: "Sunday",
+              discountValue: null,
+              amountAfterDiscount: null,
+            },
           ],
   };
 
@@ -161,8 +172,8 @@ const HouseCreate = () => {
     discountDetails: Yup.array().of(
       Yup.object().shape({
         dayOfWeek: Yup.string().required("Day of week is required"),
-        discountValue: Yup.string().nullable(),
-        amountAfterDiscount: Yup.string().nullable(),
+        discountValue: Yup.string().nullable().transform((value) => value === "" ? null : value),
+        amountAfterDiscount: Yup.string().nullable().transform((value) => value === "" ? null : value),
       })
     ),
     roomImagesBase64Strings: Yup.array()
@@ -187,24 +198,29 @@ const HouseCreate = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log("Form Submitted:", values);
-    console.log("Discount details data:", values.discountDetails);
+   
     const isEdit = isHouseEditVisible;
- 
+
     try {
       // Handle roomImagesBase64Strings based on add vs edit
       let roomImagesPayload;
-      
+
       if (isEdit) {
         // For edit: array of objects with imageId, isDeleted, and base64Image
         roomImagesPayload = await Promise.all(
           values.roomImagesBase64Strings.map(async (img) => {
             if (!img.isNew && img.imageId) {
               // For existing images - convert URL to base64
-              const base64Image = await handleImageConversion(img.imageUrl, img.imageId);
-              
+              const base64Image = await handleImageConversion(
+                img.imageUrl,
+                img.imageId
+              );
+
               // Check if conversion was skipped due to CORS
-              if (typeof base64Image === 'object' && base64Image.skipConversion) {
+              if (
+                typeof base64Image === "object" &&
+                base64Image.skipConversion
+              ) {
                 return {
                   imageId: img.imageId,
                   isDeleted: img.isDeleted ? true : false,
@@ -213,7 +229,7 @@ const HouseCreate = () => {
                   skipConversion: true,
                 };
               }
-              
+
               return {
                 imageId: img.imageId,
                 isDeleted: img.isDeleted ? true : false,
@@ -235,8 +251,15 @@ const HouseCreate = () => {
           .filter((img) => !img.isDeleted)
           .map((img) => img.imageUrl);
       }
- 
-      console.log("roomImagesPayload:", roomImagesPayload);
+
+    
+
+      // Convert empty strings to null for discount values
+      const processedDiscountDetails = values.discountDetails.map(discount => ({
+        ...discount,
+        discountValue: discount.discountValue === "" ? null : discount.discountValue,
+        amountAfterDiscount: discount.amountAfterDiscount === "" ? null : discount.amountAfterDiscount,
+      }));
 
       const payload = {
         ...values,
@@ -245,27 +268,32 @@ const HouseCreate = () => {
         isBlockout: values.isBlockout === "Yes",
         discountApplicable: values.discountApplicable === "true",
         roomImagesBase64Strings: roomImagesPayload,
-        discountDetails: values.discountDetails, // Include the discountDetails array
+        discountDetails: processedDiscountDetails, // Use the processed discount details
       };
 
       if (!payload.hasDiscount) {
         payload.discountType = null;
         payload.discountValue = null;
         payload.amountAfterDiscount = null;
-                payload.discountApplicable = null;
+        payload.discountApplicable = null;
       }
+
       
-      console.log("Final payload being sent:", payload);
       const result = await saveHouseDetails(payload, isEdit);
 
       if (result.data.status === 200) {
+       
         toast.success(
           isEdit ? "House updated successfully" : "House created successfully"
         );
         setIsHouseEditVisible(false);
         fetchPackagesWithRooms();
         resetForm();
-        setCurrentTab(0);
+        
+        // Add a small delay before changing tab to ensure toast is visible
+        setTimeout(() => {
+          setCurrentTab(0);
+        }, 1000);
       }
     } catch (xhr) {
       if (xhr?.response?.data?.errors) {
@@ -283,6 +311,7 @@ const HouseCreate = () => {
   return (
     <>
       <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
+        <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -299,16 +328,8 @@ const HouseCreate = () => {
                 console.log("Discount details errors:", errors.discountDetails);
               }
             }
-            
-            // Debug roomImagesBase64Strings
-            console.log(
-              "roomImagesBase64Strings:",
-              values.roomImagesBase64Strings
-            );
-            console.log(
-              "roomImagesBase64Strings length:",
-              values.roomImagesBase64Strings?.length
-            );
+
+          
             return (
               <Form>
                 <div className="bg-[#F3F3F3] grid md:grid-cols-4 gap-5 p-6 my-4 mx-2 rounded-xl border border-gray-300">
@@ -462,12 +483,16 @@ const HouseCreate = () => {
                           onChange={(e) => {
                             setFieldValue("discountType", e.target.value);
                             // Clear all discount values when discount type changes
-                            const clearedDiscountDetails = values.discountDetails.map(discount => ({
-                              ...discount,
-                              discountValue: "",
-                              amountAfterDiscount: ""
-                            }));
-                            setFieldValue("discountDetails", clearedDiscountDetails);
+                            const clearedDiscountDetails =
+                              values.discountDetails.map((discount) => ({
+                                ...discount,
+                                discountValue: "",
+                                amountAfterDiscount: "",
+                              }));
+                            setFieldValue(
+                              "discountDetails",
+                              clearedDiscountDetails
+                            );
                           }}
                         >
                           <option value="">Select type</option>
@@ -546,21 +571,28 @@ const HouseCreate = () => {
                                     className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      // Convert empty string to null
+                                      const processedValue = value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].discountValue`,
-                                        value
+                                        processedValue
                                       );
 
                                       const tariff = values.tariffPerDay || 0;
-                                      const discountType = values.discountType || "Percentage";
-                                      const discountValue = parseFloat(value) || 0;
+                                      const discountType =
+                                        values.discountType || "Percentage";
+                                      const discountValue =
+                                        parseFloat(value) || 0;
 
                                       let amountAfterDiscount;
                                       if (discountType === "Percentage") {
-                                        const discountAmount = (tariff * discountValue) / 100;
-                                        amountAfterDiscount = tariff - discountAmount;
+                                        const discountAmount =
+                                          (tariff * discountValue) / 100;
+                                        amountAfterDiscount =
+                                          tariff - discountAmount;
                                       } else {
-                                        amountAfterDiscount = tariff - discountValue;
+                                        amountAfterDiscount =
+                                          tariff - discountValue;
                                       }
 
                                       setFieldValue(
@@ -570,7 +602,9 @@ const HouseCreate = () => {
                                     }}
                                   />
                                   <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
-                                    {values.discountType === "Percentage" ? "%" : "₹"}
+                                    {values.discountType === "Percentage"
+                                      ? "%"
+                                      : "₹"}
                                   </span>
                                 </div>
 
@@ -583,21 +617,31 @@ const HouseCreate = () => {
                                     className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-white"
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      // Convert empty string to null
+                                      const processedValue = value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].amountAfterDiscount`,
-                                        value
+                                        processedValue
                                       );
 
                                       const tariff = values.tariffPerDay || 0;
-                                      const discountType = values.discountType || "Percentage";
-                                      const amountAfterDiscount = parseFloat(value) || 0;
+                                      const discountType =
+                                        values.discountType || "Percentage";
+                                      const amountAfterDiscount =
+                                        parseFloat(value) || 0;
 
                                       let discountValue;
                                       if (discountType === "Percentage") {
-                                        const discountAmount = tariff - amountAfterDiscount;
-                                        discountValue = ((discountAmount / tariff) * 100).toFixed(2);
+                                        const discountAmount =
+                                          tariff - amountAfterDiscount;
+                                        discountValue = (
+                                          (discountAmount / tariff) *
+                                          100
+                                        ).toFixed(2);
                                       } else {
-                                        discountValue = (tariff - amountAfterDiscount).toFixed(2);
+                                        discountValue = (
+                                          tariff - amountAfterDiscount
+                                        ).toFixed(2);
                                       }
 
                                       setFieldValue(
