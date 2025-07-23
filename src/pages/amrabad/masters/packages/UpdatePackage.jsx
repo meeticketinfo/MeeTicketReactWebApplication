@@ -8,16 +8,30 @@ import * as Yup from "yup";
 
 // helper: turn an existing image URL into a base64 string
 const urlToBase64 = async (url) => {
-  const resp = await fetch(url);
-  const blob = await resp.blob();
+  try {
+    const response = await fetch(url, {
+      mode: "cors", // explicitly request CORS
+      credentials: "omit", // avoid cookies unless needed
+    });
 
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result); // base64
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result); // base64 string
+      reader.onerror = () => reject("Failed to read blob as base64");
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error("urlToBase64 error:", error);
+    throw error;
+  }
 };
+
 
 const UpdatePackage = ({ data, onUpdateSuccess }) => {
   const { UpdatePackage, isUpdatePackageLoading, fetchPackagesWithRooms } =
