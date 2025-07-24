@@ -1,7 +1,7 @@
 import React from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import PackageImage from "../../../../images/user/package-details-1.jpg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const packageData = {
   title: "Munnar Jungle Resort, The Tiger Stay Package",
@@ -102,6 +102,8 @@ const packageData = {
 };
 
 const PackageDetail = () => {
+  const { packageId } = useParams();
+  console.log("packageId", packageId);
   return (
     <UserLayout>
       <div className="h-[350px] relative mb-7">
@@ -110,7 +112,7 @@ const PackageDetail = () => {
         <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-8 backdrop-blur-sm">
           <div className="container flex gap-6 justify-between items-center mx-auto">
             <h4 className="text-white text-3xl font-bold capitalize">{packageData.title}</h4>
-            <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white filter text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold">BOOK NOW</Link>
+            <Link to={`/amarabad/houses/${packageId}`} className="bg-white filter text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
       </div>
@@ -291,7 +293,7 @@ const PackageDetail = () => {
               BOOKINGS ARE OPEN
             </div>
             <div className="flex gap-3">
-              <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
+              <Link to={`/amarabad/houses/${packageId}`} className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
                 BOOK NOW
               </Link>
             </div>
