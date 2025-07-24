@@ -26,6 +26,8 @@ const AddPackage = () => {
       isBlockout: false,
       sequence: 0,
       remarks: "",
+      latitude: null,
+      longitude: null,
       roomImageBase64Strings: [],
       discountDetails: [
         { dayOfWeek: "Monday", discountValue: null, amountAfterDiscount: null },
@@ -53,7 +55,7 @@ const AddPackage = () => {
         { dayOfWeek: "Sunday", discountValue: null, amountAfterDiscount: null },
       ],
     };
-  
+
     return template;
   };
 
@@ -111,6 +113,20 @@ const AddPackage = () => {
     isBlockout: Yup.boolean().required("Required"),
 
     sequence: positiveInt().required("Sequence is required").nullable(),
+
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90)
+      .nullable(),
+
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180)
+      .nullable(),
 
     roomImageBase64Strings: Yup.array()
       .of(Yup.string())
@@ -636,16 +652,15 @@ const AddPackage = () => {
                       name="hasRooms"
                       onChange={(e) => {
                         const isChecked = e.target.checked;
-                     
+
                         setIsHasRoom(isChecked);
                         setFieldValue("hasRooms", isChecked);
                         if (isChecked) {
                           // Ensure the first room has the complete structure
                           const firstRoom = createRoomTemplate();
-                         
+
                           replace([firstRoom]);
                         } else {
-                          
                           replace([]);
                         }
                       }}
@@ -668,7 +683,7 @@ const AddPackage = () => {
                           type="button"
                           onClick={() => {
                             const newRoom = createRoomTemplate();
-                            
+
                             push(newRoom);
                           }}
                           className={`${
@@ -971,9 +986,12 @@ const AddPackage = () => {
                                                     onKeyDown={(e) => {
                                                       // Prevent negative values and invalid characters
                                                       if (
-                                                        ["-", "e", "E", "+"].includes(
-                                                          e.key
-                                                        ) ||
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
                                                         (e.key.length === 1 &&
                                                           !/[0-9]/.test(e.key))
                                                       ) {
@@ -983,13 +1001,15 @@ const AddPackage = () => {
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
-                                                      
+
                                                       // Prevent negative values
-                                                      if (parseFloat(value) < 0) {
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
                                                         e.target.value = "";
                                                         return;
                                                       }
-                                                      
+
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1047,7 +1067,9 @@ const AddPackage = () => {
                                                     }}
                                                     onBlur={(e) => {
                                                       // Additional check on blur to prevent negative values
-                                                      const value = parseFloat(e.target.value);
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
                                                       if (value < 0) {
                                                         e.target.value = "";
                                                         setFieldValue(
@@ -1085,9 +1107,12 @@ const AddPackage = () => {
                                                     onKeyDown={(e) => {
                                                       // Prevent negative values and invalid characters
                                                       if (
-                                                        ["-", "e", "E", "+"].includes(
-                                                          e.key
-                                                        ) ||
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
                                                         (e.key.length === 1 &&
                                                           !/[0-9]/.test(e.key))
                                                       ) {
@@ -1097,13 +1122,15 @@ const AddPackage = () => {
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
-                                                      
+
                                                       // Prevent negative values
-                                                      if (parseFloat(value) < 0) {
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
                                                         e.target.value = "";
                                                         return;
                                                       }
-                                                      
+
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1161,7 +1188,9 @@ const AddPackage = () => {
                                                     }}
                                                     onBlur={(e) => {
                                                       // Additional check on blur to prevent negative values
-                                                      const value = parseFloat(e.target.value);
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
                                                       if (value < 0) {
                                                         e.target.value = "";
                                                         setFieldValue(
@@ -1252,6 +1281,50 @@ const AddPackage = () => {
                                     maxLength="250"
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                     placeholder="Enter your remarks"
+                                  />
+                                </div>
+
+                                {/*  Latitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].latitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Latitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].latitude`}
+                                    type="text"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Latitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].latitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/*  Longitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].longitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Longitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].longitude`}
+                                    type="text"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Longitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].longitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
                                 {/* images */}
