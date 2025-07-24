@@ -9,6 +9,7 @@ export const useDashboardStore = create((set) => ({
   isFetchPieChartsLoading: false,
   isFetchEntityBookingsLoading: false,
   totalEntityBookingRecords: 0,
+  totalNehruCounterBookingRecords: 0,
   allEntityBookings: [],
   allPieCharts: [],
   allCounts: [],
@@ -64,10 +65,10 @@ export const useDashboardStore = create((set) => ({
 
   fetchAllDashboardCounts: async (
     roleDetails,
-    { fromDate, toDate, entityId, active }
+    { fromDate, toDate, entityId, active, departmentId, locationId }
   ) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
       : "";
     set({ isFetchCountsLoading: true });
     try {
@@ -94,9 +95,9 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active }) => {
+  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active, departmentId, locationId }) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
       : "";
     set({ isFetchPieChartsLoading: true });
     try {
@@ -139,7 +140,34 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.error.message, isFetchEntityBookingsLoading: true });
     }
   },
-
+  //zoo new individual report
+  fetchAllNehruCounterBookingsByFilters: async (filters = {}) => {
+    set({ isFetchNehruCounterBookingsLoading: true });
+    try {
+      const filterString = useDashboardStore
+        .getState()
+        .serializeFilters(filters);
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_NEHRU_COUNTER_BOOKINGS}?${filterString}`
+      );
+      if (response.data.status === 404) {
+        set({
+          allNehruCounterBookings: [],
+          isFetchNehruCounterBookingsLoading: false,
+          totalNehruCounterBookingRecords: 0,
+        });
+      } else {
+        set({
+          allNehruCounterBookings: response.data.data.data || [],
+          isFetchNehruCounterBookingsLoading: false,
+          totalNehruCounterBookingRecords: response?.data?.totalCount || 0,
+        });
+      }
+      return { success: true, data: response };
+    } catch (error) {
+      set({ error: error.error.message, isFetchNehruCounterBookingsLoading: true });
+    }
+  },
   fetchCurrentBookingDetailsByBookingId: async (bookingId) => {
     set({ isFetchCurrentBookingDetailsLoading: true });
     try {

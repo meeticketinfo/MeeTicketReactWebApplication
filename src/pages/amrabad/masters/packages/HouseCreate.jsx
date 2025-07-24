@@ -74,6 +74,8 @@ const HouseCreate = () => {
         ? "Yes"
         : "No"
       : "",
+    latitude: isHouseEditVisible ? selectedSubRowData?.latitude : null,
+    longitude: isHouseEditVisible ? selectedSubRowData?.longitude : null,
     remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
     sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
     // roomImagesBase64Strings: isHouseEditVisible
@@ -166,6 +168,19 @@ const HouseCreate = () => {
     noOfHousesAvailable: Yup.number().required(
       "No Of House Applicable is required"
     ),
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90)
+      .nullable(),
+
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180)
+      .nullable(),
     roomLimit: Yup.string().required("Room Limit is required."),
     isBlockout: Yup.string().required("Block Out is required."),
     sequence: Yup.string().required("Sequence is required."),
@@ -569,9 +584,30 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].discountValue`}
                                     placeholder="0"
+                                    min="0"
+                                    step="0.01"
                                     className="w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
+                                    onKeyDown={(e) => {
+                                      // Prevent negative values and invalid characters
+                                      if (
+                                        ["-", "e", "E", "+"].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      
+                                      // Prevent negative values
+                                      if (parseFloat(value) < 0) {
+                                        e.target.value = "";
+                                        return;
+                                      }
+                                      
                                       // Convert empty string to null
                                       const processedValue = value === "" ? null : value;
                                       setFieldValue(
@@ -601,6 +637,17 @@ const HouseCreate = () => {
                                         amountAfterDiscount.toFixed(2)
                                       );
                                     }}
+                                    onBlur={(e) => {
+                                      // Additional check on blur to prevent negative values
+                                      const value = parseFloat(e.target.value);
+                                      if (value < 0) {
+                                        e.target.value = "";
+                                        setFieldValue(
+                                          `discountDetails[${dayIndex}].discountValue`,
+                                          null
+                                        );
+                                      }
+                                    }}
                                   />
                                   <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                     {values.discountType === "Percentage"
@@ -615,10 +662,31 @@ const HouseCreate = () => {
                                     type="number"
                                     name={`discountDetails[${dayIndex}].amountAfterDiscount`}
                                     placeholder="0"
+                                    min="0"
+                                    step="0.01"
                                     disabled={true}
                                     className="w-40 px-2 py-1 pl-6 border border-gray-300 rounded text-sm bg-gray-300"
+                                    onKeyDown={(e) => {
+                                      // Prevent negative values and invalid characters
+                                      if (
+                                        ["-", "e", "E", "+"].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                     onChange={(e) => {
                                       const value = e.target.value;
+                                      
+                                      // Prevent negative values
+                                      if (parseFloat(value) < 0) {
+                                        e.target.value = "";
+                                        return;
+                                      }
+                                      
                                       // Convert empty string to null
                                       const processedValue = value === "" ? null : value;
                                       setFieldValue(
@@ -651,6 +719,17 @@ const HouseCreate = () => {
                                         discountValue
                                       );
                                     }}
+                                    onBlur={(e) => {
+                                      // Additional check on blur to prevent negative values
+                                      const value = parseFloat(e.target.value);
+                                      if (value < 0) {
+                                        e.target.value = "";
+                                        setFieldValue(
+                                          `discountDetails[${dayIndex}].amountAfterDiscount`,
+                                          null
+                                        );
+                                      }
+                                    }}
                                   />
                                   <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
                                     ₹
@@ -682,6 +761,47 @@ const HouseCreate = () => {
                       name="sequence"
                       component="div"
                       className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+                   {/*  Latitude */}
+                   <div className="col-span-1 sm:col-span-3 lg:col-span-1">
+                    <label
+                      htmlFor="latitude"
+                      className="block text-sm font-medium"
+                    >
+                      Latitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="package.latitude"
+                      type="text"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Latitude"
+                    />
+                    <ErrorMessage
+                      name="package.latitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+
+                  {/*  Longitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-1">
+                    <label
+                      htmlFor="longitude"
+                      className="block text-sm font-medium"
+                    >
+                      Longitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="package.longitude"
+                      type="text"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter longitude"
+                    />
+                    <ErrorMessage
+                      name="package.longitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
                     />
                   </div>
                   {/* Remarks */}

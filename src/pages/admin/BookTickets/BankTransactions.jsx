@@ -65,6 +65,7 @@ export default function BankTransactions() {
       toDate: getCurrentDate(),
       departmentId: "",
       entityTypeId: "",
+      ParkId:"",
     });
   }, [fetchParkBankTransactions]);
   useEffect(() => {

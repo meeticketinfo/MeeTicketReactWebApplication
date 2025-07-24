@@ -103,4 +103,28 @@ ul:not(.browser-default) li {
   border-radius: 6px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
+/* sweet alert */
+.elegant-swal-popup {
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
 
+.elegant-swal-icon {
+  border-color: #10B981 !important; /* Tailwind emerald-500 */
+  color: #10B981 !important;
+  
+}
+
+/* Add this in your global stylesheet */
+.small-swal-icon .swal2-icon {
+  width: 40px !important;
+  height: 40px !important;
+  font-size: 18px !important;
+  margin: 10px auto !important;
+}
+
+.react-select__placeholder {
+  white-space: nowrap;
+}
