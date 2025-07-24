@@ -149,10 +149,24 @@ const HouseCreate = () => {
     roomName: Yup.string()
       .required("House name is required.")
       .min(3, "House name must be at least 3 characters."),
-    tariffPerDay: Yup.number()
-      .typeError("Tariff must be a number.")
+    tariffPerDay: Yup.string()
       .required("Tariff per day is required.")
-      .positive("Tariff must be a positive number."),
+      .test(
+        "is-not-empty-or-space",
+        "Tariff cannot be empty or spaces only",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Tariff must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Tariff must be a positive number",
+        (value) => Number(value) > 0
+      ),
+
     hasDiscount: Yup.string().required(
       "Please select if discounts are available."
     ),
@@ -165,9 +179,24 @@ const HouseCreate = () => {
     // discountApplicable:
     //   isValidation === "Yes" &&
     //   Yup.string().required("discounts Applicable is required"),
-    noOfHousesAvailable: Yup.number().required(
-      "No Of House Applicable is required"
-    ),
+    noOfHousesAvailable: Yup.string()
+      .required("No Of House Applicable is required")
+      .test(
+        "not-only-spaces",
+        "No of Houses cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "No of Houses must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "No of Houses must be a positive number",
+        (value) => Number(value) > 0
+      ),
+
     latitude: Yup.number()
       .typeError("Latitude must be a number")
       .required("Latitude is required")
@@ -181,14 +210,50 @@ const HouseCreate = () => {
       .min(-180)
       .max(180)
       .nullable(),
-    roomLimit: Yup.string().required("Room Limit is required."),
+    roomLimit: Yup.string()
+      .required("Room Limit is required.")
+      .test(
+        "not-only-spaces",
+        "Room Limit cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Room Limit must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Room Limit must be a positive number",
+        (value) => Number(value) > 0
+      ),
     isBlockout: Yup.string().required("Block Out is required."),
-    sequence: Yup.string().required("Sequence is required."),
+    sequence: Yup.string()
+      .required("Sequence is required.")
+      .test(
+        "not-only-spaces",
+        "Sequence cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Sequence must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Sequence must be a positive number",
+        (value) => Number(value) > 0
+      ),
     discountDetails: Yup.array().of(
       Yup.object().shape({
         dayOfWeek: Yup.string().required("Day of week is required"),
-        discountValue: Yup.string().nullable().transform((value) => value === "" ? null : value),
-        amountAfterDiscount: Yup.string().nullable().transform((value) => value === "" ? null : value),
+        discountValue: Yup.string()
+          .nullable()
+          .transform((value) => (value === "" ? null : value)),
+        amountAfterDiscount: Yup.string()
+          .nullable()
+          .transform((value) => (value === "" ? null : value)),
       })
     ),
     roomImagesBase64Strings: Yup.array()
@@ -213,7 +278,6 @@ const HouseCreate = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-   
     const isEdit = isHouseEditVisible;
 
     try {
@@ -267,14 +331,18 @@ const HouseCreate = () => {
           .map((img) => img.imageUrl);
       }
 
-    
-
       // Convert empty strings to null for discount values
-      const processedDiscountDetails = values.discountDetails.map(discount => ({
-        ...discount,
-        discountValue: discount.discountValue === "" ? null : discount.discountValue,
-        amountAfterDiscount: discount.amountAfterDiscount === "" ? null : discount.amountAfterDiscount,
-      }));
+      const processedDiscountDetails = values.discountDetails.map(
+        (discount) => ({
+          ...discount,
+          discountValue:
+            discount.discountValue === "" ? null : discount.discountValue,
+          amountAfterDiscount:
+            discount.amountAfterDiscount === ""
+              ? null
+              : discount.amountAfterDiscount,
+        })
+      );
 
       const payload = {
         ...values,
@@ -293,18 +361,16 @@ const HouseCreate = () => {
         payload.discountApplicable = null;
       }
 
-      
       const result = await saveHouseDetails(payload, isEdit);
 
       if (result.data.status === 200) {
-       
         toast.success(
           isEdit ? "House updated successfully" : "House created successfully"
         );
         setIsHouseEditVisible(false);
         fetchPackagesWithRooms();
         resetForm();
-        
+
         // Add a small delay before changing tab to ensure toast is visible
         setTimeout(() => {
           setCurrentTab(0);
@@ -344,7 +410,6 @@ const HouseCreate = () => {
               }
             }
 
-          
             return (
               <Form>
                 <div className="bg-[#F3F3F3] grid md:grid-cols-4 gap-5 p-6 my-4 mx-2 rounded-xl border border-gray-300">
@@ -405,18 +470,30 @@ const HouseCreate = () => {
                     >
                       Tariff per day <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      name="tariffPerDay"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Tariff per day"
-                    />
+
+                    <Field name="tariffPerDay">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          onKeyDown={(e) => {
+                            if (e.key === " ") {
+                              e.preventDefault(); // prevent space
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Tariff per day"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="tariffPerDay"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   {/* No of Houses available  */}
                   <div className="col-span-1">
                     <label
@@ -426,19 +503,31 @@ const HouseCreate = () => {
                       No of Houses Available{" "}
                       <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="noOfHousesAvailable"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter No of Houses Available"
-                    />
+
+                    <Field name="noOfHousesAvailable">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          maxLength="10"
+                          onKeyDown={(e) => {
+                            if (e.key === " ") {
+                              e.preventDefault(); // prevent space input
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter No of Houses Available"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="noOfHousesAvailable"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   <div className="col-span-1">
                     <label
                       htmlFor="roomLimit"
@@ -446,19 +535,31 @@ const HouseCreate = () => {
                     >
                       Room Limit <span className="text-red-500 text-xs">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="roomLimit"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Room Limit"
-                    />
+
+                    <Field name="roomLimit">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          maxLength="10"
+                          onKeyDown={(e) => {
+                            if (e.key === " ") {
+                              e.preventDefault(); // Prevent space input
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Room Limit"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="roomLimit"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   <div>
                     <label
                       htmlFor="hasDiscount"
@@ -590,9 +691,7 @@ const HouseCreate = () => {
                                     onKeyDown={(e) => {
                                       // Prevent negative values and invalid characters
                                       if (
-                                        ["-", "e", "E", "+"].includes(
-                                          e.key
-                                        ) ||
+                                        ["-", "e", "E", "+"].includes(e.key) ||
                                         (e.key.length === 1 &&
                                           !/[0-9]/.test(e.key))
                                       ) {
@@ -601,15 +700,16 @@ const HouseCreate = () => {
                                     }}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      
+
                                       // Prevent negative values
                                       if (parseFloat(value) < 0) {
                                         e.target.value = "";
                                         return;
                                       }
-                                      
+
                                       // Convert empty string to null
-                                      const processedValue = value === "" ? null : value;
+                                      const processedValue =
+                                        value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].discountValue`,
                                         processedValue
@@ -669,9 +769,7 @@ const HouseCreate = () => {
                                     onKeyDown={(e) => {
                                       // Prevent negative values and invalid characters
                                       if (
-                                        ["-", "e", "E", "+"].includes(
-                                          e.key
-                                        ) ||
+                                        ["-", "e", "E", "+"].includes(e.key) ||
                                         (e.key.length === 1 &&
                                           !/[0-9]/.test(e.key))
                                       ) {
@@ -680,15 +778,16 @@ const HouseCreate = () => {
                                     }}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      
+
                                       // Prevent negative values
                                       if (parseFloat(value) < 0) {
                                         e.target.value = "";
                                         return;
                                       }
-                                      
+
                                       // Convert empty string to null
-                                      const processedValue = value === "" ? null : value;
+                                      const processedValue =
+                                        value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].amountAfterDiscount`,
                                         processedValue
@@ -750,21 +849,33 @@ const HouseCreate = () => {
                     >
                       Sequence <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="sequence"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Sequence Number"
-                    />
+
+                    <Field name="sequence">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          maxLength="10"
+                          onKeyDown={(e) => {
+                            if (e.key === " ") {
+                              e.preventDefault(); // Prevent space input
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Sequence Number"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="sequence"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
-                   {/*  Latitude */}
-                   <div className="col-span-1 sm:col-span-3 lg:col-span-1">
+
+                  {/*  Latitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-1">
                     <label
                       htmlFor="latitude"
                       className="block text-sm font-medium"
