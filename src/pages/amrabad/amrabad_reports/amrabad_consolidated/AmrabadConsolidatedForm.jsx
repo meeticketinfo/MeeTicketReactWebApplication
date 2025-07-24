@@ -165,6 +165,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                       toDate: getCurrentDate(),
                       typeOfBooking: "",
                       phoneNumber: "",
+                      PaymentMode:"",
                     },
                   });
                 }}

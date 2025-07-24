@@ -72,6 +72,7 @@ import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
 import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
 import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
 import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
+import AmrabadConsolidatedBookingDetails from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedBookingDetails";
 export const routes = [
   {
     path: "*",
@@ -190,6 +191,7 @@ export const routes = [
     element: <ProtectedRoute element={<BankTransactions />} />,
   },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
+  { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
   // ------

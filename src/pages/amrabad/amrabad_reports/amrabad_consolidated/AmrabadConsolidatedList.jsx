@@ -21,7 +21,7 @@ function AmrabadConsolidatedList() {
   );
   console.log("savedFilters",savedFilters)
   const [currentPage, setCurrentPage] = useState(0);
-
+ 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
   useEffect(() => {
@@ -183,26 +183,26 @@ function AmrabadConsolidatedList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? "Success" : "Failed"),
     },
-    // {
-    //   headerName: "Actions",
-    //   field: "actions",
-    //   cellRenderer: (params) => (
-    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-    //       <NavLink
-    //         end
-    //         to={`/entity-bookings/view-details/${params.data.bookingID}`}
-    //         onClick={() => {
-    //           setisAmrabadCompleteBookings(true);
-    //         }}
-    //         className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-    //       >
-    //         <span className="text-blue-v2"> Booking Details</span>
-    //       </NavLink>
-    //     </div>
-    //   ),
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    // },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <NavLink
+            end
+            to={`/amrabad-entity-bookings/view-details/${params.data.bookingID}`}
+            onClick={() => {
+              setisAmrabadCompleteBookings(true);
+            }}
+            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
+          >
+            <span className="text-blue-v2"> Booking Details</span>
+          </NavLink>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
   ]);
   return (
     <>
