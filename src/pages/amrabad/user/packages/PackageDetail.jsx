@@ -103,7 +103,6 @@ const packageData = {
 
 const PackageDetail = () => {
   const { packageId } = useParams();
-  console.log("packageId", packageId);
   return (
     <UserLayout>
       <div className="h-[350px] relative mb-7">
@@ -113,7 +112,7 @@ const PackageDetail = () => {
           <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{packageData.title}</h4>
             <Link 
-              to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" 
+              to={`/amarabad/houses/${packageId}`} 
               className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
