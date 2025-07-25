@@ -316,7 +316,8 @@ export const API_ENDPOINTS = {
     GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`
     },
     USER:{
-
+      GET_USER_PACKAGES:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllPackages`,
+      GET_ROOMS_BY_PACKAGE_ID:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllPackageRoomsByPackageId`,
     }
   },
   FAILED_TRANSACTIONS: {

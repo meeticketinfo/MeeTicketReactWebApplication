@@ -1,7 +1,7 @@
 import React from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import PackageImage from "../../../../images/user/package-details-1.jpg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const packageData = {
   title: "Munnar Jungle Resort, The Tiger Stay Package",
@@ -102,6 +102,8 @@ const packageData = {
 };
 
 const PackageDetail = () => {
+  const { packageId } = useParams();
+  console.log("packageId", packageId);
   return (
     <UserLayout>
       <div className="h-[350px] relative mb-7">
@@ -293,7 +295,7 @@ const PackageDetail = () => {
               BOOKINGS ARE OPEN
             </div>
             <div className="flex gap-3">
-              <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
+              <Link to={`/amarabad/houses/${packageId}`} className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
                 BOOK NOW
               </Link>
             </div>

@@ -1,19 +1,22 @@
 import React from "react";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
 
-const ListView = ({ houses }) => {
+const ListView = ({ houses,isRoomsByPackageIdLoading }) => {
   return (
+    <>
+    
     <div className="space-y-8">
-      {houses.map((house, idx) => (
-        <div
+      {houses?.map((house, idx) => (
+       isRoomsByPackageIdLoading ? <HouseCardShimmer /> : <div
           key={idx}
           className="flex flex-col lg:flex-row bg-white rounded-2xl p-4 md:p-8 gap-6 md:gap-8"
         >
           {/* Image */}
           <div className="flex-shrink-0 flex justify-center items-center xl:max-w-[440px] md:max-w-[300px]">
             <img
-              src={house.image}
+              src={house.images[0].imageUrl}
               alt={house.title}
               className="aspect-square w-full object-cover rounded-2xl"
             />
@@ -25,7 +28,7 @@ const ListView = ({ houses }) => {
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-semibold text-[#333333]">
-                    {house.title}
+                    {house.roomName}
                   </h2>
                   {/* Check-in/out */}
                   <div className="bg-[#EEEDFAB0] lg:text-base text-sm rounded-xl px-4 py-3 mt-3 flex flex-col sm:flex-row gap-2 sm:gap-4 w-full max-w-md">
@@ -34,7 +37,7 @@ const ListView = ({ houses }) => {
                         Check-In Time:
                       </div>
                       <div className="font-bold text-[#272628]">
-                        {house.checkIn}
+                      12:30 PM
                       </div>
                     </div>
                     <div className="flex items-center justify-center text-[#79787E] text-2xl">
@@ -47,17 +50,17 @@ const ListView = ({ houses }) => {
                         Check-Out Time:
                       </div>
                       <div className="font-bold text-[#272628]">
-                        {house.checkOut}
+                      10:00 AM (Next Day)
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
                   <span className="text-3xl md:text-4xl font-bold text-[#362D86]">
-                    {house.price}
+                  ₹{house.tariffPerDay}
                   </span>
                   <div className="text-[#5A5961] text-base">
-                    / {house.guests}
+                    / For {house.roomLimit} Guests 
                   </div>
                 </div>
               </div>
@@ -67,9 +70,11 @@ const ListView = ({ houses }) => {
                   Overview:
                 </div>
                 <div className="text-[#626169] text-sm leading-relaxed">
-                  {house.overview[0]}
+                
+                  These two charming cottages offer a peaceful forest view from the balcony, ideal for nature lovers. Named after local wildlife — the spotted deer (Chital) and smooth-coated otter — both species are signs of a healthy river ecosystem.,
+                    Each cottage is thoughtfully designed to accommodate 2 guests comfortably.
                   <ul className="list-disc pl-5 mt-1">
-                    <li>{house.overview[1]}</li>
+                    <li>Each cottage is thoughtfully designed to accommodate 2 guests comfortably.</li>
                   </ul>
                 </div>
               </div>
@@ -79,7 +84,7 @@ const ListView = ({ houses }) => {
                   Special Offer:
                 </div>
                 <div className="text-[#626169] text-sm">
-                  {house.specialOffer}
+                Enjoy a 5% discount on bookings from Monday to Friday!
                 </div>
               </div>
             </div>
@@ -110,6 +115,7 @@ const ListView = ({ houses }) => {
         </div>
       ))}
     </div>
+    </>
   );
 };
 

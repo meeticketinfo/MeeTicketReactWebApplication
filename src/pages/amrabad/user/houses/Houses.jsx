@@ -1,18 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import PackagesImage1 from "../../../../images/user/package-1.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Import components and data
 import { housesData } from "./housesData";
 import MapView from "./MapView";
 import ListView from "./ListView";
 import ViewToggle from "./ViewToggle";
+import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 
 const Houses = () => {
   const navigate = useNavigate();
-  const [viewMode, setViewMode] = useState('map'); // 'list' or 'map'
+  const [viewMode, setViewMode] = useState("map"); // 'list' or 'map'
   const [selectedHouse, setSelectedHouse] = useState(null);
+  const { packageId } = useParams();
+
+  const {
+    fetchRoomsByPackageId,
+    GetRoomsByPackageId,
+    isRoomsByPackageIdLoading,
+  } = useUserBookingStore();
+  console.log("GetRoomsByPackageId", GetRoomsByPackageId);
+  useEffect(() => {
+    fetchRoomsByPackageId(packageId);
+  }, [packageId]);
 
   const handleHouseClick = (house) => {
     setSelectedHouse(house);
@@ -30,11 +42,11 @@ const Houses = () => {
               Amrabad Resorts
             </Link>
             <span className="text-gray-500"> &gt; </span>
-            <span className="text-gray-500">Munnar Jungle resort</span>
+            <span className="text-gray-500">{GetRoomsByPackageId[0]?.packageName}</span>
           </div>
         </div>
       </div>
-      
+
       <div className="text-center min-h-[130px] flex items-center justify-center relative">
         <img
           src={PackagesImage1}
@@ -43,8 +55,8 @@ const Houses = () => {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-[#1b1065af] z-10 backdrop-blur-sm"></div>
         <div className="container mx-auto relative z-20">
-          <h1 className="text-4xl font-bold text-white">
-            Munnar Jungle resort - List of Houses
+          <h1 className="text-4xl font-bold text-white uppercase">
+            {GetRoomsByPackageId[0]?.packageName}
           </h1>
         </div>
       </div>
@@ -55,8 +67,8 @@ const Houses = () => {
 
         {/* Content */}
         <div className="container mx-auto p-2">
-          {viewMode === 'list' ? (
-            <ListView houses={housesData} />
+          {viewMode === "list" ? (
+            <ListView houses={GetRoomsByPackageId} isRoomsByPackageIdLoading={isRoomsByPackageIdLoading} />
           ) : (
             <MapView houses={housesData} onHouseClick={handleHouseClick} />
           )}

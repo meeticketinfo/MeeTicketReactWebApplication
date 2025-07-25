@@ -521,7 +521,7 @@ export const routes = [
     element: <PackageDetail />,
   },
   {
-    path: "/amarabad/houses/:houseId",
+    path: "/amarabad/houses/:packageId",
     element: <Houses />,
   },
   {
