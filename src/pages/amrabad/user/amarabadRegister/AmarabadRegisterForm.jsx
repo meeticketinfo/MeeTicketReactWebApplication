@@ -84,8 +84,8 @@ const AmarabadRegisterForm = () => {
       >
         {({ values, touched, errors }) => (
           <Form>
-            <div className="flex gap-4 mb-4">
-              <div className="w-1/2">
+            <div className="flex flex-wrap md:flex-nowrap gap-4 mb-4">
+              <div className="w-full md:w-1/2">
                 <label className="block text-sm mb-1">Mobile Number</label>
                 <div className="relative">
                   <Field
@@ -113,7 +113,7 @@ const AmarabadRegisterForm = () => {
                   className="text-xs font-semibold text-red-500 mt-1"
                 />
               </div>
-              <div className="w-1/2">
+              <div className="w-full md:w-1/2">
                 <label className="block text-sm mb-1">First Name</label>
                 <div className="relative">
                   <Field
@@ -139,7 +139,7 @@ const AmarabadRegisterForm = () => {
                   className="text-xs font-semibold text-red-500 mt-1"
                 />
               </div>
-              <div className="w-1/2">
+              <div className="w-full md:w-1/2">
                 <label className="block text-sm mb-1">Last Name</label>
                 <div className="relative">
                   <Field
@@ -166,8 +166,8 @@ const AmarabadRegisterForm = () => {
                 />
               </div>
             </div>
-            <div className="flex gap-4 mb-6">
-              <div className="w-1/2">
+            <div className="flex flex-wrap md:flex-nowrap gap-4 mb-6">
+              <div className="w-full md:w-1/2">
                 <label className="block text-sm mb-1">4-Digit Pin</label>
                 <div className="relative">
                   <Field
@@ -203,7 +203,7 @@ const AmarabadRegisterForm = () => {
                   className="text-xs font-semibold text-red-500 mt-1"
                 />
               </div>
-              <div className="w-1/2">
+              <div className="w-full md:w-1/2">
                 <label className="block text-sm mb-1">
                   Confirm 4-Digit Pin
                 </label>
@@ -248,7 +248,7 @@ const AmarabadRegisterForm = () => {
             <button
               type="submit"
               // disabled={AmrabadRegisterLoading}
-              className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
+              className="block max-w-full md:max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
             >
               {AmrabadRegisterLoading ? "Registering..." : "Register"}
             </button>

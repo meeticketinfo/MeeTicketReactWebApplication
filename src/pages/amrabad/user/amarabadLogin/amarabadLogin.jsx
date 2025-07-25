@@ -33,16 +33,16 @@ const AmarabadLogin = () => {
 
   return (
     <UserLayout>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-3">
         <ToastContainer limit={1} />
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
         <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
-          <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+          <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
             <img src={Lock} alt="Lock" className="" />
           </div>
-          <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
+          <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto relative z-10">
             <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
               LOGIN
             </h1>
@@ -56,7 +56,7 @@ const AmarabadLogin = () => {
                 <span className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-solid border-r-black border-r-8 border-y-transparent border-y-4 border-l-0" />
               </div>
             </div>
-            <div className="text-center text-base text-black">
+            <div className="text-center text-sm md:text-base text-black">
               Not Registered yet?{" "}
               <Link
                 to="/amarabad/register"

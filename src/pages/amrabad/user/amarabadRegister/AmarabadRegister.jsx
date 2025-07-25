@@ -4,22 +4,20 @@ import { Link } from "react-router-dom";
 import Register from "../../../../images/user/register-logo.png";
 import Logo from "../../../../images/user/logo.png";
 import AmarabadRegisterForm from "./AmarabadRegisterForm";
-import { ToastContainer } from "react-toastify";
 
 const AmarabadRegister = () => {
   return (
     <>
-      <ToastContainer />
       <UserLayout>
-        <div className="container mx-auto">
+        <div className="container mx-auto px-3">
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
           <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
-            <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+            <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
               <img src={Register} alt="Lock" className="" />
             </div>
-            <div className="max-w-[730px] mx-auto">
+            <div className="max-w-[730px] mx-auto relative z-10">
               <h1 className="text-3xl font-bold text-center mb-7 text-black">
                 REGISTER
               </h1>

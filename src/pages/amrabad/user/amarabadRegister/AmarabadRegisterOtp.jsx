@@ -5,7 +5,7 @@ import Logo from "../../../../images/user/logo.png";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Navigate, useNavigate,useLocation } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
 
 const AmarabadRegisterOtp = () => {
@@ -110,7 +110,6 @@ const AmarabadRegisterOtp = () => {
 
   return (
     <UserLayout>
-      <ToastContainer />
       <div className="container mx-auto">
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields

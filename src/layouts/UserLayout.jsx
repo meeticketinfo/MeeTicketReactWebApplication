@@ -22,7 +22,7 @@ function UserLayout({ children }) {
   }, [containerRef]);
   return (
     <>
-      
+      <ToastContainer />  
       <div
         ref={containerRef}
         className="font-manrope overflow-auto h-screen bg-[#F6F7FB]"

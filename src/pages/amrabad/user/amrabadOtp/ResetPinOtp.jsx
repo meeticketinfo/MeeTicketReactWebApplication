@@ -99,13 +99,12 @@ const ResetPinOtp = () => {
   
   return (
     <UserLayout>
-      <ToastContainer />
-      <div className="container mx-auto">
+      <div className="container mx-auto px-3">
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
         <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8">
-          <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+          <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
             <img src={Lock} alt="Lock" />
           </div>
           <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
@@ -119,12 +118,12 @@ const ResetPinOtp = () => {
               onSubmit={handleSubmit}
             >
               {({ setFieldValue, values, errors, touched }) => (
-                <Form className="otp_screen">
+                <Form className="otp_screen relative z-10">
                   <div className=" mb-8 text-xs font-medium px-10 text-center">
                     <p>
                       Please enter the 6-digit code we have sent you to your
                       Mobile Number{" "}
-                      <span className="text-black text-xs">{`+91 ${responseMobileNumber?.slice(
+                      <span className="text-black text-xs whitespace-nowrap">{`+91 ${responseMobileNumber?.slice(
                         0,
                         2
                       )}****${responseMobileNumber?.slice(-2)}`}</span>
@@ -134,7 +133,7 @@ const ResetPinOtp = () => {
                   <h3 className="text-base mt-4 text-center font-semibold text-black mb-4">
                     Enter OTP
                   </h3>
-                  <div className="flex gap-3 justify-center mb-2">
+                  <div className="flex gap-2 md:gap-3 justify-center mb-2">
                     {[...Array(6)].map((_, index) => (
                       <input
                         key={index}
@@ -146,7 +145,7 @@ const ResetPinOtp = () => {
                         }
                         onKeyDown={(e) => handleKeyDown(e, index, values)}
                         ref={(el) => (inputRefs.current[index] = el)}
-                        className={`  rounded-md border border-none w-12 h-12 bg-[#EEEEEE] backdrop-blur-sm py-2 px-3 text-gray-700  focus:outline-none focus:shadow-outline ${
+                        className={`  rounded-md border border-none w-10 md:w-12 h-10 md:h-12 bg-[#EEEEEE] backdrop-blur-sm py-2 px-3 text-gray-700  focus:outline-none focus:shadow-outline ${
                           errors.otp && touched.otp ? "border-red-500" : ""
                         }`}
                       />

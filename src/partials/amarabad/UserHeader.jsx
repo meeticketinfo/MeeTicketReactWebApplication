@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
-import Loader from "../../web_app_loaders/Loader";
+import { FaUser } from "react-icons/fa";
 
 function UserHeader({ isScrolled = false }) {
-  const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } =
-    amrabadAuthStore();
-  console.log("decodedTokenData", decodedTokenData);
+  const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } = amrabadAuthStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate("/amarabad/login");
+    localStorage.removeItem("amrabadlogin-store");
+    clearAmrabadSession();
+    setIsDropdownOpen(false);
+  };
 
   const links = [
     {
@@ -43,13 +65,13 @@ function UserHeader({ isScrolled = false }) {
                   </clipPath>
                 </defs>
               </svg>
-              <span>080-25478698</span>
+              <span className="hidden md:inline">080-25478698</span>
             </a>
             <a href="mailto:info@meeticket.telangana.in" className="flex items-center gap-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 20C3.45 20 2.97933 19.8043 2.588 19.413C2.196 19.021 2 18.55 2 18V6C2 5.45 2.196 4.97933 2.588 4.588C2.97933 4.196 3.45 4 4 4H14.1C14.0333 4.33333 14 4.66667 14 5C14 5.33333 14.0333 5.66667 14.1 6H4L12 11L15.65 8.725C15.8833 8.94167 16.1377 9.129 16.413 9.287C16.6877 9.44567 16.975 9.58333 17.275 9.7L12 13L4 8V18H20V9.9C20.3833 9.81667 20.7417 9.7 21.075 9.55C21.4083 9.4 21.7167 9.21667 22 9V18C22 18.55 21.8043 19.021 21.413 19.413C21.021 19.8043 20.55 20 20 20H4ZM19 8C18.1667 8 17.4583 7.70833 16.875 7.125C16.2917 6.54167 16 5.83333 16 5C16 4.16667 16.2917 3.45833 16.875 2.875C17.4583 2.29167 18.1667 2 19 2C19.8333 2 20.5417 2.29167 21.125 2.875C21.7083 3.45833 22 4.16667 22 5C22 5.83333 21.7083 6.54167 21.125 7.125C20.5417 7.70833 19.8333 8 19 8Z" fill="white" />
               </svg>
-              <span>
+              <span className="hidden md:inline">
                 info@meeticket.telangana.in
               </span>
             </a>
@@ -68,8 +90,8 @@ function UserHeader({ isScrolled = false }) {
               </svg>
             </a>
             <a href="https://x.com/AmrabadTiger" target='_blank' rel="noreferrer" className="text-white">
-              <svg width="22" height="17" viewBox="0 0 22 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.12109 14.115C4.14958 14.297 5.94122 13.8096 7.57083 12.5908C5.87437 12.4381 4.74414 11.5845 4.10797 10.0041C4.67198 10.0669 5.19615 10.0833 5.76016 9.92835C4.87075 9.71009 4.16773 9.27712 3.62719 8.59712C3.08841 7.91934 2.82013 7.14548 2.82146 6.25077C3.33766 6.50975 3.85872 6.67931 4.43513 6.69303C2.80729 5.32285 2.42966 3.6928 3.33456 1.73426C5.36305 4.11691 7.90065 5.42069 10.9841 5.62788C10.9708 5.2591 10.9385 4.90848 10.9487 4.55874C10.9934 3.03272 12.1626 1.58374 13.6457 1.20788C15.0185 0.85991 16.2245 1.17246 17.2564 2.14111C17.3334 2.21327 17.3972 2.23319 17.5052 2.20928C18.2707 2.03973 18.9927 1.76038 19.7183 1.34246C19.4279 2.21991 18.9055 2.8552 18.1887 3.35324C18.8842 3.29259 19.539 3.08806 20.2181 2.81535C19.7431 3.51173 19.2145 4.09478 18.573 4.56759C18.4105 4.68712 18.3685 4.81285 18.3725 5.00853C18.4079 6.71119 18.0303 8.32619 17.2905 9.85619C16.4024 11.6925 15.1128 13.1792 13.3685 14.2567C12.1267 15.0239 10.7743 15.4804 9.32794 15.6716C8.05781 15.8394 6.79609 15.7991 5.54367 15.5317C4.35057 15.2767 3.2376 14.8207 2.20255 14.1761C2.1875 14.1668 2.17422 14.1553 2.12109 14.115Z" fill="white" />
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.51724 7.01469L15.4786 0H14.0844L8.57101 6.39155L4.09953 0H0L6.11262 8.89552L0 15.2447H1.39419L7.05532 8.6142L11.9005 15.2447H16L9.51724 7.01469ZM7.53978 8.05072L7.00658 7.36939L1.38203 1.21428H3.09953L7.53645 6.983L8.06965 7.66433L14.0844 14.0055H12.3669L7.53978 8.05072Z" fill="white"/>
               </svg>
             </a>
           </div>
@@ -78,34 +100,35 @@ function UserHeader({ isScrolled = false }) {
 
       {/* Main Header/Navigation */}
       <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
-        } px-4`}>
+        } px-2 md:px-4`}>
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          <Link to="/amarabad" className="flex items-center gap-2">
             <img
               src={Logo}
               alt="Meeticket Logo"
-              className={`transition-all duration-300 ${isScrolled ? 'w-[60px]' : 'w-[85px]'
+              className={`transition-all duration-300 ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'
                 }`}
             />
-            <div>
-              <div className={`font-bold text-[#362D86] transition-all duration-300 ${isScrolled ? 'text-2xl' : 'text-3xl'
+            <div className="hidden md:block">
+              <div className={`font-bold text-[#362D86] transition-all duration-300 ${isScrolled ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
                 }`}>MEETICKET</div>
-              <div className={`text-[#515151] transition-all duration-300 ${isScrolled ? 'text-[10px]' : 'text-xs'
+              <div className={`text-[#515151] transition-all duration-300 ${isScrolled ? 'text-[8px] md:text-[10px]' : 'text-[10px] md:text-xs'
                 }`}>GOVERNMENT OF TELANGANA</div>
             </div>
-          </div>
-          <div className="flex gap-8 items-center text-base">
+          </Link>
+          <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
             {links.map((link) => (
               <NavLink key={link.to} target={link.target} to={link.to} className="text-black hover:text-[#362D86]">
                 {link.label}
               </NavLink>
             ))}
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {isLoggedIn ? (
               // After login: show user profile section
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col items-end">
+              <div className="flex items-center gap-3" ref={dropdownRef}>
+                {/* Desktop view - show user info and logout */}
+                <div className="hidden md:flex flex-col items-end">
                   {decodedTokenData ? (
                     <span className="font-bold text-black leading-tight capitalize">{`${decodedTokenData?.FirstName} ${decodedTokenData?.LastName}`}</span>
                   ) : (
@@ -114,17 +137,55 @@ function UserHeader({ isScrolled = false }) {
 
                   <span
                     className="text-gray-500 text-lg hover:underline -mt-1 cursor-pointer"
-                    onClick={() => {
-                      setIsLoggedIn(false);
-                      navigate("/amarabad/login");
-                      localStorage.removeItem("amrabadlogin-store");
-                      clearAmrabadSession();
-                    }}
+                    onClick={handleLogout}
                   >
                     Logout
                   </span>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                
+                {/* Mobile view - show only user icon with dropdown */}
+                <div className="md:hidden relative">
+                  <div 
+                    className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    {/* User icon SVG */}
+                    <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
+                      <circle cx="16" cy="16" r="16" fill="#E3E3E3"/>
+                      <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#362D86"/>
+                    </svg>
+                  </div>
+                  
+                  {/* Mobile Dropdown Menu */}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        {decodedTokenData ? (
+                          <div className="font-bold text-black capitalize text-sm">
+                            {`${decodedTokenData?.FirstName} ${decodedTokenData?.LastName}`}
+                          </div>
+                        ) : (
+                          <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
+                        )}
+                      </div>
+                      
+                      <div className="py-1">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        >
+                          <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
+                            <path d="M6 2H4C3.45 2 3 2.45 3 3V13C3 13.55 3.45 14 4 14H6C6.55 14 7 13.55 7 13V3C7 2.45 6.55 2 6 2ZM12.5 7L9.5 4.5C9.22 4.22 8.78 4.22 8.5 4.5C8.22 4.78 8.22 5.22 8.5 5.5L10.29 7.25H3.75C3.34 7.25 3 7.59 3 8C3 8.41 3.34 8.75 3.75 8.75H10.29L8.5 10.5C8.22 10.78 8.22 11.22 8.5 11.5C8.78 11.78 9.22 11.78 9.5 11.5L12.5 9C12.78 8.72 12.78 8.28 12.5 8L12.5 7Z" fill="#6B7280"/>
+                          </svg>
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Desktop view - show user icon */}
+                <div className="hidden md:block w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
                   {/* User icon SVG */}
                   <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
                     <circle cx="16" cy="16" r="16" fill="#E3E3E3"/>
@@ -134,14 +195,17 @@ function UserHeader({ isScrolled = false }) {
               </div>
             ) : (
               <>
-                <Link to="/amarabad/login" className="bg-[#E3E3E3] text-black px-6 py-2 rounded-md hover:bg-gray-300 transition duration-300">Login</Link>
-                <Link to="/amarabad/register" className="bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-indigo-800 transition duration-300">Register</Link>
+                <Link to="/amarabad/login" className="bg-[#E3E3E3] text-black px-2 md:px-6 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
+                  <span className="hidden md:block">Login</span>
+                  <FaUser className="md:hidden" />
+                </Link>
+                <Link to="/amarabad/register" className="hidden lg:block bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-indigo-800 transition duration-300">Register</Link>
               </>
             )}
             <img
               src={TelanganaRising}
               alt="Telangana Rising Logo"
-              className={`transition-all duration-300 ${isScrolled ? 'w-[40px]' : 'w-[59px]'
+              className={`transition-all duration-300 ${isScrolled ? 'w-[30px] md:w-[40px]' : 'w-[40px] md:w-[59px]'
                 }`}
             />
           </div>

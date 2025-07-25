@@ -107,18 +107,20 @@ const PackageDetail = () => {
       <div className="h-[350px] relative mb-7">
         <img src={packageData.image} alt="Package" className="w-full h-full object-cover object-center" />
         {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"></div> */}
-        <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-8 backdrop-blur-sm">
-          <div className="container flex gap-6 justify-between items-center mx-auto">
-            <h4 className="text-white text-3xl font-bold capitalize">{packageData.title}</h4>
-            <Link to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" className="bg-white filter text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold">BOOK NOW</Link>
+        <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-4 md:py-8 backdrop-blur-sm">
+          <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
+            <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{packageData.title}</h4>
+            <Link 
+              to="/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package" 
+              className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
       </div>
-      <div className="container mx-auto text-base">
+      <div className="container mx-auto text-sm md:text-base px-3">
         <div className=" ">
           {/* Highlights */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-4 pl-10 rounded-tl-[50px] mb-5 max-w-[50%]">
+            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#271F6E]">
                 Adventure Highlights
               </h2>
@@ -143,12 +145,12 @@ const PackageDetail = () => {
 
           {/* Accommodation Details */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-4 pl-10 rounded-tl-[50px] mb-5 max-w-[50%]">
+            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#271F6E]">
                 Accommodation Details
               </h2>
             </div>
-            <div className="overflow-x-auto lg:max-w-[50%]  border border-gray-200 rounded-lg">
+            <div className="overflow-x-auto w-full md:max-w-[50%]  border border-gray-200 rounded-lg">
               <table className="min-w-full">
                 <thead>
                   <tr className="bg-indigo-50">
@@ -173,16 +175,16 @@ const PackageDetail = () => {
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-4 pl-10 rounded-tl-[50px] mb-5 max-w-[50%]">
+            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#271F6E]">
                 Discount & Schedule Details
               </h2>
             </div>
-            <div className="bg-[#EEEDFA] p-5 rounded-xl">
+            <div className="bg-[#EEEDFA] p-3 md:p-5 rounded-xl">
 
               {/* Discounts */}
               <div className="mb-5">
-                <h3 className="font-semibold mb-2 text-black text-xl font-bold">Bulk Booking Discounts</h3>
+                <h3 className="font-semibold mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts</h3>
 
                 <ul className="space-y-2">
                   {packageData.discounts.map((item, idx) => (
@@ -203,17 +205,17 @@ const PackageDetail = () => {
               </div>
               {/* Itinerary */}
               <div>
-                <h3 className="mb-4 text-black text-xl font-bold">2-Day Itinerary Schedule</h3>
+                <h3 className="mb-4 text-black text-base md:text-xl font-bold">2-Day Itinerary Schedule</h3>
 
                 {/* Day 1 Card */}
-                <div className="bg-white rounded-lg p-5 mb-4 shadow-sm">
+                <div className="bg-white rounded-lg p-3 md:p-5 mb-4 shadow-sm">
                   <div className="flex items-center">
                     <div className="">
-                      <div className="text-gray-500 text-base mb-1">Check-In Time:</div>
-                      <div className="text-base font-semibold text-gray-800">12:30 PM</div>
+                      <div className="text-gray-500 text-sm md:text-base mb-1">Check-In Time:</div>
+                      <div className="text-sm md:text-base font-semibold text-gray-800">12:30 PM</div>
                     </div>
 
-                    <div className="mx-4">
+                    <div className="mx-2 md:mx-4">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center">
                         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M16.0001 21.3327L21.3334 15.9993M21.3334 15.9993L16.0001 10.666M21.3334 15.9993L10.6667 15.9993M29.3334 15.9993C29.3334 23.3631 23.3639 29.3327 16.0001 29.3327C8.63628 29.3327 2.66675 23.3631 2.66675 15.9993C2.66675 8.63555 8.63628 2.66602 16.0001 2.66602C23.3639 2.66602 29.3334 8.63555 29.3334 15.9993Z" stroke="#BDBCC3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -223,8 +225,8 @@ const PackageDetail = () => {
                     </div>
 
                     <div className="">
-                      <div className="text-gray-500 text-base mb-1">Check-Out Time:</div>
-                      <div className="text-base font-semibold text-gray-800">10:00 AM (Next Day)</div>
+                      <div className="text-gray-500 text-sm md:text-base mb-1">Check-Out Time:</div>
+                      <div className="text-sm md:text-base font-semibold text-gray-800">10:00 AM (Next Day)</div>
                     </div>
                   </div>
                 </div>
@@ -235,8 +237,8 @@ const PackageDetail = () => {
                     <table className="min-w-full text-sm">
                       <thead>
                         <tr className="bg-white">
-                          <th className="px-3 py-4 text-left font-semibold">Day</th>
-                          <th className="px-3 py-4 text-left font-semibold">Time</th>
+                          <th className="px-3 py-4 text-left font-semibold min-w-[80px]">Day</th>
+                          <th className="px-3 py-4 text-left font-semibold min-w-[130px]">Time</th>
                           <th className="px-3 py-4 text-left font-semibold">Schedule</th>
                         </tr>
                       </thead>
@@ -247,13 +249,13 @@ const PackageDetail = () => {
                               {j === 0 && (
                                 <td
                                   width="100px"
-                                  className="px-3 py-4 font-semibold"
+                                  className="px-3 py-4 font-semibold w-[100px]"
                                   rowSpan={day.schedule.length}
                                 >
                                   {day.day}
                                 </td>
                               )}
-                              <td width="150px" className="px-3 py-4">{item.time}</td>
+                              <td width="150px" className="px-3 py-4 w-[150px]">{item.time}</td>
                               <td className="px-3 py-4">{item.desc}</td>
                             </tr>
                           ))

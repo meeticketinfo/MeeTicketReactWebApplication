@@ -41,24 +41,21 @@ const AmrabadForgetPinMobileNumber = () => {
   return (
     <>
       <UserLayout>
-        <ToastContainer />
-        <div className="container mx-auto">
+        <div className="container mx-auto px-3">
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
           <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
-            <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+            <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
               <img src={Lock} alt="Lock" className="" />
             </div>
-            <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
+            <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto relative z-10">
               <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
                 Forget PIN?
               </h1>
-              <p className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto text-xs font-medium mb-12">
-                Please enter the mobile number associated with the account.
-                <span className="text-center">
-                  We will send you 6-digit OTP to change your PIN number.
-                </span>
+              <p className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto text-xs font-medium mb-12 text-center">
+                Please enter the mobile number associated with the account. 
+                We will send you 6-digit OTP to change your PIN number.
               </p>
               {/* <AmarabadLoginForm /> */}
               <Formik
@@ -70,7 +67,7 @@ const AmrabadForgetPinMobileNumber = () => {
                   <Form>
                     <div className="flex gap-4 mb-8">
                       <div className="w-full">
-                        <label className="block text-sm mb-1 font-bold text-center text-black mb-4">
+                        <label className="block text-sm mb-1 font-bold text-black">
                           Enter Mobile Number{" "}
                           <span className="text-red-700">*</span>
                         </label>

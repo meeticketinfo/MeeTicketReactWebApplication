@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import UserLayout from "../../../../layouts/UserLayout";
 import Lock from "../../../../images/user/lock.png";
 import Logo from "../../../../images/user/logo.png";
@@ -57,13 +57,12 @@ const AmrabadResetPin = () => {
   return (
     <>
       <UserLayout>
-        <ToastContainer />
-        <div className="container mx-auto">
+        <div className="container mx-auto px-3">
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
           <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
-            <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+            <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
               <img src={Lock} alt="Lock" className="" />
             </div>
             <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
