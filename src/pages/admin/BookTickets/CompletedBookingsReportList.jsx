@@ -10,7 +10,11 @@ import { NavLink } from "react-router-dom";
 import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 import Select from "react-select";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
+import useAuthStore from "../../../store/authStore";
 function CompletedBookingsReportList() {
+  const { roleDetails } = useAuthStore();
+
+  const role = roleDetails?.name;
   const {
     fetchCompleteBookingsReport,
     allCompleteBookingsReports,
@@ -34,27 +38,36 @@ function CompletedBookingsReportList() {
         ? savedFilters.typeOfBooking
         : "",
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-      entityTypeId: savedFilters?.entityTypeId ? savedFilters.entityTypeId : null,
+      departmentId: savedFilters?.departmentId
+        ? savedFilters.departmentId
+        : null,
+      entityTypeId: savedFilters?.entityTypeId
+        ? savedFilters.entityTypeId
+        : null,
     });
   }, [fetchCompleteBookingsReport]);
 
   useEffect(() => {
     fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
+    if(role === "ROLE_SUPERADMIN"){
+      fetchAllDepartmentTypes();
+    }
+    
   }, []);
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     entityId: savedFilters?.entityId ? savedFilters.entityId : null,
     departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-    typeOfBooking: savedFilters?.typeOfBooking ? savedFilters.typeOfBooking: "",
+    typeOfBooking: savedFilters?.typeOfBooking
+      ? savedFilters.typeOfBooking
+      : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
   };
 
   const onSubmit = (values, { resetForm }) => {
-    console.log("values",values)
-    
+    console.log("values", values);
+
     localStorage.setItem(
       "completed-booking-report-filters",
       JSON.stringify(values)
@@ -62,11 +75,10 @@ function CompletedBookingsReportList() {
     fetchCompleteBookingsReport({
       startDate: values.fromDate,
       endDate: values.toDate,
-      departmentId:values.departmentId,
-      entityTypeId:values.entityId,
+      departmentId: values.departmentId,
+      entityTypeId: values.entityId,
       bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : null,
-
     });
   };
 
@@ -203,13 +215,12 @@ function CompletedBookingsReportList() {
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-     {
+    {
       field: "resultStatus",
       headerName: "Actual Paytm Status",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ||"N/A"),
-     
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       headerName: "Actions",
@@ -315,61 +326,63 @@ function CompletedBookingsReportList() {
               />
             </div>
             {/* department */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Department
-              </label>
+            {role === "ROLE_SUPERADMIN" && (
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Department
+                </label>
 
-              <Select
-                name="departmentId"
-                value={
-                  allDepartmentTypes
+                <Select
+                  name="departmentId"
+                  value={
+                    allDepartmentTypes
+                      ?.filter((dept) => dept.isActive)
+                      .map((dept) => ({
+                        value: dept.departmentId,
+                        label: dept.departmentName,
+                      }))
+                      .find((option) => option.value === values.departmentId) ||
+                    null // Set the selected value
+                  }
+                  options={allDepartmentTypes
                     ?.filter((dept) => dept.isActive)
                     .map((dept) => ({
                       value: dept.departmentId,
                       label: dept.departmentName,
-                    }))
-                    .find((option) => option.value === values.departmentId) ||
-                  null // Set the selected value
-                }
-                options={allDepartmentTypes
-                  ?.filter((dept) => dept.isActive)
-                  .map((dept) => ({
-                    value: dept.departmentId,
-                    label: dept.departmentName,
-                  }))}
-                onChange={(selectedOption) =>
-                  setFieldValue("departmentId", selectedOption?.value || null)
-                }
-                isClearable
-                placeholder="Department"
-                className="mt-[4px] text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
+                    }))}
+                  onChange={(selectedOption) =>
+                    setFieldValue("departmentId", selectedOption?.value || null)
+                  }
+                  isClearable
+                  placeholder="Department"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
 
-                  menu: (base) => ({
-                    ...base,
-                    // padding: "4px 0",
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#000",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
+                    menu: (base) => ({
+                      ...base,
+                      // padding: "4px 0",
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#000",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
+            )}
             {/* location category */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -446,8 +459,8 @@ function CompletedBookingsReportList() {
                       toDate: getCurrentDate(),
                       typeOfBooking: "",
                       phoneNumber: "",
-                      entityId:null,
-                      departmentId:null,
+                      entityId: null,
+                      departmentId: null,
                     },
                   });
                 }}

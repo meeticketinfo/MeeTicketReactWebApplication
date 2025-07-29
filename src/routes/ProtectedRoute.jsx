@@ -11,6 +11,7 @@ import {
   CustomParkAdminPermissions,
   Toursim,
   RtcAdmin,
+  Department,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -47,6 +48,8 @@ const ProtectedRoute = ({ element }) => {
       return Toursim;
     } else if (role === "Role_RTCADMIN") {
       return RtcAdmin;
+    } else if (role === "Role_DeptAdmin") {
+      return Department;
     }
     return [];
   }, [role, email]);

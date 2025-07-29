@@ -17,10 +17,11 @@ import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 import { Link } from "react-router-dom";
+import useAuthStore from "../../../store/authStore";
 
 function PaymentTransactionReport() {
   const userObject = JSON.parse(localStorage.getItem("PaymentTransactions"));
-  console.log("userObject", userObject);
+
   const [openModal, setOpenModal] = useState(false);
   const [reGenerateData, setreGenerateData] = useState(null);
   const [isUpi, setisUpi] = useState(null);
@@ -40,6 +41,9 @@ function PaymentTransactionReport() {
     setPaymentTransactionNAvigate,
     PaymentTransactionNAvigate,
   } = useBookingsStore();
+  const { roleDetails } = useAuthStore();
+
+  const role = roleDetails?.name;
 
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
@@ -56,17 +60,19 @@ function PaymentTransactionReport() {
 
   useEffect(() => {
     fetchAllEntityTypes();
-    fetchAllDepartmentTypes();
+    if (role === "ROLE_SUPERADMIN") {
+      fetchAllDepartmentTypes();
+    }
   }, []);
 
   useEffect(() => {
     fetchPaymentTransactions({
-      startDate: userObject?.startDate ||getCurrentDate(),
-      endDate: userObject?.endDate ||getCurrentDate(),
-      currentTransactionStatus:userObject?.currentTransactionStatus || null,
-      phoneNumber: userObject?.phoneNumber ||null,
-      departmentId: userObject?.entityTypeId ||null,
-      entityTypeId:userObject?.departmentId ||null,
+      startDate: userObject?.startDate || getCurrentDate(),
+      endDate: userObject?.endDate || getCurrentDate(),
+      currentTransactionStatus: userObject?.currentTransactionStatus || null,
+      phoneNumber: userObject?.phoneNumber || null,
+      departmentId: userObject?.entityTypeId || null,
+      entityTypeId: userObject?.departmentId || null,
     });
   }, [fetchPaymentTransactions]);
 
@@ -264,11 +270,13 @@ function PaymentTransactionReport() {
             <Link
               to={`/entity-bookings/view-details/${params.data?.bookingId}`}
               className={`px-4 py-2 text-sm font-semibold rounded-md transition-all duration-200 ${
-                isDisabled 
+                isDisabled
                   ? "bg-gray-200 text-gray-500 cursor-not-allowed pointer-events-none"
                   : "bg-blue-v2 text-white hover:bg-blue-700"
               }`}
-              onClick={()=>{setPaymentTransactionNAvigate(true)}}
+              onClick={() => {
+                setPaymentTransactionNAvigate(true);
+              }}
             >
               View Booking
             </Link>
@@ -305,11 +313,11 @@ function PaymentTransactionReport() {
           html: `Ticket Re-generated Succesusfully`,
           confirmButtonText: "OK",
           width: "360px",
-           icon: "success",
+          icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
-           icon: 'small-swal-icon',
+            icon: "small-swal-icon",
           },
           timer: 2000,
           showConfirmButton: false,
@@ -322,7 +330,7 @@ function PaymentTransactionReport() {
          </div>`,
           icon: "info",
           confirmButtonText: "OK",
-           width: "360px",
+          width: "360px",
           customClass: {
             popup: "elegant-swal-popup",
             icon: "elegant-swal-icon",
@@ -354,7 +362,7 @@ function PaymentTransactionReport() {
     }
   };
 
-  const handleVerifyTicket = async () => { 
+  const handleVerifyTicket = async () => {
     console.log("isUpi", isUpi);
     try {
       const res = await FetchVerifyTicket(verifyData, isUpi);
@@ -372,13 +380,13 @@ function PaymentTransactionReport() {
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
            ${resultMsg}
          </div>`,
-         
+
           confirmButtonText: "OK",
-           icon: "success",
+          icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
-           icon: 'small-swal-icon',
+            icon: "small-swal-icon",
           },
           timer: 2000,
           width: "360px",
@@ -397,7 +405,7 @@ function PaymentTransactionReport() {
           customClass: {
             popup: "custom-swal-popup",
             confirmButton: "swal-custom-btn",
-             icon: 'small-swal-icon',
+            icon: "small-swal-icon",
           },
           confirmButtonText: "OK",
           background: "#ffffff",
@@ -524,65 +532,67 @@ function PaymentTransactionReport() {
                   />
                 </div>
                 {/* department */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700">
-                    Department
-                  </label>
+                {role === "ROLE_SUPERADMIN" && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Department
+                    </label>
 
-                  <Select
-                    name="departmentId"
-                    value={
-                      allDepartmentTypes
+                    <Select
+                      name="departmentId"
+                      value={
+                        allDepartmentTypes
+                          ?.filter((dept) => dept.isActive)
+                          .map((dept) => ({
+                            value: dept.departmentId,
+                            label: dept.departmentName,
+                          }))
+                          .find(
+                            (option) => option.value === values.departmentId
+                          ) || null // Set the selected value
+                      }
+                      options={allDepartmentTypes
                         ?.filter((dept) => dept.isActive)
                         .map((dept) => ({
                           value: dept.departmentId,
                           label: dept.departmentName,
-                        }))
-                        .find(
-                          (option) => option.value === values.departmentId
-                        ) || null // Set the selected value
-                    }
-                    options={allDepartmentTypes
-                      ?.filter((dept) => dept.isActive)
-                      .map((dept) => ({
-                        value: dept.departmentId,
-                        label: dept.departmentName,
-                      }))}
-                    onChange={(selectedOption) =>
-                      setFieldValue(
-                        "departmentId",
-                        selectedOption?.value || null
-                      )
-                    }
-                    isClearable
-                    placeholder="Department"
-                    className="mt-[4px] text-sm"
-                    classNamePrefix="react-select"
-                    styles={{
-                      control: (base) => ({
-                        ...base,
-                        outline: "none",
-                        boxShadow: "none",
-                        borderColor: "#ced4da",
-                        borderRadius: "6px",
-                        height: "30px",
-                        minHeight: "33px",
-                      }),
+                        }))}
+                      onChange={(selectedOption) =>
+                        setFieldValue(
+                          "departmentId",
+                          selectedOption?.value || null
+                        )
+                      }
+                      isClearable
+                      placeholder="Department"
+                      className="mt-[4px] text-sm"
+                      classNamePrefix="react-select"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          outline: "none",
+                          boxShadow: "none",
+                          borderColor: "#ced4da",
+                          borderRadius: "6px",
+                          height: "30px",
+                          minHeight: "33px",
+                        }),
 
-                      menu: (base) => ({
-                        ...base,
-                        // padding: "4px 0",
-                      }),
-                      option: (base, { isFocused }) => ({
-                        ...base,
-                        fontSize: "0.775rem",
-                        backgroundColor: isFocused ? "#F8F8F8" : "white",
-                        color: isFocused ? "#0C3771" : "#000",
-                        cursor: "pointer",
-                      }),
-                    }}
-                  />
-                </div>
+                        menu: (base) => ({
+                          ...base,
+                          // padding: "4px 0",
+                        }),
+                        option: (base, { isFocused }) => ({
+                          ...base,
+                          fontSize: "0.775rem",
+                          backgroundColor: isFocused ? "#F8F8F8" : "white",
+                          color: isFocused ? "#0C3771" : "#000",
+                          cursor: "pointer",
+                        }),
+                      }}
+                    />
+                  </div>
+                )}
                 {/* location category */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700">

@@ -418,9 +418,10 @@ function AdminDashboard() {
                   {!(
                     roleDetails?.name === "ROLE_ADMIN" ||
                     roleDetails?.name === "ROLE_ZOOPARKADMIN"
+                   
                   ) && (
                     <>
-                      <div>
+                      { roleDetails?.name != "Role_DeptAdmin"&&<div>
                         <label className="block text-xs font-medium text-gray-700">
                           Department
                         </label>
@@ -478,7 +479,7 @@ function AdminDashboard() {
                             }),
                           }}
                         />
-                      </div>
+                      </div>}
                       <div>
                         <label className="block text-xs font-medium text-gray-700">
                           Location Category
@@ -869,7 +870,7 @@ function AdminDashboard() {
           </>
         ) : null}
         {/* PIE CHART */}
-        {roleDetails?.name == "ROLE_SUPERADMIN" && (
+        {(roleDetails?.name == "ROLE_SUPERADMIN"||roleDetails?.name == "Role_DeptAdmin") && (
           <DashboardCard07>
             <div className="flex">
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">

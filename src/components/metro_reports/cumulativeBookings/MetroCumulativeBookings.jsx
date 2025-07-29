@@ -738,6 +738,7 @@ export default function MetroCumulativeBookings() {
                 setOpenModal(false);
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              disabled={isSaveInitiatAmountLoading}
             >
               {isSaveInitiatAmountLoading ? (
                 <span className="px-8">
