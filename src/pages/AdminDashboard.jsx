@@ -56,8 +56,7 @@ function AdminDashboard() {
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
   // console.log("allEntityTypes", allEntityTypes);
-  const {  roleDetails, decodedTokenData } =
-    useAuthStore();
+  const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const parkId = decodedTokenData?.data?.ParkId;
@@ -202,8 +201,8 @@ function AdminDashboard() {
       isPopup: false,
       lableName: "Total Bookings",
       count: allCounts?.totalBookingsByRole || "0",
-      upiCount:allCounts?.upiAmount || "0",
-      cashCount:allCounts?.cashAmount || "0",
+      upiCount: allCounts?.upiAmount || "0",
+      cashCount: allCounts?.cashAmount || "0",
       percentageChange: 49,
       icon: IoTicketSharp,
     },
@@ -211,8 +210,8 @@ function AdminDashboard() {
       isPopup: true,
       lableName: "Total Amount",
       count: allCounts?.totalAmountByRole,
-       upiCount:allCounts?.upiAmount || "0",
-      cashCount:allCounts?.cashAmount || "0",
+      upiCount: allCounts?.upiAmount || "0",
+      cashCount: allCounts?.cashAmount || "0",
       percentageChange: 49,
       icon: FaIndianRupeeSign,
     },
@@ -326,6 +325,48 @@ function AdminDashboard() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
   ]);
+  const columnDefs = [
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      maxWidth: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "entity",
+      headerName: "Location",
+      // flex: 1,
+      width: "330",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "entityWiseTotalBookings",
+      headerName: " No. of bookings",
+      // flex: 1,
+      width: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
+      field: "departmentName",
+      headerName: "No. of tickets",
+      // flex: 1,
+      width: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "entityWiseTotalAmount",
+      headerName: "Amount",
+      // flex: 1,
+      width: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `₹${params.value}` || "N/A",
+    },
+  ];
   const EsdInitialValues = {
     fromDate: "",
     toDate: "",
@@ -418,68 +459,72 @@ function AdminDashboard() {
                   {!(
                     roleDetails?.name === "ROLE_ADMIN" ||
                     roleDetails?.name === "ROLE_ZOOPARKADMIN"
-                   
                   ) && (
                     <>
-                      { roleDetails?.name != "Role_DeptAdmin"&&<div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Department
-                        </label>
+                      {roleDetails?.name != "Role_DeptAdmin" && (
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700">
+                            Department
+                          </label>
 
-                        <Select
-                          name="departmentId"
-                          value={
-                            allDepartmentTypes
+                          <Select
+                            name="departmentId"
+                            value={
+                              allDepartmentTypes
+                                ?.filter((dept) => dept.isActive)
+                                .map((dept) => ({
+                                  value: dept.departmentId,
+                                  label: dept.departmentName,
+                                }))
+                                .find(
+                                  (option) =>
+                                    option.value === values.departmentId
+                                ) || null
+                            }
+                            options={allDepartmentTypes
                               ?.filter((dept) => dept.isActive)
                               .map((dept) => ({
                                 value: dept.departmentId,
                                 label: dept.departmentName,
-                              }))
-                              .find(
-                                (option) => option.value === values.departmentId
-                              ) || null
-                          }
-                          options={allDepartmentTypes
-                            ?.filter((dept) => dept.isActive)
-                            .map((dept) => ({
-                              value: dept.departmentId,
-                              label: dept.departmentName,
-                            }))}
-                          onChange={(selectedOption) => {
-                            const value = selectedOption?.value || "";
-                            setFieldValue("departmentId", value);
-                            // Clear location category and location when department changes
-                            setFieldValue("entityId", "");
-                            setFieldValue("locationId", "");
-                          }}
-                          isClearable
-                          placeholder="Department"
-                          className="mt-[4px] text-sm"
-                          classNamePrefix="react-select"
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              outline: "none",
-                              boxShadow: "none",
-                              borderColor: "#ced4da",
-                              borderRadius: "6px",
-                              height: "30px",
-                              minHeight: "33px",
-                            }),
+                              }))}
+                            onChange={(selectedOption) => {
+                              const value = selectedOption?.value || "";
+                              setFieldValue("departmentId", value);
+                              // Clear location category and location when department changes
+                              setFieldValue("entityId", "");
+                              setFieldValue("locationId", "");
+                            }}
+                            isClearable
+                            placeholder="Department"
+                            className="mt-[4px] text-sm"
+                            classNamePrefix="react-select"
+                            styles={{
+                              control: (base) => ({
+                                ...base,
+                                outline: "none",
+                                boxShadow: "none",
+                                borderColor: "#ced4da",
+                                borderRadius: "6px",
+                                height: "30px",
+                                minHeight: "33px",
+                              }),
 
-                            menu: (base) => ({
-                              ...base,
-                            }),
-                            option: (base, { isFocused }) => ({
-                              ...base,
-                              fontSize: "0.775rem",
-                              backgroundColor: isFocused ? "#F8F8F8" : "white",
-                              color: isFocused ? "#0C3771" : "#000",
-                              cursor: "pointer",
-                            }),
-                          }}
-                        />
-                      </div>}
+                              menu: (base) => ({
+                                ...base,
+                              }),
+                              option: (base, { isFocused }) => ({
+                                ...base,
+                                fontSize: "0.775rem",
+                                backgroundColor: isFocused
+                                  ? "#F8F8F8"
+                                  : "white",
+                                color: isFocused ? "#0C3771" : "#000",
+                                cursor: "pointer",
+                              }),
+                            }}
+                          />
+                        </div>
+                      )}
                       <div>
                         <label className="block text-xs font-medium text-gray-700">
                           Location Category
@@ -870,7 +915,8 @@ function AdminDashboard() {
           </>
         ) : null}
         {/* PIE CHART */}
-        {(roleDetails?.name == "ROLE_SUPERADMIN"||roleDetails?.name == "Role_DeptAdmin") && (
+        {(roleDetails?.name == "ROLE_SUPERADMIN" ||
+          roleDetails?.name == "Role_DeptAdmin") && (
           <DashboardCard07>
             <div className="flex">
               <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
@@ -892,6 +938,15 @@ function AdminDashboard() {
             </div>
           </DashboardCard07>
         )}
+
+        {/* <div>
+            <AgGridTable
+              ExportName="Departments"
+              rowData={allPieCharts || []}
+              columnDefs={columnDefs}
+              isFetchLoading={isFetchPieChartsLoading}
+            />
+          </div> */}
       </div>
     </>
   );
