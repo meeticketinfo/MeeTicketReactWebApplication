@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
 import { Link } from "react-router-dom";
 import useAuthStore from "../../../store/authStore";
+import { useParkStore } from "../../../store/masters/parksStore";
 
 function PaymentTransactionReport() {
   const userObject = JSON.parse(localStorage.getItem("PaymentTransactions"));
@@ -41,6 +42,11 @@ function PaymentTransactionReport() {
     setPaymentTransactionNAvigate,
     PaymentTransactionNAvigate,
   } = useBookingsStore();
+
+  const {
+    allParks,
+    fetchAllParks,
+  } = useParkStore();
   const { roleDetails } = useAuthStore();
 
   const role = roleDetails?.name;
@@ -56,10 +62,12 @@ function PaymentTransactionReport() {
     phoneNumber: userObject?.phoneNumber || "",
     entityId: userObject?.entityTypeId || null,
     departmentId: userObject?.departmentId || null,
+    parkId: userObject?.parkId || null,
   };
 
   useEffect(() => {
     fetchAllEntityTypes();
+    fetchAllParks();
     if (role === "ROLE_SUPERADMIN") {
       fetchAllDepartmentTypes();
     }
@@ -73,6 +81,7 @@ function PaymentTransactionReport() {
       phoneNumber: userObject?.phoneNumber || null,
       departmentId: userObject?.entityTypeId || null,
       entityTypeId: userObject?.departmentId || null,
+      parkId: userObject?.parkId || null,
     });
   }, [fetchPaymentTransactions]);
 
@@ -86,6 +95,7 @@ function PaymentTransactionReport() {
         ? values.typeOfBooking
         : null,
       phoneNumber: values.phoneNumber ? values.phoneNumber : null,
+      parkId: values.parkId || null,
     });
     localStorage.setItem(
       "PaymentTransactions",
@@ -98,6 +108,7 @@ function PaymentTransactionReport() {
           ? values.typeOfBooking
           : null,
         phoneNumber: values.phoneNumber ? values.phoneNumber : null,
+        parkId: values.parkId || null,
       })
     );
   };
@@ -127,6 +138,13 @@ function PaymentTransactionReport() {
     {
       field: "entityTypeName",
       headerName: "Location category",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+      {
+      field: "parkName",
+      headerName: "Location",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -357,6 +375,7 @@ function PaymentTransactionReport() {
           entityTypeId: userObject?.entityTypeId || null,
           phoneNumber: userObject?.phoneNumber || null,
           startDate: userObject?.startDate || getCurrentDate(),
+          parkId: userObject?.parkId || null,
         });
       }, 2100); // Wait a bit for the modal to close before calling the API
     }
@@ -431,6 +450,7 @@ function PaymentTransactionReport() {
           entityTypeId: userObject?.entityTypeId || null,
           phoneNumber: userObject?.phoneNumber || null,
           startDate: userObject?.startDate || getCurrentDate(),
+          parkId: userObject?.parkId || null,
         });
       }, 2100); // Wait a bit for the modal to close before calling the API
     }
@@ -622,6 +642,62 @@ function PaymentTransactionReport() {
                     }
                     isClearable
                     placeholder="Location Category"
+                    className="mt-[4px] text-sm"
+                    classNamePrefix="react-select"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        outline: "none",
+                        boxShadow: "none",
+                        borderColor: "#ced4da",
+                        borderRadius: "6px",
+                        height: "30px",
+                        minHeight: "33px",
+                      }),
+
+                      menu: (base) => ({
+                        ...base,
+                        // padding: "4px 0",
+                      }),
+                      option: (base, { isFocused }) => ({
+                        ...base,
+                        fontSize: "0.775rem",
+                        backgroundColor: isFocused ? "#F8F8F8" : "white",
+                        color: isFocused ? "#0C3771" : "#6D7072",
+                        cursor: "pointer",
+                      }),
+                    }}
+                  />
+                </div>
+                {/* location */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700">
+                    Location
+                  </label>
+
+                  <Select
+                    name="parkId"
+                    value={
+                      allParks
+                        ?.filter((park) => park.isActive)
+                        .map((park) => ({
+                          value: park.id,
+                          label: park.name,
+                        }))
+                        .find((option) => option.value === values.parkId) ||
+                      null
+                    }
+                    options={allParks
+                      ?.filter((park) => park.isActive)
+                      .map((park) => ({
+                        value: park.id,
+                        label: park.name,
+                      }))}
+                    onChange={(selectedOption) =>
+                      setFieldValue("parkId", selectedOption?.value || "")
+                    }
+                    isClearable
+                    placeholder="Location"
                     className="mt-[4px] text-sm"
                     classNamePrefix="react-select"
                     styles={{
