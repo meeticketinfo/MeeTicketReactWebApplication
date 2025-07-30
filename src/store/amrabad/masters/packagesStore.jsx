@@ -53,7 +53,8 @@ export const usePackagesStore = create((set) => ({
       });
       set({ houseEditDetails: {} });
       return { success: true, data: response };
-    } catch (error) {
+    } catch (xhr) {
+      console.log("xhr", xhr);
       set({
         isSaveHouseDetailsLoading: false,
       });

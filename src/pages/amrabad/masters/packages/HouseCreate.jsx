@@ -8,6 +8,7 @@ import {
   convertToBase64,
   convertImageUrlToBase64,
 } from "../../../../utils/Helper";
+import MultipleDatePicker from "../../../../components/MultipleDatePicker";
 
 // Alternative approach: Skip base64 conversion for existing images if CORS fails
 const handleImageConversion = async (imageUrl, imageId) => {
@@ -42,6 +43,7 @@ const HouseCreate = () => {
     setCurrentTab,
   } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
+  const [isNoBlockSelected, setIsNoBlockSelected] = useState(false);
   const initialValues = {
     roomId: isHouseEditVisible ? selectedSubRowData?.roomId : null,
     packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
@@ -70,12 +72,23 @@ const HouseCreate = () => {
       : null,
     roomLimit: isHouseEditVisible ? selectedSubRowData?.roomLimit : "",
     isBlockout: isHouseEditVisible
-      ? selectedSubRowData?.isBlockout
+      ? (selectedSubRowData?.isBlockout === true || 
+         (selectedSubRowData?.isBlockout === false && selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0))
         ? "Yes"
         : "No"
       : "",
+    blockoutType: isHouseEditVisible
+      ? selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0
+        ? "blockByDate" // Has blocked dates means Block by Date
+        : "fullBlock" // No blocked dates means Full Block
+      : "",
+    BlockBydate: isHouseEditVisible
+      ? selectedSubRowData?.roomBlockedDurations || []
+      : [],
     latitude: isHouseEditVisible ? selectedSubRowData?.latitude : null,
     longitude: isHouseEditVisible ? selectedSubRowData?.longitude : null,
+    overview: isHouseEditVisible ? selectedSubRowData?.overview : "",
+    specialOffers: isHouseEditVisible ? selectedSubRowData?.specialOffers : "",
     remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
     sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
     // roomImagesBase64Strings: isHouseEditVisible
@@ -227,7 +240,19 @@ const HouseCreate = () => {
         "Room Limit must be a positive number",
         (value) => Number(value) > 0
       ),
-    isBlockout: Yup.string().required("Block Out is required."),
+    isBlockout: Yup.string().required("Block out selection is required"),
+    blockoutType: Yup.string().when("isBlockout", {
+      is: "Yes",
+      then: (schema) => schema.required("Block out type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    BlockBydate: Yup.array()
+      .of(Yup.string())
+      .when("blockoutType", {
+        is: "blockByDate",
+        then: (schema) => schema.min(1, "At least one date is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
     sequence: Yup.string()
       .required("Sequence is required.")
       .test(
@@ -275,6 +300,14 @@ const HouseCreate = () => {
         }
       )
       .max(5, "You can upload up to 5 images only"),
+    overview: Yup.string()
+      .required("Overview is required.")
+      .min(10, "Overview must be at least 10 characters.")
+      .max(500, "Overview cannot exceed 500 characters."),
+    specialOffers: Yup.string()
+      .required("Special offers is required.")
+      .min(10, "Special offers must be at least 10 characters.")
+      .max(500, "Special offers cannot exceed 500 characters."),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -346,13 +379,19 @@ const HouseCreate = () => {
 
       const payload = {
         ...values,
-        packageId: values.packageId,
+        packageId: values.packageId, 
         hasDiscount: values.hasDiscount === "Yes",
-        isBlockout: values.isBlockout === "Yes",
+        isBlockout: values.isBlockout === "Yes" ? true : false,
+        blockedDate: values.isBlockout === "Yes" && values.blockoutType === "blockByDate" 
+          ? values.BlockBydate || [] 
+          : [],
         discountApplicable: values.discountApplicable === "true",
         roomImagesBase64Strings: roomImagesPayload,
         discountDetails: processedDiscountDetails, // Use the processed discount details
       };
+
+      // Remove BlockBydate from payload since we only want blockedDate
+      delete payload.BlockBydate;
 
       if (!payload.hasDiscount) {
         payload.discountType = null;
@@ -377,6 +416,7 @@ const HouseCreate = () => {
         }, 1000);
       }
     } catch (xhr) {
+      console.log("xhr", xhr);
       if (xhr?.response?.data?.errors) {
         Object.entries(xhr.response.data.errors).forEach(([key, msgs]) => {
           toast.error(`${key}: ${msgs[0]}`);
@@ -629,14 +669,25 @@ const HouseCreate = () => {
                       htmlFor="isBlockout"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Block out <span className="text-red-500">*</span>
+                      Block out type? <span className="text-red-500">*</span>
                     </label>
                     <Field
                       as="select"
                       name="isBlockout"
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        setFieldValue("isBlockout", selectedValue);
+                        
+                        // Reset BlockBydate when changing blockout type
+                        if (selectedValue === "No") {
+                          // Clear dates for no block
+                          setFieldValue("BlockBydate", []);
+                          setFieldValue("blockoutType", ""); // Clear blockoutType
+                        }
+                      }}
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     >
-                      <option value="">Select option</option>
+                      <option value="">Select</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </Field>
@@ -646,6 +697,66 @@ const HouseCreate = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
+                  {/* Block out type - only show when isBlockout is "Yes" */}
+                  {values.isBlockout === "Yes" && (
+                    <div className="col-span-1">
+                      <label
+                        htmlFor="blockoutType"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Block out type? <span className="text-red-500">*</span>
+                      </label>
+                      <Field
+                        as="select"
+                        name="blockoutType"
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          setFieldValue("blockoutType", selectedValue);
+                          
+                          // Reset BlockBydate when changing blockout type
+                          if (selectedValue === "fullBlock") {
+                            // Clear dates for full block
+                            setFieldValue("BlockBydate", []);
+                          }
+                        }}
+                        className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      >
+                        <option value="">Select</option>
+                        <option value="fullBlock">Full Block</option>
+                        <option value="blockByDate">Block by Date</option>
+                      </Field>
+                      <ErrorMessage
+                        name="blockoutType"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+                  )}
+
+                  {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
+                  {values.isBlockout === "Yes" && values.blockoutType === "blockByDate" && (
+                    <div className="col-span-3">
+                      <label className="block text-xs font-medium text-gray-700">
+                        Block by Date <span className="text-red-500">*</span>
+                      </label>
+                      <div className="mt-1">
+                        <MultipleDatePicker
+                          value={values.BlockBydate || []}
+                          onChange={(selectedDates) => {
+                            setFieldValue("BlockBydate", selectedDates);
+                          }}
+                          placeholder="Select dates to block..."
+                          className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        />
+                        <ErrorMessage
+                          name="BlockBydate"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                    </div>
+                  )}
                   {/* Discount Table */}
                   {values.hasDiscount === "Yes" && (
                     <div className="col-span-4">
@@ -883,13 +994,14 @@ const HouseCreate = () => {
                       Latitude<span className="text-red-500">*</span>
                     </label>
                     <Field
-                      name="package.latitude"
-                      type="text"
+                      name="latitude"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Latitude"
                     />
                     <ErrorMessage
-                      name="package.latitude"
+                      name="latitude"
                       component="div"
                       className="text-red-500 text-xs absolute"
                     />
@@ -904,15 +1016,62 @@ const HouseCreate = () => {
                       Longitude<span className="text-red-500">*</span>
                     </label>
                     <Field
-                      name="package.longitude"
-                      type="text"
+                      name="longitude"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter longitude"
                     />
                     <ErrorMessage
-                      name="package.longitude"
+                      name="longitude"
                       component="div"
                       className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+
+                  {/* Overview */}
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="overview"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Overview <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="overview"
+                      rows="3"
+                      maxLength="500"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      placeholder="Enter house overview"
+                    />
+                    <ErrorMessage
+                      name="overview"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/* Special Offers */}
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="specialOffers"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Special Offers <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="specialOffers"
+                      rows="3"
+                      maxLength="500"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      placeholder="Enter special offers"
+                    />
+                    <ErrorMessage
+                      name="specialOffers"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
                     />
                   </div>
                   {/* Remarks */}
