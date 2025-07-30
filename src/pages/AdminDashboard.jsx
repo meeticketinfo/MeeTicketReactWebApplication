@@ -36,6 +36,7 @@ import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore
 import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
+import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
 
 function AdminDashboard() {
   superballs.register();
@@ -334,48 +335,7 @@ function AdminDashboard() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
   ]);
-  const columnDefs = [
-    {
-      headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      maxWidth: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "parkName",
-      headerName: "Location",
-      flex: 1,
-      width: "330",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "totalAmount",
-      headerName: "Amount",
-      flex: 1,
-      width: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹${params.value}` || "N/A",
-    },
-    {
-      field: "totalBookings",
-      headerName: " No. of bookings",
-      flex: 1,
-      width: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
 
-    {
-      field: "totalQuantity",
-      headerName: "No. of tickets",
-      flex: 1,
-      width: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-  ];
   const EsdInitialValues = {
     fromDate: "",
     toDate: "",
@@ -950,14 +910,12 @@ function AdminDashboard() {
         )}
         {role === "Role_DeptAdmin" && (
           <DashboardCard07>
-            <div>
-              <AgGridTable
-                ExportName="Departments"
-                rowData={AllDepartmentEntities || []}
-                columnDefs={columnDefs}
-                isFetchLoading={isFetchDepartmentEntitiesLoading}
-              />
-            </div>
+            <DepartmentTable
+              AllDepartmentEntities={AllDepartmentEntities}
+              isFetchDepartmentEntitiesLoading={
+                isFetchDepartmentEntitiesLoading
+              }
+            />
           </DashboardCard07>
         )}
       </div>
