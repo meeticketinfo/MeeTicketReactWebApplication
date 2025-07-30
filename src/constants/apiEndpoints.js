@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -303,7 +303,8 @@ export const API_ENDPOINTS = {
     REPORTS:{
     GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
     GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
-    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`
+    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`,
+    GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
     },
     USER:{
 

@@ -14,9 +14,11 @@ export const useAmrabadConsolidatedStore = create((set) => ({
 
   isAmrabadTransactionPaymentReportsLoading: false,
 
-  // setisAmrabadCompleteBookings: (isAmrabadCompleteBookings) => {
-  //   set({ isAmrabadCompleteBookings });
-  // },
+  isFetchCurrentBookingDetailsLoading: false,
+
+  setisAmrabadCompleteBookings: (isAmrabadCompleteBookings) => {
+    set({ isAmrabadCompleteBookings });
+  },
   fetchAmrabadConsolidatedReports: async (payload) => {
     console.log("payload", payload);
     set({ isAmrabadConsolidatedReportsLoading: true });
@@ -68,6 +70,22 @@ export const useAmrabadConsolidatedStore = create((set) => ({
         error: error.message,
         isAmrabadConsolidatedReportsLoading: false,
       });
+    }
+  },
+  fetchAmrabadCurrentBookingDetailsByBookingId: async (bookingId) => {
+    set({ isFetchAmrabadCurrentBookingDetailsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD.REPORTS.GET_QR_BOOKING_DETAILS}/${bookingId}`
+      );
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchAmrabadCurrentBookingDetailsLoading: false,
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({ isFetchAmrabadCurrentBookingDetailsLoading: false });
+      return { success: false };
     }
   },
 }));
