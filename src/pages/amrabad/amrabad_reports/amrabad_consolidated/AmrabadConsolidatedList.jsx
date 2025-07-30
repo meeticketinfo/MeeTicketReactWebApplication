@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import {
+  formatToCurrency,
   formatToStandardDate,
   getCurrentDate,
 } from "../../../../utils/TypographyHelper";
@@ -75,7 +76,7 @@ function AmrabadConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "entityTypeName",
+      field: "locationCategoryName",
       headerName: "Location category",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -151,7 +152,8 @@ function AmrabadConsolidatedList() {
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "₹0.00",
     },
     {
       field: "paymentMode",
