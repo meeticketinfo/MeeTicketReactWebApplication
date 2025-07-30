@@ -22,6 +22,10 @@ import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
 export default function AdminBookings() {
   const [openModal, setOpenModal] = useState(false);
+   
+  
+
+  
   const {
     fetchAllEntityBookingsByFilters,
     allEntityBookings,
@@ -61,7 +65,10 @@ export default function AdminBookings() {
   const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllBookings();
-    fetchAllDepartmentTypes();
+
+     if(role === "ROLE_SUPERADMIN"){
+      fetchAllDepartmentTypes();
+    }
     fetchAllEntityTypes();
     // fetchAllParks();
     if (role === "ROLE_NODALOFFICER") {
@@ -496,7 +503,7 @@ export default function AdminBookings() {
                         />
                       </div>
                       {/* department */}
-                      <div>
+                      {role === "ROLE_SUPERADMIN"&&<div>
                         <label className="block text-xs font-medium text-gray-700">
                           Department
                         </label>
@@ -554,7 +561,7 @@ export default function AdminBookings() {
                             }),
                           }}
                         />
-                      </div>
+                      </div>}
                       {/* location category */}
                       <div>
                         <label className="block text-xs font-medium text-gray-700">

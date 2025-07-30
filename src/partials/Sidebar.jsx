@@ -20,6 +20,7 @@ import {
   CustomParkAdminPermissions,
   Toursim,
   RtcAdmin,
+  Department,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -87,7 +88,7 @@ function Sidebar({ variant = "default" }) {
       document.querySelector("body").classList.add("sidebar-minimized");
     }
   }, [sidebarExpanded]);
-  
+
   const email = decodedTokenData?.data?.email;
   const role = roleDetails?.name;
 
@@ -115,6 +116,8 @@ function Sidebar({ variant = "default" }) {
       return Toursim;
     } else if (role === "Role_RTCADMIN") {
       return RtcAdmin;
+    } else if (role === "Role_DeptAdmin") {
+      return Department;
     }
     return [];
   }, [role, email]);
