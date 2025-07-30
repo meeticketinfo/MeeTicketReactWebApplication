@@ -183,7 +183,75 @@ const TotalTransactionsForm = () => {
                   min={values.fromDate || startOfDay}
                 />
               </div>
-
+              {/* mobile number */}
+              <div>
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <Field
+                  type="text"
+                  maxLength="10"
+                  name="phoneNumber"
+                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                  placeholder="Enter phone number"
+                  onKeyPress={(e) => {
+                    if (!/^\d$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setFieldValue("phoneNumber", e.target.value);
+                  }}
+                />
+              </div>
+              
+              {/* mode of transaction */}
+              <div>
+                <label
+                  htmlFor="bookingSource"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Mode of Transaction
+                </label>
+                <Field
+                  as="select"
+                  name="bookingSource"
+                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("bookingSource", e.target.value);
+                  }}
+                >
+                  <option value="">Select Mode</option>
+                  <option value="meeTicket">MeeTicketApp</option>
+                  <option value="counter">COUNTER</option>
+                </Field>
+              </div>
+              {/*Payment Mode */}
+              <div>
+                <label
+                  htmlFor="PaymentMode"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Payment Mode
+                </label>
+                <Field
+                  as="select"
+                  name="PaymentMode"
+                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("PaymentMode", e.target.value);
+                  }}
+                >
+                  <option value="">Select Mode</option>
+                  <option value="upi">UPI</option>
+                  <option value="creditCard">Credit Card</option>
+                  <option value="debitCard">Debit Card</option>
+                  <option value="netBanking">Net Banking</option>
+                </Field>
+              </div>
               {/* department */}
               {role === "ROLE_SUPERADMIN" && (
                 <div>
@@ -372,77 +440,6 @@ const TotalTransactionsForm = () => {
                   }}
                 />
               </div>
-              {/* mobile number */}
-              <div>
-                <label
-                  htmlFor="phoneNumber"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Phone Number
-                </label>
-                <Field
-                  type="text"
-                  maxLength="10"
-                  name="phoneNumber"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                  placeholder="Enter phone number"
-                  onKeyPress={(e) => {
-                    if (!/^\d$/.test(e.key)) {
-                      e.preventDefault();
-                    }
-                  }}
-                  onChange={(e) => {
-                    setFieldValue("phoneNumber", e.target.value);
-                  }}
-                />
-              </div>
-
-              {/* mode of transaction */}
-
-              <div>
-                <label
-                  htmlFor="bookingSource"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Mode of Transaction
-                </label>
-                <Field
-                  as="select"
-                  name="bookingSource"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("bookingSource", e.target.value);
-                  }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="meeTicket">MeeTicketApp</option>
-                  <option value="counter">COUNTER</option>
-                </Field>
-              </div>
-              {/*Payment Mode */}
-              <div>
-                <label
-                  htmlFor="PaymentMode"
-                  className="block text-xs font-medium text-gray-700"
-                >
-                  Payment Mode
-                </label>
-                <Field
-                  as="select"
-                  name="PaymentMode"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("PaymentMode", e.target.value);
-                  }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="upi">UPI</option>
-                  <option value="creditCard">Credit Card</option>
-                  <option value="debitCard">Debit Card</option>
-                  <option value="netBanking">Net Banking</option>
-                </Field>
-              </div>
-
               <div className="flex gap-2 items-end">
                 <button
                   type="submit"

@@ -11,6 +11,7 @@ import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 import Select from "react-select";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
 import useAuthStore from "../../../store/authStore";
+import { useParkStore } from "../../../store/masters/parksStore";
 function CompletedBookingsReportList() {
   const { roleDetails } = useAuthStore();
 
@@ -24,6 +25,13 @@ function CompletedBookingsReportList() {
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
+    const {
+      allParkBankTransactions,
+      fetchParkBankTransactions,
+      isFetchAllParkBankTransactionsLoading,
+      allParks,
+      fetchAllParks,
+    } = useParkStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
@@ -44,11 +52,14 @@ function CompletedBookingsReportList() {
       entityTypeId: savedFilters?.entityTypeId
         ? savedFilters.entityTypeId
         : null,
+      parkId: savedFilters?.parkId ? savedFilters.parkId : null,
     });
+    console.log("savedFilters", savedFilters);
   }, [fetchCompleteBookingsReport]);
 
   useEffect(() => {
     fetchAllEntityTypes();
+    fetchAllParks();
     if(role === "ROLE_SUPERADMIN"){
       fetchAllDepartmentTypes();
     }
@@ -63,6 +74,7 @@ function CompletedBookingsReportList() {
       ? savedFilters.typeOfBooking
       : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+    parkId: savedFilters?.parkId ? savedFilters.parkId : null,
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -73,13 +85,16 @@ function CompletedBookingsReportList() {
       JSON.stringify(values)
     );
     fetchCompleteBookingsReport({
+ 
       startDate: values.fromDate,
       endDate: values.toDate,
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
       bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : null,
+      parkId: values.parkId ? values.parkId : null,
     });
+    console.log("values", values);
   };
 
   const [columnDefs] = useState([
@@ -89,6 +104,13 @@ function CompletedBookingsReportList() {
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "paymentTransactionId",
+      headerName: "Payment Transaction ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "referencE_ID",
@@ -195,13 +217,6 @@ function CompletedBookingsReportList() {
     {
       field: "paymentType",
       headerName: "Payment Type",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "paymentTransactionId",
-      headerName: "Payment Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -438,6 +453,61 @@ function CompletedBookingsReportList() {
                 }}
               />
             </div>
+             {/* location */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Location
+                </label>
+
+                <Select
+                  name="parkId"
+                  value={
+                    allParks
+                      ?.filter((park) => park.isActive)
+                      .map((park) => ({
+                        value: park.id,
+                        label: park.name,
+                      }))
+                      .find((option) => option.value === values.parkId) || null
+                  }
+                  options={allParks
+                    ?.filter((park) => park.isActive)
+                    .map((park) => ({
+                      value: park.id,
+                      label: park.name,
+                    }))}
+                  onChange={(selectedOption) =>
+                    setFieldValue("parkId", selectedOption?.value || "")
+                  }
+                  isClearable
+                  placeholder="Location"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      // padding: "4px 0",
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#6D7072",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
+              </div>
             {/* submit */}
             <div className="flex items-end gap-2">
               <button

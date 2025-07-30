@@ -80,10 +80,13 @@ function AdminDashboard() {
     fetchAllZooDashBoardCountsTicketWise,
     isFetchCountsLoading,
     isFetchPieChartsLoading,
+    AllDepartmentEntities,
+    isFetchDepartmentEntitiesLoading,
+    fetchAllDepartmentEntities,
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
-
+  console.log(AllDepartmentEntities, "alldepartmentEntities");
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
@@ -95,6 +98,12 @@ function AdminDashboard() {
   useEffect(() => {
     fetchAllDepartmentTypes();
     fetchAllEntityTypes();
+    fetchAllDepartmentEntities({
+      fromDate: "",
+      toDate: "",
+      entityId: "",
+      locationId: "",
+    });
     fetchAllDashboardCounts(roleDetails, {
       fromDate: "",
       toDate: "",
@@ -334,37 +343,37 @@ function AdminDashboard() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "entity",
+      field: "parkName",
       headerName: "Location",
-      // flex: 1,
+      flex: 1,
       width: "330",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "entityWiseTotalBookings",
+      field: "totalAmount",
+      headerName: "Amount",
+      flex: 1,
+      width: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `₹${params.value}` || "N/A",
+    },
+    {
+      field: "totalBookings",
       headerName: " No. of bookings",
-      // flex: 1,
+      flex: 1,
       width: "100",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
 
     {
-      field: "departmentName",
+      field: "totalQuantity",
       headerName: "No. of tickets",
-      // flex: 1,
+      flex: 1,
       width: "100",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "entityWiseTotalAmount",
-      headerName: "Amount",
-      // flex: 1,
-      width: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹${params.value}` || "N/A",
     },
   ];
   const EsdInitialValues = {
@@ -379,6 +388,7 @@ function AdminDashboard() {
     fetchAllDashboardCounts(roleDetails, { ...values, active: true });
     fetchAllEntityWiseCounts({ ...values, active: true });
     fetchAllZooDashBoardCountsTicketWise({ ...values, active: true });
+    fetchAllDepartmentEntities(values);
   };
 
   // Function to get filtered location categories based on selected department
@@ -938,15 +948,18 @@ function AdminDashboard() {
             </div>
           </DashboardCard07>
         )}
-
-        {/* <div>
-            <AgGridTable
-              ExportName="Departments"
-              rowData={allPieCharts || []}
-              columnDefs={columnDefs}
-              isFetchLoading={isFetchPieChartsLoading}
-            />
-          </div> */}
+        {role === "Role_DeptAdmin" && (
+          <DashboardCard07>
+            <div>
+              <AgGridTable
+                ExportName="Departments"
+                rowData={AllDepartmentEntities || []}
+                columnDefs={columnDefs}
+                isFetchLoading={isFetchDepartmentEntitiesLoading}
+              />
+            </div>
+          </DashboardCard07>
+        )}
       </div>
     </>
   );

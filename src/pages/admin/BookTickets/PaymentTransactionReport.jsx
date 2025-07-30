@@ -111,6 +111,12 @@ function PaymentTransactionReport() {
       headerClass: "text-blue-v2",
     },
     {
+      field: "transactionId",
+      headerName: "Transaction ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
       field: "departmentName",
       headerName: "Department",
       flex: 1,
@@ -128,12 +134,6 @@ function PaymentTransactionReport() {
     {
       field: "orderId",
       headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "transactionId",
-      headerName: "Transaction ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
