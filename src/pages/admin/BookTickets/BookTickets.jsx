@@ -22,6 +22,7 @@ import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
 export default function AdminBookings() {
   const [openModal, setOpenModal] = useState(false);
+
   const {
     fetchAllEntityBookingsByFilters,
     allEntityBookings,
@@ -35,12 +36,11 @@ export default function AdminBookings() {
     isBookingFormVisible,
     setPaymentStatus,
     saveCggDetails,
-    isCggLoading
+    isCggLoading,
   } = useBookingsStore();
 
   const [cgg, setCgg] = useState(null);
 
-  
   const {
     allParks,
     fetchAllParks,
@@ -53,7 +53,7 @@ export default function AdminBookings() {
     useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
-  const {  roleDetails, decodedTokenData } = useAuthStore();
+  const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
 
@@ -61,7 +61,10 @@ export default function AdminBookings() {
   const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllBookings();
-    fetchAllDepartmentTypes();
+
+    if (role === "ROLE_SUPERADMIN") {
+      fetchAllDepartmentTypes();
+    }
     fetchAllEntityTypes();
     // fetchAllParks();
     if (role === "ROLE_NODALOFFICER") {
@@ -75,17 +78,15 @@ export default function AdminBookings() {
     const fetchData = async () => {
       try {
         const res = await fetchAllEntityBookingsByFilters(initialValues);
-       
-        setCgg(res.data.data.data.isCggEnable)
 
+        setCgg(res.data.data.data.isCggEnable);
       } catch (err) {
         console.error("Error fetching bookings:", err);
       }
     };
-  
+
     fetchData();
   }, []);
-  
 
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -111,7 +112,7 @@ export default function AdminBookings() {
     },
     {
       field: "transactionId",
-      headerName: "Transaction Id",
+      headerName: "Transaction ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value && params.value.trim() !== "" ? params.value : "N/A",
@@ -145,7 +146,7 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    
+
     {
       field: "facilityName",
       headerName: "Facility Name",
@@ -179,7 +180,7 @@ export default function AdminBookings() {
       headerName: "Quantity",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => ( params.value?? "N/A"),
+      valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "amount",
@@ -236,7 +237,6 @@ export default function AdminBookings() {
       const filters = formattedValues;
       const result = await fetchAllEntityBookingsByFilters(filters);
 
-     
       if (result?.data?.status === 200) {
         // resetForm();
       } else {
@@ -281,24 +281,26 @@ export default function AdminBookings() {
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
             {!isBookingFormVisible ? (
               <div className="flex gap-2 ">
-                {parkId==="100"&&<div className="flex items-center shadow px-2 py-1">
-                  <label className="text-sm flex ">
-                    <input
-                      type="checkbox"
-                      checked={cgg}
-                      // value={cgg}
-                      onChange={(e) => {
-                        setCgg(e.target.checked);
-                        setOpenModal(true);
-                      }}
-                      className="sr-only peer "
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
-                    <span className="ms-3 text-md font-semibold text-gray-900 ">
-                      {cgg ? "CGG ON" : "CGG OFF"}
-                    </span>
-                  </label>
-                </div>}
+                {parkId === "100" && (
+                  <div className="flex items-center shadow px-2 py-1">
+                    <label className="text-sm flex ">
+                      <input
+                        type="checkbox"
+                        checked={cgg}
+                        // value={cgg}
+                        onChange={(e) => {
+                          setCgg(e.target.checked);
+                          setOpenModal(true);
+                        }}
+                        className="sr-only peer "
+                      />
+                      <div className="relative w-11 h-6 bg-gray-200 rounded-full   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-v2"></div>
+                      <span className="ms-3 text-md font-semibold text-gray-900 ">
+                        {cgg ? "CGG ON" : "CGG OFF"}
+                      </span>
+                    </label>
+                  </div>
+                )}
                 {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
                   isCounterEnabled?.toLowerCase() === "true" && (
                     <button
@@ -342,53 +344,6 @@ export default function AdminBookings() {
                       {role !== "ROLE_ADMIN" &&
                         role !== "ROLE_ZOOPARKADMIN" && (
                           <>
-                            <div>
-                              <label className="block text-xs font-medium">
-                                Location
-                              </label>
-                              <Select
-                                name="entityId"
-                                options={parksToRender?.map((park) => ({
-                                  value: park.id,
-                                  label: park.name,
-                                }))}
-                                onChange={(selectedOption) => {
-                                  setFieldValue(
-                                    "entityId",
-                                    selectedOption?.value || ""
-                                  );
-                                }}
-                                className="mt-[4px] text-sm"
-                                classNamePrefix="react-select"
-                                placeholder="Locations"
-                                isClearable
-                                styles={{
-                                  control: (base) => ({
-                                    ...base,
-                                    outline: "none",
-                                    boxShadow: "none",
-                                    borderColor: "#ced4da",
-                                    borderRadius: "6px",
-                                    height: "30px",
-                                    minHeight: "33px",
-                                  }),
-
-                                  menu: (base) => ({
-                                    ...base,
-                                    // padding: "4px 0",
-                                  }),
-                                  option: (base, { isFocused }) => ({
-                                    ...base,
-                                    fontSize: "0.775rem",
-                                    backgroundColor: isFocused
-                                      ? "#F8F8F8"
-                                      : "white",
-                                    color: isFocused ? "#0C3771" : "#6D7072",
-                                    cursor: "pointer",
-                                  }),
-                                }}
-                              />
-                            </div>
                             {/* <div>
                         <label className="block text-xs font-medium text-gray-700">
                           Location Category
@@ -496,65 +451,70 @@ export default function AdminBookings() {
                         />
                       </div>
                       {/* department */}
-                      <div>
-                        <label className="block text-xs font-medium text-gray-700">
-                          Department
-                        </label>
+                      {role === "ROLE_SUPERADMIN" && (
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700">
+                            Department
+                          </label>
 
-                        <Select
-                          name="departmentId"
-                          value={
-                            allDepartmentTypes
+                          <Select
+                            name="departmentId"
+                            value={
+                              allDepartmentTypes
+                                ?.filter((dept) => dept.isActive)
+                                .map((dept) => ({
+                                  value: dept.departmentId,
+                                  label: dept.departmentName,
+                                }))
+                                .find(
+                                  (option) =>
+                                    option.value === values.departmentId
+                                ) || null // Set the selected value
+                            }
+                            options={allDepartmentTypes
                               ?.filter((dept) => dept.isActive)
                               .map((dept) => ({
                                 value: dept.departmentId,
                                 label: dept.departmentName,
-                              }))
-                              .find(
-                                (option) => option.value === values.departmentId
-                              ) || null // Set the selected value
-                          }
-                          options={allDepartmentTypes
-                            ?.filter((dept) => dept.isActive)
-                            .map((dept) => ({
-                              value: dept.departmentId,
-                              label: dept.departmentName,
-                            }))}
-                          onChange={(selectedOption) =>
-                            setFieldValue(
-                              "departmentId",
-                              selectedOption?.value || ""
-                            )
-                          }
-                          isClearable
-                          placeholder="Department"
-                          className="mt-[4px] text-sm"
-                          classNamePrefix="react-select"
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              outline: "none",
-                              boxShadow: "none",
-                              borderColor: "#ced4da",
-                              borderRadius: "6px",
-                              height: "30px",
-                              minHeight: "33px",
-                            }),
+                              }))}
+                            onChange={(selectedOption) =>
+                              setFieldValue(
+                                "departmentId",
+                                selectedOption?.value || ""
+                              )
+                            }
+                            isClearable
+                            placeholder="Department"
+                            className="mt-[4px] text-sm"
+                            classNamePrefix="react-select"
+                            styles={{
+                              control: (base) => ({
+                                ...base,
+                                outline: "none",
+                                boxShadow: "none",
+                                borderColor: "#ced4da",
+                                borderRadius: "6px",
+                                height: "30px",
+                                minHeight: "33px",
+                              }),
 
-                            menu: (base) => ({
-                              ...base,
-                              // padding: "4px 0",
-                            }),
-                            option: (base, { isFocused }) => ({
-                              ...base,
-                              fontSize: "0.775rem",
-                              backgroundColor: isFocused ? "#F8F8F8" : "white",
-                              color: isFocused ? "#0C3771" : "#000",
-                              cursor: "pointer",
-                            }),
-                          }}
-                        />
-                      </div>
+                              menu: (base) => ({
+                                ...base,
+                                // padding: "4px 0",
+                              }),
+                              option: (base, { isFocused }) => ({
+                                ...base,
+                                fontSize: "0.775rem",
+                                backgroundColor: isFocused
+                                  ? "#F8F8F8"
+                                  : "white",
+                                color: isFocused ? "#0C3771" : "#000",
+                                cursor: "pointer",
+                              }),
+                            }}
+                          />
+                        </div>
+                      )}
                       {/* location category */}
                       <div>
                         <label className="block text-xs font-medium text-gray-700">
@@ -615,6 +575,53 @@ export default function AdminBookings() {
                           }}
                         />
                       </div>
+                      {/* Location */}
+                      <div>
+                        <label className="block text-xs font-medium">
+                          Location
+                        </label>
+                        <Select
+                          name="entityId"
+                          options={parksToRender?.map((park) => ({
+                            value: park.id,
+                            label: park.name,
+                          }))}
+                          onChange={(selectedOption) => {
+                            setFieldValue(
+                              "entityId",
+                              selectedOption?.value || ""
+                            );
+                          }}
+                          className="mt-[4px] text-sm"
+                          classNamePrefix="react-select"
+                          placeholder="Locations"
+                          isClearable
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+                              outline: "none",
+                              boxShadow: "none",
+                              borderColor: "#ced4da",
+                              borderRadius: "6px",
+                              height: "30px",
+                              minHeight: "33px",
+                            }),
+
+                            menu: (base) => ({
+                              ...base,
+                              // padding: "4px 0",
+                            }),
+                            option: (base, { isFocused }) => ({
+                              ...base,
+                              fontSize: "0.775rem",
+                              backgroundColor: isFocused ? "#F8F8F8" : "white",
+                              color: isFocused ? "#0C3771" : "#6D7072",
+                              cursor: "pointer",
+                            }),
+                          }}
+                        />
+                      </div>
+
                       <div className="flex items-end">
                         <button
                           type="submit"
@@ -666,7 +673,7 @@ export default function AdminBookings() {
                 onClick={handleCggSubmit}
                 className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
               >
-               {isCggLoading ? (
+                {isCggLoading ? (
                   <span className="px-8">
                     <l-tailspin
                       size="15"

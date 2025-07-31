@@ -190,7 +190,7 @@ export default function MetroCumulativeBookings() {
     {
       field: "remarks",
       headerName: "Remarks",
-      maxWidth: 160,
+      maxWidth: 110,
       hide: email === "esdadmin@gmail.com",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
@@ -233,7 +233,7 @@ export default function MetroCumulativeBookings() {
     {
       field: "utr",
       headerName: "UTR Number",
-      maxWidth: "150",
+      Width: "260",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
@@ -738,6 +738,7 @@ export default function MetroCumulativeBookings() {
                 setOpenModal(false);
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              disabled={isSaveInitiatAmountLoading}
             >
               {isSaveInitiatAmountLoading ? (
                 <span className="px-8">

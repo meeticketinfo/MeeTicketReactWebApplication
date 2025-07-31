@@ -33,6 +33,7 @@ import useAuthStore from "../store/authStore";
 import { FaCalendarCheck } from "react-icons/fa";
 import { BsPassport } from "react-icons/bs";
 import { VscCompassActive } from "react-icons/vsc";
+import { MdEventAvailable } from "react-icons/md";
 
 const sidebarItems = [
   {
@@ -459,6 +460,11 @@ const sidebarItems = [
         title: "Payment Transactions",
         icon: TbReportAnalytics,
         path: "/amrabad-payment-transactions",
+      },
+      {
+        title: "Availability Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-availability-report",
       },
     ],
   },

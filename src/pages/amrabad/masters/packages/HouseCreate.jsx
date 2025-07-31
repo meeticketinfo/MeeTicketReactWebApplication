@@ -8,6 +8,7 @@ import {
   convertToBase64,
   convertImageUrlToBase64,
 } from "../../../../utils/Helper";
+import MultipleDatePicker from "../../../../components/MultipleDatePicker";
 
 // Alternative approach: Skip base64 conversion for existing images if CORS fails
 const handleImageConversion = async (imageUrl, imageId) => {
@@ -42,6 +43,7 @@ const HouseCreate = () => {
     setCurrentTab,
   } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
+  const [isNoBlockSelected, setIsNoBlockSelected] = useState(false);
   const initialValues = {
     roomId: isHouseEditVisible ? selectedSubRowData?.roomId : null,
     packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
@@ -70,10 +72,23 @@ const HouseCreate = () => {
       : null,
     roomLimit: isHouseEditVisible ? selectedSubRowData?.roomLimit : "",
     isBlockout: isHouseEditVisible
-      ? selectedSubRowData?.isBlockout
+      ? (selectedSubRowData?.isBlockout === true || 
+         (selectedSubRowData?.isBlockout === false && selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0))
         ? "Yes"
         : "No"
       : "",
+    blockoutType: isHouseEditVisible
+      ? selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0
+        ? "blockByDate" // Has blocked dates means Block by Date
+        : "fullBlock" // No blocked dates means Full Block
+      : "",
+    BlockBydate: isHouseEditVisible
+      ? selectedSubRowData?.roomBlockedDurations || []
+      : [],
+    latitude: isHouseEditVisible ? selectedSubRowData?.latitude : null,
+    longitude: isHouseEditVisible ? selectedSubRowData?.longitude : null,
+    overview: isHouseEditVisible ? selectedSubRowData?.overview : "",
+    specialOffers: isHouseEditVisible ? selectedSubRowData?.specialOffers : "",
     remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
     sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
     // roomImagesBase64Strings: isHouseEditVisible
@@ -147,10 +162,24 @@ const HouseCreate = () => {
     roomName: Yup.string()
       .required("House name is required.")
       .min(3, "House name must be at least 3 characters."),
-    tariffPerDay: Yup.number()
-      .typeError("Tariff must be a number.")
+    tariffPerDay: Yup.string()
       .required("Tariff per day is required.")
-      .positive("Tariff must be a positive number."),
+      .test(
+        "is-not-empty-or-space",
+        "Tariff cannot be empty or spaces only",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Tariff must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Tariff must be a positive number",
+        (value) => Number(value) > 0
+      ),
+
     hasDiscount: Yup.string().required(
       "Please select if discounts are available."
     ),
@@ -163,17 +192,91 @@ const HouseCreate = () => {
     // discountApplicable:
     //   isValidation === "Yes" &&
     //   Yup.string().required("discounts Applicable is required"),
-    noOfHousesAvailable: Yup.number().required(
-      "No Of House Applicable is required"
-    ),
-    roomLimit: Yup.string().required("Room Limit is required."),
-    isBlockout: Yup.string().required("Block Out is required."),
-    sequence: Yup.string().required("Sequence is required."),
+    noOfHousesAvailable: Yup.string()
+      .required("No Of House Applicable is required")
+      .test(
+        "not-only-spaces",
+        "No of Houses cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "No of Houses must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "No of Houses must be a positive number",
+        (value) => Number(value) > 0
+      ),
+
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90),
+
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180),
+    roomLimit: Yup.string()
+      .required("Room Limit is required.")
+      .test(
+        "not-only-spaces",
+        "Room Limit cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Room Limit must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Room Limit must be a positive number",
+        (value) => Number(value) > 0
+      ),
+    isBlockout: Yup.string().required("Block out selection is required"),
+    blockoutType: Yup.string().when("isBlockout", {
+      is: "Yes",
+      then: (schema) => schema.required("Block out type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    BlockBydate: Yup.array()
+      .of(Yup.string())
+      .when("blockoutType", {
+        is: "blockByDate",
+        then: (schema) => schema.min(1, "At least one date is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    sequence: Yup.string()
+      .required("Sequence is required.")
+      .test(
+        "not-only-spaces",
+        "Sequence cannot be empty or just spaces",
+        (value) => value && value.trim() !== ""
+      )
+      .test(
+        "is-valid-number",
+        "Sequence must be a valid number",
+        (value) => !isNaN(value)
+      )
+      .test(
+        "is-positive",
+        "Sequence must be a positive number",
+        (value) => Number(value) > 0
+      ),
     discountDetails: Yup.array().of(
       Yup.object().shape({
         dayOfWeek: Yup.string().required("Day of week is required"),
-        discountValue: Yup.string().nullable().transform((value) => value === "" ? null : value),
-        amountAfterDiscount: Yup.string().nullable().transform((value) => value === "" ? null : value),
+        discountValue: Yup.string()
+          .nullable()
+          .transform((value) => (value === "" ? null : value)),
+        amountAfterDiscount: Yup.string()
+          .nullable()
+          .transform((value) => (value === "" ? null : value)),
       })
     ),
     roomImagesBase64Strings: Yup.array()
@@ -195,10 +298,17 @@ const HouseCreate = () => {
         }
       )
       .max(5, "You can upload up to 5 images only"),
+    overview: Yup.string()
+      .required("Overview is required.")
+      .min(10, "Overview must be at least 10 characters.")
+      .max(500, "Overview cannot exceed 500 characters."),
+    specialOffers: Yup.string()
+      .required("Special offers is required.")
+      .min(10, "Special offers must be at least 10 characters.")
+      .max(500, "Special offers cannot exceed 500 characters."),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-   
     const isEdit = isHouseEditVisible;
 
     try {
@@ -252,24 +362,34 @@ const HouseCreate = () => {
           .map((img) => img.imageUrl);
       }
 
-    
-
       // Convert empty strings to null for discount values
-      const processedDiscountDetails = values.discountDetails.map(discount => ({
-        ...discount,
-        discountValue: discount.discountValue === "" ? null : discount.discountValue,
-        amountAfterDiscount: discount.amountAfterDiscount === "" ? null : discount.amountAfterDiscount,
-      }));
+      const processedDiscountDetails = values.discountDetails.map(
+        (discount) => ({
+          ...discount,
+          discountValue:
+            discount.discountValue === "" ? null : discount.discountValue,
+          amountAfterDiscount:
+            discount.amountAfterDiscount === ""
+              ? null
+              : discount.amountAfterDiscount,
+        })
+      );
 
       const payload = {
         ...values,
-        packageId: values.packageId,
+        packageId: values.packageId, 
         hasDiscount: values.hasDiscount === "Yes",
-        isBlockout: values.isBlockout === "Yes",
+        isBlockout: values.isBlockout === "Yes" ? true : false,
+        blockedDate: values.isBlockout === "Yes" && values.blockoutType === "blockByDate" 
+          ? values.BlockBydate || [] 
+          : [],
         discountApplicable: values.discountApplicable === "true",
         roomImagesBase64Strings: roomImagesPayload,
         discountDetails: processedDiscountDetails, // Use the processed discount details
       };
+
+      // Remove BlockBydate from payload since we only want blockedDate
+      delete payload.BlockBydate;
 
       if (!payload.hasDiscount) {
         payload.discountType = null;
@@ -278,24 +398,23 @@ const HouseCreate = () => {
         payload.discountApplicable = null;
       }
 
-      
       const result = await saveHouseDetails(payload, isEdit);
 
       if (result.data.status === 200) {
-       
         toast.success(
           isEdit ? "House updated successfully" : "House created successfully"
         );
         setIsHouseEditVisible(false);
         fetchPackagesWithRooms();
         resetForm();
-        
+
         // Add a small delay before changing tab to ensure toast is visible
         setTimeout(() => {
           setCurrentTab(0);
         }, 1000);
       }
     } catch (xhr) {
+      console.log("xhr", xhr);
       if (xhr?.response?.data?.errors) {
         Object.entries(xhr.response.data.errors).forEach(([key, msgs]) => {
           toast.error(`${key}: ${msgs[0]}`);
@@ -329,7 +448,6 @@ const HouseCreate = () => {
               }
             }
 
-          
             return (
               <Form>
                 <div className="bg-[#F3F3F3] grid md:grid-cols-4 gap-5 p-6 my-4 mx-2 rounded-xl border border-gray-300">
@@ -390,18 +508,43 @@ const HouseCreate = () => {
                     >
                       Tariff per day <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      name="tariffPerDay"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Tariff per day"
-                    />
+
+                    <Field name="tariffPerDay">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 5) {
+                              e.target.value = value.slice(0, 5);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Tariff per day"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="tariffPerDay"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   {/* No of Houses available  */}
                   <div className="col-span-1">
                     <label
@@ -411,19 +554,43 @@ const HouseCreate = () => {
                       No of Houses Available{" "}
                       <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="noOfHousesAvailable"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter No of Houses Available"
-                    />
+
+                    <Field name="noOfHousesAvailable">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter No of Houses Available"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="noOfHousesAvailable"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   <div className="col-span-1">
                     <label
                       htmlFor="roomLimit"
@@ -431,19 +598,43 @@ const HouseCreate = () => {
                     >
                       Room Limit <span className="text-red-500 text-xs">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="roomLimit"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Room Limit"
-                    />
+
+                    <Field name="roomLimit">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Room Limit"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="roomLimit"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
                   <div>
                     <label
                       htmlFor="hasDiscount"
@@ -513,14 +704,25 @@ const HouseCreate = () => {
                       htmlFor="isBlockout"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Block out <span className="text-red-500">*</span>
+                      Block out type? <span className="text-red-500">*</span>
                     </label>
                     <Field
                       as="select"
                       name="isBlockout"
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        setFieldValue("isBlockout", selectedValue);
+                        
+                        // Reset BlockBydate when changing blockout type
+                        if (selectedValue === "No") {
+                          // Clear dates for no block
+                          setFieldValue("BlockBydate", []);
+                          setFieldValue("blockoutType", ""); // Clear blockoutType
+                        }
+                      }}
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     >
-                      <option value="">Select option</option>
+                      <option value="">Select</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </Field>
@@ -530,6 +732,66 @@ const HouseCreate = () => {
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
+
+                  {/* Block out type - only show when isBlockout is "Yes" */}
+                  {values.isBlockout === "Yes" && (
+                    <div className="col-span-1">
+                      <label
+                        htmlFor="blockoutType"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Block out type? <span className="text-red-500">*</span>
+                      </label>
+                      <Field
+                        as="select"
+                        name="blockoutType"
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          setFieldValue("blockoutType", selectedValue);
+                          
+                          // Reset BlockBydate when changing blockout type
+                          if (selectedValue === "fullBlock") {
+                            // Clear dates for full block
+                            setFieldValue("BlockBydate", []);
+                          }
+                        }}
+                        className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      >
+                        <option value="">Select</option>
+                        <option value="fullBlock">Full Block</option>
+                        <option value="blockByDate">Block by Date</option>
+                      </Field>
+                      <ErrorMessage
+                        name="blockoutType"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
+                    </div>
+                  )}
+
+                  {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
+                  {values.isBlockout === "Yes" && values.blockoutType === "blockByDate" && (
+                    <div className="col-span-3">
+                      <label className="block text-xs font-medium text-gray-700">
+                        Block by Date <span className="text-red-500">*</span>
+                      </label>
+                      <div className="mt-1">
+                        <MultipleDatePicker
+                          value={values.BlockBydate || []}
+                          onChange={(selectedDates) => {
+                            setFieldValue("BlockBydate", selectedDates);
+                          }}
+                          placeholder="Select dates to block..."
+                          className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        />
+                        <ErrorMessage
+                          name="BlockBydate"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                    </div>
+                  )}
                   {/* Discount Table */}
                   {values.hasDiscount === "Yes" && (
                     <div className="col-span-4">
@@ -575,9 +837,7 @@ const HouseCreate = () => {
                                     onKeyDown={(e) => {
                                       // Prevent negative values and invalid characters
                                       if (
-                                        ["-", "e", "E", "+"].includes(
-                                          e.key
-                                        ) ||
+                                        ["-", "e", "E", "+"].includes(e.key) ||
                                         (e.key.length === 1 &&
                                           !/[0-9]/.test(e.key))
                                       ) {
@@ -586,15 +846,16 @@ const HouseCreate = () => {
                                     }}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      
+
                                       // Prevent negative values
                                       if (parseFloat(value) < 0) {
                                         e.target.value = "";
                                         return;
                                       }
-                                      
+
                                       // Convert empty string to null
-                                      const processedValue = value === "" ? null : value;
+                                      const processedValue =
+                                        value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].discountValue`,
                                         processedValue
@@ -654,9 +915,7 @@ const HouseCreate = () => {
                                     onKeyDown={(e) => {
                                       // Prevent negative values and invalid characters
                                       if (
-                                        ["-", "e", "E", "+"].includes(
-                                          e.key
-                                        ) ||
+                                        ["-", "e", "E", "+"].includes(e.key) ||
                                         (e.key.length === 1 &&
                                           !/[0-9]/.test(e.key))
                                       ) {
@@ -665,15 +924,16 @@ const HouseCreate = () => {
                                     }}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      
+
                                       // Prevent negative values
                                       if (parseFloat(value) < 0) {
                                         e.target.value = "";
                                         return;
                                       }
-                                      
+
                                       // Convert empty string to null
-                                      const processedValue = value === "" ? null : value;
+                                      const processedValue =
+                                        value === "" ? null : value;
                                       setFieldValue(
                                         `discountDetails[${dayIndex}].amountAfterDiscount`,
                                         processedValue
@@ -735,15 +995,128 @@ const HouseCreate = () => {
                     >
                       Sequence <span className="text-red-500">*</span>
                     </label>
-                    <Field
-                      type="text"
-                      maxLength="10"
-                      name="sequence"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      placeholder="Enter Sequence Number"
-                    />
+
+                    <Field name="sequence">
+                      {({ field }) => (
+                        <input
+                          {...field}
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          placeholder="Enter Sequence Number"
+                        />
+                      )}
+                    </Field>
+
                     <ErrorMessage
                       name="sequence"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/*  Latitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-1">
+                    <label
+                      htmlFor="latitude"
+                      className="block text-sm font-medium"
+                    >
+                      Latitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="latitude"
+                      type="number"
+                      step="any"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Latitude"
+                    />
+                    <ErrorMessage
+                      name="latitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+
+                  {/*  Longitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-1">
+                    <label
+                      htmlFor="longitude"
+                      className="block text-sm font-medium"
+                    >
+                      Longitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="longitude"
+                      type="number"
+                      step="any"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter longitude"
+                    />
+                    <ErrorMessage
+                      name="longitude"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+
+                  {/* Overview */}
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="overview"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Overview <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="overview"
+                      rows="3"
+                      maxLength="500"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      placeholder="Enter house overview"
+                    />
+                    <ErrorMessage
+                      name="overview"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/* Special Offers */}
+                  <div className="col-span-2">
+                    <label
+                      htmlFor="specialOffers"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Special Offers <span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="specialOffers"
+                      rows="3"
+                      maxLength="500"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      placeholder="Enter special offers"
+                    />
+                    <ErrorMessage
+                      name="specialOffers"
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />

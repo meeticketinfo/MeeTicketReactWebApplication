@@ -41,6 +41,7 @@ const MainOtpLogin = ({ closeModal }) => {
           <OtPVerification
             startTimer={startTimer}
             timeLeft={timeLeft}
+            onOtpSent={setUserId}
           />
         ) : (
           <OtpLogin onOtpSent={setUserId} startTimer={startTimer} />

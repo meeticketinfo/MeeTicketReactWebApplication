@@ -30,7 +30,20 @@ export const superAdminPermissions = [
   "metro-total-transaction",
   "metro-user-report",
   "metro-user-detailed-report",
-  "metro-refund-transactions"
+  "metro-refund-transactions",
+];
+
+// department
+
+export const Department = [
+  "dashboard",
+  "entity-bookings",
+
+  "completed-bookings",
+  "payment-transaction-report",
+  "total-transactions-dashboard",
+  "user-report",
+  "refund-transactions",
 ];
 
 export const parkAdminPermissions = [
@@ -136,5 +149,6 @@ export const Amrabad = [
   "amrabad-packages",
   "amrabad-consolidated-reports",
   "amrabad-individual-reports",
-  "amrabad-payment-transactions"
+  "amrabad-payment-transactions",
+  "amrabad-availability-report",
 ];

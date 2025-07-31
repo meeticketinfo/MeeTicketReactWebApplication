@@ -6,16 +6,18 @@ import DashboardCard07 from "../../../partials/dashboard/DashboardCard07";
 import ToursimPieChart from "../../../components/tourism/ToursimPieChart";
 import { usetoursimDashboardStore } from "../../../store/dashboard/toursimDashboardStore";
 import AmrabadPieChart from "./AmrabadPieChart";
+import { useAmrabadConsolidatedStore } from "../../../store/amrabad/reports/ConsolidatedStore";
 
 function AmrabadDashboard() {
+
   const {
-    allPackagesData,
-    allPieChartPackagesData,
-    allPackageTransactionReportData,
-  } = usetoursimDashboardStore();
+    fetchAmrabadConsolidatedReports,
+    allAmrabadConsolidatedReports,
+    setisAmrabadCompleteBookings,
+    isAmrabadConsolidatedReportsLoading,
+  } = useAmrabadConsolidatedStore();
   console.log(
     "allPackageTransactionReportData",
-    allPackageTransactionReportData
   );
   const packageData = [
     {

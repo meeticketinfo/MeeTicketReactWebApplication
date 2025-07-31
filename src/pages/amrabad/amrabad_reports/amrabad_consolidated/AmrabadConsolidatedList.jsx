@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import {
+  formatToCurrency,
   formatToStandardDate,
   getCurrentDate,
 } from "../../../../utils/TypographyHelper";
@@ -21,7 +22,7 @@ function AmrabadConsolidatedList() {
   );
   console.log("savedFilters",savedFilters)
   const [currentPage, setCurrentPage] = useState(0);
-
+ 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ function AmrabadConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "entityTypeName",
+      field: "locationCategoryName",
       headerName: "Location category",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -151,7 +152,8 @@ function AmrabadConsolidatedList() {
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "₹0.00",
     },
     {
       field: "paymentMode",
@@ -183,26 +185,26 @@ function AmrabadConsolidatedList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? "Success" : "Failed"),
     },
-    // {
-    //   headerName: "Actions",
-    //   field: "actions",
-    //   cellRenderer: (params) => (
-    //     <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-    //       <NavLink
-    //         end
-    //         to={`/entity-bookings/view-details/${params.data.bookingID}`}
-    //         onClick={() => {
-    //           setisAmrabadCompleteBookings(true);
-    //         }}
-    //         className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-    //       >
-    //         <span className="text-blue-v2"> Booking Details</span>
-    //       </NavLink>
-    //     </div>
-    //   ),
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    // },
+    {
+      headerName: "Actions",
+      field: "actions",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          <NavLink
+            end
+            to={`/amrabad-entity-bookings/view-details/${params.data.bookingID}`}
+            onClick={() => {
+              setisAmrabadCompleteBookings(true);
+            }}
+            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
+          >
+            <span className="text-blue-v2"> Booking Details</span>
+          </NavLink>
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
   ]);
   return (
     <>
