@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
-import { FaUser } from "react-icons/fa";
+import { FaHistory, FaUser } from "react-icons/fa";
 
 function UserHeader({ isScrolled = false }) {
   const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } = amrabadAuthStore();
@@ -127,24 +127,9 @@ function UserHeader({ isScrolled = false }) {
             {isLoggedIn ? (
               // After login: show user profile section
               <div className="flex items-center gap-3" ref={dropdownRef}>
-                {/* Desktop view - show user info and logout */}
-                <div className="hidden md:flex flex-col items-end">
-                  {decodedTokenData ? (
-                    <span className="font-bold text-black leading-tight capitalize">{`${decodedTokenData?.FirstName} ${decodedTokenData?.LastName}`}</span>
-                  ) : (
-                    <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-24 mb-1"></div>
-                  )}
-
-                  <span
-                    className="text-gray-500 text-lg hover:underline -mt-1 cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </span>
-                </div>
                 
                 {/* Mobile view - show only user icon with dropdown */}
-                <div className="md:hidden relative">
+                <div className="relative">
                   <div 
                     className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -162,12 +147,16 @@ function UserHeader({ isScrolled = false }) {
                       <div className="px-4 py-3 border-b border-gray-100">
                         {decodedTokenData ? (
                           <div className="font-bold text-black capitalize text-sm">
-                            {`${decodedTokenData?.FirstName} ${decodedTokenData?.LastName}`}
+                            {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
                           </div>
                         ) : (
                           <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
                         )}
                       </div>
+                      <Link to="/amarabad/booking-history" className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                        <FaHistory />
+                        Booking History
+                      </Link>
                       
                       <div className="py-1">
                         <button
@@ -182,15 +171,6 @@ function UserHeader({ isScrolled = false }) {
                       </div>
                     </div>
                   )}
-                </div>
-                
-                {/* Desktop view - show user icon */}
-                <div className="hidden md:block w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                  {/* User icon SVG */}
-                  <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-                    <circle cx="16" cy="16" r="16" fill="#E3E3E3"/>
-                    <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#362D86"/>
-                  </svg>
                 </div>
               </div>
             ) : (
