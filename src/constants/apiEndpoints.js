@@ -306,6 +306,9 @@ export const API_ENDPOINTS = {
     GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`,
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
     },
+    DASHBOARD:{
+      GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,
+    },
     USER:{
 
     }

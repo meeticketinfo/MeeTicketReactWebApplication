@@ -11,7 +11,8 @@ export const useAmrabadConsolidatedStore = create((set) => ({
 
   allAmrabadTransactionPaymentReports: [],
   isAmrabadCompleteBookings: false,
-
+  
+  isFetchAmrabadDashboardLoading: false,
   isAmrabadTransactionPaymentReportsLoading: false,
 
   isFetchCurrentBookingDetailsLoading: false,
@@ -85,6 +86,21 @@ export const useAmrabadConsolidatedStore = create((set) => ({
       return { success: true, data: response };
     } catch (error) {
       set({ isFetchAmrabadCurrentBookingDetailsLoading: false });
+      return { success: false };
+    }
+  },
+  fetchAmrabadDashboard: async () => {
+    set({ isFetchAmrabadDashboardLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD}`
+      );
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchAmrabadDashboardLoading: false,
+      });
+    } catch (error) {
+      set({ isFetchAmrabadDashboardLoading: false });
       return { success: false };
     }
   },
