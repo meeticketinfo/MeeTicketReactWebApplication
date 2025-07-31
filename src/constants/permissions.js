@@ -136,5 +136,6 @@ export const Amrabad = [
   "amrabad-packages",
   "amrabad-consolidated-reports",
   "amrabad-individual-reports",
-  "amrabad-payment-transactions"
+  "amrabad-payment-transactions",
+  "amrabad-availability-report",
 ];

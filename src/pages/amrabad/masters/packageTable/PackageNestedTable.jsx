@@ -9,7 +9,6 @@ import { ToastContainer } from "react-toastify";
 const PackageNestedTable = ({ data }) => {
   return (
     <div className="container mx-auto shadow-lg rounded-lg ">
-      
       <table className="table-auto w-full border-collapse text-sm rounded-lg overflow-hidden">
         <thead className="bg-[#f8f8f8] text-blue-v1 text-sm">
           <tr>
@@ -17,7 +16,7 @@ const PackageNestedTable = ({ data }) => {
             <th className="p-3 text-center">Package Name</th>
             <th className="p-3 text-center">Description</th>
             {/* <th className="p-3 text-center">Sequence</th> */}
-            <th className="p-3 text-center">Package Status</th>
+            <th className="p-3 text-center text-nowrap">Package Status</th>
             <th className="p-3 text-center">Actions</th>
           </tr>
         </thead>
@@ -35,15 +34,14 @@ const PackageNestedTable = ({ data }) => {
 const AccordionRow = ({ serial, row }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [OpenModal, setOpenModal] = useState(false);
-  
+
   // Callback function to close modal after successful update
   const handleUpdateSuccess = () => {
     setOpenModal(false);
   };
-  
+
   return (
     <>
-   
       <tr
         className={`cursor-pointer border-b-2 hover:bg-blue-100 text-sm bg-white `}
       >
@@ -56,9 +54,9 @@ const AccordionRow = ({ serial, row }) => {
           <div className="w-9/10 text-center">{serial + 1}</div>
         </td>
         {/* PACKAGE NAME */}
-        <td className="p-2 text-center">{row.packageName || "N/A"}</td>
+        <td className="p-2 truncate max-w-[200px] text-center">{row.packageName || "N/A"}</td>
         {/* DESCRIPTION */}
-        <td className="p-2 text-center">
+        <td className="p-2 text-center truncate max-w-[200px]">
           {row.description ? row.description : "N/A"}
         </td>
         {/* SEQUENCE */}
@@ -101,7 +99,7 @@ const AccordionRow = ({ serial, row }) => {
               <thead className={`bg-[#f8f8f8] text-blue-v1`}>
                 <tr>
                   <th className="p-2 text-center">S.No</th>
-                  <th className="p-2 text-center">Room Name</th>
+                  <th className="p-2 text-center">House Name</th>
                   <th className="p-2 text-center">Tarrif Per Day</th>
                   <th className="p-2 text-center">No of Rooms Available</th>
                   {/* <th className="p-3 text-center">Sequence</th> */}
@@ -126,7 +124,6 @@ const AccordionRow = ({ serial, row }) => {
       )}
 
       <PopupModal
-       
         isOpen={OpenModal}
         onClose={() => {
           setOpenModal(false);
@@ -151,6 +148,38 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
     setIsHouseEditVisible,
     setSelectedSubRow,
   } = usePackagesCommonStore();
+
+  // Function to determine room status based on roomBlockedDurations and isBlockout
+  const getRoomStatus = (roomData) => {
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    
+    // Scenario 1: isBlockout is false and array is empty - show active
+    if (!roomData.isBlockout && (!roomData.roomBlockedDurations || roomData.roomBlockedDurations.length === 0)) {
+      return { status: "Active", isActive: true };
+    }
+    
+    // Scenario 2: isBlockout is true and array is empty - show inactive
+    if (roomData.isBlockout && (!roomData.roomBlockedDurations || roomData.roomBlockedDurations.length === 0)) {
+      return { status: "Inactive", isActive: false };
+    }
+    
+    // Scenario 3: isBlockout is true and array has dates - check if today is blocked
+    if (roomData.isBlockout && roomData.roomBlockedDurations && roomData.roomBlockedDurations.length > 0) {
+      const isTodayBlocked = roomData.roomBlockedDurations.includes(todayString);
+      
+      if (isTodayBlocked) {
+        return { status: "Inactive", isActive: false };
+      } else {
+        return { status: "Active", isActive: true };
+      }
+    }
+    
+    // Default case
+    return { status: "Inactive", isActive: false };
+  };
+
+  const roomStatus = getRoomStatus(subRow);
 
   return (
     <>
@@ -182,13 +211,13 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
               className={`${
-                subRow.isActive
+                roomStatus.isActive
                   ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                   : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
               } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
             >
               {" "}
-              {subRow.isActive ? "Active" : "Inactive"}
+              {roomStatus.status}
             </span>
           </div>
         </td>

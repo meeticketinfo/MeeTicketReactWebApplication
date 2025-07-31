@@ -180,7 +180,7 @@ const Login = () => {
                   <input
                     id="toggle"
                     type="checkbox"
-                    className="peer hidden"
+                    className="peer hidden" 
                     checked={isPhoneSelected}
                     onChange={handleToggle}
                   />

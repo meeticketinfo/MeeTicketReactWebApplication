@@ -6,6 +6,7 @@ import { MdDeleteForever } from "react-icons/md";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import MultipleDatePicker from "../../../../components/MultipleDatePicker";
 const AddPackage = () => {
   const [isHasRoom, setIsHasRoom] = useState(false);
   const [isValidation, setIsValidation] = useState("");
@@ -23,11 +24,15 @@ const AddPackage = () => {
       amountAfterDiscount: 0,
       noOfHousesAvailable: 0,
       roomLimit: 0,
-      isBlockout: false,
+      isBlockout: "",
+      blockoutType: "",
+      blockedDate: [],
       sequence: 0,
       remarks: "",
       latitude: null,
       longitude: null,
+      overview: "",
+      specialOffers: "",
       roomImageBase64Strings: [],
       discountDetails: [
         { dayOfWeek: "Monday", discountValue: null, amountAfterDiscount: null },
@@ -110,7 +115,19 @@ const AddPackage = () => {
       .required("No Of Houses Available is required")
       .nullable(),
     roomLimit: positiveInt().required("House Limit is required").nullable(),
-    isBlockout: Yup.boolean().required("Required"),
+    isBlockout: Yup.string().required("Block out selection is required"),
+    blockoutType: Yup.string().when("isBlockout", {
+      is: "Yes",
+      then: (schema) => schema.required("Block out type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    blockedDate: Yup.array()
+      .of(Yup.string())
+      .when("blockoutType", {
+        is: "blockByDate",
+        then: (schema) => schema.min(1, "At least one date is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
 
     sequence: positiveInt().required("Sequence is required").nullable(),
 
@@ -139,6 +156,8 @@ const AddPackage = () => {
         amountAfterDiscount: Yup.string().nullable(),
       })
     ),
+    overview: Yup.string().required("Overview is required"),
+    specialOffers: Yup.string().required("Special offers is required"),
   });
 
   /*  Main schema                                                       */
@@ -212,6 +231,23 @@ const AddPackage = () => {
     const WithOutRoomspayLoad = { package: values.package };
     const WithRoomspayLoad = values;
     const Payload = isHasRoom ? WithRoomspayLoad : WithOutRoomspayLoad;
+
+    // Convert string blockout values to boolean for API
+    if (isHasRoom && Payload.rooms) {
+      Payload.rooms.forEach((room, index) => {
+        // Set isBlockout to true when user selects "Yes", null when "No"
+        room.isBlockout = room.isBlockout === "Yes" ? true : null;
+        
+        // Set blockedDate based on blockoutType
+        if (room.isBlockout === "Yes" && room.blockoutType === "blockByDate") {
+          room.blockedDate = room.blockedDate || [];
+        } else {
+          room.blockedDate = [];
+        }
+        
+        console.log(`Room ${index + 1} blockout:`, room.isBlockout);
+      });
+    }
 
     try {
       const res = await savePackageWithRoom(Payload);
@@ -351,7 +387,8 @@ const AddPackage = () => {
                     </label>
                     <Field
                       name="package.latitude"
-                      type="text"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Latitude"
                     />
@@ -372,7 +409,8 @@ const AddPackage = () => {
                     </label>
                     <Field
                       name="package.longitude"
-                      type="text"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter longitude"
                     />
@@ -683,7 +721,7 @@ const AddPackage = () => {
                           type="button"
                           onClick={() => {
                             const newRoom = createRoomTemplate();
-
+                            const newIndex = values.rooms.length;
                             push(newRoom);
                           }}
                           className={`${
@@ -708,6 +746,8 @@ const AddPackage = () => {
                                       type="button"
                                       onClick={() => {
                                         remove(index); // Remove the sub-facility at the given index
+
+
 
                                         // New logic: Check if there are no sub-facilities left, then reset the state
                                         if (values.rooms.length === 1) {
@@ -1213,30 +1253,34 @@ const AddPackage = () => {
                                   </>
                                 )}
 
-                                {/* block out */}
+                                {/* Block out */}
                                 <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor={`rooms[${index}].isBlockout`}
                                     className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
-                                    Block out{" "}
+                                    Block out?{" "}
                                     <span className="text-red-500">*</span>
                                   </label>
                                   <Field
                                     as="select"
                                     name={`rooms[${index}].isBlockout`}
                                     onChange={(e) => {
-                                      const Value = e.target.value === "true";
+                                      const selectedValue = e.target.value;
                                       setFieldValue(
                                         `rooms[${index}].isBlockout`,
-                                        Value
+                                        selectedValue
                                       );
+                                      setFieldValue(
+                                        `rooms[${index}].blockoutType`,
+                                        ""
+                                      ); // Clear blockoutType when isBlockout changes
                                     }}
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                   >
-                                    <option value="">Select option</option>
-                                    <option value={true}>Yes</option>
-                                    <option value={false}>No</option>
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
                                   </Field>
                                   <ErrorMessage
                                     name={`rooms[${index}].isBlockout`}
@@ -1244,6 +1288,78 @@ const AddPackage = () => {
                                     className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
+
+                                {/* Block out type - only show when isBlockout is "Yes" */}
+                                {values.rooms[index]?.isBlockout === "Yes" && (
+                                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                    <label
+                                      htmlFor={`rooms[${index}].blockoutType`}
+                                      className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    >
+                                      Block out type?{" "}
+                                      <span className="text-red-500">*</span>
+                                    </label>
+                                    <Field
+                                      as="select"
+                                      name={`rooms[${index}].blockoutType`}
+                                      onChange={(e) => {
+                                        const selectedValue = e.target.value;
+                                        setFieldValue(
+                                          `rooms[${index}].blockoutType`,
+                                          selectedValue
+                                        );
+                                        // Reset blockedDate when changing blockout type
+                                        if (selectedValue === "fullBlock") {
+                                          // Clear dates for full block
+                                          setFieldValue(
+                                            `rooms[${index}].blockedDate`,
+                                            []
+                                          );
+                                        }
+                                      }}
+                                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    >
+                                      <option value="">Select</option>
+                                      <option value="fullBlock">Full Block</option>
+                                      <option value="blockByDate">Block by Date</option>
+                                    </Field>
+                                    <ErrorMessage
+                                      name={`rooms[${index}].blockoutType`}
+                                      component="div"
+                                      className="text-red-500 text-xs mt-1"
+                                    />
+                                  </div>
+                                )}
+
+                                {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
+                                {values.rooms[index]?.isBlockout === "Yes" && values.rooms[index]?.blockoutType === "blockByDate" && (
+                                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                    <label className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                      Block by Date{" "}
+                                      <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="mt-1">
+                                      <MultipleDatePicker
+                                        value={
+                                          values.rooms[index]?.blockedDate || []
+                                        }
+                                        onChange={(selectedDates) => {
+                                          setFieldValue(
+                                            `rooms[${index}].blockedDate`,
+                                            selectedDates
+                                          );
+                                        }}
+                                        placeholder="Select dates to block..."
+                                        className="block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                      />
+                                      <ErrorMessage
+                                        name={`rooms[${index}].blockedDate`}
+                                        component="div"
+                                        className="text-red-500 text-xs mt-1"
+                                      />
+                                    </div>
+                                  </div>
+                                )}
                                 {/* Sequence */}
                                 <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
@@ -1295,7 +1411,8 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     name={`rooms[${index}].latitude`}
-                                    type="text"
+                                    type="number"
+                                    step="any"
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                     placeholder="Enter Latitude"
                                   />
@@ -1317,12 +1434,59 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     name={`rooms[${index}].longitude`}
-                                    type="text"
+                                    type="number"
+                                    step="any"
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                     placeholder="Enter Longitude"
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].longitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Overview */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].overview`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Overview<span className="text-red-500">*</span>
+                                  </label>
+                                  <Field 
+                                    as="textarea"
+                                    name={`rooms[${index}].overview`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter house overview"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].overview`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Special Offers */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].specialOffers`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Special Offers<span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].specialOffers`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter special offers"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].specialOffers`}
                                     component="div"
                                     className="text-red-500 text-xs mt-1"
                                   />
