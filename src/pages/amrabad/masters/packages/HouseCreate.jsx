@@ -214,15 +214,13 @@ const HouseCreate = () => {
       .typeError("Latitude must be a number")
       .required("Latitude is required")
       .min(-90)
-      .max(90)
-      .nullable(),
+      .max(90),
 
     longitude: Yup.number()
       .typeError("Longitude must be a number")
       .required("Longitude is required")
       .min(-180)
-      .max(180)
-      .nullable(),
+      .max(180),
     roomLimit: Yup.string()
       .required("Room Limit is required.")
       .test(
@@ -515,10 +513,23 @@ const HouseCreate = () => {
                       {({ field }) => (
                         <input
                           {...field}
-                          type="text"
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 5) {
+                              e.target.value = value.slice(0, 5);
+                            }
+                          }}
                           onKeyDown={(e) => {
-                            if (e.key === " ") {
-                              e.preventDefault(); // prevent space
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
                             }
                           }}
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
@@ -548,11 +559,23 @@ const HouseCreate = () => {
                       {({ field }) => (
                         <input
                           {...field}
-                          type="text"
-                          maxLength="10"
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
                           onKeyDown={(e) => {
-                            if (e.key === " ") {
-                              e.preventDefault(); // prevent space input
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
                             }
                           }}
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
@@ -580,11 +603,23 @@ const HouseCreate = () => {
                       {({ field }) => (
                         <input
                           {...field}
-                          type="text"
-                          maxLength="10"
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
                           onKeyDown={(e) => {
-                            if (e.key === " ") {
-                              e.preventDefault(); // Prevent space input
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
                             }
                           }}
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
@@ -965,11 +1000,23 @@ const HouseCreate = () => {
                       {({ field }) => (
                         <input
                           {...field}
-                          type="text"
-                          maxLength="10"
+                          type="number"
+                          min={0}
+                          onInput={(e) => {
+                            const value = e.target.value;
+                            if (value.length > 3) {
+                              e.target.value = value.slice(0, 3);
+                            }
+                          }}
                           onKeyDown={(e) => {
-                            if (e.key === " ") {
-                              e.preventDefault(); // Prevent space input
+                            if (
+                              ["-", "e", "E", "+", "."].includes(
+                                e.key
+                              ) ||
+                              (e.key.length === 1 &&
+                                !/[0-9]/.test(e.key))
+                            ) {
+                              e.preventDefault();
                             }
                           }}
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"

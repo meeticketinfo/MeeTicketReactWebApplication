@@ -90,10 +90,12 @@ export const usePackagesStore = create((set) => ({
         isSavePackageWithRoomLoading: false,
       });
       return { success: true, data: response };
-    } catch ({ error }) {
+    } catch ( xhr ) {
+      // console.log("error",error)
       set({
         isSavePackageWithRoomLoading: false,
       });
+      throw xhr;
     }
   },
 

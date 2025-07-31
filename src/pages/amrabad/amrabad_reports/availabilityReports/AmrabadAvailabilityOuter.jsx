@@ -7,148 +7,88 @@ const AmrabadAvailabilityOuter = () => {
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
-    month: "",
-    year: "",
   };
 
   const handleSubmit = (values) => {
     console.log("Form values:", values);
     // Handle form submission here
   };
-  const handleReset = (resetForm) => {
-    resetForm();
-  };
-
-  const months = [
-    { value: "", label: "Select Month" },
-    { value: "01", label: "January" },
-    { value: "02", label: "February" },
-    { value: "03", label: "March" },
-    { value: "04", label: "April" },
-    { value: "05", label: "May" },
-    { value: "06", label: "June" },
-    { value: "07", label: "July" },
-    { value: "08", label: "August" },
-    { value: "09", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
-  ];
-
-  const currentYear = new Date().getFullYear();
-  const years = [
-    { value: "", label: "Select Year" },
-    ...Array.from({ length: 5 }, (_, index) => {
-      const year = currentYear + index;
-      return { value: year.toString(), label: year.toString() };
-    }),
-  ];
 
   return (
-    <div className="p-3 bg-white rounded-lg  shadow-md">
+    <div className="p-3 bg-white rounded-lg shadow-md">
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ resetForm, values }) => (
-          <Form className="">
-            <div className="flex items-end gap-3">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 flex-1">
-                {/* From Date */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    From Date
-                  </label>
-                  <Field
-                    type="date"
-                    name="fromDate"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                {/* To Date */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    To Date
-                  </label>
-
-                  <Field
-                    type="date"
-                    name="toDate"
-                    min={values?.fromDate || ""}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                {/* Month Dropdown */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Month
-                  </label>
-                  <Field
-                    as="select"
-                    name="month"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                  >
-                    {months.map((month) => (
-                      <option key={month.value} value={month.value}>
-                        {month.label}
-                      </option>
-                    ))}
-                  </Field>
-                </div>
-
-                {/* Year Dropdown */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Year
-                  </label>
-                  <Field
-                    as="select"
-                    name="year"
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                  >
-                    {years.map((year) => (
-                      <option key={year.value} value={year.value}>
-                        {year.label}
-                      </option>
-                    ))}
-                  </Field>
-                </div>
-              </div>
-              {/* Buttons */}
-              <div className="flex space-x-2">
-                <button
-                  type="submit"
-                  className="px-4 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-1 transition-colors"
-                >
-                  Search
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleReset(resetForm)}
-                  className="px-4 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:ring-offset-1 transition-colors"
-                >
-                  Reset
-                </button>
-              </div>
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+            <div>
+              <label
+                htmlFor="fromDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                From Date
+              </label>
+              <Field
+                type="date"
+                name="fromDate"
+                className={`mt-1 block w-full px-2 py-1 border
+               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                // min={getCurrentDate()}
+                onChange={(e) => {
+                  const fromDateValue = e.target.value;
+                  setFieldValue("fromDate", fromDateValue);
+                  if (new Date(fromDateValue) > new Date(values.toDate)) {
+                    // Automatically update toDate if it's earlier than fromDate
+                    setFieldValue("toDate", fromDateValue);
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="toDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                To Date
+              </label>
+              <Field
+                type="date"
+                name="toDate"
+                className={`mt-1 block w-full px-2 py-1 border
+                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                min={values.fromDate || getCurrentDate()}
+                onChange={(e) => {
+                  const toDateValue = e.target.value;
+                  setFieldValue("toDate", toDateValue);
+                }}
+              />
+            </div>
+            {/* submit */}
+            <div className="flex items-end gap-2">
+              <button
+                type="submit"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                // disabled={isFetchAllMetroSummaryReportsLoading}
+              >
+                Search
+              </button>
+              <button
+                type="button"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                // disabled={isFetchAllMetroSummaryReportsLoading}
+              >
+                Reset
+              </button>
             </div>
           </Form>
         )}
       </Formik>
+
       <div className="mt-8">
-      <AgGridTable
-        ExportName="Individual Booking Details"
-        // isFetchLoading={isAmrabadIndividualReportsLoading}
-        isPagination={false}
-        // tableHeight={allAmrabadIndividualReports?.data?.length > 10 ? 560 : 330}
-        IsReactPaginate={true}
-        // setPageLimit={setPAGE_LIMIT}
-        // pageLimit={PAGE_LIMIT}
-        // handlePageClick={handlePageClick}
-        // currentPage={currentPage}
-        // totalCount={allAmrabadIndividualReports[0]?.totalCount}
-        // showTotalCount={true}
-        // SetcurrentPage={setCurrentPage}
-        showSearch={false}
-      />
+        <AgGridTable
+          ExportName="Individual Booking Details"
+          isPagination={false}
+          IsReactPaginate={true}
+          showSearch={false}
+        />
       </div>
     </div>
   );
