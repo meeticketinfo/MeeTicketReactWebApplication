@@ -204,7 +204,7 @@ const Login = () => {
                         isPhoneSelected ? "text-gray-600" : "text-white"
                       }`}
                     >
-                      User
+                      Officer
                     </span>
 
                     {/* Tab 2: Login with Email */}
@@ -213,7 +213,7 @@ const Login = () => {
                         isPhoneSelected ? "text-white" : "text-gray-600"
                       }`}
                     >
-                      ESD Admin
+                      Admin
                     </span>
                   </label>
                 </div>

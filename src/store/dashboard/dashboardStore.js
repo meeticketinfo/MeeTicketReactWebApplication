@@ -28,6 +28,11 @@ export const useDashboardStore = create((set) => ({
   isFetchFacilityBookingsLoading: false,
   AllDetailedReport:[],
   isFetchDetailedLoading: false,
+
+  //Dashboard Bokings
+  isFetchDepartmentEntitiesLoading:false,
+  AllDepartmentEntities: [],
+
   // Day Wise Bookings
   AllFacilityDayWiseBookings:  [],
   isFacilityDayWiseBookingsLoading: false,
@@ -255,7 +260,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchFacilityBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}&bookingsByCounter=${filters.bookingsByCounter}`
       );
       console.log("response", response);
       if (response.status == 200) {
@@ -325,6 +330,20 @@ export const useDashboardStore = create((set) => ({
       set({ error: error.error.message, isFetchDetailedLoading: true });
     }
   },
-  
+   fetchAllDepartmentEntities: async (payload) => {
+    set({ isFetchDepartmentEntitiesLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DEPARTMENT_BOOKINGS}?FromDate=${payload.fromDate}&ToDate=${payload.toDate}&LocationId=${payload.locationId}&LocationCategoryId=${payload.entityId}`
+      );
+      set({
+        AllDepartmentEntities: response.data.data || [],
+        isFetchDepartmentEntitiesLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.error.message, isFetchDepartmentEntitiesLoading: true });
+    }
+  },
+
 
 }));

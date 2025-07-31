@@ -7,6 +7,7 @@ import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
+import useAuthStore from "../../../../../store/authStore";
 
 const TotalFailedTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,7 +16,9 @@ const TotalFailedTransactionsForm = () => {
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { fetchPaymentFailedTransactionSummaryPieChartData } = useTransactionsStore();
+const { roleDetails } = useAuthStore();
 
+  const role = roleDetails?.name;
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -148,7 +151,7 @@ const TotalFailedTransactionsForm = () => {
                 />
               </div>
               {/* department */}
-              <div>
+             { role === "ROLE_SUPERADMIN" &&<div>
                 <label className="block text-xs font-medium text-gray-700">
                   Department
                 </label>
@@ -206,7 +209,7 @@ const TotalFailedTransactionsForm = () => {
                     }),
                   }}
                 />
-              </div>
+              </div>}
               {/* location category */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">

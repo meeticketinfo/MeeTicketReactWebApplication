@@ -40,6 +40,13 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
     },
     {
+      field: "paymentTransactionId",
+      headerName: "Transaction ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
       field: "ltmrhlPurchaseId",
       headerName: "LTHMRL Purchase ID",
 
