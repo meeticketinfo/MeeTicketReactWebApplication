@@ -74,16 +74,9 @@ const CheckoutDetails = () => {
   return (
     <UserLayout>
       <div className="container mx-auto">
-        <div className="p-4 md:p-8 bg-[#F6F7FB]">
+        <div className="p-2 sm:p-4 md:p-8 bg-[#F6F7FB]">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-            <Link
-              className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-              to="/amarabad"
-            >
-              Home
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
+          <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
             <Link
               className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
               to="/amarabad/packages"
@@ -108,13 +101,13 @@ const CheckoutDetails = () => {
             <span className="text-gray-800 font-semibold">Chital & Otter</span>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-4 md:p-8 flex flex-col md:flex-row gap-8">
+          <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 md:p-8 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Left: House & Room Details */}
-            <div className="flex-1 min-w-[320px]">
+            <div className="flex-1 min-w-0">
               {allRoomsRemoved ? (
                 // Show Add House button when all rooms are removed
-                <div className="text-center py-12">
-                  <div className="text-gray-500 text-lg mb-4">No houses selected</div>
+                <div className="text-center py-8 sm:py-12">
+                  <div className="text-gray-500 text-base sm:text-lg mb-4">No houses selected</div>
 
                   <Link to={`/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package`} className="ml-auto text-blue-700 text-sm font-semibold hover:underline">
                     + Add Houses
@@ -123,25 +116,27 @@ const CheckoutDetails = () => {
               ) : (
                 houses.map((house) => (
                   <div key={house.id}>
-                    <div className="flex items-center gap-4 mb-4">
-                      <img
-                        src={house.image}
-                        alt={house.name}
-                        className="w-16 h-16 rounded-lg object-cover border"
-                      />
-                      <div>
-                        <div className="font-bold text-lg text-gray-800">{house.name}</div>
-                        <div className="text-xs text-gray-500">
-                          Check-in: {house.checkIn} &nbsp; | &nbsp; Check-out: {house.checkOut}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 justify-between">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <img
+                          src={house.image}
+                          alt={house.name}
+                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover border"
+                        />
+                        <div className="flex-1">
+                          <div className="font-bold text-base sm:text-lg text-gray-800">{house.name}</div>
+                          <div className="text-xs text-gray-500">
+                            Check-in: {house.checkIn} &nbsp; | &nbsp; Check-out: {house.checkOut}
+                          </div>
                         </div>
                       </div>
-                      <Link to={`/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package`} className="ml-auto text-blue-700 text-sm font-semibold hover:underline">
+                      <Link to={`/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package`} className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center">
                         + Add Houses
                       </Link>
                     </div>
                     {/* Table */}
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm border rounded-lg mb-4">
+                      <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
                         <thead className="bg-[#F6F7FB]">
                           <tr>
                             <th className="p-2 text-left font-semibold">Name</th>
@@ -175,16 +170,16 @@ const CheckoutDetails = () => {
                       </table>
                     </div>
                     {/* Summary */}
-                    <div className="bg-[#F6F7FB] rounded-lg p-4 mb-4">
-                      <div className="flex justify-between text-gray-700 mb-1">
+                    <div className="bg-[#F6F7FB] rounded-lg p-3 sm:p-4 mb-4">
+                      <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
                         <span>Sub total</span>
                         <span>₹{subTotal.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between text-gray-700 mb-1">
+                      <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
                         <span>Discount</span>
                         <span className="text-red-600">-₹{discount.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between font-bold text-lg mt-2">
+                      <div className="flex justify-between font-bold text-base sm:text-lg mt-2">
                         <span>TOTAL PAYABLE AMOUNT</span>
                         <span className="text-blue-900">₹{totalPayable.toLocaleString()}</span>
                       </div>
@@ -195,19 +190,19 @@ const CheckoutDetails = () => {
             </div>
 
             {/* Right: Cart Total */}
-            <div className="w-full max-w-[400px]">
-              <div className="bg-[#F6F7FB] rounded-lg p-6">
-                <div className="text-lg font-semibold mb-4">CART TOTAL</div>
-                <div className="flex justify-between mb-2 text-gray-700">
+            <div className="w-full lg:max-w-[400px]">
+              <div className="bg-[#F6F7FB] rounded-lg p-4 sm:p-6">
+                <div className="text-base sm:text-lg font-semibold mb-4">CART TOTAL</div>
+                <div className="flex justify-between mb-2 text-gray-700 text-sm sm:text-base">
                   <span>Sub-total</span>
                   <span>₹{subTotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between font-bold text-lg border-t border-gray-200 pt-2 mb-6">
+                <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 mb-6">
                   <span>Total</span>
                   <span>₹{totalPayable.toLocaleString()}</span>
                 </div>
                 <button
-                  className={`w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition ${allRoomsRemoved
+                  className={`w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition text-sm sm:text-base ${allRoomsRemoved
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-[#362D86] hover:bg-blue-800'
                     }`}
@@ -215,7 +210,7 @@ const CheckoutDetails = () => {
                   disabled={allRoomsRemoved}
                 >
                   Proceed to checkout
-                  <IoArrowForward className="text-xl" />
+                  <IoArrowForward className="text-lg sm:text-xl" />
                 </button>
               </div>
             </div>

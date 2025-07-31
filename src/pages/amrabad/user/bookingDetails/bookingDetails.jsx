@@ -47,10 +47,10 @@ const AmarabadBookingDetails = () => {
 
     return (
         <UserLayout>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto py-4 sm:py-6 md:py-8 px-3">
                 <div className="">
                     {/* Left: Billing/Guest Details Form */}
-                    <div className="bg-white rounded-lg p-8 flex flex-col md:flex-row gap-8">
+                    <div className="bg-white rounded-lg py-4 sm:py-6 md:py-8 flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
                         <Formik
                             initialValues={initialValues}
                             validationSchema={validationSchema}
@@ -58,28 +58,28 @@ const AmarabadBookingDetails = () => {
                         >
                             {({ isSubmitting }) => (
                                 <>
-                                    <Form id="booking-form" className="space-y-4 w-full flex-1">
-                                        <h2 className="text-lg font-semibold mb-6 text-black">BILLING INFORMATION / Guest Details</h2>
-                                        <div className="flex gap-4">
-                                            <div className="w-1/2">
+                                    <Form id="booking-form" className="space-y-3 sm:space-y-4 w-full flex-1">
+                                        <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-black">BILLING INFORMATION / Guest Details</h2>
+                                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                                            <div className="w-full sm:w-1/2">
                                                 <label className="block text-sm font-medium mb-1">First Name <span className="text-red-500">*</span></label>
-                                                <Field placeholder="Enter your first name" name="firstName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]" />
+                                                <Field placeholder="Enter your first name" name="firstName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
                                                 <ErrorMessage name="firstName" component="div" className="text-xs text-red-500" />
                                             </div>
-                                            <div className="w-1/2">
+                                            <div className="w-full sm:w-1/2">
                                                 <label className="block text-sm font-medium mb-1">Last Name <span className="text-red-500">*</span></label>
-                                                <Field placeholder="Enter your last name" name="lastName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]" />
+                                                <Field placeholder="Enter your last name" name="lastName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
                                                 <ErrorMessage name="lastName" component="div" className="text-xs text-red-500" />
                                             </div>
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label>
-                                            <Field placeholder="Enter your email" name="email" type="email" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]" />
+                                            <Field placeholder="Enter your email" name="email" type="email" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
                                             <ErrorMessage name="email" component="div" className="text-xs text-red-500" />
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium mb-1">Country <span className="text-red-500">*</span></label>
-                                            <Field as="select" name="country" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]">
+                                            <Field as="select" name="country" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm">
                                                 <option value="INDIA">INDIA</option>
                                                 <option value="USA">USA</option>
                                                 <option value="UK">UK</option>
@@ -94,7 +94,7 @@ const AmarabadBookingDetails = () => {
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium mb-1">Mobile number <span className="text-red-500">*</span></label>
-                                            <Field placeholder="Enter your mobile number" name="mobile" type="text" maxLength={10} className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]" />
+                                            <Field placeholder="Enter your mobile number" name="mobile" type="text" maxLength={10} className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
                                             <ErrorMessage name="mobile" component="div" className="text-xs text-red-500" />
                                         </div>
                                         <div>
@@ -104,7 +104,7 @@ const AmarabadBookingDetails = () => {
                                                 type="text"
                                                 placeholder="Enter 12 digit Aadhar number"
                                                 maxLength={12}
-                                                className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380]"
+                                                className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm"
                                                 onKeyPress={(e) => {
                                                     // Only allow numbers
                                                     if (!/[0-9]/.test(e.key)) {
@@ -120,18 +120,18 @@ const AmarabadBookingDetails = () => {
                         </Formik>
 
                         {/* Right: Booking Summary & Payment */}
-                        <div className="flex-1 max-w-[450px] w-full flex flex-col gap-6">
+                        <div className="flex-1 w-full lg:max-w-[450px] flex flex-col gap-4 sm:gap-6">
                             {/* Booking Summary */}
-                            <div className="bg-[#EEEDFA] rounded-lg p-6 border border-[#C0C0C5]">
-                                <div className="flex items-start gap-4 mb-4">
-                                    <img src={bookingData.image} alt={bookingData.houseName} className="w-16 h-12 object-cover rounded" />
+                            <div className="bg-[#EEEDFA] rounded-lg p-2 sm:p-6 border border-[#C0C0C5]">
+                                <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
+                                    <img src={bookingData.image} alt={bookingData.houseName} className="w-12 h-9 sm:w-16 sm:h-12 object-cover rounded" />
                                     <div className="flex-1">
-                                        <div className="font-bold text-lg text-gray-800">{bookingData.houseName}</div>
+                                        <div className="font-bold text-base sm:text-lg text-gray-800">{bookingData.houseName}</div>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-[#C0C0C5] pt-4 mb-4">
-                                    <div className="grid grid-cols-3 gap-4 text-sm">
+                                <div className="border-t border-[#C0C0C5] pt-3 sm:pt-4 mb-3 sm:mb-4">
+                                    <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
                                         <div>
                                             <div className="font-semibold text-gray-700 mb-1">CHECK-IN</div>
                                             <div className="text-gray-600">{bookingData.checkIn}</div>
@@ -147,21 +147,21 @@ const AmarabadBookingDetails = () => {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-[#C0C0C5] pt-4">
+                                <div className="border-t border-[#C0C0C5] pt-3 sm:pt-4">
                                     <div className="flex justify-between items-center">
-                                        <span className="font-bold text-gray-800">SUB-TOTAL</span>
-                                        <span className="font-bold text-[#362D86] text-lg">₹{bookingData.subTotal.toLocaleString()}</span>
+                                        <span className="font-bold text-gray-800 text-sm sm:text-base">SUB-TOTAL</span>
+                                        <span className="font-bold text-[#362D86] text-base sm:text-lg">₹{bookingData.subTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Payment Section */}
-                            <div className="bg-white rounded-lg p-6 border border-[#C0C0C5]">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <img src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png" alt="Paytm" className="w-28 h-auto object-contain" />
-                                    <span className="font-medium text-[#362D86]">Payment Gateway</span>
+                            <div className="bg-white rounded-lg p-4 sm:p-6 border border-[#C0C0C5]">
+                                <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                                    <img src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png" alt="Paytm" className="w-20 sm:w-28 h-auto object-contain" />
+                                    <span className="font-medium text-[#362D86] text-sm sm:text-base">Payment Gateway</span>
                                 </div>
-                                <p className="text-xs text-gray-600 mb-4">
+                                <p className="text-xs text-gray-600 mb-3 sm:mb-4">
                                     The best payment gateway provider in India for e-payment through <span className="font-semibold text-gray-800">Paytm Postpaid, Paytm Wallet, UPI, Credit Card, Debit Card and Netbanking</span>
                                 </p>
                             </div>
@@ -174,10 +174,10 @@ const AmarabadBookingDetails = () => {
                                     <button
                                         type="submit"
                                         form="booking-form"
-                                        className="w-full flex items-center justify-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60"
+                                        className="w-full flex items-center justify-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60 text-sm sm:text-base"
                                         disabled={isSubmitting}
                                     >
-                                        <FaCreditCard className="text-lg" />
+                                        <FaCreditCard className="text-base sm:text-lg" />
                                         PAY&nbsp; ₹{bookingData.subTotal.toLocaleString()}
                                     </button>
                                 )}

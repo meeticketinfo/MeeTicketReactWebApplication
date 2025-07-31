@@ -128,6 +128,7 @@ import BookNow from "../pages/amrabad/user/bookNow/bookNow";
 import CheckoutDetails from "../pages/amrabad/user/checkoutDetails/checkoutDetails";
 import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/bookingDetails";
 import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
+import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 
 export const routes = [
   {
@@ -539,6 +540,10 @@ export const routes = [
   {
     path: "/amarabad/confirmed-details/:bookingId",
     element: <ConfirmedDetails />,
+  },
+  {
+    path: "/amarabad/booking-history",
+    element: <AmrabadProtectRoute element={<BookingHistory />} />,
   },
   {
     path: "/amarabad/test",

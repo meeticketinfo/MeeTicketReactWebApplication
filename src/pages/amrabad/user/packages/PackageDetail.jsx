@@ -2,6 +2,22 @@ import React from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import PackageImage from "../../../../images/user/package-details-1.jpg";
 import { Link, useParams } from "react-router-dom";
+import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
+import { useModalStore } from "../../../../store/modalStore";
+import PrivacyPolicy from "../../../../components/terms_and_conditions_privacy_policy/PrivacyPolicy";
+import TermsAndConditions from "../../../../components/terms_and_conditions_privacy_policy/TermsAndConditions";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+
+const sliderImages = [
+  PackageImage,
+  PackageImage,
+  PackageImage,
+  PackageImage,
+  PackageImage,
+  PackageImage,
+  PackageImage,
+];
 
 const packageData = {
   title: "Munnar Jungle Resort, The Tiger Stay Package",
@@ -103,6 +119,12 @@ const packageData = {
 
 const PackageDetail = () => {
   const { packageId } = useParams();
+  const { openModalId, setOpenModalId, closeModal } = useModalStore();
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+
   return (
     <UserLayout>
       <div className="h-[350px] relative mb-7">
@@ -111,8 +133,8 @@ const PackageDetail = () => {
         <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-4 md:py-8 backdrop-blur-sm">
           <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{packageData.title}</h4>
-            <Link 
-              to={`/amarabad/houses/${packageId}`} 
+            <Link
+              to={`/amarabad/houses/${packageId}`}
               className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
@@ -185,7 +207,7 @@ const PackageDetail = () => {
 
               {/* Discounts */}
               <div className="mb-5">
-                <h3 className="font-semibold mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts</h3>
+                <h3 className="mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts</h3>
 
                 <ul className="space-y-2">
                   {packageData.discounts.map((item, idx) => (
@@ -235,12 +257,12 @@ const PackageDetail = () => {
                 {/* Detailed Schedule Table (hidden by default, can be toggled) */}
                 <div className="mt-4">
                   <div className="overflow-x-auto border border-gray-200 rounded-lg text-[#1B2128]">
-                    <table className="min-w-full text-sm">
+                    <table className="min-w-full text-xs md:text-sm">
                       <thead>
                         <tr className="bg-white">
-                          <th className="px-3 py-4 text-left font-semibold min-w-[80px]">Day</th>
-                          <th className="px-3 py-4 text-left font-semibold min-w-[130px]">Time</th>
-                          <th className="px-3 py-4 text-left font-semibold">Schedule</th>
+                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[80px]">Day</th>
+                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[160px]">Time</th>
+                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold">Schedule</th>
                         </tr>
                       </thead>
                       <tbody className="bg-[#FFFFFF7A]">
@@ -250,14 +272,14 @@ const PackageDetail = () => {
                               {j === 0 && (
                                 <td
                                   width="100px"
-                                  className="px-3 py-4 font-semibold w-[100px]"
+                                  className="px-2 md:px-3 py-2 md:py-4 font-semibold w-[100px]"
                                   rowSpan={day.schedule.length}
                                 >
                                   {day.day}
                                 </td>
                               )}
-                              <td width="150px" className="px-3 py-4 w-[150px]">{item.time}</td>
-                              <td className="px-3 py-4">{item.desc}</td>
+                              <td width="150px" className="px-2 md:px-3 py-2 md:py-4 w-[150px]">{item.time}</td>
+                              <td className="px-2 md:px-3 py-2 md:py-4">{item.desc}</td>
                             </tr>
                           ))
                         )}
@@ -267,9 +289,9 @@ const PackageDetail = () => {
                 </div>
               </div>
               {/* Notes */}
-              <section className="mb-8 mt-4">
+              <section className="mt-4">
                 <h3 className="mb-4 text-black text-xl font-bold">Notes:</h3>
-                <ul className="list-disc list-inside text-gray-700 space-y-2 text-base">
+                <ul className="list-disc list-inside text-gray-700 space-y-2 text-sm md:text-base">
                   {packageData.notes.map((note, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <svg className="flex-shrink-0" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -288,19 +310,153 @@ const PackageDetail = () => {
             </div>
           </section>
 
+
+          {/* Swiper Slider - place this just above the Policy Links section */}
+          <div className="w-full mx-auto mb-6 relative">
+            <Swiper
+              modules={[Pagination]}
+              pagination={{ clickable: true }}
+              loop={true}
+              spaceBetween={10}
+              breakpoints={{
+                0: {
+                  slidesPerView: 1,
+                },
+                768: {
+                  slidesPerView: 3,
+                },
+              }}
+            >
+              {sliderImages.map((img, idx) => (
+                <SwiperSlide key={idx}>
+                  <div className="">
+                    <img
+                      src={img}
+                      alt={`Slide ${idx + 1}`}
+                      className="w-full object-cover aspect-[3.5/4]"
+                      style={{ objectPosition: "center" }}
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+          {/* End Swiper Slider */}
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 font-bold">
+            <button
+              onClick={() => setOpenModalId("cancellation-policy")}
+              className="text-[#362D86] underline transition duration-300"
+            >
+              Cancellation Policy
+            </button>
+            <div className="hidden md:block w-px h-6 bg-[#CCCBD9]"></div>
+            <button
+              onClick={() => setOpenModalId("terms-conditions")}
+              className="text-[#362D86] underline transition duration-300"
+            >
+              Terms & Conditions
+            </button>
+            <div className="hidden md:block w-px h-6 bg-[#CCCBD9]"></div>
+            <button
+              onClick={() => setOpenModalId("privacy-policy")}
+              className="text-[#362D86] underline transition duration-300"
+            >
+              Privacy Policy
+            </button>
+          </div>
+
           {/* Bookings Open Banner */}
-          <div className="bg-indigo-700 rounded-lg p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-8 mb-6">
-            <div className="text-white text-xl font-semibold">
-              BOOKINGS ARE OPEN
-            </div>
-            <div className="flex gap-3">
-              <Link to={`/amarabad/houses/${packageId}`} className="bg-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition">
-                BOOK NOW
-              </Link>
+          <div className="mt-8 mb-6 relative">
+            <img src={packageData.image} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0 rounded-lg" />
+            <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2] rounded-lg backdrop-blur-sm" />
+            <div className="relative z-10 p-6 flex flex-col items-center justify-evenly gap-4 rounded-lg min-h-[250px]">
+              <div className="text-white text-xl md:text-2xl lg:text-3xl font-semibold relative z-10">
+                BOOKINGS ARE OPEN
+              </div>
+              <div className="flex gap-3 md:gap-6 flex-col md:flex-row">
+                <Link to={`/amarabad/houses/${packageId}`} className="bg-white border border-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition text-center">
+                  BOOK NOW
+                </Link>
+                <Link target="_black" to={`https://maps.google.com?q=16.375586,78.758034`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-indigo-700 transition">
+                  GET DIRECTIONS
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Policy Modals */}
+      <PopupModal
+        popupModalId="cancellation-policy-modal"
+        isOpen={openModalId === "cancellation-policy"}
+        onClose={closeModal}
+        title="Cancellation Policy"
+        size="large"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+      >
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Cancellation Policy</h2>
+          <div className="space-y-4 text-gray-700">
+            <p>
+              <strong>Cancellation Charges:</strong>
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>Cancellation before 7 days of arrival: No charge</li>
+              <li>Cancellation between 3-7 days of arrival: 25% of total amount</li>
+              <li>Cancellation between 1-3 days of arrival: 50% of total amount</li>
+              <li>Cancellation on the day of arrival or no-show: 100% of total amount</li>
+            </ul>
+            <p>
+              <strong>Refund Process:</strong>
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>Refunds will be processed within 7-10 business days</li>
+              <li>Refund will be credited to the original payment method</li>
+              <li>Bank charges, if any, will be deducted from the refund amount</li>
+            </ul>
+            <p>
+              <strong>Force Majeure:</strong>
+            </p>
+            <p className="ml-4">
+              In case of natural disasters, government restrictions, or other unforeseen circumstances,
+              we reserve the right to modify or cancel bookings with appropriate notice and refund options.
+            </p>
+          </div>
+        </div>
+      </PopupModal>
+
+      <PopupModal
+        popupModalId="terms-conditions-modal"
+        isOpen={openModalId === "terms-conditions"}
+        onClose={closeModal}
+        title="Terms & Conditions"
+        size="large"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+      >
+        <div className="p-6">
+          <TermsAndConditions />
+        </div>
+      </PopupModal>
+
+      <PopupModal
+        popupModalId="privacy-policy-modal"
+        isOpen={openModalId === "privacy-policy"}
+        onClose={closeModal}
+        title="Privacy Policy"
+        size="large"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
+      >
+        <div className="p-6">
+          <PrivacyPolicy />
+        </div>
+      </PopupModal>
     </UserLayout>
   );
 };

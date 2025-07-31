@@ -4,13 +4,11 @@ import { Link } from "react-router-dom";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 import PackageShimmer from "../../shimmer/PackageShimmer";
 const Packages = () => {
-  const { fetchUserPackages, isUserPackagesLoading, GetUserPackages } =
-    useUserBookingStore();
+  const { fetchUserPackages, isUserPackagesLoading, GetUserPackages } = useUserBookingStore();
 
   useEffect(() => {
     fetchUserPackages();
   }, []);
-  console.log(GetUserPackages.filter((item) => item.isActive));
 
   return (
     <UserLayout>
@@ -30,8 +28,8 @@ const Packages = () => {
           GetUserPackages.filter((item) => item.isActive).map((item, index) => (
             <div className="col-span-6 md:col-span-3" key={index}>
               <div className="flex flex-col content-center items-center justify-center h-[70vh] min-h-full relative p-10">
-                <img src={item.packageImages[0].imageUrl} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0" />
-                <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"></div>
+                <img src={item?.packageImages[0]?.imageUrl} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0" />
+                <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"/>
                 <div className="relative z-10 max-w-[350px] flex flex-col gap-6 justify-center items-center">
                   <h4 className="text-white text-2xl md:text-3xl font-bold capitalize">{item.packageName}</h4>
                   <Link

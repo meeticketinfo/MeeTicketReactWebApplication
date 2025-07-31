@@ -33,8 +33,8 @@ const Houses = () => {
   return (
     <UserLayout>
       <div>
-        <div className="container mx-auto py-3">
-          <div className="flex items-center gap-2">
+        <div className="container mx-auto py-3 px-3">
+          <div className="flex items-center gap-1 flex-wrap">
             <Link
               className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
               to="/amarabad/packages"
@@ -47,7 +47,7 @@ const Houses = () => {
         </div>
       </div>
 
-      <div className="text-center min-h-[130px] flex items-center justify-center relative">
+      <div className="text-center min-h-[130px] flex items-center justify-center relative p-3">
         <img
           src={PackagesImage1}
           alt="Packages"
@@ -55,18 +55,18 @@ const Houses = () => {
         />
         <div className="absolute top-0 left-0 w-full h-full bg-[#1b1065af] z-10 backdrop-blur-sm"></div>
         <div className="container mx-auto relative z-20">
-          <h1 className="text-4xl font-bold text-white uppercase">
+          <h1 className="text-2xl  md:text-3xl xl:text-4xl font-bold text-white uppercase">
             {GetRoomsByPackageId[0]?.packageName}
           </h1>
         </div>
       </div>
 
       {/* Toggle Buttons */}
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-3">
         <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
 
         {/* Content */}
-        <div className="container mx-auto p-2">
+        <div className="">
           {viewMode === "list" ? (
             <ListView houses={GetRoomsByPackageId} isRoomsByPackageIdLoading={isRoomsByPackageIdLoading} />
           ) : (

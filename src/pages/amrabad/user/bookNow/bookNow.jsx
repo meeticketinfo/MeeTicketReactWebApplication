@@ -12,8 +12,8 @@ const BookNow = () => {
           <Breadcrumb />
           
           {/* Main Content */}
-          <div className="bg-white rounded-lg shadow-sm p-8">
-            <div className="flex gap-8">
+          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-6 lg:p-8">
+            <div className="flex flex-col lg:flex-row gap-8">
               {/* Left Column - Property Details */}
               <PropertyDetails />
               
