@@ -71,7 +71,7 @@ const Houses = () => {
           {viewMode === "list" ? (
             <ListView houses={GetRoomsByPackageId} isRoomsByPackageIdLoading={isRoomsByPackageIdLoading} />
           ) : (
-            <MapView houses={housesData} onHouseClick={handleHouseClick} />
+            <MapView houses={GetRoomsByPackageId} onHouseClick={handleHouseClick} />
           )}
         </div>
       </div>

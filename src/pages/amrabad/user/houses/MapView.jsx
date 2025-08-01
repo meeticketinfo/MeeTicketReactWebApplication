@@ -7,7 +7,7 @@ const MapView = ({ houses, onHouseClick }) => {
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showHouseList, setShowHouseList] = useState(false);
-
+  //  console.log("houses",houses);
   // Marker icon constants - will be defined after Google Maps API loads
   const [markerIcons, setMarkerIcons] = useState(null);
 
@@ -16,7 +16,7 @@ const MapView = ({ houses, onHouseClick }) => {
     setSelectedHouse(house);
 
     // Find the corresponding marker and trigger its click event
-    const houseIndex = houses.findIndex(h => h.id === house.id);
+    const houseIndex = houses.findIndex(h => h.roomId === house.roomId);
     if (houseIndex !== -1 && markers[houseIndex] && markerIcons) {
       // Get the marker
       const marker = markers[houseIndex];
@@ -33,8 +33,9 @@ const MapView = ({ houses, onHouseClick }) => {
 
       // Center map on selected house
       if (map) {
-        map.panTo(house.location);
-        map.setZoom(45); // Closer zoom to show the selected house
+        const location = { lat: house.latitude, lng: house.longitude };
+        map.panTo(location);
+        map.setZoom(100); // Closer zoom to show the selected house
       }
     }
 
@@ -51,10 +52,37 @@ const MapView = ({ houses, onHouseClick }) => {
       .replace(/'/g, '&#39;');
   };
 
+  // Helper function to get house display name
+  const getHouseDisplayName = (house) => {
+    return house.roomName || house.packageName || 'House';
+  };
+
+  // Helper function to get house image
+  const getHouseImage = (house) => {
+    if (house.images && house.images.length > 0) {
+      return house.images[0]; // Return first image
+    }
+    return '/images/house-1.jpg'; // Default image
+  };
+
+  // Helper function to get house price
+  const getHousePrice = (house) => {
+    if (house.hasDiscount && house.discountValue && house.discountType === 'Percentage') {
+      const discountAmount = (house.tariffPerDay * house.discountValue) / 100;
+      return Math.round(house.tariffPerDay - discountAmount);
+    }
+    return house.tariffPerDay;
+  };
+
+  // Helper function to get original price
+  const getOriginalPrice = (house) => {
+    return house.tariffPerDay;
+  };
+
   useEffect(() => {
     // Initialize Google Maps
     const initMap = () => {
-      if (window.google && window.google.maps) {
+      if (window.google && window.google.maps && houses && houses.length > 0) {
         // Create marker icons
         const defaultMarkerIcon = {
           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
@@ -109,10 +137,11 @@ const MapView = ({ houses, onHouseClick }) => {
 
         // Add markers for each house
         const newMarkers = houses.map((house, index) => {
+          const location = { lat: house.latitude, lng: house.longitude };
           const marker = new window.google.maps.Marker({
-            position: house.location,
+            position: location,
             map: mapInstance,
-            title: house.title,
+            title: getHouseDisplayName(house),
             icon: defaultMarkerIcon
           });
 
@@ -121,11 +150,11 @@ const MapView = ({ houses, onHouseClick }) => {
           marker.selectedIcon = selectedMarkerIcon;
 
           // Extend bounds to include this marker
-          bounds.extend(house.location);
+          bounds.extend(location);
 
           // Add click listener to marker
           marker.addListener('click', () => {
-            console.log('Marker clicked:', house.title);
+            console.log('Marker clicked:', getHouseDisplayName(house));
 
             // Update all markers to default style
             newMarkers.forEach(m => {
@@ -145,26 +174,26 @@ const MapView = ({ houses, onHouseClick }) => {
             onHouseClick && onHouseClick(house);
           });
 
-                     // Add house name label as a separate marker
-           const labelWidth = Math.max(house.title.length * 8, 120); // Dynamic width based on text length
-           const labelMarker = new window.google.maps.Marker({
-             position: new window.google.maps.LatLng(
-               house.location.lat + 0.000001, 
-               house.location.lng
-             ),
-             map: mapInstance,
-             icon: {
-               url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                 <svg xmlns="http://www.w3.org/2000/svg" width="${labelWidth}" height="30" viewBox="0 0 ${labelWidth} 30">
-                   <rect width="${labelWidth}" height="30" rx="4" fill="rgba(255,255,255,1)"/>
-                   <text x="${labelWidth / 2}" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">${escapeHtml(house.title)}</text>
-                 </svg>
-               `),
-               scaledSize: new window.google.maps.Size(labelWidth, 30),
-               anchor: new window.google.maps.Point(labelWidth / 2, 0)
-             },
-             clickable: false
-           });
+          // Add house name label as a separate marker
+          const labelWidth = Math.max(getHouseDisplayName(house).length * 8, 120); // Dynamic width based on text length
+          const labelMarker = new window.google.maps.Marker({
+            position: new window.google.maps.LatLng(
+              house.latitude + 0.000001, 
+              house.longitude
+            ),
+            map: mapInstance,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="${labelWidth}" height="30" viewBox="0 0 ${labelWidth} 30">
+                  <rect width="${labelWidth}" height="30" rx="4" fill="rgba(255,255,255,1)"/>
+                  <text x="${labelWidth / 2}" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">${escapeHtml(getHouseDisplayName(house))}</text>
+                </svg>
+              `),
+              scaledSize: new window.google.maps.Size(labelWidth, 30),
+              anchor: new window.google.maps.Point(labelWidth / 2, 0)
+            },
+            clickable: false
+          });
 
           return marker;
         });
@@ -210,6 +239,18 @@ const MapView = ({ houses, onHouseClick }) => {
     };
   }, [houses]);
 
+  // Show loading state if houses is not available
+  if (!houses || houses.length === 0) {
+    return (
+      <div className="w-full h-[80vh] rounded-2xl bg-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#362D86] mb-4"></div>
+          <p className="text-gray-600 font-medium">Loading houses data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
 
@@ -251,24 +292,34 @@ const MapView = ({ houses, onHouseClick }) => {
           <div className="max-h-[calc(80vh-6rem)] overflow-y-auto">
             {houses.map((house) => (
               <div
-                key={house.id}
+                key={house.roomId}
                 onClick={() => handleHouseSelect(house)}
                 className={`p-2 border-b border-gray-50 cursor-pointer transition-colors hover:bg-gray-50 ${
-                  selectedHouse?.id === house.id ? 'bg-blue-100 border-blue-200' : ''
+                  selectedHouse?.roomId === house.roomId ? 'bg-blue-100 border-blue-200' : ''
                 }`}
               >
                 <div className="flex items-start gap-2">
                   <img
-                    src={house.image}
-                    alt={house.title}
+                    src={house.images[0].imageUrl}
+                    alt="Image"
                     className="w-12 h-12 object-cover rounded-md flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-gray-900 text-xs leading-tight mb-0.5 truncate">{house.title}</h4>
-                    <p className="text-sm font-bold text-[#362D86] mb-0.5 leading-none">{house.price} 
-                    <span className="text-[10px] text-gray-500 ml-1">{house.guests}</span> </p>
+                    <h4 className="font-medium text-gray-900 text-xs leading-tight mb-0.5 truncate">{getHouseDisplayName(house)}</h4>
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <p className="text-sm font-bold text-[#362D86] leading-none">₹{getHousePrice(house)}</p>
+                      {house.hasDiscount && house.discountValue && (
+                        <span className="text-xs text-gray-500 line-through">₹{getOriginalPrice(house)}</span>
+                      )}
+                      <span className="text-[10px] text-gray-500 ml-1">per day</span>
+                    </div>
+                    {house.hasDiscount && house.discountValue && (
+                      <p className="text-xs text-green-600 font-medium mb-1">
+                        {house.discountValue}% OFF
+                      </p>
+                    )}
                     <Link
-                      to={`/amarabad/book-now/${house.id}`}
+                      to={`/amarabad/book-now/${house.roomId}`}
                       className="inline-block bg-[#362D86] text-white px-2 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
                       onClick={(e) => e.stopPropagation()}
                     >
