@@ -41,6 +41,13 @@ function MetroBookingList() {
 
       headerClass: "text-blue-v2",
     },
+       {
+      field: "paymentOrderID",
+      headerName: "Transaction ID",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
     {
       field: "bookingDetailsId",
       headerName: "Booking Details ID",
@@ -327,12 +334,12 @@ function MetroBookingList() {
                 htmlFor="mobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Mobile Number
+               Phone Number
               </label>
               <Field
                 type="text"
                 name="mobileNumber"
-                placeholder="Enter Mobile Number"
+                placeholder="Enter Phone Number"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               />
             </div>

@@ -105,7 +105,7 @@ function CompletedBookingsReportList() {
     },
     {
       field: "paymentTransactionId",
-      headerName: "Payment Transaction ID",
+      headerName: "Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
