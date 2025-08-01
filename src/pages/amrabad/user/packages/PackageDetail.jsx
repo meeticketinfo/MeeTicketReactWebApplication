@@ -1,138 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
-import PackageImage from "../../../../images/user/package-details-1.jpg";
 import { Link, useParams } from "react-router-dom";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import { useModalStore } from "../../../../store/modalStore";
-import PrivacyPolicy from "../../../../components/terms_and_conditions_privacy_policy/PrivacyPolicy";
-import TermsAndConditions from "../../../../components/terms_and_conditions_privacy_policy/TermsAndConditions";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-
-const sliderImages = [
-  PackageImage,
-  PackageImage,
-  PackageImage,
-  PackageImage,
-  PackageImage,
-  PackageImage,
-  PackageImage,
-];
-
-const packageData = {
-  title: "Munnar Jungle Resort, The Tiger Stay Package",
-  image: PackageImage,
-  highlights: [
-    {
-      icon: "🦁",
-      title: "Safari Ride At Farhabad",
-      desc: "Explore deep into the heart of the forest and spot rare wildlife in their natural habitat.",
-    },
-    {
-      icon: "🌲",
-      title: "Guided Forest Trekking",
-      desc: "Learn about diverse flora and fauna with special focus on birdwatching, led by expert guides.",
-    },
-    {
-      icon: "🧑‍🔬",
-      title: "Local Tour Guide Included",
-      desc: "Get immersive stories and ecological insights from trained local naturalists.",
-    },
-    {
-      icon: "🎁",
-      title: "Complimentary Gift With Stay",
-      desc: "Every booking comes with 2 complimentary eco-sets, each consisting of 1 locally crafted jute bag.",
-    },
-  ],
-  rooms: [
-    { type: "Standard Rooms", count: 6 },
-    { type: "Round Chenchu Mud House", count: 1 },
-    { type: "Tree House", count: 1 },
-    { type: "Mud Houses", count: 2 },
-    { type: "Aerocon Houses", count: 2 },
-  ],
-  priceNote:
-    "The cost of the package for 2 people ranges from 5100 to 8500 rupees depending on the room type.",
-  discounts: [
-    { label: "Bookings Below ₹20,000", value: "No Discount Applicable." },
-    {
-      label: "Bookings Between ₹20,000 And ₹40,000",
-      value: "Get 5% Discount On Total Amount.",
-    },
-    {
-      label: "Bookings Above ₹40,000",
-      value: "Get 10% Discount On Total Amount.",
-    },
-  ],
-  itinerary: [
-    {
-      day: "Day-1",
-      schedule: [
-        {
-          time: "12:30 PM",
-          desc: "Arrival at Munnanur Jungle resort, Mannanur, and Check in. Please search for “Munnanur Jungle Resort, Mannanur” in Google maps for the precise location.",
-        },
-        {
-          time: "1:00 PM - 2:00 PM",
-          desc: "Lunch at Chinnaraka hall on basis of order.",
-        },
-        {
-          time: "2:30 PM - 3:30 PM",
-          desc: "Visit to Environment Educational Centre, where an Introduction to Amrabad Tiger Reserve is given through movie and picture exhibition.",
-        },
-        {
-          time: "3:40 PM - 7:00 PM",
-          desc: "All guests to leave for the Safari after completion of the wildlife orientation from the Environment Education center or shall report at reception, Munnanur Jungle resort by 3:40PM for Jungle Safari.",
-        },
-        {
-          time: "8:00 PM - 9:00 PM",
-          desc: "Dinner at Chinnaraka hall.",
-        },
-      ],
-    },
-    {
-      day: "Day-2",
-      schedule: [
-        {
-          time: "6:00 AM - 8:00 AM",
-          desc: "Guests to report at Munnanur Jungle resort reception by 6:00AM for forest trekking/ hike and return back to the resort.",
-        },
-        {
-          time: "8:00 AM - 9:00 AM",
-          desc: "Breakfast at Chinnaraka hall.",
-        },
-        {
-          time: "10:00 AM",
-          desc: "Checkout",
-        },
-      ],
-    },
-  ],
-  notes: [
-    "In case of odd number of visitors, kindly book the immediate lower even number (E.g. book 2 rooms for 5 visitors). At the time of check-in, ₹1000 shall be charged extra for any additional person from 8 years of age onwards.",
-    "Food will be charged separately on basis of order and available menu.",
-    "Children’s above 6 years of age reservation is mandatory.",
-    "Kindly bring your shoes for Forest Trekking.",
-    "In case you forget toiletries such as toothbrush and toothpaste, the same can be purchased at our Organic store.",
-  ],
-};
+import { Pagination } from "swiper/modules";
+import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
+import PackageDetailShimmer from "../../shimmer/PackageDetailShimmer";
 
 const PackageDetail = () => {
   const { packageId } = useParams();
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
-  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const { fetchPackageDetail, isPackageDetailLoading, GetPackageDetail } = useUserBookingStore();
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+  useEffect(() => {
+    fetchPackageDetail(packageId);
+  }, [packageId]);
+
+  // Show shimmer while loading
+  if (isPackageDetailLoading) {
+    return (
+      <UserLayout>
+        <PackageDetailShimmer />
+      </UserLayout>
+    );
+  }
+
+  // Show error state if no package detail
+  if (!GetPackageDetail) {
+    return (
+      <UserLayout>
+        <div className="flex items-center justify-center h-[50vh]">
+          <div className="text-center">
+            <div className="text-gray-500 text-xl mb-4">Package not found</div>
+            <Link to="/amarabad/packages" className="text-blue-600 hover:text-blue-800 underline">
+              Back to Packages
+            </Link>
+          </div>
+        </div>
+      </UserLayout>
+    );
+  }
 
   return (
     <UserLayout>
       <div className="h-[350px] relative mb-7">
-        <img src={packageData.image} alt="Package" className="w-full h-full object-cover object-center" />
+        <img src={GetPackageDetail?.image} alt="Package" className="w-full h-full object-cover object-center" />
         {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"></div> */}
         <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-4 md:py-8 backdrop-blur-sm">
           <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
-            <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{packageData.title}</h4>
+            <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{GetPackageDetail?.title}</h4>
             <Link
               to={`/amarabad/houses/${packageId}`}
               className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
@@ -143,13 +60,13 @@ const PackageDetail = () => {
         <div className=" ">
           {/* Highlights */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#271F6E]">
                 Adventure Highlights
               </h2>
-            </div>
+            </div>}
             <ul className="space-y-2">
-              {packageData.highlights.map((item, idx) => (
+              {GetPackageDetail?.highlights?.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-xl">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -168,31 +85,35 @@ const PackageDetail = () => {
 
           {/* Accommodation Details */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#271F6E]">
-                Accommodation Details
-              </h2>
-            </div>
-            <div className="overflow-x-auto w-full md:max-w-[50%]  border border-gray-200 rounded-lg">
-              <table className="min-w-full">
-                <thead>
-                  <tr className="bg-indigo-50">
-                    <th className="px-4 py-2 text-left font-medium">Room Type</th>
-                    <th className="px-4 py-2 text-left font-medium">Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {packageData.rooms.map((room, idx) => (
-                    <tr key={idx} className="border-t">
-                      <td className="px-4 py-2">{room.type}</td>
-                      <td className="px-4 py-2">{room.count}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            {GetPackageDetail?.rooms?.length > 0 && (
+              <>
+                <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                  <h2 className="text-lg font-semibold text-[#271F6E]">
+                    Accommodation Details
+                  </h2>
+                </div>
+                <div className="overflow-x-auto w-full md:max-w-[50%]  border border-gray-200 rounded-lg">
+                  <table className="min-w-full">
+                    <thead>
+                      <tr className="bg-indigo-50">
+                        <th className="px-4 py-2 text-left font-medium">Room Type</th>
+                        <th className="px-4 py-2 text-left font-medium">Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {GetPackageDetail?.rooms?.map((room, idx) => (
+                        <tr key={idx} className="border-t">
+                          <td className="px-4 py-2">{room.type}</td>
+                          <td className="px-4 py-2">{room.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
             <p className="text-sm text-gray-600 mt-2">
-              <span className="font-semibold">Note:</span> {packageData.priceNote}
+              <span className="font-semibold">Note:</span> {GetPackageDetail?.priceNote}
             </p>
           </section>
 
@@ -210,7 +131,7 @@ const PackageDetail = () => {
                 <h3 className="mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts</h3>
 
                 <ul className="space-y-2">
-                  {packageData.discounts.map((item, idx) => (
+                  {GetPackageDetail?.discounts?.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-xl">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,7 +156,7 @@ const PackageDetail = () => {
                   <div className="flex items-center">
                     <div className="">
                       <div className="text-gray-500 text-sm md:text-base mb-1">Check-In Time:</div>
-                      <div className="text-sm md:text-base font-semibold text-gray-800">12:30 PM</div>
+                      <div className="text-sm md:text-base font-semibold text-gray-800"> {GetPackageDetail?.twoDayItinerarySchedule?.checkInTime}</div>
                     </div>
 
                     <div className="mx-2 md:mx-4">
@@ -249,7 +170,7 @@ const PackageDetail = () => {
 
                     <div className="">
                       <div className="text-gray-500 text-sm md:text-base mb-1">Check-Out Time:</div>
-                      <div className="text-sm md:text-base font-semibold text-gray-800">10:00 AM (Next Day)</div>
+                      <div className="text-sm md:text-base font-semibold text-gray-800"> {GetPackageDetail?.twoDayItinerarySchedule?.checkOutTime}</div>
                     </div>
                   </div>
                 </div>
@@ -266,7 +187,7 @@ const PackageDetail = () => {
                         </tr>
                       </thead>
                       <tbody className="bg-[#FFFFFF7A]">
-                        {packageData.itinerary.map((day, i) =>
+                        {GetPackageDetail?.itinerary?.map((day, i) =>
                           day.schedule.map((item, j) => (
                             <tr key={i + "-" + j} className="border-t">
                               {j === 0 && (
@@ -290,9 +211,9 @@ const PackageDetail = () => {
               </div>
               {/* Notes */}
               <section className="mt-4">
-                <h3 className="mb-4 text-black text-xl font-bold">Notes:</h3>
+                {GetPackageDetail?.notes?.length > 0 && <h3 className="mb-4 text-black text-xl font-bold">Notes:</h3>}
                 <ul className="list-disc list-inside text-gray-700 space-y-2 text-sm md:text-base">
-                  {packageData.notes.map((note, idx) => (
+                  {GetPackageDetail?.notes?.map((note, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <svg className="flex-shrink-0" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_8676_13856)">
@@ -327,11 +248,11 @@ const PackageDetail = () => {
                 },
               }}
             >
-              {sliderImages.map((img, idx) => (
+              {GetPackageDetail?.packageImages?.map((img, idx) => (
                 <SwiperSlide key={idx}>
                   <div className="">
                     <img
-                      src={img}
+                      src={img?.imageUrl}
                       alt={`Slide ${idx + 1}`}
                       className="w-full object-cover aspect-[3.5/4]"
                       style={{ objectPosition: "center" }}
@@ -367,7 +288,7 @@ const PackageDetail = () => {
 
           {/* Bookings Open Banner */}
           <div className="mt-8 mb-6 relative">
-            <img src={packageData.image} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0 rounded-lg" />
+            <img src={GetPackageDetail?.image} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0 rounded-lg" />
             <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2] rounded-lg backdrop-blur-sm" />
             <div className="relative z-10 p-6 flex flex-col items-center justify-evenly gap-4 rounded-lg min-h-[250px]">
               <div className="text-white text-xl md:text-2xl lg:text-3xl font-semibold relative z-10">
@@ -377,7 +298,7 @@ const PackageDetail = () => {
                 <Link to={`/amarabad/houses/${packageId}`} className="bg-white border border-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition text-center">
                   BOOK NOW
                 </Link>
-                <Link target="_black" to={`https://maps.google.com?q=16.375586,78.758034`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-indigo-700 transition">
+                <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-indigo-700 transition">
                   GET DIRECTIONS
                 </Link>
               </div>
@@ -398,31 +319,9 @@ const PackageDetail = () => {
         defaultBodyPadding={true}
       >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Cancellation Policy</h2>
           <div className="space-y-4 text-gray-700">
             <p>
-              <strong>Cancellation Charges:</strong>
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Cancellation before 7 days of arrival: No charge</li>
-              <li>Cancellation between 3-7 days of arrival: 25% of total amount</li>
-              <li>Cancellation between 1-3 days of arrival: 50% of total amount</li>
-              <li>Cancellation on the day of arrival or no-show: 100% of total amount</li>
-            </ul>
-            <p>
-              <strong>Refund Process:</strong>
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Refunds will be processed within 7-10 business days</li>
-              <li>Refund will be credited to the original payment method</li>
-              <li>Bank charges, if any, will be deducted from the refund amount</li>
-            </ul>
-            <p>
-              <strong>Force Majeure:</strong>
-            </p>
-            <p className="ml-4">
-              In case of natural disasters, government restrictions, or other unforeseen circumstances,
-              we reserve the right to modify or cancel bookings with appropriate notice and refund options.
+              {GetPackageDetail?.cancellationPolicy}
             </p>
           </div>
         </div>
@@ -439,7 +338,11 @@ const PackageDetail = () => {
         defaultBodyPadding={true}
       >
         <div className="p-6">
-          <TermsAndConditions />
+          <div className="space-y-4 text-gray-700">
+            <p>
+              {GetPackageDetail?.termsConditions}
+            </p>
+          </div>
         </div>
       </PopupModal>
 
@@ -454,7 +357,9 @@ const PackageDetail = () => {
         defaultBodyPadding={true}
       >
         <div className="p-6">
-          <PrivacyPolicy />
+          <p>
+            {GetPackageDetail?.privacyPolicy}
+          </p>
         </div>
       </PopupModal>
     </UserLayout>

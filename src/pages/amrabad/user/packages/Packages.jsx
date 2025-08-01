@@ -3,6 +3,7 @@ import UserLayout from "../../../../layouts/UserLayout";
 import { Link } from "react-router-dom";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 import PackageShimmer from "../../shimmer/PackageShimmer";
+
 const Packages = () => {
   const { fetchUserPackages, isUserPackagesLoading, GetUserPackages } = useUserBookingStore();
 
@@ -14,16 +15,16 @@ const Packages = () => {
     <UserLayout>
       <div className="grid grid-cols-6 text-center gap-1">
         {isUserPackagesLoading ? (
-          // Show shimmer while loading
+          // Show enhanced shimmer while loading
           <>
             <div className="col-span-6 md:col-span-3 w-full">
-              <PackageShimmer />
+              <PackageShimmer variant="full" />
             </div>
             <div className="col-span-6 md:col-span-3 w-full">
-              <PackageShimmer />
+              <PackageShimmer variant="full" />
             </div>
           </>
-        ) : (
+        ) : GetUserPackages && GetUserPackages.length > 0 ? (
           // Show actual package content when loaded
           GetUserPackages.filter((item) => item.isActive).map((item, index) => (
             <div className="col-span-6 md:col-span-3" key={index}>
@@ -42,6 +43,14 @@ const Packages = () => {
               </div>
             </div>
           ))
+        ) : (
+          // Show empty state with compact loading
+          <div className="col-span-6 flex items-center justify-center h-[50vh]">
+            <div className="text-center">
+              <PackageShimmer variant="compact" />
+              <p className="text-gray-500 mt-4">No packages available at the moment.</p>
+            </div>
+          </div>
         )}
       </div>
     </UserLayout>

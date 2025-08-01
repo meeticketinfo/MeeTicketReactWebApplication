@@ -10,7 +10,9 @@ export const useUserBookingStore = create((set) => ({
   // fetch rooms by package id
   GetRoomsByPackageId: [],
   isRoomsByPackageIdLoading: false,
-  
+  // fetch package detail
+  GetPackageDetail: [],
+  isPackageDetailLoading: false,  
 
   // fetch user packages
   fetchUserPackages: async () => {
@@ -51,4 +53,23 @@ export const useUserBookingStore = create((set) => ({
       toast(error.message || "Some thing went wrong");
     }
   },
+  // fetch package detail
+  fetchPackageDetail: async (packageId) => {
+    set({ isPackageDetailLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD.USER.GET_PACKAGE_DETAIL}?packageId=${packageId}`
+      );
+      set({
+        GetPackageDetail: response.data.data,
+        isPackageDetailLoading: false,
+      });
+    } catch (error) {
+      set({
+        isPackageDetailLoading: false,
+      });
+      toast(error.message || "Some thing went wrong");
+    }
+  },
+
 }));

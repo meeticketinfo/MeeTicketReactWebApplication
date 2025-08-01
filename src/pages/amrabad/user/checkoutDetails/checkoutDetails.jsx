@@ -1,75 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import { BsTrash } from "react-icons/bs";
 import { IoArrowForward } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-
-// Demo data for houses and rooms
-const initialHouses = [
-  {
-    id: 1,
-    name: "CHITAL AND OTTER",
-    image: "https://amrabadtigerreserve.com/wp-content/uploads/2023/01/20230412_162323-1024x768.jpg",
-    checkIn: "18-May-2025",
-    checkOut: "21-May-2025",
-    rooms: [
-      {
-        id: 1,
-        name: "Chital & Otter",
-        numRooms: 1,
-        actualPrice: 6250,
-        discount: 625,
-        total: 5625,
-      },
-      {
-        id: 2,
-        name: "Partha - TreeHouse",
-        numRooms: 1,
-        actualPrice: 7000,
-        discount: 350,
-        total: 6650,
-      },
-    ],
-  },
-];
+import { useCartStore } from "../../../../store/amrabad/user/userCartStore";
+import CheckoutDetailsShimmer from "../../shimmer/CheckoutDetailsShimmer";
 
 const CheckoutDetails = () => {
-  const [houses, setHouses] = useState(initialHouses);
+  const { cartItems, loadingCart, fetchCartItems } = useCartStore();
   const navigate = useNavigate();
-  // Calculate totals
-  const subTotal = houses.reduce(
-    (sum, house) =>
-      sum +
-      house.rooms.reduce((rSum, r) => rSum + r.actualPrice, 0),
-    0
-  );
-  const discount = houses.reduce(
-    (sum, house) =>
-      sum +
-      house.rooms.reduce((rSum, r) => rSum + r.discount, 0),
-    0
-  );
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  // Show shimmer while loading
+  if (loadingCart) {
+    return (
+      <UserLayout>
+        <CheckoutDetailsShimmer />
+      </UserLayout>
+    );
+  }
+
+  // Show empty state if no cart items
+  if (!cartItems || cartItems.length === 0) {
+    return (
+      <UserLayout>
+        <div className="container mx-auto">
+          <div className="p-2 sm:p-4 md:p-8 bg-[#F6F7FB]">
+            <div className="bg-white rounded-xl shadow-md p-8 text-center">
+              <div className="text-gray-500 text-lg mb-4">Your cart is empty</div>
+              <Link
+                to="/amarabad/packages"
+                className="text-blue-600 hover:text-blue-800 underline font-semibold"
+              >
+                Browse Packages
+              </Link>
+            </div>
+          </div>
+        </div>
+      </UserLayout>
+    );
+  }
+
+  // Calculate totals from cart data
+  const subTotal = cartItems.reduce((sum, item) => sum + item.amount, 0);
+  const discount = cartItems.reduce((sum, item) => sum + (item.discountAmount || 0), 0);
   const totalPayable = subTotal - discount;
 
-  // Check if all rooms are removed
-  const allRoomsRemoved = houses.every(house => house.rooms.length === 0);
-
-  // Remove a room
-  const handleRemoveRoom = (houseId, roomId) => {
-    setHouses((prev) =>
-      prev
-        .map((house) => {
-          if (house.id !== houseId) return house;
-          return {
-            ...house,
-            rooms: house.rooms.filter((room) => room.id !== roomId),
-          };
-        })
-        .filter((house) => house.rooms.length > 0)
-    );
-  };
-
-  // Proceed to checkout
+  // Group cart items by package for better display
+  const groupedCartItems = cartItems.reduce((groups, item) => {
+    const key = item.packageId;
+    if (!groups[key]) {
+      groups[key] = {
+        packageId: item.packageId,
+        packageName: item.packageName,
+        houseName: item.houseName,
+        houseImageUrl: item.houseImageUrl,
+        items: []
+      };
+    }
+    groups[key].items.push(item);
+    return groups;
+  }, {});
 
   return (
     <UserLayout>
@@ -86,107 +80,97 @@ const CheckoutDetails = () => {
             <span className="text-gray-400"> &gt; </span>
             <Link
               className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-              to="/amarabad/packages/munnanur-jungle-resort-the-tiger-stay-package"
+              to="/amarabad/packages"
             >
-              Munnar Jungle resort
+              Packages
             </Link>
             <span className="text-gray-400"> &gt; </span>
-            <Link
-              className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-              to="/amarabad/houses/chital-and-otter"
-            >
-              List of houses
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="text-gray-800 font-semibold">Chital & Otter</span>
+            <span className="text-gray-800 font-semibold">Cart</span>
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 md:p-8 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Left: House & Room Details */}
             <div className="flex-1 min-w-0">
-              {allRoomsRemoved ? (
-                // Show Add House button when all rooms are removed
-                <div className="text-center py-8 sm:py-12">
-                  <div className="text-gray-500 text-base sm:text-lg mb-4">No houses selected</div>
+              <Link to="/amarabad/packages" className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 block">
+                + Add More Houses
+              </Link>
 
-                  <Link to={`/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package`} className="ml-auto text-blue-700 text-sm font-semibold hover:underline">
-                    + Add Houses
-                  </Link>
-                </div>
-              ) : (
-                houses.map((house) => (
-                  <div key={house.id}>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4 justify-between">
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        <img
-                          src={house.image}
-                          alt={house.name}
-                          className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover border"
-                        />
-                        <div className="flex-1">
-                          <div className="font-bold text-base sm:text-lg text-gray-800">{house.name}</div>
-                          <div className="text-xs text-gray-500">
-                            Check-in: {house.checkIn} &nbsp; | &nbsp; Check-out: {house.checkOut}
-                          </div>
-                        </div>
-                      </div>
-                      <Link to={`/amarabad/houses/munnar-jungle-resort-the-tiger-stay-package`} className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center">
-                        + Add Houses
-                      </Link>
-                    </div>
-                    {/* Table */}
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
-                        <thead className="bg-[#F6F7FB]">
-                          <tr>
-                            <th className="p-2 text-left font-semibold">Name</th>
-                            <th className="p-2 text-center font-semibold">No. of Houses</th>
-                            <th className="p-2 text-center font-semibold">Actual Price</th>
-                            <th className="p-2 text-center font-semibold">Discount</th>
-                            <th className="p-2 text-center font-semibold">Total</th>
-                            <th className="p-2"></th>
+              {Object.values(groupedCartItems).map((group) => (
+                <div key={group.packageId} className="mb-6">
+                  {/* Package Header */}
+
+
+                  {/* Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
+                      <thead className="bg-[#F6F7FB]">
+                        <tr>
+                          <th className="p-2 text-left font-semibold">House Name</th>
+                          <th className="p-2 text-center font-semibold">Room Count</th>
+                          <th className="p-2 text-center font-semibold">Check-in</th>
+                          <th className="p-2 text-center font-semibold">Check-out</th>
+                          <th className="p-2 text-center font-semibold">Amount</th>
+                          <th className="p-2 text-center font-semibold">Discount</th>
+                          <th className="p-2 text-center font-semibold">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.items.map((item) => (
+                          <tr key={item.id} className="border-t">
+                            <td className="p-2">
+                              <div className="flex items-center gap-3 sm:gap-4">
+                                <img
+                                  src={item.houseImageUrl}
+                                  alt={item.houseName}
+                                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover border"
+                                />
+                                <div className="flex-1">
+                                  <div className="font-bold text-base sm:text-lg text-gray-800">{item.houseName}</div>
+                                  <div className="text-xs text-gray-500">{item.packageName}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-2 text-center">{item.roomCount}</td>
+                            <td className="p-2 text-center">
+                              {new Date(item.roomFromDate).toLocaleDateString()}
+                            </td>
+                            <td className="p-2 text-center">
+                              {new Date(item.roomToDate).toLocaleDateString()}
+                            </td>
+                            <td className="p-2 text-center">₹{item.amount.toLocaleString()}</td>
+                            <td className="p-2 text-center text-red-600">
+                              -₹{(item.discountAmount || 0).toLocaleString()}
+                            </td>
+                            <td className="p-2 text-center font-semibold">
+                              ₹{(item.amount - (item.discountAmount || 0)).toLocaleString()}
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {house.rooms.map((room) => (
-                            <tr key={room.id} className="border-t">
-                              <td className="p-2">{room.name}</td>
-                              <td className="p-2 text-center">{room.numRooms}</td>
-                              <td className="p-2 text-center">₹{room.actualPrice.toLocaleString()}</td>
-                              <td className="p-2 text-center text-red-600">-₹{room.discount.toLocaleString()}</td>
-                              <td className="p-2 text-center font-semibold">₹{room.total.toLocaleString()}</td>
-                              <td className="p-2 text-center">
-                                <button
-                                  className="text-red-500 hover:text-red-700"
-                                  onClick={() => handleRemoveRoom(house.id, room.id)}
-                                  title="Remove"
-                                >
-                                  <BsTrash />
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Summary */}
+                  <div className="bg-[#F6F7FB] rounded-lg p-3 sm:p-4 mb-4">
+                    <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
+                      <span>Sub total</span>
+                      <span>₹{group.items.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}</span>
                     </div>
-                    {/* Summary */}
-                    <div className="bg-[#F6F7FB] rounded-lg p-3 sm:p-4 mb-4">
-                      <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
-                        <span>Sub total</span>
-                        <span>₹{subTotal.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
-                        <span>Discount</span>
-                        <span className="text-red-600">-₹{discount.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between font-bold text-base sm:text-lg mt-2">
-                        <span>TOTAL PAYABLE AMOUNT</span>
-                        <span className="text-blue-900">₹{totalPayable.toLocaleString()}</span>
-                      </div>
+                    <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
+                      <span>Discount</span>
+                      <span className="text-red-600">
+                        -₹{group.items.reduce((sum, item) => sum + (item.discountAmount || 0), 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-bold text-base sm:text-lg mt-2">
+                      <span>TOTAL PAYABLE AMOUNT</span>
+                      <span className="text-blue-900">
+                        ₹{group.items.reduce((sum, item) => sum + (item.amount - (item.discountAmount || 0)), 0).toLocaleString()}
+                      </span>
                     </div>
                   </div>
-                ))
-              )}
+                </div>
+              ))}
             </div>
 
             {/* Right: Cart Total */}
@@ -197,17 +181,17 @@ const CheckoutDetails = () => {
                   <span>Sub-total</span>
                   <span>₹{subTotal.toLocaleString()}</span>
                 </div>
+                <div className="flex justify-between mb-2 text-gray-700 text-sm sm:text-base">
+                  <span>Discount</span>
+                  <span className="text-red-600">-₹{discount.toLocaleString()}</span>
+                </div>
                 <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 mb-6">
                   <span>Total</span>
                   <span>₹{totalPayable.toLocaleString()}</span>
                 </div>
                 <button
-                  className={`w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition text-sm sm:text-base ${allRoomsRemoved
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-[#362D86] hover:bg-blue-800'
-                    }`}
+                  className="w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition text-sm sm:text-base bg-[#362D86] hover:bg-blue-800"
                   onClick={() => navigate("/amarabad/booking-details")}
-                  disabled={allRoomsRemoved}
                 >
                   Proceed to checkout
                   <IoArrowForward className="text-lg sm:text-xl" />

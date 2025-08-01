@@ -21,7 +21,7 @@ const Houses = () => {
     GetRoomsByPackageId,
     isRoomsByPackageIdLoading,
   } = useUserBookingStore();
-  console.log("GetRoomsByPackageId", GetRoomsByPackageId);
+  
   useEffect(() => {
     fetchRoomsByPackageId(packageId);
   }, [packageId]);
@@ -29,6 +29,7 @@ const Houses = () => {
   const handleHouseClick = (house) => {
     setSelectedHouse(house);
   };
+  
 
   return (
     <UserLayout>
