@@ -367,7 +367,7 @@ function RtcDasboard() {
         )}
         {/* pi chart */}
         <DashboardCard07>
-          <div className="flex">
+          <div className="flex flex-col lg:flex-row">
             <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
               <RtcPieChart
                 data={allPassTypeData}

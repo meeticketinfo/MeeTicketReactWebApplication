@@ -216,18 +216,49 @@ const TotalTransactionsForm = () => {
                 >
                   Mode of Transaction
                 </label>
-                <Field
-                  as="select"
+                <Select
                   name="bookingSource"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("bookingSource", e.target.value);
+                  value={
+                    [
+                      { value: "", label: "Select Mode" },
+                      { value: "meeTicket", label: "MeeTicketApp" },
+                      { value: "counter", label: "COUNTER" },
+                    ].find((option) => option.value === values.bookingSource) || { value: "", label: "Select Mode" }
+                  }
+                  options={[
+                    { value: "", label: "Select Mode" },
+                    { value: "meeTicket", label: "MeeTicketApp" },
+                    { value: "counter", label: "COUNTER" },
+                  ]}
+                  onChange={(selectedOption) => {
+                    const value = selectedOption?.value || "";
+                    setFieldValue("bookingSource", value);
                   }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="meeTicket">MeeTicketApp</option>
-                  <option value="counter">COUNTER</option>
-                </Field>
+                  placeholder="Select Mode"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#000",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
               </div>
               {/*Payment Mode */}
               <div>
@@ -237,20 +268,53 @@ const TotalTransactionsForm = () => {
                 >
                   Payment Mode
                 </label>
-                <Field
-                  as="select"
+                <Select
                   name="PaymentMode"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  onChange={(e) => {
-                    setFieldValue("PaymentMode", e.target.value);
+                  value={
+                    [
+                      { value: "", label: "Select Mode" },
+                      { value: "upi", label: "UPI" },
+                      { value: "creditCard", label: "Credit Card" },
+                      { value: "debitCard", label: "Debit Card" },
+                      { value: "netBanking", label: "Net Banking" },
+                    ].find((option) => option.value === values.PaymentMode) || { value: "", label: "Select Mode" }
+                  }
+                  options={[
+                    { value: "", label: "Select Mode" },
+                    { value: "upi", label: "UPI" },
+                    { value: "creditCard", label: "Credit Card" },
+                    { value: "debitCard", label: "Debit Card" },
+                    { value: "netBanking", label: "Net Banking" },
+                  ]}
+                  onChange={(selectedOption) => {
+                    const value = selectedOption?.value || "";
+                    setFieldValue("PaymentMode", value);
                   }}
-                >
-                  <option value="">Select Mode</option>
-                  <option value="upi">UPI</option>
-                  <option value="creditCard">Credit Card</option>
-                  <option value="debitCard">Debit Card</option>
-                  <option value="netBanking">Net Banking</option>
-                </Field>
+                  placeholder="Select Mode"
+                  className="mt-[4px] text-sm"
+                  classNamePrefix="react-select"
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      outline: "none",
+                      boxShadow: "none",
+                      borderColor: "#ced4da",
+                      borderRadius: "6px",
+                      height: "30px",
+                      minHeight: "33px",
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                    }),
+                    option: (base, { isFocused }) => ({
+                      ...base,
+                      fontSize: "0.775rem",
+                      backgroundColor: isFocused ? "#F8F8F8" : "white",
+                      color: isFocused ? "#0C3771" : "#000",
+                      cursor: "pointer",
+                    }),
+                  }}
+                />
               </div>
               {/* department */}
               {role === "ROLE_SUPERADMIN" && (

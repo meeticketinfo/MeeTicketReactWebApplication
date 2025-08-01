@@ -498,18 +498,23 @@ function PaymentTransactionReport() {
                   <label className="block text-sm font-medium">
                     Payment Status
                   </label>
-                  <Field
-                    as="select"
+                  <Select
                     name="typeOfBooking"
-                    className={` block w-full px-2 py-1 border border-gray-300
-             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Payment Status</option>
-                    <option value="INITIATE">Initiate</option>
-                    <option value="INPROCESS">In Process</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="FAILED">Failed</option>
-                  </Field>
+                    className="mt-[4px] text-sm"
+                    options={[
+                      { value: "", label: "Select Payment Status" },
+                      { value: "INITIATE", label: "Initiate" },
+                      { value: "INPROCESS", label: "In Process" },
+                      { value: "CONFIRMED", label: "Confirmed" },
+                      { value: "FAILED", label: "Failed" },
+                    ]}
+                    onChange={(selectedOption) =>
+                      setFieldValue("typeOfBooking", selectedOption?.value || "")
+                    }
+                    placeholder="Payment Status"
+                    // className="mt-[4px] text-sm"
+                    classNamePrefix="react-select"
+                  />
                 </div>
                 <div>
                   <label

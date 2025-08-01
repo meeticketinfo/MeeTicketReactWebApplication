@@ -82,10 +82,10 @@ const MetroFailedGatewayChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
   return (
-    <div className="gap-8 w-full p-6">
-      <div className="flex flex-row gap-2 items-center justify-between">
-        <h2 className="text-lg font-medium mb-2">{title}</h2>
-        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
+    <div className="gap-4 sm:gap-6 lg:gap-8 w-full p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between">
+        <h2 className="text-base sm:text-lg font-medium mb-2">{title}</h2>
+        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 sm:px-4 py-2 text-sm sm:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
             to="/metro-failed-gateway-report"
@@ -102,22 +102,22 @@ const MetroFailedGatewayChart = ({
           </Link>
         </div>
       </div>
-      <div className="flex flex-row gap-2 items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-center lg:items-start justify-between">
         {/* Pie Chart */}
-        <div className="flex-1 w-[90%]">
-          <div ref={chartRef} className="h-[400px] max-w-[90%]" />
+        <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[50%]">
+          <div ref={chartRef} className="h-[300px] sm:h-[350px] lg:h-[400px] w-full max-w-full" />
         </div>
 
-       {data.length>0&& <div className="min-w-[340px] max-w-[500px]">
+       {data.length>0&& <div className="w-full lg:min-w-[300px] lg:max-w-[400px] xl:max-w-[500px]">
           <div className="flex justify-end mb-2"></div>
-          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
-            <table className="w-full">
+          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[350px] sm:max-h-[400px] lg:max-h-[450px] overflow-auto">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-[#D9E4FF]">
-                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">
+                  <th className="text-left px-2 sm:px-3 lg:px-4 py-2 text-[#205375] font-semibold">
                     Locations
                   </th>
-                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">
+                  <th className="text-right px-2 sm:px-3 lg:px-4 py-2 text-[#205375] font-semibold">
                     Count
                   </th>
                 </tr>
@@ -125,17 +125,17 @@ const MetroFailedGatewayChart = ({
               <tbody>
                 {data?.map((item, index) => (
                   <tr key={item.location || item.paymentCategory}>
-                    <td className="px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
                       <div className="flex items-center gap-2">
                         <div
-                          className="w-3 h-3 rounded-full shrink-0"
+                          className="w-2 h-2 sm:w-3 sm:h-3 rounded-full shrink-0"
                           style={{
                             backgroundColor: colors[index % colors.length],
                           }}
                         />
                         <Link
                           to="/metro-failed-gateway-report"
-                          className="text-[#000] hover:underline text-xs"
+                          className="text-[#000] hover:underline text-xs sm:text-sm break-words"
                           onClick={() => {
                             setInnerFilters({
                               ...innerFilters,
@@ -148,7 +148,7 @@ const MetroFailedGatewayChart = ({
                         </Link>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
+                    <td className="px-2 sm:px-3 lg:px-4 py-2 text-right border border-b-[#B7B7B7]">
                       <Link
                         to="/metro-failed-gateway-report"
                         onClick={() => {
@@ -158,7 +158,7 @@ const MetroFailedGatewayChart = ({
                             subCategory: item.failureReasonKey,
                           });
                         }}
-                        className="text-[#4A90E2] font-semibold hover:underline text-sm"
+                        className="text-[#4A90E2] font-semibold hover:underline text-xs sm:text-sm"
                       >
                         {item.reasonCount}
                       </Link>

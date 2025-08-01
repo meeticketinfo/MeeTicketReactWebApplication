@@ -4,8 +4,8 @@ import { persist } from "zustand/middleware";
 const useSidebarStore = create(
   persist(
     (set) => ({
-      sidebarOpen: false,
-      sidebarExpanded: false,
+      sidebarOpen: true,
+      sidebarExpanded: true,
 
       setSidebarOpen: (isOpen) => set({ sidebarOpen: isOpen }),
       setSidebarExpanded: (isExpanded) => set({ sidebarExpanded: isExpanded }),

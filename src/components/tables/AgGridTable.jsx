@@ -140,21 +140,21 @@ const AgGridTable = ({
   return (
     <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
       {/* Search and Export Buttons */}
-      <div className="ag-grid-toolbar flex justify-between items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm">
+      <div className="ag-grid-toolbar flex flex-col sm:flex-row justify-between items-start sm:items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm gap-2 sm:gap-0">
         {showSearch && (
-          <div>
+          <div className="w-full sm:w-auto">
             <input
               type="text"
               placeholder="Search..."
               value={quickFilterText} // Controlled input
               onChange={handleQuickFilterChange}
-              className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
+              className={`w-full sm:w-auto border border-gray-300 rounded-xl shadow-sm focus:outline-none bg-white text-xs sm:text-sm px-2 py-1 sm:py-1.5`}
             />
           </div>
         )}
-        <div className="flex items-center gap-4 ml-auto">
-          {(showTotalCount && rowData.length > 0) && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
-          <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
+        <div className="flex items-center gap-2 md:gap-4 ml-auto flex-wrap">
+          {(showTotalCount && rowData.length > 0) && <span className="text-xs md:text-sm font-semibold text-gray-500 py-1 md:py-1.5 px-2 md:px-3 bg-gray-100 rounded-xl border whitespace-nowrap">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
+          <div className="flex bg-gray-100 p-1 md:p-2 rounded-xl gap-2 md:gap-4 items-end shadow-md border border-v1">
             <button onClick={handleExportExcel} className="ag-grid-button">
               <FaFileCsv className="text-blue-v2 text-xl" />
             </button>

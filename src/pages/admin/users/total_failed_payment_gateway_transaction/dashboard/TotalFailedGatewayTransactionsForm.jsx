@@ -111,18 +111,19 @@ const { roleDetails } = useAuthStore();
       >
         {({ values, setFieldValue, setValues }) => (
           <Form>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
-              <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+              {/* From Date */}
+              <div className="sm:col-span-1">
                 <label
                   htmlFor="startDate"
-                  className="block text-xs font-medium text-gray-700"
+                  className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   From Date
                 </label>
                 <Field
                   type="datetime-local"
                   name="startDate"
-                  className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   onChange={(e) => {
                     const fromDateValue = e.target.value;
                     setFieldValue("startDate", fromDateValue);
@@ -132,17 +133,19 @@ const { roleDetails } = useAuthStore();
                   }}
                 />
               </div>
-              <div>
+              
+              {/* To Date */}
+              <div className="sm:col-span-1">
                 <label
                   htmlFor="endDate"
-                  className="block text-xs font-medium text-gray-700"
+                  className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   To Date
                 </label>
                 <Field
                   type="datetime-local"
                   name="endDate"
-                  className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   onChange={(e) => {
                     const toDateValue = e.target.value;
                     setFieldValue("endDate", toDateValue);
@@ -151,72 +154,73 @@ const { roleDetails } = useAuthStore();
                 />
               </div>
 
-              {/* department */}
-              {role === "ROLE_SUPERADMIN" &&<div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Department
-                </label>
-
-                <Select
-                  name="departmentId"
-                  value={
-                    allDepartmentTypes
+              {/* Department - Only for Super Admin */}
+              {role === "ROLE_SUPERADMIN" && (
+                <div className="sm:col-span-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Department
+                  </label>
+                  <Select
+                    name="departmentId"
+                    value={
+                      allDepartmentTypes
+                        ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
+                        .map((dept) => ({
+                          value: dept.departmentId,
+                          label: dept.departmentName,
+                        }))
+                        .find(
+                          (option) => option.value === values.departmentId
+                        ) || null
+                    }
+                    options={allDepartmentTypes
                       ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
                       .map((dept) => ({
                         value: dept.departmentId,
                         label: dept.departmentName,
-                      }))
-                      .find(
-                        (option) => option.value === values.departmentId
-                      ) || null
-                  }
-                  options={allDepartmentTypes
-                    ?.filter((dept) => dept.isActive && dept.departmentName !== "Metro")
-                    .map((dept) => ({
-                      value: dept.departmentId,
-                      label: dept.departmentName,
-                    }))}
-                  onChange={(selectedOption) => {
-                    const value = selectedOption?.value || "";
-                    setFieldValue("departmentId", value);
-                    // Clear entity and location when department changes
-                    setFieldValue("entityId", "");
-                    setFieldValue("parkId", "");
-                  }}
-                  isClearable
-                  placeholder="Department"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
-
-                    menu: (base) => ({
-                      ...base,
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#000",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>}
-              {/* location category */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
+                      }))}
+                    onChange={(selectedOption) => {
+                      const value = selectedOption?.value || "";
+                      setFieldValue("departmentId", value);
+                      // Clear entity and location when department changes
+                      setFieldValue("entityId", "");
+                      setFieldValue("parkId", "");
+                    }}
+                    isClearable
+                    placeholder="Department"
+                    className="mt-1 text-sm"
+                    classNamePrefix="react-select"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        outline: "none",
+                        boxShadow: "none",
+                        borderColor: "#ced4da",
+                        borderRadius: "6px",
+                        minHeight: "40px",
+                        backgroundColor: "#fff",
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        zIndex: 9999,
+                      }),
+                      option: (base, { isFocused }) => ({
+                        ...base,
+                        fontSize: "0.875rem",
+                        backgroundColor: isFocused ? "#F8F8F8" : "white",
+                        color: isFocused ? "#0C3771" : "#000",
+                        cursor: "pointer",
+                      }),
+                    }}
+                  />
+                </div>
+              )}
+              
+              {/* Location Category */}
+              <div className="sm:col-span-1">
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Location Category
                 </label>
-
                 <Select
                   name="entityId"
                   value={
@@ -241,7 +245,7 @@ const { roleDetails } = useAuthStore();
                   }}
                   isClearable
                   placeholder="Location Category"
-                  className="mt-[4px] text-sm"
+                  className="mt-1 text-sm"
                   classNamePrefix="react-select"
                   styles={{
                     control: (base) => ({
@@ -250,16 +254,16 @@ const { roleDetails } = useAuthStore();
                       boxShadow: "none",
                       borderColor: "#ced4da",
                       borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
+                      minHeight: "40px",
+                      backgroundColor: "#fff",
                     }),
-
                     menu: (base) => ({
                       ...base,
+                      zIndex: 9999,
                     }),
                     option: (base, { isFocused }) => ({
                       ...base,
-                      fontSize: "0.775rem",
+                      fontSize: "0.875rem",
                       backgroundColor: isFocused ? "#F8F8F8" : "white",
                       color: isFocused ? "#0C3771" : "#6D7072",
                       cursor: "pointer",
@@ -267,12 +271,12 @@ const { roleDetails } = useAuthStore();
                   }}
                 />
               </div>
-              {/* location */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
+              
+              {/* Location */}
+              <div className="sm:col-span-1">
+                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Location
                 </label>
-
                 <Select
                   name="locationId"
                   value={
@@ -297,7 +301,7 @@ const { roleDetails } = useAuthStore();
                   }}
                   isClearable
                   placeholder="Location"
-                  className="mt-[4px] text-sm"
+                  className="mt-1 text-sm"
                   classNamePrefix="react-select"
                   styles={{
                     control: (base) => ({
@@ -306,16 +310,16 @@ const { roleDetails } = useAuthStore();
                       boxShadow: "none",
                       borderColor: "#ced4da",
                       borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
+                      minHeight: "40px",
+                      backgroundColor: "#fff",
                     }),
-
                     menu: (base) => ({
                       ...base,
+                      zIndex: 9999,
                     }),
                     option: (base, { isFocused }) => ({
                       ...base,
-                      fontSize: "0.775rem",
+                      fontSize: "0.875rem",
                       backgroundColor: isFocused ? "#F8F8F8" : "white",
                       color: isFocused ? "#0C3771" : "#6D7072",
                       cursor: "pointer",
@@ -323,11 +327,12 @@ const { roleDetails } = useAuthStore();
                   }}
                 />
               </div>
-              {/* mobile number */}
-              <div>
+              
+              {/* Phone Number */}
+              <div className="sm:col-span-1">
                 <label
                   htmlFor="phoneNumber"
-                  className="block text-xs font-medium text-gray-700"
+                  className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1"
                 >
                   Phone Number
                 </label>
@@ -335,7 +340,7 @@ const { roleDetails } = useAuthStore();
                   type="text"
                   maxLength="10"
                   name="phoneNumber"
-                  className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="Enter phone number"
                   onKeyPress={(e) => {
                     if (!/^\d$/.test(e.key)) {
@@ -347,16 +352,18 @@ const { roleDetails } = useAuthStore();
                   }}
                 />
               </div>
-              <div className="flex gap-2 items-end">
+              
+              {/* Action Buttons */}
+              <div className="sm:col-span-1 flex flex-col sm:flex-row gap-2 sm:items-end">
                 <button
                   type="submit"
-                  className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                  className="w-full sm:w-auto bg-green-700 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-200"
                 >
                   Search
                 </button>
                 <button
                   type="button"
-                  className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
+                  className="w-full sm:w-auto bg-gray-500 text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
                   onClick={() => resetForm(setValues)}
                 >
                   Reset

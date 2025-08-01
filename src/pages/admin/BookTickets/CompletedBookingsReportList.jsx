@@ -25,13 +25,13 @@ function CompletedBookingsReportList() {
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
-    const {
-      allParkBankTransactions,
-      fetchParkBankTransactions,
-      isFetchAllParkBankTransactionsLoading,
-      allParks,
-      fetchAllParks,
-    } = useParkStore();
+  const {
+    allParkBankTransactions,
+    fetchParkBankTransactions,
+    isFetchAllParkBankTransactionsLoading,
+    allParks,
+    fetchAllParks,
+  } = useParkStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
@@ -60,10 +60,9 @@ function CompletedBookingsReportList() {
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllParks();
-    if(role === "ROLE_SUPERADMIN"){
+    if (role === "ROLE_SUPERADMIN") {
       fetchAllDepartmentTypes();
     }
-    
   }, []);
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
@@ -85,7 +84,6 @@ function CompletedBookingsReportList() {
       JSON.stringify(values)
     );
     fetchCompleteBookingsReport({
- 
       startDate: values.fromDate,
       endDate: values.toDate,
       departmentId: values.departmentId,
@@ -309,16 +307,21 @@ function CompletedBookingsReportList() {
               <label className="block text-sm font-medium">
                 Type of Booking
               </label>
-              <Field
-                as="select"
+              <Select
+                // as="select"
                 name="typeOfBooking"
-                className={` block w-full px-2 py-1 border border-gray-300
-             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              >
-                <option value="">ALL</option>
-                <option value="Counter">Counter</option>
-                <option value="MeeTicketApp">Mee TicketApp</option>
-              </Field>
+                className="mt-[4px] text-sm"
+                options={[
+                  { value: "", label: "ALL" },
+                  { value: "Counter", label: "Counter" },
+                  { value: "MeeTicketApp", label: "Mee TicketApp" },
+                ]}
+                onChange={(selectedOption) =>
+                  setFieldValue("typeOfBooking", selectedOption?.value || "")
+                }
+                // isClearable
+                placeholder="Type of Booking"
+              />
             </div>
             <div>
               <label
@@ -453,61 +456,61 @@ function CompletedBookingsReportList() {
                 }}
               />
             </div>
-             {/* location */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Location
-                </label>
+            {/* location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Location
+              </label>
 
-                <Select
-                  name="parkId"
-                  value={
-                    allParks
-                      ?.filter((park) => park.isActive)
-                      .map((park) => ({
-                        value: park.id,
-                        label: park.name,
-                      }))
-                      .find((option) => option.value === values.parkId) || null
-                  }
-                  options={allParks
+              <Select
+                name="parkId"
+                value={
+                  allParks
                     ?.filter((park) => park.isActive)
                     .map((park) => ({
                       value: park.id,
                       label: park.name,
-                    }))}
-                  onChange={(selectedOption) =>
-                    setFieldValue("parkId", selectedOption?.value || "")
-                  }
-                  isClearable
-                  placeholder="Location"
-                  className="mt-[4px] text-sm"
-                  classNamePrefix="react-select"
+                    }))
+                    .find((option) => option.value === values.parkId) || null
+                }
+                options={allParks
+                  ?.filter((park) => park.isActive)
+                  .map((park) => ({
+                    value: park.id,
+                    label: park.name,
+                  }))}
+                onChange={(selectedOption) =>
+                  setFieldValue("parkId", selectedOption?.value || "")
+                }
+                isClearable
+                placeholder="Location"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
                 styles={{
-                    control: (base) => ({
-                      ...base,
-                      outline: "none",
-                      boxShadow: "none",
-                      borderColor: "#ced4da",
-                      borderRadius: "6px",
-                      height: "30px",
-                      minHeight: "33px",
-                    }),
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
 
-                    menu: (base) => ({
-                      ...base,
-                      // padding: "4px 0",
-                    }),
-                    option: (base, { isFocused }) => ({
-                      ...base,
-                      fontSize: "0.775rem",
-                      backgroundColor: isFocused ? "#F8F8F8" : "white",
-                      color: isFocused ? "#0C3771" : "#6D7072",
-                      cursor: "pointer",
-                    }),
-                  }}
-                />
-              </div>
+                  menu: (base) => ({
+                    ...base,
+                    // padding: "4px 0",
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
             {/* submit */}
             <div className="flex items-end gap-2">
               <button

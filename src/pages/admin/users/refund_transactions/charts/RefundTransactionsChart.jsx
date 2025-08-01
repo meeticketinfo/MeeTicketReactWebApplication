@@ -38,20 +38,20 @@ const RefundTransactionsChart = ({
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 12,
+            fontSize: window.innerWidth < 768 ? 10 : 12,
             color: "black",
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[calloutLabelKey]?.substring(0, 220)}\n${datum[angleKey]
+              return `${datum[calloutLabelKey]?.substring(0, window.innerWidth < 768 ? 100 : 220)}\n${datum[angleKey]
                 } (${percentage}%)`;
             },
-            offset: 15,
+            offset: window.innerWidth < 768 ? 10 : 15,
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 12,
+            fontSize: window.innerWidth < 768 ? 10 : 12,
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -74,36 +74,37 @@ const RefundTransactionsChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
   return (
-    <div className="w-full mx-auto p-6">
-      <div className="flex justify-between">
-        <h2 className="text-lg font-bold">Refund Transactions</h2>
-        <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-4 py-3 shadow-sm">
-          <span className="text-lg text-[#404040] font-semibold">Total Refund Transactions</span>
-          <Link to={`/refund-transactions-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
+    <div className="w-full mx-auto p-2 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 mb-4">
+        <h2 className="text-base sm:text-lg font-bold">Refund Transactions</h2>
+        <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
+          <span className="text-sm sm:text-lg text-[#404040] font-semibold">Total Refund Transactions</span>
+          <Link to={`/refund-transactions-report?${searchParams.toString()}`} className="font-semibold text-sm sm:text-lg text-[#57a4d8] ml-2 underline">
             {totalCount}
           </Link>
         </div>
       </div>
-      <div ref={chartRef} className="w-[800px] h-[400px] mx-auto" />
-      <div className="grid grid-cols-12 p-3 max-h-[350px] overflow-auto max-w-[600px] mx-auto gap-2">
+      <div ref={chartRef} className="w-full h-[300px] sm:h-[350px] md:h-[400px] lg:w-[800px] lg:h-[400px] mx-auto" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 p-2 sm:p-3 max-h-[350px] overflow-auto max-w-full lg:max-w-[600px] mx-auto gap-2">
         {data?.map((item, index) => (
           <div
             key={index}
             title={item.status}
-            className="flex justify-between items-center rounded-lg px-2 py-1 col-span-6"
+            className="flex justify-between items-center rounded-lg px-2 py-1 col-span-1 sm:col-span-1 lg:col-span-6"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
               <div
                 className="w-3 h-3 rounded-full shrink-0"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
-              <span className="text-xs text-gray-800">{item.status}</span>
+              <span className="text-xs text-gray-800 truncate">{item.status}</span>
             </div>
             <Link
               to={`/refund-transactions-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
                 localStorage.setItem("refundTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
+              className="shrink-0"
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
                 {String(item.count).padStart(2, "0")}
