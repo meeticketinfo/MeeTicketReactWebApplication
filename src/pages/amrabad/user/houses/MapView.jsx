@@ -7,7 +7,7 @@ const MapView = ({ houses, onHouseClick }) => {
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showHouseList, setShowHouseList] = useState(false);
-  //  console.log("houses",houses);
+   console.log("houses",houses);
   // Marker icon constants - will be defined after Google Maps API loads
   const [markerIcons, setMarkerIcons] = useState(null);
 
@@ -320,7 +320,7 @@ const MapView = ({ houses, onHouseClick }) => {
                     )}
                     <Link
                       to={`/amarabad/book-now/${house.roomId}`}
-                      className="inline-block bg-[#362D86] text-white px-2 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
+                      className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Book

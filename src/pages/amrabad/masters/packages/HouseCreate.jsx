@@ -297,7 +297,7 @@ const HouseCreate = () => {
           return nonDeletedImages.length > 0;
         }
       )
-      .max(5, "You can upload up to 5 images only"),
+      .max(20, "You can upload up to 20 images only"),
     overview: Yup.string()
       .required("Overview is required.")
       .min(10, "Overview must be at least 10 characters.")
