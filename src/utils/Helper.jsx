@@ -221,3 +221,26 @@ export const departmentToCategoryMapping = {
   "CDMA": ["Parks", "Boating"],
   "ASI": ["Parks"]
 };
+
+export const formatDateTimeToReadable = (isoString) => {
+  if (!isoString) return "";
+
+  const date = new Date(isoString);
+
+  const dateOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+
+  const timeOptions = {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(date);
+  const formattedTime = new Intl.DateTimeFormat("en-US", timeOptions).format(date);
+
+  return `${formattedDate}\n${formattedTime}`;
+};

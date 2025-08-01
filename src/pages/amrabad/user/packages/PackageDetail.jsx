@@ -6,8 +6,8 @@ import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import { useModalStore } from "../../../../store/modalStore";
 import PrivacyPolicy from "../../../../components/terms_and_conditions_privacy_policy/PrivacyPolicy";
 import TermsAndConditions from "../../../../components/terms_and_conditions_privacy_policy/TermsAndConditions";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Navigation, Pagination } from "swiper/modules";
 
 const sliderImages = [
   PackageImage,

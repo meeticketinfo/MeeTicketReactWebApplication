@@ -1,79 +1,71 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
-import { bookingData } from "./data/bookingData";
 import PageHeader from "./components/PageHeader";
-import TabNavigation from "./components/TabNavigation";
 import SearchAndFilter from "./components/SearchAndFilter";
-import BookingList from "./components/BookingList";
+import AllBookings from "./components/historyComponents/AllBookings";
+import UpcomingBookings from "./components/historyComponents/UpcomingBookings";
+import CancelledBookings from "./components/historyComponents/CancelledBookings";
+import PastBookings from "./components/historyComponents/PastBookings";
+import { useBookingHistoryStore } from "../../../../store/amrabad/user/userBookingHistoryStore";
 
 const BookingHistory = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  // console.log("searchQuery", searchQuery);
+  const { fetchUserBookingHistory, GetUserBookingHistory, isUserBookingHistoryLoading } = useBookingHistoryStore();
 
-  // Helper function to parse date string to Date object
-  const parseDate = (dateStr) => {
-    const months = {
-      'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
-      'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
-    };
-    
-    const [month, day, year] = dateStr.split(' ');
-    return new Date(parseInt(year), months[month], parseInt(day));
-  };
-
-  // Categorize bookings based on current date
-  const categorizedBookings = useMemo(() => {
-    const currentDate = new Date();
-    const allBookings = bookingData.all;
-    
-    const upcoming = [];
-    const past = [];
-    const cancelled = [];
-    
-    allBookings.forEach(booking => {
-      const checkInDate = parseDate(booking.checkIn.date);
-      
-      if (booking.status === 'cancelled') {
-        cancelled.push(booking);
-      } else if (checkInDate > currentDate) {
-        upcoming.push(booking);
-      } else {
-        past.push(booking);
-      }
-    });
-    
-    return {
-      all: allBookings,
-      upcoming,
-      past,
-      cancelled
-    };
-  }, []);
-
-  // Simulate loading delay
+  // Fetch booking history on component mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500); // 1.5 seconds loading time
-
-    return () => clearTimeout(timer);
-  }, []);
+    fetchUserBookingHistory();
+  }, [fetchUserBookingHistory]);
 
   const tabs = [
-    { id: "all", label: "All Trips", count: categorizedBookings.all.length },
-    { id: "upcoming", label: "Upcoming", count: categorizedBookings.upcoming.length },
-    { id: "cancelled", label: "Cancelled", count: categorizedBookings.cancelled.length },
-    { id: "past", label: "Past", count: categorizedBookings.past.length }
+    { id: "all", label: "All Bookings", count: GetUserBookingHistory.length },
+    {
+      id: "upcoming",
+      label: "Upcoming",
+      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Upcoming").length,
+    },
+    {
+      id: "cancelled",
+      label: "Cancelled",
+      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Cancelled")
+        .length,
+    },
+    {
+      id: "past",
+      label: "Past",
+      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Past").length,
+    },
   ];
 
-  const currentBookings = categorizedBookings[activeTab];
-
-  const filteredBookings = currentBookings.filter(booking =>
-    booking.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.bookingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    booking.package.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const config = {
+    all: { component: <AllBookings data={GetUserBookingHistory} searchQuery={searchQuery} /> },
+    upcoming: {
+      component: (
+        <UpcomingBookings
+          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Upcoming")}
+          searchQuery={searchQuery}
+        />
+      ),
+    },
+    cancelled: {
+      component: (
+        <CancelledBookings
+          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Cancelled")}
+          searchQuery={searchQuery}
+        />
+      ),
+    },
+    past: {
+      component: (
+        <PastBookings
+          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Past")}
+          searchQuery={searchQuery}
+        />
+      ),
+    },
+  };
 
   return (
     <UserLayout>
@@ -83,19 +75,36 @@ const BookingHistory = () => {
 
           {/* Tabs and Search */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-            <TabNavigation 
-              tabs={tabs} 
-              activeTab={activeTab} 
-              setActiveTab={setActiveTab} 
-            />
-            <SearchAndFilter 
-              searchQuery={searchQuery} 
-              setSearchQuery={setSearchQuery} 
+            <div className="flex border-b border-gray-200 overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {tab.label} ({tab.count})
+                </button>
+              ))}
+            </div>
+            <SearchAndFilter
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
             />
           </div>
 
           {/* Booking Cards */}
-          <BookingList bookings={filteredBookings} isLoading={isLoading} />
+          {isUserBookingHistoryLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <p className="text-gray-500 mt-2">Loading bookings...</p>
+            </div>
+          ) : (
+            config[activeTab].component
+          )}
         </div>
       </div>
     </UserLayout>
