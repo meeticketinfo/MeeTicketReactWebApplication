@@ -34,6 +34,7 @@ const UpcomingBookings = ({ data, searchQuery }) => {
       </div>
     );
   }
+  
   return (
     <div className="space-y-4">
       {filteredData.map((booking) => (
