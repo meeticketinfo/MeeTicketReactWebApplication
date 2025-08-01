@@ -1,4 +1,4 @@
-import UserHeader from "../partials/amarabad/UserHeader";
+import { UserHeader } from "../partials/amarabad/UserHeader";
 import UserFooter from "../partials/amarabad/UserFooter";
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer } from "react-toastify";

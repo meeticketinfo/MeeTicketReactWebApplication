@@ -1,7 +1,7 @@
 import Breadcrumb from "./components/Breadcrumb";
 import PropertyDetails from "./components/PropertyDetails";
-import BookingForm from "./components/BookingForm";
 import UserLayout from "../../../../layouts/UserLayout";
+import { BookingForm } from "./components/BookingForm";
 
 const BookNow = () => {
   return (

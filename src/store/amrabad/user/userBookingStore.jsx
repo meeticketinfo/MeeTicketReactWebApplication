@@ -13,7 +13,9 @@ export const useUserBookingStore = create((set) => ({
   // fetch package detail
   GetPackageDetail: [],
   isPackageDetailLoading: false,  
-
+  // fetch calendar
+  GetCalendar: [],
+  isCalendarLoading: false,
   // fetch user packages
   fetchUserPackages: async () => {
     set({ isUserPackagesLoading: true });
@@ -72,4 +74,19 @@ export const useUserBookingStore = create((set) => ({
     }
   },
 
+  fetchCalendar: async () => {
+    set({ isCalendarLoading: true });
+    try {
+      const response = await apiService.get(API_ENDPOINTS.AMRABAD.USER.GET_CALENDAR);
+      set({
+        GetCalendar: response.data,
+        isCalendarLoading: false,
+      });
+    } catch (error) {
+      set({
+        isCalendarLoading: false,
+      });
+      toast(error.message || "Some thing went wrong");
+    }
+  }
 }));
