@@ -6,29 +6,50 @@ import { IoCalendarClearOutline } from "react-icons/io5";
 import { PiHouseLine, PiUsersBold } from "react-icons/pi";
 import { TbUsers } from "react-icons/tb";
 import { BsDownload } from "react-icons/bs";
+import { formatDateTimeToReadable,formatDate } from "../../../../../utils/Helper";
+import { MdHistory } from "react-icons/md";
 
 const BookingCard = ({ booking }) => {
-  const getStatusIconComponent = (status) => {
-    switch (status) {
-      case "completed":
+
+  const getStatusIconComponent = (historyStatus) => {
+    switch (historyStatus) {
+      case "Booked":
         return <IoMdCheckmarkCircleOutline className="text-green-600" />;
       case "cancelled":
         return <IoIosCloseCircleOutline className="text-red-600" />;
       case "upcoming":
         return <FaClock className="text-blue-600" />;
+      case "Past":
+        return <MdHistory className="text-gray-600" />;
       default:
         return null;
     }
   };
-
+// Helper function to get status badge class
+const getStatusBadgeClass = (historyStatus) => {
+  switch (historyStatus) {
+    case "Booked":
+      return "bg-green-50 text-green-800";
+    case "cancelled":
+      return "bg-red-50 text-red-800";
+    case "upcoming":
+      return "bg-blue-50 text-blue-800";
+    case "Past":
+      return "bg-gray-50 text-gray-800";
+    default:
+      return "bg-gray-50 text-gray-800";
+  }
+};
+  
+    // console.log("BookingCard booking:", booking);
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4">
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Image */}
         <div className="flex-shrink-0 flex justify-center lg:block mb-3 lg:mb-0">
           <img
-            src={booking.image}
-            alt={booking.propertyName}
+            src={booking.houseImageURL.imageUrl || "/images/placeholder.png"}
+            // alt={booking.propertyName}
             className="w-24 h-16 sm:w-28 sm:h-20 object-cover rounded-lg"
           />
         </div>
@@ -40,63 +61,63 @@ const BookingCard = ({ booking }) => {
             <div className="mb-1 sm:mb-0 min-w-0">
               <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2 min-w-0 flex-wrap">
                 <h3 className="text-lg sm:text-2xl font-bold text-black  min-w-0">
-                  {booking.propertyName}
+                  {booking.houseName}
                 </h3>
-                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(booking.status)} flex items-center gap-1 border-0`}>
-                  <span className="text-base">{getStatusIconComponent(booking.status)}</span>
-                  {booking.statusText}
+                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(booking.bookingStatus)} flex items-center gap-1 border-0`}>
+                  <span className="text-base">{getStatusIconComponent(booking.bookingStatus)}</span>
+                  {booking.bookingStatus}
                 </span>
               </div>
               {/* Package */}
-              <p className="text-sm sm:text-base text-black mb-1 sm:mb-2  min-w-0">{booking.package}</p>
+              <p className="text-sm sm:text-base text-black mb-1 sm:mb-2  min-w-0">{booking.packageName}</p>
             </div>
             <div className="text-left sm:text-right">
               <div className="text-lg sm:text-2xl font-bold text-[#362D86]">
-                ₹{booking.totalAmount.toLocaleString()}
+                ₹{booking.amount}
               </div>
               <div className="text-xs sm:text-sm text-gray-500">Total Amount</div>
             </div>
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-6 mb-4 sm:mb-6 max-w-screen-md">
+          <div className="grid grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 mb-4 sm:mb-6 max-w-screen-md">
             <div className="flex items-start gap-2 sm:gap-3">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
                 <IoCalendarClearOutline />
               </div>
               <div>
                 <div className="text-xs text-gray-500">Check-in</div>
-                <div className="text-xs sm:text-sm font-bold text-black">{booking.checkIn.date}</div>
-                <div className="text-xs text-gray-500">{booking.checkIn.time}</div>
+                <div className="text-xs sm:text-sm font-medium text-black"><span className="text-nowrap">{formatDateTimeToReadable(booking.checkIn)}</span></div>
+                <div className="text-xs text-gray-500">onwards</div>
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700">
+            <div className="flex items-start gap-2 sm:gap-3 ml-5 ">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
                 <IoCalendarClearOutline />
               </div>
               <div>
                 <div className="text-xs text-gray-500">Check-out</div>
-                <div className="text-xs sm:text-sm font-bold text-black">{booking.checkOut.date}</div>
-                <div className="text-xs text-gray-500">{booking.checkOut.time}</div>
+                <div className="text-xs sm:text-sm font-medium text-black"><span className="text-nowrap">{formatDateTimeToReadable(booking.checkOut)}</span></div>
+                {/* <div className="text-xs text-gray-500">onwards</div> */}
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3">
+            <div className="flex items-start gap-2 sm:gap-3 ml-11">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700">
                 <TbUsers />
               </div>
               <div>
                 <div className="text-xs text-gray-500">Guests</div>
-                <div className="text-xs sm:text-sm font-bold text-black">{booking.guests}</div>
-                <div className="text-xs text-gray-500">{booking.nights}</div>
+                <div className="text-xs sm:text-sm font-medium text-black">2 Adults</div>
+                {/* <div className="text-xs text-gray-500">3 nights stay</div> */}
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3">
+            <div className="flex items-start gap-2 sm:gap-3 ml-5">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-orange-50 rounded-md flex items-center justify-center text-orange-700">
                 <PiHouseLine />
               </div>
               <div>
                 <div className="text-xs text-gray-500">Houses</div>
-                <div className="text-xs sm:text-sm font-bold text-black">{booking.houses}</div>
+                <div className="text-xs sm:text-sm font-medium text-black">{booking.roomCount}<span> House</span></div>
               </div>
             </div>
           </div>
@@ -109,11 +130,11 @@ const BookingCard = ({ booking }) => {
             <span className="text-gray-600">Booking ID:</span> <span className="font-bold">#{booking.bookingId}</span>
           </div>
           <div className="text-black">
-            <span className="text-gray-600">Booking on:</span> <span className="font-bold whitespace-nowrap">{booking.bookingDate}</span>
+            <span className="text-gray-600">Booking on:</span> <span className="text-xs sm:text-sm font-medium text-black whitespace-nowrap">{formatDateTimeToReadable(booking.bookingDate)}</span>
           </div>
-          <div className="text-black">
+          {/* <div className="text-black">
             <span className="text-gray-600">Category:</span> <span className="font-bold">{booking.category}</span>
-          </div>
+          </div> */}
         </div>
         <div className="flex gap-2 lg:gap-4">
           <button className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
