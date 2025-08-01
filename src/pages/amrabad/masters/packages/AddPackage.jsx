@@ -6,6 +6,8 @@ import { MdDeleteForever } from "react-icons/md";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import MultipleDatePicker from "../../../../components/MultipleDatePicker";
+import apiService from "../../../../services/apiService";
 const AddPackage = () => {
   const [isHasRoom, setIsHasRoom] = useState(false);
   const [isValidation, setIsValidation] = useState("");
@@ -23,9 +25,15 @@ const AddPackage = () => {
       amountAfterDiscount: 0,
       noOfHousesAvailable: 0,
       roomLimit: 0,
-      isBlockout: false,
+      isBlockout: "",
+      blockoutType: "",
+      blockedDate: [],
       sequence: 0,
       remarks: "",
+      latitude: null,
+      longitude: null,
+      overview: "",
+      specialOffers: "",
       roomImageBase64Strings: [],
       discountDetails: [
         { dayOfWeek: "Monday", discountValue: null, amountAfterDiscount: null },
@@ -53,7 +61,7 @@ const AddPackage = () => {
         { dayOfWeek: "Sunday", discountValue: null, amountAfterDiscount: null },
       ],
     };
-  
+
     return template;
   };
 
@@ -108,9 +116,33 @@ const AddPackage = () => {
       .required("No Of Houses Available is required")
       .nullable(),
     roomLimit: positiveInt().required("House Limit is required").nullable(),
-    isBlockout: Yup.boolean().required("Required"),
+    isBlockout: Yup.string().required("Block out selection is required"),
+    blockoutType: Yup.string().when("isBlockout", {
+      is: "Yes",
+      then: (schema) => schema.required("Block out type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    blockedDate: Yup.array()
+      .of(Yup.string())
+      .when("blockoutType", {
+        is: "blockByDate",
+        then: (schema) => schema.min(1, "At least one date is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
 
     sequence: positiveInt().required("Sequence is required").nullable(),
+
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90),
+
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180),
 
     roomImageBase64Strings: Yup.array()
       .of(Yup.string())
@@ -123,6 +155,9 @@ const AddPackage = () => {
         amountAfterDiscount: Yup.string().nullable(),
       })
     ),
+    overview: Yup.string().max(500).required("Overview is required"),
+    specialOffers: Yup.string().max(255).required("Special offers is required"),
+    remarks: Yup.string().max(500),
   });
 
   /*  Main schema                                                       */
@@ -132,10 +167,10 @@ const AddPackage = () => {
 
     /* ---------- PACKAGE ---------- */
     package: Yup.object().shape({
-      packageName: Yup.string().required("Package name is required"),
+      packageName: Yup.string().max(100).required("Package name is required"),
 
       description: Yup.string()
-        .max(100, "Max 100 characters")
+        .max(1000, "Max 1000 characters")
         .required("Description is required"),
 
       checkInTime: Yup.string()
@@ -154,25 +189,25 @@ const AddPackage = () => {
           }
         ),
 
+      guidelines: Yup.string().max(1000),
+      cancellationPolicy: Yup.string().max(1000),
       termsConditions: Yup.string()
-        .max(100, "Max 100 characters")
+        .max(1000, "Max 1000 characters")
         .required("T&C are required"),
 
-      privacyPolicy: Yup.string().max(100),
+      privacyPolicy: Yup.string().max(1000),
 
       latitude: Yup.number()
         .typeError("Latitude must be a number")
         .required("Latitude is required")
         .min(-90)
-        .max(90)
-        .nullable(),
+        .max(90),
 
       longitude: Yup.number()
         .typeError("Longitude must be a number")
         .required("Longitude is required")
         .min(-180)
-        .max(180)
-        .nullable(),
+        .max(180),
 
       packageImageBase64Strings: Yup.array()
         .of(Yup.string())
@@ -197,6 +232,23 @@ const AddPackage = () => {
     const WithRoomspayLoad = values;
     const Payload = isHasRoom ? WithRoomspayLoad : WithOutRoomspayLoad;
 
+    // Convert string blockout values to boolean for API
+    if (isHasRoom && Payload.rooms) {
+      Payload.rooms.forEach((room, index) => {
+        // Set isBlockout to true when user selects "Yes", null when "No"
+        room.isBlockout = room.isBlockout === "Yes" ? true : null;
+
+        // Set blockedDate based on blockoutType
+        if (room.isBlockout === "Yes" && room.blockoutType === "blockByDate") {
+          room.blockedDate = room.blockedDate || [];
+        } else {
+          room.blockedDate = [];
+        }
+
+        console.log(`Room ${index + 1} blockout:`, room.isBlockout);
+      });
+    }
+
     try {
       const res = await savePackageWithRoom(Payload);
 
@@ -206,9 +258,10 @@ const AddPackage = () => {
           setCurrentTab(0);
         }, 1000);
       }
-    } catch (err) {
-      console.error("Submit error:", err);
-      toast.error("Something Went Wrong");
+    } catch (xhr) {
+      console.error("Submit error:", xhr);
+      toast.error(xhr.response?.data.message || "An error occurred");
+      // toast.error("Something Went Wrong");
     } finally {
       setSubmitting(false);
     }
@@ -255,7 +308,7 @@ const AddPackage = () => {
                     <Field
                       name="package.packageName"
                       type="text"
-                      maxLength={300}
+                      maxLength={100}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Package Name"
                     />
@@ -272,7 +325,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={500}
+                      maxLength={1000}
                       name="package.description"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
                       placeholder="Enter Description"
@@ -335,7 +388,8 @@ const AddPackage = () => {
                     </label>
                     <Field
                       name="package.latitude"
-                      type="text"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Latitude"
                     />
@@ -356,7 +410,8 @@ const AddPackage = () => {
                     </label>
                     <Field
                       name="package.longitude"
-                      type="text"
+                      type="number"
+                      step="any"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter longitude"
                     />
@@ -374,7 +429,7 @@ const AddPackage = () => {
                     <Field
                       as="textarea"
                       name="package.guidelines"
-                      maxlength={500}
+                      maxLength={1000}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Guidelines"
                     />
@@ -386,7 +441,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={1000}
+                      maxLength={1000}
                       name="package.privacyPolicy"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Privacy Policy"
@@ -405,7 +460,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={500}
+                      maxLength={1000}
                       name="package.cancellationPolicy"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Cancellation Policy"
@@ -423,7 +478,7 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={1000}
+                      maxLength={1000}
                       name="package.termsConditions"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Terms & Conditions"
@@ -636,16 +691,15 @@ const AddPackage = () => {
                       name="hasRooms"
                       onChange={(e) => {
                         const isChecked = e.target.checked;
-                     
+
                         setIsHasRoom(isChecked);
                         setFieldValue("hasRooms", isChecked);
                         if (isChecked) {
                           // Ensure the first room has the complete structure
                           const firstRoom = createRoomTemplate();
-                         
+
                           replace([firstRoom]);
                         } else {
-                          
                           replace([]);
                         }
                       }}
@@ -668,7 +722,7 @@ const AddPackage = () => {
                           type="button"
                           onClick={() => {
                             const newRoom = createRoomTemplate();
-                            
+                            const newIndex = values.rooms.length;
                             push(newRoom);
                           }}
                           className={`${
@@ -727,7 +781,7 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="text"
-                                    maxLength="100"
+                                    maxLength={100}
                                     id={`rooms[${index}].roomName`}
                                     name={`rooms[${index}].roomName`}
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -753,13 +807,17 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="number"
-                                    minlength={0}
-                                    maxlength={10}
+                                    min={0}
                                     placeholder="Tariff Per Day"
                                     name={`rooms[${index}].tariffPerDay`}
-                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 7) {
+                                        e.target.value = value.slice(0, 7);
+                                      }
+                                    }}
                                     onKeyDown={(e) => {
-                                      // Allow only numbers and backspace
                                       if (
                                         ["-", "e", "E", "+", "."].includes(
                                           e.key
@@ -767,20 +825,11 @@ const AddPackage = () => {
                                         (e.key.length === 1 &&
                                           !/[0-9]/.test(e.key))
                                       ) {
-                                        e.preventDefault(); // Block other keys
+                                        e.preventDefault();
                                       }
                                     }}
-                                    // onChange={(e) => {
-                                    //   const value = e.target.value;
-                                    //   if (value === "" || Number(value) >= 0) {
-
-                                    //     e.target.value = value;
-                                    //   } else {
-
-                                    //     e.target.value = 0;
-                                    //   }
-                                    // }}
                                   />
+
                                   <ErrorMessage
                                     name={`rooms[${index}].tariffPerDay`}
                                     component="div"
@@ -798,10 +847,27 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="number"
-                                    maxLength="10"
+                                    min={0}
                                     name={`rooms[${index}].noOfHousesAvailable`}
-                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                                     placeholder="Enter No of Houses Available"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 3) {
+                                        e.target.value = value.slice(0, 3);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].noOfHousesAvailable`}
@@ -822,10 +888,27 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="number"
-                                    maxLength="10"
+                                    min={0}
                                     name={`rooms[${index}].roomLimit`}
-                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                                     placeholder="Enter House Limit"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 3) {
+                                        e.target.value = value.slice(0, 3);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].roomLimit`}
@@ -971,9 +1054,12 @@ const AddPackage = () => {
                                                     onKeyDown={(e) => {
                                                       // Prevent negative values and invalid characters
                                                       if (
-                                                        ["-", "e", "E", "+"].includes(
-                                                          e.key
-                                                        ) ||
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
                                                         (e.key.length === 1 &&
                                                           !/[0-9]/.test(e.key))
                                                       ) {
@@ -983,13 +1069,15 @@ const AddPackage = () => {
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
-                                                      
+
                                                       // Prevent negative values
-                                                      if (parseFloat(value) < 0) {
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
                                                         e.target.value = "";
                                                         return;
                                                       }
-                                                      
+
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1047,7 +1135,9 @@ const AddPackage = () => {
                                                     }}
                                                     onBlur={(e) => {
                                                       // Additional check on blur to prevent negative values
-                                                      const value = parseFloat(e.target.value);
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
                                                       if (value < 0) {
                                                         e.target.value = "";
                                                         setFieldValue(
@@ -1085,9 +1175,12 @@ const AddPackage = () => {
                                                     onKeyDown={(e) => {
                                                       // Prevent negative values and invalid characters
                                                       if (
-                                                        ["-", "e", "E", "+"].includes(
-                                                          e.key
-                                                        ) ||
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
                                                         (e.key.length === 1 &&
                                                           !/[0-9]/.test(e.key))
                                                       ) {
@@ -1097,13 +1190,15 @@ const AddPackage = () => {
                                                     onChange={(e) => {
                                                       const value =
                                                         e.target.value;
-                                                      
+
                                                       // Prevent negative values
-                                                      if (parseFloat(value) < 0) {
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
                                                         e.target.value = "";
                                                         return;
                                                       }
-                                                      
+
                                                       // Convert empty string to null
                                                       const finalValue =
                                                         value === ""
@@ -1161,7 +1256,9 @@ const AddPackage = () => {
                                                     }}
                                                     onBlur={(e) => {
                                                       // Additional check on blur to prevent negative values
-                                                      const value = parseFloat(e.target.value);
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
                                                       if (value < 0) {
                                                         e.target.value = "";
                                                         setFieldValue(
@@ -1184,30 +1281,34 @@ const AddPackage = () => {
                                   </>
                                 )}
 
-                                {/* block out */}
+                                {/* Block out */}
                                 <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
                                     htmlFor={`rooms[${index}].isBlockout`}
                                     className="text-sm font-medium text-gray-900 dark:text-gray-300"
                                   >
-                                    Block out{" "}
+                                    Block out?{" "}
                                     <span className="text-red-500">*</span>
                                   </label>
                                   <Field
                                     as="select"
                                     name={`rooms[${index}].isBlockout`}
                                     onChange={(e) => {
-                                      const Value = e.target.value === "true";
+                                      const selectedValue = e.target.value;
                                       setFieldValue(
                                         `rooms[${index}].isBlockout`,
-                                        Value
+                                        selectedValue
                                       );
+                                      setFieldValue(
+                                        `rooms[${index}].blockoutType`,
+                                        ""
+                                      ); // Clear blockoutType when isBlockout changes
                                     }}
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                   >
-                                    <option value="">Select option</option>
-                                    <option value={true}>Yes</option>
-                                    <option value={false}>No</option>
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
                                   </Field>
                                   <ErrorMessage
                                     name={`rooms[${index}].isBlockout`}
@@ -1215,6 +1316,85 @@ const AddPackage = () => {
                                     className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
+
+                                {/* Block out type - only show when isBlockout is "Yes" */}
+                                {values.rooms[index]?.isBlockout === "Yes" && (
+                                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                    <label
+                                      htmlFor={`rooms[${index}].blockoutType`}
+                                      className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    >
+                                      Block out type?{" "}
+                                      <span className="text-red-500">*</span>
+                                    </label>
+                                    <Field
+                                      as="select"
+                                      name={`rooms[${index}].blockoutType`}
+                                      onChange={(e) => {
+                                        const selectedValue = e.target.value;
+                                        setFieldValue(
+                                          `rooms[${index}].blockoutType`,
+                                          selectedValue
+                                        );
+                                        // Reset blockedDate when changing blockout type
+                                        if (selectedValue === "fullBlock") {
+                                          // Clear dates for full block
+                                          setFieldValue(
+                                            `rooms[${index}].blockedDate`,
+                                            []
+                                          );
+                                        }
+                                      }}
+                                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    >
+                                      <option value="">Select</option>
+                                      <option value="fullBlock">
+                                        Full Block
+                                      </option>
+                                      <option value="blockByDate">
+                                        Block by Date
+                                      </option>
+                                    </Field>
+                                    <ErrorMessage
+                                      name={`rooms[${index}].blockoutType`}
+                                      component="div"
+                                      className="text-red-500 text-xs mt-1"
+                                    />
+                                  </div>
+                                )}
+
+                                {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
+                                {values.rooms[index]?.isBlockout === "Yes" &&
+                                  values.rooms[index]?.blockoutType ===
+                                    "blockByDate" && (
+                                    <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                      <label className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Block by Date{" "}
+                                        <span className="text-red-500">*</span>
+                                      </label>
+                                      <div className="mt-1">
+                                        <MultipleDatePicker
+                                          value={
+                                            values.rooms[index]?.blockedDate ||
+                                            []
+                                          }
+                                          onChange={(selectedDates) => {
+                                            setFieldValue(
+                                              `rooms[${index}].blockedDate`,
+                                              selectedDates
+                                            );
+                                          }}
+                                          placeholder="Select dates to block..."
+                                          className="block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                        />
+                                        <ErrorMessage
+                                          name={`rooms[${index}].blockedDate`}
+                                          component="div"
+                                          className="text-red-500 text-xs mt-1"
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
                                 {/* Sequence */}
                                 <div className="col-span-1 sm:col-span-3 lg:col-span-3">
                                   <label
@@ -1226,10 +1406,27 @@ const AddPackage = () => {
                                   </label>
                                   <Field
                                     type="number"
-                                    maxLength="10"
+                                    min={0}
                                     name={`rooms[${index}].sequence`}
-                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                                     placeholder="Enter Sequence Number"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 3) {
+                                        e.target.value = value.slice(0, 3);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   />
                                   <ErrorMessage
                                     name={`rooms[${index}].sequence`}
@@ -1252,6 +1449,100 @@ const AddPackage = () => {
                                     maxLength="250"
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                     placeholder="Enter your remarks"
+                                  />
+                                </div>
+
+                                {/*  Latitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].latitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Latitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].latitude`}
+                                    type="number"
+                                    step="any"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Latitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].latitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/*  Longitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].longitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Longitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].longitude`}
+                                    type="number"
+                                    step="any"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Longitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].longitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Overview */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].overview`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Overview
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].overview`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter house overview"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].overview`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Special Offers */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].specialOffers`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Special Offers
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].specialOffers`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter special offers"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].specialOffers`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
                                   />
                                 </div>
                                 {/* images */}

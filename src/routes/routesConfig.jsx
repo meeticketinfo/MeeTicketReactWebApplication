@@ -72,6 +72,7 @@ import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
 import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
 import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
 import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
+import AmrabadConsolidatedBookingDetails from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedBookingDetails";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
 import Packages from "../pages/amrabad/user/packages/Packages";
@@ -129,6 +130,7 @@ import CheckoutDetails from "../pages/amrabad/user/checkoutDetails/checkoutDetai
 import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/bookingDetails";
 import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
+import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
 
 export const routes = [
   {
@@ -360,6 +362,7 @@ export const routes = [
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
+  { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
   // ------
@@ -569,6 +572,10 @@ export const routes = [
    { 
     path: "/amrabad-payment-transactions",
     element: <ProtectedRoute element={<AmrabadPaymentTransactionsReport />} />,
+  },
+  {
+    path: "/amrabad-availability-report",
+    element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
   },
   // metro transaction reports
 

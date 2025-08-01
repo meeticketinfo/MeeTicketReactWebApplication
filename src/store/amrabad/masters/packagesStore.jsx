@@ -53,9 +53,9 @@ export const usePackagesStore = create((set) => ({
       });
       set({ houseEditDetails: {} });
       return { success: true, data: response };
-    } catch ({ error }) {
+    } catch (xhr) {
+      console.log("xhr", xhr);
       set({
-        saveHouseDetailsError: error.message,
         isSaveHouseDetailsLoading: false,
       });
     }
@@ -90,10 +90,12 @@ export const usePackagesStore = create((set) => ({
         isSavePackageWithRoomLoading: false,
       });
       return { success: true, data: response };
-    } catch ({ error }) {
+    } catch ( xhr ) {
+      // console.log("error",error)
       set({
         isSavePackageWithRoomLoading: false,
       });
+      throw xhr;
     }
   },
 

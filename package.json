@@ -24,6 +24,7 @@
     "chartjs-adapter-moment": "^1.0.1",
     "crypto-browserify": "^3.12.1",
     "formik": "^2.4.6",
+    "framer-motion": "^12.23.6",
     "global": "^4.4.0",
     "ldrs": "^1.0.2",
     "moment": "^2.29.4",

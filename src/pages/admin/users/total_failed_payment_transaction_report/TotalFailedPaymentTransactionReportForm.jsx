@@ -7,6 +7,7 @@ import Select from "react-select";
 import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, departmentToCategoryMapping, getEndOfCurrentDay, getStartOfCurrentDay, getValueFromQuery } from "../../../../utils/Helper";
+import useAuthStore from "../../../../store/authStore";
 
 const TotalFailedPaymentTransactionReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +17,9 @@ const TotalFailedPaymentTransactionReportForm = ({ pageNumber, pageSize, Setcurr
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allParks, fetchAllParks } = useParkStore();
   const { isFetchPaymentTransactionDetailsByStatusResult, fetchPaymentTransactionDetailsByStatusResult } = userFailureTransaction();
+const { roleDetails } = useAuthStore();
 
+  const role = roleDetails?.name;
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
@@ -149,7 +152,7 @@ const TotalFailedPaymentTransactionReportForm = ({ pageNumber, pageSize, Setcurr
             </div>
 
             {/* department */}
-            <div>
+            {role === "ROLE_SUPERADMIN" &&<div>
               <label className="block text-xs font-medium text-gray-700">
                 Department
               </label>
@@ -207,7 +210,7 @@ const TotalFailedPaymentTransactionReportForm = ({ pageNumber, pageSize, Setcurr
                   }),
                 }}
               />
-            </div>
+            </div>}
             {/* location category */}
             <div>
               <label className="block text-xs font-medium text-gray-700">

@@ -7,6 +7,7 @@ import {
   getCurrentDate,
 } from "../../../utils/TypographyHelper";
 import { Field, Form, Formik } from "formik";
+import useAuthStore from "../../../store/authStore";
 
 function FacilityBookings() {
   const {
@@ -14,12 +15,15 @@ function FacilityBookings() {
     AllFacilityBookings,
     isFetchFacilityBookingsLoading,
   } = useDashboardStore();
-
+const {  decodedTokenData } =
+    useAuthStore();
+    const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllFacilityBookingsByFilters({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
       bookingSource: "",
+      bookingsByCounter:"",
     });
   }, []);
 
@@ -27,6 +31,7 @@ function FacilityBookings() {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
     bookingSource: "",
+    bookingsByCounter:"",
   };
 
   const onSubmit = (values) => {
@@ -35,6 +40,7 @@ function FacilityBookings() {
       fromDate: values.fromDate,
       toDate: values.toDate,
       bookingSource: values.bookingSource,
+       bookingsByCounter:values.bookingsByCounter,
     });
   };
 
@@ -183,7 +189,14 @@ function FacilityBookings() {
     },
     {
       field: "bookingSource",
+      maxWidth: 130,
       headerName: "Creacted By",
+      headerClass: "text-blue-v2",
+    },
+      {
+      field: "createD_BY",
+      minwidth: "50",
+      headerName: "Creacted Mobile no",
       headerClass: "text-blue-v2",
     },
      {
@@ -193,6 +206,7 @@ function FacilityBookings() {
     },
     {
       field: "paymentType",
+      maxWidth: "130",
       headerName: "Payment Mode",
       headerClass: "text-blue-v2",
     },
@@ -233,7 +247,7 @@ function FacilityBookings() {
     },
    
 
-    { field: "mobileNumber", headerName: "Phone", headerClass: "text-blue-v2" },
+    { field: "mobileNumber", maxWidth: "120", headerName: "Phone", headerClass: "text-blue-v2" },
     {
       field: "transactionId",
       headerName: "Transaction Id",
@@ -275,7 +289,7 @@ function FacilityBookings() {
         <div className="">
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
                 <div>
                   <label
                     htmlFor="fromDate"
@@ -318,6 +332,21 @@ function FacilityBookings() {
                     <option value="MeeTicketApp">MeeTicket App</option>
                   </Field>
                 </div>
+                {parkId==="100"&&<div>
+                  <label className="block text-sm font-medium">
+                    Counters
+                  </label>
+                  <Field
+                    as="select"
+                    name="bookingsByCounter"
+                    className={` block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Counter</option>
+                    <option value="NehruZooPark@gmail.com">NehruZooPark@gmail.com</option>
+                    <option value="NehruZooPark1@gmail.com">NehruZooPark1@gmail.com</option>
+                    <option value="NehruZooPark2@gmail.com">NehruZooPark2@gmail.com</option>
+                  </Field>
+                </div>}
                 <div className="flex items-end">
                   <button
                     type="submit"

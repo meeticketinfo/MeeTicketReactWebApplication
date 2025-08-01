@@ -98,7 +98,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               >
                 <option value="">ALL</option>
                 <option value="Counter">Counter</option>
-                <option value="MeeTicketApp">Mee TicketApp</option>
+                <option value="Mobile">Mobile</option>
               </Field>
             </div>
             <div>
@@ -165,6 +165,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                       toDate: getCurrentDate(),
                       typeOfBooking: "",
                       phoneNumber: "",
+                      PaymentMode:"",
                     },
                   });
                 }}

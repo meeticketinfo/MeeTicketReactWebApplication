@@ -21,6 +21,7 @@ import {
   Toursim,
   RtcAdmin,
   Amrabad,
+  Department,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -118,6 +119,8 @@ function Sidebar({ variant = "default" }) {
       return RtcAdmin;
     } else if (role === "Role_AmrabadAdmin") {
       return Amrabad;
+    } else if (role === "Role_DeptAdmin") {
+      return Department;
     }
     return [];
   }, [role, email]);

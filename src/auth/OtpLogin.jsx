@@ -4,19 +4,20 @@ import * as Yup from "yup";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { bouncy } from "ldrs";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { API_BASE_URL } from "../constants/apiEndpoints";
+import useAuthStore from "../store/authStore";
 
 const OtpLogin = ({ onOtpSent, startTimer }) => {
   bouncy.register();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { setRedirectError } = useAuthStore();
   const initialValues = {
     mobileNumber: "",
   };
@@ -38,32 +39,29 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
     setLoading(true);
     setError(null);
     localStorage.setItem("login_id", values.mobileNumber);
-onOtpSent(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}Authentication/SendLoginOTP`,
         values
       );
-
-      console.log(response);
+      onOtpSent(true);
       //  setUserId(true);
       if (response.status === 200) {
         if (response.data.status === 200) {
-          onOtpSent(true);
-          // toast.success("OTP sent Successfully.", {
-          //   autoClose: 1000,
-          // });
           localStorage.setItem("login_id", values.mobileNumber);
           startTimer();
         } else {
           setError(response.data.message || "Failed to send OTP");
+          setRedirectError(response.data.message);
         }
       } else {
         setError(response.data.message || "Failed to send OTP");
+        setRedirectError(response.data.message || "Failed to send OTP");
       }
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
+      setRedirectError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -71,6 +69,7 @@ onOtpSent(true);
 
   return (
     <div className="flex items-center justify-center ">
+      {/* <ToastContainer /> */}
       <div className="w-full max-w-sm mx-auto">
         <Formik
           initialValues={initialValues}

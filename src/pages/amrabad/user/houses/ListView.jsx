@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
 
 const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
+  console.log("houses", houses);
   return (
     <>
       <div className="space-y-4 sm:space-y-6">
@@ -13,10 +14,10 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
             className="flex flex-col lg:flex-row bg-white rounded-xl p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
           >
             {/* Image */}
-            <div className="flex-shrink-0 flex justify-center lg:max-w-[280px] md:max-w-[200px] w-full">
+            <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full">
               <img
-                src={house.images[0].imageUrl}
-                alt={house.title}
+                src={house?.houseImages[0]?.imageUrl}
+                alt={house?.houseName}
                 className="aspect-square w-full object-cover rounded-lg"
               />
             </div>
@@ -27,7 +28,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
                   <div className="flex-1 min-w-0">
                     <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#333333] truncate">
-                      {house.roomName}
+                      {house?.houseName}
                     </h2>
                     {/* Check-in/out */}
                     <div className="bg-[#EEEDFAB0] text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
@@ -59,7 +60,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                       ₹{house.tariffPerDay}
                     </span>
                     <div className="text-[#5A5961] text-xs sm:text-sm">
-                      / {house.roomLimit} Guests 
+                      / 2 Guests 
                     </div>
                   </div>
                 </div>
@@ -88,7 +89,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
               {/* Book Now Button */}
               <div className="mt-4 sm:mt-6">
                 <Link 
-                  to={`/amarabad/book-now/${house.id}`}
+                  to={`/amarabad/book-now/${house?.houseId}`}
                   className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                 >
                   Book Now
