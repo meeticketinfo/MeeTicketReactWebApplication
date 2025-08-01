@@ -426,7 +426,7 @@ export const bookingData = {
 // Helper function to get status badge class
 export const getStatusBadgeClass = (status) => {
   switch (status) {
-    case "completed":
+    case "Booked":
       return "bg-green-50 text-green-800";
     case "cancelled":
       return "bg-red-50 text-red-800";
