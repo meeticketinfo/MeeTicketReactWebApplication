@@ -63,7 +63,8 @@ function AdminDashboard() {
   const parkId = decodedTokenData?.data?.ParkId;
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
+  const [isBookingDate, setIsBookingDate] = useState(false);
+  const [isFacilitiesBookingDate, setIsFacilitiesBookingDate] = useState(false);
   const {
     allCounts,
     fetchAllDashboardCounts,
@@ -110,7 +111,7 @@ function AdminDashboard() {
       toDate: "",
       active: false,
     });
-    fetchAllZooDashBoardCounts("");
+    fetchAllZooDashBoardCounts({DashboardDate : "", bookingDateFrom: ""});
 
     if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
       fetchAllZooDashBoardCountsTicketWise({
@@ -345,9 +346,9 @@ function AdminDashboard() {
   };
   const overAllOnSubmit = (values) => {
     console.log("values", values);
-    fetchAllDashboardCounts(roleDetails, { ...values, active: true });
-    fetchAllEntityWiseCounts({ ...values, active: true });
-    fetchAllZooDashBoardCountsTicketWise({ ...values, active: true });
+    fetchAllDashboardCounts(roleDetails, { ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
+    fetchAllEntityWiseCounts({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
+    fetchAllZooDashBoardCountsTicketWise({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
     fetchAllDepartmentEntities(values);
   };
 
@@ -383,7 +384,20 @@ function AdminDashboard() {
           <Formik initialValues={EsdInitialValues} onSubmit={overAllOnSubmit}>
             {({ values, setFieldValue }) => (
               <Form>
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                    <select 
+                      onChange={(e) => {
+                        setIsBookingDate(e.target.value === "true");
+                      }}
+                      name="bookingDate"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    >
+                      <option value="false">Purchase Date</option>
+                      <option value="true">Booking Date</option>
+                    </select>
+                  </div>
                   <div>
                     <label
                       htmlFor="fromDate"
@@ -744,11 +758,24 @@ function AdminDashboard() {
               <h1 className=" text-xl font-bold">
                 Facilities and Ticket Details
               </h1>
-              <div className="mt-2 grid grid-cols-1 md:grid-cols-4 gap-4 ">
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-4 ">
+                <div>
+                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                    <select 
+                      onChange={(e) => {
+                        setIsFacilitiesBookingDate(e.target.value === "true");
+                      }}
+                      name="bookingDate"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    >
+                      <option value="false">Purchase Date</option>
+                      <option value="true">Booking Date</option>
+                    </select>
+                  </div>
                 <div>
                   <label
                     htmlFor="fromDate"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-xs font-medium text-gray-700"
                   >
                     Search By Date
                   </label>
@@ -767,7 +794,7 @@ function AdminDashboard() {
                 <div className="flex items-end">
                   <button
                     onClick={() => {
-                      fetchAllZooDashBoardCounts(DashboardDate);
+                      fetchAllZooDashBoardCounts({DashboardDate : !isFacilitiesBookingDate ? DashboardDate : "", bookingDateFrom: isFacilitiesBookingDate ? DashboardDate : ""});
                     }}
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >

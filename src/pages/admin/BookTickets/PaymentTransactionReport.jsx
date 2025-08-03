@@ -31,6 +31,7 @@ function PaymentTransactionReport() {
   const [ReGenerateOrderId, setReGenerateOrderId] = useState("");
   const [ReGeneratePosOrderId, setReGeneratePosOrderId] = useState("");
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
+  const [isBookingDate, setIsBookingDate] = useState(false);
   const {
     isTransactionPaymentReportsLoading,
     allTransactionPaymentReports,
@@ -87,8 +88,10 @@ function PaymentTransactionReport() {
 
   const onSubmit = (values, { resetForm }) => {
     fetchPaymentTransactions({
-      startDate: values.fromDate,
-      endDate: values.toDate,
+      startDate: !isBookingDate ? values.fromDate : null,
+      endDate: !isBookingDate ? values.toDate : null,
+      bookingDateFrom: isBookingDate ? values.fromDate : null,
+      bookingDateTo: isBookingDate ? values.toDate : null,
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
       currentTransactionStatus: values.typeOfBooking
@@ -371,10 +374,12 @@ function PaymentTransactionReport() {
           currentTransactionStatus:
             userObject?.currentTransactionStatus || null,
           departmentId: userObject?.departmentId || null,
-          endDate: userObject?.endDate || getCurrentDate(),
+          endDate: !isBookingDate ? userObject?.endDate : null,
           entityTypeId: userObject?.entityTypeId || null,
           phoneNumber: userObject?.phoneNumber || null,
-          startDate: userObject?.startDate || getCurrentDate(),
+          startDate: !isBookingDate ? userObject?.startDate : null,
+          bookingDateFrom: isBookingDate ? userObject?.fromDate : null,
+          bookingDateTo: isBookingDate ? userObject?.toDate : null,
           parkId: userObject?.parkId || null,
         });
       }, 2100); // Wait a bit for the modal to close before calling the API
@@ -446,10 +451,12 @@ function PaymentTransactionReport() {
           currentTransactionStatus:
             userObject?.currentTransactionStatus || null,
           departmentId: userObject?.departmentId || null,
-          endDate: userObject?.endDate || getCurrentDate(),
+          endDate: !isBookingDate ? userObject?.endDate : null,
           entityTypeId: userObject?.entityTypeId || null,
           phoneNumber: userObject?.phoneNumber || null,
-          startDate: userObject?.startDate || getCurrentDate(),
+          startDate: !isBookingDate ? userObject?.startDate : null,
+          bookingDateFrom: isBookingDate ? userObject?.fromDate : null,
+          bookingDateTo: isBookingDate ? userObject?.toDate : null,
           parkId: userObject?.parkId || null,
         });
       }, 2100); // Wait a bit for the modal to close before calling the API
@@ -471,7 +478,20 @@ function PaymentTransactionReport() {
         <div className="mb-8">
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue, setValues }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">   
+                <div>
+                  <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                  <select 
+                    onChange={(e) => {
+                      setIsBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
                 <div>
                   <label
                     htmlFor="fromDate"
@@ -515,7 +535,7 @@ function PaymentTransactionReport() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-xs font-medium text-gray-700">
                     Payment Status
                   </label>
                   <Select
@@ -532,8 +552,30 @@ function PaymentTransactionReport() {
                       setFieldValue("typeOfBooking", selectedOption?.value || "")
                     }
                     placeholder="Payment Status"
-                    // className="mt-[4px] text-sm"
                     classNamePrefix="react-select"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        outline: "none",
+                        boxShadow: "none",
+                        borderColor: "#ced4da",
+                        borderRadius: "6px",
+                        height: "30px",
+                        minHeight: "33px",
+                      }),
+
+                      menu: (base) => ({
+                        ...base,
+                        // padding: "4px 0",
+                      }),
+                      option: (base, { isFocused }) => ({
+                        ...base,
+                        fontSize: "0.775rem",
+                        backgroundColor: isFocused ? "#F8F8F8" : "white",
+                        color: isFocused ? "#0C3771" : "#000",
+                        cursor: "pointer",
+                      }),
+                    }}
                   />
                 </div>
                 <div>
@@ -756,6 +798,7 @@ function PaymentTransactionReport() {
                         startDate: getCurrentDate(),
                         endDate: getCurrentDate(),
                       });
+                      setIsBookingDate(false);
                     }}
                   >
                     Reset

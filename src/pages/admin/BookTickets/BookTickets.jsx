@@ -22,6 +22,7 @@ import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
 export default function AdminBookings() {
   const [openModal, setOpenModal] = useState(false);
+  const [isBookingDate, setIsBookingDate] = useState(false);
 
   const {
     fetchAllEntityBookingsByFilters,
@@ -228,8 +229,10 @@ export default function AdminBookings() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate ? `${values.fromDate}` : "",
-        toDate: values.toDate ? `${values.toDate}` : "",
+        fromDate:  !isBookingDate ? values.fromDate ? `${values.fromDate}` : "" : "",
+        toDate: !isBookingDate ? values.toDate ? `${values.toDate}` : "" : "",
+        bookingDateFrom: isBookingDate ? values.fromDate : "",
+        bookingDateTo: isBookingDate ? values.toDate : "",
         departmentId: values.departmentId,
         entityTypeId: values.entityTypeId,
       };
@@ -406,6 +409,20 @@ export default function AdminBookings() {
                       </div> */}
                           </>
                         )}
+                        
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                        <select 
+                          onChange={(e) => {
+                            setIsBookingDate(e.target.value === "true");
+                          }}
+                          name="bookingDate"
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        >
+                          <option value="false">Purchase Date</option>
+                          <option value="true">Booking Date</option>
+                        </select>
+                      </div>
                       <div>
                         <label
                           htmlFor="fromDate"

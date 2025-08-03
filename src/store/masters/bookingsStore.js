@@ -314,6 +314,8 @@ export const useBookingsStore = create(
         const Payload1 = {
           startDate: payload.startDate,
           endDate: payload.endDate,
+          bookingDateFrom: payload.bookingDateFrom,
+          bookingDateTo: payload.bookingDateTo,
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
           mobileNumber: payload.mobileNumber,
@@ -345,6 +347,8 @@ export const useBookingsStore = create(
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
           mobileNumber: payload.mobileNumber,
+          bookingDateFrom: payload.bookingDateFrom,
+          bookingDateTo: payload.bookingDateTo,
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompletedZooCounterBookingsReportLoading: true });

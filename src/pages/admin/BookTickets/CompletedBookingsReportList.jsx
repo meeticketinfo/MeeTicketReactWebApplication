@@ -32,6 +32,7 @@ function CompletedBookingsReportList() {
     allParks,
     fetchAllParks,
   } = useParkStore();
+  const [isBookingDate, setIsBookingDate] = useState(false);
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
@@ -84,8 +85,10 @@ function CompletedBookingsReportList() {
       JSON.stringify(values)
     );
     fetchCompleteBookingsReport({
-      startDate: values.fromDate,
-      endDate: values.toDate,
+      startDate: !isBookingDate ? values.fromDate : null,
+      endDate: !isBookingDate ? values.toDate : null,
+      bookingDateFrom: isBookingDate ? values.fromDate : null,
+      bookingDateTo: isBookingDate ? values.toDate : null,
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
       bookingSource: values.typeOfBooking,
@@ -260,7 +263,20 @@ function CompletedBookingsReportList() {
     <div>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+              <select 
+                onChange={(e) => {
+                  setIsBookingDate(e.target.value === "true");
+                }}
+                name="bookingDate"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="false">Purchase Date</option>
+                <option value="true">Booking Date</option>
+              </select>
+            </div>
             <div>
               <label
                 htmlFor="fromDate"
@@ -304,13 +320,14 @@ function CompletedBookingsReportList() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium">
+              <label
+                className="block text-xs font-medium text-gray-700"
+              >
                 Type of Booking
               </label>
               <Select
                 // as="select"
                 name="typeOfBooking"
-                className="mt-[4px] text-sm"
                 options={[
                   { value: "", label: "ALL" },
                   { value: "Counter", label: "Counter" },
@@ -319,6 +336,32 @@ function CompletedBookingsReportList() {
                 onChange={(selectedOption) =>
                   setFieldValue("typeOfBooking", selectedOption?.value || "")
                 }
+                isClearable
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
+
+                  menu: (base) => ({
+                    ...base,
+                    // padding: "4px 0",
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#000",
+                    cursor: "pointer",
+                  }),
+                }}
                 // isClearable
                 placeholder="Type of Booking"
               />
