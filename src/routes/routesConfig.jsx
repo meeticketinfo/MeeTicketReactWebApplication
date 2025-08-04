@@ -530,19 +530,19 @@ export const routes = [
   },
   {
   path: "/amarabad/book-now/:packageId/:houseId",
-  element: <BookNow />,
+  element: <AmrabadProtectRoute element={<BookNow />} />,
   },
   {
     path: "/amarabad/checkout-details",
-    element: <CheckoutDetails />,
+    element: <AmrabadProtectRoute element={<CheckoutDetails />} />,
   },
   {
     path: "/amarabad/booking-details",
-    element: <AmarabadBookingDetails />,
+    element: <AmrabadProtectRoute element={<AmarabadBookingDetails />} />,
   },
   {
     path: "/amarabad/confirmed-details/:bookingId",
-    element: <ConfirmedDetails />,
+    element: <AmrabadProtectRoute element={<ConfirmedDetails />} />,
   },
   {
     path: "/amarabad/booking-history",
