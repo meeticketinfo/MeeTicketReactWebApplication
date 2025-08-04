@@ -1,7 +1,7 @@
 import React from "react";
-import BookingCard from "../BookingCard";
+import BookingCard from "./BookingCard";
 
-const AllBookings = ({ data, searchQuery }) => {
+const PastBookings = ({ data, searchQuery }) => {
   //  if (isLoading) {
   //   return (
   //     <div className="space-y-4">
@@ -27,7 +27,6 @@ const AllBookings = ({ data, searchQuery }) => {
       fullName?.includes(query)
     );
   });
-
   if (filteredData.length === 0) {
     return (
       <div className="text-center py-12">
@@ -44,4 +43,4 @@ const AllBookings = ({ data, searchQuery }) => {
   );
 };
 
-export default AllBookings;
+export default PastBookings;

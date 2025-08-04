@@ -131,6 +131,7 @@ import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/booking
 import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
+import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
 
 export const routes = [
   {
@@ -547,6 +548,10 @@ export const routes = [
   {
     path: "/amarabad/booking-history",
     element: <AmrabadProtectRoute element={<BookingHistory />} />,
+  },
+  {
+    path: "/amarabad/ticket",
+    element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
   },
   {
     path: "/amarabad/test",

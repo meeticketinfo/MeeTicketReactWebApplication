@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
-import PageHeader from "./components/PageHeader";
-import SearchAndFilter from "./components/SearchAndFilter";
-import AllBookings from "./components/historyComponents/AllBookings";
-import UpcomingBookings from "./components/historyComponents/UpcomingBookings";
-import CancelledBookings from "./components/historyComponents/CancelledBookings";
-import PastBookings from "./components/historyComponents/PastBookings";
+import PageHeader from "./components/amrabadBookingHistory/PageHeader";
+import SearchAndFilter from "./components/amrabadBookingHistory/SearchAndFilter";
+import AllBookings from "./components/amrabadBookingHistory/AllBookings";
+import UpcomingBookings from "./components/amrabadBookingHistory/UpcomingBookings";
+import CancelledBookings from "./components/amrabadBookingHistory/CancelledBookings";
+import PastBookings from "./components/amrabadBookingHistory/PastBookings";
 import { useBookingHistoryStore } from "../../../../store/amrabad/user/userBookingHistoryStore";
 
 const BookingHistory = () => {

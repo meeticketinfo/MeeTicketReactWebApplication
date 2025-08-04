@@ -1,7 +1,7 @@
 import React from "react";
-import BookingCard from "../BookingCard";
+import BookingCard from "./BookingCard";
 
-const PastBookings = ({ data, searchQuery }) => {
+const UpcomingBookings = ({ data, searchQuery }) => {
   //  if (isLoading) {
   //   return (
   //     <div className="space-y-4">
@@ -34,6 +34,7 @@ const PastBookings = ({ data, searchQuery }) => {
       </div>
     );
   }
+
   return (
     <div className="space-y-4">
       {filteredData.map((booking) => (
@@ -43,4 +44,4 @@ const PastBookings = ({ data, searchQuery }) => {
   );
 };
 
-export default PastBookings;
+export default UpcomingBookings;
