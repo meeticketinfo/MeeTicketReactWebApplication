@@ -3,8 +3,8 @@ import UserLayout from "../../../../layouts/UserLayout";
 import { Link, useParams } from "react-router-dom";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import { useModalStore } from "../../../../store/modalStore";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Pagination } from "swiper/modules";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 import PackageDetailShimmer from "../../shimmer/PackageDetailShimmer";
 

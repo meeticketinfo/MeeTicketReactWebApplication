@@ -131,6 +131,7 @@ import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/booking
 import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
+import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
 
 export const routes = [
   {
@@ -530,23 +531,27 @@ export const routes = [
   },
   {
   path: "/amarabad/book-now/:packageId/:houseId",
-  element: <BookNow />,
+  element: <AmrabadProtectRoute element={<BookNow />} />,
   },
   {
     path: "/amarabad/checkout-details",
-    element: <CheckoutDetails />,
+    element: <AmrabadProtectRoute element={<CheckoutDetails />} />,
   },
   {
     path: "/amarabad/booking-details",
-    element: <AmarabadBookingDetails />,
+    element: <AmrabadProtectRoute element={<AmarabadBookingDetails />} />,
   },
   {
     path: "/amarabad/confirmed-details/:bookingId",
-    element: <ConfirmedDetails />,
+    element: <AmrabadProtectRoute element={<ConfirmedDetails />} />,
   },
   {
     path: "/amarabad/booking-history",
     element: <AmrabadProtectRoute element={<BookingHistory />} />,
+  },
+  {
+    path: "/amarabad/ticket",
+    element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
   },
   {
     path: "/amarabad/test",
