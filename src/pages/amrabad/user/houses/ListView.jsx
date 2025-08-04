@@ -2,16 +2,97 @@ import React from "react";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
+import { convertTo12HourFormat } from "../../../../utils/Helper";
 
-const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
+const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
   // console.log("houses", houses);
+  
+  // Check if houses array is empty or undefined
+  const hasHouses = houses && houses.length > 0;
+  
   return (
     <>
       <div className="space-y-4 sm:space-y-6">
-        {houses?.map((house, idx) =>
-          isRoomsByPackageIdLoading ? (
-            <HouseCardShimmer />
-          ) : (
+        {isRoomsByPackageIdLoading ? (
+          // Loading state - show shimmer effects
+          <div className="flex flex-col items-center justify-center py-12 px-4">
+            <div className="text-center max-w-md w-full">
+              {/* Loading house icon with shimmer */}
+              <div className="mb-6 flex justify-center">
+                <div className="h-16 w-16 bg-gray-200 rounded-lg animate-pulse"></div>
+              </div>
+              
+              {/* Loading title with shimmer */}
+              <div className="mb-2">
+                <div className="h-6 bg-gray-200 rounded animate-pulse mx-auto w-48"></div>
+              </div>
+              
+              {/* Loading description with shimmer */}
+              <div className="mb-6 space-y-2">
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4 mx-auto"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2 mx-auto"></div>
+              </div>
+              
+              {/* Loading button with shimmer */}
+              <div className="inline-flex items-center gap-2 bg-gray-200 py-3 px-6 rounded-lg animate-pulse w-32 h-10"></div>
+            </div>
+          </div>
+        ) : !hasHouses ? (
+          // No houses available message
+          <div className="flex flex-col items-center justify-center py-12 px-4">
+            <div className="text-center max-w-md">
+              {/* House icon */}
+              <div className="mb-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-16 w-16 mx-auto text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                  />
+                </svg>
+              </div>
+              
+              {/* Message */}
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No Houses Available
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Currently there are no houses available for booking. Please check back later or explore other options.
+              </p>
+              
+              {/* Button to Amarabad page */}
+              <Link
+                to="/amarabad/packages"
+                className="inline-flex items-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              >
+                <span>Go to Packages</span>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 79 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                >
+                  <path
+                    d="M2 8.75C1.30964 8.75 0.75 9.30964 0.75 10C0.75 10.6904 1.30964 11.25 2 11.25L2 8.75ZM77.8839 10.8839C78.372 10.3957 78.372 9.60427 77.8839 9.11611L69.9289 1.16116C69.4408 0.673004 68.6493 0.673004 68.1612 1.16116C67.673 1.64931 67.673 2.44077 68.1612 2.92893L75.2322 9.99999L68.1612 17.0711C67.673 17.5592 67.673 18.3507 68.1612 18.8388C68.6493 19.327 69.4408 19.327 69.9289 18.8388L77.8839 10.8839ZM2 10L2 11.25L77 11.25L77 9.99999L77 8.74999L2 8.75L2 10Z"
+                    fill="white"
+                  />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          // Existing houses mapping logic
+          houses?.map((house, idx) => (
             <div
               key={idx}
               className="flex flex-col lg:flex-row bg-white rounded-xl p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
@@ -74,7 +155,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                             Check-In Time:
                           </div>
                           <div className="font-bold text-[#272628] text-sm">
-                            12:30 PM
+                            {convertTo12HourFormat(userPackage?.checkInTime)}
                           </div>
                         </div>
                         <div className="flex items-center justify-center text-[#79787E] text-3xl">
@@ -87,7 +168,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                             Check-Out Time:
                           </div>
                           <div className="font-bold text-[#272628] text-sm">
-                            10:00 AM (Next Day)
+                            {convertTo12HourFormat(userPackage?.checkOutTime)} (Next Day)
                           </div>
                         </div>
                       </div>
@@ -129,7 +210,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                 {/* Book Now Button */}
                 <div className="mt-4 sm:mt-6">
                   <Link
-                    to={`/amarabad/book-now/${house?.houseId}`}
+                    to={`/amarabad/book-now/${house?.packageId}/${house?.roomId}`}
                     className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                   >
                     Book Now
@@ -152,7 +233,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading }) => {
                 </div>
               </div>
             </div>
-          )
+          ))
         )}
       </div>
     </>

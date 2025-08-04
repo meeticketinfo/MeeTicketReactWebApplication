@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Breadcrumb = () => {
+const Breadcrumb = ({ house }) => {
   return (
     <div className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 mb-6 flex-wrap">
       <Link
@@ -12,19 +12,19 @@ const Breadcrumb = () => {
       <span className="text-gray-400"> &gt; </span>
       <Link
         className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-        to="/amarabad/packages/munnanur-jungle-resort-the-tiger-stay-package"
+        to={`/amarabad/packages/${house?.packageId}`}
       >
-        Munnar Jungle resort
+        {house?.packageName}
       </Link>
       <span className="text-gray-400"> &gt; </span>
       <Link
         className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-        to="/amarabad/houses/chital-and-otter"
+        to={`/amarabad/houses/${house?.packageId}`}
       >
         List of houses
       </Link>
       <span className="text-gray-400"> &gt; </span>
-      <span className="text-gray-800 font-semibold">Chital & Otter</span>
+      <span className="text-gray-800 font-semibold">{house?.roomName}</span>
     </div>
   );
 };

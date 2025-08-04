@@ -74,10 +74,12 @@ export const useUserBookingStore = create((set) => ({
     }
   },
 
-  fetchCalendar: async () => {
+  fetchCalendar: async (packageId, houseId) => {
     set({ isCalendarLoading: true });
     try {
-      const response = await apiService.get(API_ENDPOINTS.AMRABAD.USER.GET_CALENDAR);
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD.USER.GET_CALENDAR}?packageId=${packageId}&houseId=${houseId}`
+      );
       set({
         GetCalendar: response.data,
         isCalendarLoading: false,

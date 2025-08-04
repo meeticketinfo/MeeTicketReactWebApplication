@@ -244,3 +244,44 @@ export const formatDateTimeToReadable = (isoString) => {
 
   return `${formattedDate}\n${formattedTime}`;
 };
+
+// Helper function to convert 24-hour format to 12-hour format
+export const convertTo12HourFormat = (time24) => {
+  if (!time24) return "";
+  
+  try {
+    // Handle different time formats
+    let timeString = time24.toString();
+    
+    // If it's already in HH:MM format
+    if (timeString.includes(':')) {
+      const [hours, minutes] = timeString.split(':');
+      const hour = parseInt(hours, 10);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      return `${hour12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    }
+    
+    // If it's in HHMM format (e.g., "1430")
+    if (timeString.length === 4) {
+      const hours = parseInt(timeString.substring(0, 2), 10);
+      const minutes = timeString.substring(2, 4);
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+      return `${hour12.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    }
+    
+    // If it's just hours (e.g., "14")
+    if (timeString.length === 2) {
+      const hours = parseInt(timeString, 10);
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+      return `${hour12} ${ampm}`;
+    }
+    
+    return time24; // Return original if format is not recognized
+  } catch (error) {
+    console.error('Error converting time format:', error);
+    return time24; // Return original if conversion fails
+  }
+};

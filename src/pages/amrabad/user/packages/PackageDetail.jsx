@@ -264,26 +264,36 @@ const PackageDetail = () => {
           </div>
           {/* End Swiper Slider */}
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 font-bold">
-            <button
-              onClick={() => setOpenModalId("cancellation-policy")}
-              className="text-[#362D86] underline transition duration-300"
-            >
-              Cancellation Policy
-            </button>
-            <div className="hidden md:block w-px h-6 bg-[#CCCBD9]"></div>
-            <button
-              onClick={() => setOpenModalId("terms-conditions")}
-              className="text-[#362D86] underline transition duration-300"
-            >
-              Terms & Conditions
-            </button>
-            <div className="hidden md:block w-px h-6 bg-[#CCCBD9]"></div>
-            <button
-              onClick={() => setOpenModalId("privacy-policy")}
-              className="text-[#362D86] underline transition duration-300"
-            >
-              Privacy Policy
-            </button>
+            {GetPackageDetail?.cancellationPolicy && (
+              <>
+              <button
+                onClick={() => setOpenModalId("cancellation-policy")}
+                className="text-[#362D86] underline transition duration-300"
+              >
+                Cancellation Policy
+              </button>
+              </>
+            )}
+            {GetPackageDetail?.termsConditions && (
+              <>
+                <button
+                  onClick={() => setOpenModalId("terms-conditions")}
+                  className="text-[#362D86] underline transition duration-300"
+                >
+                  Terms & Conditions
+                </button>
+              </>
+            )}
+            {GetPackageDetail?.privacyPolicy && (
+              <>
+                <button
+                  onClick={() => setOpenModalId("privacy-policy")}
+                  className="text-[#362D86] underline transition duration-300"
+                >
+                  Privacy Policy
+                </button>
+              </>
+            )}
           </div>
 
           {/* Bookings Open Banner */}

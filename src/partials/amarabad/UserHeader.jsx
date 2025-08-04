@@ -153,7 +153,7 @@ export const UserHeader = ({ isScrolled = false }) => {
                         <FaHistory />
                         Booking History
                       </Link>
-                      <Link to="/amarabad/checkout-details/12" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                      <Link to="/amarabad/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
                         <FaShoppingCart />
                         Go to Cart
                       </Link>
