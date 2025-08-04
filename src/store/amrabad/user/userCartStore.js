@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 export const useCartStore = create((set) => ({
   cartItems: [],
   loadingCart: false,
+  loadingAddToCart: false,
+  loadingRemoveFromCart: false,
 
   fetchCartItems: async () => {
     set({ loadingCart: true });
@@ -15,6 +17,33 @@ export const useCartStore = create((set) => ({
     } catch (error) {
       set({ loadingCart: false });
       toast.error(error.message || "Some thing went wrong");
+    }
+  },
+
+  addToCart: async (data) => {
+    set({ loadingAddToCart: true });
+    try {
+      const response = await apiService.post(API_ENDPOINTS.AMRABAD.USER.ADD_TO_CART, data);
+      return response.data;
+    } catch (error) {
+      console.log(error, "error");
+      return error;
+    } finally {
+      set({ loadingAddToCart: false });
+    }
+  },
+
+  removeFromCart: async (cartItemId) => {
+    set({ loadingRemoveFromCart: true });
+    try {
+      const response = await apiService.delete(API_ENDPOINTS.AMRABAD.USER.REMOVE_FROM_CART + "/" + cartItemId);
+      return response.data;
+    } catch (error) {
+      console.log(error, "error");
+      return error;
+    }
+    finally {
+      set({ loadingRemoveFromCart: false });
     }
   }
 }));

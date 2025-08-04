@@ -14,17 +14,30 @@ const Houses = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState("map"); // 'list' or 'map'
   const [selectedHouse, setSelectedHouse] = useState(null);
+  const [userPackage, setUserPackage] = useState(null);
   const { packageId } = useParams();
 
   const {
     fetchRoomsByPackageId,
     GetRoomsByPackageId,
     isRoomsByPackageIdLoading,
+    fetchUserPackages,
+    GetUserPackages,
+    isUserPackagesLoading,
   } = useUserBookingStore();
   
   useEffect(() => {
     fetchRoomsByPackageId(packageId);
+    fetchUserPackages();
   }, [packageId]);
+
+  useEffect(() => {
+    if (GetUserPackages) {
+      setUserPackage(GetUserPackages?.find(packageDetail => packageDetail.packageId == packageId));
+      console.log(userPackage, "userPackage");
+    }
+  }, [GetUserPackages, packageId]);
+
 
   const handleHouseClick = (house) => {
     setSelectedHouse(house);
@@ -43,7 +56,7 @@ const Houses = () => {
               Amrabad Resorts
             </Link>
             <span className="text-gray-500"> &gt; </span>
-            <span className="text-gray-500">{GetRoomsByPackageId[0]?.packageName}</span>
+            <span className="text-gray-500 capitalize">{GetRoomsByPackageId[0]?.packageName}</span>
           </div>
         </div>
       </div>
@@ -69,9 +82,9 @@ const Houses = () => {
         {/* Content */}
         <div className="">
           {viewMode === "list" ? (
-            <ListView houses={GetRoomsByPackageId} isRoomsByPackageIdLoading={isRoomsByPackageIdLoading} />
+            <ListView houses={GetRoomsByPackageId} isRoomsByPackageIdLoading={isRoomsByPackageIdLoading} userPackage={userPackage} />
           ) : (
-            <MapView houses={housesData} onHouseClick={handleHouseClick} />
+            <MapView houses={GetRoomsByPackageId} onHouseClick={handleHouseClick} />
           )}
         </div>
       </div>

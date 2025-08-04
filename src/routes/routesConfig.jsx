@@ -530,11 +530,11 @@ export const routes = [
     element: <Houses />,
   },
   {
-  path: "/amarabad/book-now/:houseId",
+  path: "/amarabad/book-now/:packageId/:houseId",
   element: <BookNow />,
   },
   {
-    path: "/amarabad/checkout-details/:houseId",
+    path: "/amarabad/checkout-details",
     element: <CheckoutDetails />,
   },
   {

@@ -3,9 +3,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
-import { FaHistory, FaUser } from "react-icons/fa";
+import { FaHistory, FaShoppingCart, FaUser } from "react-icons/fa";
 
-function UserHeader({ isScrolled = false }) {
+export const UserHeader = ({ isScrolled = false }) => {
   const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } = amrabadAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -127,8 +127,6 @@ function UserHeader({ isScrolled = false }) {
             {isLoggedIn ? (
               // After login: show user profile section
               <div className="flex items-center gap-3" ref={dropdownRef}>
-                
-                {/* Mobile view - show only user icon with dropdown */}
                 <div className="relative">
                   <div 
                     className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
@@ -140,31 +138,32 @@ function UserHeader({ isScrolled = false }) {
                       <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#362D86"/>
                     </svg>
                   </div>
-                  
-                  {/* Mobile Dropdown Menu */}
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="absolute right-0 mt-2 w-[150px] bg-white shadow-lg border border-gray-200 py-0 z-50">
                       <div className="px-4 py-3 border-b border-gray-100">
                         {decodedTokenData ? (
                           <div className="font-bold text-black capitalize text-sm">
-                            {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
+                            {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + " " + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
                           </div>
                         ) : (
                           <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
                         )}
                       </div>
-                      <Link to="/amarabad/booking-history" className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                      <Link to="/amarabad/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
                         <FaHistory />
                         Booking History
                       </Link>
-                      
-                      <div className="py-1">
+                      <Link to="/amarabad/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                        <FaShoppingCart />
+                        Go to Cart
+                      </Link>
+                      <div className="py-0">
                         <button
                           onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                          className="w-full text-left px-4 py-2 text-xs text-red-500 hover:bg-red-100 flex items-center gap-2"
                         >
                           <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
-                            <path d="M6 2H4C3.45 2 3 2.45 3 3V13C3 13.55 3.45 14 4 14H6C6.55 14 7 13.55 7 13V3C7 2.45 6.55 2 6 2ZM12.5 7L9.5 4.5C9.22 4.22 8.78 4.22 8.5 4.5C8.22 4.78 8.22 5.22 8.5 5.5L10.29 7.25H3.75C3.34 7.25 3 7.59 3 8C3 8.41 3.34 8.75 3.75 8.75H10.29L8.5 10.5C8.22 10.78 8.22 11.22 8.5 11.5C8.78 11.78 9.22 11.78 9.5 11.5L12.5 9C12.78 8.72 12.78 8.28 12.5 8L12.5 7Z" fill="#6B7280"/>
+                            <path d="M6 2H4C3.45 2 3 2.45 3 3V13C3 13.55 3.45 14 4 14H6C6.55 14 7 13.55 7 13V3C7 2.45 6.55 2 6 2ZM12.5 7L9.5 4.5C9.22 4.22 8.78 4.22 8.5 4.5C8.22 4.78 8.22 5.22 8.5 5.5L10.29 7.25H3.75C3.34 7.25 3 7.59 3 8C3 8.41 3.34 8.75 3.75 8.75H10.29L8.5 10.5C8.22 10.78 8.22 11.22 8.5 11.5C8.78 11.78 9.22 11.78 9.5 11.5L12.5 9C12.78 8.72 12.78 8.28 12.5 8L12.5 7Z" fill="currentColor"/>
                           </svg>
                           Logout
                         </button>
@@ -194,5 +193,3 @@ function UserHeader({ isScrolled = false }) {
     </>
   );
 }
-
-export default UserHeader; 

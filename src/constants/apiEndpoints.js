@@ -322,11 +322,13 @@ export const API_ENDPOINTS = {
     },
     USER:{
       GET_USER_PACKAGES:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllPackages`,
-      GET_ROOMS_BY_PACKAGE_ID:`https://meeticketdevui.vmaxtechservices.help/amrabad/api/MobileApplication/GetHousesByPackageId`,
+      GET_ROOMS_BY_PACKAGE_ID:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllPackageRoomsByPackageId`,
       GET_PACKAGE_DETAIL:`https://meeticketdevui.vmaxtechservices.help/amrabad/api/MobileApplication/GetPackageDetails`,
       GET_CART_ITEMS:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllCartDetails`,
       GET_CALENDAR:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetCalendar/30days`,
       GET_USER_BOOKING_HISTORY:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetBookingHistory`,
+      ADD_TO_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/AddToCart`,
+      REMOVE_FROM_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/DeleteCartItem`,
     }
   },
   FAILED_TRANSACTIONS: {

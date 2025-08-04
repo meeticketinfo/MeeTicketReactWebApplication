@@ -5,9 +5,11 @@ import { IoArrowForward } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../../../store/amrabad/user/userCartStore";
 import CheckoutDetailsShimmer from "../../shimmer/CheckoutDetailsShimmer";
+import { toast } from "react-toastify";
+import { CgSpinner } from "react-icons/cg";
 
 const CheckoutDetails = () => {
-  const { cartItems, loadingCart, fetchCartItems } = useCartStore();
+  const { cartItems, loadingCart, fetchCartItems, removeFromCart, loadingRemoveFromCart } = useCartStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,33 +67,26 @@ const CheckoutDetails = () => {
     return groups;
   }, {});
 
+  const handleRemoveFromCart = async (cartItemId) => {
+    const response = await removeFromCart(cartItemId);
+    console.log(response, "response");
+    if (response.statusCode === 200) {
+      toast.success(response.message || "Item removed from cart");
+      fetchCartItems();
+    } else {
+      toast.error(response.response.data.message || "Something went wrong");
+    }
+  };
+
   return (
     <UserLayout>
       <div className="container mx-auto">
         <div className="p-2 sm:p-4 md:p-8 bg-[#F6F7FB]">
-          {/* Breadcrumb */}
-          <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
-            <Link
-              className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-              to="/amarabad/packages"
-            >
-              Amrabad Resorts
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <Link
-              className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-              to="/amarabad/packages"
-            >
-              Packages
-            </Link>
-            <span className="text-gray-400"> &gt; </span>
-            <span className="text-gray-800 font-semibold">Cart</span>
-          </div>
 
           <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 md:p-8 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Left: House & Room Details */}
             <div className="flex-1 min-w-0">
-              <Link to="/amarabad/packages" className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 block">
+              <Link to={`/amarabad/houses/${cartItems[0].packageId}`} className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 block">
                 + Add More Houses
               </Link>
 
@@ -118,7 +113,10 @@ const CheckoutDetails = () => {
                         {group.items.map((item) => (
                           <tr key={item.id} className="border-t">
                             <td className="p-2">
-                              <div className="flex items-center gap-3 sm:gap-4">
+                              <div className="flex items-center gap-1 sm:gap-3">
+                                <button className="text-red-600 text-sm font-semibold hover:bg-red-50 p-1 border border-red-600 rounded-md" onClick={() => handleRemoveFromCart(item.id)}>
+                                  {loadingRemoveFromCart ? <CgSpinner className="animate-spin" /> : <BsTrash />}
+                                </button>
                                 <img
                                   src={item.houseImageUrl}
                                   alt={item.houseName}

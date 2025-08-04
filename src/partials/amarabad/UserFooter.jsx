@@ -32,7 +32,7 @@ function UserFooter() {
       <div className="container mx-auto px-3">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 pb-12">
           {/* Left: Logo and tagline */}
-          <div className="flex flex-col md:flex-row md:items-start md:w-2/5">
+          <div className="flex flex-col md:flex-row md:items-start md:w-2/5 gap-3">
             <img src={MeeTicketLogo} alt="Chief Minister Logo" width={85} />
             <div>
               <div className="text-lg lg:text-xl xl:text-2xl font-normal text-black mb-2 mt-3">Quick Tickets & Easy Entry - Just Tap, Scan, and Go!</div>
