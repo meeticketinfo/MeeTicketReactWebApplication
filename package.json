@@ -28,6 +28,7 @@
     "global": "^4.4.0",
     "ldrs": "^1.0.2",
     "moment": "^2.29.4",
+    "paytm-blink-checkout-react": "^0.0.4",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-countup": "^6.5.3",

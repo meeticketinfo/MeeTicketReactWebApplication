@@ -110,14 +110,6 @@ const MapView = ({ houses, onHouseClick }) => {
   useEffect(() => {
     // Initialize Google Maps
     const initMap = () => {
-      // Check if map container exists
-      if (!mapRef.current) {
-        console.error('Map container not found');
-        setMapError('Map container not available. Please refresh the page.');
-        setIsLoading(false);
-        return;
-      }
-
       if (window.google && window.google.maps) {
         const validHouses = getValidHouses();
 
@@ -270,7 +262,7 @@ const MapView = ({ houses, onHouseClick }) => {
       if (!window.google) {
         const script = document.createElement('script');
         // Use environment variable with fallback
-        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyAlkbEmP0TfEv7mqMGUNKxLBEthDyyBVB0';
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyBRT-gAls8JiRt1UFJaml4oN9Mmev41LKI';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.defer = true;
@@ -287,10 +279,10 @@ const MapView = ({ houses, onHouseClick }) => {
       }
     };
 
-    // Add a small delay to ensure the component is fully mounted
+    // Add a longer delay to ensure the component is fully mounted and DOM is ready
     const timer = setTimeout(() => {
       loadGoogleMapsAPI();
-    }, 100);
+    }, 200);
 
     return () => {
       clearTimeout(timer);

@@ -78,7 +78,7 @@ export const useUserBookingStore = create((set) => ({
     set({ isCalendarLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.AMRABAD.USER.GET_CALENDAR}?packageId=${packageId}&houseId=${houseId}`
+        `${API_ENDPOINTS.AMRABAD.USER.GET_CALENDAR}?packageId=${packageId}&roomId=${houseId}`
       );
       set({
         GetCalendar: response.data,
