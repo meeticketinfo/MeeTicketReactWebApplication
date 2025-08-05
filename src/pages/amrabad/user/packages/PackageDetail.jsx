@@ -3,8 +3,8 @@ import UserLayout from "../../../../layouts/UserLayout";
 import { Link, useParams } from "react-router-dom";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import { useModalStore } from "../../../../store/modalStore";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 import PackageDetailShimmer from "../../shimmer/PackageDetailShimmer";
 
@@ -162,7 +162,7 @@ const PackageDetail = () => {
                     <div className="mx-2 md:mx-4">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center">
                         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M16.0001 21.3327L21.3334 15.9993M21.3334 15.9993L16.0001 10.666M21.3334 15.9993L10.6667 15.9993M29.3334 15.9993C29.3334 23.3631 23.3639 29.3327 16.0001 29.3327C8.63628 29.3327 2.66675 23.3631 2.66675 15.9993C2.66675 8.63555 8.63628 2.66602 16.0001 2.66602C23.3639 2.66602 29.3334 8.63555 29.3334 15.9993Z" stroke="#BDBCC3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          <path d="M16.0001 21.3327L21.3334 15.9993M21.3334 15.9993L16.0001 10.666M21.3334 15.9993L10.6667 15.9993M29.3334 15.9993C29.3334 23.3631 23.3639 29.3327 16.0001 29.3327C8.63628 29.3327 2.66675 23.3631 2.66675 15.9993C2.66675 8.63555 8.63628 2.66602 16.0001 2.66602C23.3639 2.66602 29.3334 8.63555 29.3334 15.9993Z" stroke="#BDBCC3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
 
                       </div>

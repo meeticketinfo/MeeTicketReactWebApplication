@@ -110,14 +110,6 @@ const MapView = ({ houses, onHouseClick }) => {
   useEffect(() => {
     // Initialize Google Maps
     const initMap = () => {
-      // Check if map container exists
-      if (!mapRef.current) {
-        console.error('Map container not found');
-        setMapError('Map container not available. Please refresh the page.');
-        setIsLoading(false);
-        return;
-      }
-
       if (window.google && window.google.maps) {
         const validHouses = getValidHouses();
 
@@ -270,7 +262,7 @@ const MapView = ({ houses, onHouseClick }) => {
       if (!window.google) {
         const script = document.createElement('script');
         // Use environment variable with fallback
-        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyAlkbEmP0TfEv7mqMGUNKxLBEthDyyBVB0';
+        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyBRT-gAls8JiRt1UFJaml4oN9Mmev41LKI';
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.defer = true;
@@ -287,10 +279,10 @@ const MapView = ({ houses, onHouseClick }) => {
       }
     };
 
-    // Add a small delay to ensure the component is fully mounted
+    // Add a longer delay to ensure the component is fully mounted and DOM is ready
     const timer = setTimeout(() => {
       loadGoogleMapsAPI();
-    }, 100);
+    }, 200);
 
     return () => {
       clearTimeout(timer);
@@ -298,61 +290,6 @@ const MapView = ({ houses, onHouseClick }) => {
       markers.forEach(marker => marker.setMap(null));
     };
   }, [houses]);
-
-  // Show error state if there's a map error
-  if (mapError) {
-    return (
-      <div className="w-full h-[80vh] rounded-2xl bg-gray-100 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="mb-4">
-            <svg
-              className="mx-auto h-16 w-16 text-yellow-500 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Map Unavailable
-            </h3>
-            <p className="text-gray-600 mb-4">
-              {mapError}
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <Link
-              onClick={() => {
-                setMapError(null);
-                setIsLoading(true);
-              }}
-              to="/amarabad/packages"
-              className="w-full bg-[#362D86] hover:bg-indigo-800 text-white font-medium py-3 px-4 rounded-lg transition-colors inline-block"
-            >
-              Go to Packages
-            </Link>
-
-            <button
-              onClick={() => {
-                setMapError(null);
-                setIsLoading(true);
-                window.location.reload();
-              }}
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Show loading state if houses is not available
   if (!houses || houses.length === 0) {
