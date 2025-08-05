@@ -16,6 +16,9 @@ export const useUserBookingStore = create((set) => ({
   // fetch calendar
   GetCalendar: [],
   isCalendarLoading: false,
+  // fetch ticket view details
+  GetTicketViewDetails: {},
+  isTicketViewDetailsLoading: false,
   // fetch user packages
   fetchUserPackages: async () => {
     set({ isUserPackagesLoading: true });
@@ -90,5 +93,24 @@ export const useUserBookingStore = create((set) => ({
       });
       toast(error.message || "Some thing went wrong");
     }
-  }
+  },
+
+  // fetch ticket view details
+  fetchTicketViewDetails: async (bookingId) => {
+    set({ isTicketViewDetailsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD.USER.GET_TICKET_VIEW_DETAILS}/${bookingId}`
+      );
+      set({
+        GetTicketViewDetails: response.data,
+        isTicketViewDetailsLoading: false,
+      });
+    } catch (error) {
+      set({
+        isTicketViewDetailsLoading: false,
+      });
+      toast(error.message || "Some thing went wrong");
+    }
+  },
 }));

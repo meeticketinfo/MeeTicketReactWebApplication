@@ -9,9 +9,15 @@ import { BsDownload } from "react-icons/bs";
 import { formatDateTimeToReadable,formatDate } from "../../../../../../utils/Helper";
 import { MdHistory } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const BookingCard = ({ booking }) => {
-
+   
+    const [imageError, setImageError] = useState(false);
+    
+    const handleImageError = () => {
+        setImageError(true);
+    };
   const getStatusIconComponent = (historyStatus) => {
     switch (historyStatus) {
       case "Booked":
@@ -48,11 +54,24 @@ const getStatusBadgeClass = (historyStatus) => {
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Image */}
         <div className="flex-shrink-0 flex justify-center lg:block mb-3 lg:mb-0">
-          <img
-            src={booking.houseImageURL.imageUrl || "/images/placeholder.png"}
-            // alt={booking.propertyName}
-            className="w-24 h-16 sm:w-28 sm:h-20 object-cover rounded-lg"
-          />
+          {imageError || !booking.houseImageURL.imageUrl ? (
+            <div className="w-24 h-16 sm:w-28 sm:h-20 bg-gray-100 rounded-lg flex items-center justify-center">
+              <svg 
+                className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" 
+                fill="currentColor" 
+                viewBox="0 0 20 20"
+              >
+                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              </svg>
+            </div>
+          ) : (
+            <img
+              src={booking.houseImageURL.imageUrl}
+              alt={booking.houseName || "Property Image"}
+              className="w-24 h-16 sm:w-28 sm:h-20 object-cover rounded-lg"
+              onError={handleImageError}
+            />
+          )}
         </div>
 
         {/* Content */}
@@ -140,7 +159,7 @@ const getStatusBadgeClass = (historyStatus) => {
         <div className="flex gap-2 lg:gap-4">
           <button className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
             <FaEye />
-            <span className="hidden xs:inline"><Link to={`/amarabad/ticket-view-details`}>View Details</Link></span>
+            <span className="hidden xs:inline"><Link to={`/amarabad/ticket-view-details/${booking.bookingId}`}>View Details</Link></span>
           </button>
           <button className="flex items-center gap-1 sm:gap-2 text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm">
             <BsDownload />
