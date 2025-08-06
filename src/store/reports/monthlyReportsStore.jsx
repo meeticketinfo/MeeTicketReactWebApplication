@@ -17,7 +17,7 @@ export const UsemonthlyReportsStore = create((set) => ({
         `${API_ENDPOINTS.REPORTS.MONTHLY_REPORTS.GET_DEPARTMENT_ABSTRACT_REPORT}?fromDate=${Payload.fromDate}&toDate=${Payload.toDate}`
       );
       set({
-        DepartmentAbstractReport: response.data,
+        DepartmentAbstractReport: response.data.data,
         isFetchDepartmentAbstractReportLoading: false,
       });
     } catch (error) {
