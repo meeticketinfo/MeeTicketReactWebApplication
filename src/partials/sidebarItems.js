@@ -423,6 +423,22 @@ const sidebarItems = [
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
   },
+  // monthly reports
+  {
+    title: "Monthly Reports",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Monthly Reports",
+        icon: TbReportSearch,
+        path: "/monthly-reports",
+      },
+     
+    ],
+  },
 ];
 
 export default sidebarItems;

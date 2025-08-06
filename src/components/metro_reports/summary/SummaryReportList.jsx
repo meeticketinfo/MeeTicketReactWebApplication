@@ -114,8 +114,7 @@ function SummaryReportList() {
         });
       },
     },
-   
-  
+
     {
       field: "merchantEachTicketFareAfterGst",
       headerName: "Each Ticket Fare",
@@ -136,10 +135,12 @@ function SummaryReportList() {
       headerName: "Change Destination Ticket Fare",
       Width: "100",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
+      cellRenderer: (params) => (
+        <>
+          <span>Rs. </span>
+          <span>{params.value}</span>
+        </>
+      ),
     },
     {
       field: "totalTicketAmount",
@@ -227,7 +228,7 @@ function SummaryReportList() {
             <div className="flex items-end">
               <button
                 type="submit"
-                  className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search

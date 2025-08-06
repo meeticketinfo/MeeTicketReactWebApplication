@@ -98,6 +98,11 @@ const AgGridTable = ({
         processCellCallback: (params) => {
           let value = params.value;
 
+          // Handle S.No column for totals row - keep empty instead of "N/A"
+          if (params.column.getColId() === "0" && params.node.rowPinned === "bottom") {
+            return "";
+          }
+
           // Ensure "Refund ID" and empty values show "N/A"
           if (value === null || value === undefined || value === "") {
             return "N/A";

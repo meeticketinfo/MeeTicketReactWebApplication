@@ -105,6 +105,7 @@ import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_us
 import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
 import MainMetroRefundTransactions from "../pages/metro_transaction_reports/metro_refunds/dashboard/MainMetroRefundTransactions";
 import MetroRefundTransactionsReport from "../pages/metro_transaction_reports/metro_refunds/metro_refund_transactions_report/MetroRefundTransactionsReport";
+import MainReport from "../pages/admin_monthly_reports/MainReport";
 
 export const routes = [
   {
@@ -295,6 +296,10 @@ export const routes = [
   {
     path: "/user-transactions-order-tracker",
     element: <ProtectedRoute element={<UserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/monthly-reports",
+    element: <ProtectedRoute element={<MainReport />} />,
   },
   {
     path: "/metro-user-report",
