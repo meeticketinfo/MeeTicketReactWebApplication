@@ -16,39 +16,35 @@ const MainReport = () => {
     { title: "Location Category Wise Report" },
     { title: "Location Wise Report" },
   ];
-    const reportsConfig = {
-        0: <DepartmentAbstract />,
-        1: <LocationCategoryAbstract />,
-        2: <DepartmentWiseReport />,
-        3: <LocationCategoryWiseReport />,
-        4: <LocationWiseReport />,
-    }
+  const reportsConfig = {
+    0: <DepartmentAbstract />,
+    1: <LocationCategoryAbstract />,
+    2: <DepartmentWiseReport />,
+    3: <LocationCategoryWiseReport />,
+    4: <LocationWiseReport />,
+  };
   return (
     <AdminLayout>
       <div className="px-4 py-6 w-full max-w-9xl mx-auto">
-        <div className="flex justify-between mb-2 sm:mb-0 w-[99%] mx-auto">
-          <div className="flex gap-4  border border-white text-xs font-semibold bg-blue-v2 text-white px-2 py-1.5 rounded-md shadow-md transition-colors duration-500">
+        <div className="flex justify-between mb-2 sm:mb-0 w-[100%] mx-auto">
+          <div className="flex gap-4  border border-white text-xs w-full font-semibold bg-blue-v2 text-white px-2 py-1.5 rounded-md shadow-md transition-colors duration-500">
             {ReportTabs.map((tab, index) => (
               <div
                 key={tab.title}
                 onClick={() => setActiveTab(index)}
-                className={`cursor-pointer uppercase px-2 py-1 rounded-md transition-all duration-500  ${
+                className={`cursor-pointer uppercase px-2   py-1 rounded-md transition-all duration-500  ${
                   activeTab === index
-                    ? "bg-white text-blue-v2 scale-[1.05]"
-                    : "bg-blue-900 border border-blue-800 text-white"
+                    ? "bg-white text-blue-v2 font-extrabold  "
+                    : "bg-[#4D6586] text-white   "
                 }`}
               >
                 {tab.title}
               </div>
             ))}
           </div>
-         
         </div>
 
-        <div className="py-2 px-6">
-        {reportsConfig[activeTab]}
-        </div>
-       
+        <div className="py-2 px-6">{reportsConfig[activeTab]}</div>
       </div>
     </AdminLayout>
   );
