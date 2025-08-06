@@ -1,10 +1,23 @@
 import { Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../../components/tables/AgGridTable";
+import { UsemonthlyReportsStore } from "../../../store/reports/monthlyReportsStore";
 
 const DepartmentAbstract = () => {
-  const{fetchDepartmentAbstractReport,DepartmentAbstractReport,isFetchDepartmentAbstractReportLoading}=UsemonthlyReportsStore()
+  const {
+    fetchDepartmentAbstractReport,
+    DepartmentAbstractReport,
+    isFetchDepartmentAbstractReportLoading,
+  } = UsemonthlyReportsStore();
+  console.log("DepartmentAbstractReport", DepartmentAbstractReport);
+
+  useEffect(() => {
+    fetchDepartmentAbstractReport({
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+    });
+  }, []);
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
