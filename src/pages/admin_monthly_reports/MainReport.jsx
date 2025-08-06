@@ -5,6 +5,7 @@ import LocationCategoryAbstract from "./monthly_reports/LocationCategoryAbstract
 import DepartmentWiseReport from "./monthly_reports/DepartmentWiseReport";
 import LocationCategoryWiseReport from "./monthly_reports/LocationCategoryWiseReport";
 import LocationWiseReport from "./monthly_reports/LocationWiseReport";
+import { ToastContainer } from "react-toastify";
 
 const MainReport = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -25,14 +26,15 @@ const MainReport = () => {
   };
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4 py-6 w-full max-w-9xl mx-auto">
         <div className="flex justify-between mb-2 sm:mb-0 w-[100%] mx-auto">
-          <div className="flex gap-4 border border-white text-xs w-full font-semibold bg-blue-v2 text-white px-2 py-1.5 rounded-md shadow-md transition-colors duration-500 overflow-x-auto scrollbar-hide sm:overflow-visible">
+          <div className="flex gap-4 border border-white text-sm w-full font-semibold bg-blue-v2 text-white px-2 py-1.5 rounded-lg shadow-lg transition-colors duration-500 overflow-x-auto scrollbar-hide sm:overflow-visible">
             {ReportTabs.map((tab, index) => (
               <div
                 key={tab.title}
                 onClick={() => setActiveTab(index)}
-                className={`cursor-pointer uppercase px-2 py-1 rounded-md transition-all duration-500 whitespace-nowrap min-w-fit ${
+                className={`cursor-pointer capitalize px-2 py-1 rounded-md transition-all duration-500 whitespace-nowrap min-w-fit ${
                   activeTab === index
                     ? "bg-white text-blue-v2 font-extrabold  "
                     : "bg-[#4D6586] text-white   "

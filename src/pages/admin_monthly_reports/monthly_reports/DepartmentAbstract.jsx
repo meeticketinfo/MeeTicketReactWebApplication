@@ -10,7 +10,6 @@ const DepartmentAbstract = () => {
     DepartmentAbstractReport,
     isFetchDepartmentAbstractReportLoading,
   } = UsemonthlyReportsStore();
-  console.log("DepartmentAbstractReport", DepartmentAbstractReport);
 
   useEffect(() => {
     fetchDepartmentAbstractReport({

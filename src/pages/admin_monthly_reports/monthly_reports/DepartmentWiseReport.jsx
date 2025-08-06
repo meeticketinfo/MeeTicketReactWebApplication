@@ -1,68 +1,98 @@
-import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react'
-import { getCurrentDate } from '../../../utils/TypographyHelper';
-import AgGridTable from '../../../components/tables/AgGridTable';
+import { Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { getCurrentDate } from "../../../utils/TypographyHelper";
+import AgGridTable from "../../../components/tables/AgGridTable";
+import { UsemonthlyReportsStore } from "../../../store/reports/monthlyReportsStore";
 
 const DepartmentWiseReport = () => {
-    const initialValues = {
-        fromDate: getCurrentDate(),
-        toDate: getCurrentDate(),
-      };
-      const onSubmit = (values) => {
-        fetchAllDayPassReport({
-          fromDate: values.fromDate,
-          toDate: values.toDate,
-        });
-      };
-      const [columnDefs] = useState([
-        {
-          headerName: "S.No",
-          valueGetter: "node.rowIndex + 1",
-          maxWidth: "80",
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "transactionID",
-          headerName: "Transaction ID",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        },
-    
-        {
-          field: "userName",
-          headerName: "User Name",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => `${params.value} ` || "N/A",
-        },
-        {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-        
-       
-      ]);
+  const {
+    fetchDepartmentWiseReport,
+    DepartmentWiseReport,
+    isFetchDepartmentWiseReportLoading,
+  } = UsemonthlyReportsStore();
+  
+  useEffect(() => {
+    fetchDepartmentWiseReport({
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+    });
+  }, []);
+  const initialValues = {
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+  };
+  const onSubmit = (values) => {
+    fetchDepartmentWiseReport({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+    });
+  };
+  const totals = DepartmentWiseReport.reduce(
+    (acc, row) => {
+      acc.totalBookingCount += row.totalBookingCount || 0;
+      acc.totalTickets += row.totalTickets || 0;
+      acc.totalAmount += row.totalAmount || 0;
+      return acc;
+    },
+    { totalBookingCount: 0, totalTickets: 0, totalAmount: 0 }
+  );
+
+  const pinnedBottomRowData = [
+    {
+      SNo: "",
+      departmentName: "TOTAL",
+      totalBookingCount: totals.totalBookingCount,
+      totalTickets: totals.totalTickets,
+      totalAmount: totals.totalAmount,
+    },
+  ];
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      maxWidth: "80",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        // Return empty string for totals row
+        if (params.data && params.data.departmentName === "TOTAL") {
+          return "";
+        }
+        return params.value;
+      },
+    },
+    {
+      field: "departmentName",
+      headerName: "Department Name",
+      width: 300,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+
+    {
+      field: "totalBookingCount",
+      headerName: "Total Booking Count",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "totalTickets",
+      headerName: "Total Ticket Count",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `₹${params.value} ` || "N/A",
+    },
+  ]);
   return (
     <div>
-      <h1 className='text-xl font-semibold'>Department Wise Report</h1>
+      <h1 className="text-xl font-semibold">Department Wise Report</h1>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -121,12 +151,16 @@ const DepartmentWiseReport = () => {
         )}
       </Formik>
       <AgGridTable
-        // rowData={allDayPassReports}
+        rowData={DepartmentWiseReport}
         columnDefs={columnDefs}
-        // isFetchLoading={isFetchAllallDayPassReportsLoading}
+        pinnedBottomRowData={
+          DepartmentWiseReport.length > 0 ? pinnedBottomRowData : []
+        }
+        isFetchLoading={isFetchDepartmentWiseReportLoading}
+        ExportName="Department Wise Report"
       />
     </div>
-  )
-}
+  );
+};
 
-export default DepartmentWiseReport
+export default DepartmentWiseReport;

@@ -1,19 +1,51 @@
 import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getCurrentDate } from '../../../utils/TypographyHelper';
 import AgGridTable from '../../../components/tables/AgGridTable';
+import { UsemonthlyReportsStore } from '../../../store/reports/monthlyReportsStore';
 
 const LocationWiseReport = () => {
+    const {
+        fetchLocationWiseReport,
+        LocationWiseReport,
+        isFetchLocationWiseReportLoading,
+      } = UsemonthlyReportsStore();
+      console.log("LocationWiseReport", LocationWiseReport);
+      useEffect(() => {
+        fetchLocationWiseReport({
+          fromDate: getCurrentDate(),
+          toDate: getCurrentDate(),
+        });
+      }, []);
     const initialValues = {
         fromDate: getCurrentDate(),
         toDate: getCurrentDate(),
       };
       const onSubmit = (values) => {
-        fetchAllDayPassReport({
+        fetchLocationWiseReport({
           fromDate: values.fromDate,
           toDate: values.toDate,
         });
       };
+      const totals = LocationWiseReport.reduce(
+        (acc, row) => {
+          acc.totalBookingCount += row.totalBookingCount || 0;
+          acc.totalTickets += row.totalTickets || 0;
+          acc.totalAmount += row.totalAmount || 0;
+          return acc;
+        },
+        { totalBookingCount: 0, totalTickets: 0, totalAmount: 0 }
+      );
+    
+      const pinnedBottomRowData = [
+        {
+          SNo: "",
+          locationName: "TOTAL",
+          totalBookingCount: totals.totalBookingCount,
+          totalTickets: totals.totalTickets,
+          totalAmount: totals.totalAmount,
+        },
+      ];
       const [columnDefs] = useState([
         {
           headerName: "S.No",
@@ -22,40 +54,47 @@ const LocationWiseReport = () => {
           headerClass: "text-blue-v2",
         },
         {
-          field: "transactionID",
-          headerName: "Transaction ID",
+          field: "departmentName",
+          headerName: "Department Name",
     
           headerClass: "text-blue-v2",
           valueFormatter: (params) => (params.value ? params.value : "N/A"),
         },
     
         {
-          field: "userName",
-          headerName: "User Name",
+          field: "locationCategoryName",
+          headerName: "Category Name",
     
           headerClass: "text-blue-v2",
           valueFormatter: (params) => `${params.value} ` || "N/A",
         },
         {
-            field: "userName",
-            headerName: "User Name",
+            field: "parkName",
+            headerName: "Location Name",
       
             headerClass: "text-blue-v2",
             valueFormatter: (params) => `${params.value} ` || "N/A",
           },
           {
-            field: "userName",
-            headerName: "User Name",
+            field: "totalBookingCount",
+            headerName: "Total Booking Count",
       
             headerClass: "text-blue-v2",
             valueFormatter: (params) => `${params.value} ` || "N/A",
           },
           {
-            field: "userName",
-            headerName: "User Name",
+            field: "totalTickets",
+            headerName: "Total Ticket Count",
       
             headerClass: "text-blue-v2",
             valueFormatter: (params) => `${params.value} ` || "N/A",
+          },
+          {
+            field: "totalAmount",
+            headerName: "Total Amount",
+      
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => `₹${params.value} ` || "N/A",
           },
         
        
@@ -121,9 +160,13 @@ const LocationWiseReport = () => {
         )}
       </Formik>
       <AgGridTable
-        // rowData={allDayPassReports}
+        rowData={LocationWiseReport}
         columnDefs={columnDefs}
-        // isFetchLoading={isFetchAllallDayPassReportsLoading}
+        pinnedBottomRowData={
+          LocationWiseReport.length > 0 ? pinnedBottomRowData : []
+        }
+        isFetchLoading={isFetchLocationWiseReportLoading}
+        ExportName="Location Wise Report"
       />
     </div>
   )

@@ -1,68 +1,99 @@
-import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react'
-import { getCurrentDate } from '../../../utils/TypographyHelper';
-import AgGridTable from '../../../components/tables/AgGridTable';
+import { Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { getCurrentDate } from "../../../utils/TypographyHelper";
+import AgGridTable from "../../../components/tables/AgGridTable";
+import { UsemonthlyReportsStore } from "../../../store/reports/monthlyReportsStore";
 
 const LocationCategoryAbstract = () => {
-    const initialValues = {
-        fromDate: getCurrentDate(),
-        toDate: getCurrentDate(),
-      };
-      const onSubmit = (values) => {
-        fetchAllDayPassReport({
-          fromDate: values.fromDate,
-          toDate: values.toDate,
-        });
-      };
-      const [columnDefs] = useState([
-        {
-          headerName: "S.No",
-          valueGetter: "node.rowIndex + 1",
-          maxWidth: "80",
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "transactionID",
-          headerName: "Transaction ID",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        },
-    
-        {
-          field: "userName",
-          headerName: "User Name",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => `${params.value} ` || "N/A",
-        },
-        {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "userName",
-            headerName: "User Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-        
-       
-      ]);
+  const {
+    fetchLocationCategoryAbstractReport,
+    LocationCategoryAbstractReport,
+    isFetchLocationCategoryAbstractReportLoading,
+  } = UsemonthlyReportsStore();
+  console.log("LocationCategoryAbstractReport", LocationCategoryAbstractReport);
+  useEffect(() => {
+    fetchLocationCategoryAbstractReport({
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+    });
+  }, []);
+  const initialValues = {
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+  };
+  const onSubmit = (values) => {
+    fetchLocationCategoryAbstractReport({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+    });
+  };
+  const totals = LocationCategoryAbstractReport.reduce(
+    (acc, row) => {
+      acc.locationCount += row.locationCount || 0;
+      acc.activeLocations += row.activeLocations || 0;
+      acc.inactiveLocations += row.inactiveLocations || 0;
+      return acc;
+    },
+    { locationCount: 0, activeLocations: 0, inactiveLocations: 0 }
+  );
+
+  const pinnedBottomRowData = [
+    {
+      SNo: "",
+      locationCategoryName: "TOTAL",
+      locationCount: totals.locationCount,
+      activeLocations: totals.activeLocations,
+      inactiveLocations: totals.inactiveLocations,
+    },
+  ];
+
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      maxWidth: "80",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        // Return empty string for totals row
+        if (params.data && params.data.locationCategoryName === "TOTAL") {
+          return "";
+        }
+        return params.value;
+      },
+    },
+    {
+      field: "locationCategoryName",
+      headerName: "Location Category Name",
+      width: 300,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+
+    {
+      field: "locationCount",
+      headerName: "Location Count",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "activeLocations",
+      headerName: "Active Locations",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "inactiveLocations",
+      headerName: "Inactive Locations",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+  ]);
   return (
     <div>
-      <h1 className='text-xl font-semibold'>Location Category Abstract</h1>
+      <h1 className="text-xl font-semibold">Location Category Abstract</h1>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -121,12 +152,16 @@ const LocationCategoryAbstract = () => {
         )}
       </Formik>
       <AgGridTable
-        // rowData={allDayPassReports}
+        rowData={LocationCategoryAbstractReport}
         columnDefs={columnDefs}
-        // isFetchLoading={isFetchAllallDayPassReportsLoading}
+        pinnedBottomRowData={
+          LocationCategoryAbstractReport.length > 0 ? pinnedBottomRowData : []
+        }
+        isFetchLoading={isFetchLocationCategoryAbstractReportLoading}
+        ExportName="Location Category Abstract"
       />
     </div>
-  )
-}
+  );
+};
 
-export default LocationCategoryAbstract
+export default LocationCategoryAbstract;
