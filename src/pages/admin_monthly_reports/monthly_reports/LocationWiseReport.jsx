@@ -1,107 +1,120 @@
-import { Field, Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react'
-import { getCurrentDate } from '../../../utils/TypographyHelper';
-import AgGridTable from '../../../components/tables/AgGridTable';
-import { UsemonthlyReportsStore } from '../../../store/reports/monthlyReportsStore';
+import { Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { getCurrentDate } from "../../../utils/TypographyHelper";
+import AgGridTable from "../../../components/tables/AgGridTable";
+import { UsemonthlyReportsStore } from "../../../store/reports/monthlyReportsStore";
 
 const LocationWiseReport = () => {
-    const {
-        fetchLocationWiseReport,
-        LocationWiseReport,
-        isFetchLocationWiseReportLoading,
-      } = UsemonthlyReportsStore();
-      console.log("LocationWiseReport", LocationWiseReport);
-      useEffect(() => {
-        fetchLocationWiseReport({
-          fromDate: getCurrentDate(),
-          toDate: getCurrentDate(),
-        });
-      }, []);
-    const initialValues = {
-        fromDate: getCurrentDate(),
-        toDate: getCurrentDate(),
-      };
-      const onSubmit = (values) => {
-        fetchLocationWiseReport({
-          fromDate: values.fromDate,
-          toDate: values.toDate,
-        });
-      };
-      const totals = LocationWiseReport.reduce(
-        (acc, row) => {
-          acc.totalBookingCount += row.totalBookingCount || 0;
-          acc.totalTickets += row.totalTickets || 0;
-          acc.totalAmount += row.totalAmount || 0;
-          return acc;
-        },
-        { totalBookingCount: 0, totalTickets: 0, totalAmount: 0 }
-      );
-    
-      const pinnedBottomRowData = [
-        {
-          SNo: "",
-          locationName: "TOTAL",
-          totalBookingCount: totals.totalBookingCount,
-          totalTickets: totals.totalTickets,
-          totalAmount: totals.totalAmount,
-        },
-      ];
-      const [columnDefs] = useState([
-        {
-          headerName: "S.No",
-          valueGetter: "node.rowIndex + 1",
-          maxWidth: "80",
-          headerClass: "text-blue-v2",
-        },
-        {
-          field: "departmentName",
-          headerName: "Department Name",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        },
-    
-        {
-          field: "locationCategoryName",
-          headerName: "Category Name",
-    
-          headerClass: "text-blue-v2",
-          valueFormatter: (params) => `${params.value} ` || "N/A",
-        },
-        {
-            field: "parkName",
-            headerName: "Location Name",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "totalBookingCount",
-            headerName: "Total Booking Count",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "totalTickets",
-            headerName: "Total Ticket Count",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
-          },
-          {
-            field: "totalAmount",
-            headerName: "Total Amount",
-      
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => `₹${params.value} ` || "N/A",
-          },
-        
-       
-      ]);
+  const {
+    fetchLocationWiseReport,
+    LocationWiseReport,
+    isFetchLocationWiseReportLoading,
+  } = UsemonthlyReportsStore();
+  console.log("LocationWiseReport", LocationWiseReport); 
+  useEffect(() => {
+    fetchLocationWiseReport({
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+    });
+  }, []);
+  const initialValues = {
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+  };
+  const onSubmit = (values) => {
+    fetchLocationWiseReport({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+    });
+  };
+  const totals = LocationWiseReport.reduce(
+    (acc, row) => {
+      acc.totalBookingCount += row.totalBookingCount || 0;
+      acc.totalTickets += row.totalTickets || 0;
+      acc.totalAmount += row.totalAmount || 0;
+      return acc;
+    },
+    { totalBookingCount: 0, totalTickets: 0, totalAmount: 0 }
+  );
+
+  const pinnedBottomRowData = [
+    {
+      SNo: "",
+      departmentName: "",
+      locationCategoryName: "",
+      parkName: "TOTAL",
+      totalBookingCount: totals.totalBookingCount,
+      totalTickets: totals.totalTickets,
+      totalAmount: totals.totalAmount,
+    },
+  ];
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      maxWidth: "80",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        // Return empty string for totals row
+        if (params.data && params.data.parkName === "TOTAL") {
+          return "";
+        }
+        return params.value;
+      },
+    },
+    {
+      field: "departmentName",
+      headerName: "Department Name",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        // Return empty string for totals row
+        if (params.data && params.data.parkName === "TOTAL") {
+          return "";
+        }
+        return params.value ? params.value : "N/A";
+      },
+    },
+
+    {
+      field: "locationCategoryName",
+      headerName: "Category Name",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "parkName",
+      headerName: "Location Name",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "totalBookingCount",
+      headerName: "Total Booking Count",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "totalTickets",
+      headerName: "Total Ticket Count",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `${params.value} ` || "N/A",
+    },
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => `₹${params.value} ` || "N/A",
+    },
+  ]);
   return (
     <div>
-      <h1 className='text-xl font-semibold'>Location Wise Report</h1>
+      <h1 className="text-xl font-semibold">Location Wise Report</h1>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
@@ -169,7 +182,7 @@ const LocationWiseReport = () => {
         ExportName="Location Wise Report"
       />
     </div>
-  )
-}
+  );
+};
 
-export default LocationWiseReport
+export default LocationWiseReport;
