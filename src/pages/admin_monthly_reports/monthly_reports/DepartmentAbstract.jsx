@@ -4,86 +4,90 @@ import { getCurrentDate } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../../components/tables/AgGridTable";
 
 const DepartmentAbstract = () => {
+  const{fetchDepartmentAbstractReport,DepartmentAbstractReport,isFetchDepartmentAbstractReportLoading}=UsemonthlyReportsStore()
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
   };
   const onSubmit = (values) => {
-    fetchAllDayPassReport({
+    fetchDepartmentAbstractReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
     });
   };
 
-  const data=[
+  const data = [
     {
-        DepartmentName: "Department 1",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 1",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
     {
-        DepartmentName: "Department 2",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 2",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
     {
-        DepartmentName: "Department 3",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 3",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
     {
-        DepartmentName: "Department 4",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 4",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
-    
+
     {
-        DepartmentName: "Department 5",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
-    },
-    {
-        DepartmentName: "Department 5",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 5",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
     {
-        DepartmentName: "Department 5",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 5",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
     {
-        DepartmentName: "Department 5",
-        LocationCount: 10,
-        ActiveLocations: 8,
-        InactiveLocations: 2,
+      DepartmentName: "Department 5",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
     },
-   
-   
-        ]
+    {
+      DepartmentName: "Department 5",
+      LocationCount: 10,
+      ActiveLocations: 8,
+      InactiveLocations: 2,
+    },
+  ];
 
   // Simple totals calculation
-  const totals = data.reduce((acc, row) => {
-    acc.LocationCount += row.LocationCount || 0;
-    acc.ActiveLocations += row.ActiveLocations || 0;
-    acc.InactiveLocations += row.InactiveLocations || 0;
-    return acc;
-  }, { LocationCount: 0, ActiveLocations: 0, InactiveLocations: 0 });
+  const totals = data.reduce(
+    (acc, row) => {
+      acc.LocationCount += row.LocationCount || 0;
+      acc.ActiveLocations += row.ActiveLocations || 0;
+      acc.InactiveLocations += row.InactiveLocations || 0;
+      return acc;
+    },
+    { LocationCount: 0, ActiveLocations: 0, InactiveLocations: 0 }
+  );
 
-  const pinnedBottomRowData = [{
-    SNo: "",
-    DepartmentName: "TOTAL",
-    LocationCount: totals.LocationCount,
-    ActiveLocations: totals.ActiveLocations,
-    InactiveLocations: totals.InactiveLocations,
-  }];
+  const pinnedBottomRowData = [
+    {
+      SNo: "",
+      DepartmentName: "TOTAL",
+      LocationCount: totals.LocationCount,
+      ActiveLocations: totals.ActiveLocations,
+      InactiveLocations: totals.InactiveLocations,
+    },
+  ];
 
   const [columnDefs] = useState([
     {
@@ -122,7 +126,7 @@ const DepartmentAbstract = () => {
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-        field: "InactiveLocations",
+      field: "InactiveLocations",
       headerName: "Inactive Locations",
 
       headerClass: "text-blue-v2",
