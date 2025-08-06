@@ -29,76 +29,24 @@ const DepartmentAbstract = () => {
     });
   };
 
-  const data = [
-    {
-      DepartmentName: "Department 1",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 2",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 3",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 4",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-
-    {
-      DepartmentName: "Department 5",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 5",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 5",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-    {
-      DepartmentName: "Department 5",
-      LocationCount: 10,
-      ActiveLocations: 8,
-      InactiveLocations: 2,
-    },
-  ];
-
   // Simple totals calculation
-  const totals = data.reduce(
+  const totals = DepartmentAbstractReport.reduce(
     (acc, row) => {
-      acc.LocationCount += row.LocationCount || 0;
-      acc.ActiveLocations += row.ActiveLocations || 0;
-      acc.InactiveLocations += row.InactiveLocations || 0;
+      acc.locationCount += row.locationCount || 0;
+      acc.activeLocations += row.activeLocations || 0;
+      acc.inactiveLocations += row.inactiveLocations || 0;
       return acc;
     },
-    { LocationCount: 0, ActiveLocations: 0, InactiveLocations: 0 }
+    { locationCount: 0, activeLocations: 0, inactiveLocations: 0 }
   );
 
   const pinnedBottomRowData = [
     {
       SNo: "",
-      DepartmentName: "TOTAL",
-      LocationCount: totals.LocationCount,
-      ActiveLocations: totals.ActiveLocations,
-      InactiveLocations: totals.InactiveLocations,
+      departmentName: "TOTAL",
+      locationCount: totals.locationCount,
+      activeLocations: totals.activeLocations,
+      inactiveLocations: totals.inactiveLocations,
     },
   ];
 
@@ -110,14 +58,14 @@ const DepartmentAbstract = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         // Return empty string for totals row
-        if (params.data && params.data.DepartmentName === "TOTAL") {
+        if (params.data && params.data.departmentName === "TOTAL") {
           return "";
         }
         return params.value;
       },
     },
     {
-      field: "DepartmentName",
+      field: "departmentName",
       headerName: "Department Name",
       width: 300,
       headerClass: "text-blue-v2",
@@ -125,21 +73,21 @@ const DepartmentAbstract = () => {
     },
 
     {
-      field: "LocationCount",
+      field: "locationCount",
       headerName: "Location Count",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "ActiveLocations",
+      field: "activeLocations",
       headerName: "Active Locations",
 
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "N/A",
     },
     {
-      field: "InactiveLocations",
+      field: "inactiveLocations",
       headerName: "Inactive Locations",
 
       headerClass: "text-blue-v2",
@@ -207,10 +155,12 @@ const DepartmentAbstract = () => {
         )}
       </Formik>
       <AgGridTable
-        rowData={data}
+        rowData={DepartmentAbstractReport}
         columnDefs={columnDefs}
-        pinnedBottomRowData={pinnedBottomRowData}
-        // isFetchLoading={isFetchAllallDayPassReportsLoading}
+        pinnedBottomRowData={
+          DepartmentAbstractReport.length > 0 ? pinnedBottomRowData : []
+        }
+        isFetchLoading={isFetchDepartmentAbstractReportLoading}
         ExportName="Department Abstract"
       />
     </div>
