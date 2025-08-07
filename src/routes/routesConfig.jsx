@@ -132,6 +132,9 @@ import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDe
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
 import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
+import AmrabadUserReport from "../pages/amrabad/amrabad_reports/amarabad_user/AmrabadUserReport";
+import AmarabadUserDetailedReport from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmarabadUserDetailedReport";
+import AmrabadUserTransactionsOrderTracker from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmrabadUserTransactionsOrderTracker";
 
 export const routes = [
   {
@@ -362,6 +365,10 @@ export const routes = [
     path: "/failed-transactions",
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },
+  {
+    path: "/amrabad-user-report",
+    element: <ProtectedRoute element={<AmrabadUserReport />} />,
+  },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
   // -----
@@ -581,6 +588,14 @@ export const routes = [
   {
     path: "/amrabad-availability-report",
     element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
+  },
+   {
+    path: "/amrabad-user-detailed-report",
+    element: <ProtectedRoute element={<AmarabadUserDetailedReport />} />,
+  },
+   {
+    path: "/amrabad-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />,
   },
   // metro transaction reports
 
