@@ -550,7 +550,7 @@ export const routes = [
     element: <AmrabadProtectRoute element={<BookingHistory />} />,
   },
   {
-    path: "/amarabad/ticket",
+    path: "/amarabad/ticket-view-details/:bookingId",
     element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
   },
   {
