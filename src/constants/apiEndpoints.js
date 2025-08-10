@@ -329,6 +329,7 @@ export const API_ENDPOINTS = {
       GET_USER_BOOKING_HISTORY:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetBookingHistory`,
       ADD_TO_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/AddToCart`,
       REMOVE_FROM_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/DeleteCartItem`,
+      CLEAR_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/DeleteAllCartItems`,
     }
   },
   FAILED_TRANSACTIONS: {
