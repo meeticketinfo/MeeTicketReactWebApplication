@@ -88,7 +88,7 @@ function AdminDashboard() {
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
-  console.log(AllDepartmentEntities, "alldepartmentEntities");
+  // console.log(AllDepartmentEntities, "alldepartmentEntities");
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: "",
@@ -648,7 +648,7 @@ function AdminDashboard() {
         {cardsToDisplay &&
           cardsToDisplay.map(
             (card, index) => (
-              console.log("card.isPopup", card.isPopup),
+              // console.log("card.isPopup", card.isPopup),
               (
                 <>
                   <DashboardCard01
