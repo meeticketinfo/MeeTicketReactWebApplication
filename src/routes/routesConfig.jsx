@@ -567,11 +567,11 @@ export const routes = [
     element: <ProtectedRoute element={<MainPackages/>} />,
   },
   { 
-    path: "/amrabad-consolidated-reports",
+    path: "/amrabad-booking-reports",
     element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
   },
     { 
-    path: "/amrabad-individual-reports",
+    path: "/amrabad-house-wise-reports",
     element: <ProtectedRoute element={<AmrabadIndividualReports/>} />,
   },
    { 

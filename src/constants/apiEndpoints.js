@@ -70,6 +70,7 @@ export const API_ENDPOINTS = {
       GET_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ForgotPINOTP`,
       VERIFY_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ValidateForgotPINOTP`,
       RESET_PIN:`${AMRABAD_API_BASE_URL}Authorization/ResetPIN`,
+     
     }
   },
   MASTERS: {
@@ -316,6 +317,27 @@ export const API_ENDPOINTS = {
     GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
     GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`,
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
+    AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
+    AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
+    // Filter endpoints for bookings
+    GET_AMRABAD_BOOKINGS_BY_FILTERS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByFilters`,
+    GET_AMRABAD_BOOKINGS_BY_DATE_RANGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByDateRange`,
+    GET_AMRABAD_BOOKINGS_BY_PAYMENT_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPaymentStatus`,
+    GET_AMRABAD_BOOKINGS_BY_BOOKING_SOURCE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByBookingSource`,
+    GET_AMRABAD_BOOKINGS_BY_PACKAGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPackage`,
+    GET_AMRABAD_BOOKINGS_BY_HOUSE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByHouse`,
+    GET_AMRABAD_BOOKINGS_BY_MOBILE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByMobile`,
+    GET_AMRABAD_BOOKINGS_BY_ORDER_ID:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByOrderId`,
+    GET_AMRABAD_BOOKINGS_BY_PAYMENT_MODE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPaymentMode`,
+    GET_AMRABAD_BOOKINGS_BY_BOOKING_MODE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByBookingMode`,
+    
+    // Utility endpoints for filter options
+    GET_AMRABAD_PACKAGE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPackageOptions`,
+    GET_AMRABAD_HOUSE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetHouseOptions`,
+    GET_AMRABAD_PAYMENT_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentModeOptions`,
+    GET_AMRABAD_BOOKING_SOURCE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
+    GET_AMRABAD_PAYMENT_STATUS_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
+    GET_AMRABAD_BOOKING_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
     },
     DASHBOARD:{
       GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

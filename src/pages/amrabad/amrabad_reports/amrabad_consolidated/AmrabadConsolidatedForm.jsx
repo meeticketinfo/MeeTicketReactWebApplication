@@ -1,6 +1,7 @@
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
+import { useAmrabadBookingStore } from "./store/amarabadBookingstore";
 const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const {
     fetchAmrabadConsolidatedReports,
@@ -8,6 +9,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
     setisAmrabadCompleteBookings,
     isAmrabadConsolidatedReportsLoading,
   } = useAmrabadConsolidatedStore();
+  const { allAmrabadBookings, fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-consolidated-report-filters")
   );
@@ -18,7 +20,12 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
       ? savedFilters.typeOfBooking
       : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-    // PaymentMode: savedFilters.PaymentMode || "",
+    package: savedFilters?.package ? savedFilters.package : "",
+    houses: savedFilters?.houses ? savedFilters.houses : "",
+    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+    paymentStatus: savedFilters?.paymentStatus ? savedFilters.paymentStatus : "",
+    PaymentMode: savedFilters?.PaymentMode ? savedFilters.PaymentMode : "",
+    modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -28,12 +35,17 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
       "amrabad-consolidated-report-filters",
       JSON.stringify(values)
     );
-    fetchAmrabadConsolidatedReports({
+    fetchAllAmrabadBookings({
       startDate: values.fromDate,
       endDate: values.toDate,
-      bookingSource: values.typeOfBooking ,
+      bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : "",
       PaymentMode: values.PaymentMode ? values.PaymentMode : "",
+      package: values.package ? values.package : "",
+      houses: values.houses ? values.houses : "",
+      orderId: values.orderId ? values.orderId : "",
+      paymentStatus: values.paymentStatus ? values.paymentStatus : "",
+      modeOfBooking: values.modeOfBooking ? values.modeOfBooking : "",
       PageIndex: PageIndex,
       pageSize: pageSize,
     });
@@ -88,7 +100,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
             </div>
             <div>
               <label className="block text-sm font-medium">
-                Type of Booking
+                Purchase / Booking
               </label>
               <Field
                 as="select"
@@ -96,9 +108,41 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">ALL</option>
+                <option value="">-- Select --</option>
                 <option value="Counter">Counter</option>
                 <option value="Mobile">Mobile</option>
+              </Field>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Package
+              </label>
+              <Field
+                as="select"
+                name="package"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">-- Select --</option>
+                <option value="Basic">Basic</option>
+                <option value="Premium">Premium</option>
+                <option value="VIP">VIP</option>
+              </Field>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Houses
+              </label>
+              <Field
+                as="select"
+                name="houses"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">Select</option>
+                <option value="House1">House 1</option>
+                <option value="House2">House 2</option>
+                <option value="House3">House 3</option>
               </Field>
             </div>
             <div>
@@ -106,20 +150,67 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 htmlFor="phoneNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Phone Number
+                Mobile number
               </label>
               <Field
                 type="text"
                 maxLength="10"
                 name="phoneNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
+                placeholder="Enter"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) {
                     e.preventDefault(); // Prevent non-numeric characters
                   }
                 }}
               />
+            </div>
+            <div>
+              <label
+                htmlFor="orderId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Order ID / Transaction ID
+              </label>
+              <Field
+                type="text"
+                name="orderId"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Payment status
+              </label>
+              <Field
+                as="select"
+                name="paymentStatus"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">-- Select --</option>
+                <option value="SUCCESS">Success</option>
+                <option value="PENDING">Pending</option>
+                <option value="FAILED">Failed</option>
+                <option value="REFUNDED">Refunded</option>
+              </Field>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Mode of booking
+              </label>
+              <Field
+                as="select"
+                name="modeOfBooking"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">-- Select --</option>
+                <option value="ONLINE">Online</option>
+                <option value="OFFLINE">Offline</option>
+                <option value="COUNTER">Counter</option>
+              </Field>
             </div>
             {/* payment mode */}
             <div>
@@ -165,7 +256,12 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                       toDate: getCurrentDate(),
                       typeOfBooking: "",
                       phoneNumber: "",
-                      PaymentMode:"",
+                      PaymentMode: "",
+                      package: "",
+                      houses: "",
+                      orderId: "",
+                      paymentStatus: "",
+                      modeOfBooking: "",
                     },
                   });
                 }}

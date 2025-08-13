@@ -184,7 +184,7 @@ export default function AmrabadConsolidatedBookingDetails() {
               {/* <PaymentQR /> */}
               <NavLink
                 end
-                to={"/amrabad-consolidated-reports" }
+                to={"/amrabad-bookingreports" }
                 onClick={() => {
                   // setisCompleteBookings(false)
                   setIsFirstStepTransaction(false);
