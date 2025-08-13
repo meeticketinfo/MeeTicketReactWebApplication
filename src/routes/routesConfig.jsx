@@ -132,6 +132,7 @@ import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDe
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
 import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
+import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
 
 export const routes = [
   {
@@ -631,5 +632,11 @@ export const routes = [
   {
     path: "/metro-total-traker",
     element: <ProtectedRoute element={<MetroTotalTracker />} />,
+  },
+
+  // amrabad total transaction reports
+  {
+    path: "/amarabad-total-transaction",
+    element: <ProtectedRoute element={<MainAmarabadTotalTransaction />} />,
   },
 ];

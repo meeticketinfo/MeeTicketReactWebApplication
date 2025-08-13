@@ -103,7 +103,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = 
       >
         <span className="text-lg sm:text-xl font-bold">₹{finalAmount.toLocaleString()}</span>
         {loadingAddToCart && <CgSpinner className="animate-spin" />}
-        <span className="text-sm sm:text-base">Continue</span>
+        <span className="text-sm sm:text-base">Add to Cart</span>
       </button>
     </>
   );
