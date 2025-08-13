@@ -8,6 +8,7 @@ export const useCartStore = create((set) => ({
   loadingCart: false,
   loadingAddToCart: false,
   loadingRemoveFromCart: false,
+  loadingClearCart: false,
 
   fetchCartItems: async () => {
     set({ loadingCart: true });
@@ -45,5 +46,18 @@ export const useCartStore = create((set) => ({
     finally {
       set({ loadingRemoveFromCart: false });
     }
-  }
+  },
+
+  clearCart: async () => {
+    set({ loadingClearCart: true });
+    try {
+      const response = await apiService.delete(API_ENDPOINTS.AMRABAD.USER.CLEAR_CART);
+      return response.data;
+    } catch (error) {
+      console.log(error, "error");
+      return error;
+    } finally {
+      set({ loadingClearCart: false });
+    }
+  },
 }));
