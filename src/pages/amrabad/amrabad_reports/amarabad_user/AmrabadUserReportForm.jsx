@@ -3,15 +3,15 @@ import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
 import { userReports } from "../../../../store/userTransaction/UserReports";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
+import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
 
-const AmrabadUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
+const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const {isFetchUserReport, fetchUserReport} = userReports();
-   const {
-      fetchAmrabadIndividualReports,
-      allAmrabadIndividualReports,
-      isAmrabadIndividualReportsLoading,
-    } = useAmrabadConsolidatedStore();
+
+  const {
+    isAmrabadUserReportsLoading,
+    fetchAmrabadUserReports,
+  } = useAmrabadUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -31,11 +31,12 @@ const AmrabadUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
     setSearchParams(newSearchParams);
     localStorage.setItem("userAmrabadReportSearchParams", newSearchParams);
 
-    fetchAmrabadIndividualReports({
+    fetchAmrabadUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
       PageIndex: PageIndex,
+      pageNumber:pageNumber,
       pageSize: pageSize,
     });
     SetcurrentPage(0)
@@ -52,7 +53,7 @@ const AmrabadUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
     setSearchParams(new URLSearchParams());
     localStorage.setItem("userAmrabadReportSearchParams", "");
     setValues(payload);
-    fetchAmrabadIndividualReports({...payload, PageIndex: PageIndex, pageSize: pageSize} );
+    fetchAmrabadUserReports({ ...payload, pageNumber: pageNumber, pageSize: pageSize });
     localStorage.setItem("userAmrabadReportSearchParams", "");
   };
 
@@ -130,7 +131,7 @@ const AmrabadUserReportForm = ({PageIndex, pageSize, SetcurrentPage}) => {
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isAmrabadIndividualReportsLoading}
+                disabled={isAmrabadUserReportsLoading}
               >
                 Search
               </button>

@@ -316,6 +316,9 @@ export const API_ENDPOINTS = {
     GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
     GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`,
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
+    GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
+    GET_USER_DETAILED_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
+    GET_TRANSACTION_TRACK_ORDER:`${AMRABAD_API_BASE_URL}Reports/ViewTransactionTrackOrder`,
     },
     DASHBOARD:{
       GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

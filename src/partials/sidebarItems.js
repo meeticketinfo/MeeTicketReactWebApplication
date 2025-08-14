@@ -471,6 +471,11 @@ const sidebarItems = [
         icon: MdEventAvailable,
         path: "/amrabad-user-report",
       },
+         {
+        title: "Refund Transaction Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-refund-transaction-report",
+      },
     ],
   },
 ];

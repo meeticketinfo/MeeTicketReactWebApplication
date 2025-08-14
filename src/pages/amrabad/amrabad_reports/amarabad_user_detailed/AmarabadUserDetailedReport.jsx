@@ -1,100 +1,36 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../utils/Helper"; 
+import ReactPaginate from "react-paginate";
 import Breadcrumb from "../../../../components/Breadcrumb";
-import MetroUserDetailedReportForm from "./AmrabadUserDetailedReportForm";
-
-// Dummy JSON data for Amrabad User Detailed Reports
-const dummyAmrabadUserDetailedReports = [
-  {
-    id: 1,
-    orderId: "ORD20240115001",
-    bookingId: "BK20240115001",
-    mobileNumber: "9876543210",
-    createdDate: "2024-01-15T10:30:00Z",
-    fromStationName: "Secunderabad Junction",
-    toStationName: "Hyderabad Deccan",
-    noOfTickets: 2,
-    initiateTxnAmount: 120.00,
-    transactionStatus: "SUCCESS",
-    resultStatus: "SUCCESS",
-    resultMessage: "Transaction completed successfully",
-    action: "View Track Order"
-  },
-  {
-    id: 2,
-    orderId: "ORD20240116001",
-    bookingId: "BK20240116001",
-    mobileNumber: "9876543210",
-    createdDate: "2024-01-16T14:45:00Z",
-    fromStationName: "Hyderabad Deccan",
-    toStationName: "Secunderabad Junction",
-    noOfTickets: 1,
-    initiateTxnAmount: 60.00,
-    transactionStatus: "SUCCESS",
-    resultStatus: "SUCCESS",
-    resultMessage: "Transaction completed successfully",
-    action: "View Track Order"
-  },
-  {
-    id: 3,
-    orderId: "ORD20240117001",
-    bookingId: "BK20240117001",
-    mobileNumber: "9876543210",
-    createdDate: "2024-01-17T09:15:00Z",
-    fromStationName: "Lingampally",
-    toStationName: "Secunderabad Junction",
-    noOfTickets: 3,
-    initiateTxnAmount: 180.00,
-    transactionStatus: "FAILED",
-    resultStatus: "FAILED",
-    resultMessage: "Payment gateway timeout",
-    action: "View Track Order"
-  },
-  {
-    id: 4,
-    orderId: "ORD20240118001",
-    bookingId: "BK20240118001",
-    mobileNumber: "9876543210",
-    createdDate: "2024-01-18T16:20:00Z",
-    fromStationName: "Secunderabad Junction",
-    toStationName: "Lingampally",
-    noOfTickets: 1,
-    initiateTxnAmount: 60.00,
-    transactionStatus: "SUCCESS",
-    resultStatus: "SUCCESS",
-    resultMessage: "Transaction completed successfully",
-    action: "View Track Order"
-  },
-  {
-    id: 5,
-    orderId: "ORD20240119001",
-    bookingId: "BK20240119001",
-    mobileNumber: "9876543210",
-    createdDate: "2024-01-19T11:30:00Z",
-    fromStationName: "Hyderabad Deccan",
-    toStationName: "Lingampally",
-    noOfTickets: 2,
-    initiateTxnAmount: 120.00,
-    transactionStatus: "PENDING",
-    resultStatus: "PENDING",
-    resultMessage: "Payment processing",
-    action: "View Track Order"
-  },
-];
+import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
+import AmrabadUserDetailedReportForm from "./AmrabadUserDetailedReportForm";
+import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
 
 const AmarabadUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
+  const fromDate = getStartOfCurrentDay();
+  const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const userReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
-  
-  // State for dummy data
-  const [dummyData, setDummyData] = useState(dummyAmrabadUserDetailedReports);
-  const [isLoading, setIsLoading] = useState(false);
-
+    const {
+    metroUserDetailedReport,
+    isFetchMetroUserDetailedReport,
+    fetchMetroUserDetailedReport,
+  } = metroUserReports();
+    const {
+      isAmrabadUserDetailedReportsLoading,
+      allAmrabadUserDetailedReports,
+      fetchAmrabadUserDetailedReports,
+    } = useAmrabadUserStore();
   const columnDefs =[
     {
       headerName: "S.No",
@@ -126,51 +62,59 @@ const AmarabadUserDetailedReport = () => {
         return `${formattedDate} ${formattedTime}`;
       },
     },
-        {
-      field: "mobileNumber",
-      headerName: "Order  ID",
-      maxWidth: "120",
+    {
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-     {
-      field: "mobileNumber",
-      headerName: "User Name",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          to={"/metro-user-transactions-order-tracker"}
+          state={{
+            orderId: params.data.orderId,
+            date: params.data.createdDate,
+            mobileNumber: params.data.mobileNumber,
+            status: params.data.resultStatus,
+            amount: params.data.initiateTxnAmount,
+            bookingId: params.data.bookingId,
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
     },
     {
       field: "mobileNumber",
-      headerName: "Mobile Number",
+      headerName: "Mobile No.",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "fromStationName",
-      headerName: "Package",
+      headerName: "From Station",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "toStationName",
-      headerName: "House name ",
+      headerName: "To Station",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "noOfTickets",
-      headerName: "Total Amount",
+      headerName: "Total Tickets",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "initiateTxnAmount",
-      headerName: "Ticket Status",
+      headerName: "Amount",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
@@ -178,7 +122,7 @@ const AmarabadUserDetailedReport = () => {
     },
     {
       field: "transactionStatus",
-      headerName: "Payment Status",
+      headerName: "Transaction Status",
       maxWidth: "220",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -189,7 +133,7 @@ const AmarabadUserDetailedReport = () => {
    
     {
       field: "orderId",
-      headerName: "Mode of Payment",
+      headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -207,55 +151,16 @@ const AmarabadUserDetailedReport = () => {
         <span title={params.value}>{params.value || "N/A"}</span>
       ),
     },
-     {
-      field: "action",
-      maxWidth: "180",
-      headerName: "Action",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <Link
-          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/amrabad-user-transactions-order-tracker"}
-          state={{
-            orderId: params.data.orderId,
-            date: params.data.createdDate,
-            mobileNumber: params.data.mobileNumber,
-            status: params.data.resultStatus,
-            amount: params.data.initiateTxnAmount,
-            bookingId: params.data.bookingId,
-          }}
-        >
-          View Track Order
-        </Link>
-      ),
-    },
-
   ]
 
   const loadUserReport = (page = 0) => {
-    // Simulate API loading
-    setIsLoading(true);
-    
-    // Simulate API delay
-    setTimeout(() => {
-      // Filter data based on search parameters if needed
-      let filteredData = [...dummyAmrabadUserDetailedReports];
-      
-      const mobileNumber = searchParams.get("mobileNumber");
-      if (mobileNumber) {
-        filteredData = filteredData.filter(item => 
-          item.mobileNumber.includes(mobileNumber)
-        );
-      }
-      
-      // Simulate pagination
-      const startIndex = page * PAGE_LIMIT;
-      const endIndex = startIndex + PAGE_LIMIT;
-      const paginatedData = filteredData.slice(startIndex, endIndex);
-      
-      setDummyData(paginatedData);
-      setIsLoading(false);
-    }, 500); // 500ms delay to simulate API call
+    fetchAmrabadUserDetailedReports({
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+      mobileNumber: searchParams.get("mobileNumber") || "",
+      pageNumber: page + 1, // convert zero-indexed to 1-indexed
+      pageSize: PAGE_LIMIT,
+    });
   };
 
   useEffect(() => {
@@ -269,7 +174,7 @@ const AmarabadUserDetailedReport = () => {
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/metro-user-report?${userReportSearchParams}`
+      path: `/amrabad-user-report?${userReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
@@ -300,21 +205,21 @@ const AmarabadUserDetailedReport = () => {
             </div>
           </div>
           <div>
-            <MetroUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
+            <AmrabadUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
             <AgGridTable
               ExportName="UserDetailedReport"
-              rowData={dummyData}
+              rowData={allAmrabadUserDetailedReports}
               columnDefs={columnDefs}
-              isFetchLoading={isLoading}
+              isFetchLoading={fetchAmrabadUserDetailedReports}
               IsReactPaginate={true}
               isPagination={false}
-              tableHeight={dummyData?.length > 10 ? 550 : 300}
+              tableHeight={allAmrabadUserDetailedReports?.length > 10 ? 550 : 300}
               setPageLimit={setPAGE_LIMIT}
               showTotalCount={true}
               pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
-              totalCount={dummyAmrabadUserDetailedReports.length}
+              totalCount={allAmrabadUserDetailedReports?.[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
             />
           </div>

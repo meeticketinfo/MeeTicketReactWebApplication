@@ -1,73 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import AdminLayout from "../../../../layouts/AdminLayout";
 import {
+  cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
 import AmrabadUserReportForm from "./AmrabadUserReportForm";
-import AdminLayout from "../../../../layouts/AdminLayout";
 import AgGridTable from "../../../../components/tables/AgGridTable";
-
-// Dummy JSON data for Amrabad User Reports
-const dummyAmrabadUserReports = {
-  data: [
-    {
-      id: 1,
-      phoneNumber: "9876543210",
-      createdDate: "2024-01-15T10:30:00Z",
-      userName: "John Doe",
-      email: "john.doe@example.com",
-      status: "Active"
-    },
-    {
-      id: 2,
-      phoneNumber: "9876543211",
-      createdDate: "2024-01-16T14:45:00Z",
-      userName: "Jane Smith",
-      email: "jane.smith@example.com",
-      status: "Active"
-    },
-    {
-      id: 3,
-      phoneNumber: "9876543212",
-      createdDate: "2024-01-17T09:15:00Z",
-      userName: "Mike Johnson",
-      email: "mike.johnson@example.com",
-      status: "Inactive"
-    },
-    {
-      id: 4,
-      phoneNumber: "9876543213",
-      createdDate: "2024-01-18T16:20:00Z",
-      userName: "Sarah Wilson",
-      email: "sarah.wilson@example.com",
-      status: "Active"
-    },
-    {
-      id: 5,
-      phoneNumber: "9876543214",
-      createdDate: "2024-01-19T11:30:00Z",
-      userName: "David Brown",
-      email: "david.brown@example.com",
-      status: "Active"
-    },
-  ],
-  totalCount: 5,
-  success: true,
-  message: "Data retrieved successfully"
-};
+import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
 
 const AmrabadUserReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
+  const {
+    isAmrabadUserReportsLoading,
+    allAmrabadUserReports,
+    fetchAmrabadUserReports,
+  } = useAmrabadUserStore();
   const [currentPage, setCurrentPage] = useState(0);
+
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-
-  // State for dummy data
-  const [dummyData, setDummyData] = useState(dummyAmrabadUserReports);
-  const [isLoading, setIsLoading] = useState(false);
-
   const columnDefs = [
     {
       headerName: "S.No",
@@ -77,7 +31,7 @@ const AmrabadUserReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "phoneNumber",
+      field: "mobileNumber",
       // maxWidth: 120,
       flex: 1,
       headerName: "Mobile No.",
@@ -85,7 +39,7 @@ const AmrabadUserReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "createdDate",
+      field: "registration",
       // maxWidth: 200,
       flex: 1,
       headerName: "Registration Date",
@@ -114,57 +68,52 @@ const AmrabadUserReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/amrabad-user-detailed-report?mobileNumber=${
-            params.data.phoneNumber
-          }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${
-            searchParams.get("toDate") || toDate
-          }`}
+          to={`/amrabad-user-detailed-report?mobileNumber=${params.data.mobileNumber
+            }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
+            }`}
           onClick={() => {
-            localStorage.setItem(
-              "userAmrabadReportSearchParams",
-              `mobileNumber=${
-                searchParams.get("mobileNumber") ? params.data.phoneNumber : ""
-              }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${
-                searchParams.get("toDate") || toDate
-              }`
-            );
+            localStorage.setItem("userAmrabadReportSearchParams", `mobileNumber=${searchParams.get("mobileNumber") ? params.data.phoneNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+
           }}
         >
           View Transaction
         </Link>
       ),
     },
-  ];
+    {
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          to={"/amrabad-view-transaction-track-order"}
+          state={{
+            orderId: params.data.orderId,
+            date: params.data.createdDate,
+            mobileNumber: params.data.mobileNumber,
+            parkName: params.data.locationName,
+            status: params.data.transactionStatus,
+            amount: params.data.amount,
+            bookingId: params.data.bookingId,
+            // backTitle: title()
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
+    },
+  ]
 
   const loadUserReport = (page = 0) => {
-    // Simulate API loading
-    setIsLoading(true);
-    
-    // Simulate API delay
-    setTimeout(() => {
-      // Filter data based on search parameters if needed
-      let filteredData = [...dummyAmrabadUserReports.data];
-      
-      const mobileNumber = searchParams.get("mobileNumber");
-      if (mobileNumber) {
-        filteredData = filteredData.filter(item => 
-          item.phoneNumber.includes(mobileNumber)
-        );
-      }
-      
-      // Simulate pagination
-      const startIndex = page * PAGE_LIMIT;
-      const endIndex = startIndex + PAGE_LIMIT;
-      const paginatedData = filteredData.slice(startIndex, endIndex);
-      
-      setDummyData({
-        ...dummyAmrabadUserReports,
-        data: paginatedData,
-        totalCount: filteredData.length
-      });
-      
-      setIsLoading(false);
-    }, 500); // 500ms delay to simulate API call
+    fetchAmrabadUserReports({
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+      mobileNumber: searchParams.get("mobileNumber") || "",
+      pageNumber: page + 1, // convert zero-indexed to 1-indexed
+      pageSize: PAGE_LIMIT,
+    });
   };
 
   useEffect(() => {
@@ -185,27 +134,21 @@ const AmrabadUserReport = () => {
             </h1>
           </div>
         </div>
-        <AmrabadUserReportForm
-          PageIndex={1}
-          pageSize={PAGE_LIMIT}
-          SetcurrentPage={setCurrentPage}
-        />
+        <AmrabadUserReportForm PageIndex={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={dummyData?.data}
+            rowData={allAmrabadUserReports}
             columnDefs={columnDefs}
-            isFetchLoading={isLoading}
+            isFetchLoading={isAmrabadUserReportsLoading}
             isPagination={false}
-            tableHeight={
-              dummyData?.data?.length > 10 ? 560 : 330
-            }
+            tableHeight={allAmrabadUserReports?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={dummyData?.totalCount}
+            totalCount={allAmrabadUserReports?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
           />

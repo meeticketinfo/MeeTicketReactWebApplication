@@ -7,6 +7,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
 import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
+import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
 
 const AmrabadUserDetailedReportForm = ({
   pageNumber,
@@ -17,6 +18,11 @@ const AmrabadUserDetailedReportForm = ({
   // const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
   const { isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport } =
     metroUserReports();
+   const {
+        isAmrabadUserDetailedReportsLoading,
+        allAmrabadUserDetailedReports,
+        fetchAmrabadUserDetailedReports,
+      } = useAmrabadUserStore();
 
   useEffect(() => {
     if (searchParams.toString()) {
@@ -53,7 +59,7 @@ const AmrabadUserDetailedReportForm = ({
     setSearchParams(newSearchParams);
     localStorage.setItem("userAmrabadDetailedReportSearchParams", newSearchParams);
 
-    fetchMetroUserDetailedReport({
+    fetchAmrabadUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
@@ -137,7 +143,7 @@ const AmrabadUserDetailedReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchMetroUserDetailedReport}
+                disabled={isAmrabadUserDetailedReportsLoading}
               >
                 Search
               </button>

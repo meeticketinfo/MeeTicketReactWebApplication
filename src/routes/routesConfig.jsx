@@ -135,6 +135,9 @@ import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/a
 import AmrabadUserReport from "../pages/amrabad/amrabad_reports/amarabad_user/AmrabadUserReport";
 import AmarabadUserDetailedReport from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmarabadUserDetailedReport";
 import AmrabadUserTransactionsOrderTracker from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmrabadUserTransactionsOrderTracker";
+import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/reports/MainAmarabadRefundTransactions";
+import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
+import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
 
 export const routes = [
   {
@@ -574,6 +577,10 @@ export const routes = [
     element: <ProtectedRoute element={<MainPackages/>} />,
   },
   { 
+    path: "/amrabad-view-transaction-track-order",
+    element: <ProtectedRoute element={<AmrabadViewTransactionTrackOrder/>} />,
+  },
+  { 
     path: "/amrabad-consolidated-reports",
     element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
   },
@@ -596,6 +603,14 @@ export const routes = [
    {
     path: "/amrabad-user-transactions-order-tracker",
     element: <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-report",
+    element: <ProtectedRoute element={<MainAmarabadRefundTransactions />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-inner-report",
+    element: <ProtectedRoute element={<AmrabadRefundTransactionsReport />} />,
   },
   // metro transaction reports
 
