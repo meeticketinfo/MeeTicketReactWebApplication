@@ -13,7 +13,7 @@ const CheckoutDetailsShimmer = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="p-2 sm:p-4 md:p-8 bg-[#F6F7FB]">
+      <div className="p-2 sm:p-4 bg-[#F6F7FB]">
         {/* Breadcrumb Shimmer */}
         <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
           {[1, 2, 3, 4].map((item) => (
@@ -83,7 +83,7 @@ const CheckoutDetailsShimmer = () => {
           </div>
 
           {/* Right: Cart Total Shimmer */}
-          <div className="w-full lg:max-w-[400px]">
+          <div className="w-full lg:max-w-[300px]">
             <div className="bg-[#F6F7FB] rounded-lg p-4 sm:p-6">
               <div className="h-6 bg-gray-300 rounded animate-shimmer-wave w-24 mb-4"></div>
               <div className="space-y-2 mb-6">

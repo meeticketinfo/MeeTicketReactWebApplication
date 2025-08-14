@@ -14,7 +14,10 @@ export const usePackagesStore = create((set) => ({
   saveHouseDetailsError: null,
   isSavePackageWithRoomLoading: false,
   isUpdatePackageLoading: false,
-
+  AllPackages:[],
+  isAllPackagesLoading:false,
+  AllHouses:[],
+  isAllHousesLoading:false,
   setHouseEditDetails: (houseEditDetails) => {
     set({ houseEditDetails });
   },
@@ -114,6 +117,39 @@ export const usePackagesStore = create((set) => ({
       set({
         saveHouseDetailsError: error.message,
         isUpdatePackageLoading: false,
+      });
+    }
+  },
+
+  // get packages
+  getPackages: async () => {
+    set({ isAllPackagesLoading: true });
+    try {
+      const response = await apiService.get(API_ENDPOINTS.AMRABAD.MASTERS.GET_PACKAGES);
+      set({
+        AllPackages: response.data,
+        isAllPackagesLoading: false,
+      });
+    } catch (error) {
+      set({
+        isAllPackagesLoading: false,
+        AllPackages:[]
+      });
+    }
+  },
+  // get houses
+  getHouses: async (packageId) => {
+    set({ isAllHousesLoading: true });
+    try {
+      const response = await apiService.get(`${API_ENDPOINTS.AMRABAD.MASTERS.GET_HOUSES}?packageId=${packageId}`);
+      set({
+        AllHouses: response.data,
+        isAllHousesLoading: false,
+      });
+    } catch (error) {
+      set({
+        isAllHousesLoading: false,
+        AllHouses:[]
       });
     }
   },

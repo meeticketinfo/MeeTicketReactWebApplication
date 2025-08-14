@@ -138,6 +138,7 @@ import AmrabadUserTransactionsOrderTracker from "../pages/amrabad/amrabad_report
 import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/reports/MainAmarabadRefundTransactions";
 import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
 import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
+import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
 
 export const routes = [
   {
@@ -661,5 +662,11 @@ export const routes = [
   {
     path: "/metro-total-traker",
     element: <ProtectedRoute element={<MetroTotalTracker />} />,
+  },
+
+  // amrabad total transaction reports
+  {
+    path: "/amarabad-total-transaction",
+    element: <ProtectedRoute element={<MainAmarabadTotalTransaction />} />,
   },
 ];

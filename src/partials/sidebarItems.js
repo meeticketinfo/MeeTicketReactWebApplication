@@ -476,6 +476,11 @@ const sidebarItems = [
         icon: MdEventAvailable,
         path: "/amrabad-refund-transaction-report",
       },
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/amarabad-total-transaction",
+      },
     ],
   },
 ];

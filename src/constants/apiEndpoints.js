@@ -310,11 +310,13 @@ export const API_ENDPOINTS = {
        GET_ALL_PACKAGES:`${AMRABAD_API_BASE_URL}Master/GetAllPackages`,
        ADD_PACKAGE_WITH_ROOM:`${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
        UPDATE_PACKAGE:`${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
+       GET_PACKAGES:`${AMRABAD_API_BASE_URL}Reports/GetAllPackages`,
+       GET_HOUSES:`${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
     },
     REPORTS:{
     GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
     GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
-    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionReportResult`,
+    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/PaymentTransactionsReport`,
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
     GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
     GET_USER_DETAILED_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
@@ -332,6 +334,7 @@ export const API_ENDPOINTS = {
       GET_USER_BOOKING_HISTORY:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetBookingHistory`,
       ADD_TO_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/AddToCart`,
       REMOVE_FROM_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/DeleteCartItem`,
+      CLEAR_CART:`https://meeticketdevui.vmaxtechservices.help/amrabad/DeleteAllCartItems`,
       GET_TICKET_VIEW_DETAILS:`https://meeticketdevui.vmaxtechservices.help/amrabad/ViewTicket`,
     }
   },
