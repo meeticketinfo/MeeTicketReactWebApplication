@@ -3,41 +3,123 @@ import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
 import { convertTo12HourFormat } from "../../../../utils/Helper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 
-const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
-  // console.log("houses", houses);
-  
+const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, toDate }) => {
+  console.log(userPackage,"userPackage");
+
   // Check if houses array is empty or undefined
   const hasHouses = houses && houses.length > 0;
-  
+
+  const formatDate = (date) => {
+    const dateObj = new Date(date);
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const weekday = weekdays[dateObj.getDay()];
+    const day = dateObj.getDate();
+    const month = months[dateObj.getMonth()];
+    
+    return `${weekday}, ${day} ${month}`;
+  };
+
   return (
     <>
-      <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6 pb-4">
         {isRoomsByPackageIdLoading ? (
-          // Loading state - show shimmer effects
-          <div className="flex flex-col items-center justify-center py-12 px-4">
-            <div className="text-center max-w-md w-full">
-              {/* Loading house icon with shimmer */}
-              <div className="mb-6 flex justify-center">
-                <div className="h-16 w-16 bg-gray-200 rounded-lg animate-pulse"></div>
+          // Loading state - show shimmer effects matching the house card layout
+          Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col lg:flex-row bg-white rounded-xl p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
+            >
+              {/* Left Column - Image Placeholder with Shimmer */}
+              <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full">
+                <div className="aspect-square w-full rounded-lg bg-gray-100 flex items-center justify-center">
+                  {/* House icon placeholder */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-12 w-12 text-gray-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                    />
+                  </svg>
+                </div>
               </div>
-              
-              {/* Loading title with shimmer */}
-              <div className="mb-2">
-                <div className="h-6 bg-gray-200 rounded animate-pulse mx-auto w-48"></div>
+
+              {/* Right Column - Content with Shimmer */}
+              <div className="flex-1 flex flex-col justify-between min-w-0">
+                <div>
+                  {/* Title and Price */}
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      {/* Title shimmer */}
+                      <div className="h-6 sm:h-7 md:h-8 bg-gray-200 rounded animate-pulse mb-2 w-3/4"></div>
+
+                      {/* Check-in/out shimmer */}
+                      <div className="bg-[#EEEDFAB0] rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
+                        <div className="flex-1">
+                          <div className="text-[#79787E] text-xs mb-1">
+                            Check-In Time:
+                          </div>
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                        </div>
+                        <div className="flex items-center justify-center text-[#79787E] text-3xl">
+                          <span className="hidden sm:inline-block">
+                            <IoArrowForwardCircleOutline />
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-[#79787E] text-xs mb-1">
+                            Check-Out Time:
+                          </div>
+                          <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      {/* Price shimmer */}
+                      <div className="h-6 sm:h-7 md:h-8 bg-gray-200 rounded animate-pulse w-20 mb-1"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-16"></div>
+                    </div>
+                  </div>
+
+                  {/* Overview */}
+                  <div className="mt-3 sm:mt-4">
+                    <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
+                      Overview:
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-full"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                      <div className="h-3 bg-gray-200 rounded animate-pulse w-4/6"></div>
+                    </div>
+                  </div>
+
+                  {/* Special Offer */}
+                  <div className="mt-3 sm:mt-4">
+                    <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
+                      Special Offer:
+                    </div>
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                  </div>
+                </div>
+
+                {/* Book Now Button shimmer */}
+                <div className="mt-3 sm:mt-4">
+                  <div className="w-full sm:w-auto min-w-[160px] h-10 sm:h-12 bg-gray-200 rounded-lg sm:rounded-xl animate-pulse"></div>
+                </div>
               </div>
-              
-              {/* Loading description with shimmer */}
-              <div className="mb-6 space-y-2">
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-full"></div>
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4 mx-auto"></div>
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2 mx-auto"></div>
-              </div>
-              
-              {/* Loading button with shimmer */}
-              <div className="inline-flex items-center gap-2 bg-gray-200 py-3 px-6 rounded-lg animate-pulse w-32 h-10"></div>
             </div>
-          </div>
+          ))
         ) : !hasHouses ? (
           // No houses available message
           <div className="flex flex-col items-center justify-center py-12 px-4">
@@ -59,7 +141,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
                   />
                 </svg>
               </div>
-              
+
               {/* Message */}
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
                 No Houses Available
@@ -67,10 +149,10 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
               <p className="text-gray-500 mb-6">
                 Currently there are no houses available for booking. Please check back later or explore other options.
               </p>
-              
+
               {/* Button to Amarabad page */}
               <Link
-                to="/amarabad/packages"
+                to="/amrabad/packages"
                 className="inline-flex items-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 <span>Go to Packages</span>
@@ -95,87 +177,101 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
           houses?.map((house, idx) => (
             <div
               key={idx}
-              className="flex flex-col lg:flex-row bg-white rounded-xl p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
+              className="bg-white rounded-xl p-3 sm:p-4 space-y-4"
             >
-              {/* Image */}
-              <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full">
-                {house?.images?.[0]?.imageUrl ? (
-                  <img
-                    src={house.images[0].imageUrl}
-                    alt={house?.images || "House image"}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.style.display = "none";
-                      e.target.nextSibling.style.display = "flex"; // show SVG fallback
-                    }}
-                    className="aspect-square w-full object-cover rounded-lg"
-                  />
-                ) : null}
-
-                {/* Inline SVG fallback */}
-                <div
-                  className="aspect-square w-full rounded-lg bg-gray-100 flex items-center justify-center text-gray-400"
-                  style={{
-                    display:
-                      house?.images?.[0]?.imageUrl === undefined
-                        ? "flex"
-                        : "none",
-                  }}
-                >
-                  {/* Sample house SVG icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-12 w-12"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
-                    />
-                  </svg>
+              <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6">
+                {/* Image */}
+                <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full relative">
+                  <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg">
+                    Available House : <b>{house?.noOfHousesAvailable}</b>
+                  </span>
+                  {house?.images?.length > 0 ? (
+                    <>
+                      <img
+                        src={house.images[0]}
+                        alt={house?.roomName}
+                        className="aspect-square w-full object-cover rounded-lg"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex"; // show SVG fallback
+                        }}
+                      />
+                      {/* Fallback dummy image */}
+                      <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center" style={{ display: 'none' }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-12 w-12 text-gray-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                          />
+                        </svg>
+                      </div>
+                    </>
+                  ) : (
+                    // No images available - show dummy image
+                    <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-12 w-12 text-gray-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </div>
-              </div>
-              {/* Content */}
-              <div className="flex-1 flex flex-col justify-between min-w-0">
-                <div>
-                  {/* Title and Price */}
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
-                    <div className="flex-1 min-w-0">
-                      <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#333333] truncate">
-                        {house?.roomName}
-                      </h2>
-                      {/* Check-in/out */}
-                      <div className="bg-[#EEEDFAB0] text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
-                        <div className="flex-1">
-                          <div className="text-[#79787E] text-xs mb-1">
-                            Check-In Time:
+                {/* Content */}
+                <div className="flex-1 flex flex-col justify-between min-w-0">
+                  <div>
+                    {/* Title and Price */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                      <div className="flex-1 min-w-0">
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-[#333333] truncate">
+                          {house?.roomName}
+                        </h2>
+                        {/* Check-in/out */}
+                        <div className="bg-[#EEEDFAB0] text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
+                          <div className="flex-1">
+                            <div className="text-[#79787E] text-xs mb-1">
+                              Check-In Time:
+                            </div>
+                            <div className="font-bold text-[#272628] text-sm">
+                              {convertTo12HourFormat(userPackage?.checkInTime)}
+                            </div>
                           </div>
-                          <div className="font-bold text-[#272628] text-sm">
-                            {convertTo12HourFormat(userPackage?.checkInTime)}
+                          <div className="flex items-center justify-center text-[#79787E] text-3xl">
+                            <span className="hidden sm:inline-block">
+                              <IoArrowForwardCircleOutline />
+                            </span>
                           </div>
-                        </div>
-                        <div className="flex items-center justify-center text-[#79787E] text-3xl">
-                          <span className="hidden sm:inline-block">
-                            <IoArrowForwardCircleOutline />
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-[#79787E] text-xs mb-1">
-                            Check-Out Time:
-                          </div>
-                          <div className="font-bold text-[#272628] text-sm">
-                            {convertTo12HourFormat(userPackage?.checkOutTime)} (Next Day)
-                          </div>
+                          <div className="flex-1">
+                            <div className="text-[#79787E] text-xs mb-1">
+                              Check-Out Time:
+                            </div>
+                            <div className="font-bold text-[#272628] text-sm">
+                              {convertTo12HourFormat(userPackage?.checkOutTime)} (Next Day)
+                            </div>
                         </div>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
                       <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#362D86]">
-                        ₹{house.tariffPerDay}
+                          ₹{house?.tariffPerDay?.toLocaleString()}
                       </span>
                       <div className="text-[#5A5961] text-xs sm:text-sm">
                         / 2 Guests
@@ -187,7 +283,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
                     <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
                       Overview:
                     </div>
-                    <div className="text-[#828285]  font-semibold sm:text-xs leading-relaxed">
+                      <div className="text-[#828285]  font-semibold text-xs leading-relaxed">
                       {house?.overview}
                       {/* <ul className="list-disc pl-4 mt-1 text-xs">
                         <li>
@@ -202,15 +298,16 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
                     <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
                       Special Offer:
                     </div>
-                    <div className="text-[#828285] font-semibold sm:text-xs">
+                      <div className="text-[#828285] font-semibold text-xs">
                       {house?.specialOffers}
-                    </div>
+                      </div>
                   </div>
                 </div>
                 {/* Book Now Button */}
                 <div className="mt-4 sm:mt-6">
                   <Link
-                    to={`/amarabad/book-now/${house?.packageId}/${house?.roomId}`}
+                      to={`/amrabad/book-now/${house?.packageId}/${house?.roomId}`}
+                      state={{fromDate: fromDate, toDate: toDate}}
                     className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                   >
                     Book Now
@@ -233,9 +330,91 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage }) => {
                 </div>
               </div>
             </div>
+              
+              {/* Calendar Slider with Navigation */}
+                
+                <div className="relative">
+                  <Swiper
+                    spaceBetween={8}
+                    slidesPerView={"auto"}
+                    navigation={true}
+                    modules={[Navigation]}
+                    className="calendar-swiper"
+                  >
+                    {house?.calendar?.map((item, idx) => (
+                      <SwiperSlide key={idx} className="!w-auto">
+                        <Link to={`/amrabad/book-now/${house?.packageId}/${house?.roomId}`} state={{fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date}} 
+                        className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block">
+                          
+                          {/* Date */}
+                          <div className="text-center">
+                            <div className="text-xs font-bold text-gray-800 mb-1">
+                              {formatDate(item?.date)}
+                            </div>
+                            
+                            {/* Availability and Price */}
+                            <div className="flex items-center gap-2">
+                              <div className={`
+                                text-xs font-bold
+                                ${item?.housesLeft <= 2 
+                                  ? ' text-red-700' 
+                                  : ' text-green-700'
+                                }
+                              `}>
+                                {item?.housesLeft} Left
+                              </div>
+                              
+                              <div className="text-xs font-medium text-gray-500">
+                                ₹{item?.price?.toLocaleString()}/-
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+            </div>
           ))
         )}
       </div>
+
+      <style jsx>{`
+        .calendar-swiper .swiper-button-next,
+        .calendar-swiper .swiper-button-prev {
+          color: #362D86;
+          background: white;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+          transition: all 0.2s ease;
+          opacity: 0;
+        }
+        
+        .calendar-swiper:hover .swiper-button-next,
+        .calendar-swiper:hover .swiper-button-prev {
+          opacity: 1;
+        }
+        
+        .calendar-swiper .swiper-button-next:after,
+        .calendar-swiper .swiper-button-prev:after {
+          font-size: 12px;
+          font-weight: bold;
+        }
+        
+        .calendar-swiper .swiper-button-next:hover,
+        .calendar-swiper .swiper-button-prev:hover {
+          background: #362D86;
+          color: white;
+          transform: scale(1.05);
+        }
+        
+        .calendar-swiper .swiper-button-disabled {
+          opacity: 0;
+          pointer-events: none;
+        }
+      `}</style>
     </>
   );
 };

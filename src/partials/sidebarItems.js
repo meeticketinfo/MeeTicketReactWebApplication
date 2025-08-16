@@ -447,14 +447,14 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Consolidated Reports",
+        title: "Booking Reports",
         icon: TbReportSearch,
-        path: "/amrabad-consolidated-reports",
+        path: "/amrabad-booking-reports",
       },
       {
-        title: "Individual Reports",
+        title: "House Wise Reports",
         icon: RiDashboard3Fill,
-        path: "/amrabad-individual-reports",
+        path: "/amrabad-house-wise-reports",
       },
       {
         title: "Payment Transactions",

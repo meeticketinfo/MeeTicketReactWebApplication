@@ -6,16 +6,19 @@ import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
 
 // Main Booking Form Component
-export const BookingForm = ({ packageId, houseId, house, isUserPackagesLoading }) => {
+export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
   const { GetCalendar, isCalendarLoading, fetchCalendar } = useUserBookingStore();
 
   useEffect(() => {
     fetchCalendar(packageId, houseId);
   }, [packageId, houseId]);
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(new Date(fromDate));
   const [endDate, setEndDate] = useState(() => {
-    const tomorrow = new Date();
+    const tomorrow = new Date(toDate);
+    if(toDate){
+      return new Date(toDate);
+    }
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow;
   });
@@ -99,7 +102,13 @@ export const BookingForm = ({ packageId, houseId, house, isUserPackagesLoading }
     
     // Apply discount if available
     if (house?.hasDiscount && house?.discountValue) {
-      discountAmount = house?.discountValue
+      if (house?.discountType === "Percentage") {
+        // Calculate percentage-based discount
+        discountAmount = Math.round((subtotal * house?.discountValue) / 100);
+      } else {
+        // Fixed amount discount
+        discountAmount = house?.discountValue;
+      }
     }
     
     const finalAmount = subtotal - discountAmount;
@@ -126,8 +135,10 @@ export const BookingForm = ({ packageId, houseId, house, isUserPackagesLoading }
   };
 
   const handleHouseCountChange = (increment) => {
-    const newCount = Math.max(0, houseCount + increment);
-    if (newCount > 0) {
+    const maxAvailable = house?.noOfHousesAvailable || Infinity;
+    const newCount = Math.max(1, Math.min(maxAvailable, houseCount + increment));
+    
+    if (newCount !== houseCount) {
       setHouseCount(newCount);
       calculatePricing(startDate, endDate, newCount);
     }
@@ -232,13 +243,15 @@ export const BookingForm = ({ packageId, houseId, house, isUserPackagesLoading }
         {/* Number of Houses */}
         <HouseCounter 
           houseCount={houseCount} 
-          onHouseCountChange={handleHouseCountChange} 
+          onHouseCountChange={handleHouseCountChange}
+          maxHouses={house?.noOfHousesAvailable}
         />
 
         {/* Booking Summary */}
         <BookingSummary 
           houseCount={houseCount}
           house={house}
+          userPackage={userPackage}
           startDate={startDate}
           endDate={endDate}
           discount={discount}
