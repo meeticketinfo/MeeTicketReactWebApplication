@@ -80,30 +80,7 @@ const AmrabadUserReport = () => {
         </Link>
       ),
     },
-    {
-      field: "action",
-      maxWidth: "180",
-      headerName: "Action",
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <Link
-          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/amrabad-view-transaction-track-order"}
-          state={{
-            orderId: params.data.orderId,
-            date: params.data.createdDate,
-            mobileNumber: params.data.mobileNumber,
-            parkName: params.data.locationName,
-            status: params.data.transactionStatus,
-            amount: params.data.amount,
-            bookingId: params.data.bookingId,
-            // backTitle: title()
-          }}
-        >
-          View Track Order
-        </Link>
-      ),
-    },
+  
   ]
 
   const loadUserReport = (page = 0) => {

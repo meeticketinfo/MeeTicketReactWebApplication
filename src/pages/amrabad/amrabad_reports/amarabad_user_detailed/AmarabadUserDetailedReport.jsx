@@ -7,12 +7,12 @@ import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
-} from "../../../../utils/Helper"; 
+} from "../../../../utils/Helper";
 import ReactPaginate from "react-paginate";
 import Breadcrumb from "../../../../components/Breadcrumb";
-import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 import AmrabadUserDetailedReportForm from "./AmrabadUserDetailedReportForm";
 import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
 const AmarabadUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
@@ -20,18 +20,13 @@ const AmarabadUserDetailedReport = () => {
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-  const userReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
-    const {
-    metroUserDetailedReport,
-    isFetchMetroUserDetailedReport,
-    fetchMetroUserDetailedReport,
-  } = metroUserReports();
-    const {
-      isAmrabadUserDetailedReportsLoading,
-      allAmrabadUserDetailedReports,
-      fetchAmrabadUserDetailedReports,
-    } = useAmrabadUserStore();
-  const columnDefs =[
+  const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
+  const {
+    isAmrabadUserDetailedReportsLoading,
+    allAmrabadUserDetailedReports,
+    fetchAmrabadUserDetailedReports,
+  } = useAmrabadUserStore();
+  const columnDefs = [
     {
       headerName: "S.No",
       valueGetter: (params) => {
@@ -42,9 +37,9 @@ const AmarabadUserDetailedReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "createdDate",
+      field: "purchaseDate",
       maxWidth: "200",
-      headerName: "Transaction Date & Time",
+      headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -70,19 +65,27 @@ const AmarabadUserDetailedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-user-transactions-order-tracker"}
+          to={"/amrabad-user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.createdDate,
+            date: params.data.purchaseDate,
             mobileNumber: params.data.mobileNumber,
-            status: params.data.resultStatus,
-            amount: params.data.initiateTxnAmount,
+            packageName: params.data.packageName,
+            status: params.data.transactionStatus,
+            amount: params.data.amount,
             bookingId: params.data.bookingId,
+            // backTitle: title(),
           }}
         >
           View Track Order
         </Link>
       ),
+    },
+    {
+      field: "orderId",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "mobileNumber",
@@ -92,48 +95,44 @@ const AmarabadUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "fromStationName",
-      headerName: "From Station",
+      field: "packageName",
+      headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "houseName",
+      headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "noOfTickets",
-      headerName: "Total Tickets",
+      field: "amount",
+      headerName: "Total Amount",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "initiateTxnAmount",
-      headerName: "Amount",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "transactionStatus",
-      headerName: "Transaction Status",
-      maxWidth: "220",
+      field: "paymentStatus",
+      headerName: "Payment Status",
+      maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
     },
-   
     {
-      field: "orderId",
-      headerName: "Order ID",
+      field: "actualPaymentStatus",
+      headerName: "Ticket Status",
+      maxWidth: "160",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "modeOfBooking",
+      headerName: "Payment Mode",
+      maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -152,12 +151,13 @@ const AmarabadUserDetailedReport = () => {
       ),
     },
   ]
-
   const loadUserReport = (page = 0) => {
     fetchAmrabadUserDetailedReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       mobileNumber: searchParams.get("mobileNumber") || "",
+      packageId: searchParams.get("packageId") || "",
+      houseId: searchParams.get("houseId") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -174,7 +174,7 @@ const AmarabadUserDetailedReport = () => {
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/amrabad-user-report?${userReportSearchParams}`
+      path: `/amrabad-user-report?${userAmrabadReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
@@ -197,7 +197,7 @@ const AmarabadUserDetailedReport = () => {
             </div>
             <div className="">
               <Link
-                to={`/amrabad-user-report?${userReportSearchParams}`}
+                to={`/amrabad-user-report?${userAmrabadReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -205,12 +205,12 @@ const AmarabadUserDetailedReport = () => {
             </div>
           </div>
           <div>
-            <AmrabadUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage}  />
+            <AmrabadUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage} />
             <AgGridTable
               ExportName="UserDetailedReport"
               rowData={allAmrabadUserDetailedReports}
               columnDefs={columnDefs}
-              isFetchLoading={fetchAmrabadUserDetailedReports}
+              isFetchLoading={isAmrabadUserDetailedReportsLoading}
               IsReactPaginate={true}
               isPagination={false}
               tableHeight={allAmrabadUserDetailedReports?.length > 10 ? 550 : 300}

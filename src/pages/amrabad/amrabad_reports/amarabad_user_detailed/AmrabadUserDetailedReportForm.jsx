@@ -6,8 +6,8 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
-import { metroUserReports } from "../../../../store/metro_user_reports_store/MetroUserReportStore";
 import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
 const AmrabadUserDetailedReportForm = ({
   pageNumber,
@@ -15,14 +15,24 @@ const AmrabadUserDetailedReportForm = ({
   setcurrentPage,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const {isFetchUserDetailedReport, fetchUserDetailedReport} = userReports();
-  const { isFetchMetroUserDetailedReport, fetchMetroUserDetailedReport } =
-    metroUserReports();
-   const {
-        isAmrabadUserDetailedReportsLoading,
-        allAmrabadUserDetailedReports,
-        fetchAmrabadUserDetailedReports,
-      } = useAmrabadUserStore();
+  const {
+    isAmrabadUserDetailedReportsLoading,
+    fetchAmrabadUserDetailedReports,
+  } = useAmrabadUserStore();
+const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+
+  // Load packages on component mount
+  useEffect(() => {
+    getPackages();
+  }, [getPackages]);
+
+  // Load houses if packageId is present in search params
+  useEffect(() => {
+    const packageId = searchParams.get("packageId");
+    if (packageId) {
+      getHouses(packageId);
+    }
+  }, [searchParams, getHouses]);
 
   useEffect(() => {
     if (searchParams.toString()) {
@@ -34,7 +44,7 @@ const AmrabadUserDetailedReportForm = ({
         }
       }
       localStorage.setItem(
-        "userAmrabadDetailedReportSearchParams",
+        "userDetailedAmrabadReportSearchParams",
         newSearchParams.toString()
       );
     }
@@ -46,23 +56,27 @@ const AmrabadUserDetailedReportForm = ({
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+    packageId: searchParams.get("packageId") || "",
+    houseId: searchParams.get("houseId") || "",
     mobileNumber: searchParams.get("mobileNumber") || "",
   };
 
   const onSubmit = (values) => {
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach((key) => {
-      if (values[key]) {
+      if (values[key] && values[key] !== "") {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userAmrabadDetailedReportSearchParams", newSearchParams);
+    localStorage.setItem("userDetailedAmrabadReportSearchParams", newSearchParams.toString());
 
     fetchAmrabadUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
+      packageId: values.packageId || "",
+      houseId: values.houseId || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -138,6 +152,58 @@ const AmrabadUserDetailedReportForm = ({
                   setFieldValue("mobileNumber", e.target.value);
                 }}
               />
+            </div>
+            <div>
+              <label
+                htmlFor="packageId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Packages
+              </label>
+                             <Field
+                 as="select"
+                 name="packageId"
+                 placeholder="Select Package"
+                 onChange={(e) => {
+                   const packageId = e.target.value;
+                   setFieldValue("packageId", packageId);
+                   // Clear house selection when package changes
+                   setFieldValue("houseId", "");
+                   if (packageId) {
+                     getHouses(packageId);
+                   }
+                 }}
+                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+               >
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="houseId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                House
+              </label>
+              <Field
+                as="select"
+                name="houseId"
+                placeholder="Select House"
+                disabled={values.packageId == ""}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
+              </Field>
             </div>
             <div className="flex items-end">
               <button
