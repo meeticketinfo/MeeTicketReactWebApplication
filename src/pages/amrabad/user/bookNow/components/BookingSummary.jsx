@@ -3,28 +3,48 @@ import { useCartStore } from "../../../../../store/amrabad/user/userCartStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = false, startDate, endDate }) => {
-  const { addToCart, removeFromCart, loadingAddToCart, loadingRemoveFromCart } = useCartStore();
+const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = false, startDate, endDate, userPackage }) => {
+  const { addToCart, loadingAddToCart } = useCartStore();
   const navigate = useNavigate();
+  
   // Shimmer loading component
   const ShimmerLine = ({ className = "" }) => (
     <div className={`animate-pulse bg-gray-200 rounded h-4 ${className}`}></div>
   );
 
+  // Helper function to combine date with time
+  const combineDateWithTime = (date, time) => {
+    if (!date || !time) return date;
+    
+    // Get the date string in YYYY-MM-DD format
+    const dateString = date instanceof Date ? 
+      date.toISOString().split('T')[0] : 
+      new Date(date).toISOString().split('T')[0];
+    
+    // Combine date and time in local format (YYYY-MM-DDTHH:MM:SS)
+    const combinedDateTime = `${dateString}T${time}`;
+    
+    return combinedDateTime;
+  };
+
   const handleAddToCart = async () => {
     try {
+      // Combine dates with check-in and check-out times from userPackage
+      const roomFromDateTime = combineDateWithTime(startDate, userPackage?.checkInTime);
+      const roomToDateTime = combineDateWithTime(endDate, userPackage?.checkOutTime);
+
       const response = await addToCart({
         packageId: house?.packageId,
         roomId: house?.roomId,
-        roomFromDate: startDate,
-        roomToDate: endDate,
+        roomFromDate: roomFromDateTime,
+        roomToDate: roomToDateTime,
         roomCount: houseCount,
         discountAmount: discount,
         amount: finalAmount,
       });
       console.log(response, "response");
       if (response.statusCode === 200) {
-        navigate("/amarabad/checkout-details");
+        navigate("/amrabad/checkout-details");
         toast.success("Item added to cart");
       } else {
         toast.error(response.response.data.message || "something went wrong");

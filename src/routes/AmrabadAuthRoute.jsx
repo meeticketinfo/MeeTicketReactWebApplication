@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 const AmrabadAuthRoute = ({ element }) => {
     const { isAuthenticated } = amrabadAuthStore();
   
-    return isAuthenticated ? <Navigate to="/amarabad" replace /> : element;
+    return isAuthenticated ? <Navigate to="/amrabad" replace /> : element;
 }
 
 export default AmrabadAuthRoute
