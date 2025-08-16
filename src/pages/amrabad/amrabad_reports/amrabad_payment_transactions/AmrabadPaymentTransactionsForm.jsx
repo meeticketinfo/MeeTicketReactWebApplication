@@ -1,6 +1,8 @@
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
 const AmrabadPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
@@ -15,9 +17,16 @@ const AmrabadPaymentTransactionsForm = ({
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-payment-report-filters")
   );
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+
+  useEffect(() => {
+    getPackages();
+  }, []);
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
+    package: savedFilters?.package ? savedFilters.package : "",
+    house: savedFilters?.house ? savedFilters.house : "",
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
       : null,
@@ -35,6 +44,8 @@ const AmrabadPaymentTransactionsForm = ({
     fetchAmrabadPaymentTransactions({
       startDate: values.fromDate,
       endDate: values.toDate,
+      package: values.package || "",
+      house: values.house || "",
       paymentStatus: values.paymentStatus || "",
       paymentMode: values.paymentMode || "",
       phoneNumber: values.phoneNumber || "",
@@ -46,7 +57,7 @@ const AmrabadPaymentTransactionsForm = ({
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue,resetForm }) => (
+        {({ values, setFieldValue, resetForm }) => (
           <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
             <div>
               <label
@@ -89,6 +100,55 @@ const AmrabadPaymentTransactionsForm = ({
                   setFieldValue("toDate", toDateValue);
                 }}
               />
+            </div>
+            {/* packages */}
+            <div>
+              <label
+                htmlFor="mobileNumber"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Packages
+              </label>
+              <Field
+                as="select"
+                name="package"
+                placeholder="Select Package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  getHouses(packageId);
+                  setFieldValue("package", packageId);
+                }}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="mobileNumber"
+                className="block text-xs font-medium text-gray-700"
+              >
+                House
+              </label>
+              <Field
+                as="select"
+                name="house"
+                placeholder="Select House"
+                disabled={values.package == ""}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
+              </Field>
             </div>
             <div>
               <label className="block text-sm font-medium">
@@ -157,18 +217,22 @@ const AmrabadPaymentTransactionsForm = ({
               >
                 Search
               </button>
-                <button
+              <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
-                  localStorage.removeItem("amrabad-consolidated-report-filters");
+                  localStorage.removeItem(
+                    "amrabad-consolidated-report-filters"
+                  );
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
-                      paymentStatus:"",
-                      paymentMode:"",
+                      package: "",
+                      house: "",
+                      paymentStatus: "",
+                      paymentMode: "",
                       phoneNumber: "",
                     },
                   });

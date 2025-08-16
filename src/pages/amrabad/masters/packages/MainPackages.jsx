@@ -21,11 +21,10 @@ const MainPackages = () => {
   };
   return (
     <AdminLayout>
-      
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold"> 
             {TitleConfig[currentTab]}
             </h1>
           </div>
@@ -33,7 +32,7 @@ const MainPackages = () => {
           {currentTab == 0 ? (
             <div className="flex justify-between gap-2">
               <button
-                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800 "
+                className="btn bg-gray-900 text-white shadow-sm hover:bg-gray-800"
                 onClick={() => {
                   setCurrentTab(1);
                   setIsHouseEditVisible(true)

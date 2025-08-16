@@ -26,6 +26,8 @@ function AmrabadPaymentTransactionsList() {
     fetchAmrabadPaymentTransactions({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
+      package: savedFilters?.package ??  "",
+      house: savedFilters?.house ??  "", 
       paymentStatus: savedFilters?.paymentStatus
         ? savedFilters.paymentStatus
         : "",
@@ -91,7 +93,7 @@ function AmrabadPaymentTransactionsList() {
       // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
-      field: "paymentMode",
+      field: "bookingType",
       headerName: "Mode of Booking ",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -103,7 +105,7 @@ function AmrabadPaymentTransactionsList() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paytmConfirmedStatus",
+      field: "paymentStaus",
       headerName: "Payment Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
