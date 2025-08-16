@@ -18,19 +18,23 @@ function AmrabadConsolidatedList() {
     setisAmrabadCompleteBookings,
     isAmrabadConsolidatedReportsLoading,
   } = useAmrabadConsolidatedStore();
-  const { allAmrabadBookings, fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
+  const {
+    allAmrabadBookings,
+    fetchAllAmrabadBookings,
+    isFetchAllAmrabadBookingsLoading,
+  } = useAmrabadBookingStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-consolidated-report-filters")
   );
-  console.log("savedFilters",savedFilters)
+  console.log("savedFilters", savedFilters);
   const [currentPage, setCurrentPage] = useState(0);
- 
+
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
   useEffect(() => {
     fetchAllAmrabadBookings({
-      startDate: (savedFilters?.fromDate)?? getCurrentDate(),
-      endDate: (savedFilters?.toDate) ?? getCurrentDate(),
+      startDate: savedFilters?.fromDate ?? getCurrentDate(),
+      endDate: savedFilters?.toDate ?? getCurrentDate(),
       // bookingSource: savedFilters?.typeOfBooking
       //   ? savedFilters.typeOfBooking
       //   : "",
@@ -139,7 +143,6 @@ function AmrabadConsolidatedList() {
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
-
     },
     {
       field: "amountPaid",
@@ -202,7 +205,7 @@ function AmrabadConsolidatedList() {
           <NavLink
             end
             // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
-            to={`/amarabad/ticket-view-details/${params.data.paymentTransactionID}`}
+            to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
             onClick={() => {
               setisAmrabadCompleteBookings(true);
             }}
@@ -230,9 +233,7 @@ function AmrabadConsolidatedList() {
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllAmrabadBookingsLoading}
           isPagination={false}
-          tableHeight={
-            allAmrabadBookings?.data?.length > 10 ? 560 : 330
-          }
+          tableHeight={allAmrabadBookings?.data?.length > 10 ? 560 : 330}
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}

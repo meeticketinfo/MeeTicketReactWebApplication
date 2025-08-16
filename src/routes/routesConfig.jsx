@@ -491,7 +491,7 @@ export const routes = [
   },
   //amarabad-user
   {
-    path: "/amarabad/login",
+    path: "/amrabad/login",
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
   {
@@ -499,63 +499,63 @@ export const routes = [
     element: <AmrabadForgetPinMobileNumber />,
   },
   {
-    path: "/amarabad/register",
+    path: "/amrabad/register",
     element: <AmrabadAuthRoute  element={<AmarabadRegister />} />,
   },
   {
-    path: "/amarabad/register-otp",
+    path: "/amrabad/register-otp",
     element: <AmarabadRegisterOtp />,
   },
   {
-    path: "/amarabad-otp",
+    path: "/amrabad-otp",
     element: <ResetPinOtp />,
   },
   {
-    path: "/amarabad-reset-pin",
+    path: "/amrabad-reset-pin",
     element: <AmrabadResetPin />,
   },
   {
-    path: "/amarabad",
+    path: "/amrabad",
     element: <Packages />,
   },
   {
-    path: "/amarabad/packages",
+    path: "/amrabad/packages",
     element: <Packages />,
   },
   {
-    path: "/amarabad/packages/:packageId",
+    path: "/amrabad/packages/:packageId",
     element: <PackageDetail />,
   },
   {
-    path: "/amarabad/houses/:packageId",
+    path: "/amrabad/houses/:packageId",
     element: <Houses />,
   },
   {
-  path: "/amarabad/book-now/:packageId/:houseId",
+  path: "/amrabad/book-now/:packageId/:houseId",
   element: <AmrabadProtectRoute element={<BookNow />} />,
   },
   {
-    path: "/amarabad/checkout-details",
+    path: "/amrabad/checkout-details",
     element: <AmrabadProtectRoute element={<CheckoutDetails />} />,
   },
   {
-    path: "/amarabad/booking-details",
+    path: "/amrabad/booking-details",
     element: <AmrabadProtectRoute element={<AmarabadBookingDetails />} />,
   },
   {
-    path: "/amarabad/confirmed-details/:bookingId",
+    path: "/amrabad/confirmed-details/:bookingId",
     element: <AmrabadProtectRoute element={<ConfirmedDetails />} />,
   },
   {
-    path: "/amarabad/booking-history",
+    path: "/amrabad/booking-history",
     element: <AmrabadProtectRoute element={<BookingHistory />} />,
   },
   {
-    path: "/amarabad/ticket-view-details/:bookingId",
+    path: "/amrabad/ticket-view-details/:bookingId",
     element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
   },
   {
-    path: "/amarabad/ticket-view-details/:bookingId",
+    path: "/amrabad-admin/ticket-view-details/:bookingId",
     element: <ProtectedRoute element={<TicketViewDetails />} />,
   },
   {

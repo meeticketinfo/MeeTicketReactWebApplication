@@ -70,9 +70,12 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
       <div className="w-full">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {/* Property Image - Left Side */}
-          <div className="flex-shrink-0 flex justify-center md:block">
+          <div className="flex-shrink-0 flex justify-center md:block relative">
+            <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg">
+              Available House : <b>{house?.noOfHousesAvailable}</b>
+            </span>
             <img
-              src={house?.images[0]?.imageUrl}
+              src={house?.images[0]}
               alt={house?.roomName}
               className="w-full max-w-xs sm:max-w-sm md:w-[200px] md:h-[200px] h-40 sm:h-48 object-cover rounded-lg"
             />

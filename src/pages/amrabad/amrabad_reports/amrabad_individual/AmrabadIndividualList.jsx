@@ -199,7 +199,7 @@ export default function AdminBookings() {
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: "200px" }}>
             <NavLink
               end
-              to={`/amarabad/ticket-view-details/${params.data.orderId}`}
+              to={`/amrabad-admin/ticket-view-details/${params.data.orderId}`}
               className="bg-gray-100 text-blue-v2 px-4 py-2 rounded-md hover:bg-gray-200 transition text-sm"
             >
               <span>View Ticket</span>

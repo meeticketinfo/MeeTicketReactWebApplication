@@ -14,39 +14,6 @@ import { useParams } from "react-router-dom";
 const ConfirmedDetails = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-  // Static data
-  const bookingData = {
-    customer: {
-      name: "Venu",
-      phone: "+91 0000000521",
-      email: "venu.r18@gmail.com",
-    },
-    booking: {
-      package: "Mrunmar Jungle Resort, the Tiger Stay Package",
-      checkIn: "14 JULY 2025, 12:30 PM",
-      checkOut: "16 JULY 2025, 10:00 AM",
-    },
-    houses: [
-      {
-        name: "Chital and Otter",
-        category: "Standard",
-        price: 8450,
-        bookingId: "MTI000124",
-      },
-      {
-        name: "Fanha – Tree House",
-        category: "Standard",
-        price: 8250,
-        bookingId: "MTI000164",
-      },
-    ],
-    payment: {
-      houseCharges: 17000,
-      discount: "N/A",
-      totalPaid: 11700,
-    },
-  };
   const { bookingId } = useParams();
   const {
     fetchTicketViewDetails,

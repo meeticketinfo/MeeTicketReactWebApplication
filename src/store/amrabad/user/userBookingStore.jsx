@@ -19,6 +19,12 @@ export const useUserBookingStore = create((set) => ({
   // fetch ticket view details
   GetTicketViewDetails: {},
   isTicketViewDetailsLoading: false,
+  // fetch countries
+  GetCountries: [],
+  isCountriesLoading: false,
+  // fetch states
+  GetStates: [],
+  isStatesLoading: false,
   // fetch user packages
   fetchUserPackages: async () => {
     set({ isUserPackagesLoading: true });
@@ -40,11 +46,15 @@ export const useUserBookingStore = create((set) => ({
   },
 
   // fetch rooms by package id
-  fetchRoomsByPackageId: async (packageId) => {
+  fetchRoomsByPackageId: async (packageId, FromDate, ToDate) => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("packageId", packageId);
+    if (FromDate) queryParams.append("FromDate", FromDate);
+    if (ToDate) queryParams.append("ToDate", ToDate);
     set({ isRoomsByPackageIdLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.AMRABAD.USER.GET_ROOMS_BY_PACKAGE_ID}?packageId=${packageId}`
+        `${API_ENDPOINTS.AMRABAD.USER.GET_ROOMS_BY_PACKAGE_ID}?${queryParams.toString()}`
       );
 
       set({
@@ -113,4 +123,36 @@ export const useUserBookingStore = create((set) => ({
       toast(error.message || "Some thing went wrong");
     }
   },
+  // fetch countries
+  fetchCountries: async () => {
+    set({ isCountriesLoading: true });
+    try {
+      const response = await apiService.get(API_ENDPOINTS.AMRABAD.MASTERS.GET_COUNTRIES);
+      set({
+        GetCountries: response.data,
+        isCountriesLoading: false,
+      });
+    } catch (error) {
+      set({
+        isCountriesLoading: false,
+      });
+      toast(error.message || "Some thing went wrong");
+    } 
+  },
+  // fetch states
+  fetchStates: async ( countryId) => {
+    set({ isStatesLoading: true });
+    try {
+      const response = await apiService.get(API_ENDPOINTS.AMRABAD.MASTERS.GET_STATES + "?countryId=" + countryId);
+      set({
+        GetStates: response.data,
+        isStatesLoading: false,
+      });
+    } catch (error) {
+      set({
+        isStatesLoading: false,
+      });
+      toast(error.message || "Some thing went wrong");
+    }
+  }
 }));

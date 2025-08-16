@@ -96,7 +96,7 @@ const fetchImageAsBase64 = async (imageUrl) => {
 
 // dateHelpers.js
 
-const getFormattedDate = (date) => {
+export const getFormattedDate = (date) => {
   const formattedDate = new Date(date);
   return formattedDate.toISOString().slice(0, 16); // Format as "YYYY-MM-DDTHH:MM"
 };
