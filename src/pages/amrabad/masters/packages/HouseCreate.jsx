@@ -43,7 +43,7 @@ const HouseCreate = () => {
     setCurrentTab,
   } = usePackagesCommonStore();
   const [isValidation, setIsValidation] = useState("");
-  const [isNoBlockSelected, setIsNoBlockSelected] = useState(false);
+
   const initialValues = {
     roomId: isHouseEditVisible ? selectedSubRowData?.roomId : null,
     packageId: isHouseEditVisible ? selectedSubRowData?.packageId : "",
@@ -72,13 +72,16 @@ const HouseCreate = () => {
       : null,
     roomLimit: isHouseEditVisible ? selectedSubRowData?.roomLimit : "",
     isBlockout: isHouseEditVisible
-      ? (selectedSubRowData?.isBlockout === true || 
-         (selectedSubRowData?.isBlockout === false && selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0))
+      ? selectedSubRowData?.isBlockout === true ||
+        (selectedSubRowData?.isBlockout === false &&
+          selectedSubRowData?.roomBlockedDurations &&
+          selectedSubRowData.roomBlockedDurations.length > 0)
         ? "Yes"
         : "No"
       : "",
     blockoutType: isHouseEditVisible
-      ? selectedSubRowData?.roomBlockedDurations && selectedSubRowData.roomBlockedDurations.length > 0
+      ? selectedSubRowData?.roomBlockedDurations &&
+        selectedSubRowData.roomBlockedDurations.length > 0
         ? "blockByDate" // Has blocked dates means Block by Date
         : "fullBlock" // No blocked dates means Full Block
       : "",
@@ -177,7 +180,7 @@ const HouseCreate = () => {
       .test(
         "is-positive",
         "Tariff must be a positive number",
-        (value) => Number(value) > 0
+        (value) => Number(value) >= 0
       ),
 
     hasDiscount: Yup.string().required(
@@ -222,21 +225,21 @@ const HouseCreate = () => {
       .min(-180)
       .max(180),
     roomLimit: Yup.string()
-      .required("Room Limit is required.")
+      .required("House Limit is required.")
       .test(
         "not-only-spaces",
-        "Room Limit cannot be empty or just spaces",
+        "House Limit cannot be empty or just spaces",
         (value) => value && value.trim() !== ""
       )
       .test(
         "is-valid-number",
-        "Room Limit must be a valid number",
+        "House Limit must be a valid number",
         (value) => !isNaN(value)
       )
       .test(
         "is-positive",
-        "Room Limit must be a positive number",
-        (value) => Number(value) > 0
+        "House Limit must be a positive number",
+        (value) => Number(value) >= 0
       ),
     isBlockout: Yup.string().required("Block out selection is required"),
     blockoutType: Yup.string().when("isBlockout", {
@@ -377,12 +380,13 @@ const HouseCreate = () => {
 
       const payload = {
         ...values,
-        packageId: values.packageId, 
+        packageId: values.packageId,
         hasDiscount: values.hasDiscount === "Yes",
         isBlockout: values.isBlockout === "Yes" ? true : false,
-        blockedDate: values.isBlockout === "Yes" && values.blockoutType === "blockByDate" 
-          ? values.BlockBydate || [] 
-          : [],
+        blockedDate:
+          values.isBlockout === "Yes" && values.blockoutType === "blockByDate"
+            ? values.BlockBydate || []
+            : [],
         discountApplicable: values.discountApplicable === "true",
         roomImagesBase64Strings: roomImagesPayload,
         discountDetails: processedDiscountDetails, // Use the processed discount details
@@ -523,11 +527,8 @@ const HouseCreate = () => {
                           }}
                           onKeyDown={(e) => {
                             if (
-                              ["-", "e", "E", "+", "."].includes(
-                                e.key
-                              ) ||
-                              (e.key.length === 1 &&
-                                !/[0-9]/.test(e.key))
+                              ["-", "e", "E", "+", "."].includes(e.key) ||
+                              (e.key.length === 1 && !/[0-9]/.test(e.key))
                             ) {
                               e.preventDefault();
                             }
@@ -569,11 +570,8 @@ const HouseCreate = () => {
                           }}
                           onKeyDown={(e) => {
                             if (
-                              ["-", "e", "E", "+", "."].includes(
-                                e.key
-                              ) ||
-                              (e.key.length === 1 &&
-                                !/[0-9]/.test(e.key))
+                              ["-", "e", "E", "+", "."].includes(e.key) ||
+                              (e.key.length === 1 && !/[0-9]/.test(e.key))
                             ) {
                               e.preventDefault();
                             }
@@ -596,7 +594,8 @@ const HouseCreate = () => {
                       htmlFor="roomLimit"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Room Limit <span className="text-red-500 text-xs">*</span>
+                      House Limit{" "}
+                      <span className="text-red-500 text-xs">*</span>
                     </label>
 
                     <Field name="roomLimit">
@@ -613,11 +612,8 @@ const HouseCreate = () => {
                           }}
                           onKeyDown={(e) => {
                             if (
-                              ["-", "e", "E", "+", "."].includes(
-                                e.key
-                              ) ||
-                              (e.key.length === 1 &&
-                                !/[0-9]/.test(e.key))
+                              ["-", "e", "E", "+", "."].includes(e.key) ||
+                              (e.key.length === 1 && !/[0-9]/.test(e.key))
                             ) {
                               e.preventDefault();
                             }
@@ -712,7 +708,7 @@ const HouseCreate = () => {
                       onChange={(e) => {
                         const selectedValue = e.target.value;
                         setFieldValue("isBlockout", selectedValue);
-                        
+
                         // Reset BlockBydate when changing blockout type
                         if (selectedValue === "No") {
                           // Clear dates for no block
@@ -748,7 +744,7 @@ const HouseCreate = () => {
                         onChange={(e) => {
                           const selectedValue = e.target.value;
                           setFieldValue("blockoutType", selectedValue);
-                          
+
                           // Reset BlockBydate when changing blockout type
                           if (selectedValue === "fullBlock") {
                             // Clear dates for full block
@@ -770,28 +766,29 @@ const HouseCreate = () => {
                   )}
 
                   {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
-                  {values.isBlockout === "Yes" && values.blockoutType === "blockByDate" && (
-                    <div className="col-span-3">
-                      <label className="block text-xs font-medium text-gray-700">
-                        Block by Date <span className="text-red-500">*</span>
-                      </label>
-                      <div className="mt-1">
-                        <MultipleDatePicker
-                          value={values.BlockBydate || []}
-                          onChange={(selectedDates) => {
-                            setFieldValue("BlockBydate", selectedDates);
-                          }}
-                          placeholder="Select dates to block..."
-                          className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                        />
-                        <ErrorMessage
-                          name="BlockBydate"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
+                  {values.isBlockout === "Yes" &&
+                    values.blockoutType === "blockByDate" && (
+                      <div className="col-span-3">
+                        <label className="block text-xs font-medium text-gray-700">
+                          Block by Date <span className="text-red-500">*</span>
+                        </label>
+                        <div className="mt-1">
+                          <MultipleDatePicker
+                            value={values.BlockBydate || []}
+                            onChange={(selectedDates) => {
+                              setFieldValue("BlockBydate", selectedDates);
+                            }}
+                            placeholder="Select dates to block..."
+                            className="block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                          />
+                          <ErrorMessage
+                            name="BlockBydate"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   {/* Discount Table */}
                   {values.hasDiscount === "Yes" && (
                     <div className="col-span-4">
@@ -1010,11 +1007,8 @@ const HouseCreate = () => {
                           }}
                           onKeyDown={(e) => {
                             if (
-                              ["-", "e", "E", "+", "."].includes(
-                                e.key
-                              ) ||
-                              (e.key.length === 1 &&
-                                !/[0-9]/.test(e.key))
+                              ["-", "e", "E", "+", "."].includes(e.key) ||
+                              (e.key.length === 1 && !/[0-9]/.test(e.key))
                             ) {
                               e.preventDefault();
                             }

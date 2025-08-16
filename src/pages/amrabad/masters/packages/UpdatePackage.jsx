@@ -22,7 +22,7 @@ const urlToBase64 = async (url) => {
 
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result); // base64 string
+      reader.onloadend = () => resolve(reader.result); // base64 string 
       reader.onerror = () => reject("Failed to read blob as base64");
       reader.readAsDataURL(blob);
     });
@@ -43,7 +43,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
   const updatePackageValidationSchema = Yup.object().shape({
     packageName: Yup.string().required("Package name is required"),
     description: Yup.string()
-      .max(100, "Max 100 characters")
+      .max(300, "Max 100 characters")
       .required("Description is required"),
     checkInTime: Yup.string().required("Check-in time is required"),
     // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
@@ -59,9 +59,9 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
         }
       ),
     termsConditions: Yup.string()
-      .max(100, "Max 100 characters")
+      .max(300, "Max 100 characters")
       .required("T&C are required"),
-    privacyPolicy: Yup.string().max(100),
+    privacyPolicy: Yup.string().max(300),
     latitude: Yup.number()
       .typeError("Latitude must be a number")
       .required("Latitude is required")
@@ -350,7 +350,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     <Field
                       as="textarea"
                       name="guidelines"
-                      maxlength={50}
+                      maxlength={300}
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Guidelines"
@@ -363,7 +363,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={300}
                       name="description"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
@@ -383,7 +383,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={300}
                       name="cancellationPolicy"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -397,7 +397,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={300}
                       name="termsConditions"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -416,7 +416,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={100}
+                      maxlength={300}
                       name="privacyPolicy"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

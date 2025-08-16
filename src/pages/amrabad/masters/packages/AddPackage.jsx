@@ -7,13 +7,13 @@ import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 import MultipleDatePicker from "../../../../components/MultipleDatePicker";
-import apiService from "../../../../services/apiService";
+
 const AddPackage = () => {
   const [isHasRoom, setIsHasRoom] = useState(false);
   const [isValidation, setIsValidation] = useState("");
   const { setCurrentTab } = usePackagesCommonStore();
   const { savePackageWithRoom, isSavePackageWithRoomLoading } =
-    usePackagesStore();
+    usePackagesStore(); 
 
   /*  Room template for new rooms */
   const createRoomTemplate = () => {
