@@ -9,7 +9,7 @@ export const useAmrabadBookingStore = create((set) => ({
     set({ isFetchAllAmrabadBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.AMRABAD.REPORTS.AMRABAD_BOOKINGS}?fromDate=${filters.startDate}&toDate=${filters.endDate}&bookingSource=${filters.bookingSource || ''}&mobileNumber=${filters.mobileNumber || ''}&PaymentMode=${filters.PaymentMode || ''}&package=${filters.package || ''}&houses=${filters.houses || ''}&orderId=${filters.orderId || ''}&paymentStatus=${filters.paymentStatus || ''}&modeOfBooking=${filters.modeOfBooking || ''}`
+        `${API_ENDPOINTS.AMRABAD.REPORTS.AMRABAD_BOOKINGS}?fromDate=${filters.startDate}&toDate=${filters.endDate}&purchaseOrBooking=${filters.bookingSource || ''}&mobileNumber=${filters.mobileNumber || ''}&packageId=${filters.package || ''}&roomId=${filters.houses || ''}&id=${filters.orderId || ''}&paymentStatus=${filters.paymentStatus || ''}&modeOfBooking=${filters.modeOfBooking || ''}&pageNumber=${filters.PageIndex || 1}&pageSize=${filters.pageSize || 20}`
       );
       set({
         allAmrabadBookings: response.data.records,

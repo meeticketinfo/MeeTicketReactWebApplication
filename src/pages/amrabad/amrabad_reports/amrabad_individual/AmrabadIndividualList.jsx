@@ -131,6 +131,7 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
+    
     {
       field: "toDate",
       headerName: "To Date",
@@ -198,7 +199,7 @@ export default function AdminBookings() {
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: "200px" }}>
             <NavLink
               end
-              to={`/amrabad-entity-bookings/view-details/${params.data?.bookingID || 'N/A'}`}
+              to={`/amarabad/ticket-view-details/${params.data.orderId}`}
               className="bg-gray-100 text-blue-v2 px-4 py-2 rounded-md hover:bg-gray-200 transition text-sm"
             >
               <span>View Ticket</span>
@@ -228,7 +229,7 @@ export default function AdminBookings() {
         </div>
 
         <AgGridTable
-          ExportName="Individual Booking Details"
+          ExportName="House Wise Details"
           rowData={allAmrabadHouseWiseReports || []}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllAmrabadHouseWiseReportsLoading}

@@ -29,6 +29,11 @@ api.interceptors.request.use(
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 
+    // Handle absolute URLs (don't prepend baseURL for full URLs)
+    if (config.url && (config.url.startsWith('http://') || config.url.startsWith('https://'))) {
+      config.baseURL = '';
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

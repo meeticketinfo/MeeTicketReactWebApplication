@@ -1,43 +1,45 @@
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
 import { useAmrabadHouseWiseReportStore } from "./store/amarabadHouseWiseReportStore";
 const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
-    const {
-    fetchAmrabadIndividualReports,
-    allAmrabadIndividualReports,
-    setisAmrabadCompleteBookings,
-    isAmrabadConsolidatedReportsLoading,
-  } = useAmrabadConsolidatedStore();
-  const { allAmrabadHouseWiseReports, fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading } = useAmrabadHouseWiseReportStore();
-  const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-individual-report-filters")
-  );
+  const {
+    fetchAllAmrabadHouseWiseReports,
+    isFetchAllAmrabadHouseWiseReportsLoading,
+  } = useAmrabadHouseWiseReportStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  
   const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    typeOfBooking: savedFilters?.typeOfBooking ? savedFilters.typeOfBooking : "",
-    package: savedFilters?.package ? savedFilters.package : "",
-    houses: savedFilters?.houses ? savedFilters.houses : "",
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
-    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
-    modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    typeOfBooking: "",
+    package: "",
+    houses: "",
+    phoneNumber: "",
+    orderId: "",
+    modeOfBooking: "",
   };
 
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
-
-    localStorage.setItem(
-      "amrabad-individual-report-filters",
-      JSON.stringify(values)
-    );
+    SetcurrentPage(0);
     fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,
+      bookingSource: values.typeOfBooking,
+      package: values.package,
+      houses: values.houses,
+      phoneNumber: values.phoneNumber,
+      orderId: values.orderId,
+      modeOfBooking: values.modeOfBooking,
       PageIndex: PageIndex,
       pageSize: pageSize,
     });
   };
+  useEffect(() => {
+    getPackages();
+  }, []);
 
   return (
     <>
@@ -97,40 +99,51 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">-- Select --</option>
-                <option value="Counter">Counter</option>
-                <option value="Mobile">Mobile</option>
+                <option value="Purchase">Purchase Date</option>
+                <option value="Booking">Booking Date</option>
               </Field>
             </div>
             <div>
-              <label className="block text-sm font-medium">
-                Package
-              </label>
+              <label className="block text-sm font-medium">Package</label>
               <Field
                 as="select"
                 name="package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  setFieldValue("package", packageId);
+                  
+                  if (packageId === "") {
+                    setFieldValue("houses", "");
+                  } else {
+                    getHouses(packageId);
+                  }
+                }}
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
-                <option value="Basic">Basic</option>
-                <option value="Premium">Premium</option>
-                <option value="VIP">VIP</option>
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
               </Field>
             </div>
             <div>
-              <label className="block text-sm font-medium">
-                Houses
-              </label>
+              <label className="block text-sm font-medium">Houses</label>
               <Field
                 as="select"
                 name="houses"
+                disabled={values.package == ""}
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">Select</option>
-                <option value="House1">House 1</option>
-                <option value="House2">House 2</option>
-                <option value="House3">House 3</option>
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
               </Field>
             </div>
             <div>
@@ -178,9 +191,8 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">-- Select --</option>
-                <option value="ONLINE">Online</option>
-                <option value="OFFLINE">Offline</option>
-                <option value="COUNTER">Counter</option>
+                <option value="Website">Website</option>
+                <option value="Mobile">Mobile</option>
               </Field>
             </div>
             {/* submit */}
@@ -197,7 +209,6 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
-                  localStorage.removeItem("amrabad-individual-report-filters");
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),

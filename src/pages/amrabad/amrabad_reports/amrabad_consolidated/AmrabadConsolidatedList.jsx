@@ -82,21 +82,24 @@ function AmrabadConsolidatedList() {
       headerName: "Purchase Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "fromDate",
       headerName: "From Date",
       maxWidth: 170,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "toDate",
       headerName: "To Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     // -------------------
 
@@ -134,7 +137,9 @@ function AmrabadConsolidatedList() {
       headerName: "No.of Houses Booked",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+
     },
     {
       field: "amountPaid",
@@ -156,7 +161,8 @@ function AmrabadConsolidatedList() {
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "₹0.00",
+        // formatToCurrency(params.value, "INR", "en-IN") || "₹0.00",
+        params.value ? params.value : "N/A",
     },
     {
       field: "paymentType",
@@ -186,7 +192,7 @@ function AmrabadConsolidatedList() {
       headerName: "Actual Paytm Status",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? "Success" : "Failed"),
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       headerName: "Actions",
@@ -195,7 +201,8 @@ function AmrabadConsolidatedList() {
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <NavLink
             end
-            to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
+            // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
+            to={`/amarabad/ticket-view-details/${params.data.paymentTransactionID}`}
             onClick={() => {
               setisAmrabadCompleteBookings(true);
             }}

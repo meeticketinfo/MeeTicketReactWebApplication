@@ -41,7 +41,7 @@ export const useAmrabadConsolidatedStore = create((set) => ({
   fetchAmrabadIndividualReports: async (payload) => {
     set({ isAmrabadIndividualReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_INDIVIDUAL_BOOKING_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_INDIVIDUAL_BOOKING_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&typeOfBooking=${payload.typeOfBooking || ""}&package=${payload.package || ""}&houses=${payload.houses || ""}&phoneNumber=${payload.phoneNumber || ""}&orderId=${payload.orderId || ""}&modeOfBooking=${payload.modeOfBooking || ""}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({

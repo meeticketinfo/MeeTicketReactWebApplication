@@ -2,39 +2,34 @@ import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 import { useAmrabadBookingStore } from "./store/amarabadBookingstore";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
+
 const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   const {
-    fetchAmrabadConsolidatedReports,
-    allAmrabadConsolidatedReports,
-    setisAmrabadCompleteBookings,
-    isAmrabadConsolidatedReportsLoading,
-  } = useAmrabadConsolidatedStore();
-  const { allAmrabadBookings, fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
-  const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-consolidated-report-filters")
-  );
+    allAmrabadBookings,
+    fetchAllAmrabadBookings,
+    isFetchAllAmrabadBookingsLoading,
+  } = useAmrabadBookingStore();
+
   const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    typeOfBooking: savedFilters?.typeOfBooking
-      ? savedFilters.typeOfBooking
-      : "",
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-    package: savedFilters?.package ? savedFilters.package : "",
-    houses: savedFilters?.houses ? savedFilters.houses : "",
-    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
-    paymentStatus: savedFilters?.paymentStatus ? savedFilters.paymentStatus : "",
-    PaymentMode: savedFilters?.PaymentMode ? savedFilters.PaymentMode : "",
-    modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    typeOfBooking: "",
+    phoneNumber: "",
+    package: "",
+    houses: "",
+    orderId: "",
+    paymentStatus: "",
+    modeOfBooking: "",
+    PaymentMode: "",
   };
 
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
+    // Reset to first page when applying new filters
+    SetcurrentPage(0);
 
-    localStorage.setItem(
-      "amrabad-consolidated-report-filters",
-      JSON.stringify(values)
-    );
     fetchAllAmrabadBookings({
       startDate: values.fromDate,
       endDate: values.toDate,
@@ -50,6 +45,10 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
       pageSize: pageSize,
     });
   };
+
+  useEffect(() => {
+    getPackages();
+  }, []);
 
   return (
     <>
@@ -109,40 +108,51 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">-- Select --</option>
-                <option value="Counter">Counter</option>
-                <option value="Mobile">Mobile</option>
+                <option value="Purchase">Purchase Date</option>
+                <option value="Booking">Booking Date</option>
               </Field>
             </div>
             <div>
-              <label className="block text-sm font-medium">
-                Package
-              </label>
+              <label className="block text-sm font-medium">Package</label>
               <Field
                 as="select"
                 name="package"
+                  onChange={(e) => {
+                  const packageId = e.target.value;
+                  setFieldValue("package", packageId);
+                  
+                  if (packageId === "") {
+                    setFieldValue("houses", "");
+                  } else {
+                    getHouses(packageId);
+                  }
+                }}
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
-                <option value="Basic">Basic</option>
-                <option value="Premium">Premium</option>
-                <option value="VIP">VIP</option>
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
               </Field>
             </div>
             <div>
-              <label className="block text-sm font-medium">
-                Houses
-              </label>
+              <label className="block text-sm font-medium">Houses</label>
               <Field
                 as="select"
                 name="houses"
+                disabled={values.package == ""}
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">Select</option>
-                <option value="House1">House 1</option>
-                <option value="House2">House 2</option>
-                <option value="House3">House 3</option>
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
               </Field>
             </div>
             <div>
@@ -189,13 +199,12 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
-                <option value="SUCCESS">Success</option>
-                <option value="PENDING">Pending</option>
-                <option value="FAILED">Failed</option>
-                <option value="REFUNDED">Refunded</option>
+                <option value="">Select</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Cancelled">Cancelled</option>
               </Field>
             </div>
+          
             <div>
               <label className="block text-sm font-medium">
                 Mode of booking
@@ -207,49 +216,25 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">-- Select --</option>
-                <option value="ONLINE">Online</option>
-                <option value="OFFLINE">Offline</option>
-                <option value="COUNTER">Counter</option>
+                <option value="Website">Website</option>
+                <option value="Mobile">Mobile</option>
               </Field>
             </div>
-            {/* payment mode */}
-            <div>
-              <label
-                htmlFor="PaymentMode"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Payment Mode
-              </label>
-              <Field
-                as="select"
-                name="PaymentMode"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("PaymentMode", e.target.value);
-                }}
-              >
-                <option value="">Select Mode</option>
-                <option value="upi">UPI</option>
-                <option value="creditCard">Credit Card</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="netBanking">Net Banking</option>
-              </Field>
-            </div>
+           
             {/* submit */}
             <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                disabled={isFetchAllAmrabadBookingsLoading}
               >
                 Search
               </button>
               <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                disabled={isFetchAllAmrabadBookingsLoading}
                 onClick={() => {
-                  localStorage.removeItem("amrabad-consolidated-report-filters");
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),

@@ -343,6 +343,9 @@ export const API_ENDPOINTS = {
     },
     DASHBOARD:{
       GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,
+      GET_AMRABAD_DASHBOARD_count:`${AMRABAD_API_BASE_URL}DashBoard/Dashboard`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetBookingsSummary`,
+      GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardRoomBookingSummary`,
     },
     USER:{
       GET_USER_PACKAGES:`https://meeticketdevui.vmaxtechservices.help/amrabad/GetAllPackages`,
