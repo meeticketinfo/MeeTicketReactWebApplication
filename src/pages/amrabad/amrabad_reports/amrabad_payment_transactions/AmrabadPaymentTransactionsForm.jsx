@@ -21,7 +21,7 @@ const AmrabadPaymentTransactionsForm = ({
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
       : null,
-    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : null,
+    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
   };
 

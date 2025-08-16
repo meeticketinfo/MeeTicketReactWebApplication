@@ -1,106 +1,167 @@
 import React, { useEffect, useState } from "react";
-import DashboardCard01 from "../../../partials/dashboard/DashboardCard01";
+import { Formik, Form, Field } from "formik";
 import { IoTicketSharp } from "react-icons/io5";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import DashboardCard07 from "../../../partials/dashboard/DashboardCard07";
-import ToursimPieChart from "../../../components/tourism/ToursimPieChart";
-import { usetoursimDashboardStore } from "../../../store/dashboard/toursimDashboardStore";
-import AmrabadPieChart from "./AmrabadPieChart";
-import { useAmrabadConsolidatedStore } from "../../../store/amrabad/reports/ConsolidatedStore";
+import { useAmrabadDashboardStore } from "./store/amarabadDashboardStore";
+import MunnanurTigerReserveDashboard from "./AmarabadPckagesNames";
+import GraphicalRepresentationDashboard from "./GraphicalRepresentationDashboard";
+import CountUp from "react-countup";
+import AmarabadPckagesNames from "./AmarabadPckagesNames";
 
 function AmrabadDashboard() {
-
   const {
-    fetchAmrabadConsolidatedReports,
-    allAmrabadConsolidatedReports,
-    setisAmrabadCompleteBookings,
-    isAmrabadConsolidatedReportsLoading,
-  } = useAmrabadConsolidatedStore();
-  console.log(
-    "allPackageTransactionReportData",
-  );
-  const packageData = [
-    {
-      packageTypeId: 0,
-      packageTypeName: "Mahabubabad",
-      totalBookings: 2,
-      totalAmount: 2000,
-    },
-    {
-      packageTypeId: 1,
-      packageTypeName: "munnanur jungle resort, the Tiger Stay Package",
-      totalBookings: 1,
-      totalAmount: 1000,
-    },
-    {
-      packageTypeId: 2,
-      packageTypeName: "Domalapenta Akkamaha Devi stay package",
-      totalBookings: 4,
-      totalAmount: 4000,
-    },
-    {
-      packageTypeId: 7,
-      packageTypeName: "Srisailam",
-      totalBookings: 1,
-      totalAmount: 1000,
-    },
-    {
-      packageTypeId: 7,
-      packageTypeName: "Domalapenta Resorts",
-      totalBookings: 2,
-      totalAmount: 2000,
-    },
-  ];
+    amrabadDashboardData,
+    isFetchAmrabadDashboardDataLoading,
+    fetchAmrabadDashboardData,
+    amrabadDashboardBookingsSummaryData,
+    fetchAmrabadDashboardBookingsSummaryData,
+  } = useAmrabadDashboardStore();
 
-  const dashboardCards = [
-    {
-      lableName: "Total Tickets",
-      count: 10,
-      percentageChange: 49,
-      icon: IoTicketSharp,
-    },
-    {
-      lableName: "Total Income",
-      count: 10000,
-      percentageChange: 49,
-      icon: FaIndianRupeeSign,
-    },
-  ];
-  const cardsToDisplay = dashboardCards;
+  const initialValues = {
+    fromDate: "",
+    toDate: "",
+  };
 
+  localStorage.setItem("dashboardFromDate", initialValues.fromDate);
+  localStorage.setItem("dashboardToDate", initialValues.toDate);
+  useEffect(() => {
+    fetchAmrabadDashboardData(initialValues);
+  }, []);
+  const onSubmit = (values) => {
+    fetchAmrabadDashboardData(values);
+    fetchAmrabadDashboardBookingsSummaryData(values);
+  };
   return (
     <>
       {/* Cards */}
-      <div className="grid grid-cols-12 gap-6  ">
-        {cardsToDisplay &&
-          cardsToDisplay.map((card, index) => (
-            <DashboardCard01
-              key={index} // It's important to provide a key when rendering lists
-              lableName={card.lableName}
-              count={card.count}
-              percentageChange={card.percentageChange}
-              icon={card.icon}
-            />
-          ))}
-        {/* pie chart */}
-        <DashboardCard07>
-          <div className="flex">
-            <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-              <AmrabadPieChart
-                data={packageData}
-                title="Total Tickets Booked Based on Package services "
-                angleKey="totalBookings"
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        {({ values, setFieldValue }) => (
+          <>
+            <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <div>
+                <label
+                  htmlFor="fromDate"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  From Date
+                </label>
+                <Field
+                  type="date"
+                  name="fromDate"
+                  className={`mt-1 block w-full px-2 py-1 border
+                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    const fromDateValue = e.target.value;
+                    setFieldValue("fromDate", fromDateValue);
+                    if (new Date(fromDateValue) > new Date(values.toDate)) {
+                      // Automatically update toDate if it's earlier than fromDate
+                      setFieldValue("toDate", fromDateValue);
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="toDate"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  To Date
+                </label>
+                <Field
+                  type="date"
+                  name="toDate"
+                  className={`mt-1 block w-full px-2 py-1 border
+                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  min={values.fromDate}
+                  onChange={(e) => {
+                    const toDateValue = e.target.value;
+                    setFieldValue("toDate", toDateValue);
+                  }}
+                />
+              </div>
+
+              {/* submit */}
+              <div className="flex items-end gap-2">
+                <button
+                  type="submit"
+                  className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                  // disabled={isFetchAllMetroSummaryReportsLoading}
+                >
+                  Search
+                </button>
+              </div>
+            </Form>
+          </>
+        )}
+      </Formik>
+      <h3 className="text-xl text-gray-800 mt-2">Packages Summary Count</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-0 mt-2">
+        {/* Total Bookings Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardData.totalBookings || 0}
+                duration={2}
+                prefix=""
+                separator=","
               />
             </div>
-            <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-              <AmrabadPieChart
-                data={packageData}
-                title="Total Amount Generated Based on Package services "
-                angleKey="totalAmount"
-              />
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <IoTicketSharp className="text-blue-600 text-lg" />
             </div>
           </div>
-        </DashboardCard07>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Bookings
+          </div>
+        </div>
+
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardData.totalTicketCount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <IoTicketSharp className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Tickets
+          </div>
+        </div>
+        {/* Total Amount Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardData.totalAmount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <FaIndianRupeeSign className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Amount
+          </div>
+        </div>
+      </div>
+      {/* Munnanur Tiger Reserve Package Dashboard */}
+      <div className="mt-4">
+        <AmarabadPckagesNames />
+      </div>
+
+      {/* Graphical Representation Dashboard */}
+      <div>
+        <GraphicalRepresentationDashboard />
       </div>
     </>
   );

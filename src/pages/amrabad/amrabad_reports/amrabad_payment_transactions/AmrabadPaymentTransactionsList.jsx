@@ -18,6 +18,10 @@ function AmrabadPaymentTransactionsList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-payment-report-filters")
   );
+  console.log(
+    "allAmrabadTransactionPaymentReports",
+    allAmrabadTransactionPaymentReports
+  );
   useEffect(() => {
     fetchAmrabadPaymentTransactions({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
@@ -25,8 +29,8 @@ function AmrabadPaymentTransactionsList() {
       paymentStatus: savedFilters?.paymentStatus
         ? savedFilters.paymentStatus
         : "",
-      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : null,
-      phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+      phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -42,96 +46,92 @@ function AmrabadPaymentTransactionsList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "department",
-      headerName: "Department",
+      field: "userName",
+      headerName: "User Name",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "locationCategory",
-      headerName: "Location category",
+      field: "mobileNumber",
+      headerName: "Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "orderID",
-      headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "transactionID",
+      field: "transaactionID",
       headerName: "Transaction ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "mobileNumber",
-      headerName: "Mobile No.",
+      field: "packageName",
+      headerName: "Package Name",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
+      field: "houseName",
+      headerName: "House Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "amount",
-      headerName: "Amount Initiated",
+      field: "purchaseDate",
+      headerName: "Purchase Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paymentDate",
-      headerName: "Payment Date",
+      field: "amountPaid",
+      headerName: "Amount Paid",
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
-      field: "paymentStatus",
-      headerName: "Payment Status",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "refundStatus",
-      headerName: "Refund Status",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "paytmConfirmedStatus",
-      headerName: "Paytm Confirmed Status",
+      field: "paymentMode",
+      headerName: "Mode of Booking ",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "paymentMode",
-      headerName: "Payment Mode",
+      headerName: "Paymode Mode",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    // {
-    //   field: "Re-grnerateTicket",
-    //   headerName: "Re-grnerate Ticket",
-    //   maxWidth: 160,
-    //   headerClass: "text-blue-v2",
-    //   cellRenderer: (params) => {
-    //     return (
-    //       <div className="flex justify-center">
-    //         <span
-    //           onClick={() => {
-    //             setOpenModal(true);
-    //             setreGenerateData({
-    //               paymentOrderId: params.data.orderId,
-    //               mobileNumber: params.data.phonE_NUMBER,
-    //             });
-    //           }}
-    //         >
-    //           <HiArrowPathRoundedSquare className="text-[24px] text-green-400  mt-2.5 " />
-    //         </span>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "paytmConfirmedStatus",
+      headerName: "Payment Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "paymentMode",
+      headerName: "Actual Paytm Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "paymentMode",
+      headerName: "Refund Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "paymentMode",
+      headerName: "Refund ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "paymentMode",
+      headerName: "Refund Initiated Date",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
   ]);
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
@@ -147,19 +147,19 @@ function AmrabadPaymentTransactionsList() {
         />
         <AgGridTable
           ExportName="Payment Transactions"
-          rowData={allAmrabadTransactionPaymentReports || []}
+          rowData={allAmrabadTransactionPaymentReports?.records || []}
           columnDefs={columnDefs}
           isFetchLoading={isAmrabadTransactionPaymentReportsLoading}
           isPagination={false}
           tableHeight={
-            allAmrabadTransactionPaymentReports?.data?.length > 10 ? 560 : 330
+            allAmrabadTransactionPaymentReports?.records?.length > 10 ? 560 : 330
           }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={allAmrabadTransactionPaymentReports[0]?.totalCount}
+          totalCount={allAmrabadTransactionPaymentReports.totalCount}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}
