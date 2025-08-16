@@ -29,7 +29,7 @@ const AmrabadForgetPinMobileNumber = () => {
         mobileNumber: values.mobile,
       });
       if (res.data?.status === 200) {
-        navigate("/amarabad-otp");
+        navigate("/amrabad-otp");
       } else {
         toast.error(res.data.data?.message);
       }

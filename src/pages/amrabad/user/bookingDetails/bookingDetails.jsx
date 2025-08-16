@@ -1,185 +1,168 @@
 import UserLayout from "../../../../layouts/UserLayout";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { FaCreditCard } from "react-icons/fa";
+import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
-
-// Mock booking data (replace with real data as needed)
-const bookingData = {
-    houseName: "CHITAL AND OTTER",
-    image: "https://amrabadtigerreserve.com/wp-content/uploads/2023/01/20230412_162323-1024x768.jpg",
-    checkIn: "19 MAY 2025",
-    checkOut: "21 MAY 2025",
-    noOfHouses: 1,
-    subTotal: 6175,
-};
-
-const initialValues = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    country: "INDIA",
-    mobile: "",
-    aadhar: "",
-};
-
-const validationSchema = Yup.object({
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    country: Yup.string().required("Country is required"),
-    mobile: Yup.string()
-        .matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
-        .required("Mobile number is required"),
-    aadhar: Yup.string()
-        .matches(/^\d{12}$/, "Aadhar number must be exactly 12 digits")
-        .required("Aadhar number is required"),
-});
+import BookingForm from "./components/BookingForm";
+import BookingSummary from "./components/BookingSummary";
+import PaymentSection from "./components/PaymentSection";
+import { useCartStore } from "../../../../store/amrabad/user/userCartStore";
+import { useEffect } from "react";
+import { usePaymentStore } from "../../../../store/amrabad/user/userPaymentStore";
+import { toast } from "react-toastify";
 
 const AmarabadBookingDetails = () => {
+    const { cartItems, loadingCart, fetchCartItems } = useCartStore();
+    const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
-    const handleSubmit = (values, { setSubmitting }) => {
-        // Payment logic here
-        // alert("Booking submitted!\n" + JSON.stringify(values, null, 2));
-        setSubmitting(false);
-        navigate("/amarabad/confirmed-details/1234567890");
+    const userLocalStorage = JSON.parse(localStorage.getItem("amrabadlogin-store"));
+    const userDetails = userLocalStorage?.state?.decodedTokenData;
+    
+    useEffect(() => {
+        fetchCartItems();
+    }, []);
+
+    // Helper function to map cart items to booking items format for initiateTransaction
+    const mapCartItemsToBookingItems = (cartItems) => {
+        if (!cartItems || cartItems.length === 0) return [];
+        
+        return cartItems?.data?.map(item => ({
+            packageId: item.packageId || 0,
+            roomId: item.roomId || 0,
+            checkIn: item.roomFromDate,
+            checkOut: item.roomToDate,
+            roomCount: item.roomCount,
+            tariffPerDay: item.amount || 0,
+            discountType: item.discountType || "",
+            discountValue: item.discountAmount || 0,
+            amountAfterDiscount: item.cartTotalAmount || 0
+        }));
+    };
+
+    // Helper function to map cart items for addNewBookingDetails (includes cartItemId)
+    const mapCartItemsForBookingDetails = (cartItems) => {
+        if (!cartItems || cartItems.length === 0) return [];
+        
+        return cartItems?.data?.map(item => ({
+            packageId: item.packageId || 0,
+            roomId: item.roomId || 0,
+            cartItemId: item.cartId || 0,
+            checkIn: item.roomFromDate,
+            checkOut: item.roomToDate,
+            roomCount: item.roomCount || 1,
+            tariffPerDay: item.amount || 0,
+            discountType: item.discountType || "",
+            discountValue: item.discountAmount || 0,
+            amountAfterDiscount: item.cartTotalAmount || 0
+        }));
+    };
+
+    const handleSubmit = async (formValues, { setSubmitting }) => {
+        try {
+            // Step 1: Initiate Transaction
+            const transactionData = {
+                amount: cartItems?.grandTotal,
+                customerId: userDetails?.UserId,
+                isIOS: false,
+                paymentType: "ONLINE",
+                parkId: "101",
+                departmentId: 38,
+                bookingDate: new Date().toISOString(),
+                bookingType: "ACCOMMODATION",
+                mobileNumber: userDetails?.PhoneNumber,
+                bookingRequestjson: {
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
+                    emailId: formValues.email,
+                    mobileNumber: formValues.mobile,
+                    aadharNumber: formValues.aadhar,
+                    country: formValues.country,
+                    address: formValues.address,
+                    town: formValues.town,
+                    state: formValues.state,
+                    pincode: formValues.pincode,
+                    remarks: formValues.message || "",
+                    amount: cartItems?.grandTotal,
+                    userId: userDetails?.UserId,
+                    parkId: "101",
+                    paymentTransactionId: "",
+                    orderId: "",
+                    bookingItems: mapCartItemsToBookingItems(cartItems)
+                }
+            };
+            const transactionResponse = await initiateTransaction(transactionData);
+
+            if (transactionResponse.status === 200 || transactionResponse.data?.status === 200) {
+                toast.success("Booking initiated successfully!");
+                const orderId = transactionResponse.data?.orderId || 
+                               transactionResponse.orderId;
+
+                // Step 2: Add New Booking Details
+                const bookingDetailsData = {
+                    firstName: formValues.firstName,
+                    lastName: formValues.lastName,
+                    emailId: formValues.email,
+                    mobileNumber: formValues.mobile,
+                    aadharNumber: formValues.aadhar,
+                    country: formValues.country,
+                    address: formValues.address,
+                    town: formValues.town,
+                    state: formValues.state,
+                    pincode: formValues.pincode,
+                    remarks: formValues.message || "",
+                    amount: cartItems?.grandTotal,
+                    userId: userDetails?.UserId,
+                    parkId: "101",
+                    packageId: null,
+                    roomId: null,
+                    paymentTransactionId: orderId,
+                    orderId: orderId,
+                    bookingItems: mapCartItemsForBookingDetails(cartItems)
+                };
+
+                const bookingResponse = await addNewBookingDetails(bookingDetailsData);
+                console.log(bookingResponse, "bookingResponse");
+
+                if (bookingResponse.statusCode === 200) {
+                    toast.success("Booking completed successfully!");
+                    navigate(`/amrabad/confirmed-details/${orderId}`);
+                } else {
+                    toast.error(bookingResponse.data?.message || bookingResponse.message || "Failed to complete booking");
+                }
+            } else {
+                toast.error(transactionResponse.data?.message || transactionResponse.message || "Transaction failed");
+            }
+        } catch (error) {
+            console.error("Booking error:", error);
+            toast.error(error.message || "Failed to process booking");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
         <UserLayout>
             <div className="container mx-auto py-4 sm:py-6 md:py-8 px-3">
                 <div className="">
-                    {/* Left: Billing/Guest Details Form */}
-                    <div className="bg-white rounded-lg py-4 sm:py-6 md:py-8 flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
-                        <Formik
-                            initialValues={initialValues}
-                            validationSchema={validationSchema}
-                            onSubmit={handleSubmit}
-                        >
-                            {({ isSubmitting }) => (
-                                <>
-                                    <Form id="booking-form" className="space-y-3 sm:space-y-4 w-full flex-1">
-                                        <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-black">BILLING INFORMATION / Guest Details</h2>
-                                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                                            <div className="w-full sm:w-1/2">
-                                                <label className="block text-sm font-medium mb-1">First Name <span className="text-red-500">*</span></label>
-                                                <Field placeholder="Enter your first name" name="firstName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
-                                                <ErrorMessage name="firstName" component="div" className="text-xs text-red-500" />
-                                            </div>
-                                            <div className="w-full sm:w-1/2">
-                                                <label className="block text-sm font-medium mb-1">Last Name <span className="text-red-500">*</span></label>
-                                                <Field placeholder="Enter your last name" name="lastName" type="text" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
-                                                <ErrorMessage name="lastName" component="div" className="text-xs text-red-500" />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Email <span className="text-red-500">*</span></label>
-                                            <Field placeholder="Enter your email" name="email" type="email" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
-                                            <ErrorMessage name="email" component="div" className="text-xs text-red-500" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Country <span className="text-red-500">*</span></label>
-                                            <Field as="select" name="country" className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm">
-                                                <option value="INDIA">INDIA</option>
-                                                <option value="USA">USA</option>
-                                                <option value="UK">UK</option>
-                                                <option value="CANADA">CANADA</option>
-                                                <option value="AUSTRALIA">AUSTRALIA</option>
-                                                <option value="NEW ZEALAND">NEW ZEALAND</option>
-                                                <option value="SOUTH AFRICA">SOUTH AFRICA</option>
-                                                <option value="GERMANY">GERMANY</option>
-                                                {/* Add more countries as needed */}
-                                            </Field>
-                                            <ErrorMessage name="country" component="div" className="text-xs text-red-500" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Mobile number <span className="text-red-500">*</span></label>
-                                            <Field placeholder="Enter your mobile number" name="mobile" type="text" maxLength={10} className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm" />
-                                            <ErrorMessage name="mobile" component="div" className="text-xs text-red-500" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium mb-1">Aadhar number <span className="text-red-500">*</span></label>
-                                            <Field
-                                                name="aadhar"
-                                                type="text"
-                                                placeholder="Enter 12 digit Aadhar number"
-                                                maxLength={12}
-                                                className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm"
-                                                onKeyPress={(e) => {
-                                                    // Only allow numbers
-                                                    if (!/[0-9]/.test(e.key)) {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                            />
-                                            <ErrorMessage name="aadhar" component="div" className="text-xs text-red-500" />
-                                        </div>
-                                    </Form>
-                                </>
-                            )}
-                        </Formik>
+                    <div className="bg-white rounded-lg p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
+                        {/* Left: Billing/Guest Details Form */}
+                        <BookingForm onSubmit={handleSubmit} />
 
                         {/* Right: Booking Summary & Payment */}
                         <div className="flex-1 w-full lg:max-w-[450px] flex flex-col gap-4 sm:gap-6">
-                            {/* Booking Summary */}
-                            <div className="bg-[#EEEDFA] rounded-lg p-2 sm:p-6 border border-[#C0C0C5]">
-                                <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-                                    <img src={bookingData.image} alt={bookingData.houseName} className="w-12 h-9 sm:w-16 sm:h-12 object-cover rounded" />
-                                    <div className="flex-1">
-                                        <div className="font-bold text-base sm:text-lg text-gray-800">{bookingData.houseName}</div>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-[#C0C0C5] pt-3 sm:pt-4 mb-3 sm:mb-4">
-                                    <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
-                                        <div>
-                                            <div className="font-semibold text-gray-700 mb-1">CHECK-IN</div>
-                                            <div className="text-gray-600">{bookingData.checkIn}</div>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-700 mb-1">CHECK-OUT</div>
-                                            <div className="text-gray-600">{bookingData.checkOut}</div>
-                                        </div>
-                                        <div>
-                                            <div className="font-semibold text-gray-700 mb-1">NO. OF HOUSES</div>
-                                            <div className="text-gray-600">0{bookingData.noOfHouses}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-[#C0C0C5] pt-3 sm:pt-4">
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-bold text-gray-800 text-sm sm:text-base">SUB-TOTAL</span>
-                                        <span className="font-bold text-[#362D86] text-base sm:text-lg">₹{bookingData.subTotal.toLocaleString()}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Payment Section */}
-                            <div className="bg-white rounded-lg p-4 sm:p-6 border border-[#C0C0C5]">
-                                <div className="flex items-center gap-2 sm:gap-3 mb-2">
-                                    <img src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png" alt="Paytm" className="w-20 sm:w-28 h-auto object-contain" />
-                                    <span className="font-medium text-[#362D86] text-sm sm:text-base">Payment Gateway</span>
-                                </div>
-                                <p className="text-xs text-gray-600 mb-3 sm:mb-4">
-                                    The best payment gateway provider in India for e-payment through <span className="font-semibold text-gray-800">Paytm Postpaid, Paytm Wallet, UPI, Credit Card, Debit Card and Netbanking</span>
-                                </p>
+                            <div className="position-sticky top-0"> 
+                                <BookingSummary 
+                                    bookingData={cartItems} 
+                                    loadingCart={loadingCart}
+                                />
                             </div>
                             <Formik
-                                initialValues={initialValues}
-                                validationSchema={validationSchema}
+                                initialValues={{}}
                                 onSubmit={handleSubmit}
                             >
                                 {({ isSubmitting }) => (
-                                    <button
-                                        type="submit"
-                                        form="booking-form"
-                                        className="w-full flex items-center justify-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60 text-sm sm:text-base"
-                                        disabled={isSubmitting}
-                                    >
-                                        <FaCreditCard className="text-base sm:text-lg" />
-                                        PAY&nbsp; ₹{bookingData.subTotal.toLocaleString()}
-                                    </button>
+                                    <PaymentSection 
+                                        subTotal={cartItems?.grandTotal} 
+                                        isSubmitting={isSubmitting || loadingInitiateTransaction || loadingAddNewBookingDetails}
+                                    />
                                 )}
                             </Formik>
                         </div>

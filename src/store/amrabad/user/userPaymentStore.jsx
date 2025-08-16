@@ -1,0 +1,33 @@
+import { create } from "zustand";
+import apiService from "../../../services/apiService";
+import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+import { toast } from "react-toastify";
+
+export const usePaymentStore = create((set) => ({
+  loadingInitiateTransaction: false,
+  loadingAddNewBookingDetails: false,
+  initiateTransaction: async (data) => {
+    set({ loadingInitiateTransaction: true });
+    try {
+      const response = await apiService.post(API_ENDPOINTS.AMRABAD.USER.INITIATE_TRANSACTION, data);
+      return response.data;
+    } catch (error) {
+      toast.error(error.message || "Some thing went wrong");
+      return error;
+    } finally {
+      set({ loadingInitiateTransaction: false });
+    }
+  },
+  addNewBookingDetails: async (data) => {
+    set({ loadingAddNewBookingDetails: true });
+    try {
+      const response = await apiService.post(API_ENDPOINTS.AMRABAD.USER.ADD_NEW_BOOKING_DETAILS, data);
+      return response.data;
+    } catch (error) {
+      toast.error(error.message || "Some thing went wrong");
+      return error;
+    } finally {
+      set({ loadingAddNewBookingDetails: false });
+    }
+  }
+}));

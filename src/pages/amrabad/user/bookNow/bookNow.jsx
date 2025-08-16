@@ -2,7 +2,7 @@ import Breadcrumb from "./components/Breadcrumb";
 import PropertyDetails from "./components/PropertyDetails";
 import UserLayout from "../../../../layouts/UserLayout";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BookingForm } from "./components/BookingForm";
 
@@ -11,7 +11,7 @@ const BookNow = () => {
   const [house, setHouse] = useState(null);
   const [userPackage, setUserPackage] = useState(null);
   const { packageId, houseId } = useParams();
-
+  const { fromDate, toDate } = useLocation().state;
   useEffect(() => {
     fetchUserPackages();
   }, []);
@@ -46,7 +46,7 @@ const BookNow = () => {
               <PropertyDetails house={house} userPackage={userPackage} isUserPackagesLoading={isUserPackagesLoading} />
               
               {/* Right Column - Booking Form */}
-              <BookingForm packageId={packageId} houseId={houseId} house={house} isUserPackagesLoading={isUserPackagesLoading}  />
+              <BookingForm packageId={packageId} houseId={houseId} house={house} userPackage={userPackage} isUserPackagesLoading={isUserPackagesLoading} fromDate={fromDate} toDate={toDate} />
             </div>
           </div>
         </div>

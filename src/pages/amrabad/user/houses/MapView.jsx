@@ -376,11 +376,41 @@ const MapView = ({ houses, onHouseClick }) => {
                     }`}
                 >
                   <div className="flex items-start gap-2">
-                    <img
-                      src={house.images[0].imageUrl}
-                      alt="Image"
-                      className="w-12 h-12 object-cover rounded-md flex-shrink-0"
-                    />
+                    {house?.images?.length > 0 ? (
+                      <>
+                        <img
+                          src={house.images[0]}
+                          alt={house?.roomName || "House Image"}
+                          className="w-12 h-12 object-cover rounded-md flex-shrink-0"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                        {/* Fallback dummy image */}
+                        <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center flex-shrink-0" style={{ display: 'none' }}>
+                          <svg
+                            className="w-6 h-6 text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      </>
+                    ) : (
+                      // No images available - show dummy image
+                      <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-6 h-6 text-gray-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-gray-900 text-xs leading-tight mb-0.5 truncate">
                         {getHouseDisplayName(house)}
@@ -389,19 +419,11 @@ const MapView = ({ houses, onHouseClick }) => {
                         )}
                       </h4>
                       <div className="flex items-center gap-1 mb-0.5">
-                        <p className="text-sm font-bold text-[#362D86] leading-none">₹{getHousePrice(house)}</p>
-                        {house.hasDiscount && house.discountValue && (
-                          <span className="text-xs text-gray-500 line-through">₹{getOriginalPrice(house)}</span>
-                        )}
-                        <span className="text-[10px] text-gray-500 ml-1">per day</span>
+                        <p className="text-sm font-bold text-[#362D86] leading-none">₹{house?.tariffPerDay?.toLocaleString()}</p>
+                        <span className="text-[10px] text-gray-500 ml-1">/ 2 Guests</span>
                       </div>
-                      {house.hasDiscount && house.discountValue && (
-                        <p className="text-xs text-green-600 font-medium mb-1">
-                          {house.discountValue}% OFF
-                        </p>
-                      )}
                       <Link
-                        to={`/amarabad/book-now/${house.packageId}/${house.roomId}`}
+                        to={`/amrabad/book-now/${house.packageId}/${house.roomId}`}
                         className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
                         onClick={(e) => e.stopPropagation()}
                       >

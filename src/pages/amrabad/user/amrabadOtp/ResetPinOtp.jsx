@@ -72,7 +72,7 @@ const ResetPinOtp = () => {
       console.log("response", response);
       if (response.data.status===200) {
         toast.success(response.data?.data?.message||"OTP verified successfully");
-        navigate("/amarabad-reset-pin");
+        navigate("/amrabad-reset-pin");
       } else {
         toast.info(response.data?.data?.message||"something went wrong");
       }
