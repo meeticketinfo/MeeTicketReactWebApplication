@@ -159,7 +159,7 @@ const BookingCard = ({ booking }) => {
         <div className="flex gap-2 lg:gap-4">
           <button className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
             <FaEye />
-            <span className="hidden xs:inline"><Link to={`/amrabad/ticket-view-details/${booking?.paymentTransactionId}`}>View Details</Link></span>
+            <span className="hidden xs:inline"><Link to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}`}>View Details</Link></span>
           </button>
           <button className="flex items-center gap-1 sm:gap-2 text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm">
             <BsDownload />

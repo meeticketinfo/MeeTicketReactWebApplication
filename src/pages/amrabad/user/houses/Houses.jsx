@@ -95,7 +95,7 @@ const Houses = () => {
         <div className="flex items-center gap-1 flex-wrap text-sm">
           <Link
             className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-            to="/amrabad/packages"
+            to="/amrabad-resort/packages"
           >
             Amrabad Resorts
           </Link>

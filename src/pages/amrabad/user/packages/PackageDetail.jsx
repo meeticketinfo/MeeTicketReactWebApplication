@@ -33,7 +33,7 @@ const PackageDetail = () => {
         <div className="flex items-center justify-center h-[50vh]">
           <div className="text-center">
             <div className="text-gray-500 text-xl mb-4">Package not found</div>
-            <Link to="/amrabad/packages" className="text-blue-600 hover:text-blue-800 underline">
+            <Link to="/amrabad-resort/packages" className="text-blue-600 hover:text-blue-800 underline">
               Back to Packages
             </Link>
           </div>
@@ -51,7 +51,7 @@ const PackageDetail = () => {
           <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{GetPackageDetail?.title}</h4>
             <Link
-              to={`/amrabad/houses/${packageId}`}
+              to={`/amrabad-resort/houses/${packageId}`}
               className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
@@ -305,7 +305,7 @@ const PackageDetail = () => {
                 BOOKINGS ARE OPEN
               </div>
               <div className="flex gap-3 md:gap-6 flex-col md:flex-row">
-                <Link to={`/amrabad/houses/${packageId}`} className="bg-white border border-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition text-center">
+                <Link to={`/amrabad-resort/houses/${packageId}`} className="bg-white border border-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition text-center">
                   BOOK NOW
                 </Link>
                 <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-indigo-700 transition">

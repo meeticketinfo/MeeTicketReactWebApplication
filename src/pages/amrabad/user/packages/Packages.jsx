@@ -34,7 +34,7 @@ const Packages = () => {
                 <div className="relative z-10 max-w-[350px] flex flex-col gap-6 justify-center items-center">
                   <h4 className="text-white text-2xl md:text-3xl font-bold capitalize">{item.packageName}</h4>
                   <Link
-                    to={`/amrabad/packages/${item.packageId}`}
+                    to={`/amrabad-resort/packages/${item.packageId}`}
                     className="bg-white text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold"
                   >
                     BOOK NOW

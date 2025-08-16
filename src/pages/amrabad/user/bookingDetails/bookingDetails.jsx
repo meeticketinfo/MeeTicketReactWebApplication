@@ -123,7 +123,7 @@ const AmarabadBookingDetails = () => {
 
                 if (bookingResponse.statusCode === 200) {
                     toast.success("Booking completed successfully!");
-                    navigate(`/amrabad/confirmed-details/${orderId}`);
+                    navigate(`/amrabad-resort/confirmed-details/${orderId}`);
                 } else {
                     toast.error(bookingResponse.data?.message || bookingResponse.message || "Failed to complete booking");
                 }
