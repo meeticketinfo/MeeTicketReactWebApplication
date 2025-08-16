@@ -132,6 +132,12 @@ import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDe
 import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
 import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
 import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
+import AmrabadUserReport from "../pages/amrabad/amrabad_reports/amarabad_user/AmrabadUserReport";
+import AmarabadUserDetailedReport from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmarabadUserDetailedReport";
+import AmrabadUserTransactionsOrderTracker from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmrabadUserTransactionsOrderTracker";
+import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/reports/MainAmarabadRefundTransactions";
+import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
+import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
 import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
 
 export const routes = [
@@ -363,6 +369,10 @@ export const routes = [
     path: "/failed-transactions",
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },
+  {
+    path: "/amrabad-user-report",
+    element: <ProtectedRoute element={<AmrabadUserReport />} />,
+  },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
   { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
   // -----
@@ -572,6 +582,10 @@ export const routes = [
     element: <ProtectedRoute element={<MainPackages/>} />,
   },
   { 
+    path: "/amrabad-view-transaction-track-order",
+    element: <ProtectedRoute element={<AmrabadViewTransactionTrackOrder/>} />,
+  },
+  { 
     path: "/amrabad-booking-reports",
     element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
   },
@@ -586,6 +600,22 @@ export const routes = [
   {
     path: "/amrabad-availability-report",
     element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
+  },
+   {
+    path: "/amrabad-user-detailed-report",
+    element: <ProtectedRoute element={<AmarabadUserDetailedReport />} />,
+  },
+   {
+    path: "/amrabad-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-report",
+    element: <ProtectedRoute element={<MainAmarabadRefundTransactions />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-inner-report",
+    element: <ProtectedRoute element={<AmrabadRefundTransactionsReport />} />,
   },
   // metro transaction reports
 

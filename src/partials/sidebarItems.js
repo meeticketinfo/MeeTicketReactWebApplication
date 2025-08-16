@@ -466,6 +466,16 @@ const sidebarItems = [
         icon: MdEventAvailable,
         path: "/amrabad-availability-report",
       },
+        {
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-user-report",
+      },
+         {
+        title: "Refund Transaction Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-refund-transaction-report",
+      },
       {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
