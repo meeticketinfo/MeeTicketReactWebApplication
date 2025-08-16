@@ -29,7 +29,7 @@ const PaymentSection = ({ subTotal, isSubmitting }) => {
                 disabled={isSubmitting}
             >
                 <FaCreditCard className="text-base sm:text-lg" />
-                PAY&nbsp; ₹{subTotal.toLocaleString()}
+                PAY&nbsp; ₹{subTotal ? subTotal.toLocaleString() : 0}
             </button>
         </>
     );

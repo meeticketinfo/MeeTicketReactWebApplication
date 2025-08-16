@@ -80,7 +80,7 @@ const AmarabadRegisterOtp = () => {
         toast.success(
           response.data.data.message || "OTP verified successfully"
         );
-        navigate("/amarabad/login", {
+        navigate("/amrabad/login", {
           state: { toastMessage: "User Registered Successfully. You can login now" },
         });
         localStorage.removeItem("registerdDetails");

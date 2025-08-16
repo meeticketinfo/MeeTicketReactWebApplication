@@ -5,21 +5,21 @@ const Breadcrumb = ({ house }) => {
     <div className="flex items-center gap-1 sm:gap-2 text-sm text-gray-600 mb-6 flex-wrap">
       <Link
         className="text-[#362D86] hover:text-[#362D86]/80 font-semibold capitalize"
-        to="/amarabad/packages"
+        to="/amrabad/packages"
       >
         Amrabad Resorts
       </Link>
       <span className="text-gray-400"> &gt; </span>
       <Link
         className="text-[#362D86] hover:text-[#362D86]/80 font-semibold capitalize"
-        to={`/amarabad/packages/${house?.packageId}`}
+        to={`/amrabad/packages/${house?.packageId}`}
       >
         {house?.packageName}
       </Link>
       <span className="text-gray-400"> &gt; </span>
       <Link
         className="text-[#362D86] hover:text-[#362D86]/80 font-semibold capitalize"
-        to={`/amarabad/houses/${house?.packageId}`}
+        to={`/amrabad/houses/${house?.packageId}`}
       >
         List of houses
       </Link>
