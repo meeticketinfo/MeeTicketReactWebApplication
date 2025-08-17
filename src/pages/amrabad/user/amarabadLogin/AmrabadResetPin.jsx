@@ -42,7 +42,7 @@ const AmrabadResetPin = () => {
         // toast.success(response.data.data.message||"PIN reset successfully");
         localStorage.removeItem("forgetPinMobileNumber");
 
-        navigate("/amrabad/login", {
+        navigate("/amrabad-resort/login", {
           state: { toastMessage: "PIN reset successfully. You can login now" },
         });
       } else {

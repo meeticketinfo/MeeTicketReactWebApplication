@@ -152,7 +152,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
 
               {/* Button to Amarabad page */}
               <Link
-                to="/amrabad/packages"
+                to="/amrabad-resort/packages"
                 className="inline-flex items-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 <span>Go to Packages</span>
@@ -306,7 +306,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 {/* Book Now Button */}
                 <div className="mt-4 sm:mt-6">
                   <Link
-                      to={`/amrabad/book-now/${house?.packageId}/${house?.roomId}`}
+                      to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
                       state={{fromDate: fromDate, toDate: toDate}}
                     className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                   >
@@ -343,7 +343,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                   >
                     {house?.calendar?.map((item, idx) => (
                       <SwiperSlide key={idx} className="!w-auto">
-                        <Link to={`/amrabad/book-now/${house?.packageId}/${house?.roomId}`} state={{fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date}} 
+                        <Link to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} state={{fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date}} 
                         className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block">
                           
                           {/* Date */}

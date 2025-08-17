@@ -100,7 +100,7 @@ const BookingCard = ({ booking }) => {
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 mb-4 sm:mb-6 max-w-screen-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4 sm:mb-6 gap-3">
             <div className="flex items-start gap-2 sm:gap-3">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
                 <IoCalendarClearOutline />
@@ -111,7 +111,7 @@ const BookingCard = ({ booking }) => {
                 <div className="text-xs text-gray-500">onwards</div>
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3 ml-5 ">
+            <div className="flex items-start gap-2 sm:gap-3 ">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
                 <IoCalendarClearOutline />
               </div>
@@ -121,7 +121,7 @@ const BookingCard = ({ booking }) => {
                 {/* <div className="text-xs text-gray-500">onwards</div> */}
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3 ml-11">
+            <div className="flex items-start gap-2 sm:gap-3 ">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700">
                 <TbUsers />
               </div>
@@ -131,7 +131,7 @@ const BookingCard = ({ booking }) => {
                 {/* <div className="text-xs text-gray-500">3 nights stay</div> */}
               </div>
             </div>
-            <div className="flex items-start gap-2 sm:gap-3 ml-5">
+            <div className="flex items-start gap-2 sm:gap-3 ">
               <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-orange-50 rounded-md flex items-center justify-center text-orange-700">
                 <PiHouseLine />
               </div>
@@ -157,14 +157,18 @@ const BookingCard = ({ booking }) => {
           </div> */}
         </div>
         <div className="flex gap-2 lg:gap-4">
-          <button className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
+          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}`} className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
             <FaEye />
-            <span className="hidden xs:inline"><Link to={`/amrabad/ticket-view-details/${booking?.paymentTransactionId}`}>View Details</Link></span>
-          </button>
-          <button className="flex items-center gap-1 sm:gap-2 text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm">
+            <span className="hidden xs:inline">View Details</span>
+          </Link>
+          <Link
+            target="_blank"
+            to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}?download=true`}
+            className="flex items-center gap-1 sm:gap-2 text-gray-500 hover:text-gray-700 transition-colors text-xs sm:text-sm"
+          >
             <BsDownload />
             <span className="hidden xs:inline">Download</span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

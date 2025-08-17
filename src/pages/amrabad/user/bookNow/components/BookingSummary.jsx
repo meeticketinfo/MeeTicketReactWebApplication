@@ -44,7 +44,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = 
       });
       console.log(response, "response");
       if (response.statusCode === 200) {
-        navigate("/amrabad/checkout-details");
+        navigate("/amrabad-resort/checkout-details");
         toast.success("Item added to cart");
       } else {
         toast.error(response.response.data.message || "something went wrong");

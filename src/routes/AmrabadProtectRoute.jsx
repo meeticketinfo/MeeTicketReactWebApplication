@@ -7,15 +7,15 @@ const AmrabadProtectRoute = ({ element }) => {
   const location = useLocation();
 
   // If authenticated and on login page, redirect to dashboard
-  if (isAuthenticated && location.pathname === "/amrabad/login") {
-    return <Navigate to="/amrabad" replace />;
+  if (isAuthenticated && location.pathname === "/amrabad-resort/login") {
+    return <Navigate to="/amrabad-resort" replace />;
   }
 
   // If not authenticated, redirect to login and preserve the intended path
   if (!isAuthenticated) {
     return (
       <Navigate
-        to="/amrabad/login"
+        to="/amrabad-resort/login"
         replace
         state={{ from: location }} // ✅ pass current location for redirection after login
       />

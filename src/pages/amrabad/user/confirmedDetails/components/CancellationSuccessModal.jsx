@@ -39,7 +39,7 @@ const CancellationSuccessModal = ({ isOpen, onClose }) => {
         {/* Action Button */}
         <Link
           onClick={() => onClose()}
-          to="/amrabad"
+          to="/amrabad-resort"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
         >
           Proceed to Homepage

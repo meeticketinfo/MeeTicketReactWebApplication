@@ -204,7 +204,6 @@ const AmrabadRefundTransactionsReport = () => {
             field: "mobileNumber",
             headerName: "Mobile Number",
             minWidth: 100,
-            headerName: "Mobile Number of user",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => `${params.value} ` || "N/A",
         },

@@ -34,7 +34,7 @@ const AmarabadRegister = () => {
               <div className="text-center text-base text-black">
                 Already have an account?{" "}
                 <Link
-                  to="/amrabad/login"
+                  to="/amrabad-resort/login"
                   className="text-[#EB723C] font-bold hover:underline"
                 >
                   Login
