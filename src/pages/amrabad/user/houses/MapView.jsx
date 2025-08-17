@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
-const MapView = ({ houses, onHouseClick }) => {
+const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [selectedHouse, setSelectedHouse] = useState(null);
@@ -424,6 +424,7 @@ const MapView = ({ houses, onHouseClick }) => {
                       </div>
                       <Link
                         to={`/amrabad-resort/book-now/${house.packageId}/${house.roomId}`}
+                        state={{ fromDate: fromDate, toDate: toDate }}
                         className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
                         onClick={(e) => e.stopPropagation()}
                       >

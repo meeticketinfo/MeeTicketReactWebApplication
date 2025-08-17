@@ -1,7 +1,8 @@
 import { FaDownload } from "react-icons/fa";
 import { MdBlock } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-const QRDownloadSection = ({ onCancelTicket, GetTicketViewDetails }) => {
+const QRDownloadSection = ({ bookingId, onCancelTicket, GetTicketViewDetails }) => {
   return (
     <div className="flex flex-col gap-4 sm:gap-6 min-w-[200px] sm:min-w-[220px]">
       <div className="p-4 sm:p-6 flex flex-col items-center">
@@ -19,10 +20,10 @@ const QRDownloadSection = ({ onCancelTicket, GetTicketViewDetails }) => {
           Scan to view booking
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full">
-          <button className="bg-[#362D86] hover:bg-indigo-800 text-white px-3 sm:px-4 py-2 rounded flex items-center justify-center gap-2 text-xs sm:text-sm">
+          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${bookingId}?download=true`} className="bg-[#362D86] hover:bg-indigo-800 text-white px-3 sm:px-4 py-2 rounded flex items-center justify-center gap-2 text-xs sm:text-sm">
             <FaDownload />
             Download Ticket
-          </button>
+          </Link>
           <button
             onClick={onCancelTicket}
             className="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded flex items-center justify-center gap-2 text-xs sm:text-sm"

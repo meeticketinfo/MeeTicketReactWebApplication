@@ -134,7 +134,7 @@ const CheckoutDetails = () => {
                   <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
                     <thead className="bg-[#F6F7FB]">
                       <tr>
-                        <th className="p-2 text-left font-semibold">House Name</th>
+                        <th className="p-2 text-left font-semibold min-w-[260px]">House Name</th>
                         <th className="p-2 text-center font-semibold whitespace-nowrap">Room Count</th>
                         <th className="p-2 text-center font-semibold whitespace-nowrap">Check-in</th>
                         <th className="p-2 text-center font-semibold whitespace-nowrap">Check-out</th>

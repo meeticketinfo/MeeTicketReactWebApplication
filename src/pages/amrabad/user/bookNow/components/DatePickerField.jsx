@@ -74,14 +74,15 @@ const DatePickerField = ({
               return "!text-gray-500 !text-xs !font-medium !py-2 !text-center !w-[50px]";
             }}
             dayClassName={getDayClassName}
-            calendarIconClassName="right-0 h-full !box-border w-8"
-            className="w-full !pl-3 !pr-10 py-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent"
+            calendarIconClassName="!h-5 !w-5 !cursor-pointer !right-0 !top-1/2 !transform !-translate-y-1/2 !pointer-events-auto text-[#362D86] fill-[#362D86]"
+            className="w-full !pl-3 !pr-12 py-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent !text-[#362D86]"
             filterDate={filterDate}
             renderDayContents={renderDayContents}
             placeholderText={placeholderText}
             showDisabledMonthNavigation
             calendarStartDay={0}
             formatWeekDay={(nameOfDay) => nameOfDay.slice(0, 3).toUpperCase()}
+            toggleCalendarOnIconClick={true}
           />
         )}
       </div>

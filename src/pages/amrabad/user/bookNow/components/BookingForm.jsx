@@ -186,7 +186,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     }
     
     const maxDate = new Date(startDate);
-    maxDate.setDate(maxDate.getDate() + 2);
+    maxDate.setDate(maxDate.getDate() + 3); // Changed from +2 to +3 to allow 3 days
     if (date > maxDate) {
       return false;
     }

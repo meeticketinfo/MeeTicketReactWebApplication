@@ -183,7 +183,7 @@ const PackageDetail = () => {
                         <tr className="bg-white">
                           <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[80px]">Day</th>
                           <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[160px]">Time</th>
-                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold">Schedule</th>
+                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold  min-w-[260px]">Schedule</th>
                         </tr>
                       </thead>
                       <tbody className="bg-[#FFFFFF7A]">
