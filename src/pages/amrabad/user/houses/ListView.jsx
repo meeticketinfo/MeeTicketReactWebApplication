@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
 const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, toDate }) => {
-  console.log(userPackage,"userPackage");
+  console.log(userPackage, "userPackage");
 
   // Check if houses array is empty or undefined
   const hasHouses = houses && houses.length > 0;
@@ -16,11 +16,11 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
     const dateObj = new Date(date);
     const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
+
     const weekday = weekdays[dateObj.getDay()];
     const day = dateObj.getDate();
     const month = months[dateObj.getMonth()];
-    
+
     return `${weekday}, ${day} ${month}`;
   };
 
@@ -147,7 +147,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 No Houses Available
               </h3>
               <p className="text-gray-500 mb-6">
-                Currently there are no houses available for booking. Please check back later or explore other options.
+                Currently there are no houses available for booking. Please check back later or explore other options. Or you can change from date and to date.
               </p>
 
               {/* Button to Amarabad page */}
@@ -266,114 +266,138 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                             <div className="font-bold text-[#272628] text-sm">
                               {convertTo12HourFormat(userPackage?.checkOutTime)} (Next Day)
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#362D86]">
+                          ₹{house?.tariffPerDay?.toLocaleString()}
+                        </span>
+                        <div className="text-[#5A5961] text-xs sm:text-sm">
+                          / 2 Guests
                         </div>
                       </div>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#362D86]">
-                          ₹{house?.tariffPerDay?.toLocaleString()}
-                      </span>
-                      <div className="text-[#5A5961] text-xs sm:text-sm">
-                        / 2 Guests
+                    {/* Overview */}
+                    <div className="mt-3 sm:mt-4">
+                      <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
+                        Overview:
                       </div>
-                    </div>
-                  </div>
-                  {/* Overview */}
-                  <div className="mt-3 sm:mt-4">
-                    <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
-                      Overview:
-                    </div>
                       <div className="text-[#828285]  font-semibold text-xs leading-relaxed">
-                      {house?.overview}
-                      {/* <ul className="list-disc pl-4 mt-1 text-xs">
+                        {house?.overview}
+                        {/* <ul className="list-disc pl-4 mt-1 text-xs">
                         <li>
                           Each cottage is thoughtfully designed to accommodate 2
                           guests comfortably.
                         </li>
                       </ul> */}
-                    </div>
-                  </div>
-                  {/* Special Offer */}
-                  <div className="mt-3 sm:mt-4">
-                    <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
-                      Special Offer:
-                    </div>
-                      <div className="text-[#828285] font-semibold text-xs">
-                      {house?.specialOffers}
                       </div>
+                    </div>
+                    {/* Special Offer */}
+                    <div className="mt-3 sm:mt-4">
+                      <div className="font-semibold text-[#323136] mb-1 text-sm sm:text-base">
+                        Special Offer:
+                      </div>
+                      <div className="text-[#828285] font-semibold text-xs">
+                        {house?.specialOffers}
+                      </div>
+                    </div>
                   </div>
-                </div>
-                {/* Book Now Button */}
-                <div className="mt-4 sm:mt-6">
-                  <Link
+                  {/* Book Now Button */}
+                  <div className="mt-4 sm:mt-6">
+                    <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
-                      state={{fromDate: fromDate, toDate: toDate}}
-                    className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
-                  >
-                    Book Now
-                    <span className="text-lg sm:text-xl inline-flex items-center">
-                      <svg
-                        width="60"
-                        height="16"
-                        viewBox="0 0 79 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-12 sm:w-16 h-4 sm:h-5"
-                      >
-                        <path
-                          d="M2 8.75C1.30964 8.75 0.75 9.30964 0.75 10C0.75 10.6904 1.30964 11.25 2 11.25L2 8.75ZM77.8839 10.8839C78.372 10.3957 78.372 9.60427 77.8839 9.11611L69.9289 1.16116C69.4408 0.673004 68.6493 0.673004 68.1612 1.16116C67.673 1.64931 67.673 2.44077 68.1612 2.92893L75.2322 9.99999L68.1612 17.0711C67.673 17.5592 67.673 18.3507 68.1612 18.8388C68.6493 19.327 69.4408 19.327 69.9289 18.8388L77.8839 10.8839ZM2 10L2 11.25L77 11.25L77 9.99999L77 8.74999L2 8.75L2 10Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </span>
-                  </Link>
+                      state={{ fromDate: fromDate, toDate: toDate }}
+                      className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
+                    >
+                      Book Now
+                      <span className="text-lg sm:text-xl inline-flex items-center">
+                        <svg
+                          width="60"
+                          height="16"
+                          viewBox="0 0 79 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-12 sm:w-16 h-4 sm:h-5"
+                        >
+                          <path
+                            d="M2 8.75C1.30964 8.75 0.75 9.30964 0.75 10C0.75 10.6904 1.30964 11.25 2 11.25L2 8.75ZM77.8839 10.8839C78.372 10.3957 78.372 9.60427 77.8839 9.11611L69.9289 1.16116C69.4408 0.673004 68.6493 0.673004 68.1612 1.16116C67.673 1.64931 67.673 2.44077 68.1612 2.92893L75.2322 9.99999L68.1612 17.0711C67.673 17.5592 67.673 18.3507 68.1612 18.8388C68.6493 19.327 69.4408 19.327 69.9289 18.8388L77.8839 10.8839ZM2 10L2 11.25L77 11.25L77 9.99999L77 8.74999L2 8.75L2 10Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </span>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-              
+
               {/* Calendar Slider with Navigation */}
-                
-                <div className="relative">
-                  <Swiper
-                    spaceBetween={8}
-                    slidesPerView={"auto"}
-                    navigation={true}
-                    modules={[Navigation]}
-                    className="calendar-swiper"
-                  >
-                    {house?.calendar?.map((item, idx) => (
-                      <SwiperSlide key={idx} className="!w-auto">
-                        <Link to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} state={{fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date}} 
-                        className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block">
-                          
-                          {/* Date */}
-                          <div className="text-center">
+
+              <div className="relative">
+                <Swiper
+                  spaceBetween={8}
+                  slidesPerView={"auto"}
+                  navigation={true}
+                  modules={[Navigation]}
+                  className="calendar-swiper"
+                >
+                  {house?.calendar?.map((item, idx) => (
+                    <SwiperSlide key={idx} className="!w-auto">
+                      <Link to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
+                        className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px]">
+
+                        {/* Date */}
+                        <div className="text-center">
+
+                          <div className="flex flex-row gap-2">
                             <div className="text-xs font-bold text-gray-800 mb-1">
                               {formatDate(item?.date)}
                             </div>
-                            
-                            {/* Availability and Price */}
-                            <div className="flex items-center gap-2">
-                              <div className={`
-                                text-xs font-bold
-                                ${item?.housesLeft <= 2 
-                                  ? ' text-red-700' 
-                                  : ' text-green-700'
-                                }
-                              `}>
-                                {item?.housesLeft} Left
-                              </div>
-                              
-                              <div className="text-xs font-medium text-gray-500">
-                                ₹{item?.price?.toLocaleString()}/-
-                              </div>
+
+                            {/* Availability */}
+                            <div className={`
+                              text-xs font-bold mb-1
+                              ${item?.housesLeft <= 2
+                                ? ' text-red-700'
+                                : ' text-green-700'
+                              }
+                            `}>
+                              {item?.housesLeft} Left
                             </div>
                           </div>
-                        </Link>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
+
+                          {/* Price with Discount */}
+                          <div className="flex flex-row gap-2">
+                            {item?.discountPercent && item?.discountPercent > 0 ? (
+                              <>
+
+                                {/* Discount Badge */}
+                                <div className="inline-block bg-green-100 text-green-800 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
+                                  {item?.discountPercent}% OFF
+                                </div>
+                                {/* Original Price (struck through) */}
+                                <div className="text-[10px] text-gray-400 line-through">
+                                  ₹{item?.price?.toLocaleString()}
+                                </div>
+
+                                {/* Discounted Price */}
+                                <div className="text-xs font-bold text-green-600">
+                                  ₹{item?.amountAfterDiscount?.toLocaleString()}/-
+                                </div>
+                              </>
+                            ) : (
+                              /* Regular Price */
+                              <div className="text-xs font-medium text-gray-600">
+                                ₹{item?.price?.toLocaleString()}/-
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
             </div>
           ))
         )}

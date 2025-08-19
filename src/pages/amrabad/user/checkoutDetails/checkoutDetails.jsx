@@ -119,7 +119,7 @@ const CheckoutDetails = () => {
               <Link to={`/amrabad-resort/houses/${cartData?.[0]?.packageId}`} className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
                 + Add More Houses
               </Link>
-              <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 block whitespace-nowrap">
+              <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 flex items-center whitespace-nowrap">
                 Clear Cart
                 {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
               </button>
