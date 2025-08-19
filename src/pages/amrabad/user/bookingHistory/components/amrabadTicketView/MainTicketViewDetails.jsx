@@ -227,8 +227,6 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     <span className="font-medium text-black text-sm sm:text-base">
                       {
                         GetTicketViewDetails?.bookingItems?.[0]?.bookingDate
-                          ? formatDateTimeToReadable(GetTicketViewDetails.bookingItems[0].bookingDate)
-                          : 'Not Available'
                       }
                     </span>
                   </div>
@@ -314,17 +312,17 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">
                           {house.tariffPerDay
                             ? `₹${house.tariffPerDay.toLocaleString()}`
-                            : "N/A"}
+                            : "0"}
                         </td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">
-                          {house.discountApplicable
-                            ? `₹${house.discountApplicable.toLocaleString()}`
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-red-600">
+                          -{house.discountValuePerRecord
+                            ? `₹${house.discountValuePerRecord.toLocaleString()}`
                             : "0"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm font-semibold">
-                          {house.amount
-                            ? `₹${house.amount.toLocaleString()}`
-                            : "N/A"}
+                          {house.amountAfterDiscount
+                            ? `₹${house.amountAfterDiscount.toLocaleString()}`
+                            : "0"}
                         </td>
                       </tr>
                     ))}
@@ -338,14 +336,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                   </span>
                   <span className="text-base sm:text-lg font-bold text-black pr-2 sm:pr-8">
                     ₹
-                    {GetTicketViewDetails?.bookingItems
-                      ?.reduce((total, item) => {
-                        const itemTotal =
-                          item.amount ||
-                          item.tariffPerDay - (item.discountApplicable || 0);
-                        return total + itemTotal;
-                      }, 0)
-                      .toLocaleString()}
+                    {GetTicketViewDetails?.totals.totalAfterDiscount.toLocaleString()}
                   </span>
                 </div>
               </div>

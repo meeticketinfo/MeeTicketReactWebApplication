@@ -77,9 +77,9 @@ const ConfirmedDetails = () => {
                 <QRDownloadSection bookingId={bookingId} onCancelTicket={handleCancelTicket}  GetTicketViewDetails={GetTicketViewDetails} />
               </div>
 
-              <BookingDetails booking={GetTicketViewDetails.bookingItems[0]} />
+              {/* <BookingDetails booking={GetTicketViewDetails.bookingItems[0]} /> */}
               <HouseDetails houses={GetTicketViewDetails} />
-              <PaymentSummary payment={GetTicketViewDetails.bookingItems} />
+              <PaymentSummary payment={GetTicketViewDetails?.totals} />
             </div>
           </div>
         </div>
