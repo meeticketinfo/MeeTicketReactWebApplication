@@ -8,15 +8,15 @@ const PaymentSummary = ({ payment }) => {
         <div className="flex justify-between">
           <span className="font-bold text-black">House charges:</span>
           <span className="font-bold text-black">
-            ₹{payment[0]?.amount?.toLocaleString() ?? "N/A"}
+            ₹{payment?.totalTariff?.toLocaleString() ?? "N/A"}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="font-bold">Discount Applied:</span>
-          <span className="font-bold">
-            {payment[0]?.discountApplicable
-              ? payment[0]?.discountApplicable
-              : "N/A"}
+          <span className="font-bold text-red-600">
+            -{payment?.totalDiscount
+              ? payment?.totalDiscount
+              : "0"}
           </span>
         </div>
         <div className="flex justify-between font-bold text-sm sm:text-base border-t pt-2">
@@ -24,14 +24,7 @@ const PaymentSummary = ({ payment }) => {
           {/* <span className="font-bold text-black">₹{payment.totalPaid.toLocaleString()}</span> */}
           <span className="text-base sm:text-lg font-bold text-black">
             ₹
-            {payment
-              ?.reduce((total, item) => {
-                const itemTotal =
-                  item?.amount ||
-                  item?.tariffPerDay - (item?.discountApplicable || 0);
-                return total + itemTotal;
-              }, 0)
-              .toLocaleString()}
+            {payment.totalAfterDiscount.toLocaleString()}
           </span>
         </div>
       </div>

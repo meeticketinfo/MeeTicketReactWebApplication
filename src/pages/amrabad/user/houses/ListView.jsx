@@ -147,7 +147,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 No Houses Available
               </h3>
               <p className="text-gray-500 mb-6">
-                Currently there are no houses available for booking. Please check back later or explore other options.
+                Currently there are no houses available for booking. Please check back later or explore other options. Or you can change from date and to date.
               </p>
 
               {/* Button to Amarabad page */}

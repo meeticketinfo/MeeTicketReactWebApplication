@@ -135,6 +135,42 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     setTotalPrice(finalAmount);
   };
 
+  // Calculate maximum available houses for the selected date range
+  const getMaxAvailableHouses = (checkInDate, checkOutDate) => {
+    let minHousesAvailable = Infinity;
+    const currentDate = new Date(checkInDate);
+    
+    while (currentDate < checkOutDate) {
+      const dateString = getLocalDateString(currentDate);
+      const dayData = availableDatesMapWithFallback[dateString];
+      
+      if (dayData && typeof dayData.housesLeft === 'number') {
+        minHousesAvailable = Math.min(minHousesAvailable, dayData.housesLeft);
+      } else {
+        // If no calendar data available, fall back to house configuration
+        minHousesAvailable = Math.min(minHousesAvailable, house?.noOfHousesAvailable || 1);
+      }
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // If no valid dates found, return house configuration or 1 as fallback
+    return minHousesAvailable === Infinity ? (house?.noOfHousesAvailable || 1) : minHousesAvailable;
+  };
+
+  const handleHouseCountChange = (increment) => {
+    const maxAvailable = getMaxAvailableHouses(startDate, endDate);
+    const newCount = Math.max(1, Math.min(maxAvailable, houseCount + increment));
+    
+    if (newCount !== houseCount) {
+      setHouseCount(newCount);
+      calculatePricing(startDate, endDate, newCount);
+    }
+  };
+
+  // Update max houses when dates change
+  const maxAvailableHouses = getMaxAvailableHouses(startDate, endDate);
+
   const handleCheckInDateChange = (date) => {
     setStartDate(date);
     
@@ -142,21 +178,26 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     nextDay.setDate(nextDay.getDate() + 1);
     setEndDate(nextDay);
     
-    calculatePricing(date, nextDay, houseCount);
+    // Reset house count if it exceeds new maximum
+    const newMaxHouses = getMaxAvailableHouses(date, nextDay);
+    if (houseCount > newMaxHouses) {
+      setHouseCount(newMaxHouses);
+      calculatePricing(date, nextDay, newMaxHouses);
+    } else {
+      calculatePricing(date, nextDay, houseCount);
+    }
   };
 
   const handleCheckOutDateChange = (date) => {
     setEndDate(date);
-    calculatePricing(startDate, date, houseCount);
-  };
-
-  const handleHouseCountChange = (increment) => {
-    const maxAvailable = house?.noOfHousesAvailable || Infinity;
-    const newCount = Math.max(1, Math.min(maxAvailable, houseCount + increment));
     
-    if (newCount !== houseCount) {
-      setHouseCount(newCount);
-      calculatePricing(startDate, endDate, newCount);
+    // Reset house count if it exceeds new maximum
+    const newMaxHouses = getMaxAvailableHouses(startDate, date);
+    if (houseCount > newMaxHouses) {
+      setHouseCount(newMaxHouses);
+      calculatePricing(startDate, date, newMaxHouses);
+    } else {
+      calculatePricing(startDate, date, houseCount);
     }
   };
 
@@ -274,7 +315,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         <HouseCounter 
           houseCount={houseCount} 
           onHouseCountChange={handleHouseCountChange}
-          maxHouses={house?.noOfHousesAvailable}
+          maxHouses={maxAvailableHouses}
         />
 
         {/* Booking Summary */}
