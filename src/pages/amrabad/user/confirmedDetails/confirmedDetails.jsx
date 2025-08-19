@@ -74,12 +74,12 @@ const ConfirmedDetails = () => {
             <div className="flex-1 space-y-4 sm:space-y-6">
               <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
                 <CustomerDetails customer={GetTicketViewDetails.bookingItems[0]} />
-                <QRDownloadSection onCancelTicket={handleCancelTicket}  GetTicketViewDetails={GetTicketViewDetails} />
+                <QRDownloadSection bookingId={bookingId} onCancelTicket={handleCancelTicket}  GetTicketViewDetails={GetTicketViewDetails} />
               </div>
 
-              <BookingDetails booking={GetTicketViewDetails.bookingItems[0]} />
+              {/* <BookingDetails booking={GetTicketViewDetails.bookingItems[0]} /> */}
               <HouseDetails houses={GetTicketViewDetails} />
-              <PaymentSummary payment={GetTicketViewDetails.bookingItems} />
+              <PaymentSummary payment={GetTicketViewDetails?.totals} />
             </div>
           </div>
         </div>

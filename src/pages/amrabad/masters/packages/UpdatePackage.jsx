@@ -48,16 +48,16 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
     checkInTime: Yup.string().required("Check-in time is required"),
     // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
     checkOutTime: Yup.string()
-      .required("Check-out time is required")
+      .required("Check-out time is required"),
       // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format")
-      .test(
-        "after-check-in",
-        "Check-out must be after check-in",
-        function (value) {
-          const { checkInTime } = this.parent;
-          return !value || !checkInTime || value > checkInTime;
-        }
-      ),
+      // .test(
+      //   "after-check-in",
+      //   "Check-out must be after check-in",
+      //   function (value) {
+      //     const { checkInTime } = this.parent;
+      //     return !value || !checkInTime || value > checkInTime;
+      //   }
+      // ),
     termsConditions: Yup.string()
       .max(300, "Max 100 characters")
       .required("T&C are required"),

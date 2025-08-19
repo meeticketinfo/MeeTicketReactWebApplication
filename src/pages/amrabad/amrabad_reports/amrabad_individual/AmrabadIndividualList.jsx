@@ -30,6 +30,7 @@ export default function AdminBookings() {
     fetchAllAmrabadHouseWiseReports({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
+      bookingSource: "Purchase",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });

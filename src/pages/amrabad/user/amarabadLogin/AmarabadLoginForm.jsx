@@ -31,7 +31,7 @@ const AmarabadLoginForm = () => {
     const response = await AmrabadLogin(values);
     console.log("responseee", response);
     if (response.data?.status === 200) {
-      const redirectTo = location.state?.from?.pathname || "/amrabad";
+      const redirectTo = location.state?.from?.pathname || "/amrabad-resort";
       navigate(redirectTo, { replace: true });
       setIsLoggedIn(true);
       resetForm();

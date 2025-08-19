@@ -59,7 +59,7 @@ const AmarabadLogin = () => {
             <div className="text-center text-sm md:text-base text-black">
               Not Registered yet?{" "}
               <Link
-                to="/amrabad/register"
+                to="/amrabad-resort/register"
                 className="text-[#EB723C] font-bold hover:underline"
               >
                 Create an Account

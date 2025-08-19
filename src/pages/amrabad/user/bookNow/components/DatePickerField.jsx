@@ -17,7 +17,7 @@ const DatePickerField = ({
     if (isCheckout) {
       const isSelected = date.toDateString() === endDate.toDateString();
       const isAvailable = filterDate(date);
-      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[50px]";
+      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[60px]";
       
       if (!isAvailable) {
         return "!text-gray-300 !cursor-not-allowed !bg-gray-50 " + commonClass;
@@ -71,17 +71,18 @@ const DatePickerField = ({
             calendarClassName="!bg-white !border-gray-200 !rounded-lg !shadow-lg"
             monthClassName="!bg-white"
             weekDayClassName={(date) => {
-              return "!text-gray-500 !text-xs !font-medium !py-2 !text-center !w-[50px]";
+              return "!text-gray-500 !text-xs !font-medium !py-2 !text-center !w-[50px] !h-auto";
             }}
             dayClassName={getDayClassName}
-            calendarIconClassName="right-0 h-full !box-border w-8"
-            className="w-full !pl-3 !pr-10 py-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent"
+            calendarIconClassName="!h-5 !w-5 !cursor-pointer !right-0 !top-1/2 !transform !-translate-y-1/2 !pointer-events-auto text-[#362D86] fill-[#362D86]"
+            className="w-full !pl-3 !pr-12 py-4 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent !text-[#362D86]"
             filterDate={filterDate}
             renderDayContents={renderDayContents}
             placeholderText={placeholderText}
             showDisabledMonthNavigation
             calendarStartDay={0}
             formatWeekDay={(nameOfDay) => nameOfDay.slice(0, 3).toUpperCase()}
+            toggleCalendarOnIconClick={true}
           />
         )}
       </div>

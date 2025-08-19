@@ -14,7 +14,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
-    typeOfBooking: "",
+    typeOfBooking: "Purchase",
     package: "",
     houses: "",
     phoneNumber: "",
@@ -27,7 +27,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
     fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,
-      bookingSource: values.typeOfBooking,
+      bookingSource: values.typeOfBooking  || "",
       package: values.package,
       houses: values.houses,
       phoneNumber: values.phoneNumber,
@@ -98,7 +98,6 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
                 <option value="Purchase">Purchase Date</option>
                 <option value="Booking">Booking Date</option>
               </Field>
@@ -190,7 +189,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
+                <option value="">Select</option>
                 <option value="Website">Website</option>
                 <option value="Mobile">Mobile</option>
               </Field>

@@ -60,7 +60,7 @@ const AmarabadRegisterForm = () => {
       const res = await AmrabadRegister({ mobileNumber: values.mobileNumber });
       if (res.data?.status === 200) {
         resetForm();
-        navigate("/amrabad/register-otp", {
+        navigate("/amrabad-resort/register-otp", {
           replace: true,
           state: { otpSent: true },
         });

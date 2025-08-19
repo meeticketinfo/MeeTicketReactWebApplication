@@ -27,7 +27,7 @@ export const UserHeader = ({ isScrolled = false }) => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    navigate("/amrabad/login");
+    navigate("/amrabad-resort/login");
     localStorage.removeItem("amrabadlogin-store");
     clearAmrabadSession();
     setIsDropdownOpen(false);
@@ -36,7 +36,7 @@ export const UserHeader = ({ isScrolled = false }) => {
   const links = [
     {
       label: "Home",
-      to: "/amrabad",
+      to: "/amrabad-resort",
     },
     {
       label: 'Download',
@@ -102,7 +102,7 @@ export const UserHeader = ({ isScrolled = false }) => {
       <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
         } px-2 md:px-4`}>
         <div className="container mx-auto flex justify-between items-center">
-          <Link to="/amrabad" className="flex items-center gap-2">
+          <Link to="/amrabad-resort" className="flex items-center gap-2">
             <img
               src={Logo}
               alt="Meeticket Logo"
@@ -149,11 +149,11 @@ export const UserHeader = ({ isScrolled = false }) => {
                           <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
                         )}
                       </div>
-                      <Link to="/amrabad/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                      <Link to="/amrabad-resort/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
                         <FaHistory />
                         Booking History
                       </Link>
-                      <Link to="/amrabad/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                      <Link to="/amrabad-resort/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
                         <FaShoppingCart />
                         Go to Cart
                       </Link>
@@ -174,11 +174,11 @@ export const UserHeader = ({ isScrolled = false }) => {
               </div>
             ) : (
               <>
-                <Link to="/amrabad/login" className="bg-[#E3E3E3] text-black px-2 md:px-6 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
+                <Link to="/amrabad-resort/login" className="bg-[#E3E3E3] text-black px-2 md:px-6 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
                   <span className="hidden md:block">Login</span>
                   <FaUser className="md:hidden" />
                 </Link>
-                <Link to="/amrabad/register" className="hidden lg:block bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-indigo-800 transition duration-300">Register</Link>
+                <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-indigo-800 transition duration-300">Register</Link>
               </>
             )}
             <img

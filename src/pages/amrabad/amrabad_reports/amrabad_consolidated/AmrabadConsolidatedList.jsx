@@ -36,13 +36,14 @@ function AmrabadConsolidatedList() {
     fetchAllAmrabadBookings({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
+      bookingSource: "Purchase",
       // bookingSource: savedFilters?.typeOfBooking
       //   ? savedFilters.typeOfBooking
       //   : "",
       // mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       // PaymentMode: savedFilters?.PaymentMode ? savedFilters.PaymentMode : "",
-      // PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-      // pageSize: PAGE_LIMIT,
+      PageIndex: currentPage + 1,
+      pageSize: PAGE_LIMIT,
     });
   }, [currentPage, PAGE_LIMIT]);
 
@@ -220,7 +221,10 @@ function AmrabadConsolidatedList() {
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllAmrabadBookingsLoading}
           isPagination={false}
-          tableHeight={allAmrabadBookings?.data?.length > 10 ? 560 : 330}
+          // tableHeight={(allAmrabadBookings?.data?.length || 0) > 10 ? 560 : 330}
+          tableHeight={
+            (allAmrabadBookings?.length || 0) > 10 ? 560 : 330
+          }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}

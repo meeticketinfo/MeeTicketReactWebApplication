@@ -13,7 +13,7 @@ const AddPackage = () => {
   const [isValidation, setIsValidation] = useState("");
   const { setCurrentTab } = usePackagesCommonStore();
   const { savePackageWithRoom, isSavePackageWithRoomLoading } =
-    usePackagesStore(); 
+    usePackagesStore();
 
   /*  Room template for new rooms */
   const createRoomTemplate = () => {
@@ -177,17 +177,7 @@ const AddPackage = () => {
         .required("Check-in time is required")
         .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
 
-      checkOutTime: Yup.string()
-        .required("Check-out time is required")
-        .matches(/^\d{2}:\d{2}$/, "Use HH:MM format")
-        .test(
-          "after-check-in",
-          "Check-out must be after check-in",
-          function (value) {
-            const { checkInTime } = this.parent;
-            return !value || !checkInTime || value > checkInTime;
-          }
-        ),
+      checkOutTime: Yup.string().required("Check-out time is required"),
 
       guidelines: Yup.string().max(1000),
       cancellationPolicy: Yup.string().max(1000),
@@ -886,30 +876,74 @@ const AddPackage = () => {
                                       *
                                     </span>
                                   </label>
-                                  <Field
-                                    type="number"
-                                    min={0}
-                                    name={`rooms[${index}].roomLimit`}
-                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                                    placeholder="Enter House Limit"
-                                    onInput={(e) => {
-                                      const value = e.target.value;
-                                      if (value.length > 3) {
-                                        e.target.value = value.slice(0, 3);
-                                      }
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (
-                                        ["-", "e", "E", "+", "."].includes(
-                                          e.key
-                                        ) ||
-                                        (e.key.length === 1 &&
-                                          !/[0-9]/.test(e.key))
-                                      ) {
-                                        e.preventDefault();
-                                      }
-                                    }}
-                                  />
+                                  <Field name={`rooms[${index}].roomLimit`}>
+                                    {({ field }) => (
+                                      <input
+                                        {...field}
+                                        type="number"
+                                        min={0}
+                                        max={
+                                          values.rooms[index]
+                                            ?.noOfHousesAvailable || undefined
+                                        }
+                                        className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                        placeholder="Enter House Limit"
+                                        onInput={(e) => {
+                                          const value = e.target.value;
+                                          const maxHouses =
+                                            values.rooms[index]
+                                              ?.noOfHousesAvailable;
+
+                                          // Limit length to 3 characters
+                                          if (value.length > 3) {
+                                            e.target.value = value.slice(0, 3);
+                                          }
+
+                                          // If noOfHousesAvailable is set and value exceeds it, set to max
+                                          if (
+                                            maxHouses &&
+                                            Number(value) > Number(maxHouses)
+                                          ) {
+                                            e.target.value = maxHouses;
+                                            setFieldValue(
+                                              `rooms[${index}].roomLimit`,
+                                              maxHouses
+                                            );
+                                          }
+                                        }}
+                                        onKeyDown={(e) => {
+                                          if (
+                                            ["-", "e", "E", "+", "."].includes(
+                                              e.key
+                                            ) ||
+                                            (e.key.length === 1 &&
+                                              !/[0-9]/.test(e.key))
+                                          ) {
+                                            e.preventDefault();
+                                          }
+                                        }}
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          const maxHouses =
+                                            values.rooms[index]
+                                              ?.noOfHousesAvailable;
+
+                                          // If noOfHousesAvailable is set and value exceeds it, don't update
+                                          if (
+                                            maxHouses &&
+                                            Number(value) > Number(maxHouses)
+                                          ) {
+                                            return;
+                                          }
+
+                                          setFieldValue(
+                                            `rooms[${index}].roomLimit`,
+                                            value
+                                          );
+                                        }}
+                                      />
+                                    )}
+                                  </Field>
                                   <ErrorMessage
                                     name={`rooms[${index}].roomLimit`}
                                     component="div"

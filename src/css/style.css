@@ -148,3 +148,7 @@ ul:not(.browser-default) li {
 .react-select__placeholder {
   white-space: nowrap;
 }
+
+.react-datepicker__week {
+  display: flex;
+}
