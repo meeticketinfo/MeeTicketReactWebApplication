@@ -604,10 +604,20 @@ const HouseCreate = () => {
                           {...field}
                           type="number"
                           min={0}
+                          max={values.noOfHousesAvailable || undefined}
                           onInput={(e) => {
                             const value = e.target.value;
+                            const maxHouses = values.noOfHousesAvailable;
+                            
+                            // Limit length to 3 characters
                             if (value.length > 3) {
                               e.target.value = value.slice(0, 3);
+                            }
+                            
+                            // If noOfHousesAvailable is set and value exceeds it, set to max
+                            if (maxHouses && Number(value) > Number(maxHouses)) {
+                              e.target.value = maxHouses;
+                              setFieldValue("roomLimit", maxHouses);
                             }
                           }}
                           onKeyDown={(e) => {
@@ -617,6 +627,17 @@ const HouseCreate = () => {
                             ) {
                               e.preventDefault();
                             }
+                          }}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const maxHouses = values.noOfHousesAvailable;
+                            
+                            // If noOfHousesAvailable is set and value exceeds it, don't update
+                            if (maxHouses && Number(value) > Number(maxHouses)) {
+                              return;
+                            }
+                            
+                            setFieldValue("roomLimit", value);
                           }}
                           className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                           placeholder="Enter Room Limit"
