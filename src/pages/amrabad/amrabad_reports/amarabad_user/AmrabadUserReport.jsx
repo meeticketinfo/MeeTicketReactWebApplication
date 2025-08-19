@@ -72,7 +72,7 @@ const AmrabadUserReport = () => {
             }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
             }`}
           onClick={() => {
-            localStorage.setItem("userAmrabadReportSearchParams", `mobileNumber=${searchParams.get("mobileNumber") ? params.data.phoneNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+            localStorage.setItem("userAmrabadReportSearchParams", `mobileNumber=${searchParams.get("mobileNumber") ? params.data.mobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
 
           }}
         >
@@ -111,7 +111,7 @@ const AmrabadUserReport = () => {
             </h1>
           </div>
         </div>
-        <AmrabadUserReportForm PageIndex={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
+        <AmrabadUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
@@ -125,7 +125,7 @@ const AmrabadUserReport = () => {
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={allAmrabadUserReports?.totalCount}
+            totalCount={allAmrabadUserReports?.[0]?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
           />
