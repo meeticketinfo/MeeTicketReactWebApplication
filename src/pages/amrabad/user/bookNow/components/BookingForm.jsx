@@ -222,11 +222,11 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         {/* Price */}
         {hasDiscount ? (
           <div className="flex flex-col items-center">
-            <span className="text-[8px] text-gray-400 line-through leading-none">₹{dayData.price}</span>
-            <span className="text-[10px] leading-none font-medium text-green-600">₹{dayData.amountAfterDiscount}</span>
+            <span className="text-[10px] text-gray-400 font-medium line-through leading-none">₹{dayData.price}</span>
+            <span className="text-[12px] leading-none font-bold text-green-600">₹{dayData.amountAfterDiscount}</span>
           </div>
         ) : (
-          <span className="text-[10px] leading-none font-medium">₹{dayData.price}</span>
+          <span className="text-[12px] leading-none font-medium">₹{dayData.price}</span>
         )}
         
         {/* Day */}

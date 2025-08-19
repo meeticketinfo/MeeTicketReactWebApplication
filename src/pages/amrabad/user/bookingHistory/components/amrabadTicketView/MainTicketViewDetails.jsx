@@ -310,8 +310,8 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkIn}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkOut}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">
-                          {house.tariffPerDay
-                            ? `₹${house.tariffPerDay.toLocaleString()}`
+                          {house.totalTariff
+                            ? `₹${house.totalTariff.toLocaleString()}`
                             : "0"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-red-600">
