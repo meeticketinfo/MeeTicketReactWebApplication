@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import {
   formatToCurrency,
+  formatToStandardDate,
   getCurrentDate,
 } from "../../../../utils/TypographyHelper";
 import { useDashboardStore } from "../../../../store/dashboard/dashboardStore";
@@ -15,7 +16,8 @@ import { useAmrabadHouseWiseReportStore } from "./store/amarabadHouseWiseReportS
 export default function AdminBookings() {
   const { fetchAmrabadIndividualReports, allAmrabadIndividualReports ,isAmrabadIndividualReportsLoading} =
     useAmrabadConsolidatedStore();
-  const { allAmrabadHouseWiseReports, fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading } = useAmrabadHouseWiseReportStore();
+  const { allAmrabadHouseWiseReports, fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading, totalCount } = useAmrabadHouseWiseReportStore();
+  
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-individual-report-filters")
   );
@@ -122,14 +124,16 @@ export default function AdminBookings() {
       headerName: "Purchased Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "fromDate",
       headerName: "From Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     
     {
@@ -137,7 +141,8 @@ export default function AdminBookings() {
       headerName: "To Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "actualAmount",
@@ -242,7 +247,7 @@ export default function AdminBookings() {
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={allAmrabadHouseWiseReports?.[0]?.totalCount || 0}
+          totalCount={totalCount || 0}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}

@@ -139,6 +139,7 @@ import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amr
 import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
 import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
 import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
+import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 
 export const routes = [
   {
@@ -600,6 +601,10 @@ export const routes = [
   {
     path: "/amrabad-availability-report",
     element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
+  },
+  {
+    path: "/amrabad-availability-inner-report",
+    element: <ProtectedRoute element={<AmrabadAvailabilityInner />} />,
   },
    {
     path: "/amrabad-user-detailed-report",
