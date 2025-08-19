@@ -93,7 +93,7 @@ const BookingCard = ({ booking }) => {
             </div>
             <div className="text-left sm:text-right">
               <div className="text-lg sm:text-2xl font-bold text-[#362D86]">
-                ₹{booking?.amount?.toLocaleString() ?? "N/A"}
+                ₹{booking?.amountAfterDiscount?.toLocaleString() ?? "N/A"}
               </div>
               <div className="text-xs sm:text-sm text-gray-500">Total Amount</div>
             </div>

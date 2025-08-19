@@ -227,8 +227,6 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     <span className="font-medium text-black text-sm sm:text-base">
                       {
                         GetTicketViewDetails?.bookingItems?.[0]?.bookingDate
-                          ? formatDateTimeToReadable(GetTicketViewDetails.bookingItems[0].bookingDate)
-                          : 'Not Available'
                       }
                     </span>
                   </div>

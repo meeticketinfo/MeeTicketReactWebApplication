@@ -66,7 +66,10 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     
     acc[normalizedDate] = {
       price: item.price,
-      housesLeft: item.housesLeft
+      housesLeft: item.housesLeft,
+      amountAfterDiscount: item.amountAfterDiscount,
+      discountPercent: item.discountPercent,
+      isBlockedOut: item.isBlockedOut
     };
     return acc;
   }, {});
@@ -81,6 +84,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   // Calculate pricing breakdown
   const calculatePricing = (checkInDate, checkOutDate, count) => {
     let totalPrice = 0;
+    let totalDiscountedPrice = 0;
     const currentDate = new Date(checkInDate);
     
     while (currentDate < checkOutDate) {
@@ -89,19 +93,31 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       
       if (dayData && dayData.price) {
         totalPrice += dayData.price;
+        
+        // Use discounted price if available, otherwise use regular price
+        if (dayData.amountAfterDiscount && dayData.discountPercent > 0) {
+          totalDiscountedPrice += dayData.amountAfterDiscount;
+        } else {
+          totalDiscountedPrice += dayData.price;
+        }
       } else {
         // Use house tariff if no calendar data
-        totalPrice += (house?.tariffPerDay || 6500);
+        const dayPrice = house?.tariffPerDay || 6500;
+        totalPrice += dayPrice;
+        totalDiscountedPrice += dayPrice;
       }
       
       currentDate.setDate(currentDate.getDate() + 1);
     }
     
     const subtotal = totalPrice * count;
-    let discountAmount = 0;
+    const discountedSubtotal = totalDiscountedPrice * count;
     
-    // Apply discount if available
-    if (house?.hasDiscount && house?.discountValue) {
+    // Calculate discount amount based on day-specific discounts
+    let discountAmount = subtotal - discountedSubtotal;
+    
+    // If no day-specific discounts found, check for house-level discount
+    if (discountAmount === 0 && house?.hasDiscount && house?.discountValue) {
       if (house?.discountType === "Percentage") {
         // Calculate percentage-based discount
         discountAmount = Math.round((subtotal * house?.discountValue) / 100);
@@ -158,10 +174,24 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       return <div className="text-gray-400">{day}</div>;
     }
 
+    const hasDiscount = dayData.discountPercent && dayData.discountPercent > 0;
+
     return (
-      <div className="flex flex-col items-center justify-center h-full w-full text-center gap-1">
-        <span className="text-[10px] leading-none font-medium">₹{dayData.price}</span>
+      <div className="flex flex-col items-center justify-center h-full w-full text-center gap-1 p-1">
+        {/* Price */}
+        {hasDiscount ? (
+          <div className="flex flex-col items-center">
+            <span className="text-[8px] text-gray-400 line-through leading-none">₹{dayData.price}</span>
+            <span className="text-[10px] leading-none font-medium text-green-600">₹{dayData.amountAfterDiscount}</span>
+          </div>
+        ) : (
+          <span className="text-[10px] leading-none font-medium">₹{dayData.price}</span>
+        )}
+        
+        {/* Day */}
         <span className="text-sm leading-none font-semibold">{day}</span>
+        
+        {/* Houses Left */}
         <span className="text-[10px] leading-none">{dayData.housesLeft} left</span>
       </div>
     );
@@ -254,6 +284,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           userPackage={userPackage}
           startDate={startDate}
           endDate={endDate}
+          subTotal={subTotal}
           discount={discount}
           finalAmount={finalAmount}
           isLoading={isCalendarLoading || isUserPackagesLoading}

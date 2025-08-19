@@ -17,7 +17,7 @@ const DatePickerField = ({
     if (isCheckout) {
       const isSelected = date.toDateString() === endDate.toDateString();
       const isAvailable = filterDate(date);
-      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[50px]";
+      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[60px]";
       
       if (!isAvailable) {
         return "!text-gray-300 !cursor-not-allowed !bg-gray-50 " + commonClass;
@@ -71,7 +71,7 @@ const DatePickerField = ({
             calendarClassName="!bg-white !border-gray-200 !rounded-lg !shadow-lg"
             monthClassName="!bg-white"
             weekDayClassName={(date) => {
-              return "!text-gray-500 !text-xs !font-medium !py-2 !text-center !w-[50px]";
+              return "!text-gray-500 !text-xs !font-medium !py-2 !text-center !w-[50px] !h-auto";
             }}
             dayClassName={getDayClassName}
             calendarIconClassName="!h-5 !w-5 !cursor-pointer !right-0 !top-1/2 !transform !-translate-y-1/2 !pointer-events-auto text-[#362D86] fill-[#362D86]"
