@@ -307,7 +307,8 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                   <div className="mt-4 sm:mt-6">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
-                      state={{ fromDate: fromDate, toDate: toDate }}
+                      onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
+                      // state={{ fromDate: fromDate, toDate: toDate }}
                       className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
@@ -345,7 +346,8 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                       {item?.housesLeft > 0 ? (
                         <Link 
                           to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} 
-                          state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
+                          onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": item?.date, "toDate": house?.calendar[idx + 1]?.date}))}
+                          // state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
                           className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#362D86]"
                         >
                           {/* Date */}

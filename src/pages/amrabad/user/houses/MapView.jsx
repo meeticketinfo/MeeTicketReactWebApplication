@@ -424,9 +424,10 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
                       </div>
                       <Link
                         to={`/amrabad-resort/book-now/${house.packageId}/${house.roomId}`}
-                        state={{ fromDate: fromDate, toDate: toDate }}
+                        onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
+                        // state={{ fromDate: fromDate, toDate: toDate }}
                         className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
-                        onClick={(e) => e.stopPropagation()}
+                        // onClick={(e) => e.stopPropagation()}
                       >
                         Book
                       </Link>
