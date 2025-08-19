@@ -2,17 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
-import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../utils/Helper";
-import ReactPaginate from "react-paginate";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import AmrabadUserDetailedReportForm from "./AmrabadUserDetailedReportForm";
 import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
-import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 
 const AmarabadUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
@@ -38,7 +35,6 @@ const AmarabadUserDetailedReport = () => {
     },
     {
       field: "purchaseDate",
-      maxWidth: "200",
       headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -70,7 +66,8 @@ const AmarabadUserDetailedReport = () => {
             orderId: params.data.orderId,
             date: params.data.purchaseDate,
             mobileNumber: params.data.mobileNumber,
-            packageName: params.data.packageName,
+            packageNames: params.data.packageNames,
+            houseNames: params.data.houseNames,
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
@@ -95,14 +92,14 @@ const AmarabadUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "packageName",
+      field: "packageNames",
       headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "houseName",
+      field: "houseNames",
       headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
@@ -123,7 +120,7 @@ const AmarabadUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "actualPaymentStatus",
+      field: "currentTransactionStatus",
       headerName: "Ticket Status",
       maxWidth: "160",
       headerClass: "text-blue-v2",
