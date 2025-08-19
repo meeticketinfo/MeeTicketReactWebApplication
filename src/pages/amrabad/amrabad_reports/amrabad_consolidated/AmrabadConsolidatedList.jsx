@@ -21,6 +21,7 @@ function AmrabadConsolidatedList() {
   const {
     allAmrabadBookings,
     fetchAllAmrabadBookings,
+    totalCount,
     isFetchAllAmrabadBookingsLoading,
   } = useAmrabadBookingStore();
   const savedFilters = JSON.parse(
@@ -120,20 +121,6 @@ function AmrabadConsolidatedList() {
       headerName: "House Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      // valueFormatter: (params) => {
-      //   if (!params.value) return "N/A";
-      //   const date = new Date(params.value);
-      //   const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-      //   const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-      //   const year = date.getFullYear(); // Get year
-      //   const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-      //   const formattedTime = date.toLocaleTimeString("en-US", {
-      //     hour: "2-digit",
-      //     minute: "2-digit",
-      //     hour12: true,
-      //   });
-      //   return `${formattedDate} ${formattedTime}`;
-      // },
     },
 
     {
@@ -149,7 +136,7 @@ function AmrabadConsolidatedList() {
       headerName: "Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => (params.value ? params.value : 0),
     },
     {
       field: "mid",
@@ -239,7 +226,7 @@ function AmrabadConsolidatedList() {
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={allAmrabadBookings[0]?.totalCount}
+          totalCount={totalCount  }
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}

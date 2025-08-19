@@ -139,7 +139,7 @@ export const usePackagesStore = create((set) => ({
   },
   // get houses
   getHouses: async (packageId) => {
-    set({ isAllHousesLoading: true });
+    set({ isAllHousesLoading: true, AllHouses: [] }); // Clear previous houses immediately
     try {
       const response = await apiService.get(`${API_ENDPOINTS.AMRABAD.MASTERS.GET_HOUSES}?packageId=${packageId}`);
       set({

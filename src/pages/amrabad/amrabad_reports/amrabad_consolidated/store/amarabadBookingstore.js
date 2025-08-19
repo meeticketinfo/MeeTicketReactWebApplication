@@ -5,6 +5,7 @@ import { handleApiError } from "../../../../../utils/apiErrorHandler";
 export const useAmrabadBookingStore = create((set) => ({
   allAmrabadBookings: [],
   isFetchAllAmrabadBookingsLoading: false,
+  totalCount: 0,
   fetchAllAmrabadBookings: async (filters) => {
     set({ isFetchAllAmrabadBookingsLoading: true });
     try {
@@ -13,6 +14,7 @@ export const useAmrabadBookingStore = create((set) => ({
       );
       set({
         allAmrabadBookings: response.data.records,
+        totalCount: response.data.totalCount,
         isFetchAllAmrabadBookingsLoading: false,
       });
     } catch (error) {

@@ -120,10 +120,9 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                   onChange={(e) => {
                   const packageId = e.target.value;
                   setFieldValue("package", packageId);
+                  setFieldValue("houses", "");
                   
-                  if (packageId === "") {
-                    setFieldValue("houses", "");
-                  } else {
+                  if (packageId !== "") {
                     getHouses(packageId);
                   }
                 }}
@@ -200,8 +199,8 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Cancelled">Cancelled</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="FAILED">Cancelled</option>
               </Field>
             </div>
           
@@ -230,7 +229,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               >
                 Search
               </button>
-              <button
+              {/* <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 disabled={isFetchAllAmrabadBookingsLoading}
@@ -252,7 +251,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 }}
               >
                 Reset
-              </button>
+              </button> */}
             </div>
           </Form>
         )}
