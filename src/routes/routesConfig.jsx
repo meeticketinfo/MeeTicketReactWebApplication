@@ -142,6 +142,7 @@ import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrab
 import AmrabadFailedOtherReason from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReason";
 import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGateway";
 import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
+import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 
 export const routes = [
   {
@@ -504,7 +505,7 @@ export const routes = [
   },
   //amarabad-user
   {
-    path: "/amrabad/login",
+    path: "/amrabad-resort/login",
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
   {
@@ -512,11 +513,11 @@ export const routes = [
     element: <AmrabadForgetPinMobileNumber />,
   },
   {
-    path: "/amrabad/register",
+    path: "/amrabad-resort/register",
     element: <AmrabadAuthRoute  element={<AmarabadRegister />} />,
   },
   {
-    path: "/amrabad/register-otp",
+    path: "/amrabad-resort/register-otp",
     element: <AmarabadRegisterOtp />,
   },
   {
@@ -528,43 +529,43 @@ export const routes = [
     element: <AmrabadResetPin />,
   },
   {
-    path: "/amrabad",
+    path: "/amrabad-resort",
     element: <Packages />,
   },
   {
-    path: "/amrabad/packages",
+    path: "/amrabad-resort/packages",
     element: <Packages />,
   },
   {
-    path: "/amrabad/packages/:packageId",
+    path: "/amrabad-resort/packages/:packageId",
     element: <PackageDetail />,
   },
   {
-    path: "/amrabad/houses/:packageId",
+    path: "/amrabad-resort/houses/:packageId",
     element: <Houses />,
   },
   {
-  path: "/amrabad/book-now/:packageId/:houseId",
+  path: "/amrabad-resort/book-now/:packageId/:houseId",
   element: <AmrabadProtectRoute element={<BookNow />} />,
   },
   {
-    path: "/amrabad/checkout-details",
+    path: "/amrabad-resort/checkout-details",
     element: <AmrabadProtectRoute element={<CheckoutDetails />} />,
   },
   {
-    path: "/amrabad/booking-details",
+    path: "/amrabad-resort/booking-details",
     element: <AmrabadProtectRoute element={<AmarabadBookingDetails />} />,
   },
   {
-    path: "/amrabad/confirmed-details/:bookingId",
+    path: "/amrabad-resort/confirmed-details/:bookingId",
     element: <AmrabadProtectRoute element={<ConfirmedDetails />} />,
   },
   {
-    path: "/amrabad/booking-history",
+    path: "/amrabad-resort/booking-history",
     element: <AmrabadProtectRoute element={<BookingHistory />} />,
   },
   {
-    path: "/amrabad/ticket-view-details/:bookingId",
+    path: "/amrabad-resort/ticket-view-details/:bookingId",
     element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
   },
   {
@@ -603,6 +604,10 @@ export const routes = [
   {
     path: "/amrabad-availability-report",
     element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
+  },
+  {
+    path: "/amrabad-availability-inner-report",
+    element: <ProtectedRoute element={<AmrabadAvailabilityInner />} />,
   },
    {
     path: "/amrabad-user-detailed-report",

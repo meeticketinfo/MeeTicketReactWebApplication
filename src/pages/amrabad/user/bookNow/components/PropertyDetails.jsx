@@ -71,14 +71,36 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {/* Property Image - Left Side */}
           <div className="flex-shrink-0 flex justify-center md:block relative">
-            <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg">
+            {/* <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg">
               Available House : <b>{house?.noOfHousesAvailable}</b>
-            </span>
+            </span> */}
             <img
               src={house?.images[0]}
               alt={house?.roomName}
               className="w-full max-w-xs sm:max-w-sm md:w-[200px] md:h-[200px] h-40 sm:h-48 object-cover rounded-lg"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "flex"; // show SVG fallback
+              }}
             />
+            {/* Fallback dummy image */}
+            <div className="max-w-xs sm:max-w-sm md:w-[200px] md:h-[200px] h-40 sm:h-48 aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center" style={{ display: 'none' }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-gray-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                />
+              </svg>
+            </div>
           </div>
 
           {/* Property Details - Right Side */}

@@ -29,9 +29,9 @@ const AmarabadLoginForm = () => {
   const handleSubmit = async (values,{resetForm}) => {
     try{
     const response = await AmrabadLogin(values);
-    console.log("responseee", response);
+    // console.log("responseee", response);
     if (response.data?.status === 200) {
-      const redirectTo = location.state?.from?.pathname || "/amrabad";
+      const redirectTo = location.state?.from?.pathname || "/amrabad-resort";
       navigate(redirectTo, { replace: true });
       setIsLoggedIn(true);
       resetForm();
@@ -127,7 +127,7 @@ const AmarabadLoginForm = () => {
                   to="/forget-pin-mobile"
                   className="text-[#362D86] text-sm font-normal"
                 >
-                  Forget Pin?
+                  Forgot Pin?
                 </Link>
               </div>
             </div>

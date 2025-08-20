@@ -6,12 +6,8 @@ import {useAmrabadDashboardStore } from "./store/amarabadDashboardStore";
 
 const AmarabadPckagesNames = () => {
   const {
-    amrabadDashboardBookingsSummaryData,
-    fetchAmrabadDashboardBookingsSummaryData,
+    amrabadDashboardBookingsSummaryData
   } = useAmrabadDashboardStore();
-  useEffect(() => {
-    fetchAmrabadDashboardBookingsSummaryData({ fromDate: "", toDate: "" });
-  }, []);
   return (
     <div>
       {/* Header */}

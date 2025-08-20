@@ -1,8 +1,6 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
-import { userReports } from "../../../../store/userTransaction/UserReports";
-import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
 
 const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
@@ -35,7 +33,6 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
-      PageIndex: PageIndex,
       pageNumber:pageNumber,
       pageSize: pageSize,
     });

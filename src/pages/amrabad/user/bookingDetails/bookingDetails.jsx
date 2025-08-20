@@ -9,13 +9,30 @@ import { useEffect } from "react";
 import { usePaymentStore } from "../../../../store/amrabad/user/userPaymentStore";
 import { toast } from "react-toastify";
 
+function toLocalISOString(date = new Date()) {
+    const tzo = -date.getTimezoneOffset();
+    const dif = tzo >= 0 ? '+' : '-';
+    const pad = (num) => String(Math.floor(Math.abs(num))).padStart(2, '0');
+  
+    return (
+      date.getFullYear() +
+      '-' + pad(date.getMonth() + 1) +
+      '-' + pad(date.getDate()) +
+      'T' + pad(date.getHours()) +
+      ':' + pad(date.getMinutes()) +
+      ':' + pad(date.getSeconds()) +
+      '.' + String(date.getMilliseconds()).padStart(3, '0') +
+      dif + pad(tzo / 60) + ':' + pad(tzo % 60)
+    );
+  }
+
 const AmarabadBookingDetails = () => {
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
     const userLocalStorage = JSON.parse(localStorage.getItem("amrabadlogin-store"));
     const userDetails = userLocalStorage?.state?.decodedTokenData;
-    
+
     useEffect(() => {
         fetchCartItems();
     }, []);
@@ -23,7 +40,7 @@ const AmarabadBookingDetails = () => {
     // Helper function to map cart items to booking items format for initiateTransaction
     const mapCartItemsToBookingItems = (cartItems) => {
         if (!cartItems || cartItems.length === 0) return [];
-        
+
         return cartItems?.data?.map(item => ({
             packageId: item.packageId || 0,
             roomId: item.roomId || 0,
@@ -40,7 +57,7 @@ const AmarabadBookingDetails = () => {
     // Helper function to map cart items for addNewBookingDetails (includes cartItemId)
     const mapCartItemsForBookingDetails = (cartItems) => {
         if (!cartItems || cartItems.length === 0) return [];
-        
+
         return cartItems?.data?.map(item => ({
             packageId: item.packageId || 0,
             roomId: item.roomId || 0,
@@ -62,11 +79,11 @@ const AmarabadBookingDetails = () => {
                 amount: cartItems?.grandTotal,
                 customerId: userDetails?.UserId,
                 isIOS: false,
-                paymentType: "ONLINE",
+                paymentType: "UPI",
                 parkId: "101",
                 departmentId: 38,
-                bookingDate: new Date().toISOString(),
-                bookingType: "ACCOMMODATION",
+                bookingDate: toLocalISOString(),
+                bookingType: "Web",
                 mobileNumber: userDetails?.PhoneNumber,
                 bookingRequestjson: {
                     firstName: formValues.firstName,
@@ -92,8 +109,8 @@ const AmarabadBookingDetails = () => {
 
             if (transactionResponse.status === 200 || transactionResponse.data?.status === 200) {
                 toast.success("Booking initiated successfully!");
-                const orderId = transactionResponse.data?.orderId || 
-                               transactionResponse.orderId;
+                const orderId = transactionResponse.data?.orderId ||
+                    transactionResponse.orderId;
 
                 // Step 2: Add New Booking Details
                 const bookingDetailsData = {
@@ -123,7 +140,7 @@ const AmarabadBookingDetails = () => {
 
                 if (bookingResponse.statusCode === 200) {
                     toast.success("Booking completed successfully!");
-                    navigate(`/amrabad/confirmed-details/${orderId}`);
+                    navigate(`/amrabad-resort/confirmed-details/${orderId}`);
                 } else {
                     toast.error(bookingResponse.data?.message || bookingResponse.message || "Failed to complete booking");
                 }
@@ -148,19 +165,17 @@ const AmarabadBookingDetails = () => {
 
                         {/* Right: Booking Summary & Payment */}
                         <div className="flex-1 w-full lg:max-w-[450px] flex flex-col gap-4 sm:gap-6">
-                            <div className="position-sticky top-0"> 
-                                <BookingSummary 
-                                    bookingData={cartItems} 
-                                    loadingCart={loadingCart}
-                                />
-                            </div>
+                            <BookingSummary
+                                bookingData={cartItems}
+                                loadingCart={loadingCart}
+                            />
                             <Formik
                                 initialValues={{}}
                                 onSubmit={handleSubmit}
                             >
                                 {({ isSubmitting }) => (
-                                    <PaymentSection 
-                                        subTotal={cartItems?.grandTotal} 
+                                    <PaymentSection
+                                        subTotal={cartItems?.grandTotal}
                                         isSubmitting={isSubmitting || loadingInitiateTransaction || loadingAddNewBookingDetails}
                                     />
                                 )}

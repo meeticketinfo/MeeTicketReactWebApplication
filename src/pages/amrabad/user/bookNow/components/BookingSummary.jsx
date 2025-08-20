@@ -3,10 +3,13 @@ import { useCartStore } from "../../../../../store/amrabad/user/userCartStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = false, startDate, endDate, userPackage }) => {
+const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, isLoading = false, startDate, endDate, userPackage }) => {
   const { addToCart, loadingAddToCart } = useCartStore();
   const navigate = useNavigate();
   
+  // Calculate discount percentage
+  const discountPercentage = subTotal && discount > 0 ? Math.round((discount / subTotal) * 100) : 0;
+
   // Shimmer loading component
   const ShimmerLine = ({ className = "" }) => (
     <div className={`animate-pulse bg-gray-200 rounded h-4 ${className}`}></div>
@@ -44,7 +47,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = 
       });
       console.log(response, "response");
       if (response.statusCode === 200) {
-        navigate("/amrabad/checkout-details");
+        navigate("/amrabad-resort/checkout-details");
         toast.success("Item added to cart");
       } else {
         toast.error(response.response.data.message || "something went wrong");
@@ -95,13 +98,12 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, isLoading = 
               {houseCount}X ₹{house?.tariffPerDay?.toLocaleString()}
             </span>
           </div>
-
           {house?.hasDiscount && discount > 0 && (
             <>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Discount:</span>
                 <span className="text-sm font-medium text-red-600">
-                  -₹{discount.toLocaleString()}
+                  -₹{discount.toLocaleString()} ({discountPercentage}%)
                 </span>
               </div>
               <hr className="border-gray-200" />

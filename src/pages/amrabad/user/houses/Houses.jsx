@@ -41,6 +41,16 @@ const Houses = () => {
     return `${year}-${month}-${day}`;
   };
 
+  // Get max date (3 days from fromDate)
+  const getMaxDateString = (dateString) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 3);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const {
     fetchRoomsByPackageId,
     GetRoomsByPackageId,
@@ -95,7 +105,7 @@ const Houses = () => {
         <div className="flex items-center gap-1 flex-wrap text-sm">
           <Link
             className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
-            to="/amrabad/packages"
+            to="/amrabad-resort/packages"
           >
             Amrabad Resorts
           </Link>
@@ -143,6 +153,7 @@ const Houses = () => {
                 <input
                   type="date"
                   min={fromDate ? getNextDayString(fromDate) : getCurrentDateString()}
+                  max={fromDate ? getMaxDateString(fromDate) : ""}
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent"

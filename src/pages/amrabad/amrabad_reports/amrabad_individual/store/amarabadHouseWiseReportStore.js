@@ -8,6 +8,7 @@ export const useAmrabadHouseWiseReportStore = create(
   persist((set) => ({
     allAmrabadHouseWiseReports: [],
     isFetchAllAmrabadHouseWiseReportsLoading: false,
+    totalCount: 0,
     fetchAllAmrabadHouseWiseReports: async (filters) => {
       set({ isFetchAllAmrabadHouseWiseReportsLoading: true });
       try {
@@ -16,6 +17,7 @@ export const useAmrabadHouseWiseReportStore = create(
         );
         set({ 
           allAmrabadHouseWiseReports: response.data.records,
+          totalCount: response.data.totalCount,
           isFetchAllAmrabadHouseWiseReportsLoading: false 
         });
       } catch (error) {

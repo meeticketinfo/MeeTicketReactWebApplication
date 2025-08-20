@@ -1,42 +1,58 @@
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
-import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect } from "react";
-import { useAmrabadHouseWiseReportStore } from "./store/amarabadHouseWiseReportStore";
-const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
-  const {
-    fetchAllAmrabadHouseWiseReports,
-    isFetchAllAmrabadHouseWiseReportsLoading,
-  } = useAmrabadHouseWiseReportStore();
+import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+
+const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  const {
+    amrabadAvailabilityInnerReports,
+    isFetchAmarabadAvailabilityInnerReportsLoading,
+    fetchAmarabadAvailabilityInnerReports,
+  } = useAmarabadAvailabilityReportsStore();
+  
+  // Load saved filters from localStorage
+  const savedFilters = JSON.parse(
+    localStorage.getItem("amrabad-availability-inner-report-filters")
+  );
   
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
-    typeOfBooking: "",
-    package: "",
-    houses: "",
-    phoneNumber: "",
-    orderId: "",
-    modeOfBooking: "",
+    fromDate: savedFilters.fromDate || getCurrentDate(),
+    toDate: savedFilters.toDate || getCurrentDate(),
+    typeOfBooking: savedFilters.typeOfBooking || "",
+    phoneNumber: savedFilters.phoneNumber || "",
+    package: savedFilters.package || "",
+    houses: savedFilters.houses || "",
+    orderId: savedFilters.orderId || "",
+    paymentStatus: savedFilters.paymentStatus || "",
+    modeOfBooking: savedFilters.modeOfBooking || "",
+    PaymentMode: savedFilters.PaymentMode || "",
   };
 
   const onSubmit = (values, { resetForm }) => {
+    // Reset to first page when applying new filters
     SetcurrentPage(0);
-    fetchAllAmrabadHouseWiseReports({
+
+    // Save filters to localStorage
+    localStorage.setItem("amrabad-availability-inner-report-filters", JSON.stringify(values));
+
+    fetchAmarabadAvailabilityInnerReports({
       startDate: values.fromDate,
       endDate: values.toDate,
       bookingSource: values.typeOfBooking,
-      package: values.package,
-      houses: values.houses,
-      phoneNumber: values.phoneNumber,
-      orderId: values.orderId,
-      modeOfBooking: values.modeOfBooking,
+      mobileNumber: values.phoneNumber ? values.phoneNumber : "",
+      PaymentMode: values.PaymentMode ? values.PaymentMode : "",
+      package: values.package ? values.package : "",
+      houses: values.houses ? values.houses : "",
+      orderId: values.orderId ? values.orderId : "",
+      paymentStatus: values.paymentStatus ? values.paymentStatus : "",
+      modeOfBooking: values.modeOfBooking ? values.modeOfBooking : "",
       PageIndex: PageIndex,
       pageSize: pageSize,
     });
   };
+
   useEffect(() => {
     getPackages();
   }, []);
@@ -88,7 +104,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 }}
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium">
                 Purchase / Booking
               </label>
@@ -102,8 +118,8 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 <option value="Purchase">Purchase Date</option>
                 <option value="Booking">Booking Date</option>
               </Field>
-            </div>
-            <div>
+            </div> */}
+           <div>
               <label className="block text-sm font-medium">Package</label>
               <Field
                 as="select"
@@ -112,8 +128,19 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                   const packageId = e.target.value;
                   setFieldValue("package", packageId);
                   
+                  // Always clear the houses field when package changes
+                  setFieldValue("houses", "");
+                  
+                  // Update localStorage to clear previous houses selection
+                  const currentFilters = JSON.parse(
+                    localStorage.getItem("amrabad-availability-inner-report-filters")
+                  );
+                  currentFilters.houses = "";
+                  localStorage.setItem("amrabad-availability-inner-report-filters", JSON.stringify(currentFilters));
+                  
                   if (packageId === "") {
-                    setFieldValue("houses", "");
+                    // Clear houses from store when no package selected
+                    usePackagesStore.getState().AllHouses = [];
                   } else {
                     getHouses(packageId);
                   }
@@ -195,29 +222,32 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>
+           
             {/* submit */}
             <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                // disabled={isFetchAllAmrabadBookingsLoading}
               >
                 Search
               </button>
               {/* <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                disabled={isFetchAllAmrabadBookingsLoading}
                 onClick={() => {
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
                       typeOfBooking: "",
+                      phoneNumber: "",
+                      PaymentMode: "",
                       package: "",
                       houses: "",
-                      phoneNumber: "",
                       orderId: "",
+                      paymentStatus: "",
                       modeOfBooking: "",
                     },
                   });
@@ -233,4 +263,4 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   );
 };
 
-export default AmrabadIndividualForm;
+export default AmarabadAvailabilityInnerForm;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
@@ -7,15 +7,16 @@ import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { useAmrabadTrackOrderStore } from "../../../../store/amrabad/reports/TransactionTrackOrderStore";
+import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
   return (
-    <div 
+    <div
       className="fixed inset-0 w-screen h-screen bg-black bg-opacity-40 flex items-center justify-center z-50"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-white rounded-lg p-6 min-w-[350px] max-w-[400px] relative"
         onClick={(e) => e.stopPropagation()}
       >
@@ -31,11 +32,10 @@ const SimpleModal = ({ open, onClose, children }) => {
 
 const AmrabadUserTransactionsOrderTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, parkName, date, amount, bookingId, backTitle } = location.state || {};
+  const { orderId, mobileNumber, packageNames, houseNames, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
-  const userReportSearchParams = localStorage.getItem("userReportSearchParams");
-
+  const userDetailedAmrabadReportSearchParams = localStorage.getItem("userDetailedAmrabadReportSearchParams");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
@@ -54,7 +54,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       handleApiError(xhr);
     }
   };
-    const {
+  const {
     AmrabadTransactionTrackingStatusByOrderIdData,
     isFetchAmrabadTransactionTrackingStatusByOrderId,
     fetchAmrabadTransactionTrackingStatusByOrderId,
@@ -68,7 +68,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "requestTimestamp",
+      field: "requestTimeStamps",
       maxWidth: "200",
       headerName: "Request Time Stamp",
       headerClass: "text-blue-v2",
@@ -78,7 +78,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       },
     },
     {
-      field: "responseTimestamp",
+      field: "responseTimeStamps",
       maxWidth: "200",
       headerName: "Response Time Stamp",
       headerClass: "text-blue-v2",
@@ -104,7 +104,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       ),
     },
     {
-      field: "resultMsg",
+      field: "resultMessage",
       flex: 1,
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
@@ -124,11 +124,11 @@ const AmrabadUserTransactionsOrderTracker = () => {
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/amrabad-user-report?${userReportSearchParams}`
+      path: `/amrabad-user-report?${userAmrabadReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
-      path: `/amrabad-user-detailed-report?${userAmrabadReportSearchParams}`
+      path: `/amrabad-user-detailed-report?${userDetailedAmrabadReportSearchParams}`
     },
     {
       label: 'User Transaction Order Tracking Report',
@@ -149,7 +149,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/amrabad-user-detailed-report?${userAmrabadReportSearchParams}`}
+                to={`/amrabad-user-detailed-report?${userDetailedAmrabadReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -167,33 +167,41 @@ const AmrabadUserTransactionsOrderTracker = () => {
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
-              <p className="text-sm font-semibold text-gray-900">{orderId || 'N/A'}</p>
+               <p className="text-sm font-semibold text-gray-900">
+                {orderId || 'N/A'}
+                {orderId && orderId != "Not Generated" && (
+                  <NavLink
+                    end
+                    to={`/amrabad-admin/ticket-view-details/${orderId}`}
+                    className="ml-2 text-blue-600 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>View Ticket Details</span>
+                  </NavLink>
+                )}
+              </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
-              <p className="text-sm font-semibold text-gray-900">
-                {bookingId || 'N/A'}
-                {bookingId && bookingId != "Not Generated" && (
-                  <button
-                    className="ml-2 text-blue-600 underline"
-                    onClick={() => fetchQRsForBooking(bookingId)}
-                  >
-                    View Ticket Details
-                  </button>
-                )}
-              </p>
+               <p className="text-sm font-semibold text-gray-900">{bookingId || 'N/A'}</p>
+
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
               <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Package Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{parkName || 'N/A'}</p>
-            </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Package Name</h3>
+              <p className="text-sm font-semibold text-gray-900">{packageNames || 'N/A'}</p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">House Name</h3>
+              <p className="text-sm font-semibold text-gray-900">{houseNames || 'N/A'}</p>
             </div>
           </div>
 
