@@ -101,7 +101,7 @@ const AccordionRow = ({ serial, row }) => {
                   <th className="p-2 text-center">S.No</th>
                   <th className="p-2 text-center">House Name</th>
                   <th className="p-2 text-center">Tarrif Per Day</th>
-                  <th className="p-2 text-center">No of Rooms Available</th>
+                  <th className="p-2 text-center">No of House Available</th>
                   {/* <th className="p-3 text-center">Sequence</th> */}
                   <th className="p-2 text-center">House Status</th>
                   <th className="p-2 text-center">Actions</th>
@@ -199,7 +199,7 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
         <td className="p-2 text-center">{subRow.tariffPerDay ?? "N/A"}</td>
         {/* NO OF ROOMS AVAILABLE */}
         <td className="p-2 text-center">
-          {subRow.roomLimit ? subRow.roomLimit : "N/A"}
+          {subRow.noOfHousesAvailable ? subRow.noOfHousesAvailable : "N/A"}
         </td>
         {/* SEQUENCE */}
         {/* <td className="p-2 text-center">

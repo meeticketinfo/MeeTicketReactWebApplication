@@ -470,7 +470,7 @@ const HouseCreate = () => {
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     >
                       <option value="">Select Packages</option>
-                      {GetAllPackages.map((pkg) => (
+                      {GetAllPackages.filter((pkg) => pkg.isActive).map((pkg) => (
                         <option key={pkg.packageId} value={pkg.packageId}>
                           {pkg.packageName}
                         </option>
@@ -492,7 +492,7 @@ const HouseCreate = () => {
                     </label>
                     <Field
                       name="roomName"
-                      maxLength="300"
+                      maxLength="100"
                       type="text"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Name of the House"
@@ -521,8 +521,8 @@ const HouseCreate = () => {
                           min={0}
                           onInput={(e) => {
                             const value = e.target.value;
-                            if (value.length > 5) {
-                              e.target.value = value.slice(0, 5);
+                            if (value.length > 7) {
+                              e.target.value = value.slice(0, 7);
                             }
                           }}
                           onKeyDown={(e) => {
