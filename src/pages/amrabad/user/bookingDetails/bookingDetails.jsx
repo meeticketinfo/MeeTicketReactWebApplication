@@ -79,11 +79,11 @@ const AmarabadBookingDetails = () => {
                 amount: cartItems?.grandTotal,
                 customerId: userDetails?.UserId,
                 isIOS: false,
-                paymentType: "ONLINE",
+                paymentType: "UPI",
                 parkId: "101",
                 departmentId: 38,
                 bookingDate: toLocalISOString(),
-                bookingType: "",
+                bookingType: "Web",
                 mobileNumber: userDetails?.PhoneNumber,
                 bookingRequestjson: {
                     firstName: formValues.firstName,

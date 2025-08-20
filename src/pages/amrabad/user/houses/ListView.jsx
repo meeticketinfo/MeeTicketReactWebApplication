@@ -307,7 +307,8 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                   <div className="mt-4 sm:mt-6">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
-                      state={{ fromDate: fromDate, toDate: toDate }}
+                      onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
+                      // state={{ fromDate: fromDate, toDate: toDate }}
                       className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
@@ -332,7 +333,6 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
               </div>
 
               {/* Calendar Slider with Navigation */}
-
               <div className="relative">
                 <Swiper
                   spaceBetween={8}
@@ -343,57 +343,102 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 >
                   {house?.calendar?.map((item, idx) => (
                     <SwiperSlide key={idx} className="!w-auto">
-                      <Link to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
-                        className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px]">
+                      {item?.housesLeft > 0 ? (
+                        <Link 
+                          to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} 
+                          onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": item?.date, "toDate": house?.calendar[idx + 1]?.date}))}
+                          // state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
+                          className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#362D86]"
+                        >
+                          {/* Date */}
+                          <div className="text-center">
+                            <div className="flex flex-row gap-2">
+                              <div className="text-xs font-bold text-gray-800 mb-1">
+                                {formatDate(item?.date)}
+                              </div>
 
-                        {/* Date */}
-                        <div className="text-center">
-
-                          <div className="flex flex-row gap-2">
-                            <div className="text-xs font-bold text-gray-800 mb-1">
-                              {formatDate(item?.date)}
+                              {/* Availability */}
+                              <div className={`
+                                text-xs font-bold mb-1
+                                ${item?.housesLeft <= 2
+                                  ? ' text-red-700'
+                                  : ' text-green-700'
+                                }
+                              `}>
+                                {item?.housesLeft} Left
+                              </div>
                             </div>
 
-                            {/* Availability */}
-                            <div className={`
-                              text-xs font-bold mb-1
-                              ${item?.housesLeft <= 2
-                                ? ' text-red-700'
-                                : ' text-green-700'
-                              }
-                            `}>
-                              {item?.housesLeft} Left
+                            {/* Price with Discount */}
+                            <div className="flex flex-row gap-2">
+                              {item?.discountPercent && item?.discountPercent > 0 ? (
+                                <>
+                                  {/* Discount Badge */}
+                                  <div className="inline-block bg-green-100 text-green-800 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
+                                    {item?.discountPercent}% OFF
+                                  </div>
+                                  {/* Original Price (struck through) */}
+                                  <div className="text-[10px] text-gray-400 line-through">
+                                    ₹{item?.price?.toLocaleString()}
+                                  </div>
+
+                                  {/* Discounted Price */}
+                                  <div className="text-xs font-bold text-green-600">
+                                    ₹{item?.amountAfterDiscount?.toLocaleString()}/-
+                                  </div>
+                                </>
+                              ) : (
+                                /* Regular Price */
+                                <div className="text-xs font-medium text-gray-600">
+                                  ₹{item?.price?.toLocaleString()}/-
+                                </div>
+                              )}
                             </div>
                           </div>
-
-                          {/* Price with Discount */}
-                          <div className="flex flex-row gap-2">
-                            {item?.discountPercent && item?.discountPercent > 0 ? (
-                              <>
-
-                                {/* Discount Badge */}
-                                <div className="inline-block bg-green-100 text-green-800 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
-                                  {item?.discountPercent}% OFF
-                                </div>
-                                {/* Original Price (struck through) */}
-                                <div className="text-[10px] text-gray-400 line-through">
-                                  ₹{item?.price?.toLocaleString()}
-                                </div>
-
-                                {/* Discounted Price */}
-                                <div className="text-xs font-bold text-green-600">
-                                  ₹{item?.amountAfterDiscount?.toLocaleString()}/-
-                                </div>
-                              </>
-                            ) : (
-                              /* Regular Price */
-                              <div className="text-xs font-medium text-gray-600">
-                                ₹{item?.price?.toLocaleString()}/-
+                        </Link>
+                      ) : (
+                        <div className="relative rounded-md p-2 border transition-all duration-200 cursor-not-allowed block min-w-[120px] bg-gray-50 opacity-60">
+                          {/* Date */}
+                          <div className="text-center">
+                            <div className="flex flex-row gap-2">
+                              <div className="text-xs font-bold text-gray-500 mb-1">
+                                {formatDate(item?.date)}
                               </div>
-                            )}
+
+                              {/* Availability */}
+                              <div className="text-xs font-bold mb-1 text-red-700">
+                                {item?.housesLeft} Left
+                              </div>
+                            </div>
+
+                            {/* Price with Discount */}
+                            <div className="flex flex-row gap-2">
+                              {item?.discountPercent && item?.discountPercent > 0 ? (
+                                <>
+                                  {/* Discount Badge */}
+                                  <div className="inline-block bg-gray-100 text-gray-500 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
+                                    {item?.discountPercent}% OFF
+                                  </div>
+                                  {/* Original Price (struck through) */}
+                                  <div className="text-[10px] text-gray-400 line-through">
+                                    ₹{item?.price?.toLocaleString()}
+                                  </div>
+
+                                  {/* Discounted Price */}
+                                  <div className="text-xs font-bold text-gray-500">
+                                    ₹{item?.amountAfterDiscount?.toLocaleString()}/-
+                                  </div>
+                                </>
+                              ) : (
+                                /* Regular Price */
+                                <div className="text-xs font-medium text-gray-500">
+                                  ₹{item?.price?.toLocaleString()}/-
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </Link>
+                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>
