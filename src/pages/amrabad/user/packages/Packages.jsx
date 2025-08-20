@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import { Link } from "react-router-dom";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
@@ -6,16 +6,19 @@ import PackageShimmer from "../../shimmer/PackageShimmer";
 
 const Packages = () => {
   const { fetchUserPackages, isUserPackagesLoading, GetUserPackages } = useUserBookingStore();
-
+  const [activePackages, setActivePackages] = useState([]);
   useEffect(() => {
     fetchUserPackages();
   }, []);
+
+  useEffect(() => {
+    setActivePackages(GetUserPackages.filter((item) => item.isActive));
+  }, [GetUserPackages]);
 
   return (
     <UserLayout>
       <div className="grid grid-cols-6 text-center gap-1">
         {isUserPackagesLoading ? (
-          // Show enhanced shimmer while loading
           <>
             <div className="col-span-6 md:col-span-3 w-full">
               <PackageShimmer variant="full" />
@@ -26,8 +29,8 @@ const Packages = () => {
           </>
         ) : GetUserPackages && GetUserPackages.length > 0 ? (
           // Show actual package content when loaded
-          GetUserPackages.filter((item) => item.isActive).map((item, index) => (
-            <div className="col-span-6 md:col-span-3" key={index}>
+          activePackages.map((item, index) => (
+            <div className={`col-span-6 ${activePackages.length % 2 !== 0 && activePackages.length - 1 === index ? "md:col-span-6" : "md:col-span-3"}`} key={index}>
               <div className="flex flex-col content-center items-center justify-center h-[70vh] min-h-full relative p-10">
                 <img src={item?.packageImages[0]?.imageUrl} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0" />
                 <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"/>
