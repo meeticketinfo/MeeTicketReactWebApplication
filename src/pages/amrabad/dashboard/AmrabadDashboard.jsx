@@ -11,9 +11,7 @@ import AmarabadPckagesNames from "./AmarabadPckagesNames";
 function AmrabadDashboard() {
   const {
     amrabadDashboardData,
-    isFetchAmrabadDashboardDataLoading,
     fetchAmrabadDashboardData,
-    amrabadDashboardBookingsSummaryData,
     fetchAmrabadDashboardBookingsSummaryData,
   } = useAmrabadDashboardStore();
 
@@ -21,11 +19,9 @@ function AmrabadDashboard() {
     fromDate: "",
     toDate: "",
   };
-
-  localStorage.setItem("dashboardFromDate", initialValues.fromDate);
-  localStorage.setItem("dashboardToDate", initialValues.toDate);
   useEffect(() => {
     fetchAmrabadDashboardData(initialValues);
+    fetchAmrabadDashboardBookingsSummaryData(initialValues);
   }, []);
   const onSubmit = (values) => {
     fetchAmrabadDashboardData(values);
@@ -122,7 +118,7 @@ function AmrabadDashboard() {
               <CountUp
                 end={amrabadDashboardData.totalTicketCount || 0}
                 duration={2}
-                prefix="₹"
+                prefix=""
                 separator=","
               />
             </div>

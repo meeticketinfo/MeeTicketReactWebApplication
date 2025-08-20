@@ -6,7 +6,7 @@ import apiService from "../../../../services/apiService";
 
 
 export const useAmrabadDashboardStore = create(
-  persist((set) => ({
+  ((set) => ({
     // Dashboard data
     amrabadDashboardData: [],
     isFetchAmrabadDashboardDataLoading: false,

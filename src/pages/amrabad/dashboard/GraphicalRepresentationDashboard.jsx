@@ -14,18 +14,10 @@ const GraphicalRepresentationDashboard = () => {
   const { AllPackages,getPackages} = usePackagesStore();
   const { packagesDataById, fetchPackagesDataById, isFetchPackagesDataByIdLoading } = useAmrabadDashboardStore();
 
-  // Fetch data on component mount
+  // Fetch packages data on component mount
   useEffect(() => {
-    const currentDate = new Date();
-    const fromDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    
-    fetchAmrabadDashboardBookingsSummaryData({
-      fromDate: fromDate.toISOString().split('T')[0],
-      toDate: toDate.toISOString().split('T')[0]
-    });
     getPackages();
-  }, [fetchAmrabadDashboardBookingsSummaryData]);
+  }, [getPackages]);
 
   // Set default package when AllPackages loads
   useEffect(() => {
