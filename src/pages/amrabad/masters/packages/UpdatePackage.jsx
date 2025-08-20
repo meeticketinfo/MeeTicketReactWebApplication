@@ -3,7 +3,6 @@ import { Field, Form, Formik, ErrorMessage } from "formik";
 import { ToastContainer, toast } from "react-toastify";
 import { convertToBase64 } from "../../../../utils/Helper";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
-import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 import * as Yup from "yup";
 
 // helper: turn an existing image URL into a base64 string
@@ -22,7 +21,7 @@ const urlToBase64 = async (url) => {
 
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result); // base64 string 
+      reader.onloadend = () => resolve(reader.result); // base64 string
       reader.onerror = () => reject("Failed to read blob as base64");
       reader.readAsDataURL(blob);
     });
@@ -31,14 +30,9 @@ const urlToBase64 = async (url) => {
     throw error;
   }
 };
-
-
 const UpdatePackage = ({ data, onUpdateSuccess }) => {
   const { UpdatePackage, isUpdatePackageLoading, fetchPackagesWithRooms } =
-    usePackagesStore();
-
-  const { setCurrentTab } = usePackagesCommonStore();
-
+    usePackagesStore(); 
   /** ---------------- validation schema ---------------- */
   const updatePackageValidationSchema = Yup.object().shape({
     packageName: Yup.string().required("Package name is required"),
@@ -154,7 +148,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
       if (res.data.status === 200) {
         
       
-        toast.success("Package updated successfully 🎉");
+        toast.success("Package updated successfully");
         // Close the modal after successful update
         setTimeout(() => {
           onUpdateSuccess(); // close modal
@@ -329,7 +323,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                       }}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     >
-                      <option value="">Select</option>
+                      {/* <option value="">Select</option> */}
                       <option value={true}>Active</option>
                       <option value={false}>In Active</option>
                     </Field>

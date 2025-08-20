@@ -399,4 +399,8 @@ export const API_ENDPOINTS = {
     GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
     }
   },
+  AMRABAD_TRANSACTIONS_REPORT:{
+    GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/TotalTransactionsReport`,
+   
+  }
 };

@@ -8,6 +8,8 @@ import {
 } from "../../../../../utils/Helper";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AmrabadTotalTransactionChart from "../charts/AmrabadTotalTransactionChart";
 
 const OuterAmarabadTotalTransactionReport = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -20,19 +22,32 @@ const OuterAmarabadTotalTransactionReport = () => {
     resetInnerFilters,
   } = AmarabadTotalCommonStore();
 
+  const {
+    AmarabadTransactionByReasonData,
+    fetchAmarabadTransactionByReason,
+    isAmarabadTransactionByReasonLoading,
+  } = useAmarabadTotalTransactionStore();
+  console.log(
+    "AmarabadTransactionByReasonData",
+    AmarabadTransactionByReasonData
+  );
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
   useEffect(() => {
     setInnerFilters({
       fromDate: outerFilters.fromDate ?? startOfDay,
       toDate: outerFilters.toDate ?? endOfDay,
+      package: outerFilters.package ?? "",
+      house: outerFilters.house ?? "",
       mobileNumber: outerFilters.mobileNumber ?? "",
     });
-    // fetchMetroTransactionByReason({
-    //   fromDate: outerFilters.fromDate ?? startOfDay,
-    //   toDate: outerFilters.toDate ?? endOfDay,
-    //   mobileNumber: outerFilters.mobileNumber ?? "",
-    // });
+    fetchAmarabadTransactionByReason({
+      fromDate: outerFilters.fromDate ?? startOfDay,
+      toDate: outerFilters.toDate ?? endOfDay,
+      package: outerFilters.package ?? "",
+      house: outerFilters.house ?? "",
+      mobileNumber: outerFilters.mobileNumber ?? "",
+    });
 
     getPackages();
   }, []);
@@ -45,14 +60,14 @@ const OuterAmarabadTotalTransactionReport = () => {
     mobileNumber: outerFilters.mobileNumber ?? "",
   };
   const onSubmit = (values) => {
-    console.log("values", values);
+    console.log("valuesssss", values);
     setOuterFilters(values);
     setInnerFilters(values);
-    // fetchMetroTransactionByReason(values);
+    fetchAmarabadTransactionByReason(values);
   };
-  // const totalCount = Array.isArray(MetroTransactionByReasonData)
-  // ? MetroTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
-  // : 0;
+  const totalCount = Array.isArray(AmarabadTransactionByReasonData)
+    ? AmarabadTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
+    : 0;
   return (
     <>
       <ToastContainer />
@@ -115,7 +130,7 @@ const OuterAmarabadTotalTransactionReport = () => {
             </div>
             <div>
               <label
-                htmlFor="mobileNumber"
+                htmlFor="package"
                 className="block text-xs font-medium text-gray-700"
               >
                 Packages
@@ -141,7 +156,7 @@ const OuterAmarabadTotalTransactionReport = () => {
             </div>
             <div>
               <label
-                htmlFor="mobileNumber"
+                htmlFor="house"
                 className="block text-xs font-medium text-gray-700"
               >
                 House
@@ -176,6 +191,8 @@ const OuterAmarabadTotalTransactionReport = () => {
                   setValues({
                     fromDate: startOfDay,
                     toDate: endOfDay,
+                    package: "",
+                    house: "",
                     mobileNumber: "",
                   });
                   // resetOuterFilters();
@@ -183,18 +200,24 @@ const OuterAmarabadTotalTransactionReport = () => {
                   resetOuterFilters({
                     fromDate: startOfDay,
                     toDate: endOfDay,
+                    package: "",
+                    house: "",
                     mobileNumber: "",
                   });
                   setInnerFilters({
                     fromDate: startOfDay,
                     toDate: endOfDay,
+                    package: "",
+                    house: "",
                     mobileNumber: "",
                   });
-                  // fetchMetroTransactionByReason({
-                  //   fromDate: startOfDay,
-                  //   toDate: endOfDay,
-                  //   mobileNumber: "",
-                  // });
+                  fetchAmarabadTransactionByReason({
+                    fromDate: startOfDay, 
+                    toDate: endOfDay,
+                    package: "",
+                    house: "",
+                    mobileNumber: "",
+                  });
                 }}
               >
                 Reset
@@ -209,17 +232,17 @@ const OuterAmarabadTotalTransactionReport = () => {
           <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
             {/* <Loader/> */}
 
-            {false && (
+            {isAmarabadTransactionByReasonLoading && (
               <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                 <div className="loader"></div>
               </div>
             )}
-            {/* <MetroTotalTransactionChart
-              data={totalCount !== 0 ? MetroTransactionByReasonData : []}
+            <AmrabadTotalTransactionChart
+              data={totalCount !== 0 ? AmarabadTransactionByReasonData : []}
               title="Total Transactions"
               angleKey="count"
               calloutLabelKey="paymentCategory"
-            /> */}
+            />
           </div>
         </div>
       </div>
