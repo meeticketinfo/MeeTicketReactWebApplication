@@ -1,19 +1,64 @@
-const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity }) => {
+import { IoInformationCircleOutline } from "react-icons/io5";
+
+const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity, calendarData, startDate, endDate }) => {
   const canDecrease = houseCount > 1;
   const canIncrease = houseCount < maxHouses;
 
+  // Get availability info from calendar data for the selected date range
+  const getAvailabilityInfo = () => {
+    if (!calendarData || !startDate || !endDate) return null;
+    
+    let minHousesLeft = Infinity;
+    let minRoomLimit = Infinity;
+    
+    const currentDate = new Date(startDate);
+    while (currentDate < endDate) {
+      const dateString = currentDate.toISOString().split('T')[0];
+      const dayData = calendarData.find(item => item.date === dateString);
+      
+      if (dayData) {
+        if (typeof dayData.housesLeft === 'number') {
+          minHousesLeft = Math.min(minHousesLeft, dayData.housesLeft);
+        }
+        if (typeof dayData.roomLimit === 'number' && dayData.roomLimit > 0) {
+          minRoomLimit = Math.min(minRoomLimit, dayData.roomLimit);
+        }
+      }
+      
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return {
+      housesLeft: minHousesLeft === Infinity ? 'N/A' : minHousesLeft,
+      roomLimit: minRoomLimit === Infinity ? 'N/A' : minRoomLimit
+    };
+  };
+
+  const availabilityInfo = getAvailabilityInfo();
+
   return (
     <div className="mb-4 sm:mb-6">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      {/* Availability Information */}
+      {availabilityInfo && (
+        <div className="mb-3 bg-gray-50 rounded-lg flex items-center gap-2 text-sm text-gray-600">
+          <IoInformationCircleOutline className="text-gray-400" />
+          <span>
+            Available Houses: {availabilityInfo.housesLeft} 
+            {availabilityInfo.roomLimit !== 'N/A' && ` (Max Limit: ${availabilityInfo.roomLimit})`}
+          </span>
+        </div>
+      )}
+
+      {/* <label className="block text-sm font-medium text-gray-700 mb-2">
         No. of Houses
         {maxHouses !== Infinity && (
           <span className="text-xs text-gray-500 ml-1">
             (Max: {maxHouses} available)
           </span>
         )}
-      </label>
+      </label> */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <span className="text-sm sm:text-base text-gray-600">Houses</span>
+        <span className="text-sm sm:text-base text-gray-600">No. of Houses</span>
         <button
           onClick={() => onHouseCountChange(-1)}
           disabled={!canDecrease}
@@ -49,4 +94,4 @@ const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity }) 
   );
 };
 
-export default HouseCounter; 
+export default HouseCounter;
