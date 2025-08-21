@@ -2,6 +2,8 @@ import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
+import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
 
 const AmrabadRefundTransactionsReportForm = ({
     pageNumber,
@@ -16,6 +18,20 @@ const AmrabadRefundTransactionsReportForm = ({
     const refundTransactionSearchParams = localStorage.getItem(
         "refundMetroTransactionSearchParams"
     );
+    const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+
+  // Load packages on component mount
+  useEffect(() => {
+    getPackages();
+  }, [getPackages]);
+
+  // Load houses if packageId is present in search params
+  useEffect(() => {
+    const packageId = searchParams.get("packageId");
+    if (packageId) {
+      getHouses(packageId);
+    }
+  }, [searchParams, getHouses]);
 
     const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
@@ -96,49 +112,55 @@ const AmrabadRefundTransactionsReportForm = ({
                         {/* mobile number */}
                         <div>
                             <label
-                                htmlFor="phoneNumber"
+                                htmlFor="packageId"
                                 className="block text-xs font-medium text-gray-700"
                             >
-                                Package
+                                Packages
                             </label>
                             <Field
-                                type="text"
-                                maxLength="10"
-                                name="phoneNumber"
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                                placeholder="Enter phone number"
-                                onKeyPress={(e) => {
-                                    if (!/^\d$/.test(e.key)) {
-                                        e.preventDefault(); // Prevent non-numeric characters
+                                as="select"
+                                name="packageId"
+                                placeholder="Select Package"
+                                onChange={(e) => {
+                                    const packageId = e.target.value;
+                                    setFieldValue("packageId", packageId);
+                                    // Clear house selection when package changes
+                                    setFieldValue("houseId", "");
+                                    if (packageId) {
+                                        getHouses(packageId);
                                     }
                                 }}
-                                onChange={(e) => {
-                                    setFieldValue("phoneNumber", e.target.value);
-                                }}
-                            />
+                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                            >
+                                <option value="">Select Package</option>
+                                {AllPackages.map((item) => (
+                                    <option key={item.packageId} value={item.packageId}>
+                                        {item.packageName}
+                                    </option>
+                                ))}
+                            </Field>
                         </div>
                         <div>
                             <label
-                                htmlFor="phoneNumber"
+                                htmlFor="houseId"
                                 className="block text-xs font-medium text-gray-700"
                             >
-                                Houses
+                                House
                             </label>
                             <Field
-                                type="text"
-                                maxLength="10"
-                                name="phoneNumber"
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                                placeholder="Enter phone number"
-                                onKeyPress={(e) => {
-                                    if (!/^\d$/.test(e.key)) {
-                                        e.preventDefault(); // Prevent non-numeric characters
-                                    }
-                                }}
-                                onChange={(e) => {
-                                    setFieldValue("phoneNumber", e.target.value);
-                                }}
-                            />
+                                as="select"
+                                name="houseId"
+                                placeholder="Select House"
+                                disabled={values.packageId == ""}
+                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                            >
+                                <option value="">Select House</option>
+                                {AllHouses.map((item) => (
+                                    <option key={item.roomId} value={item.roomId}>
+                                        {item.roomName}
+                                    </option>
+                                ))}
+                            </Field>
                         </div>
                         <div>
                             <label

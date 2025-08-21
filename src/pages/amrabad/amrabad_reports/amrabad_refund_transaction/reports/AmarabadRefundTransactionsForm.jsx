@@ -3,6 +3,7 @@ import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 
 const AmarabadRefundTransactionsForm = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,7 +19,20 @@ const AmarabadRefundTransactionsForm = () => {
         newSearchParams.delete("RefundStatus");
         setSearchParams(newSearchParams);
     }, [searchParams]);
+    const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
+    // Load packages on component mount
+    useEffect(() => {
+        getPackages();
+    }, [getPackages]);
+
+    // Load houses if packageId is present in search params
+    useEffect(() => {
+        const packageId = searchParams.get("packageId");
+        if (packageId) {
+            getHouses(packageId);
+        }
+    }, [searchParams, getHouses]);
 
 
     const initialValues = {
@@ -132,6 +146,60 @@ const AmarabadRefundTransactionsForm = () => {
                                         setFieldValue("phoneNumber", e.target.value);
                                     }}
                                 />
+                            </div>
+                            {/* Packages */}
+                            <div>
+                                <label
+                                    htmlFor="packageId"
+                                    className="block text-xs font-medium text-gray-700"
+                                >
+                                    Packages
+                                </label>
+                                <Field
+                                    as="select"
+                                    name="packageId"
+                                    placeholder="Select Package"
+                                    onChange={(e) => {
+                                        const packageId = e.target.value;
+                                        setFieldValue("packageId", packageId);
+                                        // Clear house selection when package changes
+                                        setFieldValue("houseId", "");
+                                        if (packageId) {
+                                            getHouses(packageId);
+                                        }
+                                    }}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                >
+                                    <option value="">Select Package</option>
+                                    {AllPackages.map((item) => (
+                                        <option key={item.packageId} value={item.packageId}>
+                                            {item.packageName}
+                                        </option>
+                                    ))}
+                                </Field>
+                            </div>
+                            {/* Houses */}
+                            <div>
+                                <label
+                                    htmlFor="houseId"
+                                    className="block text-xs font-medium text-gray-700"
+                                >
+                                    House
+                                </label>
+                                <Field
+                                    as="select"
+                                    name="houseId"
+                                    placeholder="Select House"
+                                    disabled={values.packageId == ""}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                >
+                                    <option value="">Select House</option>
+                                    {AllHouses.map((item) => (
+                                        <option key={item.roomId} value={item.roomId}>
+                                            {item.roomName}
+                                        </option>
+                                    ))}
+                                </Field>
                             </div>
                             <div className="flex gap-2 items-end">
                                 <button
