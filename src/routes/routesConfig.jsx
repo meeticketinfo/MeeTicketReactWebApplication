@@ -139,6 +139,7 @@ import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amr
 import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
 import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
 import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
+import AmrabadComingSoon from "../pages/amrabad/user/amrabadComingSoon/AmrabadComingSoon";
 import AmrabadFailedOtherReason from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReason";
 import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGateway";
 import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
@@ -531,6 +532,10 @@ export const routes = [
   {
     path: "/amrabad-resort",
     element: <Packages />,
+  },
+  {
+    path: "/amrabad-resort/coming-soon",
+    element: <AmrabadComingSoon />,
   },
   {
     path: "/amrabad-resort/packages",
