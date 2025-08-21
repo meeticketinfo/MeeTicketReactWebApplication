@@ -87,7 +87,7 @@ const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity, ca
       </div>
       {maxHouses !== Infinity && houseCount >= maxHouses && (
         <p className="text-xs text-amber-600 mt-1">
-          Maximum available houses selected
+          Maximum limit for houses selected
         </p>
       )}
     </div>
