@@ -351,7 +351,7 @@ const AddPackage = () => {
                       htmlFor="package.checkOutTime"
                       className="block text-sm font-medium"
                     >
-                      Checkout Time<span className="text-red-500">*</span>
+                      Check-out Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -559,6 +559,12 @@ const AddPackage = () => {
                             [...currentImages, ...base64Images]
                           );
                         }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.getElementById("package.packageImageBase64Strings");
+                        if (fileInput) {
+                          fileInput.value = "";
+                        }
                       }}
                     >
                       {/* Upload Icon */}
@@ -617,6 +623,8 @@ const AddPackage = () => {
                               [...currentImages, ...base64Images]
                             );
                           }
+                          // Clear the file input value to allow selecting the same file again
+                          event.target.value = "";
                         }}
                       />
                     </div>
@@ -1640,6 +1648,12 @@ const AddPackage = () => {
                                           [...currentImages, ...base64Images]
                                         );
                                       }
+                                      
+                                      // Clear any file input to ensure consistency
+                                      const fileInput = document.getElementById(`rooms[${index}].roomImageBase64Strings`);
+                                      if (fileInput) {
+                                        fileInput.value = "";
+                                      }
                                     }}
                                   >
                                     {/* Upload Icon */}
@@ -1703,6 +1717,8 @@ const AddPackage = () => {
                                             [...currentImages, ...base64Images]
                                           );
                                         }
+                                        // Clear the file input value to allow selecting the same file again
+                                        event.target.value = "";
                                       }}
                                     />
                                   </div>

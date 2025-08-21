@@ -228,7 +228,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                       htmlFor="checkInTime"
                       className="block text-sm font-medium"
                     >
-                      Check-in<span className="text-red-500">*</span>
+                      Check-in Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -249,7 +249,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                       htmlFor="checkOutTime"
                       className="block text-sm font-medium"
                     >
-                      Checkout Time<span className="text-red-500">*</span>
+                      Check-out Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -443,6 +443,12 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                         );
                         if (files.length > 0) {
                           handleFileChange({ target: { files } });
+                        }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.querySelector('input[type="file"]');
+                        if (fileInput) {
+                          fileInput.value = "";
                         }
                       }}
                     >
