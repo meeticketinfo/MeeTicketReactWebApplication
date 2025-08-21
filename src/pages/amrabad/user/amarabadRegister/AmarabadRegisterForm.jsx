@@ -125,6 +125,7 @@ const AmarabadRegisterForm = () => {
                         ? "border-green-500 focus:border-green-500"
                         : ""
                     }`}
+                    maxLength={50}
                   />
                   {touched.firstName &&
                     !errors.firstName &&
@@ -151,6 +152,7 @@ const AmarabadRegisterForm = () => {
                         ? "border-green-500 focus:border-green-500"
                         : ""
                     }`}
+                    maxLength={50}
                   />
                   {touched.lastName &&
                     !errors.lastName &&
@@ -247,8 +249,8 @@ const AmarabadRegisterForm = () => {
             </div>
             <button
               type="submit"
-              // disabled={AmrabadRegisterLoading}
-              className="block max-w-full md:max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
+              disabled={AmrabadRegisterLoading}
+              className={`block max-w-full md:max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full ${AmrabadRegisterLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {AmrabadRegisterLoading ? "Registering..." : "Register"}
             </button>

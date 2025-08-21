@@ -14,7 +14,7 @@ const AmarabadLoginForm = () => {
   const { isLoggedIn, setIsLoggedIn, AmrabadLoginLoading, AmrabadLogin } =
     amrabadAuthStore();
 
-  // Validation schema
+  // Enhanced validation schema
   const LoginValidationSchema = Yup.object().shape({
     mobileNumber: Yup.string()
       .matches(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number")
@@ -43,6 +43,65 @@ const AmarabadLoginForm = () => {
       console.log("error", error);
     }
   };
+
+  // Function to handle input restrictions
+  const handleMobileInput = (e) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (!/^\d*$/.test(value)) {
+      e.preventDefault();
+      return;
+    }
+    // Limit to 10 digits
+    if (value.length > 10) {
+      e.preventDefault();
+      return;
+    }
+  };
+
+  const handlePinInput = (e) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (!/^\d*$/.test(value)) {
+      e.preventDefault();
+      return;
+    }
+    // Limit to 4 digits
+    if (value.length > 4) {
+      e.preventDefault();
+      return;
+    }
+  };
+
+  // Function to handle paste events
+  const handleMobilePaste = (e) => {
+    e.preventDefault();
+    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+    const numericOnly = pastedText.replace(/\D/g, ''); // Remove all non-digits
+    const limitedNumeric = numericOnly.slice(0, 10); // Limit to 10 digits
+    
+    // Set the filtered value
+    e.target.value = limitedNumeric;
+    
+    // Trigger change event for Formik
+    const event = new Event('input', { bubbles: true });
+    e.target.dispatchEvent(event);
+  };
+
+  const handlePinPaste = (e) => {
+    e.preventDefault();
+    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+    const numericOnly = pastedText.replace(/\D/g, ''); // Remove all non-digits
+    const limitedNumeric = numericOnly.slice(0, 4); // Limit to 4 digits
+    
+    // Set the filtered value
+    e.target.value = limitedNumeric;
+    
+    // Trigger change event for Formik
+    const event = new Event('input', { bubbles: true });
+    e.target.dispatchEvent(event);
+  };
+
   return (
     <>
       <Formik
@@ -63,6 +122,14 @@ const AmarabadLoginForm = () => {
                   type="text"
                   placeholder="Enter your mobile number"
                   maxLength={10}
+                  onKeyPress={(e) => {
+                    // Only allow numbers and backspace
+                    if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
+                      e.preventDefault();
+                    }
+                  }}
+                  onInput={handleMobileInput}
+                  onPaste={handleMobilePaste}
                   className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
                     touched.mobileNumber &&
                     !errors.mobileNumber &&
@@ -96,6 +163,14 @@ const AmarabadLoginForm = () => {
                   type={showPin ? "text" : "password"}
                   placeholder="Enter your 4-digit pin"
                   maxLength={4}
+                  onKeyPress={(e) => {
+                    // Only allow numbers and backspace
+                    if (!/\d/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
+                      e.preventDefault();
+                    }
+                  }}
+                  onInput={handlePinInput}
+                  onPaste={handlePinPaste}
                   className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
                     touched.pinNumber &&
                     !errors.pinNumber &&
@@ -133,10 +208,10 @@ const AmarabadLoginForm = () => {
             </div>
             <button
               type="submit"
-              // disabled={isSubmitting}
-              className="text-lg w-full bg-[#362D86] text-white py-3 rounded-md font-semibold hover:bg-indigo-800 transition mb-4"
+              disabled={AmrabadLoginLoading}
+              className={`text-lg w-full bg-[#362D86] text-white py-3 rounded-md font-semibold hover:bg-indigo-800 transition mb-4 ${AmrabadLoginLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {AmrabadLoginLoading ? "Loading.." : "LOGIN"}
+              {AmrabadLoginLoading ? "LOGGING IN..." : "LOGIN"}
             </button>
           </Form>
         )}

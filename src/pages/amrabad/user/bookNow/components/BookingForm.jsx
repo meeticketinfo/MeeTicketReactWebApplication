@@ -16,7 +16,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const [startDate, setStartDate] = useState(new Date(fromDate));
   const [endDate, setEndDate] = useState(() => {
     const tomorrow = new Date(toDate);
-    if(toDate){
+    if (toDate) {
       return new Date(toDate);
     }
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -63,13 +63,14 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       const date = new Date(item.date);
       normalizedDate = getLocalDateString(date);
     }
-    
+
     acc[normalizedDate] = {
       price: item.price,
       housesLeft: item.housesLeft,
       amountAfterDiscount: item.amountAfterDiscount,
       discountPercent: item.discountPercent,
-      isBlockedOut: item.isBlockedOut
+      isBlockedOut: item.isBlockedOut,
+      roomLimit: item.roomLimit
     };
     return acc;
   }, {});
@@ -86,14 +87,14 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     let totalPrice = 0;
     let totalDiscountedPrice = 0;
     const currentDate = new Date(checkInDate);
-    
+
     while (currentDate < checkOutDate) {
       const dateString = getLocalDateString(currentDate);
       const dayData = availableDatesMapWithFallback[dateString];
-      
+
       if (dayData && dayData.price) {
         totalPrice += dayData.price;
-        
+
         // Use discounted price if available, otherwise use regular price
         if (dayData.amountAfterDiscount && dayData.discountPercent > 0) {
           totalDiscountedPrice += dayData.amountAfterDiscount;
@@ -106,16 +107,16 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         totalPrice += dayPrice;
         totalDiscountedPrice += dayPrice;
       }
-      
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
+
     const subtotal = totalPrice * count;
     const discountedSubtotal = totalDiscountedPrice * count;
-    
+
     // Calculate discount amount based on day-specific discounts
     let discountAmount = subtotal - discountedSubtotal;
-    
+
     // If no day-specific discounts found, check for house-level discount
     if (discountAmount === 0 && house?.hasDiscount && house?.discountValue) {
       if (house?.discountType === "Percentage") {
@@ -126,9 +127,9 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         discountAmount = house?.discountValue;
       }
     }
-    
+
     const finalAmount = subtotal - discountAmount;
-    
+
     setSubTotal(subtotal);
     setDiscount(discountAmount);
     setFinalAmount(finalAmount);
@@ -138,30 +139,59 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   // Calculate maximum available houses for the selected date range
   const getMaxAvailableHouses = (checkInDate, checkOutDate) => {
     let minHousesAvailable = Infinity;
+    let minRoomLimit = Infinity;
     const currentDate = new Date(checkInDate);
-    
+
     while (currentDate < checkOutDate) {
       const dateString = getLocalDateString(currentDate);
       const dayData = availableDatesMapWithFallback[dateString];
-      
-      if (dayData && typeof dayData.housesLeft === 'number') {
-        minHousesAvailable = Math.min(minHousesAvailable, dayData.housesLeft);
+
+      if (dayData) {
+        if (typeof dayData.housesLeft === 'number') {
+          minHousesAvailable = Math.min(minHousesAvailable, dayData.housesLeft);
+        }
+        if (typeof dayData.roomLimit === 'number' && dayData.roomLimit > 0) {
+          minRoomLimit = Math.min(minRoomLimit, dayData.roomLimit);
+        }
       } else {
-        // If no calendar data available, fall back to house configuration
-        minHousesAvailable = Math.min(minHousesAvailable, house?.noOfHousesAvailable || 1);
+        // Only fallback to house config if no calendar data exists
+        // If calendar data exists but housesLeft is 0, respect that
+        if (minHousesAvailable === Infinity) {
+          minHousesAvailable = house?.noOfHousesAvailable || 1;
+        }
+        if (typeof house?.roomLimit === 'number' && house.roomLimit > 0) {
+          minRoomLimit = Math.min(minRoomLimit, house.roomLimit);
+        }
       }
-      
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
-    // If no valid dates found, return house configuration or 1 as fallback
-    return minHousesAvailable === Infinity ? (house?.noOfHousesAvailable || 1) : minHousesAvailable;
+
+    // If we have calendar data and housesLeft is 0, return 0
+    if (minHousesAvailable === 0) {
+      return 0;
+    }
+
+    const fallbackHouses = house?.noOfHousesAvailable || 1;
+    const fallbackRoomLimit = (typeof house?.roomLimit === 'number' && house.roomLimit > 0) ? house.roomLimit : Infinity;
+
+    const available = minHousesAvailable === Infinity ? fallbackHouses : minHousesAvailable;
+    const limit = minRoomLimit === Infinity ? fallbackRoomLimit : minRoomLimit;
+
+    return Math.max(0, Math.min(available, limit));
   };
 
   const handleHouseCountChange = (increment) => {
     const maxAvailable = getMaxAvailableHouses(startDate, endDate);
+
+    // If max available is 0, don't allow any changes
+    if (maxAvailable === 0) {
+      setHouseCount(0);
+      return;
+    }
+
     const newCount = Math.max(1, Math.min(maxAvailable, houseCount + increment));
-    
+
     if (newCount !== houseCount) {
       setHouseCount(newCount);
       calculatePricing(startDate, endDate, newCount);
@@ -173,11 +203,11 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
   const handleCheckInDateChange = (date) => {
     setStartDate(date);
-    
+
     const nextDay = new Date(date);
     nextDay.setDate(nextDay.getDate() + 1);
     setEndDate(nextDay);
-    
+
     // Reset house count if it exceeds new maximum
     const newMaxHouses = getMaxAvailableHouses(date, nextDay);
     if (houseCount > newMaxHouses) {
@@ -190,7 +220,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
   const handleCheckOutDateChange = (date) => {
     setEndDate(date);
-    
+
     // Reset house count if it exceeds new maximum
     const newMaxHouses = getMaxAvailableHouses(startDate, date);
     if (houseCount > newMaxHouses) {
@@ -210,7 +240,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const renderDayContents = (day, date) => {
     const dateString = getLocalDateString(date);
     const dayData = availableDatesMapWithFallback[dateString];
-    
+
     if (!dayData) {
       return <div className="text-gray-400">{day}</div>;
     }
@@ -228,10 +258,10 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         ) : (
           <span className="text-[12px] leading-none font-medium">₹{dayData.price}</span>
         )}
-        
+
         {/* Day */}
         <span className="text-sm leading-none font-semibold">{day}</span>
-        
+
         {/* Houses Left */}
         <span className="text-[10px] leading-none">{dayData.housesLeft} left</span>
       </div>
@@ -241,11 +271,11 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const filterDate = (date) => {
     const dateString = getLocalDateString(date);
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
-    
+
     if (calendarData && calendarData.length > 0) {
       return isAvailable;
     }
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date >= today;
@@ -255,16 +285,16 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     if (date <= startDate) {
       return false;
     }
-    
+
     const maxDate = new Date(startDate);
     maxDate.setDate(maxDate.getDate() + 3); // Changed from +2 to +3 to allow 3 days
     if (date > maxDate) {
       return false;
     }
-    
+
     const dateString = getLocalDateString(date);
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
-    
+
     return isAvailable;
   };
 
@@ -316,10 +346,13 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           houseCount={houseCount} 
           onHouseCountChange={handleHouseCountChange}
           maxHouses={maxAvailableHouses}
+          calendarData={calendarData}
+          startDate={startDate}
+          endDate={endDate}
         />
 
         {/* Booking Summary */}
-        <BookingSummary 
+        <BookingSummary
           houseCount={houseCount}
           house={house}
           userPackage={userPackage}

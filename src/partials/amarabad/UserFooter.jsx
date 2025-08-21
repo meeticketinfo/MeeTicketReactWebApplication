@@ -1,27 +1,28 @@
 import React from 'react';
 import MeeTicketLogo from '../../images/user/logo.png';
+import { Link } from 'react-router-dom';
 
 const footerLinks = [
   {
     title: 'Quick links',
     links: [
-      { label: 'Home', href: '#' },
+      { label: 'Home', href: '/amrabad-resort' },
       { label: 'App Download', href: 'https://play.google.com/store/apps/details?id=com.me_ticket_app&pcampaignid=web_share', target: '_blank' },
     ],
   },
   {
     title: 'Support',
     links: [
-      { label: 'Help & FAQs', href: '#' },
-      { label: 'Contact Support', href: '#' },
+      { label: 'Help & FAQs', href: '/amrabad-resort/coming-soon' },
+      { label: 'Contact Support', href: '/amrabad-resort/coming-soon' },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Terms & Conditions', href: '#' },
-      { label: 'Refund & Cancellation', href: '#' },
+      { label: 'Privacy Policy', href: '/amrabad-resort/coming-soon' },
+      { label: 'Terms & Conditions', href: '/amrabad-resort/coming-soon' },
+      { label: 'Refund & Cancellation', href: '/amrabad-resort/coming-soon' },
     ],
   },
 ];
@@ -59,7 +60,7 @@ function UserFooter() {
                 <ul className="space-y-2 text-[#6D6D6D]">
                   {col.links.map((link) => (
                     <li key={link.label}>
-                      <a href={link.href} target={link.target} className="hover:underline">{link.label}</a>
+                      <Link to={link.href} target={link.target} className="hover:underline">{link.label}</Link>
                     </li>
                   ))}
                 </ul>

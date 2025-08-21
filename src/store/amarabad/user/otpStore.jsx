@@ -60,7 +60,8 @@ export const UseOtpStore = create((set, get) => ({
     } catch (error) {
       console.log(error?.message);
       set({ isverifyRegisterOtpLoading: false });
-      return { success: false };
+      // Throw the error so it can be caught in the component
+      throw error;
     }
   },
     verifyResendOtp: async (payload) => {
