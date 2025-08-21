@@ -8,7 +8,7 @@ import BackButton from "../../../../components/BackButton";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 
 const MainPackages = () => {
-  const { currentTab, setCurrentTab ,setIsHouseEditVisible } = usePackagesCommonStore();
+  const { currentTab, setCurrentTab ,setIsHouseEditVisible,isHouseEditVisible } = usePackagesCommonStore();
   const TabConfig = {
     0: <PackagesList />,
     1: <AddPackage />,
@@ -17,7 +17,7 @@ const MainPackages = () => {
   const TitleConfig = {
     0: "Packages",
     1: "Add Package",
-    2: "Add House",
+    2: isHouseEditVisible ? "Edit House" : "Add House",
   };
   return (
     <AdminLayout>
