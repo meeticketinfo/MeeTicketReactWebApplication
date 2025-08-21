@@ -3,8 +3,21 @@ import { IoCalendarClearOutline } from "react-icons/io5";
 import { PiHouseLine } from "react-icons/pi";
 import { BsCurrencyRupee } from "react-icons/bs";
 
+const formatDateTime = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).toUpperCase();
+};
+
 const HouseDetails = ({ houses }) => {
-  console.log("houses", houses);
+  // console.log("houses", houses);
   
   return (
     <div className="">
@@ -68,7 +81,7 @@ const HouseDetails = ({ houses }) => {
                 <div className="flex-1">
                   <div className="text-xs text-gray-500 mb-1">Check-in</div>
                   <div className="font-medium text-gray-900 text-sm">
-                    {house?.checkIn ?? "N/A"}
+                    {house?.checkIn ? formatDateTime(house?.checkIn) : "N/A"}
                   </div>
                 </div>
               </div>
@@ -81,7 +94,7 @@ const HouseDetails = ({ houses }) => {
                 <div className="flex-1">
                   <div className="text-xs text-gray-500 mb-1">Check-out</div>
                   <div className="font-medium text-gray-900 text-sm">
-                    {house?.checkOut ?? "N/A"}
+                    {house?.checkOut ? formatDateTime(house?.checkOut) : "N/A"}
                   </div>
                 </div>
               </div>

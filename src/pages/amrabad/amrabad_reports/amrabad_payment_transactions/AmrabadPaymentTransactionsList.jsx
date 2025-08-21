@@ -92,7 +92,7 @@ function AmrabadPaymentTransactionsList() {
       field: "amountPaid",
       headerName: "Amount Paid",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A" || "N/A",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "bookingType",

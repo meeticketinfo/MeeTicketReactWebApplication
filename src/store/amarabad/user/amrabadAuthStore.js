@@ -18,9 +18,12 @@ export const amrabadAuthStore = create(
       decodedTokenData: null,
       isAuthenticated: false,
 
+      setTokenType: (tokenType) => set({ tokenType }),
+
       setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
       setIsRegisterIn: (isRegisterIn) => set({ isRegisterIn }),
       AmrabadLogin: async (loginData) => {
+        localStorage.clear();
         set({ AmrabadLoginLoading: true });
         try {
           const response = await apiService.post(
