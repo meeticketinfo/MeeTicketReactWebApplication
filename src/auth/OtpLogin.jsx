@@ -11,12 +11,14 @@ import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { API_BASE_URL } from "../constants/apiEndpoints";
 import useAuthStore from "../store/authStore";
+import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 
 const OtpLogin = ({ onOtpSent, startTimer }) => {
   bouncy.register();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { setTokenType } = amrabadAuthStore();
   const { setRedirectError } = useAuthStore();
   const initialValues = {
     mobileNumber: "",
@@ -36,6 +38,8 @@ const OtpLogin = ({ onOtpSent, startTimer }) => {
   });
 
   const login = async (values) => {
+    localStorage.clear();
+    setTokenType(null);
     setLoading(true);
     setError(null);
     localStorage.setItem("login_id", values.mobileNumber);
