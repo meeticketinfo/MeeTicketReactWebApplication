@@ -32,6 +32,7 @@ const AmrabadPaymentTransactionsForm = ({
       : null,
     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+    transactionId: savedFilters?.transactionId ? savedFilters.transactionId : "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -49,6 +50,7 @@ const AmrabadPaymentTransactionsForm = ({
       paymentStatus: values.paymentStatus || "",
       paymentMode: values.paymentMode || "",
       phoneNumber: values.phoneNumber || "",
+      transactionId: values.transactionId || "",
       PageIndex,
       pageSize,
     });
@@ -209,6 +211,21 @@ const AmrabadPaymentTransactionsForm = ({
                 }}
               />
             </div>
+            {/* transaction Status */}
+            <div>
+              <label
+                htmlFor="transactionId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Transaction ID
+              </label>
+              <Field
+                type="text"
+                name="transactionId"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter transaction ID"
+              />
+            </div>
             <div className="flex items-end gap-2">
               <button
                 type="submit"
@@ -234,7 +251,20 @@ const AmrabadPaymentTransactionsForm = ({
                       paymentStatus: "",
                       paymentMode: "",
                       phoneNumber: "",
+                      transactionId:"",
                     },
+                  });
+                  fetchAmrabadPaymentTransactions({
+                    startDate: getCurrentDate(),
+                    endDate: getCurrentDate(),
+                    package: "",
+                    house: "",
+                    paymentStatus: "",
+                    paymentMode: "",
+                    phoneNumber: "",
+                    transactionId:"",
+                    PageIndex,
+                    pageSize,
                   });
                 }}
               >

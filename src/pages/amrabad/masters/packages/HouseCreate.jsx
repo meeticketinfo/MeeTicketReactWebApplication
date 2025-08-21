@@ -420,11 +420,11 @@ const HouseCreate = () => {
     } catch (xhr) {
       console.log("xhr", xhr);
       if (xhr?.response?.data?.errors) {
-        Object.entries(xhr.response.data.errors).forEach(([key, msgs]) => {
+        Object.entries(xhr.response.data.errors||xhr.response.data.message).forEach(([key, msgs]) => {
           toast.error(`${key}: ${msgs[0]}`);
         });
       } else {
-        toast.error(xhr.response?.data || "An error occurred");
+        toast.error((xhr.response?.data?.errors||xhr.response?.data?.message) || "An error occurred");
       }
     } finally {
       setSubmitting(false);
@@ -1211,6 +1211,12 @@ const HouseCreate = () => {
                             ...base64Images,
                           ]);
                         }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.getElementById("roomImagesBase64Strings");
+                        if (fileInput) {
+                          fileInput.value = "";
+                        }
                       }}
                     >
                       {/* Upload Icon */}
@@ -1274,6 +1280,8 @@ const HouseCreate = () => {
                               ...base64Images,
                             ]);
                           }
+                          // Clear the file input value to allow selecting the same file again
+                          event.target.value = "";
                         }}
                       />
                     </div>
