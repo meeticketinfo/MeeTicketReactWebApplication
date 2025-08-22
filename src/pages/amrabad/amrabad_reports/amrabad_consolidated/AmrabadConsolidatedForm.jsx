@@ -30,6 +30,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
     // Reset to first page when applying new filters
     SetcurrentPage(0);
 
+    localStorage.setItem("amrabad-consolidated-report-filters", JSON.stringify(values));
     fetchAllAmrabadBookings({
       startDate: values.fromDate,
       endDate: values.toDate,

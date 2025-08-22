@@ -3,31 +3,48 @@ import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect } from "react";
 import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+import { useAmrabadBookingStore } from "../amrabad_consolidated/store/amarabadBookingstore";
 
-const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
+const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fromDate, toDate, packageId, roomId, bookingDate }) => {
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  const {
-    amrabadAvailabilityInnerReports,
-    isFetchAmarabadAvailabilityInnerReportsLoading,
-    fetchAmarabadAvailabilityInnerReports,
-  } = useAmarabadAvailabilityReportsStore();
+
+
+  const { fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
   
   // Load saved filters from localStorage
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-availability-inner-report-filters")
   );
-  
+
+  // Helper function to remove time from date string
+  const removeTimeFromDate = (dateString) => {
+    if (!dateString) return dateString;
+    // If date contains 'T' (timestamp), extract only the date part
+    return dateString.split('T')[0];
+  };
+
+  // Helper function to get next day date
+  const getNextDayDate = (dateString) => {
+    if (!dateString) return dateString;
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 2);
+    return date.toISOString().split('T')[0];
+  };
+
+  console.log("bookingDate", getNextDayDate(bookingDate));
+
   const initialValues = {
-    fromDate: savedFilters.fromDate || getCurrentDate(),
-    toDate: savedFilters.toDate || getCurrentDate(),
-    typeOfBooking: savedFilters.typeOfBooking || "",
-    phoneNumber: savedFilters.phoneNumber || "",
-    package: savedFilters.package || "",
-    houses: savedFilters.houses || "",
-    orderId: savedFilters.orderId || "",
-    paymentStatus: savedFilters.paymentStatus || "",
-    modeOfBooking: savedFilters.modeOfBooking || "",
-    PaymentMode: savedFilters.PaymentMode || "",
+    fromDate: removeTimeFromDate(bookingDate) || savedFilters?.fromDate || getCurrentDate(),
+    toDate: getNextDayDate(bookingDate) || savedFilters?.toDate || getCurrentDate(),
+    bookingSource: "Booking",
+    typeOfBooking: savedFilters?.typeOfBooking || "",
+    phoneNumber: savedFilters?.phoneNumber || "",
+    package: packageId || savedFilters?.package || "",
+    houses: roomId || savedFilters?.houses || "",
+    orderId: savedFilters?.orderId || "",
+    paymentStatus: savedFilters?.paymentStatus || "",
+    modeOfBooking: savedFilters?.modeOfBooking || "",
+    PaymentMode: savedFilters?.PaymentMode || "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -36,11 +53,13 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage }) 
 
     // Save filters to localStorage
     localStorage.setItem("amrabad-availability-inner-report-filters", JSON.stringify(values));
-
-    fetchAmarabadAvailabilityInnerReports({
+    const savedFilters = JSON.parse(
+      localStorage.getItem("amrabad-availability-inner-report-filters")
+    );
+    fetchAllAmrabadBookings({
       startDate: values.fromDate,
       endDate: values.toDate,
-      bookingSource: values.typeOfBooking,
+      bookingSource: "Booking",
       mobileNumber: values.phoneNumber ? values.phoneNumber : "",
       PaymentMode: values.PaymentMode ? values.PaymentMode : "",
       package: values.package ? values.package : "",
@@ -56,6 +75,13 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage }) 
   useEffect(() => {
     getPackages();
   }, []);
+
+  // Load houses when packageId is provided
+  useEffect(() => {
+    if (packageId) {
+      getHouses(packageId);
+    }
+  }, [packageId]);
 
   return (
     <>
@@ -104,21 +130,6 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage }) 
                 }}
               />
             </div>
-            {/* <div>
-              <label className="block text-sm font-medium">
-                Purchase / Booking
-              </label>
-              <Field
-                as="select"
-                name="typeOfBooking"
-                className={` block w-full px-2 py-1 border border-gray-300
-             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              >
-                <option value="">-- Select --</option>
-                <option value="Purchase">Purchase Date</option>
-                <option value="Booking">Booking Date</option>
-              </Field>
-            </div> */}
            <div>
               <label className="block text-sm font-medium">Package</label>
               <Field

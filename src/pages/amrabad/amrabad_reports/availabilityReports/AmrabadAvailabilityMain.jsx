@@ -1,7 +1,8 @@
 import React from 'react'
 import AdminLayout from '../../../../layouts/AdminLayout'
 import { ToastContainer } from 'react-toastify'
-import AmrabadAvailabilityOuter from './amrabadAvailabilityOuter'
+import AmrabadAvailabilityOuter from './AmrabadAvailabilityOuter'
+import AmarabdAvailabilityOuterList from './AmarabadAvailabilityOuterList'
 
 const AmrabadAvailabilityMain = () => {
   return (
@@ -18,7 +19,7 @@ const AmrabadAvailabilityMain = () => {
 
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2"></div>
         </div>
-        <AmrabadAvailabilityOuter/>
+        <AmarabdAvailabilityOuterList/>
       </div>
       </AdminLayout>
    </>

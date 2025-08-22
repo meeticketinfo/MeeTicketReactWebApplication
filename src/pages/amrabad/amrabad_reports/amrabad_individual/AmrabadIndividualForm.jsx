@@ -24,6 +24,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
 
   const onSubmit = (values, { resetForm }) => {
     SetcurrentPage(0);
+    localStorage.setItem("amrabad-individual-report-filters", JSON.stringify(values));
     fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,

@@ -5,15 +5,25 @@ import { formatToCurrency, formatToStandardDate } from "../../../../utils/Typogr
 import { formatDateTime } from "../../../../utils/Helper"
 import AgGridTable from '../../../../components/tables/AgGridTable';
 import { getCurrentDate } from '../../../../utils/TypographyHelper';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useAmrabadBookingStore } from '../amrabad_consolidated/store/amarabadBookingstore';
 
 const AmarabdAvailabilityInnerList = () => {
+  const location = useLocation();
+  const {bookingDate, fromDate, toDate, packageId, roomId} = location.state || {};
   const {
     amrabadAvailabilityInnerReports,
     isFetchAmarabadAvailabilityInnerReportsLoading,
     fetchAmarabadAvailabilityInnerReports,
-    totalCount,
+    // totalCount,
   } = useAmarabadAvailabilityReportsStore();
+
+  const {
+    allAmrabadBookings,
+    fetchAllAmrabadBookings,
+    totalCount,
+    isFetchAllAmrabadBookingsLoading,
+  } = useAmrabadBookingStore();
 
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -23,22 +33,36 @@ const AmarabdAvailabilityInnerList = () => {
     localStorage.getItem("amrabad-availability-inner-report-filters")
   );
 
+// Helper function to remove time from date string
+  const removeTimeFromDate = (dateString) => {
+    if (!dateString) return dateString;
+    // If date contains 'T' (timestamp), extract only the date part
+    return dateString.split('T')[0];
+  };
+
+  // Helper function to get next day date
+  const getNextDayDate = (dateString) => {
+    if (!dateString) return dateString;
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 2);
+    return date.toISOString().split('T')[0];
+  };
   useEffect(() => {
-    fetchAmarabadAvailabilityInnerReports({
-      startDate: savedFilters?.fromDate ?? getCurrentDate(),
-      endDate: savedFilters?.toDate ?? getCurrentDate(),
-      bookingSource: savedFilters?.typeOfBooking || "",
+    fetchAllAmrabadBookings({
+      startDate: removeTimeFromDate(bookingDate) || (savedFilters?.fromDate ?? getCurrentDate()),
+      endDate: getNextDayDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
+      bookingSource: "Booking",
       mobileNumber: savedFilters?.phoneNumber || "",
       PaymentMode: savedFilters?.PaymentMode || "",
-      package: savedFilters?.package || "",
-      houses: savedFilters?.houses || "",
+      package: packageId || savedFilters?.package || "",
+      houses: roomId || savedFilters?.houses || "",
       orderId: savedFilters?.orderId || "",
       paymentStatus: savedFilters?.paymentStatus || "",
       modeOfBooking: savedFilters?.modeOfBooking || "",
       PageIndex: currentPage + 1, 
       pageSize: PAGE_LIMIT,
     });
-  }, [currentPage, PAGE_LIMIT]);
+  }, [currentPage, PAGE_LIMIT, fromDate, toDate, packageId, roomId]);
 
   const [columnDefs] = useState([
     {
@@ -65,7 +89,7 @@ const AmarabdAvailabilityInnerList = () => {
     },
     
     {
-      field: "orderId",
+      field: "orderID",
       headerName: "Order ID",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -86,14 +110,14 @@ const AmarabdAvailabilityInnerList = () => {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "noofHouses",
+      field: "noofHousesBooked",
       headerName: "No. of Houses",
       minWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "purchasedDate",
+      field: "purchaseDate",
       headerName: "Purchased Date",
       minWidth: 150,
       headerClass: "text-blue-v2",
@@ -130,7 +154,7 @@ const AmarabdAvailabilityInnerList = () => {
         params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
     },
     {
-      field: "totalAmount",
+      field: "amountPaid",
       headerName: "Total Amount",
       minWidth: 140,
       headerClass: "text-blue-v2",
@@ -168,7 +192,7 @@ const AmarabdAvailabilityInnerList = () => {
     },
 
     {
-      field: "transactionID",
+      field: "paymentTransactionID",
       headerName: "Payment Transaction ID",
       minWidth: 140,
       headerClass: "text-blue-v2",
@@ -189,7 +213,7 @@ const AmarabdAvailabilityInnerList = () => {
           <NavLink
             end
             // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
-            to={`/amrabad-admin/ticket-view-details/${params.data.transactionID}`}
+            to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
             // onClick={() => {
             //   setisAmrabadCompleteBookings(true);
             // }}
@@ -211,19 +235,24 @@ const AmarabdAvailabilityInnerList = () => {
   return (  
     <div>
         <AmarabadAvailabilityInnerForm
-        PageIndex={1}
-        pageSize={PAGE_LIMIT}
-        SetcurrentPage={setCurrentPage}
-      />
+          PageIndex={1}
+          pageSize={PAGE_LIMIT}
+          SetcurrentPage={setCurrentPage}
+          fromDate={fromDate}
+          toDate={toDate}
+          packageId={packageId}
+          roomId={roomId}
+          bookingDate={bookingDate}
+        />
       <div>
         <AgGridTable
           ExportName="Availability Inner Report"
-          rowData={amrabadAvailabilityInnerReports || []}
+          rowData={allAmrabadBookings || []}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAmarabadAvailabilityInnerReportsLoading}
           isPagination={false}
           tableHeight={
-            (amrabadAvailabilityInnerReports?.length || 0) > 10 ? 560 : 330
+            (allAmrabadBookings?.length || 0) > 10 ? 560 : 330
           }
           // tableHeight={amrabadAvailabilityInnerReports?.data?.length > 10 ? 560 : 330}
           IsReactPaginate={true}

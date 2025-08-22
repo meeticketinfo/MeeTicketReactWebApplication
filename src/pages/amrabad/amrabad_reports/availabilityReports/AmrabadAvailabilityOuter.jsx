@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import AgGridTable from "../../../../components/tables/AgGridTable";
-
+import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+import AmarabdAvailabilityOuterList from "./AmarabadAvailabilityOuterList";
 const AmrabadAvailabilityOuter = () => {
+  const { fetchAmarabadAvailabilityOuterReports, amrabadAvailabilityOuterReports, isFetchAmarabadAvailabilityOuterReportsLoading } = useAmarabadAvailabilityReportsStore();
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
   const [showInnerReport, setShowInnerReport] = useState(false);
   const [hiddenFields, setHiddenFields] = useState({
@@ -35,7 +36,7 @@ const AmrabadAvailabilityOuter = () => {
   ];
 
   const years = [];
-  for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+  for (let year = currentYear; year <= currentYear + 15; year++) {
     years.push(year);
   }
 
@@ -340,21 +341,38 @@ const AmrabadAvailabilityOuter = () => {
     };
   }, []);
 
+  // Update row data when API response changes
+  useEffect(() => {
+    if (amrabadAvailabilityOuterReports && amrabadAvailabilityOuterReports.length > 0) {
+      setRowData(amrabadAvailabilityOuterReports);
+    }
+  }, [amrabadAvailabilityOuterReports]);
+
   const handleSubmit = async (values) => {
     console.log("Form values:", values);
-    setIsLoading(true);
 
     try {
-      // Here you would fetch data from API based on the form values
-      // For now, we'll use the exact data from the image
-      setTimeout(() => {
-        setRowData(exactData);
-        setIsLoading(false);
-      }, 1000);
+      // Prepare filters for API call
+      const filters = {
+        startDate: values.fromDate || `${values.year}-${String(parseInt(values.month) + 1).padStart(2, '0')}-01`,
+        endDate: values.toDate || getLastDateOfMonth(values.year, values.month),
+        month: values.month,
+        year: values.year,
+        PageIndex: 1,
+        pageSize: 20
+      };
+
+      // Call the outer report API
+      await fetchAmarabadAvailabilityOuterReports(filters);
     } catch (error) {
       console.error("Error fetching availability data:", error);
-      setIsLoading(false);
     }
+  };
+
+  // Helper function to get last date of month
+  const getLastDateOfMonth = (year, month) => {
+    const date = new Date(year, parseInt(month) + 1, 0);
+    return date.toISOString().split('T')[0];
   };
 
   return (
@@ -484,9 +502,9 @@ const AmrabadAvailabilityOuter = () => {
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 disabled:opacity-50"
-                disabled={isLoading}
+                disabled={isFetchAmarabadAvailabilityOuterReportsLoading}
               >
-                {isLoading ? "Loading..." : "Search"}
+                {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"}
               </button>
               <button
                 type="button"
@@ -509,23 +527,7 @@ const AmrabadAvailabilityOuter = () => {
         )}
       </Formik>
 
-      <div className="mt-8">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700"></div>
-          </div>
-        ) : (
-          <AgGridTable
-            ExportName="Availability Report"
-            isPagination={false}
-            IsReactPaginate={true}
-            columnDefs={columnDefs}
-            rowData={rowData}
-            showSearch={false}
-            tableHeight={600}
-          />
-        )}
-      </div>
+    <AmarabdAvailabilityOuterList />
     </div>
   );
 };

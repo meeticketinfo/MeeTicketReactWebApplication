@@ -37,6 +37,12 @@ function AmrabadConsolidatedList() {
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
       bookingSource: "Purchase",
+      package: savedFilters?.package ? savedFilters.package : "",
+      houses: savedFilters?.houses ? savedFilters.houses : "",
+      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+      paymentStatus: savedFilters?.paymentStatus ? savedFilters.paymentStatus : "",
+      modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
+      
       // bookingSource: savedFilters?.typeOfBooking
       //   ? savedFilters.typeOfBooking
       //   : "",
@@ -230,7 +236,7 @@ function AmrabadConsolidatedList() {
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={totalCount  }
+          totalCount={totalCount}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}

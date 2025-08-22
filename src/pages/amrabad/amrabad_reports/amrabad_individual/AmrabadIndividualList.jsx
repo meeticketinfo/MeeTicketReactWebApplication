@@ -31,6 +31,11 @@ export default function AdminBookings() {
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
       bookingSource: "Purchase",
+      package: savedFilters?.package ? savedFilters.package : "",
+      houses: savedFilters?.houses ? savedFilters.houses : "",
+      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+      paymentStatus: savedFilters?.paymentStatus ? savedFilters.paymentStatus : "",
+      modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
