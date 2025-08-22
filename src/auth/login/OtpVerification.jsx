@@ -142,7 +142,7 @@ const OtPVerification = ({
             onSubmit={handleSubmit}
           >
             {({ isSubmitting, setFieldValue, values, errors, touched }) => (
-              <Form className="  otp_screen ">
+              <Form className="otp_screen">
                 <div className="flex justify-center">
                   {/* <img alt="" src={VerificationImg} className="ml-2 mt-[2px]" /> */}
                 </div>
@@ -156,6 +156,7 @@ const OtPVerification = ({
                   <div className="w-1/3 text-right">
                     <button
                       className="text-white text-sm cursor-pointer"
+                      type="button"
                       onClick={() => {
                         setRedirectError(null);
                          setOtpError(null)

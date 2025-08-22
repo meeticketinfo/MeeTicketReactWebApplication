@@ -40,8 +40,8 @@ const SalarjangMuseumDashboard = () => {
   };
 
   // Download functionality
-  const downloadDetailedReport = () => {
-    const detailedData = generateDetailedReport();
+  const downloadDetailedReport = (formValues) => {
+    const detailedData = generateDetailedReport(formValues);
     const blob = new Blob([detailedData], {
       type: "text/plain;charset=utf-8;",
     });
@@ -50,7 +50,7 @@ const SalarjangMuseumDashboard = () => {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `SalarjangMuseumDashboard_Detailed_${initialValues.fromDate}_to_${initialValues.toDate}.txt`
+      `SalarjangMuseumDashboard_Detailed_${formValues.fromDate}_to_${formValues.toDate}.txt`
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
@@ -58,12 +58,12 @@ const SalarjangMuseumDashboard = () => {
     document.body.removeChild(link);
   };
 
-  const generateDetailedReport = () => {
+  const generateDetailedReport = (formValues) => {
     let report = `╔══════════════════════════════════════════════════════════════════════════════╗\n`;
     report += `                     SALARJANG MUSEUM DASHBOARD REPORT                        \n`;
     report += `╚══════════════════════════════════════════════════════════════════════════════╝\n\n`;
 
-    report += `Date Range: ${initialValues.fromDate} to ${initialValues.toDate}\n`;
+    report += `Date Range: ${formValues.fromDate} to ${formValues.toDate}\n`;
     report += `Generated On: ${new Date().toLocaleString()}\n`;
     // report += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
@@ -231,7 +231,7 @@ const SalarjangMuseumDashboard = () => {
             <div className="flex items-end gap-2">
               <button
                 type="button"
-                onClick={downloadDetailedReport}
+                onClick={() => downloadDetailedReport(values)}
                 className="bg-blue-v2 text-xs text-white rounded-lg px-3 py-1.5  "
                 disabled={isSalarjungMuseumDashBoardCountLoading}
               >
