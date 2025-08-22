@@ -13,13 +13,13 @@ const LocationWiseReport = () => {
   console.log("LocationWiseReport", LocationWiseReport); 
   useEffect(() => {
     fetchLocationWiseReport({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
+      fromDate: "",
+      toDate: "",
     });
   }, []);
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: "",
+    toDate: "",
   };
   const onSubmit = (values) => {
     fetchLocationWiseReport({

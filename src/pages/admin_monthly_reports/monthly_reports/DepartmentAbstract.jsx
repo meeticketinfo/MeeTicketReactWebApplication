@@ -13,13 +13,13 @@ const DepartmentAbstract = () => {
 
   useEffect(() => {
     fetchDepartmentAbstractReport({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
+      fromDate: "",
+      toDate: "",
     });
   }, []);
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: "",
+    toDate: "",
   };
   const onSubmit = (values) => {
     fetchDepartmentAbstractReport({

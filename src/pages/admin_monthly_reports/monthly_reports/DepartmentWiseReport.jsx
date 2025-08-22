@@ -10,16 +10,16 @@ const DepartmentWiseReport = () => {
     DepartmentWiseReport,
     isFetchDepartmentWiseReportLoading,
   } = UsemonthlyReportsStore();
-  
+
   useEffect(() => {
     fetchDepartmentWiseReport({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
+      fromDate: "",
+      toDate: "",
     });
   }, []);
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: "",
+    toDate: "",
   };
   const onSubmit = (values) => {
     fetchDepartmentWiseReport({

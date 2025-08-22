@@ -10,16 +10,16 @@ const LocationCategoryAbstract = () => {
     LocationCategoryAbstractReport,
     isFetchLocationCategoryAbstractReportLoading,
   } = UsemonthlyReportsStore();
-  console.log("LocationCategoryAbstractReport", LocationCategoryAbstractReport);
+  // console.log("LocationCategoryAbstractReport", LocationCategoryAbstractReport);
   useEffect(() => {
     fetchLocationCategoryAbstractReport({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
+      fromDate: "",
+      toDate: "",
     });
   }, []);
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: "",
+    toDate: "",
   };
   const onSubmit = (values) => {
     fetchLocationCategoryAbstractReport({

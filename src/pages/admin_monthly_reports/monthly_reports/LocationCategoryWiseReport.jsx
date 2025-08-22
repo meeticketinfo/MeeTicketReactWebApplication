@@ -13,13 +13,13 @@ const LocationCategoryWiseReport = () => {
 
   useEffect(() => {
     fetchLocationCategoryWiseReport({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
+      fromDate: "",
+      toDate: "",
     });
   }, []);
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: "",
+    toDate: "",
   };
   const onSubmit = (values) => {
     fetchLocationCategoryWiseReport({
