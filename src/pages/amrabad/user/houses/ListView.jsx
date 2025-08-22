@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
 import { convertTo12HourFormat } from "../../../../utils/Helper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 
 const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, toDate }) => {
   console.log(userPackage, "userPackage");
@@ -181,60 +181,53 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
             >
               <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6">
                 {/* Image */}
-                <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full relative">
-                  <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg">
-                    Available House : <b>{house?.noOfHousesAvailable}</b>
-                  </span>
-                  {house?.images?.length > 0 ? (
-                    <>
-                      <img
-                        src={house.images[0]}
-                        alt={house?.roomName}
-                        className="aspect-square w-full object-cover rounded-lg"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.style.display = "none";
-                          e.target.nextSibling.style.display = "flex"; // show SVG fallback
-                        }}
-                      />
-                      {/* Fallback dummy image */}
-                      <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center" style={{ display: 'none' }}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-12 w-12 text-gray-300"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
-                          />
-                        </svg>
-                      </div>
-                    </>
-                  ) : (
-                    // No images available - show dummy image
-                    <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12 text-gray-300"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+              <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full relative">
+                <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg z-10">
+                  Available House : <b>{house?.noOfHousesAvailable}</b>
+                </span>
+
+                {Array.isArray(house?.images) && house.images.length > 0 ? (
+                  <Swiper
+                    spaceBetween={8}
+                    slidesPerView={1}
+                    pagination={{ clickable: true }}
+                    modules={[Pagination]}
+                    className="house-image-swiper w-full"
+                  >
+                    {house.images.map((src, i) => (
+                      <SwiperSlide key={i}>
+                        <img
+                          src={src}
+                          alt={`${house?.roomName || "House"} ${i + 1}`}
+                          className="aspect-square w-full object-cover rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.src =
+                              'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 fill=%22%23f3f4f6%22/><path d=%22M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9%22 fill=%22none%22 stroke=%22%239ca3af%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>';
+                          }}
                         />
-                      </svg>
-                    </div>
-                  )}
-                </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                ) : (
+                  // No images available - show dummy image
+                  <div className="aspect-square w-full bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-12 w-12 text-gray-300"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 9.75L12 4l9 5.75M4.5 10.5v9h15v-9M9 21V12h6v9"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
                 {/* Content */}
                 <div className="flex-1 flex flex-col justify-between min-w-0">
                   <div>
@@ -307,7 +300,8 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                   <div className="mt-4 sm:mt-6">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
-                      state={{ fromDate: fromDate, toDate: toDate }}
+                      onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
+                      // state={{ fromDate: fromDate, toDate: toDate }}
                       className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
@@ -332,7 +326,6 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
               </div>
 
               {/* Calendar Slider with Navigation */}
-
               <div className="relative">
                 <Swiper
                   spaceBetween={8}
@@ -343,57 +336,102 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 >
                   {house?.calendar?.map((item, idx) => (
                     <SwiperSlide key={idx} className="!w-auto">
-                      <Link to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
-                        className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px]">
+                      {item?.housesLeft > 0 ? (
+                        <Link 
+                          to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} 
+                          onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": item?.date, "toDate": house?.calendar[idx + 1]?.date}))}
+                          // state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
+                          className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#362D86]"
+                        >
+                          {/* Date */}
+                          <div className="text-center">
+                            <div className="flex flex-row gap-2">
+                              <div className="text-xs font-bold text-gray-800 mb-1">
+                                {formatDate(item?.date)}
+                              </div>
 
-                        {/* Date */}
-                        <div className="text-center">
-
-                          <div className="flex flex-row gap-2">
-                            <div className="text-xs font-bold text-gray-800 mb-1">
-                              {formatDate(item?.date)}
+                              {/* Availability */}
+                              <div className={`
+                                text-xs font-bold mb-1
+                                ${item?.housesLeft <= 2
+                                  ? ' text-red-700'
+                                  : ' text-green-700'
+                                }
+                              `}>
+                                {item?.housesLeft} Left
+                              </div>
                             </div>
 
-                            {/* Availability */}
-                            <div className={`
-                              text-xs font-bold mb-1
-                              ${item?.housesLeft <= 2
-                                ? ' text-red-700'
-                                : ' text-green-700'
-                              }
-                            `}>
-                              {item?.housesLeft} Left
+                            {/* Price with Discount */}
+                            <div className="flex flex-row gap-2">
+                              {item?.discountPercent && item?.discountPercent > 0 ? (
+                                <>
+                                  {/* Discount Badge */}
+                                  <div className="inline-block bg-green-100 text-green-800 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
+                                    {item?.discountPercent}% OFF
+                                  </div>
+                                  {/* Original Price (struck through) */}
+                                  <div className="text-[10px] text-gray-400 line-through">
+                                    ₹{item?.price?.toLocaleString()}
+                                  </div>
+
+                                  {/* Discounted Price */}
+                                  <div className="text-xs font-bold text-green-600">
+                                    ₹{item?.amountAfterDiscount?.toLocaleString()}/-
+                                  </div>
+                                </>
+                              ) : (
+                                /* Regular Price */
+                                <div className="text-xs font-medium text-gray-600">
+                                  ₹{item?.price?.toLocaleString()}/-
+                                </div>
+                              )}
                             </div>
                           </div>
-
-                          {/* Price with Discount */}
-                          <div className="flex flex-row gap-2">
-                            {item?.discountPercent && item?.discountPercent > 0 ? (
-                              <>
-
-                                {/* Discount Badge */}
-                                <div className="inline-block bg-green-100 text-green-800 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
-                                  {item?.discountPercent}% OFF
-                                </div>
-                                {/* Original Price (struck through) */}
-                                <div className="text-[10px] text-gray-400 line-through">
-                                  ₹{item?.price?.toLocaleString()}
-                                </div>
-
-                                {/* Discounted Price */}
-                                <div className="text-xs font-bold text-green-600">
-                                  ₹{item?.amountAfterDiscount?.toLocaleString()}/-
-                                </div>
-                              </>
-                            ) : (
-                              /* Regular Price */
-                              <div className="text-xs font-medium text-gray-600">
-                                ₹{item?.price?.toLocaleString()}/-
+                        </Link>
+                      ) : (
+                        <div className="relative rounded-md p-2 border transition-all duration-200 cursor-not-allowed block min-w-[120px] bg-gray-50 opacity-60">
+                          {/* Date */}
+                          <div className="text-center">
+                            <div className="flex flex-row gap-2">
+                              <div className="text-xs font-bold text-gray-500 mb-1">
+                                {formatDate(item?.date)}
                               </div>
-                            )}
+
+                              {/* Availability */}
+                              <div className="text-xs font-bold mb-1 text-red-700">
+                                {item?.housesLeft} Left
+                              </div>
+                            </div>
+
+                            {/* Price with Discount */}
+                            <div className="flex flex-row gap-2">
+                              {item?.discountPercent && item?.discountPercent > 0 ? (
+                                <>
+                                  {/* Discount Badge */}
+                                  <div className="inline-block bg-gray-100 text-gray-500 text-[8px] px-1.5 py-0.5 rounded-full font-medium">
+                                    {item?.discountPercent}% OFF
+                                  </div>
+                                  {/* Original Price (struck through) */}
+                                  <div className="text-[10px] text-gray-400 line-through">
+                                    ₹{item?.price?.toLocaleString()}
+                                  </div>
+
+                                  {/* Discounted Price */}
+                                  <div className="text-xs font-bold text-gray-500">
+                                    ₹{item?.amountAfterDiscount?.toLocaleString()}/-
+                                  </div>
+                                </>
+                              ) : (
+                                /* Regular Price */
+                                <div className="text-xs font-medium text-gray-500">
+                                  ₹{item?.price?.toLocaleString()}/-
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </Link>
+                      )}
                     </SwiperSlide>
                   ))}
                 </Swiper>

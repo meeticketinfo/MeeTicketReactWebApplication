@@ -33,7 +33,7 @@ const DatePickerField = ({
       const isToday = date.toDateString() === today.toDateString();
       const isSelected = date.toDateString() === startDate.toDateString();
       const isAvailable = isDateAvailable(date);
-      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[50px]";
+      const commonClass = "!text-gray-800 !hover:!bg-gray-100 !rounded-md !transition-colors !w-[50px] !h-[60px]";
       
       if (!isAvailable) {
         return "!text-gray-300 !cursor-not-allowed !bg-gray-50 " + commonClass;

@@ -13,7 +13,7 @@ const AmarabadRegisterOtp = () => {
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
   const [otpError, setOtpError] = useState("");
-  const { verifyRegisterOtp, verifyResendOtp } = UseOtpStore();
+  const { verifyRegisterOtp, verifyResendOtp,isverifyRegisterOtpLoading,isverifyResendOtpLoading } = UseOtpStore();
   const RegisterdDetails = JSON.parse(localStorage.getItem("registerdDetails"));
 
   const navigate = useNavigate();
@@ -76,7 +76,9 @@ const AmarabadRegisterOtp = () => {
         ...RegisterdDetails,
         otp: values.otp,
       });
-      if (response.data.status === 200) {
+      
+      // Check if response exists and has the expected structure
+      if (response && response.data && response.data.status === 200) {
         toast.success(
           response.data.data.message || "OTP verified successfully"
         );
@@ -84,11 +86,43 @@ const AmarabadRegisterOtp = () => {
           state: { toastMessage: "User Registered Successfully. You can login now" },
         });
         localStorage.removeItem("registerdDetails");
+      } else if (response && response.data) {
+        // Handle non-200 status responses
+        toast.error(response.data?.data?.message || "Something went wrong");
       } else {
-        toast.info(response.data?.data?.message || "something went wrong");
+        // Handle case where response is undefined or malformed
+        toast.error("Invalid response from server");
       }
     } catch (error) {
-      toast.error(error.message || "something went wrong");
+      // Handle API validation errors
+      if (error.response?.data?.errors) {
+        const apiErrors = error.response.data.errors;
+        
+        // Handle OTP validation error specifically
+        if (apiErrors.OTP && apiErrors.OTP.length > 0) {
+          setOtpError(apiErrors.OTP[0]);
+          toast.error(apiErrors.OTP[0]);
+        } else {
+          // Handle other validation errors
+          const errorMessages = Object.values(apiErrors).flat();
+          const errorMessage = errorMessages[0] || "Validation error occurred";
+          setOtpError(errorMessage);
+          toast.error(errorMessage);
+        }
+      } else if (error.response?.data?.message) {
+        // Handle general API error messages
+        setOtpError(error.response.data.message);
+        toast.error(error.response.data.message);
+      } else if (error.message) {
+        // Handle network or other errors
+        setOtpError(error.message);
+        toast.error(error.message);
+      } else {
+        // Fallback error message
+        const errorMessage = "Something went wrong. Please try again.";
+        setOtpError(errorMessage);
+        toast.error(errorMessage);
+      }
       console.log("error", error);
     }
   };
@@ -195,10 +229,11 @@ const AmarabadRegisterOtp = () => {
                   </p>
 
                   <button
+                    disabled={isverifyRegisterOtpLoading}
                     type="submit"
-                    className="block mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full mt-8"
+                    className={`block mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full mt-8 ${isverifyRegisterOtpLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    VERIFY
+                    {isverifyRegisterOtpLoading ? "VERIFYING..." : "VERIFY"}
                   </button>
                 </Form>
               )}

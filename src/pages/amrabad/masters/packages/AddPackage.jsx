@@ -61,10 +61,9 @@ const AddPackage = () => {
         { dayOfWeek: "Sunday", discountValue: null, amountAfterDiscount: null },
       ],
     };
-
     return template;
   };
-
+ 
   /*  Initial values                                                    */
 
   const initialValues = {
@@ -115,7 +114,7 @@ const AddPackage = () => {
     noOfHousesAvailable: positiveInt()
       .required("No Of Houses Available is required")
       .nullable(),
-    roomLimit: positiveInt().required("House Limit is required").nullable(),
+    roomLimit: Yup.string().required("House Limit is required").nullable(),
     isBlockout: Yup.string().required("Block out selection is required"),
     blockoutType: Yup.string().when("isBlockout", {
       is: "Yes",
@@ -174,8 +173,7 @@ const AddPackage = () => {
         .required("Description is required"),
 
       checkInTime: Yup.string()
-        .required("Check-in time is required")
-        .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
+        .required("Check-in time is required"),
 
       checkOutTime: Yup.string().required("Check-out time is required"),
 
@@ -332,7 +330,7 @@ const AddPackage = () => {
                       htmlFor="package.checkInTime"
                       className="block text-sm font-medium"
                     >
-                      Check-in<span className="text-red-500">*</span>
+                      Check-in Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -353,7 +351,7 @@ const AddPackage = () => {
                       htmlFor="package.checkOutTime"
                       className="block text-sm font-medium"
                     >
-                      Checkout Time<span className="text-red-500">*</span>
+                      Check-out Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -386,7 +384,7 @@ const AddPackage = () => {
                     <ErrorMessage
                       name="package.latitude"
                       component="div"
-                      className="text-red-500 text-xs absolute"
+                      className="text-red-500 text-xs mt-1"
                     />
                   </div>
 
@@ -408,7 +406,7 @@ const AddPackage = () => {
                     <ErrorMessage
                       name="package.longitude"
                       component="div"
-                      className="text-red-500 text-xs absolute"
+                      className="text-red-500 text-xs"
                     />
                   </div>
                   {/*  Guidelines */}
@@ -498,7 +496,6 @@ const AddPackage = () => {
                       }}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     >
-                      <option value="">Select</option>
                       <option value={true}>Active</option>
                       <option value={false}>In Active</option>
                     </Field>
@@ -555,10 +552,18 @@ const AddPackage = () => {
                             const base64 = await convertToBase64(files[i]);
                             base64Images.push(base64);
                           }
+                          // Append new images to existing ones
+                          const currentImages = values.package.packageImageBase64Strings || [];
                           setFieldValue(
                             "package.packageImageBase64Strings",
-                            base64Images
+                            [...currentImages, ...base64Images]
                           );
+                        }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.getElementById("package.packageImageBase64Strings");
+                        if (fileInput) {
+                          fileInput.value = "";
                         }
                       }}
                     >
@@ -611,11 +616,15 @@ const AddPackage = () => {
                               const base64 = await convertToBase64(files[i]);
                               base64Images.push(base64);
                             }
+                            // Append new images to existing ones
+                            const currentImages = values.package.packageImageBase64Strings || [];
                             setFieldValue(
                               "package.packageImageBase64Strings",
-                              base64Images
+                              [...currentImages, ...base64Images]
                             );
                           }
+                          // Clear the file input value to allow selecting the same file again
+                          event.target.value = "";
                         }}
                       />
                     </div>
@@ -972,7 +981,7 @@ const AddPackage = () => {
                                       );
                                     }}
                                   >
-                                    <option value=" " label="Select Option" />
+                                    {/* <option value=" " label="Select Option" /> */}
                                     <option value={true} label="Yes" />
                                     <option value={false} label="No" />
                                   </Field>
@@ -1632,10 +1641,18 @@ const AddPackage = () => {
                                           );
                                           base64Images.push(base64);
                                         }
+                                        // Append new images to existing ones
+                                        const currentImages = values.rooms[index]?.roomImageBase64Strings || [];
                                         setFieldValue(
                                           `rooms[${index}].roomImageBase64Strings`,
-                                          base64Images
+                                          [...currentImages, ...base64Images]
                                         );
+                                      }
+                                      
+                                      // Clear any file input to ensure consistency
+                                      const fileInput = document.getElementById(`rooms[${index}].roomImageBase64Strings`);
+                                      if (fileInput) {
+                                        fileInput.value = "";
                                       }
                                     }}
                                   >
@@ -1693,11 +1710,15 @@ const AddPackage = () => {
                                               await convertToBase64(files[i]);
                                             base64Images.push(base64);
                                           }
+                                          // Append new images to existing ones
+                                          const currentImages = values.rooms[index]?.roomImageBase64Strings || [];
                                           setFieldValue(
                                             `rooms[${index}].roomImageBase64Strings`,
-                                            base64Images
+                                            [...currentImages, ...base64Images]
                                           );
                                         }
+                                        // Clear the file input value to allow selecting the same file again
+                                        event.target.value = "";
                                       }}
                                     />
                                   </div>

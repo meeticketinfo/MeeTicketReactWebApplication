@@ -8,6 +8,19 @@ import { useEffect, useState } from "react";
 import { formatDateTimeToReadable } from "../../../../../../utils/Helper";
 import { downloadTicketReliable } from "../amrabadBookingHistory/pdfDownloader";
 
+const formatDateTime = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).toUpperCase();
+};
+
 const TicketViewDetails = ({ isScrolled = false }) => {
   const { bookingId } = useParams();
   const location = useLocation();
@@ -225,9 +238,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                       DATE:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
-                      {
-                        GetTicketViewDetails?.bookingItems?.[0]?.bookingDate
-                      }
+                      {GetTicketViewDetails?.bookingItems?.[0]?.bookingDate ? formatDateTime(GetTicketViewDetails?.bookingItems?.[0]?.bookingDate) : "N/A"}
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
@@ -307,11 +318,11 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                           {house.roomName ? house.roomName : "N/A"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.roomCount}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkIn}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkOut}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkIn ? formatDateTime(house.checkIn) : "N/A"}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkOut ? formatDateTime(house.checkOut) : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">
-                          {house.tariffPerDay
-                            ? `₹${house.tariffPerDay.toLocaleString()}`
+                          {house.totalTariff
+                            ? `₹${house.totalTariff.toLocaleString()}`
                             : "0"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-red-600">

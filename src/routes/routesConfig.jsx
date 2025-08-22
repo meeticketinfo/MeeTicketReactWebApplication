@@ -139,6 +139,10 @@ import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amr
 import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
 import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
 import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
+import AmrabadComingSoon from "../pages/amrabad/user/amrabadComingSoon/AmrabadComingSoon";
+import AmrabadFailedOtherReason from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReason";
+import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGateway";
+import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
 import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
 
@@ -531,6 +535,10 @@ export const routes = [
     element: <Packages />,
   },
   {
+    path: "/amrabad-resort/coming-soon",
+    element: <AmrabadComingSoon />,
+  },
+  {
     path: "/amrabad-resort/packages",
     element: <Packages />,
   },
@@ -682,5 +690,17 @@ export const routes = [
   {
     path: "/amarabad-total-transaction",
     element: <ProtectedRoute element={<MainAmarabadTotalTransaction />} />,
+  },
+  {
+    path: "/amrabad-failed-other-reason",
+    element: <ProtectedRoute element={<AmrabadFailedOtherReason/>} />,
+  },
+  {
+    path: "/amrabad-failed-gateway",
+    element: <ProtectedRoute element={<AmrabadFailedGateway/>} />,
+  },
+  {
+    path: "/amrabad-not-generated",
+    element: <ProtectedRoute element={<AmrabadNotGenerated/>} />,
   },
 ];

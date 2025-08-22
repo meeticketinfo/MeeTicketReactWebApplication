@@ -11,7 +11,7 @@ const BookNow = () => {
   const [house, setHouse] = useState(null);
   const [userPackage, setUserPackage] = useState(null);
   const { packageId, houseId } = useParams();
-  const { fromDate, toDate } = useLocation().state;
+  const { fromDate, toDate } = JSON.parse(localStorage.getItem("bookingDate"));
   useEffect(() => {
     fetchUserPackages();
   }, []);

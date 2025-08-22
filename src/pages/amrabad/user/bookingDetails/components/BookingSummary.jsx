@@ -207,10 +207,6 @@ const BookingItemCard = ({ item, formatDate }) => {
           src={item?.houseImageUrl} 
           alt={item?.houseName || 'House'} 
           className="w-10 h-10 object-cover rounded"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = '/images/placeholder-house.jpg';
-          }}
         />
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-sm text-gray-800 truncate">

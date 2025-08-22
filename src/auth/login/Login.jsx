@@ -19,12 +19,14 @@ import "./Login.css";
 import { bouncy } from "ldrs";
 import OtpLogin from "../OtpLogin";
 import MainOtpLogin from "./MainOtpLogin";
+import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
 
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
   const { isLoading, isAuthenticated, loginError, login, setOtpError } =
     useAuthStore();
+  const { setTokenType } = amrabadAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isPhoneSelected, setIsPhoneSelected] = useState(false);
 
@@ -59,6 +61,8 @@ const Login = () => {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    localStorage.clear();
+    setTokenType(null);
     const isCaptchaValid = validateCaptchaInput();
     if (!isCaptchaValid) {
       setSubmitting(false);

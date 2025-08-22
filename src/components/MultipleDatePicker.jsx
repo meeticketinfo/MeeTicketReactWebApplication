@@ -2,11 +2,12 @@ import React, { useState, useRef } from 'react';
 import Flatpickr from 'react-flatpickr';
 
 const MultipleDatePicker = ({ 
-  value = [], 
+  value = [],
   onChange, 
   placeholder = "Select dates...",
   className = "",
-  disabled = false 
+  disabled = false,
+  minDate = "today" // Default to today to prevent past dates
 }) => {
   const [selectedDates, setSelectedDates] = useState(value);
   const flatpickrRef = useRef(null);
@@ -27,6 +28,7 @@ const MultipleDatePicker = ({
     defaultDate: value,
     allowInput: false,
     clickOpens: true,
+    minDate: minDate, // Add minDate restriction
     prevArrow:
       '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
     nextArrow:
