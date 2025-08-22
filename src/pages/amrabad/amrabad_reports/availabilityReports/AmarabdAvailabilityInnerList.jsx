@@ -249,7 +249,7 @@ const AmarabdAvailabilityInnerList = () => {
           ExportName="Availability Inner Report"
           rowData={allAmrabadBookings || []}
           columnDefs={columnDefs}
-          isFetchLoading={isFetchAmarabadAvailabilityInnerReportsLoading}
+          isFetchLoading={isFetchAllAmrabadBookingsLoading}
           isPagination={false}
           tableHeight={
             (allAmrabadBookings?.length || 0) > 10 ? 560 : 330

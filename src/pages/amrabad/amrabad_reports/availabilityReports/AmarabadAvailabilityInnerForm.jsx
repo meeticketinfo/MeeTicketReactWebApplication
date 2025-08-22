@@ -239,9 +239,9 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllAmrabadBookingsLoading}
+                disabled={isFetchAllAmrabadBookingsLoading}
               >
-                Search
+                {isFetchAllAmrabadBookingsLoading ? 'Searching...' : 'Search'}
               </button>
               {/* <button
                 type="button"

@@ -211,7 +211,7 @@ const AmarabdAvailabilityOuterList = () => {
                   <span style={{ color: "inherit" }}>0</span>
                 </div>
               );
-            },
+            }, 
           },
           {
             field: `package_${packageId}_room_${roomName}_total`,
