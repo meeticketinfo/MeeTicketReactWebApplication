@@ -179,8 +179,8 @@ function AmrabadPaymentTransactionsList() {
 
       if (res.response?.data?.status === 200) {
         setOpenVerifyModal(false);
-        const resultMsg = res.response?.data?.message;
-        console.log("resultMsg", resultMsg);
+        const resultMsg = res.response?.data?.data?.resultStatus;
+       
         Swal.fire({
           title: "Success!",
 
