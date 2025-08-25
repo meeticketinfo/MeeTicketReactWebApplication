@@ -37,7 +37,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
   const updatePackageValidationSchema = Yup.object().shape({
     packageName: Yup.string().required("Package name is required"),
     description: Yup.string()
-      .max(300, "Max 100 characters")
+      .max(1000, "Max 1000 characters")
       .required("Description is required"),
     checkInTime: Yup.string().required("Check-in time is required"),
     // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
@@ -53,9 +53,9 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
       //   }
       // ),
     termsConditions: Yup.string()
-      .max(300, "Max 100 characters")
+      .max(1000, "Max 1000 characters")
       .required("T&C are required"),
-    privacyPolicy: Yup.string().max(300),
+    privacyPolicy: Yup.string().max(1000),
     latitude: Yup.number()
       .typeError("Latitude must be a number")
       .required("Latitude is required")
@@ -228,7 +228,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                       htmlFor="checkInTime"
                       className="block text-sm font-medium"
                     >
-                      Check-in<span className="text-red-500">*</span>
+                      Check-in Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -249,7 +249,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                       htmlFor="checkOutTime"
                       className="block text-sm font-medium"
                     >
-                      Checkout Time<span className="text-red-500">*</span>
+                      Check-out Time<span className="text-red-500">*</span>
                     </label>
                     <Field
                       type="time"
@@ -344,7 +344,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     <Field
                       as="textarea"
                       name="guidelines"
-                      maxlength={300}
+                      maxlength={1000}
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Guidelines"
@@ -357,7 +357,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={300}
+                      maxlength={1000}
                       name="description"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
@@ -377,7 +377,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={300}
+                      maxlength={1000}
                       name="cancellationPolicy"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -391,7 +391,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={300}
+                      maxlength={1000}
                       name="termsConditions"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -410,7 +410,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={300}
+                      maxlength={1000}
                       name="privacyPolicy"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -443,6 +443,12 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                         );
                         if (files.length > 0) {
                           handleFileChange({ target: { files } });
+                        }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.querySelector('input[type="file"]');
+                        if (fileInput) {
+                          fileInput.value = "";
                         }
                       }}
                     >

@@ -57,10 +57,12 @@ export const usePackagesStore = create((set) => ({
       set({ houseEditDetails: {} });
       return { success: true, data: response };
     } catch (xhr) {
-      console.log("xhr", xhr);
+      console.log("xhr", xhr.response?.data?.message);
+      
       set({
         isSaveHouseDetailsLoading: false,
       });
+      throw xhr;
     }
   },
   fetchGetAllPackages: async () => {

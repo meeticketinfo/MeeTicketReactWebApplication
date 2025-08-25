@@ -6,27 +6,36 @@ import { toast } from "react-toastify";
 const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, isLoading = false, startDate, endDate, userPackage }) => {
   const { addToCart, loadingAddToCart } = useCartStore();
   const navigate = useNavigate();
-  
-  // Calculate discount percentage
-  const discountPercentage = subTotal && discount > 0 ? Math.round((discount / subTotal) * 100) : 0;
 
-  // Shimmer loading component
   const ShimmerLine = ({ className = "" }) => (
     <div className={`animate-pulse bg-gray-200 rounded h-4 ${className}`}></div>
   );
+  // Calculate discount percentage
+  const discountPercentage = subTotal && discount > 0 ? Math.round((discount / subTotal) * 100) : 0;
+
+  // Nights between check-in and check-out
+  const nights = (() => {
+    if (!startDate || !endDate) return 0;
+    const start = new Date(startDate); start.setHours(0, 0, 0, 0);
+    const end = new Date(endDate); end.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    return Math.max(1, diffDays);
+  })();
+
+  const pricePerNight = house?.tariffPerDay || 0;
 
   // Helper function to combine date with time
   const combineDateWithTime = (date, time) => {
     if (!date || !time) return date;
-    
+
     // Get the date string in YYYY-MM-DD format
-    const dateString = date instanceof Date ? 
-      date.toISOString().split('T')[0] : 
+    const dateString = date instanceof Date ?
+      date.toISOString().split('T')[0] :
       new Date(date).toISOString().split('T')[0];
-    
+
     // Combine date and time in local format (YYYY-MM-DDTHH:MM:SS)
     const combinedDateTime = `${dateString}T${time}`;
-    
+
     return combinedDateTime;
   };
 
@@ -93,12 +102,18 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Sub total:</span>
+            <span className="text-sm text-gray-600">Total Houses:</span>
+            <span className="text-sm font-medium text-gray-800">{houseCount}</span>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">House Fare:</span>
             <span className="text-sm font-medium text-gray-800">
-              {houseCount}X ₹{house?.tariffPerDay?.toLocaleString()}
+              {nights} {nights === 1 ? "night" : "nights"} × ₹{pricePerNight.toLocaleString()}
             </span>
           </div>
-          {house?.hasDiscount && discount > 0 && (
+
+          {discount > 0 && (
             <>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Discount:</span>
@@ -121,7 +136,8 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
       <button
         onClick={handleAddToCart}
-        className="w-full bg-[#362D86] text-white py-3 rounded-lg font-semibold hover:bg-[#362D86]/90 transition-colors flex items-center justify-between px-4 sm:px-6"
+        disabled={houseCount === 0}
+        className="w-full bg-[#362D86] text-white py-3 rounded-lg font-semibold hover:bg-[#362D86]/90 transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="text-lg sm:text-xl font-bold">₹{finalAmount.toLocaleString()}</span>
         {loadingAddToCart && <CgSpinner className="animate-spin" />}
