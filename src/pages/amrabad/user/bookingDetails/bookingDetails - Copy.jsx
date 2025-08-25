@@ -29,7 +29,7 @@ function toLocalISOString(date = new Date()) {
 const AmarabadBookingDetails = () => {
     // const HOST = "https://3bd830ff7ae4ba2892cb368ec01af4f6.m.pipedream.net";
     // const HOST = "https://securegw-stage.paytm.in";
-    const HOST = "https://securestage.paytmpayments.com";
+    const HOST = "https://secure.paytmpayments.com";
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
@@ -191,7 +191,7 @@ const AmarabadBookingDetails = () => {
     // }
 
     const makePayment = (paymentData) => {
-        // console.log("paymentData => ", paymentData);
+        console.log("paymentData => ", paymentData);
         console.log("paymentData?.txnToken => ", paymentData?.txnToken);
 
         // Check if Paytm SDK is available
@@ -208,22 +208,11 @@ const AmarabadBookingDetails = () => {
                 orderId: paymentData?.orderId,
                 token: paymentData?.txnToken,
                 tokenType: "TXN_TOKEN",
-                amount: "1.00", // <-- use real amount instead of hardcoded 1
+                amount: 1, // <-- use real amount instead of hardcoded 1
             },
             merchant: {
                 mid: paymentData?.mid,
                 redirect: true, // if true → Paytm will redirect after payment
-            },
-            payMode: {
-                labels: {},
-                filter: {
-                    exclude: []
-                },
-                order: [
-                    "NB",
-                    "CARD",
-                    "LOGIN"
-                ]
             },
             handler: {
                 transactionStatus: function (paymentStatus) {
@@ -248,22 +237,21 @@ const AmarabadBookingDetails = () => {
         console.log("window.Paytm && window.Paytm.CheckoutJS => ", window.Paytm && window.Paytm.CheckoutJS);
 
         try {
-            console.log("payment Trying to load", window.Paytm.CheckoutJS);
             // Use onLoad if available, otherwise proceed directly
             if (typeof window.Paytm.CheckoutJS.onLoad === 'function') {
-                console.log("payment Trying to invoke");
-                window.Paytm.CheckoutJS.init(config)
-                    .then(() => {
-                        console.log("window.Paytm.CheckoutJS.invoke() => ");
-                        window.Paytm.CheckoutJS.invoke(); // open payment popup
-                    })
-                    .catch((error) => {
-                        console.error("Paytm init error => ", error);
-                        toast.error("Payment initialization failed. Please try again.");
-                    });
+                window.Paytm.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+                    window.Paytm.CheckoutJS.init(config)
+                        .then(() => {
+                            console.log("window.Paytm.CheckoutJS.invoke() => ");
+                            window.Paytm.CheckoutJS.invoke(); // open payment popup
+                        })
+                        .catch((error) => {
+                            console.error("Paytm init error => ", error);
+                            toast.error("Payment initialization failed. Please try again.");
+                        });
+                });
             } else {
                 // Direct initialization if onLoad is not available
-                console.log("payment Trying to invoke else");
                 window.Paytm.CheckoutJS.init(config)
                     .then(() => {
                         console.log("window.Paytm.CheckoutJS.invoke() => ");
