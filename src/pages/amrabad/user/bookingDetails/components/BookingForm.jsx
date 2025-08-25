@@ -24,7 +24,11 @@ const validationSchema = Yup.object({
     country: Yup.string().required("Country is required"),
     address: Yup.string().required("Address is required"),
     town: Yup.string().required("Town is required"),
-    state: Yup.string().required("State is required"),
+    state: Yup.string().when('country', {
+        is: (country) => country && country !== "",
+        then: (schema) => schema.required("State is required"),
+        otherwise: (schema) => schema.required("Please select a country first")
+    }),
     pincode: Yup.string()
         .matches(/^\d{6}$/, "Pincode must be exactly 6 digits")
         .required("Pincode is required"),
@@ -33,12 +37,14 @@ const validationSchema = Yup.object({
         .required("Mobile number is required"),
     aadhar: Yup.string()
         .matches(/^\d{12}$/, "Aadhar number must be exactly 12 digits")
-        .required("Aadhar number is required"),
+        .nullable()
+        .optional(),
     message: Yup.string(),
 });
 
 const BookingForm = ({ onSubmit }) => {
     const { GetCountries, GetStates, isCountriesLoading, isStatesLoading, fetchCountries, fetchStates } = useUserBookingStore();
+    
     useEffect(() => {
         fetchCountries();
     }, []);
@@ -48,7 +54,7 @@ const BookingForm = ({ onSubmit }) => {
         
         // Update field values
         await setFieldValue("country", countryId);
-        await setFieldValue("state", "");
+        await setFieldValue("state", ""); // Clear state when country changes
         
         // Mark fields as touched and validate
         setFieldTouched("country", true);
@@ -56,19 +62,37 @@ const BookingForm = ({ onSubmit }) => {
         
         // Validate the country field to clear error if valid
         await validateField("country");
+        await validateField("state");
         
         // Fetch states if country is selected
         if (countryId) {
             fetchStates(countryId);
         }
-    }
+    };
+
+    const handleStateChange = async (e, setFieldValue, setFieldTouched, validateField, values) => {
+        const stateId = e.target.value;
+        
+        // Check if country is selected before allowing state selection
+        if (!values.country || values.country === "") {
+            setFieldTouched("country", true);
+            await validateField("country");
+            return; // Don't proceed if no country is selected
+        }
+        
+        // Update state field
+        await setFieldValue("state", stateId);
+        setFieldTouched("state", true);
+        await validateField("state");
+    };
+
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
         >
-            {({ isSubmitting, setFieldValue, setFieldTouched, validateField, values }) => (
+            {({ isSubmitting, setFieldValue, setFieldTouched, validateField, values, errors, touched }) => (
                 <Form id="booking-form" className="space-y-3 sm:space-y-4 w-full flex-1">
                     <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-black">
                         Billing Details
@@ -167,14 +191,32 @@ const BookingForm = ({ onSubmit }) => {
                                 as="select" 
                                 name="state" 
                                 value={values.state}
-                                className="w-full border border-[#D1D1D3] rounded px-3 py-2 bg-[#EEECF380] text-sm"
+                                onChange={(e) => handleStateChange(e, setFieldValue, setFieldTouched, validateField, values)}
+                                className={`w-full border border-[#D1D1D3] rounded px-3 py-2 text-sm ${
+                                    !values.country || values.country === "" 
+                                        ? "bg-gray-200 cursor-not-allowed" 
+                                        : "bg-[#EEECF380] cursor-pointer"
+                                }`}
+                                disabled={!values.country || values.country === ""}
                             >
-                                <option value=""> {isStatesLoading ? "Loading..." : "Select State"}</option>
+                                <option value="">
+                                    {!values.country || values.country === "" 
+                                        ? "Select Country First" 
+                                        : isStatesLoading 
+                                            ? "Loading..." 
+                                            : "Select State"
+                                    }
+                                </option>
                                 {GetStates.map((state) => (
                                     <option key={state.stateId} value={state.stateId}>{state.stateName}</option>
                                 ))}
                             </Field>
                             <ErrorMessage name="state" component="div" className="text-xs text-red-500" />
+                            {!values.country || values.country === "" ? (
+                                <div className="text-xs text-orange-500">
+                                    Please select a country first to choose a state
+                                </div>
+                            ) : null}
                         </div>
                     </div>
                     
@@ -221,7 +263,7 @@ const BookingForm = ({ onSubmit }) => {
                     
                     <div>
                         <label className="block text-sm font-medium mb-1">
-                            Aadhar number <span className="text-red-500">*</span>
+                            Aadhaar number
                         </label>
                         <Field
                             name="aadhar"
