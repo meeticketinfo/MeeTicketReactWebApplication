@@ -4,6 +4,7 @@ import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../
 import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import { useEffect } from "react";
+import { useAmrabadRefundStore } from "../../../../../store/amrabad/reports/RefundTransactionStore";
 
 const AmrabadRefundTransactionsReportForm = ({
     pageNumber,
@@ -11,27 +12,27 @@ const AmrabadRefundTransactionsReportForm = ({
     setCurrentPage,
 }) => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const {
-        isAmrabadTransactionPaymentReportsLoading,
-        fetchAmrabadPaymentTransactions,
-    } = useAmrabadConsolidatedStore();
-    const refundTransactionSearchParams = localStorage.getItem(
-        "refundMetroTransactionSearchParams"
-    );
+     const {
+            isFetchAmrabadRefundTransactionsReport,
+            fetchAmrabadRefundTransactionsReport,
+        } = useAmrabadRefundStore();
+      const refundTransactionSearchParams = localStorage.getItem(
+    "refundAmrabadInnerTransactionSearchParams"
+  );
     const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
-  // Load packages on component mount
-  useEffect(() => {
-    getPackages();
-  }, [getPackages]);
+    // Load packages on component mount
+    useEffect(() => {
+        getPackages();
+    }, [getPackages]);
 
-  // Load houses if packageId is present in search params
-  useEffect(() => {
-    const packageId = searchParams.get("packageId");
-    if (packageId) {
-      getHouses(packageId);
-    }
-  }, [searchParams, getHouses]);
+    // Load houses if packageId is present in search params
+    useEffect(() => {
+        const packageId = searchParams.get("packageId");
+        if (packageId) {
+            getHouses(packageId);
+        }
+    }, [searchParams, getHouses]);
 
     const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
@@ -39,7 +40,11 @@ const AmrabadRefundTransactionsReportForm = ({
     const initialValues = {
         fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-        phoneNumber: searchParams.get("phoneNumber") || "",
+        packageId: searchParams.get("packageId") || "",
+        roomId: searchParams.get("roomId") || "",
+        modeOfBooking:searchParams.get("modeOfBooking") || "",
+        modeOfPayment:searchParams.get("modeOfPayment") || "",
+        mobileNumber: searchParams.get("mobileNumber") || "",
         refundStatus: (searchParams.get("RefundStatus") !== "null" && searchParams.get("RefundStatus")) || "",
         // refundStaus:"Refund",
     };
@@ -52,11 +57,14 @@ const AmrabadRefundTransactionsReportForm = ({
             }
         });
         setSearchParams(newSearchParams);
-
-        fetchAmrabadPaymentTransactions({
+        fetchAmrabadRefundTransactionsReport({
             fromDate: values.fromDate,
             toDate: values.toDate,
-            phoneNumber: values.phoneNumber,
+            packageId:values.packageId,
+            roomId:values.roomId,
+            modeOfBooking:values.modeOfBooking,
+            modeOfPayment:values.modeOfPayment,
+            mobileNumber: values.mobileNumber,
             refundStatus: values.refundStatus,
             pageNumber: pageNumber,
             pageSize: pageSize,
@@ -142,15 +150,19 @@ const AmrabadRefundTransactionsReportForm = ({
                         </div>
                         <div>
                             <label
-                                htmlFor="houseId"
+                                htmlFor="roomId"
                                 className="block text-xs font-medium text-gray-700"
                             >
                                 House
                             </label>
                             <Field
                                 as="select"
-                                name="houseId"
+                                name="roomId"
                                 placeholder="Select House"
+                                 onChange={(e) => {
+                                    const roomIdValue = e.target.value;
+                                    setFieldValue("roomId", roomIdValue);
+                                }}
                                 disabled={values.packageId == ""}
                                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                             >
@@ -163,54 +175,45 @@ const AmrabadRefundTransactionsReportForm = ({
                             </Field>
                         </div>
                         <div>
-                            <label
-                                htmlFor="phoneNumber"
-                                className="block text-xs font-medium text-gray-700"
-                            >
-                                Mode Of booking
+                            <label className="block text-sm font-medium">
+                                Mode of booking
                             </label>
                             <Field
-                                type="text"
-                                maxLength="10"
-                                name="phoneNumber"
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                                placeholder="Enter phone number"
-                                onKeyPress={(e) => {
-                                    if (!/^\d$/.test(e.key)) {
-                                        e.preventDefault(); // Prevent non-numeric characters
-                                    }
-                                }}
-                                onChange={(e) => {
-                                    setFieldValue("phoneNumber", e.target.value);
-                                }}
-                            />
+                                as="select"
+                                name="modeOfBooking"
+                                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                            >
+                                <option value="">-- Select --</option>
+                                <option value="Website">Website</option>
+                                <option value="Mobile">Mobile</option>
+                            </Field>
                         </div>
                         <div>
                             <label
-                                htmlFor="phoneNumber"
+                                htmlFor="modeOfPayment"
                                 className="block text-xs font-medium text-gray-700"
                             >
-                                Mode of Payment
+                                Payment Mode
                             </label>
                             <Field
-                                type="text"
-                                maxLength="10"
-                                name="phoneNumber"
-                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                                placeholder="Enter phone number"
-                                onKeyPress={(e) => {
-                                    if (!/^\d$/.test(e.key)) {
-                                        e.preventDefault(); // Prevent non-numeric characters
-                                    }
-                                }}
+                                as="select"
+                                name="modeOfPayment"
+                                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                                 onChange={(e) => {
-                                    setFieldValue("phoneNumber", e.target.value);
+                                    setFieldValue("modeOfPayment", e.target.value);
                                 }}
-                            />
+                            >
+                                <option value="">Select Mode</option>
+                                <option value="upi">UPI</option>
+                                <option value="creditCard">Credit Card</option>
+                                <option value="debitCard">Debit Card</option>
+                                <option value="netBanking">Net Banking</option>
+                            </Field>
                         </div>
                         <div>
                             <label
-                                htmlFor="phoneNumber"
+                                htmlFor="mobileNumber"
                                 className="block text-xs font-medium text-gray-700"
                             >
                                 Mobile number
@@ -218,7 +221,7 @@ const AmrabadRefundTransactionsReportForm = ({
                             <Field
                                 type="text"
                                 maxLength="10"
-                                name="phoneNumber"
+                                name="mobileNumber"
                                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                                 placeholder="Enter phone number"
                                 onKeyPress={(e) => {
@@ -227,7 +230,7 @@ const AmrabadRefundTransactionsReportForm = ({
                                     }
                                 }}
                                 onChange={(e) => {
-                                    setFieldValue("phoneNumber", e.target.value);
+                                    setFieldValue("mobileNumber", e.target.value);
                                 }}
                             />
                         </div>
@@ -248,15 +251,15 @@ const AmrabadRefundTransactionsReportForm = ({
                                 }}
                             >
                                 <option value="">Select Mode</option>
-                                <option value="Refunded">Refunded</option>
-                                <option value="NotRefunded">Not Refunded</option>
+                                <option value="Refund">Refunded</option>
+                                <option value="NotRefund">Not Refunded</option>
                             </Field>
                         </div>
                         <div className="flex items-end">
                             <button
                                 type="submit"
                                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                                disabled={isAmrabadTransactionPaymentReportsLoading}
+                                disabled={isFetchAmrabadRefundTransactionsReport}
                             >
                                 Search
                             </button>

@@ -17,10 +17,11 @@ const AmrabadRefundTransactionsReport = () => {
     const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
     const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
     const [RefundOrderId, setRefundOrderId] = useState("");
-    const AmrabadrefundTransactionSearchParams = localStorage.getItem("AmrabadrefundTransactionSearchParams") || "";
+    const amrabadRefundTransactionSearchParams = localStorage.getItem("amrabadRefundInnerTransactionSearchParams") || "";
     const {
         isFetchAmrabadRefundTransactionsReport,
         refundAmrabadTransactionsReport,
+        refundTransactionsPagination,
         fetchAmrabadRefundTransactionsReport,
         fetchAmrabadInitiateRefundOrderId,
         isInitiateRefund,
@@ -34,9 +35,8 @@ const AmrabadRefundTransactionsReport = () => {
             headerClass: "text-blue-v2",
         },
         {
-            field: "createdDate",
+            field: "dateandTimeofTransaction",
             headerName: "Date and Time of Transaction",
-            maxWidth: "180",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => {
                 if (!params.value) return "N/A";
@@ -62,13 +62,13 @@ const AmrabadRefundTransactionsReport = () => {
                     <div className="flex align-center gap-2">
                         <>
                             <button
-                                className={` ${params.data.refundStatus === "Not Refunded"
+                                className={` ${params.data.refundStatus === "Not Refund"
                                     ? "bg-green-400"
                                     : "bg-green-100 cursor-not-allowed "
                                     } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                                disabled={params.data.refundStatus != "Not Refunded"}
+                                disabled={params.data.refundStatus != "Not Refund"}
                                 onClick={() => {
-                                    setRefundOrderId(params.data.orderId);
+                                    setRefundOrderId(params.data.orderID);
                                     setInitiatRefundModal(true);
                                 }}
                             >
@@ -97,18 +97,17 @@ const AmrabadRefundTransactionsReport = () => {
             valueFormatter: (params) => `${params.value} ` || "N/A",
         },
         {
-            field: "department",
+            field: "package",
             headerName: "Package Name",
-            maxWidth: "140",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "N/A",
         },
         {
-            field: "department",
+            field: "houseName",
             headerName: "House Name",
             maxWidth: "140",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "N/A",
         },
         {
             field: "amount",
@@ -119,18 +118,18 @@ const AmrabadRefundTransactionsReport = () => {
                 formatToCurrency(params.value, "INR", "en-IN") || "00:00",
         },
         {
-            field: "noOfTickets",
+            field: "noofTicketsBooked",
             headerName: "No of Tickets",
             maxWidth: "120",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "0",
         },
         {
-            field: "noOfTickets",
+            field: "modeofBooking",
             headerName: "Mode of Booking",
             maxWidth: "120",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "N/A",
         },
         {
             field: "paymentMode",
@@ -140,52 +139,56 @@ const AmrabadRefundTransactionsReport = () => {
             valueFormatter: (params) => params.value ?? "N/A",
         },
         {
-            field: "locationCategory",
+            field: "transactionStatus",
             headerName: "Transaction Status",
-
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "N/A",
         },
          {
-            field: "orderId",
+            field: "orderID",
             headerName: "Order ID",
             Width: "390",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
         {
-            field: "bookingID",
+            field: "bookingId",
             headerName: "Booking ID",
             Width: "260",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
         {
-            field: "locationName",
+            field: "refundStatus",
             headerName: "Refund Status",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "0",
+            valueFormatter: (params) => params.value || "N/A",
         },
     ];
 
     const loadRefundTransactionsReport = (page = 0) => {
-        fetchAmrabadRefundTransactionsReport({
-            fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-            toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-            locationId: searchParams.get("locationId") || "",
-            departmentId: +searchParams.get("departmentId") || "",
-            categoryId: +searchParams.get("entityId") || "",
-            refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
-            phoneNumber: searchParams.get("phoneNumber") || "",
-            modeOfTransaction: searchParams.get("bookingSource") || "",
-            paymentMode: searchParams.get("PaymentMode") || "",
-            pageNumber: page + 1,
-            pageSize: PAGE_LIMIT,
-        });
+        try {
+            fetchAmrabadRefundTransactionsReport({
+                fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+                toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+                packageId: searchParams.get("packageId") || "",
+                roomId: +searchParams.get("roomId") || "",
+                modeOfBooking: +searchParams.get("modeOfBooking") || "",
+                modeOfPayment: searchParams.get("modeOfPayment") === "null" ? "" : searchParams.get("modeOfPayment") || "",
+                mobileNumber: searchParams.get("mobileNumber") || "",
+                refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
+                pageNumber: page + 1,
+                pageSize: PAGE_LIMIT,
+            });
+        } catch (error) {
+            console.error("Error loading refund transactions report:", error);
+        }
     };
     useEffect(() => {
         loadRefundTransactionsReport(currentPage);
     }, [currentPage, PAGE_LIMIT]);
+
+
 
     const handlePageClick = (selectedItem) => {
         setCurrentPage(selectedItem.selected);
@@ -252,7 +255,7 @@ const AmrabadRefundTransactionsReport = () => {
     const breadcrumbItems = [
         {
             label: 'Refund Transactions',
-            path: `/refund-transactions?${AmrabadrefundTransactionSearchParams}`
+            path: `/amrabad-refund-transaction-report?${amrabadRefundTransactionSearchParams}`
         },
         {
             label: `Refund Transactions Report ${searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}`,
@@ -276,7 +279,7 @@ const AmrabadRefundTransactionsReport = () => {
                         </div>
                         <div className="">
                             <Link
-                                to={`/refund-transactions?${AmrabadrefundTransactionSearchParams}`}
+                                to={`/amrabad-refund-transaction-report?${amrabadRefundTransactionSearchParams}`}
                                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
                             >
                                 Back
@@ -292,10 +295,10 @@ const AmrabadRefundTransactionsReport = () => {
                         <AgGridTable
                             showSearch={false}
                             ExportName="UserStatusTransactionReport"
-                            rowData={refundAmrabadTransactionsReport}
+                            rowData={Array.isArray(refundAmrabadTransactionsReport) ? refundAmrabadTransactionsReport : []}
                             columnDefs={columnDefs}
                             isFetchLoading={isFetchAmrabadRefundTransactionsReport}
-                            tableHeight={refundAmrabadTransactionsReport?.length > 10 ? 560 : 330}
+                            tableHeight={Array.isArray(refundAmrabadTransactionsReport) && refundAmrabadTransactionsReport?.length > 10 ? 560 : 330}
                             isPagination={false}
                             IsReactPaginate={true}
                             setPageLimit={setPAGE_LIMIT}
@@ -303,7 +306,7 @@ const AmrabadRefundTransactionsReport = () => {
                             handlePageClick={handlePageClick}
                             currentPage={currentPage}
                             showTotalCount={true}
-                            totalCount={refundAmrabadTransactionsReport[0]?.totalCount}
+                            totalCount={refundTransactionsPagination.totalCount}
                             SetcurrentPage={setCurrentPage}
                         />
                     </div>

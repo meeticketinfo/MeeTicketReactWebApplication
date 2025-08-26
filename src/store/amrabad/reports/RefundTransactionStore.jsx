@@ -8,40 +8,66 @@ export const useAmrabadRefundStore = create((set) => ({
 
     isFetchAmrabadRefundTransactionsReport: false,
     refundAmrabadTransactionsReport: [],
+    // Pagination state for refund transactions report
+    refundTransactionsPagination: {
+        totalCount: 0,
+        pageNumber: 1,
+        pageSize: 10
+    },
+
+    isFetchAmrabadRefundTransactions: false,
+    amrabadRefundTransactions: [],
 
     isInitiateRefund: false,
 
+    fetchAmrabadRefundTransactions: async (queryParams) => {
+        const queryString = new URLSearchParams(queryParams).toString();
 
-    fetchAmrabadUserReports: async (payload) => {
-        set({ isAmrabadUserReportsLoading: true });
+        set({ isFetchAmrabadRefundTransactions: true });
         try {
-            const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_USER_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
-            const method = "get";
-            const response = await apiService[method](url);
+            const response = await apiService.get(
+                `${API_ENDPOINTS.AMRABAD.REPORTS.GET_REFUND_TRANSACTION_DASHBOARD}?${queryString}`
+            );
             set({
-                allAmrabadUserReports: response.data,
-                isAmrabadUserReportsLoading: false,
+                amrabadRefundTransactions: response.data,
             });
+            return { response: response.data };
         } catch (error) {
             set({
                 error: error.message,
-                isAmrabadUserReportsLoading: false,
+            });
+        } finally {
+            set({
+                isFetchAmrabadRefundTransactions: false,
             });
         }
     },
-    fetchAmrabadRefundTransactionsReport: async (payload) => {
+    fetchAmrabadRefundTransactionsReport: async (queryParams) => {
+        const queryString = new URLSearchParams(queryParams).toString();
         set({ isFetchAmrabadRefundTransactionsReport: true });
         try {
-            const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&packageId=${payload.packageId}&houseId=${payload.houseId}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
-            const method = "get";
-            const response = await apiService[method](url);
+            const response = await apiService.get(
+                `${API_ENDPOINTS.AMRABAD.REPORTS.GET_REFUND_TRANSACTION_REPORT}?${queryString}`
+            );
+            
+            // Extract records and pagination data from the response
+            const { records, totalCount, pageNumber, pageSize } = response.data;
+            
             set({
-                refundAmrabadTransactionsReport: response.data,
-                isFetchAmrabadRefundTransactionsReport: false,
+                refundAmrabadTransactionsReport: records || [],
+                refundTransactionsPagination: {
+                    totalCount: totalCount || 0,
+                    pageNumber: pageNumber || 1,
+                    pageSize: pageSize || 10
+                }
             });
+            return { response: response.data };
         } catch (error) {
             set({
                 error: error.message,
+            });
+        } finally {
+            set({
                 isFetchAmrabadRefundTransactionsReport: false,
             });
         }
@@ -49,7 +75,7 @@ export const useAmrabadRefundStore = create((set) => ({
     fetchAmrabadInitiateRefundOrderId: async (orderID) => {
         set({ isInitiateRefund: true });
         try {
-            const url = `${API_ENDPOINTS.FAILED_TRANSACTIONS.INITIATE_REFUND}`;
+            const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_INITIATE_REFUND}`;
             const method = "post";
             const response = await apiService[method](url, { orderId: orderID });
 

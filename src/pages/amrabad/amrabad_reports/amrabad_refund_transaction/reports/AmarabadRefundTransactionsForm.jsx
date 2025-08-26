@@ -4,13 +4,15 @@ import { useSearchParams } from "react-router-dom";
 import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
+import { useAmrabadRefundStore } from "../../../../../store/amrabad/reports/RefundTransactionStore";
 
 const AmarabadRefundTransactionsForm = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const {
-        isAmrabadTransactionPaymentReportsLoading,
-        fetchAmrabadPaymentTransactions,
-    } = useAmrabadConsolidatedStore();
+     const {
+      amrabadRefundTransactions,
+      isFetchAmrabadRefundTransactions,
+      fetchAmrabadRefundTransactions
+      } = useAmrabadRefundStore();
     const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
 
@@ -38,7 +40,9 @@ const AmarabadRefundTransactionsForm = () => {
     const initialValues = {
         fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-        phoneNumber: searchParams.get("phoneNumber") || "",
+        mobileNumber: searchParams.get("mobileNumber") || "",
+        packageId: searchParams.get("packageId") || "",
+        roomId: searchParams.get("roomId") || "",
     };
 
     const overAllOnSubmit = (values) => {
@@ -50,30 +54,34 @@ const AmarabadRefundTransactionsForm = () => {
             }
         });
         setSearchParams(newSearchParams);
-        localStorage.setItem("refundAmrabadTransactionSearchParams", newSearchParams);
+        localStorage.setItem("amrabadRefundInnerTransactionSearchParams", newSearchParams);
 
         const payload = {
             fromDate: values.fromDate,
             toDate: values.toDate,
-            phoneNumber: values.phoneNumber,
+            packageId: values.packageId,
+            roomId: values.roomId,
+            mobileNumber: values.mobileNumber,
         };
 
-        fetchAmrabadPaymentTransactions(payload);
+        fetchAmrabadRefundTransactions(payload);
     };
 
     const resetForm = (setValues) => {
         const payload = {
             fromDate: startOfDay,
             toDate: endOfDay,
-            phoneNumber: "",
+            packageId: "",
+            roomId: "",
+            mobileNumber: "",
         };
 
         // Clear URL search params
         setSearchParams(new URLSearchParams());
 
-        localStorage.setItem("refundAmrabadTransactionSearchParams", "");
+        localStorage.setItem("amrabadRefundInnerTransactionSearchParams", "");
         setValues(payload);
-        fetchAmrabadPaymentTransactions(payload);
+        fetchAmrabadRefundTransactions(payload);
     };
 
     return (
@@ -126,7 +134,7 @@ const AmarabadRefundTransactionsForm = () => {
                             {/* mobile number */}
                             <div>
                                 <label
-                                    htmlFor="phoneNumber"
+                                    htmlFor="mobileNumber"
                                     className="block text-xs font-medium text-gray-700"
                                 >
                                     Phone Number
@@ -134,7 +142,7 @@ const AmarabadRefundTransactionsForm = () => {
                                 <Field
                                     type="text"
                                     maxLength="10"
-                                    name="phoneNumber"
+                                    name="mobileNumber"
                                     className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                                     placeholder="Enter phone number"
                                     onKeyPress={(e) => {
@@ -143,7 +151,7 @@ const AmarabadRefundTransactionsForm = () => {
                                         }
                                     }}
                                     onChange={(e) => {
-                                        setFieldValue("phoneNumber", e.target.value);
+                                        setFieldValue("mobileNumber", e.target.value);
                                     }}
                                 />
                             </div>
@@ -163,7 +171,7 @@ const AmarabadRefundTransactionsForm = () => {
                                         const packageId = e.target.value;
                                         setFieldValue("packageId", packageId);
                                         // Clear house selection when package changes
-                                        setFieldValue("houseId", "");
+                                        setFieldValue("roomId", "");
                                         if (packageId) {
                                             getHouses(packageId);
                                         }
@@ -181,14 +189,14 @@ const AmarabadRefundTransactionsForm = () => {
                             {/* Houses */}
                             <div>
                                 <label
-                                    htmlFor="houseId"
+                                    htmlFor="roomId"
                                     className="block text-xs font-medium text-gray-700"
                                 >
                                     House
                                 </label>
                                 <Field
                                     as="select"
-                                    name="houseId"
+                                    name="roomId"
                                     placeholder="Select House"
                                     disabled={values.packageId == ""}
                                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
@@ -205,7 +213,7 @@ const AmarabadRefundTransactionsForm = () => {
                                 <button
                                     type="submit"
                                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                                    disabled={isAmrabadTransactionPaymentReportsLoading}
+                                    disabled={isFetchAmrabadRefundTransactions}
                                 >
                                     Search
                                 </button>
@@ -213,7 +221,7 @@ const AmarabadRefundTransactionsForm = () => {
                                     type="button"
                                     className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                                     onClick={() => resetForm(setValues)}
-                                    disabled={isAmrabadTransactionPaymentReportsLoading}
+                                    disabled={isFetchAmrabadRefundTransactions}
                                 >
                                     Reset
                                 </button>
