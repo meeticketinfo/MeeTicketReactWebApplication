@@ -19,6 +19,8 @@ export const useAmrabadConsolidatedStore = create((set) => ({
 
   isFetchAmrabadVerifyStatusLoading: false,
 
+  isFetchAmrabadPaymentTransactionRefundLoading: false,
+
   setisAmrabadCompleteBookings: (isAmrabadCompleteBookings) => {
     set({ isAmrabadCompleteBookings });
   },
@@ -132,6 +134,24 @@ export const useAmrabadConsolidatedStore = create((set) => ({
     } catch (error) {
       set({ isFetchAmrabadVerifyStatusLoading: false });
       return { success: false };
+    }
+  },
+
+  //   initiate refund
+  fetchAmrabadPaymentTransactionRefund: async (payload) => {
+    set({ isFetchAmrabadPaymentTransactionRefundLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_INITIATE_REFUND}`;
+      const method = "post";
+      const response = await apiService[method](url,payload);
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchAmrabadPaymentTransactionRefundLoading: false,
+      });
+      return { response: response };
+    } catch (error) {
+      set({ isFetchAmrabadPaymentTransactionRefundLoading: false });
+      throw error;
     }
   },
 }));
