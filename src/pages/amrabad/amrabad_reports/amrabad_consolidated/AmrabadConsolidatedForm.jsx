@@ -8,35 +8,47 @@ import { useEffect } from "react";
 const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   const {
-    allAmrabadBookings,
     fetchAllAmrabadBookings,
     isFetchAllAmrabadBookingsLoading,
   } = useAmrabadBookingStore();
 
+  const getSavedFilters = () => {
+    try {
+      const savedFilters = localStorage.getItem("amrabad-consolidated-report-filters");
+      if (savedFilters) {
+        return JSON.parse(savedFilters);
+      }
+    } catch (error) {
+      console.error("Error parsing saved filters:", error);
+    }
+    return null;
+  };
+
+  const savedFilters = getSavedFilters();
+
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
-    typeOfBooking: "Purchase",
-    phoneNumber: "",
-    package: "",
-    houses: "",
-    orderId: "",
-    paymentStatus: "",
-    modeOfBooking: "",
-    PaymentMode: "",
+    fromDate: savedFilters?.fromDate || getCurrentDate(),
+    toDate: savedFilters?.toDate || getCurrentDate(),
+    typeOfBooking: savedFilters?.typeOfBooking || "Purchase",
+    phoneNumber: savedFilters?.phoneNumber || "",
+    package: savedFilters?.package || "",
+    houses: savedFilters?.houses || "",
+    orderId: savedFilters?.orderId || "",
+    paymentStatus: savedFilters?.paymentStatus || "",
+    modeOfBooking: savedFilters?.modeOfBooking || "",
   };
 
   const onSubmit = (values, { resetForm }) => {
-    // Reset to first page when applying new filters
     SetcurrentPage(0);
-
-    localStorage.setItem("amrabad-consolidated-report-filters", JSON.stringify(values));
+    localStorage.setItem(
+      "amrabad-consolidated-report-filters",
+      JSON.stringify(values)
+    );
     fetchAllAmrabadBookings({
       startDate: values.fromDate,
       endDate: values.toDate,
       bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : "",
-      PaymentMode: values.PaymentMode ? values.PaymentMode : "",
       package: values.package ? values.package : "",
       houses: values.houses ? values.houses : "",
       orderId: values.orderId ? values.orderId : "",
@@ -49,6 +61,11 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
 
   useEffect(() => {
     getPackages();
+    
+    // If there are saved filters and a package is selected, load the houses for that package
+    if (savedFilters?.package) {
+      getHouses(savedFilters.package);
+    }
   }, []);
 
   return (
@@ -117,11 +134,11 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               <Field
                 as="select"
                 name="package"
-                  onChange={(e) => {
+                onChange={(e) => {
                   const packageId = e.target.value;
                   setFieldValue("package", packageId);
                   setFieldValue("houses", "");
-                  
+
                   if (packageId !== "") {
                     getHouses(packageId);
                   }
@@ -166,7 +183,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 maxLength="10"
                 name="phoneNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter"
+                placeholder="Enter Mobile Number"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) {
                     e.preventDefault(); // Prevent non-numeric characters
@@ -185,7 +202,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 type="text"
                 name="orderId"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter"
+                placeholder="Enter Order ID / Transaction ID"
               />
             </div>
             <div>
@@ -198,12 +215,12 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">Select</option>
+                <option value="">Select Payment Status</option>
                 <option value="CONFIRMED">Confirmed</option>
-                <option value="FAILED">Cancelled</option>
+                <option value="FAILED">Failed</option>
               </Field>
             </div>
-          
+
             <div>
               <label className="block text-sm font-medium">
                 Mode of booking
@@ -219,7 +236,6 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>
-           
             {/* submit */}
             <div className="flex items-end gap-2">
               <button
@@ -229,29 +245,53 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               >
                 Search
               </button>
-              {/* <button
+              <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchAllAmrabadBookingsLoading}
+                 
                 onClick={() => {
+                  // Reset form to default values
+                  const defaultValues = {
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    typeOfBooking: "Purchase",
+                    package: "",
+                    houses: "",
+                    phoneNumber: "",
+                    orderId: "",
+                    paymentStatus: "",
+                    modeOfBooking: "",
+                  };
+                  
                   resetForm({
-                    values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
-                      typeOfBooking: "",
-                      phoneNumber: "",
-                      PaymentMode: "",
-                      package: "",
-                      houses: "",
-                      orderId: "",
-                      paymentStatus: "",
-                      modeOfBooking: "",
-                    },
+                    values: defaultValues,
+                  });
+                  
+                  // Clear saved filters from localStorage
+                  localStorage.removeItem("amrabad-consolidated-report-filters");
+                  
+                  // Reset current page to 0
+                  SetcurrentPage(0);
+                  
+                  // Call API with default values to refresh data
+                  fetchAllAmrabadBookings({
+                    startDate: defaultValues.fromDate,
+                    endDate: defaultValues.toDate,
+                    bookingSource: defaultValues.typeOfBooking,
+                    package: defaultValues.package,
+                    houses: defaultValues.houses,
+                    mobileNumber: defaultValues.phoneNumber,
+                    orderId: defaultValues.orderId,
+                    paymentStatus: defaultValues.paymentStatus,
+                    modeOfBooking: defaultValues.modeOfBooking,
+                    PaymentMode: defaultValues.PaymentMode,
+                    PageIndex: 0,
+                    pageSize: pageSize,
                   });
                 }}
               >
                 Reset
-              </button> */}
+              </button>
             </div>
           </Form>
         )}

@@ -1,74 +1,180 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
-import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+import { getCurrentDate } from "../../../../utils/TypographyHelper";
 
-const AmarabadAvailabilityOuterForm = ({fromDate, toDate, month, year, onFiltersChange}) => {
-  const { fetchAmarabadAvailabilityOuterReports, isFetchAmarabadAvailabilityOuterReportsLoading } = useAmarabadAvailabilityReportsStore();
+const AmarabadAvailabilityOuterForm = ({ PageIndex = 1, pageSize = 20, SetcurrentPage }) => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
+  const [dateErrors, setDateErrors] = useState({});
+  const [monthYearErrors, setMonthYearErrors] = useState({});
 
-  const [hiddenFields, setHiddenFields] = useState({
-    month: false,
-    year: false,
-    fromDate: false,
-    toDate: false,
+  const STORAGE_KEY = 'amarabad_availability_form_values';
+
+  const { 
+    fetchAmarabadAvailabilityOuterReports,
+  } = useAmarabadAvailabilityReportsStore();
+
+  const getNextMonthDate = (dateString) => {
+    const date = new Date(dateString);
+    const nextMonth = new Date(date);
+    nextMonth.setMonth(date.getMonth() + 1);
+    return nextMonth.toISOString().split("T")[0];
+  };
+
+  const fromDate = getCurrentDate();
+  const toDate = getNextMonthDate(fromDate);
+
+  // Load initial values from localStorage only once on mount
+  const [initialFormValues, setInitialFormValues] = useState(() => {
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        const lastUpdated = new Date(parsedData.lastUpdated);
+        const now = new Date();
+        const daysDiff = (now - lastUpdated) / (1000 * 60 * 60 * 24);
+
+        if (daysDiff <= 7) {
+          return {
+            fromDate: parsedData.fromDate || "",
+            toDate: parsedData.toDate || "",
+            month: parsedData.month || "",
+            year: parsedData.year || ""
+          };
+        }
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    return {
+      fromDate,
+      toDate,
+      month: "",
+      year: ""
+    };
   });
 
-  // Set initial hidden fields based on saved values
+  // Perform default search only if no saved values exist
   useEffect(() => {
-    // Always show month and year fields, never hide them
-    setHiddenFields(prev => ({
-      ...prev,
-      month: false,
-      year: false,
-      fromDate: false,
-      toDate: false,
-    }));
-  }, []);
+    if (!initialFormValues.fromDate && !initialFormValues.toDate && !initialFormValues.month && !initialFormValues.year) {
+      const defaultSearchParams = {
+        startDate: fromDate,
+        endDate: toDate,
+        searchType: 'dateRange',
+        PageIndex: 1,
+        pageSize
+      };
+      fetchAmarabadAvailabilityOuterReports(defaultSearchParams);
+    }
+  }, [fromDate, toDate, pageSize, fetchAmarabadAvailabilityOuterReports]);
 
-  // Function to update localStorage when any field changes
-  const updateLocalStorage = (fieldName, value, currentFormValues) => {
-    const currentValues = { ...currentFormValues };
-    currentValues[fieldName] = value;
-    
-    // Only save to localStorage if there are actual values
-    const hasValues = Object.values(currentValues).some(val => val !== "" && val !== undefined);
-    if (hasValues) {
-      localStorage.setItem('amarabad_availability_filters', JSON.stringify(currentValues));
-      // Don't notify parent component on field changes, only on search button clicks
-    } else {
-      localStorage.removeItem('amarabad_availability_filters');
-      // Don't notify parent component on field changes, only on search button clicks
+  const saveToLocalStorage = (values) => {
+    try {
+      const dataToSave = {
+        fromDate: values.fromDate || "",
+        toDate: values.toDate || "",
+        month: values.month || "",
+        year: values.year || "",
+        lastUpdated: new Date().toISOString()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
     }
   };
 
-  // Validation function for form submission
-  const validateForm = (values) => {
+  const validateDateRange = (values) => {
     const errors = {};
-    
-    // Check if month or year is selected
-    const hasMonth = values.month !== "" && values.month !== undefined;
-    const hasYear = values.year !== "" && values.year !== undefined;
-    const hasFromDate = values.fromDate && values.fromDate !== "";
-    const hasToDate = values.toDate && values.toDate !== "";
-    
-    // If month is selected, year is mandatory
-    if (hasMonth && !hasYear) {
-      errors.year = "Year is required when month is selected";
+    if (!values.fromDate) {
+      errors.fromDate = "From Date is required";
     }
-    
-    // If year is selected, month is mandatory
-    if (hasYear && !hasMonth) {
-      errors.month = "Month is required when year is selected";
+    if (!values.toDate) {
+      errors.toDate = "To Date is required";
     }
-    
-    // If neither month/year nor date range is selected, show error
-    if (!hasMonth && !hasYear && !hasFromDate && !hasToDate) {
-      errors.general = "Please select either month/year or date range";
+    if (values.fromDate && values.toDate && new Date(values.toDate) < new Date(values.fromDate)) {
+      errors.toDate = "To Date must be after or equal to From Date";
     }
-    
     return errors;
+  };
+
+  const validateMonthYear = (values) => {
+    const errors = {};
+    if (!values.month) {
+      errors.month = "Month is required";
+    } else if (values.month < 1 || values.month > 12) {
+      errors.month = "Please select a valid month";
+    }
+    if (!values.year) {
+      errors.year = "Year is required";
+    } else if (values.year < currentYear || values.year > currentYear + 15) {
+      errors.year = `Year must be between ${currentYear} and ${currentYear + 15}`;
+    }
+    return errors;
+  };
+
+  const handleDateRangeSearch = async (values, setFieldValue) => {
+    try {
+      const dateRangeErrors = validateDateRange(values);
+      if (Object.keys(dateRangeErrors).length > 0) {
+        setDateErrors(dateRangeErrors);
+        return;
+      }
+
+      setDateErrors({});
+      setMonthYearErrors({});
+      SetcurrentPage(0);
+
+      const searchParams = {
+        startDate: values.fromDate,
+        endDate: values.toDate,
+        searchType: 'dateRange',
+        PageIndex: 1,
+        pageSize
+      };
+
+      // Update form values and save to localStorage
+      setFieldValue("month", "");
+      setFieldValue("year", "");
+      saveToLocalStorage({ ...values, month: "", year: "" });
+
+      await fetchAmarabadAvailabilityOuterReports(searchParams);
+    } catch (error) {
+      console.error('Error in date range search:', error);
+    }
+  };
+
+  const handleMonthYearSearch = async (values, setFieldValue) => {
+    try {
+      const monthYearValidationErrors = validateMonthYear(values);
+      if (Object.keys(monthYearValidationErrors).length > 0) {
+        setMonthYearErrors(monthYearValidationErrors);
+        return;
+      }
+
+      setDateErrors({});
+      setMonthYearErrors({});
+      SetcurrentPage(0);
+
+      const searchParams = {
+        month: values.month,
+        year: values.year,
+        searchType: 'monthYear',
+        PageIndex: 1,
+        pageSize
+      };
+
+      // Update form values and save to localStorage
+      setFieldValue("fromDate", "");
+      setFieldValue("toDate", "");
+      saveToLocalStorage({ ...values, fromDate: "", toDate: "" });
+
+      await fetchAmarabadAvailabilityOuterReports(searchParams);
+    } catch (error) {
+      console.error('Error in month/year search:', error);
+    }
   };
 
   const months = [
@@ -91,175 +197,87 @@ const AmarabadAvailabilityOuterForm = ({fromDate, toDate, month, year, onFilters
     years.push({ value: year, label: year.toString() });
   }
 
-  const initialValues = {
-    fromDate: fromDate || "",
-    toDate: toDate || "",
-    month: month || "",
-    year: year || "",
-  };
-
-  // Function for date range search - sends only date values, others as empty
-  const handleDateRangeSearch = async (values, setFieldValue) => {
-    
-    // Clear month and year filters when date search is clicked
-    setFieldValue("month", "");
-    setFieldValue("year", "");
-    
-    // Save updated values to localStorage
-    const updatedValues = { ...values, month: "", year: "" };
-    localStorage.setItem('amarabad_availability_filters', JSON.stringify(updatedValues));
-    
-    // Notify parent component only when search is clicked
-    if (onFiltersChange) {
-      onFiltersChange(updatedValues);
-    }
-    
-    try {
-      const filters = {
-        startDate: values.fromDate || "",
-        endDate: values.toDate || "",
-        month: "", 
-        year: "",
-        PageIndex: 1,
-        pageSize: 20
-      };
-
-      // Call the outer report API
-      await fetchAmarabadAvailabilityOuterReports(filters);
-    } catch (error) {
-      console.error("Error fetching availability data:", error);
-    }
-  };
-
-  // Function for month/year search - sends only month/year values, dates as empty
-  const handleMonthYearSearch = async (values, setFieldValue) => {
-    console.log("Month/Year search:", values);
-    
-    // Clear date filters when month/year search is clicked
-    setFieldValue("fromDate", "");
-    setFieldValue("toDate", "");
-    
-    // Save updated values to localStorage
-    const updatedValues = { ...values, fromDate: "", toDate: "" };
-    localStorage.setItem('amarabad_availability_filters', JSON.stringify(updatedValues));
-    
-    // Notify parent component only when search is clicked
-    if (onFiltersChange) {
-      onFiltersChange(updatedValues);
-    }
-    
-    try {
-      const filters = {
-        startDate: "", 
-        endDate: "", 
-        month: values.month || "", 
-        year: values.year || "",
-        PageIndex: 1,
-        pageSize: 20
-      };
-
-      // Call the outer report API
-      await fetchAmarabadAvailabilityOuterReports(filters);
-    } catch (error) {
-      console.error("Error fetching availability data:", error);
-    }
-  };
-
   return (
-    <div className="p-3 ">
-      <Formik 
-        initialValues={initialValues} 
-        validate={validateForm}
-        validateOnChange={true}
-        validateOnBlur={true}
+    <div>
+      <Formik
+        initialValues={initialFormValues}
+        validateOnChange={false}
+        validateOnBlur={false}
+        enableReinitialize={false}
       >
-        {({ resetForm, values, setFieldValue, errors, touched }) => (
+        {({ values, setFieldValue, handleChange }) => (
           <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-3">
-            
-            {/* From Date field */}
             <div>
-              <label
-                htmlFor="fromDate"
-                className="block text-xs font-medium text-gray-700"
-              >
+              <label htmlFor="fromDate" className="block text-xs font-medium text-gray-700">
                 From Date
               </label>
               <Field
                 type="date"
                 name="fromDate"
-                className="mt-1 block w-full px-2 py-1 border h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className={`mt-1 block w-full px-2 py-1 border h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm ${
+                  dateErrors.fromDate ? "border-red-500" : ""
+                }`}
                 onChange={(e) => {
-                  const fromDateValue = e.target.value;
-                  setFieldValue("fromDate", fromDateValue);
-                  
-                  // Update toDate if fromDate is greater than toDate
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    setFieldValue("toDate", fromDateValue);
+                  handleChange(e);
+                  if (e.target.value && dateErrors.fromDate) {
+                    setDateErrors(prev => ({ ...prev, fromDate: "" }));
                   }
-                  
-                  // Update localStorage with new values
-                  const newValues = { ...values, fromDate: fromDateValue };
-                  updateLocalStorage("fromDate", fromDateValue, newValues);
                 }}
               />
+              {dateErrors.fromDate && (
+                <div className="text-red-500 text-xs mt-1 absolute">{dateErrors.fromDate}</div>
+              )}
             </div>
 
-            {/* To Date field */}
             <div>
-              <label
-                htmlFor="toDate"
-                className="block text-xs font-medium text-gray-700"
-              >
+              <label htmlFor="toDate" className="block text-xs font-medium text-gray-700">
                 To Date
               </label>
               <Field
                 type="date"
                 name="toDate"
-                className="mt-1 block w-full px-2 py-1 border h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                min={values.fromDate || getCurrentDate()}
+                className={`mt-1 block w-full px-2 py-1 border h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm ${
+                  dateErrors.toDate ? "border-red-500" : ""
+                }`}
                 onChange={(e) => {
-                  const toDateValue = e.target.value;
-                  setFieldValue("toDate", toDateValue);
-                  
-                  // Update localStorage with new values
-                  const newValues = { ...values, toDate: toDateValue };
-                  updateLocalStorage("toDate", toDateValue, newValues);
+                  handleChange(e);
+                  if (e.target.value && dateErrors.toDate) {
+                    setDateErrors(prev => ({ ...prev, toDate: "" }));
+                  }
                 }}
               />
+              {dateErrors.toDate && (
+                <div className="text-red-500 text-xs mt-1 absolute">{dateErrors.toDate}</div>
+              )}
             </div>
 
-            {/* Date Range Search Button and Reset Button */}
             <div className="flex items-end gap-2">
               <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 disabled:opacity-50 h-8"
-                // disabled={!values.fromDate || !values.toDate}
+                // disabled={isFetchAmarabadAvailabilityOuterReportsLoading}
                 onClick={() => handleDateRangeSearch(values, setFieldValue)}
               >
-                {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"}
+                Search
+                {/* {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"} */}
               </button>
-            
             </div>
-            
-            {/* Month field */}
+
             <div>
-              <label
-                htmlFor="month"
-                className="block text-xs font-medium text-gray-700"
-              >
+              <label htmlFor="month" className="block text-xs font-medium text-gray-700">
                 Month
               </label>
               <Field
                 as="select"
                 name="month"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm ${
+                  monthYearErrors.month ? "border-red-500" : ""
+                }`}
                 onChange={(e) => {
-                  const monthValue = e.target.value;
-                  setFieldValue("month", monthValue);
-                  
-                  // Update localStorage with new values
-                  const newValues = { ...values, month: monthValue };
-                  updateLocalStorage("month", monthValue, newValues);
+                  handleChange(e);
+                  if (e.target.value && monthYearErrors.month) {
+                    setMonthYearErrors(prev => ({ ...prev, month: "" }));
+                  }
                 }}
               >
                 <option value="">Select Month</option>
@@ -269,27 +287,26 @@ const AmarabadAvailabilityOuterForm = ({fromDate, toDate, month, year, onFilters
                   </option>
                 ))}
               </Field>
+              {monthYearErrors.month && (
+                <div className="text-red-500 text-xs mt-1 absolute">{monthYearErrors.month}</div>
+              )}
             </div>
 
-            {/* Year field */}
             <div>
-              <label
-                htmlFor="year"
-                className="block text-xs font-medium text-gray-700"
-              >
+              <label htmlFor="year" className="block text-xs font-medium text-gray-700">
                 Year
               </label>
               <Field
                 as="select"
                 name="year"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 bg-white text-sm"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 bg-white text-sm ${
+                  monthYearErrors.year ? "border-red-500" : ""
+                }`}
                 onChange={(e) => {
-                  const yearValue = e.target.value;
-                  setFieldValue("year", yearValue);
-                  
-                  // Update localStorage with new values
-                  const newValues = { ...values, year: yearValue };
-                  updateLocalStorage("year", yearValue, newValues);
+                  handleChange(e);
+                  if (e.target.value && monthYearErrors.year) {
+                    setMonthYearErrors(prev => ({ ...prev, year: "" }));
+                  }
                 }}
               >
                 <option value="">Select Year</option>
@@ -299,21 +316,22 @@ const AmarabadAvailabilityOuterForm = ({fromDate, toDate, month, year, onFilters
                   </option>
                 ))}
               </Field>
+              {monthYearErrors.year && (
+                <div className="text-red-500 text-xs mt-1 absolute">{monthYearErrors.year}</div>
+              )}
             </div>
 
-            {/* Month/Year Search Button */}
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 ">
               <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 disabled:opacity-50 h-8"
-                // disabled={!values.month || !values.year}
+                // disabled={isFetchAmarabadAvailabilityOuterReportsLoading}
                 onClick={() => handleMonthYearSearch(values, setFieldValue)}
               >
-                {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"}
+                Search
+                {/* {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"} */}
               </button>
-             
             </div>
-
           </Form>
         )}
       </Formik>
@@ -322,3 +340,7 @@ const AmarabadAvailabilityOuterForm = ({fromDate, toDate, month, year, onFilters
 };
 
 export default AmarabadAvailabilityOuterForm;
+
+
+
+

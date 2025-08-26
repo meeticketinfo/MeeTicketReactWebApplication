@@ -20,15 +20,22 @@ export const useAmarabadAvailabilityReportsStore = create((set, get) => ({
     set({ isFetchAmarabadAvailabilityOuterReportsLoading: true });
     
     try {
+      // Handle both date range and month/year search parameters
+      const fromDate = filters.startDate || filters.fromDate || "";
+      const toDate = filters.endDate || filters.toDate || "";
+      const month = filters.month || "";
+      const year = filters.year || "";
+      const pageNumber = filters.PageIndex || filters.pageNumber || 1;
+      const pageSize = filters.pageSize || 20;
+      
       const response = await apiService.get(
         `${
-          API_ENDPOINTS.AMRABAD.REPORTS.AMRABAD_AVAILABILITY_OUTER_REPORTS}?fromDate=${filters.startDate || ""}&toDate=${filters.endDate || ""}&month=${filters.month || ""}&year=${filters.year || ""}&pageNumber=${filters.PageIndex || 1}&pageSize=${filters.pageSize || 20}`
+          API_ENDPOINTS.AMRABAD.REPORTS.AMRABAD_AVAILABILITY_OUTER_REPORTS}?fromDate=${fromDate}&toDate=${toDate}&month=${month}&year=${year}&pageNumber=${pageNumber}&pageSize=${pageSize}`
       );
-      console.log("API Response in store:", response.data);
       
       // Store the request parameters and results for caching
       const result = {
-        amrabadAvailabilityOuterReports: response.data || response.data,
+        amrabadAvailabilityOuterReports: response.data,
         outerTotalCount: response.data.totalCount || 0,
       };
       

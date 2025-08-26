@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AmarabadAvailabilityInnerForm from "./AmarabadAvailabilityInnerForm";
 import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
-import {
-  formatToCurrency,
-  formatToStandardDate,
-} from "../../../../utils/TypographyHelper";
+import { formatToStandardDate } from "../../../../utils/TypographyHelper";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
-import { NavLink, useNavigate } from "react-router-dom";
+
+// Helper function to get date exactly one month after a given date
+const getNextMonthDate = (dateString) => {
+  const date = new Date(dateString);
+  const nextMonth = new Date(date);
+  nextMonth.setMonth(date.getMonth() + 1);
+  return nextMonth.toISOString().split("T")[0];
+};
+import { useNavigate } from "react-router-dom";
 import AmarabadAvailabilityOuterForm from "./AmarabadAvailabilityOuterForm";
 
 const AmarabdAvailabilityOuterList = () => {
@@ -24,18 +29,71 @@ const AmarabdAvailabilityOuterList = () => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [groupedTotalCount, setGroupedTotalCount] = useState(0);
+  const initialLoadDone = useRef(false);
 
-  const savedFilters = JSON.parse(
-    localStorage.getItem("amarabad_availability_filters")
-  );
-
-  // Calculate next month date for default to date
-  const getNextMonthDate = () => {
-    const currentDate = new Date();
-    const nextMonth = new Date(currentDate);
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    return nextMonth.toISOString().split("T")[0];
+  // Helper function to get saved filters
+  const getSavedFilters = () => {
+    try {
+      const savedFilters = localStorage.getItem(
+        "amarabad_availability_form_values"
+      );
+      return savedFilters ? JSON.parse(savedFilters) : null;
+    } catch (error) {
+      console.error("Error parsing saved filters:", error);
+      return null;
+    }
   };
+
+  // Initial load effect
+  useEffect(() => {
+    if (!initialLoadDone.current) {
+      const filters = getSavedFilters();
+      if (filters) {
+        const searchParams = {
+          ...filters,
+          PageIndex: 1,
+          pageSize: PAGE_LIMIT,
+        };
+
+        // Determine search type based on saved values
+        if (filters.fromDate && filters.toDate) {
+          searchParams.startDate = filters.fromDate;
+          searchParams.endDate = filters.toDate;
+          searchParams.searchType = "dateRange";
+        } else if (filters.month && filters.year) {
+          searchParams.month = filters.month;
+          searchParams.year = filters.year;
+          searchParams.searchType = "monthYear";
+        }
+
+        fetchAmarabadAvailabilityOuterReports(searchParams);
+      } else {
+        // If no saved filters, call API with default date range (current date to next month)
+        const defaultSearchParams = {
+          startDate: getCurrentDate(),
+          endDate: getNextMonthDate(getCurrentDate()),
+          searchType: "dateRange",
+          PageIndex: 1,
+          pageSize: PAGE_LIMIT,
+        };
+
+        // Save default values to localStorage for consistency
+        localStorage.setItem(
+          "amarabad_availability_form_values",
+          JSON.stringify({
+            fromDate: getCurrentDate(),
+            toDate: getNextMonthDate(getCurrentDate()),
+            month: "",
+            year: "",
+            lastUpdated: new Date().toISOString(),
+          })
+        );
+
+        fetchAmarabadAvailabilityOuterReports(defaultSearchParams);
+      }
+      initialLoadDone.current = true;
+    }
+  }, [fetchAmarabadAvailabilityOuterReports, PAGE_LIMIT]);
 
   // Group data by booking date
   const groupDataByDate = (data) => {
@@ -91,7 +149,7 @@ const AmarabdAvailabilityOuterList = () => {
       {
         headerName: "S.No",
         valueGetter: (params) =>
-            currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+          currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
         minWidth: 80,
         maxWidth: 80,
         headerClass: "text-blue-v2",
@@ -149,23 +207,31 @@ const AmarabdAvailabilityOuterList = () => {
                       style={{
                         color: roomsBooked > 0 ? "#3B82F6" : "inherit",
                         cursor: roomsBooked > 0 ? "pointer" : "default",
-                        fontWeight: roomsBooked > 0 ? "bold" : "normal",
+                        fontWeight: roomsBooked > 0 ? "600" : "normal",
                       }}
                       onClick={() => {
                         if (roomsBooked > 0) {
+                          const filters = getSavedFilters();
                           navigate("/amrabad-availability-inner-report", {
                             state: {
                               bookingDate: rowData.bookingDate,
-                              fromDate:
-                                savedFilters?.fromDate ?? getCurrentDate(),
+                              fromDate: filters?.fromDate ?? getCurrentDate(),
                               toDate:
-                                savedFilters?.toDate ?? getNextMonthDate(),
+                                filters?.toDate ??
+                                getNextMonthDate(getCurrentDate()),
                               packageId: packageId,
                               packageName: packageName,
                               roomId: roomData.roomId,
                               roomName: roomName,
                               roomsBooked: roomsBooked,
                               roomsAvailable: roomData.roomsAvailable || 0,
+                              // Pass the outer filters for restoration when returning
+                              outerFilters: {
+                                fromDate: filters?.fromDate || "",
+                                toDate: filters?.toDate || "",
+                                month: filters?.month || "",
+                                year: filters?.year || "",
+                              },
                             },
                           });
                         }
@@ -211,7 +277,7 @@ const AmarabdAvailabilityOuterList = () => {
                   <span style={{ color: "inherit" }}>0</span>
                 </div>
               );
-            }, 
+            },
           },
           {
             field: `package_${packageId}_room_${roomName}_total`,
@@ -232,10 +298,7 @@ const AmarabdAvailabilityOuterList = () => {
 
                 return (
                   <div style={{ textAlign: "center" }}>
-                    <span
-                    >
-                      {totalRooms}
-                    </span>
+                    <span>{totalRooms}</span>
                   </div>
                 );
               }
@@ -285,72 +348,74 @@ const AmarabdAvailabilityOuterList = () => {
     }
   }, [amrabadAvailabilityOuterReports, currentPage, PAGE_LIMIT]);
 
-  useEffect(() => {
-    // Load saved filters and make initial API call
-    const loadSavedFiltersAndFetch = () => {
-      const savedFilters = JSON.parse(
-        localStorage.getItem("amarabad_availability_filters")
-      );
-
-      if (savedFilters) {
-        fetchAmarabadAvailabilityOuterReports({
-          startDate: savedFilters.fromDate || getCurrentDate(),
-          endDate: savedFilters.toDate || getNextMonthDate(),
-          month: savedFilters.month || "",
-          year: savedFilters.year || "",
-         PageIndex: currentPage + 1,
-          pageSize: PAGE_LIMIT,
-        });
-      } else {
-        // Use default values if no saved filters
-        fetchAmarabadAvailabilityOuterReports({
-          startDate: getCurrentDate(),
-          endDate: getNextMonthDate(),
-          month: "",
-          year: "",
-         PageIndex: currentPage + 1,
-          pageSize: PAGE_LIMIT,
-        });
-      }
-    };
-
-    // loadSavedFiltersAndFetch();
-  }, [currentPage, PAGE_LIMIT]); // Only run once when component mounts
-
-  useEffect(() => {
-    // Only fetch when page changes, not when filters change
-    if (savedFilters) {
-      fetchAmarabadAvailabilityOuterReports({
-        startDate: savedFilters.fromDate ?? getCurrentDate(),
-        endDate: savedFilters.toDate ?? getNextMonthDate(),
-        month: savedFilters.month ?? "",
-        year: savedFilters.year ?? "",
-        PageIndex: currentPage + 1,
-        pageSize: PAGE_LIMIT,
-      });
-    }
-  }, [currentPage, PAGE_LIMIT]);
-
   const handlePageClick = (selectedItem) => {
-    setCurrentPage(selectedItem.selected);
+    const newPage = selectedItem.selected;
+    setCurrentPage(newPage);
+
+    // Call the API with the new page
+    const filters = getSavedFilters();
+
+    if (filters) {
+      const searchParams = {
+        ...filters,
+        PageIndex: newPage + 1, // API expects 1-based indexing
+        pageSize: PAGE_LIMIT,
+      };
+
+      // Determine search type based on saved values
+      if (filters.fromDate && filters.toDate) {
+        searchParams.startDate = filters.fromDate;
+        searchParams.endDate = filters.toDate;
+        searchParams.searchType = "dateRange";
+      } else if (filters.month && filters.year) {
+        searchParams.month = filters.month;
+        searchParams.year = filters.year;
+        searchParams.searchType = "monthYear";
+      }
+      fetchAmarabadAvailabilityOuterReports(searchParams);
+    }
   };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPAGE_LIMIT(newPageSize);
+    setCurrentPage(0); // Reset to first page when page size changes
+
+    // Call the API with the new page size
+    const filters = getSavedFilters();
+    if (filters) {
+      const searchParams = {
+        ...filters,
+        PageIndex: 1, // Reset to first page
+        pageSize: newPageSize,
+      };
+
+      // Determine search type based on saved values
+      if (filters.fromDate && filters.toDate) {
+        searchParams.startDate = filters.fromDate;
+        searchParams.endDate = filters.toDate;
+        searchParams.searchType = "dateRange";
+      } else if (filters.month && filters.year) {
+        searchParams.month = filters.month;
+        searchParams.year = filters.year;
+        searchParams.searchType = "monthYear";
+      }
+
+      fetchAmarabadAvailabilityOuterReports(searchParams);
+    }
+  };
+
+  // Create a key for the form to force re-render when filters change
+  const formKey = JSON.stringify(getSavedFilters() || {});
 
   return (
     <div>
       <AmarabadAvailabilityOuterForm
-        PageIndex={1}
+        key={formKey}
+        PageIndex={currentPage + 1}
         pageSize={PAGE_LIMIT}
-        SetcurrentPage={(page) => {
-          // Reset to page 0 when filters change
-          setCurrentPage(page);
-        }}
-        fromDate={savedFilters?.fromDate}
-        toDate={savedFilters?.toDate}
-        month={savedFilters?.month}
-        year={savedFilters?.year}
-        onFiltersChange={() => setCurrentPage(0)}
+        SetcurrentPage={setCurrentPage}
       />
-      <div>
+      <div className="mt-10">
         <AgGridTable
           ExportName="Availability Outer Report"
           rowData={groupedData || []}
@@ -359,7 +424,7 @@ const AmarabdAvailabilityOuterList = () => {
           isPagination={false}
           tableHeight={(groupedData?.length || 0) > 10 ? 560 : 330}
           IsReactPaginate={true}
-          setPageLimit={setPAGE_LIMIT}
+          setPageLimit={handlePageSizeChange}
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}

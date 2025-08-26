@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import AdminLayout from '../../../../layouts/AdminLayout'
 import { ToastContainer } from 'react-toastify'
-import AmrabadAvailabilityOuter from './AmrabadAvailabilityOuter'
 import AmarabdAvailabilityOuterList from './AmarabadAvailabilityOuterList'
 
 const AmrabadAvailabilityMain = () => {

@@ -154,7 +154,7 @@ const AmarabdAvailabilityInnerList = () => {
         params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
     },
     {
-      field: "amountPaid",
+      field: "amount",
       headerName: "Total Amount",
       minWidth: 140,
       headerClass: "text-blue-v2",
@@ -162,7 +162,7 @@ const AmarabdAvailabilityInnerList = () => {
         params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
     },
     {
-      field: "modeofPayment",
+      field: "paymentType",
       headerName: "Mode of Payment",
       minWidth: 150,
       headerClass: "text-blue-v2",
@@ -214,6 +214,8 @@ const AmarabdAvailabilityInnerList = () => {
             end
             // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
             to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
+            target="_blank"
+            rel="noopener noreferrer"
             // onClick={() => {
             //   setisAmrabadCompleteBookings(true);
             // }}

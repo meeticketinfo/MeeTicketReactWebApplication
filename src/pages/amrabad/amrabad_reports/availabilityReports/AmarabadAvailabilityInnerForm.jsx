@@ -11,10 +11,11 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
 
   const { fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
   
-  // Load saved filters from localStorage
-  const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-availability-inner-report-filters")
-  );
+  // Clear saved filters when component mounts to ensure fresh state
+  useEffect(() => {
+    // Clear any previously saved filters when component mounts
+    localStorage.removeItem("amrabad-availability-inner-report-filters");
+  }, []);
 
   // Helper function to remove time from date string
   const removeTimeFromDate = (dateString) => {
@@ -34,17 +35,17 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
   console.log("bookingDate", getNextDayDate(bookingDate));
 
   const initialValues = {
-    fromDate: removeTimeFromDate(bookingDate) || savedFilters?.fromDate || getCurrentDate(),
-    toDate: getNextDayDate(bookingDate) || savedFilters?.toDate || getCurrentDate(),
+    fromDate: removeTimeFromDate(bookingDate) || getCurrentDate(),
+    toDate: getNextDayDate(bookingDate) || getCurrentDate(),
     bookingSource: "Booking",
-    typeOfBooking: savedFilters?.typeOfBooking || "",
-    phoneNumber: savedFilters?.phoneNumber || "",
-    package: packageId || savedFilters?.package || "",
-    houses: roomId || savedFilters?.houses || "",
-    orderId: savedFilters?.orderId || "",
-    paymentStatus: savedFilters?.paymentStatus || "",
-    modeOfBooking: savedFilters?.modeOfBooking || "",
-    PaymentMode: savedFilters?.PaymentMode || "",
+    typeOfBooking: "",
+    phoneNumber: "",
+    package: packageId || "",
+    houses: roomId || "",
+    orderId: "",
+    paymentStatus: "",
+    modeOfBooking: "",
+    PaymentMode: "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -141,13 +142,6 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
                   
                   // Always clear the houses field when package changes
                   setFieldValue("houses", "");
-                  
-                  // Update localStorage to clear previous houses selection
-                  const currentFilters = JSON.parse(
-                    localStorage.getItem("amrabad-availability-inner-report-filters")
-                  );
-                  currentFilters.houses = "";
-                  localStorage.setItem("amrabad-availability-inner-report-filters", JSON.stringify(currentFilters));
                   
                   if (packageId === "") {
                     // Clear houses from store when no package selected
