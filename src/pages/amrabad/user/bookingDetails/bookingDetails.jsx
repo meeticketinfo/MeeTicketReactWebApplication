@@ -29,7 +29,8 @@ function toLocalISOString(date = new Date()) {
 const AmarabadBookingDetails = () => {
     // const HOST = "https://3bd830ff7ae4ba2892cb368ec01af4f6.m.pipedream.net";
     // const HOST = "https://securegw-stage.paytm.in";
-    const HOST = "https://securestage.paytmpayments.com";
+    // const HOST = "https://securestage.paytmpayments.com";
+    const HOST = "https://secure.paytmpayments.com"; // prod
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
@@ -38,7 +39,7 @@ const AmarabadBookingDetails = () => {
 
     const loadPaytmScript = (paymentData) => {
         console.log("paymentData => ", paymentData);
-        console.log("HOST => ", HOST);
+        console.log("HOST => ", HOST); 
 
         // First, check if Paytm SDK is already loaded
         if (window.Paytm && window.Paytm.CheckoutJS) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
   const [map, setMap] = useState(null);
@@ -37,6 +38,41 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
       }
       return isValid;
     });
+  };
+
+  // Function to format date for display
+  const formatDate = (date) => {
+    const dateObj = new Date(date);
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    const weekday = weekdays[dateObj.getDay()];
+    const day = dateObj.getDate();
+    const month = months[dateObj.getMonth()];
+
+    return `${weekday}, ${day} ${month}`;
+  };
+
+  // Function to check availability for a specific date
+  const checkAvailabilityForDate = (house, targetDate) => {
+    if (!house?.calendar || !targetDate) return false;
+    
+    const calendarItem = house.calendar.find(item => item.date === targetDate);
+    return calendarItem && calendarItem.housesLeft > 0;
+  };
+
+  // Function to handle Book Now click with validation
+  const handleBookNowClick = (house, e) => {
+    // Check if the fromDate has available rooms
+    if (!checkAvailabilityForDate(house, fromDate)) {
+      e.preventDefault();
+      toast.error(`No room available on ${formatDate(fromDate)}`);
+      return false;
+    }
+    
+    // If available, proceed with normal navigation
+    localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}));
+    return true;
   };
 
   // Function to handle house selection from list
@@ -99,7 +135,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
       const discountAmount = (house.tariffPerDay * house.discountValue) / 100;
       return Math.round(house.tariffPerDay - discountAmount);
     }
-    return house.tariffPerDay;
+    return house.tariffPerDay || 0;
   };
 
   // Helper function to get original price
@@ -424,8 +460,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
                       </div>
                       <Link
                         to={`/amrabad-resort/book-now/${house.packageId}/${house.roomId}`}
-                        onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
-                        // state={{ fromDate: fromDate, toDate: toDate }}
+                        onClick={(e) => handleBookNowClick(house, e)}
                         className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
                         // onClick={(e) => e.stopPropagation()}
                       >
