@@ -101,7 +101,7 @@ const AmarabadRefundTransactionsChart = ({
             <Link
               to={`/amrabad-refund-transaction-inner-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
-                localStorage.setItem("refundMetroTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
+                localStorage.setItem("amrabadRefundInnerTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">
