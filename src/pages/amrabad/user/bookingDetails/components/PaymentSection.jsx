@@ -3,7 +3,7 @@ import { FaCreditCard } from "react-icons/fa";
 const PaymentSection = ({ subTotal, isSubmitting }) => {
     return (
         <>
-            <div className="bg-white rounded-lg p-2 sm:p-4 border border-[#C0C0C5]">
+            <div className="bg-white rounded-lg p-2 sm:p-4 sm:pb-2 sm:pt-0 border border-[#C0C0C5]">
                 <div className="flex items-center gap-2 sm:gap-3 mb-2">
                     <img 
                         src="https://1000logos.net/wp-content/uploads/2023/03/Paytm-logo.png" 
@@ -26,10 +26,16 @@ const PaymentSection = ({ subTotal, isSubmitting }) => {
                 type="submit"
                 form="booking-form"
                 className="w-full flex items-center justify-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60 text-sm sm:text-base"
-                disabled={isSubmitting}
+                disabled={isSubmitting || subTotal <= 0}
             >
-                <FaCreditCard className="text-base sm:text-lg" />
-                PAY&nbsp; ₹{subTotal ? subTotal.toLocaleString() : 0}
+                {subTotal > 0 ? (
+                    <>
+                        <FaCreditCard className="text-base sm:text-lg" />
+                        PAY&nbsp; ₹{subTotal ? subTotal.toLocaleString() : 0}
+                    </>
+                ) : (
+                    "No booking items found"
+                )}
             </button>
         </>
     );
