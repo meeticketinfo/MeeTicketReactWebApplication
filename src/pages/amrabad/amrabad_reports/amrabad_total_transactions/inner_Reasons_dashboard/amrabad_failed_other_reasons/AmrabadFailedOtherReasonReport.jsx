@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
@@ -20,12 +20,12 @@ const FailedOtherReasonReport = () => {
     deepInnerFilters,
     resetDeepInnerFilters,
     resetInnerFilters
-  } = useMetroTotalCommonStore();
+  } = AmarabadTotalCommonStore();
   const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+    fetchAmrabadTotalTransactions,
+    AmrabadTotalTransactionsData,
+    isAmrabadTotalTransactionsLoading,
+  } = useAmarabadTotalTransactionStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
@@ -34,11 +34,13 @@ const FailedOtherReasonReport = () => {
   console.log("outerFilters", innerFilters);
 
   useEffect(() => {
-    fetchMetroTotalTransactions({
+    fetchAmrabadTotalTransactions({
       startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
       endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
-      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      PaymentMode: (deepInnerFilters.PaymentMode) ?? "",
+      phoneNumber: (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+      package: (innerFilters.package ?? deepInnerFilters.package) ?? "",
+      house: (innerFilters.house ?? deepInnerFilters.house) ?? "",
+      PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
       subCategory: innerFilters.subCategory ?? "",
       pageNumber: currentPage + 1,
@@ -169,11 +171,11 @@ const FailedOtherReasonReport = () => {
     const breadcrumbItems = [
     {
       label: 'Total Transactions',
-      path: `/metro-total-transaction`
+      path: `/amarabad-total-transaction`
     },
      {
       label: 'Failed (Other Reasons)',  
-      path: `/metro-failed-other-reason`,
+      path: `/amrabad-failed-other-reason`,
       onclick:()=>{resetDeepInnerFilters()
         
       },
@@ -200,7 +202,7 @@ const FailedOtherReasonReport = () => {
           </div>
           <div className="">
             <Link
-              to="/metro-failed-other-reason"
+              to="/amrabad-failed-other-reason"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -219,9 +221,9 @@ const FailedOtherReasonReport = () => {
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
+            rowData={AmrabadTotalTransactionsData}
             columnDefs={columnDefs}
-            isFetchLoading={isMetroTotalTransactionsLoading}
+            isFetchLoading={isAmrabadTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -229,8 +231,8 @@ const FailedOtherReasonReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={MetroTotalTransactionsData[0]?.totalCount}
-            tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={AmrabadTotalTransactionsData[0]?.totalCount}
+            tableHeight={AmrabadTotalTransactionsData.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>
