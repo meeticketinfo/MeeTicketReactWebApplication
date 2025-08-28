@@ -235,7 +235,7 @@ const BookingItemCard = ({ item, formatDate }) => {
 
       <div className="flex justify-between items-center text-xs border-t border-gray-200 pt-1">
         <span className="text-gray-600">Amount</span>
-        <div className="text-right">
+        <div className="text-right flex gap-1 items-end">
           <div className="font-semibold text-[#362D86] text-sm">
             ₹{((item?.amount || 0) - (item?.discountAmount || 0))?.toLocaleString()}
           </div>

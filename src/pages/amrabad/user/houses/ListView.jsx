@@ -5,6 +5,7 @@ import HouseCardShimmer from "./houseShimmer/HouseCardShimmer";
 import { convertTo12HourFormat } from "../../../../utils/Helper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import { toast } from "react-toastify";
 
 const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, toDate }) => {
   console.log(userPackage, "userPackage");
@@ -22,6 +23,42 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
     const month = months[dateObj.getMonth()];
 
     return `${weekday}, ${day} ${month}`;
+  };
+
+  // Function to check availability for a specific date
+  const checkAvailabilityForDate = (house, targetDate) => {
+    if (!house?.calendar || !targetDate) return false;
+    
+    const calendarItem = house.calendar.find(item => item.date === targetDate);
+    return calendarItem && calendarItem.housesLeft > 0;
+  };
+
+  // Function to handle Book Now click with validation
+  const handleBookNowClick = (house, e) => {
+    // Check if the fromDate has available rooms
+    if (!checkAvailabilityForDate(house, fromDate)) {
+      e.preventDefault();
+      toast.error(`No room available on ${formatDate(fromDate)}`);
+      return false;
+    }
+    
+    // If available, proceed with normal navigation
+    localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}));
+    return true;
+  };
+
+  // Function to handle calendar item click with validation
+  const handleCalendarItemClick = (house, item, idx, e) => {
+    // Check if the selected date has available rooms
+    if (!checkAvailabilityForDate(house, item.date)) {
+      e.preventDefault();
+      toast.error(`No room available on ${formatDate(item.date)}`);
+      return false;
+    }
+    
+    // If available, proceed with normal navigation
+    localStorage.setItem("bookingDate", JSON.stringify({"fromDate": item.date, "toDate": house?.calendar[idx + 1]?.date}));
+    return true;
   };
 
   return (
@@ -300,7 +337,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                   <div className="mt-4 sm:mt-6">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
-                      onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": fromDate, "toDate": toDate}))}
+                      onClick={(e) => handleBookNowClick(house, e)}
                       // state={{ fromDate: fromDate, toDate: toDate }}
                       className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
@@ -339,7 +376,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                       {item?.housesLeft > 0 ? (
                         <Link 
                           to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} 
-                          onClick={() => localStorage.setItem("bookingDate", JSON.stringify({"fromDate": item?.date, "toDate": house?.calendar[idx + 1]?.date}))}
+                          onClick={(e) => handleCalendarItemClick(house, item, idx, e)}
                           // state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
                           className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#362D86]"
                         >

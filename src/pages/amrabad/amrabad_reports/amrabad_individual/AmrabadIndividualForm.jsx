@@ -4,6 +4,7 @@ import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/C
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
 import { useEffect } from "react";
 import { useAmrabadHouseWiseReportStore } from "./store/amarabadHouseWiseReportStore";
+
 const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const {
     fetchAllAmrabadHouseWiseReports,
@@ -11,23 +12,39 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   } = useAmrabadHouseWiseReportStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   
+  // Get saved filters from localStorage
+  const getSavedFilters = () => {
+    try {
+      const savedFilters = localStorage.getItem("amrabad-individual-report-filters");
+      if (savedFilters) {
+        return JSON.parse(savedFilters);
+      }
+    } catch (error) {
+      console.error("Error parsing saved filters:", error);
+    }
+    return null;
+  };
+
+  const savedFilters = getSavedFilters();
+  
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
-    typeOfBooking: "",
-    package: "",
-    houses: "",
-    phoneNumber: "",
-    orderId: "",
-    modeOfBooking: "",
+    fromDate: savedFilters?.fromDate || getCurrentDate(),
+    toDate: savedFilters?.toDate || getCurrentDate(),
+    typeOfBooking: savedFilters?.typeOfBooking || "Purchase",
+    package: savedFilters?.package || "",
+    houses: savedFilters?.houses || "",
+    phoneNumber: savedFilters?.phoneNumber || "",
+    orderId: savedFilters?.orderId || "",
+    modeOfBooking: savedFilters?.modeOfBooking || "",
   };
 
   const onSubmit = (values, { resetForm }) => {
     SetcurrentPage(0);
+    localStorage.setItem("amrabad-individual-report-filters", JSON.stringify(values));
     fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,
-      bookingSource: values.typeOfBooking,
+      bookingSource: values.typeOfBooking  || "",
       package: values.package,
       houses: values.houses,
       phoneNumber: values.phoneNumber,
@@ -37,8 +54,14 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
       pageSize: pageSize,
     });
   };
+
   useEffect(() => {
     getPackages();
+    
+    // If there are saved filters and a package is selected, load the houses for that package
+    if (savedFilters?.package) {
+      getHouses(savedFilters.package);
+    }
   }, []);
 
   return (
@@ -98,7 +121,6 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
                 <option value="Purchase">Purchase Date</option>
                 <option value="Booking">Booking Date</option>
               </Field>
@@ -190,7 +212,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="">-- Select --</option>
+                <option value="">Select</option>
                 <option value="Website">Website</option>
                 <option value="Mobile">Mobile</option>
               </Field>
@@ -200,31 +222,54 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                disabled={isFetchAllAmrabadHouseWiseReportsLoading}
               >
                 Search
               </button>
-              {/* <button
+              <button
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+                 
                 onClick={() => {
+                  // Reset form to default values
+                  const defaultValues = {
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    typeOfBooking: "Purchase",
+                    package: "",
+                    houses: "",
+                    phoneNumber: "",
+                    orderId: "",
+                    modeOfBooking: "",
+                  };
+                  
                   resetForm({
-                    values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
-                      typeOfBooking: "",
-                      package: "",
-                      houses: "",
-                      phoneNumber: "",
-                      orderId: "",
-                      modeOfBooking: "",
-                    },
+                    values: defaultValues,
+                  });
+                  
+                  // Clear saved filters from localStorage
+                  localStorage.removeItem("amrabad-individual-report-filters");
+                  
+                  // Reset current page to 0
+                  SetcurrentPage(0);
+                  
+                  // Call API with default values to refresh data
+                  fetchAllAmrabadHouseWiseReports({
+                    startDate: defaultValues.fromDate,
+                    endDate: defaultValues.toDate,
+                    bookingSource: defaultValues.typeOfBooking,
+                    package: defaultValues.package,
+                    houses: defaultValues.houses,
+                    phoneNumber: defaultValues.phoneNumber,
+                    orderId: defaultValues.orderId,
+                    modeOfBooking: defaultValues.modeOfBooking,
+                    PageIndex: 0,
+                    pageSize: pageSize,
                   });
                 }}
               >
                 Reset
-              </button> */}
+              </button>
             </div>
           </Form>
         )}
