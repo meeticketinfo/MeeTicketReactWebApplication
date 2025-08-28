@@ -14,12 +14,16 @@ function AmrabadPaymentTransactionsList() {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [verifyData, setVerifyData] = useState("");
+  const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
+  const [RefundOrderId, setRefundOrderId] = useState("");
   const {
     isAmrabadTransactionPaymentReportsLoading,
     allAmrabadTransactionPaymentReports,
     fetchAmrabadPaymentTransactions,
     fetchAmrabadVerifyStatus,
     isFetchAmrabadVerifyStatusLoading,
+    fetchAmrabadPaymentTransactionRefund,
+    isFetchAmrabadPaymentTransactionRefundLoading
   } = useAmrabadConsolidatedStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-payment-report-filters")
@@ -137,6 +141,37 @@ function AmrabadPaymentTransactionsList() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
+      headerName: "Initiate Refund",
+      field: "InitiateRefund",
+      maxWidth: 130,
+      //   hide: email === "esdadmin@gmail.com",
+      cellRenderer: (params) => {
+        // console.log("params",params)
+        return (
+          <div className="flex align-center gap-2">
+            <>
+              <button
+                className={` ${
+                 true
+                    ? "bg-green-400"
+                    : "bg-green-100 cursor-not-allowed "
+                } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
+                // disabled={params.data.refundStatus != "Not Refunded"}
+                onClick={() => {
+                  setRefundOrderId(params.data.transaactionID);
+                  setInitiatRefundModal(true);
+                }}
+              >
+                Initiate
+              </button>
+            </>
+          </div>
+        );
+      },
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+    {
       field: "VerifyTicket",
       headerName: "Verify Ticket",
       maxWidth: 140,
@@ -179,8 +214,8 @@ function AmrabadPaymentTransactionsList() {
 
       if (res.response?.data?.status === 200) {
         setOpenVerifyModal(false);
-        const resultMsg = res.response?.data?.message;
-        console.log("resultMsg", resultMsg);
+        const resultMsg = res.response?.data?.data?.resultStatus;
+       
         Swal.fire({
           title: "Success!",
 
@@ -251,6 +286,65 @@ function AmrabadPaymentTransactionsList() {
           pageSize: PAGE_LIMIT,
         });
       }, 2100);
+    }
+  };
+//   initiate refund
+  const handleInitiateRefund = async () => {
+   
+    try {
+      const res = await fetchAmrabadPaymentTransactionRefund({orderId:RefundOrderId});
+      console.log("API Response:", res);
+      setInitiatRefundModal(false);
+      if (res.response?.status === 200) {
+        const resultMsg = res.response?.data?.message;
+
+        Swal.fire({
+          title: "Success!",
+
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${resultMsg}
+            </div>`,
+
+          confirmButtonText: "OK",
+          icon: "success",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+            icon: "small-swal-icon",
+          },
+          timer: 2000,
+          width: "360px",
+          showConfirmButton: false,
+        });
+      } else {
+        setInitiatRefundModal(false);
+        Swal.fire({
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${res.response?.data?.message}
+            </div>`,
+          icon: "info",
+          width: "360px",
+
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
+      }
+    } catch (err) {
+      setInitiatRefundModal(false);
+      Swal.fire({
+        title: "Failed!",
+        text: `Refund failed. Please try again.`,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      // Delay API call to ensure SweetAlert has closed
+      // loadRefundTransactionsReport(currentPage);
     }
   };
 
@@ -327,6 +421,53 @@ function AmrabadPaymentTransactionsList() {
           </div>
         </div>
       </PopupModal>
+
+      {/* initiate refund modal */}
+
+      <PopupModal
+          popupModalId="first-modal"
+          isOpen={InitiatRefundModal}
+          onClose={() => setInitiatRefundModal(false)}
+          size="small"
+          overlayClassName="bg-gray-800 bg-opacity-60"
+          contentClassName="bg-white"
+          defaultBodyPadding={true}
+        >
+          <div className="px-10 py-14">
+            <h1 className="text-blue-v1 font-semibold">
+              Are you sure you want to proceed with the refund?
+            </h1>
+
+            <div className="flex justify-center gap-8 mt-4 z-30">
+              <button
+                onClick={async () => {
+                  await handleInitiateRefund();
+                }}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              >
+                {false ? (
+                  <span className="px-8">
+                    <l-tailspin
+                      size="15"
+                      stroke="5"
+                      speed="0.9"
+                      color="white"
+                    ></l-tailspin>
+                  </span>
+                ) : (
+                  "Proceed"
+                )}
+              </button>
+
+              <button
+                onClick={() => setInitiatRefundModal(false)}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+              >
+                Deny
+              </button>
+            </div>
+          </div>
+        </PopupModal>
     </div>
   );
 }
