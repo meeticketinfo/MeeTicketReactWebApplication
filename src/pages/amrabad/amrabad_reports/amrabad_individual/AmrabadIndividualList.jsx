@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import {
   formatToCurrency,
@@ -30,6 +30,12 @@ export default function AdminBookings() {
     fetchAllAmrabadHouseWiseReports({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
+      bookingSource: savedFilters?.typeOfBooking ?? "Purchase",
+      package: savedFilters?.package ? savedFilters.package : "",
+      houses: savedFilters?.houses ? savedFilters.houses : "",
+      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+      paymentStatus: savedFilters?.paymentStatus ? savedFilters.paymentStatus : "",
+      modeOfBooking: savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -45,33 +51,14 @@ export default function AdminBookings() {
     setSelectedTicketData(null);
   };
 
-  const handleSearchButtonClick = () => {
-    // Create sample ticket data for demonstration
-    const sampleTicketData = {
-      bookingID: "TKT123456",
-      mobileNo: "9876543210",
-      parkName: "Sample User",
-      packageName: "Amrabad Package",
-      departmentName: "House 1",
-      locationCategoryName: "2",
-      // packageName: "2024-01-15",
-      roomName: "2024-01-20",
-      bookingDate: "2024-01-25",
-      noofDays: "₹5000",
-      individualAmount: "₹500",
-      totalAmount: "₹4500",
-      paymentMode: "Online"
-    };
-    
-    setSelectedTicketData(sampleTicketData);
-    setIsTicketModalOpen(true);
-  };
-
-  const [columnDefs] = useState([
+  const columnDefs = useMemo(() => [
     {
       headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        // Calculate serial number based on current page and row position
+        const serialNumber = currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+        return serialNumber;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -87,6 +74,8 @@ export default function AdminBookings() {
       headerName: "Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
+      minWidth: 150,
+      maxWidth: 150,
       valueFormatter: (params) =>
         !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
@@ -94,6 +83,8 @@ export default function AdminBookings() {
       field: "userName",
       headerName: "User Name",
       // flex: 1,
+      minWidth: 150,
+      maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -113,7 +104,9 @@ export default function AdminBookings() {
     },
     {
       field: "noofHouses",
-      headerName: "No.of houses",
+      headerName: "No.of houses", 
+      minWidth: 120,
+      maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -122,6 +115,8 @@ export default function AdminBookings() {
     {
       field: "purchasedDate",
       headerName: "Purchased Date",
+      minWidth: 150,
+      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => params.value || "0",
@@ -130,6 +125,8 @@ export default function AdminBookings() {
     {
       field: "fromDate",
       headerName: "From Date",
+      minWidth: 120,
+      maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => params.value || "0",
@@ -139,6 +136,8 @@ export default function AdminBookings() {
     {
       field: "toDate",
       headerName: "To Date",
+      minWidth: 120,
+      maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
       // valueFormatter: (params) => params.value || "0",
@@ -147,13 +146,17 @@ export default function AdminBookings() {
     {
       field: "actualAmount",
       headerName: "Actual Amount",
+      minWidth: 130,
+      maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "discountApplicable",
       headerName: "Discount Applicable",
+      minWidth: 160,
+      maxWidth: 160,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
@@ -168,15 +171,19 @@ export default function AdminBookings() {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "paymentMode",
+      field: "totalAmount",
       headerName: "Total Amount",
+      minWidth: 130,
+      maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "modeofPayment",
       headerName: "Mode of Payment",
+      minWidth: 150,
+      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -184,6 +191,8 @@ export default function AdminBookings() {
     {
       field: "modeofBooking",
       headerName: "Mode of Booking",
+      minWidth: 150,
+      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -199,12 +208,13 @@ export default function AdminBookings() {
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => {
-        console.log("Row data:", params.data); // Debug log
         return (
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: "200px" }}>
             <NavLink
               end
               to={`/amrabad-admin/ticket-view-details/${params.data.orderId}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-100 text-blue-v2 px-4 py-2 rounded-md hover:bg-gray-200 transition text-sm"
             >
               <span>View Ticket</span>
@@ -216,10 +226,10 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       width: 200,
     },
-  ]);
-  const handlePageClick = (selectedItem) => {
+  ], [currentPage, PAGE_LIMIT]);
+  const handlePageClick = useCallback((selectedItem) => {
     setCurrentPage(selectedItem.selected);
-  };
+  }, []);
 
   return (
     <div>
@@ -229,14 +239,18 @@ export default function AdminBookings() {
             PageIndex={1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
-            onSearchClick={handleSearchButtonClick}
           />
         </div>
 
         <AgGridTable
+          key={`ag-grid-${currentPage}-${PAGE_LIMIT}`}
           ExportName="House Wise Details"
           rowData={allAmrabadHouseWiseReports || []}
+          getRowId={(params) => `${currentPage}-${params.data?.orderId || params.node.rowIndex}`}
           columnDefs={columnDefs}
+          suppressRowClickSelection={true}
+          suppressCellFocus={true}
+          suppressAnimationFrame={false}
           isFetchLoading={isFetchAllAmrabadHouseWiseReportsLoading}
           isPagination={false}
           tableHeight={

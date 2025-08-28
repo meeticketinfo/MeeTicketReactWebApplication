@@ -2,16 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import AgGridTable from "../../../../components/tables/AgGridTable";
-
+import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+import AmarabdAvailabilityOuterList from "./AmarabadAvailabilityOuterList";
 const AmrabadAvailabilityOuter = () => {
+  const { fetchAmarabadAvailabilityOuterReports, amrabadAvailabilityOuterReports, isFetchAmarabadAvailabilityOuterReportsLoading } = useAmarabadAvailabilityReportsStore();
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
   const [showInnerReport, setShowInnerReport] = useState(false);
+  const [hiddenFields, setHiddenFields] = useState({
+    month: false,
+    year: false,
+    fromDate: false,
+    toDate: false,
+  });
 
   const months = [
     { value: 0, label: "January" },
@@ -29,7 +36,7 @@ const AmrabadAvailabilityOuter = () => {
   ];
 
   const years = [];
-  for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+  for (let year = currentYear; year <= currentYear + 15; year++) {
     years.push(year);
   }
 
@@ -52,7 +59,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "4/4",
-      crocodile: "2/4"
+      crocodile: "2/4",
     },
     {
       sno: 2,
@@ -64,7 +71,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "2/4",
-      crocodile: "2/4"
+      crocodile: "2/4",
     },
     {
       sno: 3,
@@ -76,7 +83,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "3/4",
-      crocodile: "2/4"
+      crocodile: "2/4",
     },
     {
       sno: 4,
@@ -88,7 +95,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "2/4",
-      crocodile: "3/4"
+      crocodile: "3/4",
     },
     {
       sno: 5,
@@ -100,7 +107,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "2/4",
-      crocodile: "3/4"
+      crocodile: "3/4",
     },
     {
       sno: 6,
@@ -112,7 +119,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "3/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "1/4",
-      crocodile: "2/4"
+      crocodile: "2/4",
     },
     {
       sno: 7,
@@ -124,7 +131,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "4/4",
       tortoisedenhouse: "2/4",
-      crocodile: "2/4"
+      crocodile: "2/4",
     },
     {
       sno: 8,
@@ -136,7 +143,7 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "4/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "2/4",
-      crocodile: "1/4"
+      crocodile: "1/4",
     },
     {
       sno: 9,
@@ -148,18 +155,18 @@ const AmrabadAvailabilityOuter = () => {
       rivertern: "2/4",
       turtlehouse: "2/4",
       tortoisedenhouse: "1/4",
-      crocodile: "2/4"
-    }
+      crocodile: "2/4",
+    },
   ];
 
   // Handle cell click for inner report
   const handleCellClick = (params) => {
-    if (params.column.colId !== 'sno' && params.column.colId !== 'date') {
+    if (params.column.colId !== "sno" && params.column.colId !== "date") {
       setSelectedCell({
         date: params.data.date,
         accommodation: params.column.colDef.headerName,
-        resort: params.column.parent?.colDef?.headerName || 'Unknown Resort',
-        value: params.value
+        resort: params.column.parent?.colDef?.headerName || "Unknown Resort",
+        value: params.value,
       });
       setShowInnerReport(true);
     }
@@ -180,7 +187,7 @@ const AmrabadAvailabilityOuter = () => {
         width: 80,
         sortable: true,
         filter: true,
-        cellStyle: { fontWeight: 'bold' },
+        cellStyle: { fontWeight: "bold" },
         headerClass: "bg-gray-50 text-gray-400",
       },
       {
@@ -189,9 +196,9 @@ const AmrabadAvailabilityOuter = () => {
         width: 120,
         sortable: true,
         filter: true,
-        cellStyle: { fontWeight: 'bold' },
+        cellStyle: { fontWeight: "bold" },
         headerClass: "bg-gray-50 text-gray-400",
-      }
+      },
     ];
 
     const resortColumns = [
@@ -206,8 +213,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available}/ ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -219,8 +226,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -232,8 +239,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -245,13 +252,13 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
-          }
-        ]
+          },
+        ],
       },
       {
         headerName: "Domalapenta Akkamaha Devi Stay Package",
@@ -264,8 +271,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -277,8 +284,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -290,8 +297,8 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
@@ -303,14 +310,14 @@ const AmrabadAvailabilityOuter = () => {
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-              if (!params.value) return '';
-              const [available, total] = params.value.split('/');
+              if (!params.value) return "";
+              const [available, total] = params.value.split("/");
               return `${available} / ${total}`;
             },
             headerClass: "bg-gray-50 text-gray-400",
-          }
-        ]
-      }
+          },
+        ],
+      },
     ];
 
     return [...baseColumns, ...resortColumns];
@@ -328,28 +335,44 @@ const AmrabadAvailabilityOuter = () => {
         date: date,
         accommodation: accommodation,
         resort: resort,
-        value: value
+        value: value,
       });
       setShowInnerReport(true);
     };
   }, []);
 
+  // Update row data when API response changes
+  useEffect(() => {
+    if (amrabadAvailabilityOuterReports && amrabadAvailabilityOuterReports.length > 0) {
+      setRowData(amrabadAvailabilityOuterReports);
+    }
+  }, [amrabadAvailabilityOuterReports]);
+
   const handleSubmit = async (values) => {
     console.log("Form values:", values);
-    setIsLoading(true);
-    
+
     try {
-      // Here you would fetch data from API based on the form values
-      // For now, we'll use the exact data from the image
-      setTimeout(() => {
-        setRowData(exactData);
-        setIsLoading(false);
-      }, 1000);
-      
+      // Prepare filters for API call
+      const filters = {
+        startDate: values.fromDate || `${values.year}-${String(parseInt(values.month) + 1).padStart(2, '0')}-01`,
+        endDate: values.toDate || getLastDateOfMonth(values.year, values.month),
+        month: values.month,
+        year: values.year,
+        PageIndex: 1,
+        pageSize: 20
+      };
+
+      // Call the outer report API
+      await fetchAmarabadAvailabilityOuterReports(filters);
     } catch (error) {
       console.error("Error fetching availability data:", error);
-      setIsLoading(false);
     }
+  };
+
+  // Helper function to get last date of month
+  const getLastDateOfMonth = (year, month) => {
+    const date = new Date(year, parseInt(month) + 1, 0);
+    return date.toISOString().split('T')[0];
   };
 
   return (
@@ -357,93 +380,131 @@ const AmrabadAvailabilityOuter = () => {
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ resetForm, values, setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-3">
-            <div>
-              <label
-                htmlFor="fromDate"
-                className="block text-xs font-medium text-gray-700"
-              >
-                From Date
-              </label>
-              <Field
-                type="date"
-                name="fromDate"
-                className={`mt-1 block w-full px-2 py-1 border
-               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  const fromDateValue = e.target.value;
-                  setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    setFieldValue("toDate", fromDateValue);
-                  }
-                }}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="toDate"
-                className="block text-xs font-medium text-gray-700"
-              >
-                To Date
-              </label>
-              <Field
-                type="date"
-                name="toDate"
-                className={`mt-1 block w-full px-2 py-1 border
+            {!hiddenFields.fromDate && (
+              <div>
+                <label
+                  htmlFor="fromDate"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  From Date
+                </label>
+                <Field
+                  type="date"
+                  name="fromDate"
+                  className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
-                onChange={(e) => {
-                  const toDateValue = e.target.value;
-                  setFieldValue("toDate", toDateValue);
-                }}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="month"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Month
-              </label>
-              <Field
-                as="select"
-                name="month"
-                className={`mt-1 block w-full px-2 py-1 border
-                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              >
-                {months.map((month) => (
-                  <option key={month.value} value={month.value}>
-                    {month.label}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="year"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Year
-              </label>
-              <Field
-                as="select"
-                name="year"
-                className={`mt-1 block w-full px-2 py-1 border
-                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </Field>
-            </div>
+                  onChange={(e) => {
+                    const fromDateValue = e.target.value;
+                    setFieldValue("fromDate", fromDateValue);
+                    if (new Date(fromDateValue) > new Date(values.toDate)) {
+                      setFieldValue("toDate", fromDateValue);
+                    }
+                    // Hide month and year when date is selected
+                    setHiddenFields((prev) => ({
+                      ...prev,
+                      month: true,
+                      year: true,
+                    }));
+                  }}
+                />
+              </div>
+            )}
+            {!hiddenFields.toDate && (
+              <div>
+                <label
+                  htmlFor="toDate"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  To Date
+                </label>
+                <Field
+                  type="date"
+                  name="toDate"
+                  className={`mt-1 block w-full px-2 py-1 border
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  min={values.fromDate || getCurrentDate()}
+                  onChange={(e) => {
+                    const toDateValue = e.target.value;
+                    setFieldValue("toDate", toDateValue);
+                    // Hide month and year when date is selected
+                    setHiddenFields((prev) => ({
+                      ...prev,
+                      month: true,
+                      year: true,
+                    }));
+                  }}
+                />
+              </div>
+            )}
+            {!hiddenFields.month && (
+              <div>
+                <label
+                  htmlFor="month"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Month
+                </label>
+                <Field
+                  as="select"
+                  name="month"
+                  className={`mt-1 block w-full px-2 py-1 border
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("month", e.target.value);
+                    // Hide from date and to date when month is selected
+                    setHiddenFields((prev) => ({
+                      ...prev,
+                      fromDate: true,
+                      toDate: true,
+                    }));
+                  }}
+                >
+                  {months.map((month) => (
+                    <option key={month.value} value={month.value}>
+                      {month.label}
+                    </option>
+                  ))}
+                </Field>
+              </div>
+            )}
+            {!hiddenFields.year && (
+              <div>
+                <label
+                  htmlFor="year"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Year
+                </label>
+                <Field
+                  as="select"
+                  name="year"
+                  className={`mt-1 block w-full px-2 py-1 border
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  onChange={(e) => {
+                    setFieldValue("year", e.target.value);
+                    // Hide from date and to date when year is selected
+                    setHiddenFields((prev) => ({
+                      ...prev,
+                      fromDate: true,
+                      toDate: true,
+                    }));
+                  }}
+                >
+                  {years.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </Field>
+              </div>
+            )}
             <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 disabled:opacity-50"
-                disabled={isLoading}
+                disabled={isFetchAmarabadAvailabilityOuterReportsLoading}
               >
-                {isLoading ? "Loading..." : "Search"}
+                {isFetchAmarabadAvailabilityOuterReportsLoading ? "Loading..." : "Search"}
               </button>
               <button
                 type="button"
@@ -451,6 +512,12 @@ const AmrabadAvailabilityOuter = () => {
                 onClick={() => {
                   resetForm();
                   setRowData(exactData);
+                  setHiddenFields({
+                    month: false,
+                    year: false,
+                    fromDate: false,
+                    toDate: false,
+                  });
                 }}
               >
                 Reset
@@ -460,93 +527,7 @@ const AmrabadAvailabilityOuter = () => {
         )}
       </Formik>
 
-      <div className="mt-8">
-       
-        {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700"></div>
-          </div>
-        ) : (
-          <AgGridTable
-            ExportName="Availability Report"
-            isPagination={false}
-            IsReactPaginate={true}
-            columnDefs={columnDefs}
-            rowData={rowData}
-            showSearch={false}
-            tableHeight={600}
-          />
-        )}
-      </div>
-
-      {/* Inner Report Modal */}
-      {showInnerReport && selectedCell && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl w-11/12 max-w-4xl max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <div>
-                <h2 className="text-xl font-bold text-gray-800">
-                  Detailed Availability Information
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Date: {selectedCell.date} | Resort: {selectedCell.resort} | Accommodation: {selectedCell.accommodation}
-                </p>
-              </div>
-              <button
-                onClick={handleCloseInnerReport}
-                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-              >
-                ×
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="text-sm font-medium text-blue-800">Available Units</h3>
-                  <p className="text-2xl font-bold text-blue-900">
-                    {selectedCell.value.split('/')[0]}
-                  </p>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <h3 className="text-sm font-medium text-green-800">Total Units</h3>
-                  <p className="text-2xl font-bold text-green-900">
-                    {selectedCell.value.split('/')[1]}
-                  </p>
-                </div>
-                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                  <h3 className="text-sm font-medium text-orange-800">Occupancy Rate</h3>
-                  <p className="text-2xl font-bold text-orange-900">
-                    {Math.round((selectedCell.value.split('/')[0] / selectedCell.value.split('/')[1]) * 100)}%
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold mb-3">Additional Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <p><strong>Resort:</strong> {selectedCell.resort}</p>
-                    <p><strong>Accommodation Type:</strong> {selectedCell.accommodation}</p>
-                    <p><strong>Date:</strong> {selectedCell.date}</p>
-                  </div>
-                  <div>
-                    <p><strong>Availability:</strong> {selectedCell.value}</p>
-                    <p><strong>Status:</strong> 
-                      <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
-                        selectedCell.value.split('/')[0] > 0 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {selectedCell.value.split('/')[0] > 0 ? 'Available' : 'Fully Booked'}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+    <AmarabdAvailabilityOuterList />
     </div>
   );
 };

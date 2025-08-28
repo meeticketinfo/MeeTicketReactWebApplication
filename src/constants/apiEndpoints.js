@@ -328,6 +328,7 @@ export const API_ENDPOINTS = {
     AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
     AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
     AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
+    AMRABAD_AVAILABILITY_OUTER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
     // Filter endpoints for bookings
     GET_AMRABAD_BOOKINGS_BY_FILTERS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByFilters`,
     GET_AMRABAD_BOOKINGS_BY_DATE_RANGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByDateRange`,
