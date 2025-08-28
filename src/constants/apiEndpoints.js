@@ -408,6 +408,9 @@ export const API_ENDPOINTS = {
   },
   AMRABAD_TRANSACTIONS_REPORT:{
     GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionSummaryByFailureDetail`,
+    GET_AMRABAD_GATEWAY_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureFromGateway_SubCategoryReportResult`,
+    GET_AMRABAD_TICKET_NOT_GENERATED_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    GET_AMRABAD_OTHER_REASON_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureDueToOtherReasons_SubCategoryReportResult`,
     //total transaction report
     GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
   }

@@ -11,6 +11,9 @@ import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../util
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import AmrabadTotalTransactionChart from "../../charts/AmrabadTotalTransactionChart";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
 
 
 const AmrabadFailedGateway = () => {
@@ -19,19 +22,20 @@ const AmrabadFailedGateway = () => {
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
   AmarabadTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  // const {
-  //   fetchGateWayPieChart,
-  //   PaymentGatewayPieChartData,
-  //   isPaymentGatewayPieChartLoading,
-  // } = useMetroTotalTransactionsStore();
-  // console.log("PaymentGatewayPieChartData", PaymentGatewayPieChartData);
+  const {
+    fetchGateWayPieChart,
+    PaymentGatewayPieChartData,
+    isPaymentGatewayPieChartLoading,
+  } = useAmarabadTotalTransactionStore();
   useEffect(() => {
-    // fetchGateWayPieChart({
-    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ??startOfDay,
-    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    //   mobileNumber:
-    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    // });
+    fetchGateWayPieChart({
+      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ??startOfDay,
+      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+      mobileNumber:
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      package: (innerFilters.package ?? outerFilters.package) ?? "",
+      house: (innerFilters.house ?? outerFilters.house) ?? "",
+    });
     getPackages()
   }, []);
 
@@ -44,33 +48,28 @@ const AmrabadFailedGateway = () => {
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    // fetchGateWayPieChart(values);
+    fetchGateWayPieChart(values);
   };
-  
 
-  //   const totalCount = Array.isArray(PaymentGatewayPieChartData)
-  // ? PaymentGatewayPieChartData.reduce((sum, item) => sum + item.count, 0)
-  // : 0;
-
-  //      const breadcrumbItems = [
-  //   {
-  //     label: 'Total Transactions',
-  //     path: `/metro-total-transaction`,
-  //     onclick:()=>resetInnerFilters(),
-  //   },
-  //   {
-  //     label: 'Failed (Payment Gateway)',  
-  //     isLast: true
-  //   }
-  // ];
+       const breadcrumbItems = [
+    {
+      label: 'Total Transactions',
+      path: `/metro-total-transaction`,
+      onclick:()=>resetInnerFilters(),
+    },
+    {
+      label: 'Failed (Payment Gateway)',  
+      isLast: true
+    }
+  ];
 
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        {/* <Breadcrumb 
+        <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
-          /> */}
+          />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -212,12 +211,14 @@ const AmrabadFailedGateway = () => {
                         toDate: endOfDay,
                         mobileNumber: "",
                       });
-                      // resetInnerFilters();
-                      // fetchGateWayPieChart({
-                      //   fromDate: startOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      // });
+                      resetInnerFilters();
+                      fetchGateWayPieChart({
+                        fromDate: startOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        package: "",
+                        house: "",
+                      });
                     }}
                   >
                     Reset
@@ -226,7 +227,7 @@ const AmrabadFailedGateway = () => {
               </Form>
             )}
           </Formik>
-          {/* <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+          <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
             <div className="flex">
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                
@@ -236,15 +237,15 @@ const AmrabadFailedGateway = () => {
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroFailedGatewayChart
-                  data={totalCount !== 0 ? PaymentGatewayPieChartData : []}
+                <AmrabadTotalTransactionChart
+                  data={PaymentGatewayPieChartData || []}
                   title="Failed (Payment Gateway)"
                   angleKey="reasonCount"
                   calloutLabelKey="failureReason"
                 />
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </AdminLayout>
