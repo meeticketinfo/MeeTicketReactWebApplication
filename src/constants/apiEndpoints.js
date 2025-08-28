@@ -324,10 +324,15 @@ export const API_ENDPOINTS = {
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
     GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
     GET_USER_DETAILED_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
-    GET_TRANSACTION_TRACK_ORDER:`${AMRABAD_API_BASE_URL}Reports/ViewTransactionTrackOrder`,
+    GET_TRANSACTION_TRACK_ORDER:`${AMRABAD_API_BASE_URL}Reports/GetTransactionTrackingStatusByOrderId`,
+    //refund transaction report
+    GET_REFUND_TRANSACTION_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
+    GET_REFUND_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
+    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
     AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
     AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
     AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
+    AMRABAD_AVAILABILITY_OUTER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
     // Filter endpoints for bookings
     GET_AMRABAD_BOOKINGS_BY_FILTERS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByFilters`,
     GET_AMRABAD_BOOKINGS_BY_DATE_RANGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByDateRange`,

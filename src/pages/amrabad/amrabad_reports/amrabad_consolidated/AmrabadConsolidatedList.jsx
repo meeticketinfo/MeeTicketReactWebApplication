@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import {
@@ -24,25 +24,36 @@ function AmrabadConsolidatedList() {
     totalCount,
     isFetchAllAmrabadBookingsLoading,
   } = useAmrabadBookingStore();
-  const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-consolidated-report-filters")
-  );
-  console.log("savedFilters", savedFilters);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
+  const getSavedFilters = () => {
+    try {
+      const savedFilters = localStorage.getItem("amrabad-consolidated-report-filters");
+      if (savedFilters) {
+        return JSON.parse(savedFilters);
+      }
+    } catch (error) {
+      console.error("Error parsing saved filters:", error);
+    }
+    return null;
+  };
+  const savedFilters = getSavedFilters();
+
+
   useEffect(() => {
     fetchAllAmrabadBookings({
-      startDate: savedFilters?.fromDate ?? getCurrentDate(),
-      endDate: savedFilters?.toDate ?? getCurrentDate(),
-      // bookingSource: savedFilters?.typeOfBooking
-      //   ? savedFilters.typeOfBooking
-      //   : "",
-      // mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
-      // PaymentMode: savedFilters?.PaymentMode ? savedFilters.PaymentMode : "",
-      // PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-      // pageSize: PAGE_LIMIT,
+      startDate: savedFilters?.fromDate || getCurrentDate(),
+      endDate: savedFilters?.toDate || getCurrentDate(),
+      bookingSource: savedFilters?.typeOfBooking || "Purchase",
+      package: savedFilters?.package || "",
+      houses: savedFilters?.houses || "",
+      orderId: savedFilters?.orderId || "",
+      paymentStatus: savedFilters?.paymentStatus || "",
+      modeOfBooking: savedFilters?.modeOfBooking || "",
+      PageIndex: currentPage + 1,
+      pageSize: PAGE_LIMIT,
     });
   }, [currentPage, PAGE_LIMIT]);
 
@@ -50,7 +61,7 @@ function AmrabadConsolidatedList() {
     setCurrentPage(selectedItem.selected);
   };
 
-  const [columnDefs] = useState([
+  const columnDefs = useMemo(() => [
     {
       headerName: "S.No",
       valueGetter: (params) =>
@@ -132,11 +143,40 @@ function AmrabadConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "amountPaid",
-      headerName: "Amount",
+      field: "actualAmount",
+      headerName: "Actual Amount",
+      minWidth: 130,
+      maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : 0),
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "discountApplicable",
+      headerName: "Discount Applicable",
+      minWidth: 160,
+      maxWidth: 160,
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    // {
+    //   field: "totalAmount",
+    //   headerName: "Amount Paid (House Wise)",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) =>
+    //     formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    // },
+    {
+      field: "amount",
+      headerName: "Total Amount",
+      minWidth: 130,
+      maxWidth: 130,
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "mid",
@@ -193,6 +233,8 @@ function AmrabadConsolidatedList() {
             end
             // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
             to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => {
               setisAmrabadCompleteBookings(true);
             }}
@@ -205,28 +247,33 @@ function AmrabadConsolidatedList() {
       flex: 1,
       headerClass: "text-blue-v2",
     },
-  ]);
+  ], [currentPage, PAGE_LIMIT]);
   return (
     <>
       <AmrabadConsolidatedForm
         PageIndex={1}
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
+        
       />
       <div>
         <AgGridTable
+          key={`amrabad-consolidated-${currentPage}-${PAGE_LIMIT}`}
           ExportName="Booking Report"
           rowData={allAmrabadBookings || []}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllAmrabadBookingsLoading}
           isPagination={false}
-          tableHeight={allAmrabadBookings?.data?.length > 10 ? 560 : 330}
+          // tableHeight={(allAmrabadBookings?.data?.length || 0) > 10 ? 560 : 330}
+          tableHeight={
+            (allAmrabadBookings?.length || 0) > 10 ? 560 : 330
+          }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={totalCount  }
+          totalCount={totalCount}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}
