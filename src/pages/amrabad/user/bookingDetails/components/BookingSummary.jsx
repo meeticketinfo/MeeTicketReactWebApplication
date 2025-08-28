@@ -1,6 +1,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
+import { Link } from 'react-router-dom';
 
 // Skeleton loader component for BookingSummary
 const BookingSummarySkeleton = () => {
@@ -84,7 +85,12 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
     return (
       <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5]">
         <div className="text-center text-gray-600 py-3 text-sm">
-          No booking items found
+          No booking items found <br/>
+          <Link to="/amrabad-resort">
+            <button className="text-[#362D86] text-sm rounded-md underline font-semibold">
+              Go to Houses
+            </button>
+          </Link>
         </div>
       </div>
     );
@@ -122,7 +128,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
 
       {/* Swiper for multiple items */}
       {cartItems?.length > 1 ? (
-        <div className="mb-1">
+        <div className="mb-0">
           <Swiper
             modules={[Pagination]}
             spaceBetween={12}
@@ -142,7 +148,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
         </div>
       ) : (
         // Single item display
-        <div className="mb-1">
+        <div className="mb-0">
           <BookingItemCard item={cartItems?.[0]} formatDate={formatDate} />
         </div>
       )}

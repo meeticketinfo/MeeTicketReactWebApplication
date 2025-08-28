@@ -371,6 +371,7 @@ export const API_ENDPOINTS = {
       CLEAR_CART:`${AMRABAD_API_BASE_URL}WebBooking/DeleteAllCartItems`,
       GET_TICKET_VIEW_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/ViewTicket`,
       INITIATE_TRANSACTION:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/IntiateTransactionforCard`,
+      ORDER_STATUS_CALL:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/OrderStatusCall`,
       ADD_NEW_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/AddNewBookingDetails`,
     }
   },
