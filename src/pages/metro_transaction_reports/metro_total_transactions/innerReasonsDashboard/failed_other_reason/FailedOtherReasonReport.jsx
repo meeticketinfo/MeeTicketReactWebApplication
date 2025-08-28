@@ -31,7 +31,6 @@ const FailedOtherReasonReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
 
   useEffect(() => {
     fetchMetroTotalTransactions({

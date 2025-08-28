@@ -19,6 +19,9 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
   TicketNotGeneratedPieChartData: [],
   isTicketNotGeneratedPieChartLoading: false,
 
+  AmrabadTotalTransactionsData: [],
+  isAmrabadTotalTransactionsLoading: false,
+
 
 
   // track order
@@ -127,7 +130,6 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
       set({ error: error.message,OtherReasonsPieChartData: [], isOtherReasonsPieChartLoading: false });
     }
   },
-
 
   // track order
   //   fetchMetroTransactionTrackingStatusByOrderId: async (orderID="") => {

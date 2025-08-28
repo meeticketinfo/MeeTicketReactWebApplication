@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import AgGridTable from "../../../../../../components/tables/AgGridTable";
+import AdminLayout from "../../../../../../layouts/AdminLayout";
+import { formatDateTime } from "../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import useAmrabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AmarabadNotGeneratedReportForm from "./AmarabadNotGeneratedReportForm";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
 
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
+const AmarabadNotGeneratedReport = () => {
 
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 
-import MetroNotGeneratedReportForm from "./MetroNotGeneratedReportForm";
-import Breadcrumb from "../../../../../components/Breadcrumb";
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const packageName = searchParams.get("package");
+  const house = searchParams.get("house");
+  const mobileNumber = searchParams.get("mobileNumber");
+  const fromDate = searchParams.get("fromDate");
+  const toDate = searchParams.get("toDate");
+  const {innerFilters,outerFilters,deepInnerFilters,resetDeepInnerFilters} = useAmrabadTotalCommonStore();
 
-const MetroNotGeneratedReport = () => {
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   const {
-    innerFilters,
-    outerFilters,
-    deepInnerFilters,
-    resetDeepInnerFilters,
-    resetInnerFilters
-  } = useMetroTotalCommonStore();
-  const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+    fetchAmrabadTotalTransactions,
+    AmrabadTotalTransactionsData,
+    isAmrabadTotalTransactionsLoading,
+  } = useAmarabadTotalTransactionStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
@@ -33,11 +36,11 @@ const MetroNotGeneratedReport = () => {
   };
   console.log("outerFilters", innerFilters);
   useEffect(() => {
-    fetchMetroTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
+    fetchAmrabadTotalTransactions({
+      startDate: fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
+      endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
       phoneNumber:
-        (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+        mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
       PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
       subCategory: innerFilters.subCategory ?? "",
@@ -45,7 +48,8 @@ const MetroNotGeneratedReport = () => {
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage]);
+  }, [PAGE_LIMIT, currentPage]);  
+  
   const columnDefs = [
     {
       headerName: "S.No",
@@ -88,23 +92,33 @@ const MetroNotGeneratedReport = () => {
         </Link>
       ),
     },
+
+      
+      {
+        field: "userName",
+        headerName: "User Name",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+
     {
       field: "mobileNumber",
-      headerName: "Mobile No.",
+      headerName: "Mobile Number of User",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "fromStationName",
-      headerName: "From Station",
+      field: "packageName",
+      headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "houseNames",
+      headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -119,13 +133,19 @@ const MetroNotGeneratedReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
+      field: "noOfHouses",
+      headerName: "No of Houses Booked",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+    {
+      field: "bookingType",
+      headerName: "Mode of Booking",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "paymentMode",
       headerName: "Payment Mode",
@@ -198,7 +218,7 @@ const MetroNotGeneratedReport = () => {
           </div>
           <div className="">
             <Link
-              to="/metro-not-generated"
+              to="/amrabad-not-generated"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -210,16 +230,21 @@ const MetroNotGeneratedReport = () => {
         </div>
 
         <div>
-          <MetroNotGeneratedReportForm
+          <AmarabadNotGeneratedReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
+            packageName={packageName}
+            house={house}
+            mobileNumber={mobileNumber}
+            fromDate={fromDate}
+            toDate={toDate}
           />
-          <AgGridTable
+           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
+            rowData={AmrabadTotalTransactionsData}
             columnDefs={columnDefs}
-            isFetchLoading={isMetroTotalTransactionsLoading}
+            isFetchLoading={isAmrabadTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -227,8 +252,8 @@ const MetroNotGeneratedReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={MetroTotalTransactionsData[0]?.totalCount}
-            tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={AmrabadTotalTransactionsData[0]?.totalCount}
+            tableHeight={AmrabadTotalTransactionsData.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>
@@ -237,4 +262,4 @@ const MetroNotGeneratedReport = () => {
   );
 };
 
-export default MetroNotGeneratedReport;
+export default AmarabadNotGeneratedReport;

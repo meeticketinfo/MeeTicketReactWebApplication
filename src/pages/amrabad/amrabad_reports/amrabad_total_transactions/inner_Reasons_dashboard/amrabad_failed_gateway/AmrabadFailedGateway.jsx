@@ -91,7 +91,7 @@ const AmrabadFailedGateway = () => {
         <div>
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue, setValues }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2">
                 <div>
                   <label
                     htmlFor="startDate"

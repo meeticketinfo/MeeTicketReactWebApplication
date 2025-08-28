@@ -1,32 +1,53 @@
 import { Formik, Form, Field } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import useAmrabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import {
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../utils/Helper";
+import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
 
 const FailedOtherReasonReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  packageName,
+  house,
+  mobileNumber,
+  fromDate,
+  toDate,
 }) => {
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
-  const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = useMetroTotalCommonStore();
-  console.log("outerFilters", innerFilters);
-  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
+  const endOfDay = getEndOfCurrentDay();
+  const { innerFilters, setDeepInnerFilters, deepInnerFilters } =
+    useAmrabadTotalCommonStore();
+  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   const initialValues = {
-    startDate: (deepInnerFilters.startDate??innerFilters.fromDate) ?? startOfDay,
-    endDate: (deepInnerFilters.endDate??innerFilters.toDate) ?? endOfDay,
-    phoneNumber: (deepInnerFilters.mobileNumber??innerFilters.mobileNumber) ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode??"",
+    startDate:
+      fromDate ??
+      deepInnerFilters.startDate ??
+      innerFilters.fromDate ??
+      startOfDay,
+    endDate:
+      toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? endOfDay,
+    phoneNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
+    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    PaymentMode: deepInnerFilters.PaymentMode ?? "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
-    setDeepInnerFilters(values)
-    fetchMetroTotalTransactions({
+    setDeepInnerFilters(values);
+    fetchAmrabadTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory:innerFilters.subCategory,
+      subCategory: innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -104,6 +125,55 @@ const FailedOtherReasonReportForm = ({
               />
             </div>
             {/*Payment Mode */}
+
+            <div>
+              <label
+                htmlFor="package"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Packages
+              </label>
+              <Field
+                as="select"
+                name="package"
+                placeholder="Select Package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  getHouses(packageId);
+                  setFieldValue("package", packageId);
+                }}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="house"
+                className="block text-xs font-medium text-gray-700"
+              >
+                House
+              </label>
+              <Field
+                as="select"
+                name="house"
+                placeholder="Select House"
+                disabled={!values.package || values.package === ""}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
+              </Field>
+            </div>
             <div>
               <label
                 htmlFor="PaymentMode"
@@ -126,6 +196,7 @@ const FailedOtherReasonReportForm = ({
                 <option value="netBanking">Net Banking</option>
               </Field>
             </div>
+
             <div className="flex items-end">
               <button
                 type="submit"
