@@ -54,7 +54,7 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
   //TOTAL TRANSACTIONS
   fetchAmrabadTotalTransactions: async (payload) => {
     set({ isAmrabadTotalTransactionsLoading: true });
-    const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&package=${payload.package}&house=${payload.house}&status=${payload.status}&paymentMode=${payload.PaymentMode}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+    const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&packageId=${payload.package}&roomId=${payload.house}&status=${payload.status}&paymentMode=${payload.PaymentMode}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.AMRABAD_TRANSACTIONS_REPORT.GET_AMRABAD_TOTAL_TRANSACTION_STATUS}${param}`
