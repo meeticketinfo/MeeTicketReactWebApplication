@@ -98,7 +98,7 @@ const AmrabadTotalTransactionChart = ({
           Total Transactions&nbsp;
           <Link
             to="/metro-total-report"
-            onClick={() => {
+            onClick={() => {  
               setOuterFilters({ ...outerFilters, status: "" });
             }}
             className="text-[#007AFF] font-bold underline ml-1"

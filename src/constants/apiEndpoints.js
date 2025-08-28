@@ -320,6 +320,7 @@ export const API_ENDPOINTS = {
     GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
     GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
     GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/PaymentTransactionsReport`,
+    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
     GET_AMRABAD_VERIFY_STATUS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/CheckOrderTransactionStatus`,
     GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
     GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
@@ -406,7 +407,7 @@ export const API_ENDPOINTS = {
     }
   },
   AMRABAD_TRANSACTIONS_REPORT:{
-    GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/TotalTransactionsReport`,
+    GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionSummaryByFailureDetail`,
    
   }
 };
