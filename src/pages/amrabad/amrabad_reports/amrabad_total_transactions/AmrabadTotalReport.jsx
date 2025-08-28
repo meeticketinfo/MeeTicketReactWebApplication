@@ -8,7 +8,7 @@ import AgGridTable from "../../../../components/tables/AgGridTable";
 import { formatDateTime } from "../../../../utils/Helper";
 import { formatToCurrency } from "../../../../utils/TypographyHelper";
 import Breadcrumb from "../../../../components/Breadcrumb";
-// import OuterAmarabadTotalTransactionForm from "./outer_report/OuterAmarabadTotalTransactionForm";
+import OuterAmarabadTotalTransactionForm from "./outer_report/OuterAmarabadTotalTransactionForm";
 
 const AmrabadTotalReport = () => {
   const {
@@ -30,12 +30,14 @@ const AmrabadTotalReport = () => {
   console.log("outerFilters", outerFilters);
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? outerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? outerFilters.toDate) ?? "",
+      startDate: (innerFilters.startDate ?? outerFilters.fromDate) ?? "",
+      endDate: (innerFilters.endDate ?? outerFilters.toDate) ?? "",
       phoneNumber:
-        (deepInnerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
-      status: outerFilters.status ?? "",
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      package:(innerFilters.package ?? outerFilters.package) ?? "",
+      house:(innerFilters.house ?? outerFilters.house) ?? "",
+      PaymentMode: innerFilters.PaymentMode ?? "",
+      status: innerFilters.status ?? "",
       subCategory: "",
 
       pageNumber: currentPage + 1,
@@ -201,11 +203,11 @@ const AmrabadTotalReport = () => {
         </div>
 
         <div>
-          {/* <OuterAmarabadTotalTransactionForm
+          <OuterAmarabadTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
-          /> */}
+          />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={AmrabadTotalTransactionsData}

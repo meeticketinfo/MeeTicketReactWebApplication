@@ -14,6 +14,7 @@ import { usePackagesStore } from "../../../../../../store/amrabad/masters/packag
 import AmrabadTotalTransactionChart from "../../charts/AmrabadTotalTransactionChart";
 import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
+import AmrabadFailedGatewayChart from "../../charts/AmrabadFailedGatewayChart";
 
 
 const AmrabadFailedGateway = () => {
@@ -54,7 +55,7 @@ const AmrabadFailedGateway = () => {
        const breadcrumbItems = [
     {
       label: 'Total Transactions',
-      path: `/metro-total-transaction`,
+      path: `/amarabad-total-transaction`,
       onclick:()=>resetInnerFilters(),
     },
     {
@@ -237,7 +238,7 @@ const AmrabadFailedGateway = () => {
                     <div className="loader"></div>
                   </div>
                 )}
-                <AmrabadTotalTransactionChart
+                <AmrabadFailedGatewayChart
                   data={PaymentGatewayPieChartData || []}
                   title="Failed (Payment Gateway)"
                   angleKey="reasonCount"

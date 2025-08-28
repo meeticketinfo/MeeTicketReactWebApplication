@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { Link, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../../../components/tables/AgGridTable";
+import { Link } from "react-router-dom";
+
+import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AgGridTable from "../../../../../components/tables/AgGridTable";
 import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import {
@@ -31,8 +34,8 @@ const FailedOtherReasonReport = () => {
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = useAmrabadTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+    resetInnerFilters
+  } = AmarabadTotalCommonStore();
   const {
     fetchAmrabadTotalTransactions,
     AmrabadTotalTransactionsData,
