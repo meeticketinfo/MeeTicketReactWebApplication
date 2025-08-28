@@ -7,7 +7,6 @@ import { useBookingsStore } from "../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../utils/Helper";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { useAmrabadTrackOrderStore } from "../../../../store/amrabad/reports/TransactionTrackOrderStore";
-import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
@@ -68,7 +67,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "requestTimeStamps",
+      field: "requestTimestamp",
       maxWidth: "200",
       headerName: "Request Time Stamp",
       headerClass: "text-blue-v2",
@@ -78,7 +77,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       },
     },
     {
-      field: "responseTimeStamps",
+      field: "responseTimestamp",
       maxWidth: "200",
       headerName: "Response Time Stamp",
       headerClass: "text-blue-v2",
@@ -104,7 +103,7 @@ const AmrabadUserTransactionsOrderTracker = () => {
       ),
     },
     {
-      field: "resultMessage",
+      field: "resultMsg",
       flex: 1,
       headerName: "Result Msg",
       headerClass: "text-blue-v2",
