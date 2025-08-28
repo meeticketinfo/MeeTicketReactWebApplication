@@ -9,6 +9,10 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
   AmarabadTransactionByReasonData: [],
   isAmarabadTransactionByReasonLoading: false,
 
+  //metro total transactions
+  AmrabadTotalTransactionsData: [],
+  isAmrabadTotalTransactionsLoading: false,
+
   // track order
 
   //   isFetchMetroTransactionTrackingStatusByOrderId: false,
@@ -39,7 +43,24 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
       toast.error(error.message);
     }
   },
+  //TOTAL TRANSACTIONS
+  fetchAmrabadTotalTransactions: async (payload) => {
+    set({ isAmrabadTotalTransactionsLoading: true });
+    const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&status=${payload.status}&paymentMode=${payload.PaymentMode}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.AMRABAD_TRANSACTIONS_REPORT.GET_AMRABAD_TOTAL_TRANSACTION_STATUS}${param}`
+      );
 
+      set({
+        AmrabadTotalTransactionsData: response.data,
+        isAmrabadTotalTransactionsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, AmrabadTotalTransactionsData: [], isAmrabadTotalTransactionsLoading: false });
+      toast.error(error.message)
+    }
+  },
   // track order
   //   fetchMetroTransactionTrackingStatusByOrderId: async (orderID="") => {
   //     set({ isFetchMetroTransactionTrackingStatusByOrderId: true });

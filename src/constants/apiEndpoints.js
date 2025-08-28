@@ -408,6 +408,7 @@ export const API_ENDPOINTS = {
   },
   AMRABAD_TRANSACTIONS_REPORT:{
     GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionSummaryByFailureDetail`,
-   
+    //total transaction report
+    GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
   }
 };

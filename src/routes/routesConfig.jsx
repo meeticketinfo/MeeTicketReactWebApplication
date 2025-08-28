@@ -145,6 +145,7 @@ import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total
 import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
 import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
+import AmrabadTotalReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/AmrabadTotalReport";
 
 export const routes = [
   {
@@ -702,5 +703,9 @@ export const routes = [
   {
     path: "/amrabad-not-generated",
     element: <ProtectedRoute element={<AmrabadNotGenerated/>} />,
+  },
+  {
+    path: "/amrabad-total-report",
+    element: <ProtectedRoute element={<AmrabadTotalReport/>} />,
   },
 ];
