@@ -1,12 +1,27 @@
 import { FaTicketAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import { useState } from "react";
+import { usePaymentStore } from "../../../../../store/amrabad/user/userPaymentStore";
+import { BiLoaderAlt } from "react-icons/bi";
+import { toast } from "react-toastify";
 
-const CancelTicketModal = ({ isOpen, onClose, onConfirm }) => {
+const CancelTicketModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
+  const [cancellationReason, setCancellationReason] = useState("");
+  const { cancelTicket, loadingCancelTicket } = usePaymentStore();
   if (!isOpen) return null;
 
+  const handleConfirm = async () => {
+    const response = await cancelTicket({
+      bookingId: bookingId,
+      reason: cancellationReason
+    });
+    if (response.statusCode === 200) {
+      onConfirm();
+    }
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-[600px] w-full p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
+      <div className="bg-white rounded-lg max-w-[600px] w-full p-4 relative">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -30,7 +45,6 @@ const CancelTicketModal = ({ isOpen, onClose, onConfirm }) => {
                 </clipPath>
               </defs>
             </svg>
-
           </div>
           <h2 className="text-xl font-bold text-[#E51409]">Cancel Ticket</h2>
         </div>
@@ -50,6 +64,21 @@ const CancelTicketModal = ({ isOpen, onClose, onConfirm }) => {
           </p>
         </div>
 
+        {/* Cancellation Reason Textarea */}
+        <div className="mb-6">
+          <label htmlFor="cancellationReason" className="block text-sm font-medium text-gray-700 mb-2">
+            Reason for cancellation (Optional)
+          </label>
+          <textarea
+            id="cancellationReason"
+            value={cancellationReason}
+            onChange={(e) => setCancellationReason(e.target.value)}
+            placeholder="Please provide a reason for cancellation..."
+            className="text-sm w-full px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            rows="4"
+          />
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-3 max-w-[300px] mx-auto">
           <button
@@ -59,10 +88,12 @@ const CancelTicketModal = ({ isOpen, onClose, onConfirm }) => {
             No
           </button>
           <button
-            onClick={onConfirm}
-            className="flex-1 bg-[#FE3838] hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+            onClick={handleConfirm}
+            disabled={loadingCancelTicket}
+            className="flex-1 bg-[#FE3838] hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Yes
+            {loadingCancelTicket && <BiLoaderAlt className="animate-spin" />}
           </button>
         </div>
       </div>

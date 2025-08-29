@@ -1,6 +1,9 @@
 import { toast } from "react-toastify";
+import { usePaymentStore } from "../../../../../store/amrabad/user/userPaymentStore";
 
 export const usePaytmPaymentHandler = (host = "https://secure.paytmpayments.com") => {
+    const { saveCardPaymentTransactions } = usePaymentStore();
+
     const loadPaytmScript = (paymentData, onScriptLoaded) => {
         console.log("paymentData => ", paymentData);
         console.log("HOST => ", host);
@@ -87,6 +90,9 @@ export const usePaytmPaymentHandler = (host = "https://secure.paytmpayments.com"
 
     const getPaymentConfig = (paymentData, grandTotal, onPaymentSuccess) => ({
         root: "",
+        style: {
+            headerBackgroundColor: "#6f5eff",
+        },
         flow: "DEFAULT",
         data: {
             orderId: paymentData?.orderId,
@@ -126,6 +132,13 @@ export const usePaytmPaymentHandler = (host = "https://secure.paytmpayments.com"
                     if (onPaymentSuccess) {
                         onPaymentSuccess(paymentStatus, paymentData?.orderId);
                     }
+
+                    // Save card payment transaction
+                    saveCardPaymentTransactions({
+                        orderId: paymentData?.orderId,
+                        responseJson: JSON.stringify(paymentStatus),
+                        cardType: paymentStatus?.PAYMENTMODE
+                    });
                 } else {
                     toast.error("Payment failed!");
                     window.Paytm.CheckoutJS.close();
