@@ -24,8 +24,6 @@ const ConfirmedDetails = () => {
     fetchTicketViewDetails(bookingId);
   }, []);
 
-  console.log("GetTicketViewDetails", GetTicketViewDetails);
-
   // Show loading state while data is being fetched
 
   const handleCancelTicket = () => {
@@ -89,6 +87,7 @@ const ConfirmedDetails = () => {
       <CancelTicketModal
         isOpen={showCancelModal}
         onClose={handleCloseCancelModal}
+        bookingId={GetTicketViewDetails?.bookingItems[0]?.bookingId}
         onConfirm={handleConfirmCancellation}
       />
 

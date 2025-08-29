@@ -9,9 +9,6 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
   AmarabadTransactionByReasonData: [],
   isAmarabadTransactionByReasonLoading: false,
 
-  //metro total transactions
-  AmrabadTotalTransactionsData: [],
-  isAmrabadTotalTransactionsLoading: false,
 
   PaymentGatewayPieChartData: [],
   isPaymentGatewayPieChartLoading: false,

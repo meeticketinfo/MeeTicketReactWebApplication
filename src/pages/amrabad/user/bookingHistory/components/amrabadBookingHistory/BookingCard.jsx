@@ -1,4 +1,4 @@
-import { FaEye, FaDownload, FaCheck, FaTimes, FaClock } from "react-icons/fa";
+import { FaEye, FaDownload, FaCheck, FaTimes, FaClock, FaTrash } from "react-icons/fa";
 import { IoIosCloseCircleOutline, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { CiCalendar } from "react-icons/ci";
 import { getStatusBadgeClass } from "../../data/bookingData";
@@ -10,26 +10,49 @@ import { formatDateTimeToReadable, formatDate } from "../../../../../../utils/He
 import { MdHistory } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import CancelTicketModal from "../../../confirmedDetails/components/CancelTicketModal";
+import CancellationSuccessModal from "../../../confirmedDetails/components/CancellationSuccessModal";
 
 const BookingCard = ({ booking }) => {
 
   const [imageError, setImageError] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleImageError = () => {
     setImageError(true);
+  };
+
+  // Cancel ticket handlers
+  const handleCancelTicket = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancellation = () => {
+    setShowCancelModal(false);
+    setShowSuccessModal(true);
+    // Add your cancellation logic here
+  };
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false);
+  };
+
+  const handleCloseSuccessModal = () => {
+    setShowSuccessModal(false);
   };
   const getStatusIconComponent = (historyStatus) => {
     switch (historyStatus) {
       case "Booked":
         return <IoMdCheckmarkCircleOutline className="text-green-600" />;
-      case "cancelled":
+      case "Cancelled":
         return <IoIosCloseCircleOutline className="text-red-600" />;
       case "upcoming":
         return <FaClock className="text-blue-600" />;
       case "Past":
         return <MdHistory className="text-gray-600" />;
       default:
-        return null;
+        return <IoMdCheckmarkCircleOutline className="text-green-600" />;
     }
   };
   // Helper function to get status badge class
@@ -37,14 +60,29 @@ const BookingCard = ({ booking }) => {
     switch (historyStatus) {
       case "Booked":
         return "bg-green-50 text-green-800";
-      case "cancelled":
+      case "Cancelled":
         return "bg-red-50 text-red-800";
       case "upcoming":
         return "bg-blue-50 text-blue-800";
       case "Past":
         return "bg-gray-50 text-gray-800";
       default:
-        return "bg-gray-50 text-gray-800";
+        return "bg-green-50 text-green-800";
+    }
+  };
+  // Helper function to get status badge class
+  const getStatusBadgeText = (historyStatus) => {
+    switch (historyStatus) {
+      case "Booked":
+        return "Booked";
+      case "Cancelled":
+        return "Cancelled";
+      case "upcoming":
+        return "Upcoming";
+      case "Past":
+        return "Past";
+      default:
+        return "Booked";
     }
   };
 
@@ -83,9 +121,9 @@ const BookingCard = ({ booking }) => {
                 <h3 className="text-lg sm:text-2xl font-bold text-black  min-w-0">
                   {booking?.houseName ?? "N/A"}
                 </h3>
-                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(booking.bookingStatus)} flex items-center gap-1 border-0`}>
-                  <span className="text-base">{getStatusIconComponent(booking.bookingStatus)}</span>
-                  {booking.bookingStatus}
+                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium border ${getStatusBadgeClass(booking.historyStatus)} flex items-center gap-1 border-0`}>
+                  <span className="text-base">{getStatusIconComponent(booking.historyStatus)}</span>
+                  {getStatusBadgeText(booking.historyStatus)}
                 </span>
               </div>
               {/* Package */}
@@ -156,7 +194,7 @@ const BookingCard = ({ booking }) => {
             <span className="text-gray-600">Category:</span> <span className="font-bold">{booking.category}</span>
           </div> */}
         </div>
-        <div className="flex gap-2 lg:gap-4">
+        <div className="flex gap-3 lg:gap-4">
           <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}`} className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
             <FaEye />
             <span className="hidden xs:inline">View Details</span>
@@ -169,8 +207,31 @@ const BookingCard = ({ booking }) => {
             <BsDownload />
             <span className="hidden xs:inline">Download</span>
           </Link>
+          {booking.historyStatus === "Upcoming" && (
+            <button 
+              onClick={handleCancelTicket}
+              className="flex items-center gap-1 text-red-500 hover:text-red-700 transition-colors text-xs sm:text-sm"
+            >
+              <IoIosCloseCircleOutline />
+              <span className="hidden xs:inline">Cancel</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {/* Cancel Ticket Modal */}
+      <CancelTicketModal
+        isOpen={showCancelModal}
+        onClose={handleCloseCancelModal}
+        onConfirm={handleConfirmCancellation}
+        bookingId={booking?.bookingId}
+      />
+
+      {/* Cancellation Success Modal */}
+      <CancellationSuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleCloseSuccessModal}
+      />
     </div>
   );
 };
