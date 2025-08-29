@@ -166,7 +166,7 @@ const AmarabadSuccessViewTrackOrder = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
                <p className="text-sm font-semibold text-gray-900">
                 {orderId || 'N/A'}
-                {orderId && orderId != "Not Generated" && (
+                {bookingId && bookingId != "Not Generated" && (
                   <NavLink
                     end
                     to={`/amrabad-admin/ticket-view-details/${orderId}`}

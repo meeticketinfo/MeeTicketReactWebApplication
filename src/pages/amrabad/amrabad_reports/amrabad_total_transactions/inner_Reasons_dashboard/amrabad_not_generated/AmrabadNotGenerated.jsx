@@ -222,17 +222,19 @@ const AmrabadNotGenerated = () => {
                       onClick={() => {
                         setValues({
                           fromDate: startOfDay,
-                          toDate: startOfDay,
+                          toDate: endOfDay,
                           package: "",
                           house: "",
                           mobileNumber: "",
                         });
-                        // resetInnerFilters();
-                        // fetchTicketNotGeneratedPieChart({
-                        //   fromDate: startOfDay,
-                        //   toDate: endOfDay,
-                        //   mobileNumber: "",
-                        // });
+                        resetInnerFilters();
+                        fetchTicketNotGeneratedPieChart({
+                          fromDate: startOfDay,
+                          toDate: endOfDay,
+                          mobileNumber: "",
+                          package: "",
+                          house: "",
+                        });
                       }}
                     >
                       Reset

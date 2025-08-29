@@ -113,7 +113,7 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
 
   fetchOtherReasonsPieChart: async (payload) => {
     set({ isOtherReasonsPieChartLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}`;
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&packageId=${payload.package}&roomId=${payload.house}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.AMRABAD_TRANSACTIONS_REPORT.GET_AMRABAD_OTHER_REASON_PIE_CHART}${param}`
