@@ -88,7 +88,9 @@ const AmarabadNotGeneratedReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
-            subCategory: params.data.subCategory,
+            subCategory: params.data.subCategory, 
+            packageName: params.data.packageName,
+            houseName: params.data.roomName,
           }}
         >
           View Track Order

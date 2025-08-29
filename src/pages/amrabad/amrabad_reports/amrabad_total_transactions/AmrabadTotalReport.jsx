@@ -78,6 +78,8 @@ const AmrabadTotalReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            packageName: params.data.packageName,
+            houseName: params.data.roomName,
           }}
         >
           View Track Order

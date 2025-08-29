@@ -39,7 +39,7 @@ const AmarabadSuccessViewTrackOrder = () => {
   } = AmarabadTotalCommonStore();
   const location = useLocation();
   const navigate = useNavigate();
-  const { orderId, mobileNumber, packageNames, houseNames, date, amount, bookingId, backTitle } = location.state || {};
+  const { orderId, mobileNumber, packageName, houseName, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
   const userDetailedAmrabadReportSearchParams = localStorage.getItem("userDetailedAmrabadReportSearchParams");
@@ -166,7 +166,7 @@ const AmarabadSuccessViewTrackOrder = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
                <p className="text-sm font-semibold text-gray-900">
                 {orderId || 'N/A'}
-                {orderId && orderId != "Not Generated" && (
+                {bookingId && bookingId != "Not Generated" && (
                   <NavLink
                     end
                     to={`/amrabad-admin/ticket-view-details/${orderId}`}
@@ -194,11 +194,11 @@ const AmarabadSuccessViewTrackOrder = () => {
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Package Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{packageNames || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{packageName || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">House Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{houseNames || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{houseName || 'N/A'}</p>
             </div>
           </div>
 
