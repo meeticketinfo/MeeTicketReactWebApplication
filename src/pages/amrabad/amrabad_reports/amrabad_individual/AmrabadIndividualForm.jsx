@@ -213,7 +213,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Website">Website</option>
+                <option value="Web">Website</option>
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>

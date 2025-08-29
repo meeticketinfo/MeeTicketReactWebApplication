@@ -141,6 +141,7 @@ const OuterAmarabadTotalTransactionReport = () => {
                 placeholder="Select Package"
                 onChange={(e) => {
                   const packageId = e.target.value;
+                  getHouses(packageId);
                   setFieldValue("package", packageId);
                   
                   if (packageId === "") {

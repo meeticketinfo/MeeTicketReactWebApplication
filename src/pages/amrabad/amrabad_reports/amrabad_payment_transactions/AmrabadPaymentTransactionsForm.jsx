@@ -25,12 +25,14 @@ const AmrabadPaymentTransactionsForm = ({
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
+    purchaseOrBooking: savedFilters?.purchaseOrBooking || "Purchase",
     package: savedFilters?.package ? savedFilters.package : "",
     house: savedFilters?.house ? savedFilters.house : "",
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
       : null,
-    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+    modeOfBooking: savedFilters?.modeOfBooking || "",
+    // paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
     transactionId: savedFilters?.transactionId ? savedFilters.transactionId : "",
   };
@@ -45,10 +47,12 @@ const AmrabadPaymentTransactionsForm = ({
     fetchAmrabadPaymentTransactions({
       startDate: values.fromDate,
       endDate: values.toDate,
+      purchaseOrBooking: values.purchaseOrBooking  || "",
       package: values.package || "",
       house: values.house || "",
       paymentStatus: values.paymentStatus || "",
-      paymentMode: values.paymentMode || "",
+      // paymentMode: values.paymentMode || "",
+      modeOfBooking: values.modeOfBooking,
       phoneNumber: values.phoneNumber || "",
       transactionId: values.transactionId || "",
       PageIndex,
@@ -103,10 +107,24 @@ const AmrabadPaymentTransactionsForm = ({
                 }}
               />
             </div>
+             <div>
+              <label className="block text-sm font-medium">
+                Purchase / Booking
+              </label>
+              <Field
+                as="select"
+                name="purchaseOrBooking"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="Purchase">Purchase Date</option>
+                <option value="Booking">Booking Date</option>
+              </Field>
+            </div>
             {/* packages */}
             <div>
               <label
-                htmlFor="mobileNumber"
+                htmlFor="package"
                 className="block text-xs font-medium text-gray-700"
               >
                 Packages
@@ -117,8 +135,13 @@ const AmrabadPaymentTransactionsForm = ({
                 placeholder="Select Package"
                 onChange={(e) => {
                   const packageId = e.target.value;
-                  getHouses(packageId);
                   setFieldValue("package", packageId);
+                    if (packageId === "") {
+                    // Clear house when package is unselected
+                    setFieldValue("house", "");
+                  } else {
+                  getHouses(packageId);
+                  }
                 }}
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
@@ -132,7 +155,7 @@ const AmrabadPaymentTransactionsForm = ({
             </div>
             <div>
               <label
-                htmlFor="mobileNumber"
+                htmlFor="house"
                 className="block text-xs font-medium text-gray-700"
               >
                 House
@@ -152,6 +175,56 @@ const AmrabadPaymentTransactionsForm = ({
                 ))}
               </Field>
             </div>
+             <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Phone Number
+              </label>
+              <Field
+                type="text"
+                maxLength="10"
+                name="phoneNumber"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter phone number"
+                onKeyPress={(e) => {
+                  if (!/^\d$/.test(e.key)) {
+                    e.preventDefault(); // Prevent non-numeric characters
+                  }
+                }}
+              />
+            </div>
+             {/* transaction Status */}
+            <div>
+              <label
+                htmlFor="transactionId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Transaction ID
+              </label>
+              <Field
+                type="text"
+                name="transactionId"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter transaction ID"
+              />
+            </div>
+             <div>
+              <label className="block text-sm font-medium">
+                Mode of booking
+              </label>
+              <Field
+                as="select"
+                name="modeOfBooking"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">Select</option>
+                <option value="Web">Website</option>
+                <option value="Mobile">Mobile</option>
+              </Field>
+            </div>
             <div>
               <label className="block text-sm font-medium">
                 Payment Status
@@ -169,7 +242,8 @@ const AmrabadPaymentTransactionsForm = ({
                 <option value="FAILED">Failed</option>
               </Field>
             </div>
-            <div>
+
+            {/* <div>
               <label
                 htmlFor="paymentMode"
                 className="block text-xs font-medium text-gray-700"
@@ -190,42 +264,9 @@ const AmrabadPaymentTransactionsForm = ({
                 <option value="debitCard">Debit Card</option>
                 <option value="netBanking">Net Banking</option>
               </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Phone Number
-              </label>
-              <Field
-                type="text"
-                maxLength="10"
-                name="phoneNumber"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
-                onKeyPress={(e) => {
-                  if (!/^\d$/.test(e.key)) {
-                    e.preventDefault(); // Prevent non-numeric characters
-                  }
-                }}
-              />
-            </div>
-            {/* transaction Status */}
-            <div>
-              <label
-                htmlFor="transactionId"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Transaction ID
-              </label>
-              <Field
-                type="text"
-                name="transactionId"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter transaction ID"
-              />
-            </div>
+            </div> */}
+           
+           
             <div className="flex items-end gap-2">
               <button
                 type="submit"
@@ -246,6 +287,8 @@ const AmrabadPaymentTransactionsForm = ({
                     values: {
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
+                      purchaseOrBooking:"",
+                      modeOfBooking:"",
                       package: "",
                       house: "",
                       paymentStatus: "",
@@ -257,6 +300,8 @@ const AmrabadPaymentTransactionsForm = ({
                   fetchAmrabadPaymentTransactions({
                     startDate: getCurrentDate(),
                     endDate: getCurrentDate(),
+                    purchaseOrBooking:"",
+                    modeOfBooking:"",
                     package: "",
                     house: "",
                     paymentStatus: "",
