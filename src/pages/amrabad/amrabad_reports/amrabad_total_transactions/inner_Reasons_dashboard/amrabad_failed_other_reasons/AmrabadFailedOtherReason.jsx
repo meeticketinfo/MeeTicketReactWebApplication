@@ -11,6 +11,9 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
+import AmrabadTotalTransactionChart from "../../charts/AmrabadTotalTransactionChart";
 
 const AmrabadFailedOtherReason = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -18,21 +21,23 @@ const AmrabadFailedOtherReason = () => {
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     AmarabadTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  // const {
-  //   fetchOtherReasonsPieChart,
-  //   OtherReasonsPieChartData,
-  //   isOtherReasonsPieChartLoading,
-  // } = useMetroTotalTransactionsStore();
+  const {
+    fetchOtherReasonsPieChart,
+    OtherReasonsPieChartData,
+    isOtherReasonsPieChartLoading,
+  } = useAmarabadTotalTransactionStore();
+
+  console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
   // console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
 
-  // const filtersToUse = {
-  //   fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
-  //   toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-  //   mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
-  // };
+  const filtersToUse = {
+    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+  };
 
   useEffect(() => {
-    // fetchOtherReasonsPieChart(filtersToUse);
+    fetchOtherReasonsPieChart(filtersToUse);
     getPackages();
   }, []);
 
@@ -51,23 +56,23 @@ const AmrabadFailedOtherReason = () => {
   // const totalCount = Array.isArray(OtherReasonsPieChartData)
   //   ? OtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
   //   : 0;
-  // const breadcrumbItems = [
-  //   {
-  //     label: "Total Transactions ",
-  //     path: `/metro-total-transaction`,
-  //     onclick: () => resetInnerFilters(),
-  //   },
-  //   {
-  //     label: "Failed (Other Reasons)",
-  //     isLast: true,
-  //   },
-  // ];
+  const breadcrumbItems = [
+    {
+      label: "Total Transactions ",
+      path: `/metro-total-transaction`,
+      onclick: () => resetInnerFilters(),
+    },
+    {
+      label: "Failed (Other Reasons)",
+      isLast: true,
+    },
+  ];
 
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
-          {/* <Breadcrumb customItems={breadcrumbItems} className="mb-4" /> */}
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
@@ -225,7 +230,7 @@ const AmrabadFailedOtherReason = () => {
             )}
           </Formik>
 
-          {/* <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+          <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
             <div className="flex">
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                
@@ -235,15 +240,15 @@ const AmrabadFailedOtherReason = () => {
                     <div className="loader"></div>
                   </div>
                 )}
-                <FailedOtherReasonChart
-                  data={totalCount !== 0 ? OtherReasonsPieChartData : []}
+                <AmrabadTotalTransactionChart
+                  data={OtherReasonsPieChartData || []}
                   title="Failed Other Reasons"
                   angleKey="subCategoryCount"
                   calloutLabelKey="subCategory"
                 />
               </div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </AdminLayout>

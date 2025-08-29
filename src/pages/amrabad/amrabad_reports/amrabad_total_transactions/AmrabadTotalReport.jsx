@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import AmarabadTotalCommonStore from "../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AdminLayout from "../../../../layouts/AdminLayout";
+import AgGridTable from "../../../../components/tables/AgGridTable";
+import { formatDateTime } from "../../../../utils/Helper";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import OuterAmarabadTotalTransactionForm from "./outer_report/OuterAmarabadTotalTransactionForm";
 
-import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
-import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-import Breadcrumb from "../../../../../components/Breadcrumb";
-
-const FailedOtherReasonReport = () => {
-  const startOfDay = getStartOfCurrentDay();
-      const endOfDay = getEndOfCurrentDay();
+const AmrabadTotalReport = () => {
   const {
     innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-    resetInnerFilters
   } = AmarabadTotalCommonStore();
   const {
     fetchAmrabadTotalTransactions,
@@ -31,23 +27,22 @@ const FailedOtherReasonReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
-
+  console.log("outerFilters", outerFilters);
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
-      phoneNumber: (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      package: (innerFilters.package ?? deepInnerFilters.package) ?? "",
-      house: (innerFilters.house ?? deepInnerFilters.house) ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
-      status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
+      startDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? "",
+      endDate: (innerFilters.toDate ?? outerFilters.toDate) ?? "",
+      phoneNumber:
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      package:(innerFilters.package ?? outerFilters.package) ?? "",
+      house:(innerFilters.house ?? outerFilters.house) ?? "",
+      PaymentMode: innerFilters.PaymentMode ?? "",
+      status:outerFilters.status ?? "",
+      subCategory: "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
-
   const columnDefs = [
     {
       headerName: "S.No",
@@ -61,7 +56,7 @@ const FailedOtherReasonReport = () => {
     {
       field: "createdDate",
       maxWidth: "200",
-      headerName: "Transaction Date & Time",
+      headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -90,23 +85,30 @@ const FailedOtherReasonReport = () => {
         </Link>
       ),
     },
-    {
-      field: "mobileNumber",
-      headerName: "Mobile No.",
+      {
+      field: "userName",
+      headerName: "User name",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "fromStationName",
-      headerName: "From Station",
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "packageName",
+      headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "roomName",
+      headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -121,13 +123,19 @@ const FailedOtherReasonReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
+      field: "noOfHouses",
+      headerName: "No of Houses booked",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+      {
+      field: "bookingType",
+      headerName: "Mode of Booking",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "paymentMode",
       headerName: "Payment Mode",
@@ -151,58 +159,38 @@ const FailedOtherReasonReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "bookingId",
-      headerName: "Booking ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "resultMessage",
-      hide: outerFilters.status === "Success",
-      headerName: "Result Message",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
-    },
   ];
-    const breadcrumbItems = [
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/amarabad-total-transaction`
+      label: "Total Transactions ",
+      path: `/amarabad-total-transaction`,
+      onclick: () => resetDeepInnerFilters(),
     },
-     {
-      label: 'Failed (Other Reasons)',  
-      path: `/amrabad-failed-other-reason`,
-      onclick:()=>{resetDeepInnerFilters()
-        
-      },
-    },
+
     {
-      label: 'Failed (Other Reasons) Report',  
-      isLast: true
-    }
+      label: `Total ${
+        outerFilters.status ? outerFilters.status : "Transaction"
+      } Report`,
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-         <div className="mb-6">
-          <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
+              Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/amrabad-failed-other-reason"
+              to="/amarabad-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -214,7 +202,7 @@ const FailedOtherReasonReport = () => {
         </div>
 
         <div>
-          <FailedOtherReasonReportForm
+          <OuterAmarabadTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
@@ -241,4 +229,4 @@ const FailedOtherReasonReport = () => {
   );
 };
 
-export default FailedOtherReasonReport;
+export default AmrabadTotalReport;
