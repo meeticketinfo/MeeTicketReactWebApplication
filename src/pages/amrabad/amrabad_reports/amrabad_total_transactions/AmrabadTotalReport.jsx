@@ -27,7 +27,6 @@ const AmrabadTotalReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", outerFilters);
   useEffect(() => {
     fetchAmrabadTotalTransactions({
       startDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? "",
@@ -37,7 +36,7 @@ const AmrabadTotalReport = () => {
       package:(innerFilters.package ?? outerFilters.package) ?? "",
       house:(innerFilters.house ?? outerFilters.house) ?? "",
       PaymentMode: innerFilters.PaymentMode ?? "",
-      status:outerFilters.status ?? "",
+      status: outerFilters.status ?? "",
       subCategory: "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
@@ -71,7 +70,7 @@ const AmrabadTotalReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/amrabad-successful-view-track-order"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -162,7 +161,7 @@ const AmrabadTotalReport = () => {
   ];
   const breadcrumbItems = [
     {
-      label: "Total Transactions ",
+      label: "Total Transactions Report",
       path: `/amarabad-total-transaction`,
       onclick: () => resetDeepInnerFilters(),
     },
@@ -177,7 +176,7 @@ const AmrabadTotalReport = () => {
   return (
     <AdminLayout>
       <ToastContainer />
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
           <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>

@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
+import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AgGridTable from "../../../../../../components/tables/AgGridTable";
 import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-import Breadcrumb from "../../../../../components/Breadcrumb";
+import AdminLayout from "../../../../../../layouts/AdminLayout";
+import {
+  formatDateTime,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import useAmrabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 
 const FailedOtherReasonReport = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const packageName = searchParams.get("package");
+  const house = searchParams.get("house");
+  const mobileNumber = searchParams.get("mobileNumber");
+  const fromDate = searchParams.get("fromDate");
+  const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
+
   const startOfDay = getStartOfCurrentDay();
-      const endOfDay = getEndOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const {
     innerFilters,
     outerFilters,
@@ -31,18 +46,21 @@ const FailedOtherReasonReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
 
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
-      phoneNumber: (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      package: (innerFilters.package ?? deepInnerFilters.package) ?? "",
-      house: (innerFilters.house ?? deepInnerFilters.house) ?? "",
+      startDate:
+       fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? startOfDay  ,
+      endDate:
+        toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? endOfDay,
+      phoneNumber:  
+      mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ??  "",
       PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
+      subCategory: subCategory ?? innerFilters.subCategory ?? "",
+      package:
+        packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -76,7 +94,8 @@ const FailedOtherReasonReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/amrabad-view-track-order"}
+
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -84,29 +103,39 @@ const FailedOtherReasonReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            subCategory: params.data.subCategory,
           }}
         >
           View Track Order
         </Link>
       ),
     },
+
+    {
+      field: "userName",
+      headerName: "User Name",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+
     {
       field: "mobileNumber",
-      headerName: "Mobile No.",
+      headerName: "Mobile Number of User",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "fromStationName",
-      headerName: "From Station",
+      field: "packageName",
+      headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "houseNames",
+      headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -121,13 +150,19 @@ const FailedOtherReasonReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
+      field: "noOfHouses",
+      headerName: "No of Houses Booked",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+    {
+      field: "bookingType",
+      headerName: "Mode of Booking",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "paymentMode",
       headerName: "Payment Mode",
@@ -168,41 +203,40 @@ const FailedOtherReasonReport = () => {
       ),
     },
   ];
-    const breadcrumbItems = [
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/amarabad-total-transaction`
-    },
-     {
-      label: 'Failed (Other Reasons)',  
+      label: "Total Transactions Report",
       path: `/amrabad-failed-other-reason`,
-      onclick:()=>{resetDeepInnerFilters()
-        
+    },
+    {
+      label: "Total Failed (Other Reasons)",
+      path: `/amrabad-failed-other-reason`,
+      onclick: () => {
+        resetDeepInnerFilters();
       },
     },
     {
-      label: 'Failed (Other Reasons) Report',  
-      isLast: true
-    }
+      label: (subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim() || "Total Failed (Other Reasons) Report",
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-         <div className="mb-6">
-          <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
+             Total Failed (Other Reasons) -
+              {(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/amrabad-failed-other-reason"
+              to={`/amrabad-failed-other-reason?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -218,6 +252,12 @@ const FailedOtherReasonReport = () => {
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
+            packageName={packageName}
+            house={house}
+            mobileNumber={mobileNumber}
+            fromDate={fromDate}
+            toDate={toDate}
+            subCategory={subCategory}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
