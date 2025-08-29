@@ -1,47 +1,43 @@
 import React, { useEffect, useState } from "react";
-
 import { Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import AmarabadTotalCommonStore from "../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AdminLayout from "../../../../layouts/AdminLayout";
+import AgGridTable from "../../../../components/tables/AgGridTable";
+import { formatDateTime } from "../../../../utils/Helper";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import OuterAmarabadTotalTransactionForm from "./outer_report/OuterAmarabadTotalTransactionForm";
 
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
-
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-
-import MetroNotGeneratedReportForm from "./MetroNotGeneratedReportForm";
-import Breadcrumb from "../../../../../components/Breadcrumb";
-
-const MetroNotGeneratedReport = () => {
+const AmrabadTotalReport = () => {
   const {
     innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-    resetInnerFilters
-  } = useMetroTotalCommonStore();
+  } = AmarabadTotalCommonStore();
   const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+    fetchAmrabadTotalTransactions,
+    AmrabadTotalTransactionsData,
+    isAmrabadTotalTransactionsLoading,
+  } = useAmarabadTotalTransactionStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
   useEffect(() => {
-    fetchMetroTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
+    fetchAmrabadTotalTransactions({
+      startDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? "",
+      endDate: (innerFilters.toDate ?? outerFilters.toDate) ?? "",
       phoneNumber:
-        (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
-      status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
-
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      package:(innerFilters.package ?? outerFilters.package) ?? "",
+      house:(innerFilters.house ?? outerFilters.house) ?? "",
+      PaymentMode: innerFilters.PaymentMode ?? "",
+      status: outerFilters.status ?? "",
+      subCategory: "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -59,7 +55,7 @@ const MetroNotGeneratedReport = () => {
     {
       field: "createdDate",
       maxWidth: "200",
-      headerName: "Transaction Date & Time",
+      headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -74,7 +70,7 @@ const MetroNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/amrabad-successful-view-track-order"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -88,23 +84,30 @@ const MetroNotGeneratedReport = () => {
         </Link>
       ),
     },
-    {
-      field: "mobileNumber",
-      headerName: "Mobile No.",
+      {
+      field: "userName",
+      headerName: "User name",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "fromStationName",
-      headerName: "From Station",
+      field: "mobileNumber",
+      headerName: "Mobile Number",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "packageName",
+      headerName: "Package Name",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "roomName",
+      headerName: "House Name",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -119,13 +122,19 @@ const MetroNotGeneratedReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
+      field: "noOfHouses",
+      headerName: "No of Houses booked",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+      {
+      field: "bookingType",
+      headerName: "Mode of Booking",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "paymentMode",
       headerName: "Payment Mode",
@@ -149,56 +158,38 @@ const MetroNotGeneratedReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "bookingId",
-      headerName: "Booking ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "resultMessage",
-      hide: outerFilters.status === "Success",
-      headerName: "Result Message",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
-      ),
-    },
   ];
   const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/metro-total-transaction`
+      label: "Total Transactions Report",
+      path: `/amarabad-total-transaction`,
+      onclick: () => resetDeepInnerFilters(),
     },
-     {
-      label: 'Payment Successful but Ticket not Generated',  
-      path: `/metro-not-generated`,
-       onclick:()=>{resetDeepInnerFilters()
-        
-      },
-    },
+
     {
-      label: 'Payment Successful but Ticket not Generated Report',  
-      isLast: true
-    }
+      label: `Total ${
+        outerFilters.status ? outerFilters.status : "Transaction"
+      } Report`,
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+      <ToastContainer />
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Successful but Ticket not Generated  Report
+              Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-not-generated"
+              to="/amarabad-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -210,16 +201,16 @@ const MetroNotGeneratedReport = () => {
         </div>
 
         <div>
-          <MetroNotGeneratedReportForm
+          <OuterAmarabadTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
+            rowData={AmrabadTotalTransactionsData}
             columnDefs={columnDefs}
-            isFetchLoading={isMetroTotalTransactionsLoading}
+            isFetchLoading={isAmrabadTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -227,8 +218,8 @@ const MetroNotGeneratedReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={MetroTotalTransactionsData[0]?.totalCount}
-            tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={AmrabadTotalTransactionsData[0]?.totalCount}
+            tableHeight={AmrabadTotalTransactionsData.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>
@@ -237,4 +228,4 @@ const MetroNotGeneratedReport = () => {
   );
 };
 
-export default MetroNotGeneratedReport;
+export default AmrabadTotalReport;

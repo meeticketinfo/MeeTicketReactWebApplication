@@ -145,6 +145,17 @@ import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total
 import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
 import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
+import AmrabadTotalReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/AmrabadTotalReport";
+import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
+// import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
+import AmrabadFailedOtherReasonReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReasonReport";
+import AmarabadNotGeneratedReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmarabadNotGeneratedReport";
+import AmrabadFailedGatewayReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGatewayReport";
+import AmarabadViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadOtherReasonViewTrackOrder";
+import AmarabadNotGeneratedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadNotGeneratedTrackOrder";
+import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadGateWayViewTrackOrder";
+import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
+import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 
 export const routes = [
   {
@@ -700,7 +711,49 @@ export const routes = [
     element: <ProtectedRoute element={<AmrabadFailedGateway/>} />,
   },
   {
+    path: "/amrabad-failed-gateway-report",
+    element: <ProtectedRoute element={<AmrabadFailedGatewayReport/>} />,
+  },
+  {
     path: "/amrabad-not-generated",
     element: <ProtectedRoute element={<AmrabadNotGenerated/>} />,
+  },
+  {
+    path: "/amrabad-total-report",
+    element: <ProtectedRoute element={<AmrabadTotalReport/>} />,
+  },
+  {
+    path: "/amrabad-failed-other-reasons-report",
+    element: <ProtectedRoute element={<AmrabadFailedOtherReasonReport/>} />,
+  },
+
+  {
+    path: "/amrabad-not-generated-report",
+    element: <ProtectedRoute element={<AmarabadNotGeneratedReport/>} />,
+  },
+
+  {
+    path: "/amrabad-view-track-order",
+    element: <ProtectedRoute element={<AmarabadViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-not-generated-view-track-order",
+    element: <ProtectedRoute element={<AmarabadNotGeneratedViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-gateway-view-track-order",
+    element: <ProtectedRoute element={<AmarabadGatewayViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-successful-view-track-order",
+    element: <ProtectedRoute element={<AmarabadSuccessViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-uncategorized-view-track-order",
+    element: <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder/>} />,
   },
 ];

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
 // import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
@@ -11,66 +11,78 @@ import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../util
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import AmrabadTotalTransactionChart from "../../charts/AmrabadTotalTransactionChart";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
+import AmrabadFailedGatewayChart from "../../charts/AmrabadFailedGatewayChart";
 
 
 const AmrabadFailedGateway = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const packageName = searchParams.get("package");
+  const house = searchParams.get("house");
+  const mobileNumber = searchParams.get("mobileNumber");
+  const fromDate = searchParams.get("fromDate");
+  const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
+  
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
   AmarabadTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  // const {
-  //   fetchGateWayPieChart,
-  //   PaymentGatewayPieChartData,
-  //   isPaymentGatewayPieChartLoading,
-  // } = useMetroTotalTransactionsStore();
-  // console.log("PaymentGatewayPieChartData", PaymentGatewayPieChartData);
+  const {
+    fetchGateWayPieChart,
+    PaymentGatewayPieChartData,
+    isPaymentGatewayPieChartLoading,
+  } = useAmarabadTotalTransactionStore();
   useEffect(() => {
-    // fetchGateWayPieChart({
-    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ??startOfDay,
-    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    //   mobileNumber:
-    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    // });
+    fetchGateWayPieChart({
+      fromDate: fromDate ?? (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+      toDate: toDate ?? (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+      mobileNumber:
+        mobileNumber ?? (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      package: packageName ?? (innerFilters.package ?? outerFilters.package) ?? "",
+      house: house ?? (innerFilters.house ?? outerFilters.house) ?? "",
+    });
     getPackages()
-  }, []);
+  }, [packageName, house, mobileNumber, fromDate, toDate]);
 
   const initialValues = {
-    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    package: (innerFilters.package ?? outerFilters.package) ?? "",
-    house: (innerFilters.house ?? outerFilters.house) ?? "",
-    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+    fromDate: fromDate ?? (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    toDate: toDate ?? (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+    package: packageName ?? (innerFilters.package ?? outerFilters.package) ?? "",
+    house: house ?? (innerFilters.house ?? outerFilters.house) ?? "",
+    mobileNumber: mobileNumber ?? (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
   };
   const onSubmit = (values) => {
-    setInnerFilters(values);
-    // fetchGateWayPieChart(values);
+    setInnerFilters({
+      ...values,
+      subCategory: subCategory || innerFilters.subCategory || "",
+    });
+    fetchGateWayPieChart(values);
   };
-  
 
-  //   const totalCount = Array.isArray(PaymentGatewayPieChartData)
-  // ? PaymentGatewayPieChartData.reduce((sum, item) => sum + item.count, 0)
-  // : 0;
-
-  //      const breadcrumbItems = [
-  //   {
-  //     label: 'Total Transactions',
-  //     path: `/metro-total-transaction`,
-  //     onclick:()=>resetInnerFilters(),
-  //   },
-  //   {
-  //     label: 'Failed (Payment Gateway)',  
-  //     isLast: true
-  //   }
-  // ];
+       const breadcrumbItems = [
+    {
+      label: 'Total Transactions Report',
+      path: `/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
+      onclick:()=>resetInnerFilters(),
+    },
+    {
+      label: 'Total Failed (Payment Gateway)',  
+      isLast: true
+    }
+  ];
 
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        {/* <Breadcrumb 
+       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
-          /> */}
+          />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -79,7 +91,7 @@ const AmrabadFailedGateway = () => {
           </div>
           <div className="">
             <Link
-              to="/amarabad-total-transaction"
+              to={`/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -92,7 +104,8 @@ const AmrabadFailedGateway = () => {
         <div>
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue, setValues }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <>
+              <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2">
                 <div>
                   <label
                     htmlFor="startDate"
@@ -212,21 +225,22 @@ const AmrabadFailedGateway = () => {
                         toDate: endOfDay,
                         mobileNumber: "",
                       });
-                      // resetInnerFilters();
-                      // fetchGateWayPieChart({
-                      //   fromDate: startOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      // });
+                      resetInnerFilters();
+                      fetchGateWayPieChart({
+                        fromDate: startOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        package: "",
+                        house: "",
+                      });
                     }}
                   >
                     Reset
                   </button>
                 </div>
               </Form>
-            )}
-          </Formik>
-          {/* <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+            
+          <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
             <div className="flex">
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                
@@ -236,15 +250,24 @@ const AmrabadFailedGateway = () => {
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroFailedGatewayChart
-                  data={totalCount !== 0 ? PaymentGatewayPieChartData : []}
+                <AmrabadFailedGatewayChart
+                  data={PaymentGatewayPieChartData || []}
                   title="Failed (Payment Gateway)"
                   angleKey="reasonCount"
                   calloutLabelKey="failureReason"
+                  packageName={values.package}
+                  house={values.house}
+                  mobileNumber={values.mobileNumber}
+                  fromDate={values.fromDate}
+                  toDate={values.toDate}
                 />
+
               </div>
             </div>
-          </div> */}
+          </div>
+          </>
+          )}
+          </Formik>
         </div>
       </div>
     </AdminLayout>

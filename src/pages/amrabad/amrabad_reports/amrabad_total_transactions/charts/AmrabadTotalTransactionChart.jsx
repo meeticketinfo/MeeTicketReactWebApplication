@@ -21,13 +21,12 @@ const AmrabadTotalTransactionChart = ({
   // filters,
 }) => {
   const { setOuterFilters, outerFilters, resetOuterFilters } =
-  AmarabadTotalCommonStore();
+    AmarabadTotalCommonStore();
 
   const chartRef = useRef(null);
-
-  // Calculate total count
-  const totalCount = data?.reduce((sum, item) => sum + item.count, 0) || 0;
-
+  const totalCount =
+    data?.reduce((sum, item) => sum + item.count || item.totalCount || 0, 0) ||
+    0;
   useEffect(() => {
     const chart = AgCharts.create({
       container: chartRef.current,
@@ -43,8 +42,14 @@ const AmrabadTotalTransactionChart = ({
             color: "black",
             maxWidth: window.innerWidth < 768 ? 100 : 150, // Smaller max width on mobile
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
-              const total = data.reduce((sum, item) => sum + item[angleKey], 0);
-              const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
+              const total = data.reduce(
+                (sum, item) => sum + (item[angleKey] || item.reasonCount || 0),
+                0
+              );
+              const percentage = (
+                ((datum[angleKey] || datum.reasonCount || 0) / total) *
+                100
+              ).toFixed(2);
               const text = datum[calloutLabelKey] || "";
               const wrapLength = window.innerWidth < 768 ? 15 : 25; // Shorter wrap on mobile
               const wrappedText = text.replace(
@@ -52,7 +57,7 @@ const AmrabadTotalTransactionChart = ({
                 "$1\n"
               );
               return `${wrappedText.trim()}\n${
-                datum[angleKey]
+                datum[angleKey] || datum.reasonCount || 0
               } (${percentage}%)`;
             },
             offset: window.innerWidth < 768 ? 10 : 15, // Smaller offset on mobile
@@ -64,9 +69,17 @@ const AmrabadTotalTransactionChart = ({
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
-              const total = data.reduce((sum, item) => sum + item[angleKey], 0);
-              const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
-              return `${datum[angleKey]} (${percentage}%)`;
+              const total = data.reduce(
+                (sum, item) => sum + (item[angleKey] || item.reasonCount || 0),
+                0
+              );
+              const percentage = (
+                ((datum[angleKey] || datum.reasonCount || 0) / total) *
+                100
+              ).toFixed(2);
+              return `${
+                datum[angleKey] || datum.reasonCount || 0
+              } (${percentage}%)`;
             },
           },
           fills: Object.values(reasonStyles).map((s) => s.color),
@@ -82,27 +95,29 @@ const AmrabadTotalTransactionChart = ({
     return () => chart.destroy();
   }, [data, title, angleKey, calloutLabelKey]);
 
-      const routes={
-        FailedDueToOtherReasons:"/amrabad-failed-other-reason",
-        FailedFromGateway:"/amrabad-failed-gateway",
-        PaymentSuccessButTicketNotGenerated:"/amrabad-not-generated",
-        Success:"/metro-total-report",
-        Uncategorized:"/metro-total-report"
-      }
+  const routes = {
+    FailedDueToOtherReasons: "/amrabad-failed-other-reason",
+    FailedFromGateway: "/amrabad-failed-gateway",
+    PaymentSuccessButTicketNotGenerated: "/amrabad-not-generated",
+    Success: "/amrabad-total-report",
+    Uncategorized: "/amrabad-total-report",
+  };
   return (
     <div className="gap-4 md:gap-8 w-full p-3 md:p-6">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between">
-        <h2 className="text-base md:text-lg font-medium mb-2">Total Transactions</h2>
+        <h2 className="text-base md:text-lg font-medium mb-2">
+          Total Transactions
+        </h2>
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/metro-total-report"
+            to="/amrabad-total-report"
             onClick={() => {
               setOuterFilters({ ...outerFilters, status: "" });
             }}
             className="text-[#007AFF] font-bold underline ml-1"
-          > 
+          >
             {totalCount}
           </Link>
         </div>
@@ -112,9 +127,12 @@ const AmrabadTotalTransactionChart = ({
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start lg:items-center justify-between">
         {/* Pie Chart */}
         <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[70%]">
-          <div ref={chartRef} className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full" />
+          <div
+            ref={chartRef}
+            className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full"
+          />
         </div>
-        
+
         {/* Table Section */}
         {data.length > 0 && (
           <div className="w-full lg:min-w-[300px] xl:min-w-[340px] lg:w-[40%] xl:w-[30%]">
@@ -134,31 +152,39 @@ const AmrabadTotalTransactionChart = ({
                   {data?.map((item, index) => (
                     <tr key={index}>
                       <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                        <div className="flex items-center gap-1 md:gap-2">
+                        <div className="flex items-start gap-1 md:gap-2">
                           <div
-                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0"
+                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0 mt-1"
                             style={{
                               backgroundColor: colors[index % colors.length],
                             }}
                           />
-                          <Link 
-                           to={routes[item.paymentCategoryKey]}
-                          className="text-[#000] hover:underline text-xs md:text-sm truncate max-w-[120px] md:max-w-[150px] lg:max-w-[200px]"
-                           onClick={() => {
-                            setOuterFilters({
-                              ...outerFilters,
-                              status: item.paymentCategoryKey,
-                            });
-                          }}
-                          title={item.location || item.paymentCategory}
+                          <Link
+                            to={routes[item.paymentCategoryKey] || "#"}
+                            className="text-[#000] hover:underline text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight"
+                            onClick={() => {
+                              setOuterFilters({
+                                ...outerFilters,
+                                status: item.paymentCategoryKey,
+                              });
+                            }}
+                            title={
+                              item.failureReason ||
+                              item.location ||
+                              item.paymentCategory ||
+                              item.subCategory
+                            }
                           >
-                            {item.location || item.paymentCategory}
+                            {item.failureReason ||
+                              item.location ||
+                              item.paymentCategory ||
+                              item.subCategory}
                           </Link>
                         </div>
                       </td>
                       <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                          to={routes[item.paymentCategoryKey]}
+                          to={routes[item.paymentCategoryKey] || "#"}
                           onClick={() => {
                             setOuterFilters({
                               ...outerFilters,
@@ -167,7 +193,10 @@ const AmrabadTotalTransactionChart = ({
                           }}
                           className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"
                         >
-                          {item.count}
+                          {item.reasonCount ||
+                            item.count ||
+                            item.subCategoryCount ||
+                            0}
                         </Link>
                       </td>
                     </tr>

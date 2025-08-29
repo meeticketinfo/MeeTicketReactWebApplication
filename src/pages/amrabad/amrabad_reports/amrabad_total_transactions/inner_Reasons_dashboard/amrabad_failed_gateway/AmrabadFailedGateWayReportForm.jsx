@@ -1,37 +1,59 @@
 import { Formik, Form, Field } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
 
-const AmrabadFailedOtherReasonReport = ({
+const AmrabadFailedGateWayReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  packageName,
+  house,
+  mobileNumber,
+  fromDate,
+  toDate,
+  subCategory,
 }) => {
   const {
     innerFilters,
     setDeepInnerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = useMetroTotalCommonStore();
+    outerFilters,
+  } = AmarabadTotalCommonStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   console.log("outerFilters", innerFilters);
-  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
+  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
   const initialValues = {
-    startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-    endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-    phoneNumber: (deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber) ?? "",
+    startDate:
+      fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
+    endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
+    phoneNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
     PaymentMode: deepInnerFilters.PaymentMode ?? "",
+    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    mobileNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
     setDeepInnerFilters(values);
-    fetchMetroTotalTransactions({
+    fetchAmrabadTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory: innerFilters.subCategory,
+      subCategory: subCategory ?? innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
+    getPackages();
     SetcurrentPage(0);
   };
 
@@ -80,7 +102,54 @@ const AmrabadFailedOtherReasonReport = ({
                 }}
               />
             </div>
-
+            <div>
+              <label
+                htmlFor="package"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Packages
+              </label>
+              <Field
+                as="select"
+                name="package"
+                placeholder="Select Package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  getHouses(packageId);
+                  setFieldValue("package", packageId);
+                }}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="house"
+                className="block text-xs font-medium text-gray-700"
+              >
+                House
+              </label>
+              <Field
+                as="select"
+                name="house"
+                placeholder="Select House"
+                disabled={values.package == ""}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
+              </Field>
+            </div>
             {/* mobile number */}
             <div>
               <label
@@ -143,4 +212,4 @@ const AmrabadFailedOtherReasonReport = ({
   );
 };
 
-export default AmrabadFailedOtherReasonReport;
+export default AmrabadFailedGateWayReportForm;
