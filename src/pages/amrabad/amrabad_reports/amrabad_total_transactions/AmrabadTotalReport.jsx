@@ -29,8 +29,8 @@ const AmrabadTotalReport = () => {
   };
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: (innerFilters.startDate ?? outerFilters.fromDate) ?? "",
-      endDate: (innerFilters.endDate ?? outerFilters.toDate) ?? "",
+      startDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? "",
+      endDate: (innerFilters.toDate ?? outerFilters.toDate) ?? "",
       phoneNumber:
         (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
       package:(innerFilters.package ?? outerFilters.package) ?? "",
@@ -38,7 +38,6 @@ const AmrabadTotalReport = () => {
       PaymentMode: innerFilters.PaymentMode ?? "",
       status: outerFilters.status ?? "",
       subCategory: "",
-
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });

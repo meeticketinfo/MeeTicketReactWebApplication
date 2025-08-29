@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import {
   formatToStandardDate,
@@ -202,6 +203,35 @@ function AmrabadPaymentTransactionsList() {
         );
       },
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      maxWidth: 160,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => {
+        const orderId = params?.data?.transaactionID;
+        const canView = orderId && orderId !== "Not Generated";
+        return (
+          <div className="flex items-center gap-2">
+            {canView ? (
+              <NavLink
+                end
+                to={`/amrabad-admin/ticket-view-details/${orderId}`}
+                className="flex items-center gap-1 text-blue-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View ticket"
+              >
+                <span className="text-blue-600">👁️</span>
+                <span className="text-blue-600">View ticket</span>
+              </NavLink>
+            ) : (
+              <span className="text-gray-400 text-xs">Not available</span>
+            )}
+          </div>
+        );
+      },
+    }
   ]);
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);

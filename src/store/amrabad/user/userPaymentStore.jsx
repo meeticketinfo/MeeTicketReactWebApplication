@@ -29,5 +29,17 @@ export const usePaymentStore = create((set) => ({
     } finally {
       set({ loadingAddNewBookingDetails: false });
     }
+  },
+  orderStatusCall: async (orderId) => {
+    set({ loadingOrderStatusCall: true });
+    try {
+      const response = await apiService.post(API_ENDPOINTS.AMRABAD.USER.ORDER_STATUS_CALL + "/" + orderId);
+      return response.data;
+    } catch (error) {
+      toast.error(error.message || "Some thing went wrong");
+      return error;
+    } finally {
+      set({ loadingOrderStatusCall: false });
+    }
   }
 }));
