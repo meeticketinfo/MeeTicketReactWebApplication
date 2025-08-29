@@ -279,7 +279,7 @@ const AmrabadNotGeneratedChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}`}
+            to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -329,14 +329,19 @@ const AmrabadNotGeneratedChart = ({
                             }}
                           />
                           <Link 
-                          to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}`}
+                          to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
 
                           className="text-[#000] hover:underline text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight"
                           onClick={() => {
                             setInnerFilters({
                               ...innerFilters,
                               status: item.mainCategory,
-                            subCategory: item.subCategory,
+                              subCategory: item.subCategory,
+                              package: packageName,
+                              house: house,
+                              mobileNumber: mobileNumber,
+                              fromDate: fromDate,
+                              toDate: toDate,
                             });
                           }}
                           title={item.failureReason || item.location || item.paymentCategory || item.subCategory}
@@ -347,12 +352,17 @@ const AmrabadNotGeneratedChart = ({
                       </td>
                       <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                         to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}`}
+                         to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
                          onClick={() => {
                           setInnerFilters({
                             ...innerFilters,
                             status: item.mainCategory,
-                          subCategory: item.subCategory,
+                            subCategory: item.subCategory,
+                            package: packageName,
+                            house: house,
+                            mobileNumber: mobileNumber,
+                            fromDate: fromDate,
+                            toDate: toDate,
                           });
                         }}
                           className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import { useAmarabadTotalTransactionStore } from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import AmarabadTotalCommonStore from "../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
+import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AgGridTable from "../../../../../../components/tables/AgGridTable";
 import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import {
@@ -26,6 +25,7 @@ const FailedOtherReasonReport = () => {
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -57,7 +57,7 @@ const FailedOtherReasonReport = () => {
       mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ??  "",
       PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
+      subCategory: subCategory ?? innerFilters.subCategory ?? "",
       package:
         packageName ?? innerFilters.package ?? outerFilters.package ?? "",
       house: house ?? innerFilters.house ?? outerFilters.house ?? "",
@@ -94,7 +94,8 @@ const FailedOtherReasonReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/amrabad-view-track-order"}
+
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -102,6 +103,7 @@ const FailedOtherReasonReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            subCategory: params.data.subCategory,
           }}
         >
           View Track Order
@@ -203,7 +205,7 @@ const FailedOtherReasonReport = () => {
   ];
   const breadcrumbItems = [
     {
-      label: "Total Transactions",
+      label: "Total Transactions Report",
       path: `/amrabad-failed-other-reason`,
     },
     {
@@ -214,27 +216,27 @@ const FailedOtherReasonReport = () => {
       },
     },
     {
-      label: "Failed (Other Reasons) Report",
+      label: (subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim() || "Total Failed (Other Reasons) Report",
       isLast: true,
     },
   ];
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
           <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Other Reasons) -
-              {innerFilters.subCategory.replace(/([A-Z])/g, " $1").trim()}{" "}
+             Total Failed (Other Reasons) -
+              {(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()}{" "}
               Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/amrabad-failed-other-reason"
+              to={`/amrabad-failed-other-reason?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -255,6 +257,7 @@ const FailedOtherReasonReport = () => {
             mobileNumber={mobileNumber}
             fromDate={fromDate}
             toDate={toDate}
+            subCategory={subCategory}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"

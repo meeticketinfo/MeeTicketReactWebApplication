@@ -12,6 +12,7 @@ const AmarabadNotGeneratedReportForm = ({
   mobileNumber,
   fromDate,
   toDate,
+  subCategory,
 }) => {
    const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = useAmrabadTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
@@ -31,7 +32,7 @@ const AmarabadNotGeneratedReportForm = ({
       fetchAmrabadTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory:innerFilters.subCategory,
+      subCategory: subCategory ?? innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });

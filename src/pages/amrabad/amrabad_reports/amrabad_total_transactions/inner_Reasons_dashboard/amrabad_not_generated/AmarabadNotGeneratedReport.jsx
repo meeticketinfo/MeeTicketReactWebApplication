@@ -21,6 +21,7 @@ const AmarabadNotGeneratedReport = () => {
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
   const {innerFilters,outerFilters,deepInnerFilters,resetDeepInnerFilters} = useAmrabadTotalCommonStore();
 
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
@@ -43,12 +44,13 @@ const AmarabadNotGeneratedReport = () => {
         mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
       PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
-
+      subCategory: subCategory ?? innerFilters.subCategory ?? "",
+      package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage]);  
+  }, [PAGE_LIMIT, currentPage, packageName, house, mobileNumber, fromDate, toDate, subCategory]);  
   
   const columnDefs = [
     {
@@ -78,7 +80,7 @@ const AmarabadNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/amrabad-not-generated-view-track-order"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -86,6 +88,7 @@ const AmarabadNotGeneratedReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            subCategory: params.data.subCategory,
           }}
         >
           View Track Order
@@ -188,24 +191,24 @@ const AmarabadNotGeneratedReport = () => {
   ];
   const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/metro-total-transaction`
+      label: 'Total Transactions Report',
+      path: `/amarabad-total-transaction`
     },
      {
-      label: 'Payment Successful but Ticket not Generated',  
-      path: `/metro-not-generated`,
-       onclick:()=>{resetDeepInnerFilters()
+      label: 'Ticket Not Generated Transactions Report',  
+      path: `/amrabad-not-generated`,
+      //  onclick:()=>{resetDeepInnerFilters()
         
-      },
+      // },
     },
     {
-      label: 'Payment Successful but Ticket not Generated Report',  
+      label: subCategory ? `${subCategory.replace(/([A-Z])/g, " $1").trim()}` : "Payment Successful but Ticket not Generated Report",  
       isLast: true
     }
   ];
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
@@ -213,12 +216,12 @@ const AmarabadNotGeneratedReport = () => {
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Successful but Ticket not Generated  Report
+              Payment Successful but Ticket not Generated - {(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()} Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/amrabad-not-generated"
+              to={`/amrabad-not-generated?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -239,6 +242,7 @@ const AmarabadNotGeneratedReport = () => {
             mobileNumber={mobileNumber}
             fromDate={fromDate}
             toDate={toDate}
+            subCategory={subCategory}
           />
            <AgGridTable
             ExportName="UserStatusTransactionReport"

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 // import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
 // import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
@@ -16,6 +16,15 @@ import Breadcrumb from "../../../../../../components/Breadcrumb";
 import AmrabadFailedOtherReasonsChart from "../../charts/AmarabadFailedOtherReasonsChart";
 
 const AmrabadFailedOtherReason = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const packageName = searchParams.get("package");
+  const house = searchParams.get("house");
+  const mobileNumber = searchParams.get("mobileNumber");
+  const fromDate = searchParams.get("fromDate");
+  const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
+  
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
@@ -28,27 +37,30 @@ const AmrabadFailedOtherReason = () => {
   } = useAmarabadTotalTransactionStore();
 
   const filtersToUse = {
-    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
-    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
-    package: innerFilters.package ?? outerFilters.package ?? "",
-    house: innerFilters.house ?? outerFilters.house ?? "",
+    fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    mobileNumber: mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
   };
 
   useEffect(() => {
     fetchOtherReasonsPieChart(filtersToUse);
     getPackages();
-  }, []);
+  }, [packageName, house, mobileNumber, fromDate, toDate]);
 
   const initialValues = {
-    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
-    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-    package: innerFilters.package ?? outerFilters.package ?? "",
-    house: innerFilters.house ?? outerFilters.house ?? "",
-    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    mobileNumber: mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
   };
   const onSubmit = (values) => {
-    setInnerFilters(values);
+    setInnerFilters({
+      ...values,
+      subCategory: subCategory || innerFilters.subCategory || "",
+    });
     fetchOtherReasonsPieChart(values);
   };
 
@@ -58,7 +70,7 @@ const AmrabadFailedOtherReason = () => {
   const breadcrumbItems = [
     {
       label: "Total Transactions Report",
-      path: `/amarabad-total-transaction`,
+      path: `/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
       onclick: () => resetInnerFilters(),
     },
     {
@@ -69,7 +81,7 @@ const AmrabadFailedOtherReason = () => {
 
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
           <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
@@ -81,7 +93,7 @@ const AmrabadFailedOtherReason = () => {
           </div>
           <div className="">
             <Link
-              to="/amarabad-total-transaction"
+              to={`/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();

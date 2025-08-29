@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import AgGridTable from "../../../../../../components/tables/AgGridTable";
@@ -9,8 +9,15 @@ import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import AmrabadFailedGateWayReportForm from "./AmrabadFailedGateWayReportForm";
 
-const AmrabadFailedGatewayReport = () => {
-  
+const AmrabadFailedGatewayReport = ( ) => {
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const packageName = searchParams.get("package");
+    const house = searchParams.get("house");
+    const mobileNumber = searchParams.get("mobileNumber");
+    const fromDate = searchParams.get("fromDate");
+    const toDate = searchParams.get("toDate");
+    const subCategory = searchParams.get("subCategory");
    const {
     innerFilters,
     outerFilters,
@@ -31,14 +38,15 @@ const AmrabadFailedGatewayReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+      startDate: fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
+      endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
+      phoneNumber:
+        mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
       PaymentMode: deepInnerFilters.mobileNumber ?? "",
       status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
-      package: (innerFilters.package ?? deepInnerFilters.package) ?? "",
-      house: (innerFilters.house ?? deepInnerFilters.house) ?? "",
+      subCategory: subCategory ?? innerFilters.subCategory ?? "",
+        package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -72,7 +80,7 @@ const AmrabadFailedGatewayReport = () => {
         cellRenderer: (params) => (
           <Link
             className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-            to={"/metro-total-traker"}
+            to={"/amrabad-gateway-view-track-order"}
             state={{
               orderId: params.data.orderId,
               date: params.data.createdDate,
@@ -80,6 +88,7 @@ const AmrabadFailedGatewayReport = () => {
               status: params.data.transactionStatus,
               amount: params.data.amount,
               bookingId: params.data.bookingId,
+              subCategory: params.data.subCategory,
             }}
           >
             View Track Order
@@ -180,24 +189,24 @@ const AmrabadFailedGatewayReport = () => {
     ];
     const breadcrumbItems = [
     {
-      label: 'Total Transactions',
+      label: 'Total Transactions Report',
       path: `/amarabad-total-transaction`
     },
      {
-      label: 'Failed (Payment Gateway)',  
+      label: 'Total Failed (Payment Gateway)',  
       path: `/amrabad-failed-gateway`,
        onclick:()=>{resetDeepInnerFilters()
        
       },
     },
     {
-      label: 'Failed (Payment Gateway)Report',  
+      label: subCategory ? `${subCategory.replace(/([A-Z])/g, " $1").trim()}` : "Failed (Payment Gateway) Report",  
       isLast: true
     }
   ];
   return (
     <AdminLayout>
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
@@ -205,12 +214,12 @@ const AmrabadFailedGatewayReport = () => {
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Payment Gateway)-{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()}Report
+              Failed (Payment Gateway)-{(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()} Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/amrabad-failed-gateway"
+              to={`/amrabad-failed-gateway?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
                onClick={() => {
                 resetDeepInnerFilters();
@@ -226,6 +235,12 @@ const AmrabadFailedGatewayReport = () => {
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
+            packageName={packageName}
+            house={house}
+            mobileNumber={mobileNumber}
+            fromDate={fromDate}
+            toDate={toDate}
+            subCategory={subCategory}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"

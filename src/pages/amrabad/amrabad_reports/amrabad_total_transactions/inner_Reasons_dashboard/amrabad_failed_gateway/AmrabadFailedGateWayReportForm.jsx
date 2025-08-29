@@ -7,34 +7,53 @@ const AmrabadFailedGateWayReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  packageName,
+  house,
+  mobileNumber,
+  fromDate,
+  toDate,
+  subCategory,
 }) => {
   const {
     innerFilters,
     setDeepInnerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
+    outerFilters,
   } = AmarabadTotalCommonStore();
-    const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   console.log("outerFilters", innerFilters);
-  const { fetchMetroTotalTransactions } = useAmarabadTotalTransactionStore();
+  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
   const initialValues = {
-    startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-    endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-    phoneNumber: (deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber) ?? "",
+    startDate:
+      fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
+    endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
+    phoneNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
     PaymentMode: deepInnerFilters.PaymentMode ?? "",
+    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    mobileNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
     setDeepInnerFilters(values);
-    fetchMetroTotalTransactions({
+    fetchAmrabadTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory: innerFilters.subCategory,
+      subCategory: subCategory ?? innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-      getPackages();
+    getPackages();
     SetcurrentPage(0);
   };
 

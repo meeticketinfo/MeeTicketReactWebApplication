@@ -17,6 +17,12 @@ const AmrabadFailedGatewayChart = ({
   title,
   angleKey,
   calloutLabelKey,
+  packageName,
+  house,
+  mobileNumber,
+  fromDate,
+  toDate,
+
   // filters,
 }) => {
   const { innerFilters, setInnerFilters, outerFilters } =
@@ -36,7 +42,7 @@ const AmrabadFailedGatewayChart = ({
           data: data,
           angleKey: angleKey,
           calloutLabelKey: calloutLabelKey,
-         calloutLabel: {
+          calloutLabel: {
             enabled: true,
             fontSize: 10,
             color: "black",
@@ -88,7 +94,11 @@ const AmrabadFailedGatewayChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/amrabad-failed-gateway-report"
+            to={`/amrabad-failed-gateway-report?package=${
+              packageName || ""
+            }&house=${house || ""}&mobileNumber=${
+              mobileNumber || ""
+            }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -108,67 +118,95 @@ const AmrabadFailedGatewayChart = ({
           <div ref={chartRef} className="h-[400px] max-w-[90%]" />
         </div>
 
-       {data.length>0&& <div className="min-w-[340px] max-w-[500px]">
-          <div className="flex justify-end mb-2"></div>
-          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#D9E4FF]">
-                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">
-                    Locations
-                  </th>
-                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">
-                    Count
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data?.map((item, index) => (
-                  <tr key={item.location || item.paymentCategory}>
-                    <td className="px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full shrink-0"
-                          style={{
-                            backgroundColor: colors[index % colors.length],
-                          }}
-                        />
+        {data.length > 0 && (
+          <div className="min-w-[340px] max-w-[500px]">
+            <div className="flex justify-end mb-2"></div>
+            <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#D9E4FF]">
+                    <th className="text-left px-4 py-2 text-[#205375] font-semibold">
+                      Locations
+                    </th>
+                    <th className="text-right px-4 py-2 text-[#205375] font-semibold">
+                      Count
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.map((item, index) => (
+                    <tr key={item.location || item.paymentCategory}>
+                      <td className="px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-3 h-3 rounded-full shrink-0"
+                            style={{
+                              backgroundColor: colors[index % colors.length],
+                            }}
+                          />
+                          <Link
+                            to={`/amrabad-failed-gateway-report?package=${
+                              packageName || ""
+                            }&house=${house || ""}&mobileNumber=${
+                              mobileNumber || ""
+                            }&fromDate=${fromDate || ""}&toDate=${
+                              toDate || ""
+                            }&subCategory=${encodeURIComponent(
+                              item.failureReasonKey || ""
+                            )}`}
+                            className="text-[#000] hover:underline text-xs"
+                            onClick={() => {
+                              setInnerFilters({
+                                ...innerFilters,
+                                status: outerFilters.status,
+                                subCategory: item.failureReasonKey,
+                                package: packageName,
+                                house: house,
+                                mobileNumber: mobileNumber,
+                                fromDate: fromDate,
+                                toDate: toDate,
+                              });
+                            }}
+                          >
+                            {item.failureReason}
+                          </Link>
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                          to="/amrabad-failed-gateway-report"
-                          className="text-[#000] hover:underline text-xs"
+                          to={`/amrabad-failed-gateway-report?package=${
+                            packageName || ""
+                          }&house=${house || ""}&mobileNumber=${
+                            mobileNumber || ""
+                          }&fromDate=${fromDate || ""}&toDate=${
+                            toDate || ""
+                          }&subCategory=${encodeURIComponent(
+                            item.failureReasonKey || ""
+                          )}`}
                           onClick={() => {
                             setInnerFilters({
                               ...innerFilters,
                               status: outerFilters.status,
                               subCategory: item.failureReasonKey,
+                              package: packageName,
+                              house: house,
+                              mobileNumber: mobileNumber,
+                              fromDate: fromDate,
+                              toDate: toDate,
                             });
                           }}
+                          className="text-[#4A90E2] font-semibold hover:underline text-sm"
                         >
-                          {item.failureReason}
+                          {item.reasonCount}
                         </Link>
-                      </div>
-                    </td>
-                    <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
-                      <Link
-                        to="/amrabad-failed-gateway-report"
-                        onClick={() => {
-                          setInnerFilters({
-                            ...innerFilters,
-                            status: outerFilters.status,
-                            subCategory: item.failureReasonKey,
-                          });
-                        }}
-                        className="text-[#4A90E2] font-semibold hover:underline text-sm"
-                      >
-                        {item.reasonCount}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>}
+        )}
       </div>
     </div>
   );

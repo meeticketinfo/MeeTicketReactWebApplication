@@ -195,7 +195,7 @@ const AmrabadFailedOtherReasonsChart = ({
   data,
   title,
   angleKey,
-  calloutLabelKey,  
+  calloutLabelKey,
   packageName,
   house,
   mobileNumber,
@@ -203,8 +203,13 @@ const AmrabadFailedOtherReasonsChart = ({
   toDate,
   // filters,
 }) => {
-    const { setInnerFilters, innerFilters, resetInnerFilters,setOuterFilters,outerFilters } =
-    AmarabadTotalCommonStore();
+  const {
+    setInnerFilters,
+    innerFilters,
+    resetInnerFilters,
+    setOuterFilters,
+    outerFilters,
+  } = AmarabadTotalCommonStore();
 
   const chartRef = useRef(null);
   const totalCount =
@@ -278,12 +283,25 @@ const AmrabadFailedOtherReasonsChart = ({
     return () => chart.destroy();
   }, [data, title, angleKey, calloutLabelKey]);
 
-  const routes = {
-    FailedDueToOtherReasons: "/amrabad-failed-other-reasons-report",
-    FailedFromGateway: "/amrabad-failed-gateway",
-    PaymentSuccessButTicketNotGenerated: "/amrabad-not-generated",
-    Success: "/amrabad-total-report",
-    Uncategorized: "/amrabad-total-report",
+  const redirectionLink = (item) => {
+    if (item.paymentCategoryKey == "FailedDueToOtherReasons") {
+      return `/failed-transactions-dashboard?${searchParams.toString()}&category=${
+        item.paymentCategoryKey
+      }`;
+    }
+    if (item.paymentCategoryKey == "FailedFromGateway") {
+      return `/failed-gateway-transactions-dashboard?${searchParams.toString()}&category=${
+        item.paymentCategoryKey
+      }`;
+    }
+    if (item.paymentCategoryKey == "PaymentSuccessButTicketNotGenerated") {
+      return `/ticket-not-generated-transactions-dashboard?${searchParams.toString()}&category=${
+        item.paymentCategoryKey
+      }`;
+    }
+    return `/total-payment-transaction-report?${searchParams.toString()}&category=${
+      item.paymentCategoryKey
+    }`;
   };
   return (
     <div className="gap-4 md:gap-8 w-full p-3 md:p-6">
@@ -295,7 +313,13 @@ const AmrabadFailedOtherReasonsChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to={`/amrabad-failed-other-reasons-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&status=${outerFilters.status || ''}&subCategory=`}
+            to={`/amrabad-failed-other-reasons-report?package=${
+              packageName || ""
+            }&house=${house || ""}&mobileNumber=${
+              mobileNumber || ""
+            }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&status=${
+              outerFilters.status || ""
+            }&subCategory=`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -336,68 +360,73 @@ const AmrabadFailedOtherReasonsChart = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.map((item, index) => 
-                    {
-                      return(
-                    <tr key={index}>
-                      <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                        <div className="flex items-start gap-1 md:gap-2">
-                          <div
-                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0 mt-1"
-                            style={{
-                              backgroundColor: colors[index % colors.length],
-                            }}
-                          />
+                  {data?.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                          <div className="flex items-start gap-1 md:gap-2">
+                            <div
+                              className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0 mt-1"
+                              style={{
+                                backgroundColor: colors[index % colors.length],
+                              }}
+                            />
+                            <Link
+                              to={`/amrabad-failed-other-reasons-report?package=${
+                                packageName || ""
+                              }&house=${house || ""}&mobileNumber=${
+                                mobileNumber || ""
+                              }&fromDate=${fromDate || ""}&toDate=${
+                                toDate || ""
+                              }&subCategory=${encodeURIComponent(item.subCategory || "")}`}
+                              className="text-[#000] hover:underline text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight"
+                              onClick={() => {
+                                setInnerFilters({
+                                  ...innerFilters,
+                                  status: item.mainCategory,
+                                  subCategory: item.subCategory,
+                                  package: packageName,
+                                  house: house,
+                                  mobileNumber: mobileNumber,
+                                  fromDate: fromDate,
+                                  toDate: toDate,
+                                });
+                              }}
+                              title={item.subCategory}
+                            >
+                              {item.subCategory}
+                            </Link>
+                          </div>
+                        </td>
+                        <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                           <Link
-                            to={`/amrabad-failed-other-reasons-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}`}
-                            className="text-[#000] hover:underline text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight"
+                            to={`/amrabad-failed-other-reasons-report?package=${
+                              packageName || ""
+                            }&house=${house || ""}&mobileNumber=${
+                              mobileNumber || ""
+                            }&fromDate=${fromDate || ""}&toDate=${
+                              toDate || ""
+                            }`}
                             onClick={() => {
                               setInnerFilters({
                                 ...innerFilters,
                                 status: item.mainCategory,
-                              subCategory: item.subCategory,
-                              package: packageName,
-                              house: house,
-                              mobileNumber: mobileNumber,
-                              fromDate: fromDate,
-                              toDate: toDate, 
+                                subCategory: item.subCategory,
+                                package: packageName,
+                                house: house,
+                                mobileNumber: mobileNumber,
+                                fromDate: fromDate,
+                                toDate: toDate,
                               });
                             }}
-                            title={
-                              item.subCategory
-                            }
+                            className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"
                           >
-                            {
-                              item.subCategory}
+                            {item.subCategoryCount || 0}
                           </Link>
-                        </div>
-                      </td>
-                      <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
-                                                <Link
-                          to={`/amrabad-failed-other-reasons-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}`}
-                          onClick={() => {
-                            setInnerFilters({
-                              ...innerFilters,
-                              status: item.mainCategory,
-                            subCategory: item.subCategory,
-                              package: packageName,
-                              house: house,
-                              mobileNumber: mobileNumber,
-                              fromDate: fromDate,
-                              toDate: toDate, 
-                            });
-                          }}
-                          className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"
-                        >
-                          {
-                            item.subCategoryCount ||
-                            0}
-                        </Link>
-                      </td>
-                    </tr>
-                      )
-                    }
-                  )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

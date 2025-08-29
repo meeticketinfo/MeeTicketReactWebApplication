@@ -16,6 +16,7 @@ const FailedOtherReasonReportForm = ({
   mobileNumber,
   fromDate,
   toDate,
+  subCategory,
 }) => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -47,7 +48,7 @@ const FailedOtherReasonReportForm = ({
     fetchAmrabadTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory: innerFilters.subCategory,
+      subCategory: subCategory ?? innerFilters.subCategory,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
