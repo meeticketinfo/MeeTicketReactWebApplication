@@ -73,7 +73,7 @@ export const useAmrabadConsolidatedStore = create((set) => ({
     console.log("payload", payload);
     set({ isAmrabadTransactionPaymentReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&packageId=${payload.package}&roomId=${payload.house}&paymentStatus=${payload.paymentStatus}&paymentMode=${payload.paymentMode}&mobileNumber=${payload.phoneNumber}&orderId=${payload.transactionId}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&purchaseOrBooking=${payload.purchaseOrBooking}&packageId=${payload.package}&roomId=${payload.house}&paymentStatus=${payload.paymentStatus}&modeOfBooking=${payload.modeOfBooking}&mobileNumber=${payload.phoneNumber}&orderId=${payload.transactionId}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({

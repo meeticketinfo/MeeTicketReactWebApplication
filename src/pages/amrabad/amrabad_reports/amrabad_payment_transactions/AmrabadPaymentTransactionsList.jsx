@@ -10,6 +10,7 @@ import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/C
 import AmrabadPaymentTransactionsForm from "./AmrabadPaymentTransactionsForm";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
+import viewIcon from "../../../../images/Eye.png";
 function AmrabadPaymentTransactionsList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
@@ -34,10 +35,12 @@ function AmrabadPaymentTransactionsList() {
     fetchAmrabadPaymentTransactions({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
+      purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
       package: savedFilters?.package ?? "",
       house: savedFilters?.house ?? "",
       paymentStatus: savedFilters?.paymentStatus? savedFilters.paymentStatus: "",
-      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+      // paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+      modeOfBooking:savedFilters?.modeOfBooking ? savedFilters.modeOfBooking : "",
       phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       transactionId: savedFilters?.transactionId? savedFilters.transactionId: "",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
@@ -112,7 +115,7 @@ function AmrabadPaymentTransactionsList() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paymentStaus",
+      field: "currentTransactionStatus",
       headerName: "Payment Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -222,8 +225,8 @@ function AmrabadPaymentTransactionsList() {
                 rel="noopener noreferrer"
                 title="View ticket"
               >
-                <span className="text-blue-600">👁️</span>
-                <span className="text-blue-600">View ticket</span>
+                <span className="text-blue-600"><img src={viewIcon} /></span>
+                <span className="text-[#1964FE] font-semibold text-sm">View ticket</span>
               </NavLink>
             ) : (
               <span className="text-gray-400 text-xs">Not available</span>
@@ -298,13 +301,17 @@ function AmrabadPaymentTransactionsList() {
         fetchAmrabadPaymentTransactions({
           startDate: savedFilters?.fromDate ?? getCurrentDate(),
           endDate: savedFilters?.toDate ?? getCurrentDate(),
+          purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
           package: savedFilters?.package ?? "",
           house: savedFilters?.house ?? "",
           paymentStatus: savedFilters?.paymentStatus
             ? savedFilters.paymentStatus
             : "",
-          paymentMode: savedFilters?.paymentMode
-            ? savedFilters.paymentMode
+          // paymentMode: savedFilters?.paymentMode
+          //   ? savedFilters.paymentMode
+          //   : "",
+          modeOfBooking: savedFilters?.modeOfBooking
+            ? savedFilters.modeOfBooking
             : "",
           phoneNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
