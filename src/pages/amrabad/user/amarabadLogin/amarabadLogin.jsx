@@ -1,0 +1,78 @@
+import React, { useEffect, useRef } from "react";
+import UserLayout from "../../../../layouts/UserLayout";
+import { Link, useLocation } from "react-router-dom";
+import AmarabadLoginForm from "./AmarabadLoginForm";
+import Lock from "../../../../images/user/lock.png";
+import Logo from "../../../../images/user/logo.png";
+import { toast, ToastContainer } from "react-toastify";
+import { UseOtpStore } from "../../../../store/amarabad/user/otpStore";
+
+const AmarabadLogin = () => {
+  const location = useLocation();
+  const toastMessage = location?.state?.toastMessage;
+
+  useEffect(() => {
+    if (toastMessage) {
+      const timeout = setTimeout(() => {
+        toast.success(toastMessage, {
+          position: "top-center",
+          className: "custom-toast",
+          bodyClassName: "custom-toast-body",
+          icon: "✅",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        window.history.replaceState({}, document.title);
+      }, 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [toastMessage]);
+
+  return (
+    <UserLayout>
+      <div className="container mx-auto px-3">
+        <ToastContainer limit={1} />
+        <div className="text-sm text-[#888888] text-right py-3">
+          <span className="text-red-500">*</span> Indicates mandatory fields
+        </div>
+        <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
+          <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
+            <img src={Lock} alt="Lock" className="" />
+          </div>
+          <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto relative z-10">
+            <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
+              LOGIN
+            </h1>
+            <AmarabadLoginForm />
+            <div className="flex items-center my-6 opacity-50">
+              <div className="flex-grow border-t border-black relative">
+                <span className="absolute top-1/2 -translate-y-1/2 left-0 w-0 h-0 border-solid border-l-black border-l-8 border-y-transparent border-y-4 border-r-0" />
+              </div>
+              <span className="mx-2 text-black">or</span>
+              <div className="flex-grow border-t border-black relative">
+                <span className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-solid border-r-black border-r-8 border-y-transparent border-y-4 border-l-0" />
+              </div>
+            </div>
+            <div className="text-center text-sm md:text-base text-black">
+              Not Registered yet?{" "}
+              <Link
+                to="/amrabad-resort/register"
+                className="text-[#EB723C] font-bold hover:underline"
+              >
+                Create an Account
+              </Link>
+            </div>
+          </div>
+          <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
+            <img src={Logo} alt="MeeTicket Logo" className="w-56" />
+          </div>
+        </div>
+      </div>
+    </UserLayout>
+  );
+};
+
+export default AmarabadLogin;

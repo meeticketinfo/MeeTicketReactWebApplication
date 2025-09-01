@@ -1,0 +1,271 @@
+import { Formik, Form, Field } from "formik";
+import { getCurrentDate } from "../../../../utils/TypographyHelper";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { useEffect } from "react";
+import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
+import { useAmrabadBookingStore } from "../amrabad_consolidated/store/amarabadBookingstore";
+
+const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fromDate, toDate, packageId, roomId, bookingDate }) => {
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+
+
+  const { fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
+  
+  // Clear saved filters when component mounts to ensure fresh state
+  useEffect(() => {
+    // Clear any previously saved filters when component mounts
+    localStorage.removeItem("amrabad-availability-inner-report-filters");
+  }, []);
+
+  // Helper function to remove time from date string
+  const removeTimeFromDate = (dateString) => {
+    if (!dateString) return dateString;
+    // If date contains 'T' (timestamp), extract only the date part
+    return dateString.split('T')[0];
+  };
+
+  // Helper function to get next day date
+  const getNextDayDate = (dateString) => {
+    if (!dateString) return dateString;
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 2);
+    return date.toISOString().split('T')[0];
+  };
+
+  console.log("bookingDate", getNextDayDate(bookingDate));
+
+  const initialValues = {
+    fromDate: removeTimeFromDate(bookingDate) || getCurrentDate(),
+    toDate: getNextDayDate(bookingDate) || getCurrentDate(),
+    bookingSource: "Booking",
+    typeOfBooking: "",
+    phoneNumber: "",
+    package: packageId || "",
+    houses: roomId || "",
+    orderId: "",
+    paymentStatus: "",
+    modeOfBooking: "",
+    PaymentMode: "",
+  };
+
+  const onSubmit = (values, { resetForm }) => {
+    // Reset to first page when applying new filters
+    SetcurrentPage(0);
+
+    // Save filters to localStorage
+    localStorage.setItem("amrabad-availability-inner-report-filters", JSON.stringify(values));
+    const savedFilters = JSON.parse(
+      localStorage.getItem("amrabad-availability-inner-report-filters")
+    );
+    fetchAllAmrabadBookings({
+      startDate: values.fromDate,
+      endDate: values.toDate,
+      bookingSource: "Booking",
+      mobileNumber: values.phoneNumber ? values.phoneNumber : "",
+      PaymentMode: values.PaymentMode ? values.PaymentMode : "",
+      package: values.package ? values.package : "",
+      houses: values.houses ? values.houses : "",
+      orderId: values.orderId ? values.orderId : "",
+      paymentStatus: values.paymentStatus ? values.paymentStatus : "",
+      modeOfBooking: values.modeOfBooking ? values.modeOfBooking : "",
+      PageIndex: PageIndex,
+      pageSize: pageSize,
+    });
+  };
+
+  useEffect(() => {
+    getPackages();
+  }, []);
+
+  // Load houses when packageId is provided
+  useEffect(() => {
+    if (packageId) {
+      getHouses(packageId);
+    }
+  }, [packageId]);
+
+  return (
+    <>
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        {({ values, setFieldValue, resetForm }) => (
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+            <div>
+              <label
+                htmlFor="fromDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                From Date
+              </label>
+              <Field
+                type="date"
+                name="fromDate"
+                className={`mt-1 block w-full px-2 py-1 border
+                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                // min={getCurrentDate()}
+                onChange={(e) => {
+                  const fromDateValue = e.target.value;
+                  setFieldValue("fromDate", fromDateValue);
+                  if (new Date(fromDateValue) > new Date(values.toDate)) {
+                    // Automatically update toDate if it's earlier than fromDate
+                    setFieldValue("toDate", fromDateValue);
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="toDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                To Date
+              </label>
+              <Field
+                type="date"
+                name="toDate"
+                className={`mt-1 block w-full px-2 py-1 border
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                min={values.fromDate || getCurrentDate()}
+                onChange={(e) => {
+                  const toDateValue = e.target.value;
+                  setFieldValue("toDate", toDateValue);
+                }}
+              />
+            </div>
+           <div>
+              <label className="block text-sm font-medium">Package</label>
+              <Field
+                as="select"
+                name="package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  setFieldValue("package", packageId);
+                  
+                  // Always clear the houses field when package changes
+                  setFieldValue("houses", "");
+                  
+                  if (packageId === "") {
+                    // Clear houses from store when no package selected
+                    usePackagesStore.getState().AllHouses = [];
+                  } else {
+                    getHouses(packageId);
+                  }
+                }}
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">Select Package</option>
+                {AllPackages.map((item) => (
+                  <option key={item.packageId} value={item.packageId}>
+                    {item.packageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label className="block text-sm font-medium">Houses</label>
+              <Field
+                as="select"
+                name="houses"
+                disabled={values.package == ""}
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">Select House</option>
+                {AllHouses.map((item) => (
+                  <option key={item.roomId} value={item.roomId}>
+                    {item.roomName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Mobile number
+              </label>
+              <Field
+                type="text"
+                maxLength="10"
+                name="phoneNumber"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter"
+                onKeyPress={(e) => {
+                  if (!/^\d$/.test(e.key)) {
+                    e.preventDefault(); // Prevent non-numeric characters
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="orderId"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Order ID / Transaction ID
+              </label>
+              <Field
+                type="text"
+                name="orderId"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
+                placeholder="Enter"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Mode of booking
+              </label>
+              <Field
+                as="select"
+                name="modeOfBooking"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="">-- Select --</option>
+                <option value="Website">Website</option>
+                <option value="Mobile">Mobile</option>
+              </Field>
+            </div>
+           
+            {/* submit */}
+            <div className="flex items-end gap-2">
+              <button
+                type="submit"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                disabled={isFetchAllAmrabadBookingsLoading}
+              >
+                {isFetchAllAmrabadBookingsLoading ? 'Searching...' : 'Search'}
+              </button>
+              {/* <button
+                type="button"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                disabled={isFetchAllAmrabadBookingsLoading}
+                onClick={() => {
+                  resetForm({
+                    values: {
+                      fromDate: getCurrentDate(),
+                      toDate: getCurrentDate(),
+                      typeOfBooking: "",
+                      phoneNumber: "",
+                      PaymentMode: "",
+                      package: "",
+                      houses: "",
+                      orderId: "",
+                      paymentStatus: "",
+                      modeOfBooking: "",
+                    },
+                  });
+                }}
+              >
+                Reset
+              </button> */}
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+export default AmarabadAvailabilityInnerForm;

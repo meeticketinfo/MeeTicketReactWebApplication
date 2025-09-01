@@ -5,6 +5,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
+    fontFamily: {
+      manrope: ['Manrope', 'sans-serif'],
+      poppins: ['Poppins', 'sans-serif'],
+    },
     extend: {
       boxShadow: {
         custom: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
@@ -156,6 +160,7 @@ export default {
         lg: "3px 3px 6px rgba(0, 0, 0, 0.5)",
       },
     },
+    
   },
   plugins: [
     forms,

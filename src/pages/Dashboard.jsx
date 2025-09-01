@@ -6,6 +6,7 @@ import MetroDashboard from "../components/metro_reports/MetroDashboard";
 import { useNavigate } from "react-router-dom";
 import ToursimDashboard from "../components/tourism/ToursimDashboard";
 import RtcDasboard from "../components/rtc/RtcDasboard";
+import AmrabadDashboard from "./amrabad/dashboard/AmrabadDashboard";
 import SalarjangMuseumDashboard from "./park_admin/SalarjangMuseumDashboard";
 
 function Dashboard() {
@@ -22,6 +23,8 @@ function Dashboard() {
       return <RtcDasboard />;
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
+    } else if (roleDetails?.name === "Role_AmrabadAdmin") {
+      return <AmrabadDashboard/>;
     } else if (
       roleDetails?.name === "ROLE_ADMIN" &&
       parkId === "06de1b5e-0494-4b87-ac25-041849b68186"

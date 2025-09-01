@@ -33,6 +33,7 @@ import useAuthStore from "../store/authStore";
 import { FaCalendarCheck } from "react-icons/fa";
 import { BsPassport } from "react-icons/bs";
 import { VscCompassActive } from "react-icons/vsc";
+import { MdEventAvailable } from "react-icons/md";
 
 const sidebarItems = [
   {
@@ -142,7 +143,7 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/payment-transaction-report",
       },
-       {
+      {
         title: "Consolidated Booking Details",
         icon: TbReportSearch,
         path: "/pos-consolidated-booking-reports",
@@ -177,9 +178,9 @@ const sidebarItems = [
       //   path: "/transactions-dashboard",
       // },
       {
-       title: "Total Transactions",
-       icon: FaUsers,
-       path: "/total-transactions-dashboard",
+        title: "Total Transactions",
+        icon: FaUsers,
+        path: "/total-transactions-dashboard",
       },
       {
         title: "User Report",
@@ -293,17 +294,17 @@ const sidebarItems = [
       //   path: "/summary-report",
       // },
 
-       {
+      {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/metro-total-transaction",
       },
-       {
+      {
         title: "User Report",
         icon: FaUsers,
         path: "/metro-user-report",
       },
-        {
+      {
         title: "Refund Transactions",
         icon: FaUsers,
         path: "/metro-refund-transactions",
@@ -423,7 +424,7 @@ const sidebarItems = [
       "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [],
   },
-  // monthly reports
+
   {
     title: "Monthly Reports",
     icon: FaCalendarCheck,
@@ -436,7 +437,65 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/monthly-reports",
       },
-     
+    ],
+  },
+
+  {
+    title: "Masters",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Packages",
+        icon: TbReportSearch,
+        path: "/amrabad-packages",
+      },
+    ],
+  },
+  {
+    title: "Reports",
+    icon: HiOutlineDocumentReport,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Booking Reports",
+        icon: TbReportSearch,
+        path: "/amrabad-booking-reports",
+      },
+      {
+        title: "House Wise Reports",
+        icon: RiDashboard3Fill,
+        path: "/amrabad-house-wise-reports",
+      },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/amrabad-payment-transactions",
+      },
+      {
+        title: "Availability Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-availability-report",
+      },
+      {
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-user-report",
+      },
+      {
+        title: "Refund Transaction Report",
+        icon: MdEventAvailable,
+        path: "/amrabad-refund-transaction-report",
+      },
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/amarabad-total-transaction",
+      },
     ],
   },
 ];

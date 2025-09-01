@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup"; // Import Yup for validation
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import { bouncy } from "ldrs";
@@ -246,7 +246,6 @@ const OtPVerification = ({
           </Formik>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

@@ -1,0 +1,1807 @@
+import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { convertToBase64 } from "../../../../utils/Helper";
+import { MdDeleteForever } from "react-icons/md";
+import * as Yup from "yup";
+import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
+import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
+import MultipleDatePicker from "../../../../components/MultipleDatePicker";
+
+const AddPackage = () => {
+  const [isHasRoom, setIsHasRoom] = useState(false);
+  const [isValidation, setIsValidation] = useState("");
+  const { setCurrentTab } = usePackagesCommonStore();
+  const { savePackageWithRoom, isSavePackageWithRoomLoading } =
+    usePackagesStore();
+
+  /*  Room template for new rooms */
+  const createRoomTemplate = () => {
+    const template = {
+      roomName: "",
+      tariffPerDay: null,
+      hasDiscount: false,
+      discountType: "",
+      amountAfterDiscount: 0,
+      noOfHousesAvailable: 0,
+      roomLimit: 0,
+      isBlockout: "",
+      blockoutType: "",
+      blockedDate: [],
+      sequence: 0,
+      remarks: "",
+      latitude: null,
+      longitude: null,
+      overview: "",
+      specialOffers: "",
+      roomImageBase64Strings: [],
+      discountDetails: [
+        { dayOfWeek: "Monday", discountValue: null, amountAfterDiscount: null },
+        {
+          dayOfWeek: "Tuesday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        {
+          dayOfWeek: "Wednesday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        {
+          dayOfWeek: "Thursday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        { dayOfWeek: "Friday", discountValue: null, amountAfterDiscount: null },
+        {
+          dayOfWeek: "Saturday",
+          discountValue: null,
+          amountAfterDiscount: null,
+        },
+        { dayOfWeek: "Sunday", discountValue: null, amountAfterDiscount: null },
+      ],
+    };
+    return template;
+  };
+ 
+  /*  Initial values                                                    */
+
+  const initialValues = {
+    package: {
+      packageName: "",
+      description: "",
+      checkInTime: "",
+      checkOutTime: "",
+      guidelines: "",
+      cancellationPolicy: "",
+      termsConditions: "",
+      privacyPolicy: "",
+      latitude: null,
+      longitude: null,
+      packageImageBase64Strings: [],
+      isActive: true,
+    },
+    hasRooms: false,
+    rooms: [], // Start with empty rooms array
+  };
+
+  /*  Validation helpers                                                */
+
+  const positiveInt = (msg = "Must be a positive number") =>
+    Yup.number()
+      .typeError("Must be a number")
+      .integer("Must be an integer")
+      .positive(msg)
+      .nullable();
+
+  /*  ONE room schema (uses Yup.when)                                   */
+  const roomSchema = Yup.object().shape({
+    roomName: Yup.string().max(100).required("House name is required"),
+    tariffPerDay: Yup.number()
+      .typeError("Must be a number")
+      .positive()
+      .required("Tariff per day is required")
+      .nullable(),
+
+    hasDiscount: Yup.boolean().required("Required"),
+
+    discountType: Yup.string().when("hasDiscount", {
+      is: true,
+      then: (schema) => schema.required("Discount Type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    noOfHousesAvailable: positiveInt()
+      .required("No Of Houses Available is required")
+      .nullable(),
+    roomLimit: Yup.string().required("House Limit is required").nullable(),
+    isBlockout: Yup.string().required("Block out selection is required"),
+    blockoutType: Yup.string().when("isBlockout", {
+      is: "Yes",
+      then: (schema) => schema.required("Block out type is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+    blockedDate: Yup.array()
+      .of(Yup.string())
+      .when("blockoutType", {
+        is: "blockByDate",
+        then: (schema) => schema.min(1, "At least one date is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+
+    sequence: positiveInt().required("Sequence is required").nullable(),
+
+    latitude: Yup.number()
+      .typeError("Latitude must be a number")
+      .required("Latitude is required")
+      .min(-90)
+      .max(90),
+
+    longitude: Yup.number()
+      .typeError("Longitude must be a number")
+      .required("Longitude is required")
+      .min(-180)
+      .max(180),
+
+    roomImageBase64Strings: Yup.array()
+      .of(Yup.string())
+      .min(1, "At least one image"),
+
+    discountDetails: Yup.array().of(
+      Yup.object().shape({
+        dayOfWeek: Yup.string().required("Day of week is required"),
+        discountValue: Yup.string().nullable(),
+        amountAfterDiscount: Yup.string().nullable(),
+      })
+    ),
+    overview: Yup.string().max(500).required("Overview is required"),
+    specialOffers: Yup.string().max(255).required("Special offers is required"),
+    remarks: Yup.string().max(500),
+  });
+
+  /*  Main schema                                                       */
+
+  const addPackageValidationSchema = Yup.object().shape({
+    hasRooms: Yup.boolean(),
+
+    /* ---------- PACKAGE ---------- */
+    package: Yup.object().shape({
+      packageName: Yup.string().max(100).required("Package name is required"),
+
+      description: Yup.string()
+        .max(1000, "Max 1000 characters")
+        .required("Description is required"),
+
+      checkInTime: Yup.string()
+        .required("Check-in time is required"),
+
+      checkOutTime: Yup.string().required("Check-out time is required"),
+
+      guidelines: Yup.string().max(1000),
+      cancellationPolicy: Yup.string().max(1000),
+      termsConditions: Yup.string()
+        .max(1000, "Max 1000 characters")
+        .required("T&C are required"),
+
+      privacyPolicy: Yup.string().max(1000),
+
+      latitude: Yup.number()
+        .typeError("Latitude must be a number")
+        .required("Latitude is required")
+        .min(-90)
+        .max(90),
+
+      longitude: Yup.number()
+        .typeError("Longitude must be a number")
+        .required("Longitude is required")
+        .min(-180)
+        .max(180),
+
+      packageImageBase64Strings: Yup.array()
+        .of(Yup.string())
+        .min(1, "At least one image is required"),
+
+      isActive: Yup.boolean().required("Status is required"),
+    }),
+
+    /* ---------- ROOMS ---------- */
+    rooms: Yup.lazy((_, ctx) => {
+      console.log("Validating rooms:", ctx.parent?.rooms);
+      return ctx.parent?.hasRooms
+        ? Yup.array().of(roomSchema).min(1, "Add at least one house")
+        : Yup.array().notRequired();
+    }),
+  });
+
+  /*  Submit handler   */
+
+  const onSubmit = async (values, { setSubmitting, setErrors }) => {
+    const WithOutRoomspayLoad = { package: values.package };
+    const WithRoomspayLoad = values;
+    const Payload = isHasRoom ? WithRoomspayLoad : WithOutRoomspayLoad;
+
+    // Convert string blockout values to boolean for API
+    if (isHasRoom && Payload.rooms) {
+      Payload.rooms.forEach((room, index) => {
+        // Set isBlockout to true when user selects "Yes", null when "No"
+        room.isBlockout = room.isBlockout === "Yes" ? true : null;
+
+        // Set blockedDate based on blockoutType
+        if (room.isBlockout === "Yes" && room.blockoutType === "blockByDate") {
+          room.blockedDate = room.blockedDate || [];
+        } else {
+          room.blockedDate = [];
+        }
+
+        console.log(`Room ${index + 1} blockout:`, room.isBlockout);
+      });
+    }
+
+    try {
+      const res = await savePackageWithRoom(Payload);
+
+      if (res.data.status === 200) {
+        toast.success("Package Added Successfully");
+        setTimeout(() => {
+          setCurrentTab(0);
+        }, 1000);
+      }
+    } catch (xhr) {
+      console.error("Submit error:", xhr);
+      toast.error(xhr.response?.data.message || "An error occurred");
+      // toast.error("Something Went Wrong");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  return (
+    <div className="bg-white/30 p-2 sm:p-3 rounded-2xl">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="bg-white rounded-2xl p-2 sm:p-3 shadow-md border border-gray-200">
+        <Formik
+          initialValues={initialValues}
+          validationSchema={addPackageValidationSchema}
+          onSubmit={onSubmit}
+          enableReinitialize={true}
+          validateOnChange={true}
+          validateOnBlur={true}
+        >
+          {({ setFieldValue, values, errors, touched }) => {
+            // Debug validation errors
+            if (Object.keys(errors).length > 0) {
+              console.log("Validation errors:", errors);
+              console.log("Form values:", values);
+              if (errors.rooms) {
+                console.log("Room errors:", errors.rooms);
+                console.log("Rooms array:", values.rooms);
+                if (errors.rooms[0] && errors.rooms[0].discountDetails) {
+                  console.log(
+                    "Discount details errors:",
+                    errors.rooms[0].discountDetails
+                  );
+                }
+              }
+            }
+            return (
+              <Form>
+                <div className="bg-[#F3F3F3] rounded-2xl mb-1 grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4 p-2 sm:p-3">
+                  {/*  Package Name */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                    <label
+                      htmlFor="openTime"
+                      className="block text-sm font-medium"
+                    >
+                      Name of the Package<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="package.packageName"
+                      type="text"
+                      maxLength={100}
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Package Name"
+                    />
+                    <ErrorMessage
+                      name="package.packageName"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+                  {/* discription */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                    <label className="block text-sm font-medium">
+                      Description<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      maxLength={1000}
+                      name="package.description"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none  bg-white text-sm`}
+                      placeholder="Enter Description"
+                    />
+                    <ErrorMessage
+                      name="package.description"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+                  {/* Check In Time */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                    <label
+                      htmlFor="package.checkInTime"
+                      className="block text-sm font-medium"
+                    >
+                      Check-in Time<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      type="time"
+                      name="package.checkInTime"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Check-in Time"
+                    />
+                    <ErrorMessage
+                      name="package.checkInTime"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/* Check Out Time */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                    <label
+                      htmlFor="package.checkOutTime"
+                      className="block text-sm font-medium"
+                    >
+                      Check-out Time<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      type="time"
+                      name="package.checkOutTime"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Checkout Time"
+                    />
+                    <ErrorMessage
+                      name="package.checkOutTime"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/*  Latitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                    <label
+                      htmlFor="latitude"
+                      className="block text-sm font-medium"
+                    >
+                      Latitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="package.latitude"
+                      type="number"
+                      step="any"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Latitude"
+                    />
+                    <ErrorMessage
+                      name="package.latitude"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {/*  Longitude */}
+                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                    <label
+                      htmlFor="longitude"
+                      className="block text-sm font-medium"
+                    >
+                      Longitude<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      name="package.longitude"
+                      type="number"
+                      step="any"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter longitude"
+                    />
+                    <ErrorMessage
+                      name="package.longitude"
+                      component="div"
+                      className="text-red-500 text-xs"
+                    />
+                  </div>
+                  {/*  Guidelines */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                    <label htmlFor="User" className="block text-sm font-medium">
+                      Guidelines
+                    </label>
+                    <Field
+                      as="textarea"
+                      name="package.guidelines"
+                      maxLength={1000}
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Guidelines"
+                    />
+                  </div>
+                  {/* Privacy Policy */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                    <label className="block text-sm font-medium">
+                      Privacy Policy
+                    </label>
+                    <Field
+                      as="textarea"
+                      maxLength={1000}
+                      name="package.privacyPolicy"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Privacy Policy"
+                    />
+                    {/* <ErrorMessage
+                        name="package.privacyPolicy"
+                        component="div"
+                        className="text-red-500 text-xs absolute"
+                        /> */}
+                  </div>
+
+                  {/* Cancellation Policy */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                    <label className="block text-sm font-medium">
+                      Cancellation Policy
+                    </label>
+                    <Field
+                      as="textarea"
+                      maxLength={1000}
+                      name="package.cancellationPolicy"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Cancellation Policy"
+                    />
+                    {/* <ErrorMessage
+                      name="package.cancellationPolicy"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                      /> */}
+                  </div>
+                  {/* Terms & Conditions */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                    <label className="block text-sm font-medium">
+                      Terms & Conditions<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="textarea"
+                      maxLength={1000}
+                      name="package.termsConditions"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      placeholder="Enter Terms & Conditions"
+                    />
+                    <ErrorMessage
+                      name="package.termsConditions"
+                      component="div"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+                  {/* status */}
+                  <div className="form-group col-span-1 sm:col-span-3 lg:col-span-3">
+                    <label
+                      className="block text-sm font-medium"
+                      htmlFor="package.isActive"
+                    >
+                      Status<span className="text-red-500">*</span>
+                    </label>
+                    <Field
+                      as="select"
+                      id="package.isActive"
+                      name="package.isActive"
+                      onChange={(e) => {
+                        const Value = e.target.value === "true";
+                        setIsValidation(Value);
+                        setFieldValue(`package.isActive`, Value);
+                      }}
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    >
+                      <option value={true}>Active</option>
+                      <option value={false}>In Active</option>
+                    </Field>
+                    <ErrorMessage
+                      name="package.isActive"
+                      component="span"
+                      className="text-red-500 text-xs absolute"
+                    />
+                  </div>
+                  {/* upload Image */}
+                  <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                    <label
+                      htmlFor="package.packageImageBase64Strings"
+                      className="block text-sm font-medium mb-2"
+                    >
+                      Upload Images<span className="text-red-500">*</span>
+                    </label>
+
+                    {/* Drag and Drop Zone */}
+                    <div
+                      className={`relative border-2 border-dashed rounded-lg p-4 sm:p-8 text-center transition-colors ${
+                        values.package.packageImageBase64Strings.length > 0
+                          ? "border-green-300 bg-green-50"
+                          : "border-gray-300 hover:border-blue-400 bg-gray-50"
+                      }`}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
+                      }}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove(
+                          "border-blue-500",
+                          "bg-blue-50"
+                        );
+
+                        const files = Array.from(e.dataTransfer.files).filter(
+                          (file) => file.type.startsWith("image/")
+                        );
+
+                        if (files.length > 0) {
+                          const base64Images = [];
+                          for (let i = 0; i < files.length; i++) {
+                            const base64 = await convertToBase64(files[i]);
+                            base64Images.push(base64);
+                          }
+                          // Append new images to existing ones
+                          const currentImages = values.package.packageImageBase64Strings || [];
+                          setFieldValue(
+                            "package.packageImageBase64Strings",
+                            [...currentImages, ...base64Images]
+                          );
+                        }
+                        
+                        // Clear any file input to ensure consistency
+                        const fileInput = document.getElementById("package.packageImageBase64Strings");
+                        if (fileInput) {
+                          fileInput.value = "";
+                        }
+                      }}
+                    >
+                      {/* Upload Icon */}
+                      <div className="flex justify-center mb-4">
+                        <svg
+                          className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Upload Text */}
+                      <p className="text-gray-600 mb-2 text-sm">
+                        Drop your images here, or{" "}
+                        <label
+                          htmlFor="package.packageImageBase64Strings"
+                          className="text-blue-600 underline cursor-pointer hover:text-blue-800"
+                        >
+                          click to browse
+                        </label>
+                      </p>
+
+                      {/* File Specifications */}
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        1600 × 1200 (4:3) recommended. PNG, JPG
+                      </p>
+
+                      {/* Hidden File Input */}
+                      <input
+                        id="package.packageImageBase64Strings"
+                        name="package.packageImageBase64Strings"
+                        className="hidden"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={async (event) => {
+                          const files = event.currentTarget.files;
+                          if (files) {
+                            const base64Images = [];
+                            for (let i = 0; i < files.length; i++) {
+                              const base64 = await convertToBase64(files[i]);
+                              base64Images.push(base64);
+                            }
+                            // Append new images to existing ones
+                            const currentImages = values.package.packageImageBase64Strings || [];
+                            setFieldValue(
+                              "package.packageImageBase64Strings",
+                              [...currentImages, ...base64Images]
+                            );
+                          }
+                          // Clear the file input value to allow selecting the same file again
+                          event.target.value = "";
+                        }}
+                      />
+                    </div>
+
+                    <ErrorMessage
+                      name="package.packageImageBase64Strings"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+
+                    {/* preview */}
+                    {values.package.packageImageBase64Strings.length !== 0 && (
+                      <div className="col-md-10 border p-2 mt-2">
+                        <h4 className="text-sm font-semibold text-gray-800 mb-2">
+                          Selected Image Previews:
+                        </h4>
+
+                        <div className="flex flex-wrap gap-2 sm:gap-4 h-20 overflow-auto ">
+                          {values.package.packageImageBase64Strings.map(
+                            (base64Image, index) => (
+                              <div
+                                key={index}
+                                className="relative w-[80px] sm:w-[120px] rounded overflow-hidden shadow-md border border-gray-200"
+                              >
+                                {/* Delete button */}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const updatedImages =
+                                      values.package.packageImageBase64Strings.filter(
+                                        (_, i) => i !== index
+                                      );
+                                    setFieldValue(
+                                      "package.packageImageBase64Strings",
+                                      updatedImages
+                                    );
+                                  }}
+                                  className="absolute top-1 right-1 bg-white text-gray-600 border border-gray-300 rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs hover:bg-red-600 hover:text-white transition-all"
+                                >
+                                  ×
+                                </button>
+
+                                {/* Image preview */}
+                                <img
+                                  src={base64Image}
+                                  alt={`preview-${index}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ---------------------------------------------------------------------------------------------------------------------- */}
+                  {/* has sub facility */}
+                  <div className="flex items-center mt-5 col-span-1 sm:col-span-6 lg:col-span-12">
+                    <Field
+                      type="checkbox"
+                      id="hasRooms"
+                      name="hasRooms"
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+
+                        setIsHasRoom(isChecked);
+                        setFieldValue("hasRooms", isChecked);
+                        if (isChecked) {
+                          // Ensure the first room has the complete structure
+                          const firstRoom = createRoomTemplate();
+
+                          replace([firstRoom]);
+                        } else {
+                          replace([]);
+                        }
+                      }}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label
+                      htmlFor="hasRooms"
+                      className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      Has House
+                    </label>
+                  </div>
+                </div>
+                <hr className="py-2"></hr>
+                <div>
+                  <FieldArray name="rooms">
+                    {({ push, remove, replace }) => (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newRoom = createRoomTemplate();
+                            const newIndex = values.rooms.length;
+                            push(newRoom);
+                          }}
+                          className={`${
+                            values.hasRooms ? "" : "hidden"
+                          } bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 my-3`}
+                        >
+                          Add House
+                        </button>
+                        <div className={`${values.hasRooms ? "" : "hidden"}`}>
+                          {values.rooms.map((rooms, index) => (
+                            <div
+                              key={index}
+                              className="card mb-3 p-2 sm:p-3 bg-[#F3F3F3] border border-gray-100 rounded-2xl shadow-md"
+                            >
+                              <div className="flex items-center justify-between mb-4">
+                                <h1 className="font-medium text-sm sm:text-base">
+                                  House: {index + 1}
+                                </h1>
+                                {values.rooms.length > 1 && (
+                                  <div className="flex items-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        remove(index); // Remove the sub-facility at the given index
+
+                                        // New logic: Check if there are no sub-facilities left, then reset the state
+                                        if (values.rooms.length === 1) {
+                                          setFieldValue("hasRooms", false);
+                                        }
+                                      }}
+                                      className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-red-500 hover:bg-red-600 transition duration-200"
+                                    >
+                                      <MdDeleteForever className="text-white text-sm sm:text-base" />
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div
+                                className={`mb-6 ${
+                                  values.hasRooms
+                                    ? "grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4"
+                                    : "hidden"
+                                }`}
+                              >
+                                {/* House Name */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].roomName`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    House Name{" "}
+                                    <span className="text-red-500 text-xs">
+                                      *
+                                    </span>
+                                  </label>
+                                  <Field
+                                    type="text"
+                                    maxLength={100}
+                                    id={`rooms[${index}].roomName`}
+                                    name={`rooms[${index}].roomName`}
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter House Name"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].roomName`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Tariff Per Day */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].tariffPerDay`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Tariff Per Day{" "}
+                                    <span className="text-red-500 text-xs">
+                                      *
+                                    </span>
+                                  </label>
+                                  <Field
+                                    type="number"
+                                    min={0}
+                                    placeholder="Tariff Per Day"
+                                    name={`rooms[${index}].tariffPerDay`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 7) {
+                                        e.target.value = value.slice(0, 7);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
+                                  />
+
+                                  <ErrorMessage
+                                    name={`rooms[${index}].tariffPerDay`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {/* No of Houses Available */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor="noOfHousesAvailable"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    No of Houses Available{" "}
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    type="number"
+                                    min={0}
+                                    name={`rooms[${index}].noOfHousesAvailable`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    placeholder="Enter No of Houses Available"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 3) {
+                                        e.target.value = value.slice(0, 3);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].noOfHousesAvailable`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {/* House Limit */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor="roomLimit"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    House Limit{" "}
+                                    <span className="text-red-500 text-xs">
+                                      *
+                                    </span>
+                                  </label>
+                                  <Field name={`rooms[${index}].roomLimit`}>
+                                    {({ field }) => (
+                                      <input
+                                        {...field}
+                                        type="number"
+                                        min={0}
+                                        max={
+                                          values.rooms[index]
+                                            ?.noOfHousesAvailable || undefined
+                                        }
+                                        className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                        placeholder="Enter House Limit"
+                                        onInput={(e) => {
+                                          const value = e.target.value;
+                                          const maxHouses =
+                                            values.rooms[index]
+                                              ?.noOfHousesAvailable;
+
+                                          // Limit length to 3 characters
+                                          if (value.length > 3) {
+                                            e.target.value = value.slice(0, 3);
+                                          }
+
+                                          // If noOfHousesAvailable is set and value exceeds it, set to max
+                                          if (
+                                            maxHouses &&
+                                            Number(value) > Number(maxHouses)
+                                          ) {
+                                            e.target.value = maxHouses;
+                                            setFieldValue(
+                                              `rooms[${index}].roomLimit`,
+                                              maxHouses
+                                            );
+                                          }
+                                        }}
+                                        onKeyDown={(e) => {
+                                          if (
+                                            ["-", "e", "E", "+", "."].includes(
+                                              e.key
+                                            ) ||
+                                            (e.key.length === 1 &&
+                                              !/[0-9]/.test(e.key))
+                                          ) {
+                                            e.preventDefault();
+                                          }
+                                        }}
+                                        onChange={(e) => {
+                                          const value = e.target.value;
+                                          const maxHouses =
+                                            values.rooms[index]
+                                              ?.noOfHousesAvailable;
+
+                                          // If noOfHousesAvailable is set and value exceeds it, don't update
+                                          if (
+                                            maxHouses &&
+                                            Number(value) > Number(maxHouses)
+                                          ) {
+                                            return;
+                                          }
+
+                                          setFieldValue(
+                                            `rooms[${index}].roomLimit`,
+                                            value
+                                          );
+                                        }}
+                                      />
+                                    )}
+                                  </Field>
+                                  <ErrorMessage
+                                    name={`rooms[${index}].roomLimit`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {/* discounts */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].hasDiscount`}
+                                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Discount
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="select"
+                                    name={`rooms[${index}].hasDiscount`}
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    onChange={(e) => {
+                                      const Value = e.target.value === "true";
+                                      setIsValidation(Value);
+                                      setFieldValue(
+                                        `rooms[${index}].hasDiscount`,
+                                        Value
+                                      );
+                                    }}
+                                  >
+                                    {/* <option value=" " label="Select Option" /> */}
+                                    <option value={true} label="Yes" />
+                                    <option value={false} label="No" />
+                                  </Field>
+                                  <ErrorMessage
+                                    name={`rooms[${index}].hasDiscount`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {values.rooms[index].hasDiscount === true && (
+                                  <>
+                                    {/* Discount Type */}
+                                    <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                      <label
+                                        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                        htmlFor={`rooms[${index}].discountType`}
+                                      >
+                                        Discount Type
+                                        <span className="text-red-500">*</span>
+                                      </label>
+                                      <Field
+                                        as="select"
+                                        name={`rooms[${index}].discountType`}
+                                        className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                        onChange={(e) => {
+                                          const discountType = e.target.value;
+                                          setFieldValue(
+                                            `rooms[${index}].discountType`,
+                                            discountType
+                                          );
+
+                                          // Clear all discount details when discount type changes
+                                          const updatedDiscountDetails =
+                                            values.rooms[
+                                              index
+                                            ].discountDetails.map((detail) => ({
+                                              ...detail,
+                                              discountValue: null,
+                                              amountAfterDiscount: null,
+                                            }));
+                                          setFieldValue(
+                                            `rooms[${index}].discountDetails`,
+                                            updatedDiscountDetails
+                                          );
+                                        }}
+                                      >
+                                        <option value="">Select type</option>
+                                        <option value="Amount">Amount</option>
+                                        <option value="Percentage">
+                                          Percentage
+                                        </option>
+                                      </Field>
+                                      <ErrorMessage
+                                        name={`rooms[${index}].discountType`}
+                                        component="div"
+                                        className="text-red-500 text-xs mt-1"
+                                      />
+                                    </div>
+
+                                    {/* Discount Table */}
+                                    <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                                      <div className="bg-gray-200 border border-gray-300 rounded-lg p-4 sm:p-8">
+                                        {/* Discount applicable on */}
+                                        <div>
+                                          <div className="space-y-2">
+                                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-[120px]">
+                                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                                Discount applicable on
+                                              </h4>
+                                              <h4 className="text-sm font-medium text-gray-900 mb-3">
+                                                Amount after discount
+                                              </h4>
+                                            </div>
+                                            {[
+                                              "MONDAY",
+                                              "TUESDAY",
+                                              "WEDNESDAY",
+                                              "THURSDAY",
+                                              "FRIDAY",
+                                              "SATURDAY",
+                                              "SUNDAY",
+                                            ].map((day, dayIndex) => (
+                                              <div
+                                                key={day}
+                                                className="flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 sm:gap-4"
+                                              >
+                                                {/* Day Label */}
+                                                <span className="text-sm text-gray-700 w-20 min-w-[80px]">
+                                                  {day}
+                                                </span>
+
+                                                {/* Discount Input */}
+                                                <div className="relative w-full sm:w-auto">
+                                                  <Field
+                                                    type="number"
+                                                    name={`rooms[${index}].discountDetails[${dayIndex}].discountValue`}
+                                                    placeholder={
+                                                      values.rooms[index]
+                                                        .discountType ===
+                                                      "Amount"
+                                                        ? "0"
+                                                        : "0"
+                                                    }
+                                                    value={
+                                                      values.rooms[index]
+                                                        .discountDetails[
+                                                        dayIndex
+                                                      ].discountValue || ""
+                                                    }
+                                                    min="0"
+                                                    step="0.01"
+                                                    className="w-full sm:w-40 px-2 py-1 pr-8 border border-gray-300 rounded text-sm bg-white"
+                                                    onKeyDown={(e) => {
+                                                      // Prevent negative values and invalid characters
+                                                      if (
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
+                                                        (e.key.length === 1 &&
+                                                          !/[0-9]/.test(e.key))
+                                                      ) {
+                                                        e.preventDefault();
+                                                      }
+                                                    }}
+                                                    onChange={(e) => {
+                                                      const value =
+                                                        e.target.value;
+
+                                                      // Prevent negative values
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
+                                                        e.target.value = "";
+                                                        return;
+                                                      }
+
+                                                      // Convert empty string to null
+                                                      const finalValue =
+                                                        value === ""
+                                                          ? null
+                                                          : value;
+                                                      setFieldValue(
+                                                        `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                        finalValue
+                                                      );
+
+                                                      // Calculate amount after discount based on discount type
+                                                      const tariff =
+                                                        values.rooms[index]
+                                                          .tariffPerDay || 0;
+                                                      const discountValue =
+                                                        parseFloat(value) || 0;
+
+                                                      if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Percentage"
+                                                      ) {
+                                                        // Calculate amount after discount for percentage
+                                                        const discountAmount =
+                                                          (tariff *
+                                                            discountValue) /
+                                                          100;
+                                                        const amountAfterDiscount =
+                                                          tariff -
+                                                          discountAmount;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                          amountAfterDiscount.toFixed(
+                                                            2
+                                                          )
+                                                        );
+                                                      } else if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Amount"
+                                                      ) {
+                                                        // Calculate amount after discount for amount
+                                                        const amountAfterDiscount =
+                                                          tariff -
+                                                          discountValue;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                          amountAfterDiscount.toFixed(
+                                                            2
+                                                          )
+                                                        );
+                                                      }
+                                                    }}
+                                                    onBlur={(e) => {
+                                                      // Additional check on blur to prevent negative values
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
+                                                      if (value < 0) {
+                                                        e.target.value = "";
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                          null
+                                                        );
+                                                      }
+                                                    }}
+                                                  />
+                                                  <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                                                    {values.rooms[index]
+                                                      .discountType === "Amount"
+                                                      ? "₹"
+                                                      : "%"}
+                                                  </span>
+                                                </div>
+
+                                                {/* Amount after Discount */}
+                                                <div className="relative w-full sm:w-auto">
+                                                  <Field
+                                                    type="number"
+                                                    name={`rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`}
+                                                    placeholder="0"
+                                                    value={
+                                                      values.rooms[index]
+                                                        .discountDetails[
+                                                        dayIndex
+                                                      ].amountAfterDiscount ||
+                                                      ""
+                                                    }
+                                                    min="0"
+                                                    step="0.01"
+                                                    disabled={true}
+                                                    className="w-full sm:w-40 px-2 py-1 pl-6 bg-gray-300 border border-gray-300 rounded text-sm"
+                                                    onKeyDown={(e) => {
+                                                      // Prevent negative values and invalid characters
+                                                      if (
+                                                        [
+                                                          "-",
+                                                          "e",
+                                                          "E",
+                                                          "+",
+                                                        ].includes(e.key) ||
+                                                        (e.key.length === 1 &&
+                                                          !/[0-9]/.test(e.key))
+                                                      ) {
+                                                        e.preventDefault();
+                                                      }
+                                                    }}
+                                                    onChange={(e) => {
+                                                      const value =
+                                                        e.target.value;
+
+                                                      // Prevent negative values
+                                                      if (
+                                                        parseFloat(value) < 0
+                                                      ) {
+                                                        e.target.value = "";
+                                                        return;
+                                                      }
+
+                                                      // Convert empty string to null
+                                                      const finalValue =
+                                                        value === ""
+                                                          ? null
+                                                          : value;
+                                                      setFieldValue(
+                                                        `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                        finalValue
+                                                      );
+
+                                                      // Calculate discount value based on amount after discount
+                                                      const tariff =
+                                                        values.rooms[index]
+                                                          .tariffPerDay || 0;
+                                                      const amountAfterDiscount =
+                                                        parseFloat(value) || 0;
+
+                                                      if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Amount"
+                                                      ) {
+                                                        // Calculate discount amount for amount type
+                                                        const discountAmount =
+                                                          tariff -
+                                                          amountAfterDiscount;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                          discountAmount.toFixed(
+                                                            2
+                                                          )
+                                                        );
+                                                      } else if (
+                                                        values.rooms[index]
+                                                          .discountType ===
+                                                        "Percentage"
+                                                      ) {
+                                                        // Calculate discount percentage for percentage type
+                                                        const discountAmount =
+                                                          tariff -
+                                                          amountAfterDiscount;
+                                                        const discountPercentage =
+                                                          (discountAmount /
+                                                            tariff) *
+                                                          100;
+
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].discountValue`,
+                                                          discountPercentage.toFixed(
+                                                            2
+                                                          )
+                                                        );
+                                                      }
+                                                    }}
+                                                    onBlur={(e) => {
+                                                      // Additional check on blur to prevent negative values
+                                                      const value = parseFloat(
+                                                        e.target.value
+                                                      );
+                                                      if (value < 0) {
+                                                        e.target.value = "";
+                                                        setFieldValue(
+                                                          `rooms[${index}].discountDetails[${dayIndex}].amountAfterDiscount`,
+                                                          null
+                                                        );
+                                                      }
+                                                    }}
+                                                  />
+                                                  <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                                                    ₹
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+
+                                {/* Block out */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].isBlockout`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Block out?{" "}
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="select"
+                                    name={`rooms[${index}].isBlockout`}
+                                    onChange={(e) => {
+                                      const selectedValue = e.target.value;
+                                      setFieldValue(
+                                        `rooms[${index}].isBlockout`,
+                                        selectedValue
+                                      );
+                                      setFieldValue(
+                                        `rooms[${index}].blockoutType`,
+                                        ""
+                                      ); // Clear blockoutType when isBlockout changes
+                                    }}
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                  </Field>
+                                  <ErrorMessage
+                                    name={`rooms[${index}].isBlockout`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Block out type - only show when isBlockout is "Yes" */}
+                                {values.rooms[index]?.isBlockout === "Yes" && (
+                                  <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                    <label
+                                      htmlFor={`rooms[${index}].blockoutType`}
+                                      className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    >
+                                      Block out type?{" "}
+                                      <span className="text-red-500">*</span>
+                                    </label>
+                                    <Field
+                                      as="select"
+                                      name={`rooms[${index}].blockoutType`}
+                                      onChange={(e) => {
+                                        const selectedValue = e.target.value;
+                                        setFieldValue(
+                                          `rooms[${index}].blockoutType`,
+                                          selectedValue
+                                        );
+                                        // Reset blockedDate when changing blockout type
+                                        if (selectedValue === "fullBlock") {
+                                          // Clear dates for full block
+                                          setFieldValue(
+                                            `rooms[${index}].blockedDate`,
+                                            []
+                                          );
+                                        }
+                                      }}
+                                      className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    >
+                                      <option value="">Select</option>
+                                      <option value="fullBlock">
+                                        Full Block
+                                      </option>
+                                      <option value="blockByDate">
+                                        Block by Date
+                                      </option>
+                                    </Field>
+                                    <ErrorMessage
+                                      name={`rooms[${index}].blockoutType`}
+                                      component="div"
+                                      className="text-red-500 text-xs mt-1"
+                                    />
+                                  </div>
+                                )}
+
+                                {/* Block by Date - only show when isBlockout is "Yes" and blockoutType is "blockByDate" */}
+                                {values.rooms[index]?.isBlockout === "Yes" &&
+                                  values.rooms[index]?.blockoutType ===
+                                    "blockByDate" && (
+                                    <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                      <label className="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        Block by Date{" "}
+                                        <span className="text-red-500">*</span>
+                                      </label>
+                                      <div className="mt-1">
+                                        <MultipleDatePicker
+                                          value={
+                                            values.rooms[index]?.blockedDate ||
+                                            []
+                                          }
+                                          onChange={(selectedDates) => {
+                                            setFieldValue(
+                                              `rooms[${index}].blockedDate`,
+                                              selectedDates
+                                            );
+                                          }}
+                                          placeholder="Select dates to block..."
+                                          className="block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                        />
+                                        <ErrorMessage
+                                          name={`rooms[${index}].blockedDate`}
+                                          component="div"
+                                          className="text-red-500 text-xs mt-1"
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
+                                {/* Sequence */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor="sequence"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Sequence{" "}
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    type="number"
+                                    min={0}
+                                    name={`rooms[${index}].sequence`}
+                                    className="mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                    placeholder="Enter Sequence Number"
+                                    onInput={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length > 3) {
+                                        e.target.value = value.slice(0, 3);
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        ["-", "e", "E", "+", "."].includes(
+                                          e.key
+                                        ) ||
+                                        (e.key.length === 1 &&
+                                          !/[0-9]/.test(e.key))
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].sequence`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {/* Remarks */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor="remarks"
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Remarks
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].remarks`}
+                                    rows="2"
+                                    maxLength="250"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter your remarks"
+                                  />
+                                </div>
+
+                                {/*  Latitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].latitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Latitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].latitude`}
+                                    type="number"
+                                    step="any"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Latitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].latitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/*  Longitude */}
+                                <div className="col-span-1 sm:col-span-3 lg:col-span-3">
+                                  <label
+                                    htmlFor={`rooms[${index}].longitude`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Longitude
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    name={`rooms[${index}].longitude`}
+                                    type="number"
+                                    step="any"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter Longitude"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].longitude`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Overview */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].overview`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Overview
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].overview`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter house overview"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].overview`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+
+                                {/* Special Offers */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-6">
+                                  <label
+                                    htmlFor={`rooms[${index}].specialOffers`}
+                                    className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                                  >
+                                    Special Offers
+                                    <span className="text-red-500">*</span>
+                                  </label>
+                                  <Field
+                                    as="textarea"
+                                    name={`rooms[${index}].specialOffers`}
+                                    rows="3"
+                                    maxLength="500"
+                                    className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                                    placeholder="Enter special offers"
+                                  />
+                                  <ErrorMessage
+                                    name={`rooms[${index}].specialOffers`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+                                </div>
+                                {/* images */}
+                                <div className="col-span-1 sm:col-span-6 lg:col-span-12">
+                                  <label
+                                    htmlFor={`rooms[${index}].roomImageBase64Strings`}
+                                    className="block text-sm font-medium mb-2"
+                                  >
+                                    Upload Images
+                                    <span className="text-red-500">*</span>
+                                  </label>
+
+                                  {/* Drag and Drop Zone */}
+                                  <div
+                                    className={`relative border-2 border-dashed rounded-lg p-4 sm:p-6 text-center transition-colors ${
+                                      values.rooms[index]
+                                        ?.roomImageBase64Strings?.length > 0
+                                        ? "border-green-300 bg-green-50"
+                                        : "border-gray-300 hover:border-blue-400 bg-gray-50"
+                                    }`}
+                                    onDragOver={(e) => {
+                                      e.preventDefault();
+                                      e.currentTarget.classList.add(
+                                        "border-blue-500",
+                                        "bg-blue-50"
+                                      );
+                                    }}
+                                    onDragLeave={(e) => {
+                                      e.preventDefault();
+                                      e.currentTarget.classList.remove(
+                                        "border-blue-500",
+                                        "bg-blue-50"
+                                      );
+                                    }}
+                                    onDrop={async (e) => {
+                                      e.preventDefault();
+                                      e.currentTarget.classList.remove(
+                                        "border-blue-500",
+                                        "bg-blue-50"
+                                      );
+
+                                      const files = Array.from(
+                                        e.dataTransfer.files
+                                      ).filter((file) =>
+                                        file.type.startsWith("image/")
+                                      );
+
+                                      if (files.length > 0) {
+                                        const base64Images = [];
+                                        for (let i = 0; i < files.length; i++) {
+                                          const base64 = await convertToBase64(
+                                            files[i]
+                                          );
+                                          base64Images.push(base64);
+                                        }
+                                        // Append new images to existing ones
+                                        const currentImages = values.rooms[index]?.roomImageBase64Strings || [];
+                                        setFieldValue(
+                                          `rooms[${index}].roomImageBase64Strings`,
+                                          [...currentImages, ...base64Images]
+                                        );
+                                      }
+                                      
+                                      // Clear any file input to ensure consistency
+                                      const fileInput = document.getElementById(`rooms[${index}].roomImageBase64Strings`);
+                                      if (fileInput) {
+                                        fileInput.value = "";
+                                      }
+                                    }}
+                                  >
+                                    {/* Upload Icon */}
+                                    <div className="flex justify-center mb-3">
+                                      <svg
+                                        className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                        />
+                                      </svg>
+                                    </div>
+
+                                    {/* Upload Text */}
+                                    <p className="text-gray-600 mb-1 text-sm">
+                                      Drop your images here, or{" "}
+                                      <label
+                                        htmlFor={`rooms[${index}].roomImageBase64Strings`}
+                                        className="text-blue-600 underline cursor-pointer hover:text-blue-800"
+                                      >
+                                        click to browse
+                                      </label>
+                                    </p>
+
+                                    {/* File Specifications */}
+                                    <p className="text-xs text-gray-500">
+                                      1600 × 1200 (4:3) recommended. PNG, JPG
+                                    </p>
+
+                                    {/* Hidden File Input */}
+                                    <input
+                                      id={`rooms[${index}].roomImageBase64Strings`}
+                                      name={`rooms[${index}].roomImageBase64Strings`}
+                                      className="hidden"
+                                      type="file"
+                                      accept="image/*"
+                                      multiple
+                                      onChange={async (event) => {
+                                        const files = event.currentTarget.files;
+                                        if (files) {
+                                          const base64Images = [];
+                                          for (
+                                            let i = 0;
+                                            i < files.length;
+                                            i++
+                                          ) {
+                                            const base64 =
+                                              await convertToBase64(files[i]);
+                                            base64Images.push(base64);
+                                          }
+                                          // Append new images to existing ones
+                                          const currentImages = values.rooms[index]?.roomImageBase64Strings || [];
+                                          setFieldValue(
+                                            `rooms[${index}].roomImageBase64Strings`,
+                                            [...currentImages, ...base64Images]
+                                          );
+                                        }
+                                        // Clear the file input value to allow selecting the same file again
+                                        event.target.value = "";
+                                      }}
+                                    />
+                                  </div>
+
+                                  <ErrorMessage
+                                    name={`rooms[${index}].roomImageBase64Strings`}
+                                    component="div"
+                                    className="text-red-500 text-xs mt-1"
+                                  />
+
+                                  {values.rooms[index]?.roomImageBase64Strings
+                                    ?.length > 0 && (
+                                    <div className="col-md-10">
+                                      <h4 className="block text-xs font-medium text-gray-700">
+                                        Selected Image Previews:
+                                      </h4>
+                                      <div className="flex gap-2 sm:gap-4 mt-2">
+                                        {values.rooms[
+                                          index
+                                        ]?.roomImageBase64Strings?.map(
+                                          (base64Image, imgIndex) => (
+                                            <div
+                                              key={imgIndex}
+                                              className="relative w-[80px] h-[80px] sm:w-[100px] sm:h-[100px]"
+                                            >
+                                              {/* Delete button */}
+                                              <button
+                                                type="button"
+                                                onClick={() => {
+                                                  const updatedImages =
+                                                    values.rooms[
+                                                      index
+                                                    ].roomImageBase64Strings.filter(
+                                                      (_, i) => i !== imgIndex
+                                                    );
+
+                                                  setFieldValue(
+                                                    `rooms[${index}].roomImageBase64Strings`,
+                                                    updatedImages
+                                                  );
+                                                }}
+                                                className="absolute -top-2 -right-2 bg-black text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                                              >
+                                                ×
+                                              </button>
+
+                                              {/* Image preview */}
+                                              <img
+                                                src={base64Image}
+                                                alt={`preview-${imgIndex}`}
+                                                className="w-full h-full object-cover rounded shadow-md"
+                                              />
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </FieldArray>
+                </div>
+                <div className="flex justify-center mt-3">
+                  <button
+                    type="submit"
+                    className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
+                    disabled={isSavePackageWithRoomLoading}
+                  >
+                    {isSavePackageWithRoomLoading ? "Saving..." : "Submit"}
+                  </button>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+    </div>
+  );
+};
+
+export default AddPackage;

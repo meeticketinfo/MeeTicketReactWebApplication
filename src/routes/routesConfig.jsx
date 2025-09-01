@@ -67,8 +67,28 @@ import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDa
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
+import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
+import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
+import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
+import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
+import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
+import AmrabadConsolidatedBookingDetails from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedBookingDetails";
 import TransactionsDashboard from "../pages/admin/userFailedTransactions/dashboard/MainTransactionsDashboard";
 import FailedTransactions from "../pages/admin/userFailedTransactions/reports/FailedTransactions";
+import Packages from "../pages/amrabad/user/packages/Packages";
+import Houses from "../pages/amrabad/user/houses/Houses";
+import AmarabadLogin from "../pages/amrabad/user/amarabadLogin/amarabadLogin";
+import AmarabadRegister from "../pages/amrabad/user/amarabadRegister/AmarabadRegister";
+import AmrabadProtectRoute from "./AmrabadProtectRoute";
+import AmrabadAuthRoute from "./AmrabadAuthRoute";
+import AmrabadTest from "../pages/amrabad/user/test/AmrabadTest";
+
+import AmrabadForgetPinMobileNumber from "../pages/amrabad/user/amarabadLogin/AmrabadForgetPinMobileNumber";
+import AmrabadResetPin from "../pages/amrabad/user/amarabadLogin/AmrabadResetPin";
+
+import AmarabadRegisterOtp from "../pages/amrabad/user/amarabadRegister/AmarabadRegisterOtp";
+import ResetPinOtp from "../pages/amrabad/user/amrabadOtp/ResetPinOtp";
+import PackageDetail from "../pages/amrabad/user/packages/PackageDetail";
 import MainTotalTransactions from "../pages/admin/users/total_transaction/dashboard/MainTotalTransactions";
 import TransactionsOrderTracker from "../pages/admin/userFailedTransactions/reports/TransactionsOrderTracker";
 import PosConsolidatedBookingReports from "../pages/admin/BookTickets/pos_reports/PosConsolidatedBookingReports";
@@ -105,6 +125,37 @@ import MetroUserDetailedReport from "../pages/metro_transaction_reports/metro_us
 import MetroUserTransactionsOrderTracker from "../pages/metro_transaction_reports/metro_user/metro_user_detailed_report/MetroUserTransactionsOrderTracker";
 import MainMetroRefundTransactions from "../pages/metro_transaction_reports/metro_refunds/dashboard/MainMetroRefundTransactions";
 import MetroRefundTransactionsReport from "../pages/metro_transaction_reports/metro_refunds/metro_refund_transactions_report/MetroRefundTransactionsReport";
+import BookNow from "../pages/amrabad/user/bookNow/bookNow";
+import CheckoutDetails from "../pages/amrabad/user/checkoutDetails/checkoutDetails";
+import AmarabadBookingDetails from "../pages/amrabad/user/bookingDetails/bookingDetails";
+import ConfirmedDetails from "../pages/amrabad/user/confirmedDetails/confirmedDetails";
+import BookingHistory from "../pages/amrabad/user/bookingHistory/BookingHistory";
+import AmrabadAvailabilityMain from "../pages/amrabad/amrabad_reports/availabilityReports/amrabadAvailabilityMain";
+import TicketViewDetails from "../pages/amrabad/user/bookingHistory/components/amrabadTicketView/MainTicketViewDetails";
+import AmrabadUserReport from "../pages/amrabad/amrabad_reports/amarabad_user/AmrabadUserReport";
+import AmarabadUserDetailedReport from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmarabadUserDetailedReport";
+import AmrabadUserTransactionsOrderTracker from "../pages/amrabad/amrabad_reports/amarabad_user_detailed/AmrabadUserTransactionsOrderTracker";
+import MainAmarabadRefundTransactions from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/reports/MainAmarabadRefundTransactions";
+import AmrabadRefundTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_refund_transaction/amrabad_refund_transaction_inner/AmrabadRefundTransactionsReport";
+import AmrabadViewTransactionTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmrabadViewTransactionTrackOrder";
+import MainAmarabadTotalTransaction from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/MainAmarabadTotalTransaction";
+import AmrabadComingSoon from "../pages/amrabad/user/amrabadComingSoon/AmrabadComingSoon";
+import AmrabadFailedOtherReason from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReason";
+import AmrabadFailedGateway from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGateway";
+import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmrabadNotGenerated";
+import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
+import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
+import AmrabadTotalReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/AmrabadTotalReport";
+import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
+// import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
+import AmrabadFailedOtherReasonReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReasonReport";
+import AmarabadNotGeneratedReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmarabadNotGeneratedReport";
+import AmrabadFailedGatewayReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_gateway/AmrabadFailedGatewayReport";
+import AmarabadViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadOtherReasonViewTrackOrder";
+import AmarabadNotGeneratedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadNotGeneratedTrackOrder";
+import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadGateWayViewTrackOrder";
+import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
+import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
 
 export const routes = [
@@ -121,6 +172,7 @@ export const routes = [
     element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+
   // dashboard detailed report
 
   {
@@ -339,7 +391,12 @@ export const routes = [
     path: "/failed-transactions",
     element: <ProtectedRoute element={<FailedTransactions />} />,
   },
+  {
+    path: "/amrabad-user-report",
+    element: <ProtectedRoute element={<AmrabadUserReport />} />,
+  },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
+  { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
   // ------
@@ -464,7 +521,136 @@ export const routes = [
     path: "/user-status-transaction",
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
-
+  //amarabad-user
+  {
+    path: "/amrabad-resort/login",
+    element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
+  },
+  {
+    path: "/forget-pin-mobile",
+    element: <AmrabadForgetPinMobileNumber />,
+  },
+  {
+    path: "/amrabad-resort/register",
+    element: <AmrabadAuthRoute  element={<AmarabadRegister />} />,
+  },
+  {
+    path: "/amrabad-resort/register-otp",
+    element: <AmarabadRegisterOtp />,
+  },
+  {
+    path: "/amrabad-otp",
+    element: <ResetPinOtp />,
+  },
+  {
+    path: "/amrabad-reset-pin",
+    element: <AmrabadResetPin />,
+  },
+  {
+    path: "/amrabad-resort",
+    element: <Packages />,
+  },
+  {
+    path: "/amrabad-resort/coming-soon",
+    element: <AmrabadComingSoon />,
+  },
+  {
+    path: "/amrabad-resort/packages",
+    element: <Packages />,
+  },
+  {
+    path: "/amrabad-resort/packages/:packageId",
+    element: <PackageDetail />,
+  },
+  {
+    path: "/amrabad-resort/houses/:packageId",
+    element: <Houses />,
+  },
+  {
+  path: "/amrabad-resort/book-now/:packageId/:houseId",
+  element: <AmrabadProtectRoute element={<BookNow />} />,
+  },
+  {
+    path: "/amrabad-resort/checkout-details",
+    element: <AmrabadProtectRoute element={<CheckoutDetails />} />,
+  },
+  {
+    path: "/amrabad-resort/booking-details",
+    element: <AmrabadProtectRoute element={<AmarabadBookingDetails />} />,
+  },
+  {
+    path: "/amrabad-resort/confirmed-details/:bookingId",
+    element: <AmrabadProtectRoute element={<ConfirmedDetails />} />,
+  },
+  {
+    path: "/amrabad-resort/booking-history",
+    element: <AmrabadProtectRoute element={<BookingHistory />} />,
+  },
+  {
+    path: "/amrabad-resort/ticket-view-details/:bookingId",
+    element: <AmrabadProtectRoute element={<TicketViewDetails />} />,
+  },
+  {
+    path: "/amrabad-admin/ticket-view-details/:bookingId",
+    element: <ProtectedRoute element={<TicketViewDetails />} />,
+  },
+  {
+    path: "/amarabad/test",
+    element: <AmrabadProtectRoute element={<AmrabadTest />} />,
+  },
+  // amrabad admin routes
+  {
+    path: "/packages",
+    element: <ProtectedRoute element={<MainPackages />} />,
+  },
+   { 
+    path: "/amrabad-packages",
+    element: <ProtectedRoute element={<MainPackages/>} />,
+  },
+  { 
+    path: "/amrabad-view-transaction-track-order",
+    element: <ProtectedRoute element={<AmrabadViewTransactionTrackOrder/>} />,
+  },
+  { 
+    path: "/amrabad-booking-reports",
+    element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
+  },
+    { 
+    path: "/amrabad-house-wise-reports",
+    element: <ProtectedRoute element={<AmrabadIndividualReports/>} />,
+  },
+   { 
+    path: "/amrabad-payment-transactions",
+    element: <ProtectedRoute element={<AmrabadPaymentTransactionsReport />} />,
+  },
+  {
+    path: "/amrabad-availability-report",
+    element: <ProtectedRoute element={<AmrabadAvailabilityMain />} />,
+  },
+  {
+    path: "/amrabad-availability-inner-report",
+    element: <ProtectedRoute element={<AmrabadAvailabilityInner />} />,
+  },
+  {
+    path: "/amrabad/room-details",
+    element: <ProtectedRoute element={<RoomDetails />} />,
+  },
+   {
+    path: "/amrabad-user-detailed-report",
+    element: <ProtectedRoute element={<AmarabadUserDetailedReport />} />,
+  },
+   {
+    path: "/amrabad-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-report",
+    element: <ProtectedRoute element={<MainAmarabadRefundTransactions />} />,
+  },
+  {
+    path: "/amrabad-refund-transaction-inner-report",
+    element: <ProtectedRoute element={<AmrabadRefundTransactionsReport />} />,
+  },
   // metro transaction reports
 
   {
@@ -514,5 +700,65 @@ export const routes = [
   {
     path: "/metro-total-traker",
     element: <ProtectedRoute element={<MetroTotalTracker />} />,
+  },
+
+  // amrabad total transaction reports
+  {
+    path: "/amarabad-total-transaction",
+    element: <ProtectedRoute element={<MainAmarabadTotalTransaction />} />,
+  },
+  {
+    path: "/amrabad-failed-other-reason",
+    element: <ProtectedRoute element={<AmrabadFailedOtherReason/>} />,
+  },
+  {
+    path: "/amrabad-failed-gateway",
+    element: <ProtectedRoute element={<AmrabadFailedGateway/>} />,
+  },
+  {
+    path: "/amrabad-failed-gateway-report",
+    element: <ProtectedRoute element={<AmrabadFailedGatewayReport/>} />,
+  },
+  {
+    path: "/amrabad-not-generated",
+    element: <ProtectedRoute element={<AmrabadNotGenerated/>} />,
+  },
+  {
+    path: "/amrabad-total-report",
+    element: <ProtectedRoute element={<AmrabadTotalReport/>} />,
+  },
+  {
+    path: "/amrabad-failed-other-reasons-report",
+    element: <ProtectedRoute element={<AmrabadFailedOtherReasonReport/>} />,
+  },
+
+  {
+    path: "/amrabad-not-generated-report",
+    element: <ProtectedRoute element={<AmarabadNotGeneratedReport/>} />,
+  },
+
+  {
+    path: "/amrabad-view-track-order",
+    element: <ProtectedRoute element={<AmarabadViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-not-generated-view-track-order",
+    element: <ProtectedRoute element={<AmarabadNotGeneratedViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-gateway-view-track-order",
+    element: <ProtectedRoute element={<AmarabadGatewayViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-successful-view-track-order",
+    element: <ProtectedRoute element={<AmarabadSuccessViewTrackOrder/>} />,
+  },
+
+  {
+    path: "/amrabad-uncategorized-view-track-order",
+    element: <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder/>} />,
   },
 ];

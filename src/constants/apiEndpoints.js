@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL =
+//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -14,7 +14,7 @@ export const PAYNOW_API_BASE_URL =
 
 // metro dev
 // export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/metroapi/";
+//   "https://meeticketdevui.vmaxtechservices.help/metroapi/"; 
 
 // METRO UAT
 export const METRO_API_BASE_URL =
@@ -47,15 +47,31 @@ export const RTC_API_BASE_URL =
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
+// Amarabad dev
+export const AMRABAD_API_BASE_URL =
+"https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+
+// PARK PROD
 //  PARK UAT testing
 // export const API_BASE_URL =
-//   "https://7q0xctq4-7237.inc1.devtunnels.ms/api/";
+//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
     REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
+    AMRABAD:{
+      AMRABAD_REGISTER:`${AMRABAD_API_BASE_URL}Authorization/RegisterOTP`,
+      AMRABAD_REGISTER_OTP:`${AMRABAD_API_BASE_URL}Authorization/ValidateRegisterOTP`,
+      AMRABAD_RESEND_OTP:`${AMRABAD_API_BASE_URL}Authorization/ResendOTP`,
+      AMRABAD_LOGIN:`${AMRABAD_API_BASE_URL}Authorization/AmrabadLogin`,
+      AMRABAD_DECODE_TOKEN:`${AMRABAD_API_BASE_URL}Authentication/GetDecodedToken`,
+      GET_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ForgotPINOTP`,
+      VERIFY_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ValidateForgotPINOTP`,
+      RESET_PIN:`${AMRABAD_API_BASE_URL}Authorization/ResetPIN`,
+     
+    }
   },
   MASTERS: {
     PARK: {
@@ -295,6 +311,73 @@ export const API_ENDPOINTS = {
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
 
+  AMRABAD:{
+    MASTERS:{
+       GET_PACKAGES_WITH_ROOMS: `${AMRABAD_API_BASE_URL}Master/GetPackagesWithRooms`,
+       ADD_HOUSE:`${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
+       UPDATE_HOUSE:`${AMRABAD_API_BASE_URL}Master/UpdateRoom`,
+       GET_ALL_PACKAGES:`${AMRABAD_API_BASE_URL}Master/GetAllPackages`,
+       ADD_PACKAGE_WITH_ROOM:`${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
+       UPDATE_PACKAGE:`${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
+       GET_PACKAGES:`${AMRABAD_API_BASE_URL}Reports/GetAllPackages`,
+       GET_HOUSES:`${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
+       GET_COUNTRIES:`${AMRABAD_API_BASE_URL}Master/GetAllCountries`,
+       GET_STATES:`${AMRABAD_API_BASE_URL}Master/GetAllStates`,
+    },
+    REPORTS:{
+    GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
+    GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
+    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/PaymentTransactionsReport`,
+    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+    GET_AMRABAD_VERIFY_STATUS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/CheckOrderTransactionStatus`,
+    GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
+    GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
+    GET_USER_DETAILED_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
+    GET_TRANSACTION_TRACK_ORDER:`${AMRABAD_API_BASE_URL}Reports/GetTransactionTrackingStatusByOrderId`,
+    //refund transaction report
+    GET_REFUND_TRANSACTION_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
+    GET_REFUND_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
+    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+    AMRABAD_REGENERATE_TICKET:`${AMRABAD_API_BASE_URL}WebBooking/RegenerateTicket`,
+    AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
+    AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
+    AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
+    AMRABAD_AVAILABILITY_OUTER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
+    
+    // Utility endpoints for filter options
+    GET_AMRABAD_PACKAGE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPackageOptions`,
+    GET_AMRABAD_HOUSE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetHouseOptions`,
+    GET_AMRABAD_PAYMENT_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentModeOptions`,
+    GET_AMRABAD_BOOKING_SOURCE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
+    GET_AMRABAD_PAYMENT_STATUS_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
+    GET_AMRABAD_BOOKING_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
+    },
+    DASHBOARD:{
+      GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,
+      GET_AMRABAD_DASHBOARD_count:`${AMRABAD_API_BASE_URL}DashBoard/Dashboard`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetBookingsSummary`,
+      GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardRoomBookingSummary`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_FULL_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardFullSummary`,
+
+    },
+    USER:{
+      GET_USER_PACKAGES:`${AMRABAD_API_BASE_URL}WebBooking/GetAllPackages`,
+      GET_ROOMS_BY_PACKAGE_ID:`${AMRABAD_API_BASE_URL}WebBooking/GetAllPackageRoomsByPackageId`,
+      GET_PACKAGE_DETAIL:`${AMRABAD_API_BASE_URL}MobileApplication/GetPackageDetails`,
+      GET_CART_ITEMS:`${AMRABAD_API_BASE_URL}WebBooking/GetAllCartDetails`,
+      GET_CALENDAR:`${AMRABAD_API_BASE_URL}WebBooking/GetCalendar/30days`,
+      GET_USER_BOOKING_HISTORY:`${AMRABAD_API_BASE_URL}WebBooking/GetBookingHistory`,
+      ADD_TO_CART:`${AMRABAD_API_BASE_URL}WebBooking/AddToCart`,
+      REMOVE_FROM_CART:`${AMRABAD_API_BASE_URL}WebBooking/DeleteCartItem`,
+      CLEAR_CART:`${AMRABAD_API_BASE_URL}WebBooking/DeleteAllCartItems`,
+      GET_TICKET_VIEW_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/ViewTicket`,
+      INITIATE_TRANSACTION:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/IntiateTransactionforCard`,
+      ORDER_STATUS_CALL:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/OrderStatusCall`,
+      ADD_NEW_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/AddNewBookingDetails`,
+      SAVE_CARD_PAYMENT_TRANSACTIONS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/SaveCardPaymentTransactions`,
+      CANCEL_TICKET:`${AMRABAD_API_BASE_URL}MobileApplication/CancellationBooking`,
+    }
+  },
   FAILED_TRANSACTIONS: {
     GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
     GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
@@ -326,4 +409,13 @@ export const API_ENDPOINTS = {
     GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
     }
   },
+  AMRABAD_TRANSACTIONS_REPORT:{
+    GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionSummaryByFailureDetail`,
+    GET_AMRABAD_GATEWAY_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureFromGateway_SubCategoryReportResult`,
+    GET_AMRABAD_TICKET_NOT_GENERATED_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    GET_AMRABAD_OTHER_REASON_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    
+    //total transaction report
+    GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
+  }
 };

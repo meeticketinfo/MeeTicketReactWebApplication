@@ -144,3 +144,15 @@ export const Toursim = [
   "tourism-individual",
   "toursim-bank-payments",
 ];
+
+export const Amrabad = [
+  "dashboard",
+  "amrabad-packages",
+  "amrabad-booking-reports",
+  "amrabad-house-wise-reports",
+  "amrabad-payment-transactions",
+  "amrabad-availability-report",
+  "amrabad-user-report",
+  "amrabad-refund-transaction-report",
+  "amarabad-total-transaction",
+];
