@@ -11,6 +11,14 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
     fetchAllAmrabadBookings,
     isFetchAllAmrabadBookingsLoading,
   } = useAmrabadBookingStore();
+  const getNextMonthDate = () => {
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    const year = nextMonth.getFullYear();
+    const month = String(nextMonth.getMonth() + 1).padStart(2, "0");
+    const day = String(nextMonth.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const getSavedFilters = () => {
     try {
@@ -28,7 +36,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
 
   const initialValues = {
     fromDate: savedFilters?.fromDate || getCurrentDate(),
-    toDate: savedFilters?.toDate || getCurrentDate(),
+    toDate: savedFilters?.toDate || getNextMonthDate(),
     typeOfBooking: savedFilters?.typeOfBooking || "Purchase",
     phoneNumber: savedFilters?.phoneNumber || "",
     package: savedFilters?.package || "",
@@ -232,7 +240,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value=""> Select </option>
-                <option value="Website">Website</option>
+                <option value="Web">Web</option>
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>
@@ -253,7 +261,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                   // Reset form to default values
                   const defaultValues = {
                     fromDate: getCurrentDate(),
-                    toDate: getCurrentDate(),
+                    toDate: getNextMonthDate(),
                     typeOfBooking: "Purchase",
                     package: "",
                     houses: "",

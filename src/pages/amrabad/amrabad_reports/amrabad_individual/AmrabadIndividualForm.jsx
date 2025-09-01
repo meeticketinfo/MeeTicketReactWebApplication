@@ -12,6 +12,16 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   } = useAmrabadHouseWiseReportStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   
+  // Helper function to get next month's date
+  const getNextMonthDate = () => {
+    const now = new Date();
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    const year = nextMonth.getFullYear();
+    const month = String(nextMonth.getMonth() + 1).padStart(2, "0");
+    const day = String(nextMonth.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  
   // Get saved filters from localStorage
   const getSavedFilters = () => {
     try {
@@ -25,11 +35,13 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
     return null;
   };
 
+  
+
   const savedFilters = getSavedFilters();
   
   const initialValues = {
     fromDate: savedFilters?.fromDate || getCurrentDate(),
-    toDate: savedFilters?.toDate || getCurrentDate(),
+    toDate: savedFilters?.toDate || getNextMonthDate(),
     typeOfBooking: savedFilters?.typeOfBooking || "Purchase",
     package: savedFilters?.package || "",
     houses: savedFilters?.houses || "",
@@ -213,7 +225,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Website">Website</option>
+                <option value="Web">Web</option>
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>
@@ -234,7 +246,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                   // Reset form to default values
                   const defaultValues = {
                     fromDate: getCurrentDate(),
-                    toDate: getCurrentDate(),
+                    toDate: getNextMonthDate(),
                     typeOfBooking: "Purchase",
                     package: "",
                     houses: "",

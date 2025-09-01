@@ -22,45 +22,23 @@ export const useAmrabadDashboardStore = create(
     // Packages data by id
     packagesDataById: [],
     isFetchPackagesDataByIdLoading: false,
-    
-    // Fetch dashboard data API
-    fetchAmrabadDashboardData: async (filters) => {
-      set({ isFetchAmrabadDashboardDataLoading: true });
+
+
+    amrabadDashboardBookingsFullSummaryData: [],
+    isFetchAmrabadDashboardBookingsFullSummaryDataLoading: false,
+
+
+    // Fetch bookings full summary data API
+    fetchAmrabadDashboardBookingsFullSummaryData: async (filters) => {
+      set({ isFetchAmrabadDashboardBookingsFullSummaryDataLoading: true });
       try {
-        const response = await apiService.get(
-          `${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD_count}?fromDate=${filters.fromDate}&toDate=${filters.toDate}`
-        );
-        set({ amrabadDashboardData: response.data, isFetchAmrabadDashboardDataLoading: false });
+        const response = await apiService.get(`${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD_BOOKINGS_FULL_SUMMARY}?fromDate=${filters.fromDate}&toDate=${filters.toDate}`);
+        set({ amrabadDashboardBookingsFullSummaryData: response.data, isFetchAmrabadDashboardBookingsFullSummaryDataLoading: false });
       } catch (error) {
         handleApiError(error);
-        set({ isFetchAmrabadDashboardDataLoading: false });
+        set({ isFetchAmrabadDashboardBookingsFullSummaryDataLoading: false });
       }
     },
-    
-    // Fetch bookings summary data API
-    fetchAmrabadDashboardBookingsSummaryData: async (filters) => {
-      set({ isFetchAmrabadDashboardBookingsSummaryDataLoading: true });
-      try {
-        const response = await apiService.get(
-          `${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY}?fromDate=${filters.fromDate}&toDate=${filters.toDate}`
-        );
-        set({ amrabadDashboardBookingsSummaryData: response.data, isFetchAmrabadDashboardBookingsSummaryDataLoading: false });
-      } catch (error) {
-        handleApiError(error);
-        set({ isFetchAmrabadDashboardBookingsSummaryDataLoading: false });
-      }     
-    },
- 
-    // Fetch packages data by id API
-    fetchPackagesDataById: async (id) => {
-      set({ isFetchPackagesDataByIdLoading: true });
-      try {
-        const response = await apiService.get(`${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID}/${id}`);
-        set({ packagesDataById: response.data, isFetchPackagesDataByIdLoading: false });
-      } catch (error) { 
-        handleApiError(error);
-        set({ isFetchPackagesDataByIdLoading: false });
-      }
-    }
+
   }))
 );          

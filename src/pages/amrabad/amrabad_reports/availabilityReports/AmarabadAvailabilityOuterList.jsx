@@ -39,7 +39,6 @@ const AmarabdAvailabilityOuterList = () => {
       );
       return savedFilters ? JSON.parse(savedFilters) : null;
     } catch (error) {
-      console.error("Error parsing saved filters:", error);
       return null;
     }
   };
@@ -186,7 +185,7 @@ const AmarabdAvailabilityOuterList = () => {
         children: [
           {
             field: `package_${packageId}_room_${roomName}_booked`,
-            headerName: "No of rooms booked",
+            headerName: "No of houses booked",
             flex: 1,
             minWidth: 120,
             headerClass: "text-blue-v2 whitespace-normal break-words",
@@ -251,7 +250,7 @@ const AmarabdAvailabilityOuterList = () => {
           },
           {
             field: `package_${packageId}_room_${roomName}_available`,
-            headerName: "No of rooms available",
+            headerName: "No of houses available",
             flex: 1,
             minWidth: 120,
             headerClass: "text-blue-v2 whitespace-normal break-words",
@@ -281,7 +280,7 @@ const AmarabdAvailabilityOuterList = () => {
           },
           {
             field: `package_${packageId}_room_${roomName}_total`,
-            headerName: "Total rooms",
+            headerName: "Total houses",
             flex: 1,
             minWidth: 120,
             headerClass: "text-blue-v2 whitespace-normal break-words",
