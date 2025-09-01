@@ -117,8 +117,55 @@ const Login = () => {
         {/* Header */}
         <div className="container-fluid p-3 bg-blue-v1 rounded-[20px] text-gray-200 shadow-lg backdrop-blur-sm bg-white/30 ">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            {/* First Column */}
-            <div className="align-middle hidden lg:flex items-center space-x-2">
+            {/* Mobile Layout - First Row: Government of Telangana Logo and Details */}
+            <div className="flex lg:hidden items-center justify-center w-full mb-3">
+              <div className="flex items-center space-x-2">
+                <img alt="site-logo" src={headerLogo} width={40} height={40} />
+                <div>
+                  <p className="text-base font-semibold">Government of Telangana</p>
+                  <small className="text-sm">ITE&C Department</small>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Layout - Second Row: CM and Details */}
+            <div className="flex lg:hidden items-center justify-center w-full mb-3">
+              {/* Chief Minister Section */}
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-base font-semibold">Sri A. Revanth Reddy</p>
+                  <span className="block text-sm leading-tight">
+                    Hon'ble Chief Minister <br /> Government of Telangana
+                  </span>
+                </div>
+                <img
+                  src={cmImg}
+                  alt="CM"
+                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
+                />
+              </div>
+            </div>
+
+            {/* Mobile Layout - Third Row: IT Minister and Details */}
+            <div className="flex lg:hidden items-center justify-center w-full">
+              {/* IT Minister Section */}
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-base font-semibold">Sri D. Sridhar Babu</p>
+                  <span className="block text-sm leading-tight">
+                    Hon'ble Minister for IT <br /> Government of Telangana
+                  </span>
+                </div>
+                <img
+                  src={ITMinisterImg}
+                  alt="Minister"
+                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
+                />
+              </div>
+            </div>
+
+            {/* Desktop Layout - Original Structure */}
+            <div className="hidden lg:flex items-center space-x-2">
               <img alt="site-logo" src={headerLogo} width={40} height={40} />
               <div>
                 <p className="text-lg font-semibold">Government of Telangana</p>
@@ -126,8 +173,8 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Second Column */}
-            <div className="flex items-center space-x-8">
+            {/* Desktop Layout - Second Column */}
+            <div className="hidden lg:flex items-center space-x-8">
               {/* Chief Minister Section */}
               <div className="flex items-center space-x-3">
                 <div className="text-right">
@@ -364,6 +411,7 @@ const Login = () => {
                 </div>
               </div>
             </div>
+            
           </div>
         </div>
       </div>

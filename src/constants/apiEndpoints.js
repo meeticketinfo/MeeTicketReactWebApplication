@@ -250,6 +250,13 @@ export const API_ENDPOINTS = {
       GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
       GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
+      MONTHLY_REPORTS: {
+      GET_DEPARTMENT_ABSTRACT_REPORT: `${API_BASE_URL}DashBoard/GetDepartmentParkStats`,
+      GET_LOCATION_CATEGORY_ABSTRACTREPORT: `${API_BASE_URL}DashBoard/GetEnityCategoryParkStats`,
+      GET_DEPARTMENT_WISE_REPORT: `${API_BASE_URL}DashBoard/GetBookingSummaryByDepartmentStats`,
+      GET_LOCATION_CATEGORY_WISE_REPORT: `${API_BASE_URL}DashBoard/GetBookingSummaryByEntityCategoryStats`,
+      GET_LOCATION_WISE_REPORT: `${API_BASE_URL}DashBoard/GetLocationwiseBookingSummaryStats`,
+    },
     USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
@@ -289,6 +296,7 @@ export const API_ENDPOINTS = {
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
+    GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
   },
   RTC_DASHBOARD: {
     GET_OVER_ALL: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardReports`,

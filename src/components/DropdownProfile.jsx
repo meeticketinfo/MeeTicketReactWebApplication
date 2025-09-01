@@ -9,6 +9,7 @@ import useCaptchaStore from "../store/useCaptchaStore";
 
 function DropdownProfile({ align }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showMobileTooltip, setShowMobileTooltip] = useState(false);
   const navigate = useNavigate();
 
   const trigger = useRef(null);
@@ -16,11 +17,13 @@ function DropdownProfile({ align }) {
   const { logout, isAuthenticated, roleDetails, decodedTokenData,terminateSession } =
     useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
+  
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+  
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }) => {
@@ -47,6 +50,12 @@ function DropdownProfile({ align }) {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
+  // Handle mobile tooltip
+  const handleMobileTooltip = () => {
+    setShowMobileTooltip(true);
+    setTimeout(() => setShowMobileTooltip(false), 3000); // Hide after 3 seconds
+  };
+
   return (
     <div className="relative inline-flex">
       <button
@@ -63,8 +72,11 @@ function DropdownProfile({ align }) {
           height="42"
           alt="User"
         />
-        <div className="flex items-center truncate">
-          <span className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white">
+        <div className="flex items-center truncate max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[300px]">
+          <span 
+            className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white break-words"
+            title={decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || decodedTokenData?.data?.email || "Name"}
+          >
             {decodedTokenData?.data?.email || "Name"}
           </span>
           <svg
@@ -94,11 +106,22 @@ function DropdownProfile({ align }) {
           onBlur={() => setDropdownOpen(false)}
         >
           <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-gray-200 dark:border-gray-700/60">
-            <div className="font-normal text-sm text-black dark:text-gray-100">
+            <div 
+              className="font-normal text-sm text-black dark:text-gray-100 break-words relative"
+              title={decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || "User Name"}
+              onClick={handleMobileTooltip}
+            >
               {decodedTokenData?.data?.email || "Name"}
+              {/* Mobile tooltip */}
+              {showMobileTooltip && (
+                <div className="absolute bottom-full left-0 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-50 whitespace-nowrap">
+                  {decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || "User Name"}
+                  <div className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                </div>
+              )}
             </div>
             {decodedTokenData?.data?.PhoneNumber&&
-            <div className="font-normal text-xs text-black dark:text-gray-100">
+            <div className="font-normal text-xs text-black dark:text-gray-100 break-words">
               Mobile Number : <span>{decodedTokenData?.data?.PhoneNumber || "mobile"}</span>
               {/* {decodedTokenData?.data?.email || "Name"} */}
             </div>

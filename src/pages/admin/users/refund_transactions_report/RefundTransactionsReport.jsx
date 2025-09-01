@@ -21,7 +21,8 @@ const RefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const refundTransactionSearchParams = localStorage.getItem("refundTransactionSearchParams") || "";
+  const refundTransactionSearchParams =
+    localStorage.getItem("refundTransactionSearchParams") || "";
 
   const {
     isFetchRefundTransactionsReport,
@@ -91,11 +92,29 @@ const RefundTransactionsReport = () => {
     },
     {
       field: "refundStatus",
-      headerName: "RefundStatus",
+      headerName: "Refund Status",
       maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
+    },
+    {
+      field: "refundeddate",
+      headerName: "Refund Date",
+      maxWidth: "180",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
     },
     {
       field: "mobileNumber",
@@ -178,7 +197,10 @@ const RefundTransactionsReport = () => {
       locationId: searchParams.get("locationId") || "",
       departmentId: +searchParams.get("departmentId") || "",
       categoryId: +searchParams.get("entityId") || "",
-      refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
+      refundStatus:
+        searchParams.get("RefundStatus") === "null"
+          ? ""
+          : searchParams.get("RefundStatus") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
       modeOfTransaction: searchParams.get("bookingSource") || "",
       paymentMode: searchParams.get("PaymentMode") || "",
@@ -254,27 +276,31 @@ const RefundTransactionsReport = () => {
 
   const breadcrumbItems = [
     {
-      label: 'Refund Transactions',
-      path: `/refund-transactions?${refundTransactionSearchParams}`
+      label: "Refund Transactions",
+      path: `/refund-transactions?${refundTransactionSearchParams}`,
     },
     {
-      label: `Refund Transactions Report ${searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}`,
-      isLast: true
-    }
+      label: `Refund Transactions Report ${
+        searchParams.get("RefundStatus")
+          ? `(${searchParams.get("RefundStatus")})`
+          : ""
+      }`,
+      isLast: true,
+    },
   ];
 
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-                Refund Transactions Report {searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}
+                Refund Transactions Report{" "}
+                {searchParams.get("RefundStatus")
+                  ? `(${searchParams.get("RefundStatus")})`
+                  : ""}
               </h1>
             </div>
             <div className="">

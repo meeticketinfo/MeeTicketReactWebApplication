@@ -20,10 +20,10 @@ function DashboardCard01({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center">
-          <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
+          <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 rounded-lg shadow-md shadow-gray-300">
             <Icon className="text-3xl font-bold text-white dark:text-gray-100" />
           </div>
-          <div className="flex-shrink-0 ml-3">
+          <div className="flex-shrink-0 ml-3 min-w-0 flex-1">
             {isLoading ? (
               <div className="space-y-2">
                 {/* Skeleton for count */}
@@ -33,10 +33,10 @@ function DashboardCard01({
               </div>
             ) : (
               <>
-                <span className="text-2xl font-bold leading-none text-gray-600">
+                <span className="text-lg md:text-xl lg:text-2xl font-bold leading-none text-gray-600 break-words">
                   <CountUp end={count} duration={2} prefix="" separator="," />
                 </span>
-                <h3 className="text-base font-normal text-gray-500">
+                <h3 className="text-sm md:text-base font-normal text-gray-500 break-words">
                   {lableName}
                 </h3>
               </>

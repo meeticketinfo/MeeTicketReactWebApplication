@@ -38,14 +38,14 @@ const MetroTotalTransactionChart = ({
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 768 ? 8 : 10, // Smaller font on mobile
             color: "black",
-            maxWidth: 150, // enables wrapping on AgCharts v8+
+            maxWidth: window.innerWidth < 768 ? 100 : 150, // Smaller max width on mobile
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = 25;
+              const wrapLength = window.innerWidth < 768 ? 15 : 25; // Shorter wrap on mobile
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"
@@ -54,12 +54,12 @@ const MetroTotalTransactionChart = ({
                 datum[angleKey]
               } (${percentage}%)`;
             },
-            offset: 15,
+            offset: window.innerWidth < 768 ? 10 : 15, // Smaller offset on mobile
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 768 ? 8 : 10, // Smaller font on mobile
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -89,10 +89,11 @@ const MetroTotalTransactionChart = ({
         Uncategorized:"/metro-total-report"
       }
   return (
-    <div className="gap-8 w-full p-6">
-      <div className="flex flex-row gap-2 items-center justify-between">
-        <h2 className="text-lg font-medium mb-2">Total Transactions</h2>
-        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
+    <div className="gap-4 md:gap-8 w-full p-3 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between">
+        <h2 className="text-base md:text-lg font-medium mb-2">Total Transactions</h2>
+        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
             to="/metro-total-report"
@@ -105,21 +106,25 @@ const MetroTotalTransactionChart = ({
           </Link>
         </div>
       </div>
-      <div className="flex flex-row gap-2 items-center justify-between">
+
+      {/* Chart and Table Section */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start lg:items-center justify-between">
         {/* Pie Chart */}
-        <div className="flex-1 w-[90%]">
-          <div ref={chartRef} className="h-[400px] max-w-[90%]" />
+        <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[70%]">
+          <div ref={chartRef} className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full" />
         </div>
+        
+        {/* Table Section */}
         {data.length > 0 && (
-          <div className="min-w-[340px]">
-            <div className="border-l-[#B7B7B7] border-r-[#B7B7B7]">
-              <table className="w-full">
+          <div className="w-full lg:min-w-[300px] xl:min-w-[340px] lg:w-[40%] xl:w-[30%]">
+            <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] overflow-x-auto">
+              <table className="w-full min-w-[280px]">
                 <thead>
                   <tr className="bg-[#D9E4FF]">
-                    <th className="text-left px-4 py-2 text-[#205375] font-semibold">
+                    <th className="text-left px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
                       Reasons
                     </th>
-                    <th className="text-right px-4 py-2 text-[#205375] font-semibold">
+                    <th className="text-right px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
                       Count
                     </th>
                   </tr>
@@ -127,29 +132,30 @@ const MetroTotalTransactionChart = ({
                 <tbody>
                   {data?.map((item, index) => (
                     <tr key={index}>
-                      <td className="px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                        <div className="flex items-center gap-2">
+                      <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                        <div className="flex items-center gap-1 md:gap-2">
                           <div
-                            className="w-3 h-3 rounded-full shrink-0"
+                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0"
                             style={{
                               backgroundColor: colors[index % colors.length],
                             }}
                           />
                           <Link 
                            to={routes[item.paymentCategoryKey]}
-                          className="text-[#000] hover:underline text-xs"
+                          className="text-[#000] hover:underline text-xs md:text-sm truncate max-w-[120px] md:max-w-[150px] lg:max-w-[200px]"
                            onClick={() => {
                             setOuterFilters({
                               ...outerFilters,
                               status: item.paymentCategoryKey,
                             });
                           }}
+                          title={item.location || item.paymentCategory}
                           >
                             {item.location || item.paymentCategory}
                           </Link>
                         </div>
                       </td>
-                      <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
+                      <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
                           to={routes[item.paymentCategoryKey]}
                           onClick={() => {
@@ -158,7 +164,7 @@ const MetroTotalTransactionChart = ({
                               status: item.paymentCategoryKey,
                             });
                           }}
-                          className="text-[#4A90E2] font-semibold hover:underline text-sm"
+                          className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"
                         >
                           {item.count}
                         </Link>

@@ -40,27 +40,43 @@ function TotalFailedGatewayTransactions() {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-full ">
-          <TotalFailedGatewayTransactionsForm/>
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+        {/* Form Section */}
+        <div className="col-span-1">
+          <div className="bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)] p-4 sm:p-6">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
+              Filter Options
+            </h3>
+            <TotalFailedGatewayTransactionsForm/>
+          </div>
         </div>
 
-        {/* Transactions by reason chart */}
-        <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
-          <div className="flex">
-            <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
-              {/* <Loader/> */}
-
+        {/* Chart Section */}
+        <div className="col-span-1">
+          <div className="bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)] p-4 sm:p-6">
+            <div className="mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-700 dark:text-gray-200">
+                Failed Transactions by Reason
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Total failed transactions: {totalCount}
+              </p>
+            </div>
+            
+            <div className="relative min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
               {isPaymentFailedGatewayTransactionSummaryPieChartLoading && (
-                <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg z-10">
                   <div className="loader"></div>
                 </div>
               )}
-              <TotalFailedGatewayTransactionsChart
-                data={totalCount !== 0 ? PaymentFailedGatewayTransactionSummaryPieChartData : []}
-                angleKey="reasonCount"
-                calloutLabelKey="failureReason"
-              />
+              
+              <div className="w-full h-full">
+                <TotalFailedGatewayTransactionsChart
+                  data={totalCount !== 0 ? PaymentFailedGatewayTransactionSummaryPieChartData : []}
+                  angleKey="reasonCount"
+                  calloutLabelKey="failureReason"
+                />
+              </div>
             </div>
           </div>
         </div>

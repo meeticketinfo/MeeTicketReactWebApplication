@@ -156,6 +156,7 @@ import AmarabadNotGeneratedViewTrackOrder from "../pages/amrabad/amrabad_reports
 import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadGateWayViewTrackOrder";
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
+import MainReport from "../pages/admin_monthly_reports/MainReport";
 
 export const routes = [
   {
@@ -347,6 +348,10 @@ export const routes = [
   {
     path: "/user-transactions-order-tracker",
     element: <ProtectedRoute element={<UserTransactionsOrderTracker />} />,
+  },
+  {
+    path: "/monthly-reports",
+    element: <ProtectedRoute element={<MainReport />} />,
   },
   {
     path: "/metro-user-report",

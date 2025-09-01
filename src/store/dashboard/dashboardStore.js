@@ -70,10 +70,10 @@ export const useDashboardStore = create((set) => ({
 
   fetchAllDashboardCounts: async (
     roleDetails,
-    { fromDate, toDate, entityId, active, departmentId, locationId }
+    { fromDate, toDate, entityId, active, departmentId, locationId, bookingDateFrom, bookingDateTo }
   ) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}&bookingDateFrom=${bookingDateFrom}&bookingDateTo=${bookingDateTo}`
       : "";
     set({ isFetchCountsLoading: true });
     try {
@@ -100,9 +100,9 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
-  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active, departmentId, locationId }) => {
+  fetchAllEntityWiseCounts: async ({ fromDate, toDate, entityId, active, departmentId, locationId, bookingDateFrom, bookingDateTo }) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}&bookingDateFrom=${bookingDateFrom}&bookingDateTo=${bookingDateTo}`
       : "";
     set({ isFetchPieChartsLoading: true });
     try {
@@ -215,11 +215,11 @@ export const useDashboardStore = create((set) => ({
   },
 
   // ZOO DASH BOARD
-  fetchAllZooDashBoardCounts: async (date) => {
+  fetchAllZooDashBoardCounts: async ({DashboardDate, bookingDateFrom}) => {
     set({ isFetchZooDashboardLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}?date=${date}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS}?date=${DashboardDate}&bookingDateFrom=${bookingDateFrom}`
       );
       set({
         allZooDashboard: response.data,
@@ -234,9 +234,11 @@ export const useDashboardStore = create((set) => ({
     toDate,
     entityId,
     active,
+    bookingDateFrom,
+    bookingDateTo,
   }) => {
     const date = active
-      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}`
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&bookingDateFrom=${bookingDateFrom}&bookingDateTo=${bookingDateTo}`
       : "";
     set({ isFetchZooDashboardTicketWiseLoading: true });
     try {

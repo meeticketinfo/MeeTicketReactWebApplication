@@ -19,6 +19,7 @@ function PosPaymentTransactionsReport() {
   const userObject = JSON.parse(localStorage.getItem("PaymentTransactions"));
   console.log("userObject", userObject);
   const [openModal, setOpenModal] = useState(false);
+  const [isBookingDate, setIsBookingDate] = useState(false);
   const [reGenerateData, setreGenerateData] = useState(null);
   const [isUpi, setisUpi] = useState(null);
   // console.log("reGenerateData", reGenerateData);
@@ -67,8 +68,10 @@ console.log(allNehruUserWisePaymentDetailsReports,"allNehruUserWisePaymentDetail
 
   const onSubmit = (values, { resetForm }) => {
     fetchNehruUserWisePaymentDetailsReports({
-      startDate: values.fromDate,
-      endDate: values.toDate,
+      startDate: !isBookingDate ? values.fromDate : "",
+      endDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
       departmentId: values.departmentId,
       entityTypeId: values.entityId,
       currentTransactionStatus: values.typeOfBooking
@@ -79,8 +82,10 @@ console.log(allNehruUserWisePaymentDetailsReports,"allNehruUserWisePaymentDetail
     localStorage.setItem(
       "PaymentTransactions",
       JSON.stringify({
-        startDate: values.fromDate,
-        endDate: values.toDate,
+        startDate: !isBookingDate ? values.fromDate : "",
+        endDate: !isBookingDate ? values.toDate : "",
+        bookingDateFrom: isBookingDate ? values.fromDate : "",
+        bookingDateTo: isBookingDate ? values.toDate : "",
         departmentId: values.departmentId,
         entityTypeId: values.entityId,
         currentTransactionStatus: values.typeOfBooking
@@ -439,6 +444,19 @@ console.log(allNehruUserWisePaymentDetailsReports,"allNehruUserWisePaymentDetail
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue, setValues }) => (
               <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                  <select 
+                    onChange={(e) => {
+                      setIsBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
                 <div>
                   <label
                     htmlFor="fromDate"

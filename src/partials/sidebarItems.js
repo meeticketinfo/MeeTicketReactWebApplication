@@ -143,7 +143,7 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/payment-transaction-report",
       },
-       {
+      {
         title: "Consolidated Booking Details",
         icon: TbReportSearch,
         path: "/pos-consolidated-booking-reports",
@@ -178,9 +178,9 @@ const sidebarItems = [
       //   path: "/transactions-dashboard",
       // },
       {
-       title: "Total Transactions",
-       icon: FaUsers,
-       path: "/total-transactions-dashboard",
+        title: "Total Transactions",
+        icon: FaUsers,
+        path: "/total-transactions-dashboard",
       },
       {
         title: "User Report",
@@ -294,17 +294,17 @@ const sidebarItems = [
       //   path: "/summary-report",
       // },
 
-       {
+      {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/metro-total-transaction",
       },
-       {
+      {
         title: "User Report",
         icon: FaUsers,
         path: "/metro-user-report",
       },
-        {
+      {
         title: "Refund Transactions",
         icon: FaUsers,
         path: "/metro-refund-transactions",
@@ -426,6 +426,21 @@ const sidebarItems = [
   },
 
   {
+    title: "Monthly Reports",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Monthly Reports",
+        icon: TbReportSearch,
+        path: "/monthly-reports",
+      },
+    ],
+  },
+
+  {
     title: "Masters",
     icon: FaCalendarCheck,
     path: "",
@@ -466,12 +481,12 @@ const sidebarItems = [
         icon: MdEventAvailable,
         path: "/amrabad-availability-report",
       },
-        {
+      {
         title: "User Report",
         icon: MdEventAvailable,
         path: "/amrabad-user-report",
       },
-         {
+      {
         title: "Refund Transaction Report",
         icon: MdEventAvailable,
         path: "/amrabad-refund-transaction-report",

@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 import Sidebar from "../partials/Sidebar";
 import Header from "../partials/Header";
 import { ToastContainer } from "react-toastify";
+import useSidebarStore from "../store/sidebarStore";
 
 function AdminLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { sidebarOpen, setSidebarOpen } = useSidebarStore();
+
+  // Scroll to top when component mounts (after login)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -16,8 +22,6 @@ function AdminLayout({ children }) {
       {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       {/* Sidebar */}
       <Sidebar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         role={"Admin"}
         variant="default"
       />
@@ -25,7 +29,7 @@ function AdminLayout({ children }) {
       {/* Content area */}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         {/*  Site header */}
-        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Header />
 
         <main className="grow">
           {/* Dashboard actions */}

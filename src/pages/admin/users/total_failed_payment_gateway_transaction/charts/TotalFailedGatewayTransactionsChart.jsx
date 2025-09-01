@@ -36,14 +36,14 @@ const TotalFailedGatewayTransactionsChart = ({
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 768 ? 8 : 10, // Smaller font on mobile
             color: "black",
-            maxWidth: 150, // enables wrapping on AgCharts v8+
+            maxWidth: window.innerWidth < 768 ? 100 : 150, // Smaller max width on mobile
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = 25;
+              const wrapLength = window.innerWidth < 768 ? 15 : 25; // Shorter wrap length on mobile
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"
@@ -52,12 +52,12 @@ const TotalFailedGatewayTransactionsChart = ({
                 datum[angleKey]
               } (${percentage}%)`;
             },
-            offset: 15,
+            offset: window.innerWidth < 768 ? 10 : 15, // Smaller offset on mobile
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 768 ? 8 : 10, // Smaller font on mobile
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -84,10 +84,11 @@ const TotalFailedGatewayTransactionsChart = ({
   }
 
   return (
-    <div className="gap-8 w-full p-6">
-      <div className="flex flex-row gap-2 items-center justify-between">
-        <h2 className="text-lg font-medium mb-2">Failed (Payment Gateway)</h2>
-        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
+    <div className="gap-4 md:gap-8 w-full p-3 md:p-6">
+      {/* Header Section - Mobile Responsive */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center justify-between mb-4">
+        <h2 className="text-base md:text-lg font-medium mb-2 sm:mb-0">Failed (Payment Gateway)</h2>
+        <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center w-full sm:w-auto justify-center sm:justify-start">
           Total Failed (Payment Gateway)&nbsp;
           <Link
             to={`/failed-gateway-transactions-report?${searchParams.toString()}`}
@@ -97,35 +98,38 @@ const TotalFailedGatewayTransactionsChart = ({
           </Link>
         </div>
       </div>
-      <div className="flex flex-row gap-2 items-center justify-between">
-        {/* Pie Chart */}
-        <div className="flex-1 w-[90%]">
-          <div ref={chartRef} className="h-[400px] max-w-[90%]" />
+
+      {/* Chart and Table Section - Mobile Responsive */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 items-center lg:items-start">
+        {/* Pie Chart - Mobile Responsive */}
+        <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[50%]">
+          <div ref={chartRef} className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full" />
         </div>
 
-        <div className="min-w-[340px] max-w-[450px]">
+        {/* Table Section - Mobile Responsive */}
+        <div className="w-full lg:min-w-[300px] lg:max-w-[400px] xl:max-w-[450px]">
           <div className="flex justify-end mb-2">
           </div>
-          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[450px] overflow-y-auto">
-            <table className="w-full">
+          <div className="border-l-[#B7B7B7] border-r-[#B7B7B7] max-h-[350px] sm:max-h-[400px] md:max-h-[450px] overflow-y-auto">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-[#D9E4FF]">
-                  <th className="text-left px-4 py-2 text-[#205375] font-semibold">Failed Reasons</th>
-                  <th className="text-right px-4 py-2 text-[#205375] font-semibold">Count</th>
+                  <th className="text-left px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">Failed Reasons</th>
+                  <th className="text-right px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">Count</th>
                 </tr>
               </thead>
               <tbody>
                 {data?.map((item, index) => (
                   <tr key={item.location || item.paymentCategory}>
-                    <td className="px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                      <div className="flex items-center gap-2">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <div
-                          className="w-3 h-3 rounded-full shrink-0"
+                          className="w-2 sm:w-3 h-2 sm:h-3 rounded-full shrink-0"
                           style={{ backgroundColor: colors[index % colors.length] }}
                         />
                         <Link
                           to={redirectionLink(item)}
-                          className="text-[#000] hover:underline text-xs"
+                          className="text-[#000] hover:underline text-xs sm:text-sm break-words"
                           onClick={() => {
                             localStorage.setItem("totalFailedGatewayTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.failureReasonKey}`);
                           }}
@@ -134,10 +138,10 @@ const TotalFailedGatewayTransactionsChart = ({
                         </Link>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
+                    <td className="px-2 sm:px-3 md:px-4 py-2 text-right border border-b-[#B7B7B7]">
                       <Link
                         to={redirectionLink(item)}
-                        className="text-[#4A90E2] font-semibold hover:underline text-sm"
+                        className="text-[#4A90E2] font-semibold hover:underline text-xs sm:text-sm"
                         onClick={() => {
                           localStorage.setItem("totalFailedGatewayTransactionSearchParams", `${searchParams.toString()}&subCategory=${item.failureReasonKey}`);
                         }}

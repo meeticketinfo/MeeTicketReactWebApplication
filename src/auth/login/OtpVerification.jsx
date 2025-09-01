@@ -135,20 +135,20 @@ const OtPVerification = ({
     <div>
       {/* <ToastContainer /> */}
       <div className="">
-        <div className="w-full max-w-sm mx-auto my-4">
+        <div className="w-full max-w-sm mx-auto my-4 px-4">
           <Formik
             initialValues={{ otp: "" }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
             {({ isSubmitting, setFieldValue, values, errors, touched }) => (
-              <Form className="  otp_screen ">
+              <Form className="otp_screen">
                 <div className="flex justify-center">
                   {/* <img alt="" src={VerificationImg} className="ml-2 mt-[2px]" /> */}
                 </div>
 
                 {/* -----------------------Modal header--------------------- */}
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-4 px-2">
                   <div className="w-1/3"></div> {/* Empty div for spacing */}
                   <h3 className="text-base  font-semibold text-white w-1/3 text-center">
                     Verification
@@ -156,6 +156,7 @@ const OtPVerification = ({
                   <div className="w-1/3 text-right">
                     <button
                       className="text-white text-sm cursor-pointer"
+                      type="button"
                       onClick={() => {
                         setRedirectError(null);
                          setOtpError(null)
@@ -167,7 +168,7 @@ const OtPVerification = ({
                   </div>
                 </div>
                 {/* ------------------------Text------------------------- */}
-                <div className="mb-4 text-sm text-white px-10 text-center">
+                <div className="mb-4 text-sm text-white px-4 text-center">
                   <p>
                     Please enter the 6-digit code we have sent you to your
                     Mobile Number{" "}
@@ -182,7 +183,7 @@ const OtPVerification = ({
                 <h3 className="text-base mt-4 text-center font-semibold text-white mb-4">
                   Enter Code
                 </h3>
-                <div className="flex gap-3 justify-center mb-2">
+                <div className="flex gap-2 justify-center mb-2 px-2">
                   {[...Array(6)].map((_, index) => (
                     <Field
                       key={index}
@@ -197,7 +198,7 @@ const OtPVerification = ({
                           }
                           onKeyDown={(e) => handleKeyDown(e, index, values)}
                           ref={(el) => (inputRefs.current[index] = el)}
-                          className={`appearance-none border rounded-md w-12 h-12 bg-white/30 backdrop-blur-sm py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                          className={`appearance-none border rounded-md w-10 h-10 bg-white/30 backdrop-blur-sm py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
                             errors.otp && touched.otp ? "border-red-500" : ""
                           }`}
                         />
@@ -211,7 +212,7 @@ const OtPVerification = ({
                   component="div"
                   className="text-red-500 text-xs mt-1"
                 />
-                <p className="text-center text-white text-xs mt-2">
+                <p className="text-center text-white text-xs mt-2 px-2">
                   Didn't receive the OTP?&nbsp;
                   <span
                     className={`clr_link ${
@@ -227,7 +228,7 @@ const OtPVerification = ({
                   {timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
                 </p>
                 <div className="text-red-500 text-xs mt-1">{redirectError}</div>
-                <div className="w-full py-3 mt-4 mb-4 text-dark bg-primary hover:bg-primary rounded-md text-base font-medium flex items-center justify-center">
+                <div className="w-full py-3 mt-4 mb-4 text-dark bg-primary hover:bg-primary rounded-md text-base font-medium flex items-center justify-center px-4">
                   <button
                     type="submit"
                     className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${

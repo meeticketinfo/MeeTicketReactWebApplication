@@ -21,6 +21,7 @@ import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 
 export default function PosIndividualBookingReports() {
   const [openModal, setOpenModal] = useState(false);
+  const [isBookingDate, setIsBookingDate] = useState(false);
   const {
     fetchAllNehruCounterBookingsByFilters,
     allNehruCounterBookings,
@@ -226,8 +227,10 @@ export default function PosIndividualBookingReports() {
     try {
       const formattedValues = {
         ...values,
-        fromDate: values.fromDate ? `${values.fromDate}` : "",
-        toDate: values.toDate ? `${values.toDate}` : "",
+        fromDate: !isBookingDate ? values.fromDate ? `${values.fromDate}` : "" : "",
+        toDate: !isBookingDate ? values.toDate ? `${values.toDate}` : "" : "",
+        bookingDateFrom: isBookingDate ? values.fromDate : "",
+        bookingDateTo: isBookingDate ? values.toDate : "",
         departmentId: values.departmentId,
         entityTypeId: values.entityTypeId,
       };
@@ -339,7 +342,7 @@ export default function PosIndividualBookingReports() {
               >
                 {({ values, setFieldValue }) => (
                   <Form>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
                       {role !== "ROLE_ADMIN" &&
                         role !== "ROLE_ZOOPARKADMIN" && (
                           <>
@@ -452,6 +455,19 @@ export default function PosIndividualBookingReports() {
                       </div> */}
                           </>
                         )}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
+                        <select 
+                          onChange={(e) => {
+                            setIsBookingDate(e.target.value === "true");
+                          }}
+                          name="bookingDate"
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        >
+                          <option value="false">Purchase Date</option>
+                          <option value="true">Booking Date</option>
+                        </select>
+                      </div>
                       <div>
                         <label
                           htmlFor="fromDate"

@@ -5,3 +5,58 @@ a#reload_href {
 body {
   overflow: hidden;
 }
+
+
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  body {
+    overflow: auto;
+    min-height: 100vh;
+  }
+  
+  /* Ensure main container allows scroll on mobile */
+  .min-h-screen {
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    overflow: auto;
+    min-height: 120vh;
+  }
+  
+  /* Ensure main container allows scroll on small mobile */
+  .min-h-screen {
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
+/* Handle landscape orientation on mobile */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+  body {
+    overflow: auto;
+    min-height: 140vh;
+  }
+  
+  .min-h-screen {
+    overflow-y: auto;
+    height: auto;
+  }
+}
+
+/* Handle portrait orientation on mobile */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+  body {
+    overflow: auto;
+    min-height: 100vh;
+  }
+  
+  .min-h-screen {
+    overflow-y: auto;
+    height: auto;
+  }
+}
