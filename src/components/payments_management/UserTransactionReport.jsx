@@ -29,6 +29,12 @@ const UserTransactionReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+     {
+      field: "parkName",
+      headerName: "park Name",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "totalAttempts",
       headerName: "Total Attempts",

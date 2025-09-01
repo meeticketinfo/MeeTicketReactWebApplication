@@ -23,6 +23,11 @@ const useAuthStore = create(
       userRoles: [],
       roleDetails: null, // To store role id and name
       sidebarMenuItems: [], // To store filtered sidebar items
+      redirectError: null,
+
+      setRedirectError: (redirectError) => {
+        set({ redirectError });
+      },
 
       login: async (loginData) => {
         set({ isLoading: true });

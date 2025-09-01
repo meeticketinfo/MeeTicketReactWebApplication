@@ -23,16 +23,19 @@ export default function BookingDetails() {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
     setIsFirstStepTransaction,
+    isCompletedZooCounterBookings,
     isCompleteBookings,
     setCheckPosTsxStatusData,
-    
+    PosPaymentTransactionNAvigate,
+    setPosPaymentTransactionNAvigate,
+    PaymentTransactionNAvigate,
+    PosIndividualNAvigate,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   useEffect(() => {
     fetchQRsForBooking(id);
-   
   }, []);
 
   const fetchQRsForBooking = async (bookingId) => {
@@ -167,7 +170,7 @@ export default function BookingDetails() {
       )
     );
   }, 0);
-
+  
   return (
     <AdminLayout>
       {isFetchCurrentBookingDetailsLoading ? (
@@ -184,8 +187,18 @@ export default function BookingDetails() {
               <PaymentQR />
               <NavLink
                 end
+             
+ 
                 to={
-                  isCompleteBookings
+                  PosIndividualNAvigate
+                    ? "/pos-individual-booking-reports"
+                    : PosPaymentTransactionNAvigate
+                    ? "/pos-payment-transactions-reports"
+                    : isCompletedZooCounterBookings
+                    ? "/pos-consolidated-booking-reports"
+                    : PaymentTransactionNAvigate
+                    ? "/payment-transaction-report"
+                    : isCompleteBookings
                     ? "/completed-bookings"
                     : role === "ROLE_ZOOPARKADMIN"
                     ? "/book-tickets"
@@ -315,9 +328,19 @@ export default function BookingDetails() {
                         paddingTop: 15,
                         fontWeight: 700,
                       }}
-                      dangerouslySetInnerHTML={{__html: `: ${bookingDetailsResponse?.referenceId
-                        ? bookingDetailsResponse?.referenceId.replace(/\n/g, "<br />")
-                        : bookingDetailsResponse?.id?.replace(/\n/g, "<br />") || "N/A"}`}}
+                      dangerouslySetInnerHTML={{
+                        __html: `: ${
+                          bookingDetailsResponse?.referenceId
+                            ? bookingDetailsResponse?.referenceId.replace(
+                                /\n/g,
+                                "<br />"
+                              )
+                            : bookingDetailsResponse?.id?.replace(
+                                /\n/g,
+                                "<br />"
+                              ) || "N/A"
+                        }`,
+                      }}
                     />
                   </div>
                 </div>

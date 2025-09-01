@@ -34,7 +34,6 @@ export default function NodalOfficer() {
   const toggleNodalOfficerCreate = () => {
     setIsNodalOfficerCreateVisible((prev) => !prev);
     setIsNodalOfficerEditVisible(false);
-    false;
   };
   const nodalOfficerColumnDefs = [
     {
@@ -138,9 +137,9 @@ export default function NodalOfficer() {
             {!isNodalOfficerCreateVisible ? (
               <button
                 onClick={toggleNodalOfficerCreate}
-                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+               className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
               >
-                <span className="max-xs:sr-only"> Add Nodal Officer </span>
+                <span > Add Nodal Officer </span>
               </button>
             ) : (
               <BackButton

@@ -1,14 +1,14 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL =
+  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
-  //  paynow UAT
+//  paynow UAT
 export const PAYNOW_API_BASE_URL =
   "https://uat.meeticket.telangana.gov.in/parkapi/";
 
@@ -47,9 +47,9 @@ export const RTC_API_BASE_URL =
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
 
-// PARK PROD
+//  PARK UAT testing
 // export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
+//   "https://7q0xctq4-7237.inc1.devtunnels.ms/api/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -92,7 +92,7 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
-      FIRST_STEP_TRANSACTION: `${API_BASE_URL}PaymentTransaction/Transaction`,
+      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v3/PaymentTransaction/Transaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
@@ -182,6 +182,11 @@ export const API_ENDPOINTS = {
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
+      GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
+      POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
+      GET_COMPLETED_ZOO_COUNTER_BOOKINGS:`${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
+      GET_NEHRU_USER_WISE_PAYMENT_DETAILS:`${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
+      // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
@@ -202,10 +207,10 @@ export const API_ENDPOINTS = {
       UPDATE_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/UpdateSettlmentPayment`,
       ADD_PAYMENT_SETTLEMENT: `${METRO_API_BASE_URL}v1/PaymentTransaction/AddVerifySettlementAmount`,
     },
-    PARK_BANK_PAYMENT:{
-      PAYMENT_VERIFY:`${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
-      PAYMENT_INITIAT:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
-      PAYMENT_REFRESH:`${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
+    PARK_BANK_PAYMENT: {
+      PAYMENT_VERIFY: `${API_BASE_URL}PaymentTransaction/AddVerifySettlementAmount`,
+      PAYMENT_INITIAT: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/InititateParkPayment`,
+      PAYMENT_REFRESH: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
       GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
@@ -229,10 +234,31 @@ export const API_ENDPOINTS = {
       GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
       GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
+      MONTHLY_REPORTS: {
+      GET_DEPARTMENT_ABSTRACT_REPORT: `${API_BASE_URL}DashBoard/GetDepartmentParkStats`,
+      GET_LOCATION_CATEGORY_ABSTRACTREPORT: `${API_BASE_URL}DashBoard/GetEnityCategoryParkStats`,
+      GET_DEPARTMENT_WISE_REPORT: `${API_BASE_URL}DashBoard/GetBookingSummaryByDepartmentStats`,
+      GET_LOCATION_CATEGORY_WISE_REPORT: `${API_BASE_URL}DashBoard/GetBookingSummaryByEntityCategoryStats`,
+      GET_LOCATION_WISE_REPORT: `${API_BASE_URL}DashBoard/GetLocationwiseBookingSummaryStats`,
+    },
     USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
-    }
+    },
+    USER_REPORTS: {
+      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
+      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
+      GET_USER_REPORT: `${API_BASE_URL}UserTransactions/GetAllUsers`,
+      GET_USER_DETAILED_REPORT: `${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
+      GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
+      GET_REFUND_TRANSACTIONS_REPORT: `${API_BASE_URL}ParkReport/GetParkRefundInnerReport`,
+    },
+    USER_TRANSACTIONS: {
+      GET_PAYMENT_TRANSACTION_DETAILS_BY_STATUS_RESULT: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionDetailsByStatus_V2Result`,
+    },
+    FAILED_TRANSACTIONS: {
+      GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -241,17 +267,20 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
+    GET_ALL_NEHRU_COUNTER_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetNehruCounterBookings`,
     GET_ALL_Facility_BOOKINGS: `${API_BASE_URL}ParkReport/GetBookingDetailsJSON`,
     GET_ALL_DAY_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseBookingSummaryReport`,
     GET_ALL_APPLICATION_WISE_BOOKINGS: `${API_BASE_URL}ParkReport/GetFacilityDayWiseReportWithBookingSource`,
     GET_ALL_DASHBOARD_DETAILED_REPORT: `${API_BASE_URL}ParkReport/GetZooParkDashboardDetails`,
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
+    GET_ALL_DEPARTMENT_BOOKINGS: `${API_BASE_URL}DashBoard/GetEnitywisedashBoardCount`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
+    GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
   },
   RTC_DASHBOARD: {
     GET_OVER_ALL: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardReports`,
@@ -264,5 +293,37 @@ export const API_ENDPOINTS = {
     GET_CATEGORY_WISE_TOTALCOUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetCategoryWiseTotalBookings`,
     GET_PACKAGE_TYPE_WISE_BOOKINGS: `${TOURISM_API_BASE_URL}TourismReports/GetPackageTypeWiseBookingDetails`,
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
+  },
+
+  FAILED_TRANSACTIONS: {
+    GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
+    GET_SUCCESS_BUT_NOT_CONFIRMED_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetSuccessButNotConfirmedPieChart`,
+    GET_TRANSACTION_TRACKING_STATUS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetTransactionTrackingStatusByOrderId-Updated`,
+    GET_FAILED_TRANSACTIONS_BY_REASON: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByReasonPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_LOCATION: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_LOCATION_CATEGORY: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByLocationCategoryPercentage`,
+    GET_FAILED_TRANSACTIONS_BY_DEPARTMENT: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsByDepartmentPercentage`,
+    GET_FAILED_TRANSACTIONS_TREND_GRAPH: `${API_BASE_URL}AdminDashBoardController/GetFailedTransactionsTrendGraph`,
+    GET_PAYMENT_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionSummaryByFailureDetail_V3`,
+    GET_PAYMENT_FAILED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+
+    GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureFromGateway_SubCategoryReportResult`,
+    
+    INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
+  },
+  METRO_TRANSACTIONS_REPORT: {
+    GET_METRO_TRANSACTIONS_BY_REASON: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentTotalTransactionSummary`,
+    GET_METRO_TOTAL_TRANSACTIONS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroPaymentTransactionInnerDetails`,
+    GET_OTHER_REASON_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureDueToOtherReasons_SubCategoryReportResult`,
+    GET_GATEWAY_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureFromGateway_SubCategoryReportResult`,
+    GET_TICKET_NOT_GENERATED_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
+    METRO_USER_TRANSACTIONS_REPORT:{
+    GET_METRO_USER_REPORT:`${METRO_API_BASE_URL}v1/BookingDetails/GetAllUsers`,
+    GET_USER_TRANSACTION_DETAILS:`${METRO_API_BASE_URL}v1/MetroReport/GetUserTransactionDetails`,
+    GET_METRO_TRANSACTION_TRACKING_STATUS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroTransactionTrackingStatusByOrderId`,
+    GET_METRO_REFUND_TRANSACTIONS_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundSummaryOuterReport`,
+    GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
+    }
   },
 };

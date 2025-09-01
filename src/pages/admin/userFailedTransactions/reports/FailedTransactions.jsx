@@ -1,0 +1,196 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import AgGridTable from "../../../../components/tables/AgGridTable";
+import AdminLayout from "../../../../layouts/AdminLayout";
+import {
+  formatToCurrency,
+} from "../../../../utils/TypographyHelper";
+import { userFailureTransaction } from "../../../../store/failedTransaction/failedTransaction";
+import FailedTransactionsForm from "./FailedTransactionsForm";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
+import { useTransactionsStore } from "../../../../store/userTransaction/TransactionsStore";
+
+const FailedTransactions = () => {
+  const [searchParams] = useSearchParams();
+  const fromDate = getStartOfCurrentDay();
+  const toDate = getEndOfCurrentDay();
+
+  const navigate = useNavigate();
+  const {totalTransactionSearchParams} = useTransactionsStore();
+  console.log(totalTransactionSearchParams, "totalTransactionSearchParams");
+  const {
+    failureUserTransactionReport,
+    isFetchFailureUserTransactionReport,
+    fetchFailureUserTransactionReport,
+    isTotalTransactionPage
+  } = userFailureTransaction();
+
+  const [columnDefs] = useState([
+    {
+      headerName: "S.No",
+      valueGetter: "node.rowIndex + 1",
+      maxWidth: "80",
+      headerClass: "text-blue-v2",
+    },
+    {
+      field: "date",
+      maxWidth: "180",
+      headerName: "Date",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
+    {
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          to={"/transactions-order-tracker"}
+          state={{
+            orderId: params.data.orderId,
+            date: params.data.date,
+            mobileNumber: params.data.mobileNumber,
+            parkName: params.data.parkName,
+            status: params.data.status,
+            amount: params.data.amount
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
+    },
+    {
+      field: "orderId",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "mobileNumber",
+      headerName: "Mobile No.",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "parkName",
+      headerName: "Park Name",
+      minWidth: "200",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "categoryName",
+      headerName: "Location Category",
+      maxWidth: "200",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "departmentName",
+      headerName: "Department",
+      maxWidth: "200",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "status",
+      headerName: "Payment Status",
+      maxWidth: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Ticket Status",
+      width: "140",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "bookingId",
+      headerName: "Booking ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "filteredResultMsg",
+      headerName: "Result Msg",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+      cellRenderer: (params) => (<span title={params.value}>{params.value ?? "N/A"}</span>)
+    },
+  ]);
+
+  useEffect(() => {
+    fetchFailureUserTransactionReport({
+      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
+      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
+      status: searchParams.get("status") == "Failed" ? "FAILED" : searchParams.get("category") == "" ? "" : searchParams.get("category") == "ConfirmedSuccess" ? 'CONFIRMED' : "FAILED",
+      parkId: searchParams.get("locationId") || "",
+      resultMsg: searchParams.get("resultMsg") || "",
+      departmentId: +searchParams.get("departmentId") || "",
+      categoryId: +searchParams.get("entityId") || "",
+      category: searchParams.get("category") || "",
+      mobileNumber: searchParams.get("phoneNumber") || "",
+    });
+  }, []);
+
+  return (
+    <>
+      <AdminLayout>
+        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+          <div className="sm:flex sm:justify-between sm:items-center mb-2">
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+                User Status Transaction Report
+              </h1>
+            </div>
+            <div className="">
+              <button
+                onClick={() => navigate(isTotalTransactionPage ? `/total-transactions-dashboard?${totalTransactionSearchParams.toString()}` : `/transactions-dashboard?${totalTransactionSearchParams.toString()}`)}
+                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
+              >
+                Back
+              </button>
+            </div>
+          </div>
+          <div>
+            <FailedTransactionsForm />
+            <AgGridTable
+              ExportName="UserStatusTransactionReport"
+              rowData={failureUserTransactionReport}
+              columnDefs={columnDefs}
+              isFetchLoading={isFetchFailureUserTransactionReport}
+            />
+          </div>
+        </div>
+      </AdminLayout>
+    </>
+  );
+};
+
+export default FailedTransactions;

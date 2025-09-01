@@ -37,9 +37,9 @@ export default function AdminUsers() {
             {!isUserCreateVisible ? (
               <button
                 onClick={toggleUserCreate}
-                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
               >
-                <span className="max-xs:sr-only">Create Location Admin</span>
+                <span >Create Location Admin</span>
               </button>
             ) : (
               <BackButton

@@ -20,6 +20,7 @@ import {
   CustomParkAdminPermissions,
   Toursim,
   RtcAdmin,
+  Department,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -87,7 +88,7 @@ function Sidebar({ variant = "default" }) {
       document.querySelector("body").classList.add("sidebar-minimized");
     }
   }, [sidebarExpanded]);
-  
+
   const email = decodedTokenData?.data?.email;
   const role = roleDetails?.name;
 
@@ -115,6 +116,8 @@ function Sidebar({ variant = "default" }) {
       return Toursim;
     } else if (role === "Role_RTCADMIN") {
       return RtcAdmin;
+    } else if (role === "Role_DeptAdmin") {
+      return Department;
     }
     return [];
   }, [role, email]);
@@ -138,13 +141,19 @@ function Sidebar({ variant = "default" }) {
   return (
     <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}
-      <div className={`fixed  ${""}`} aria-hidden="true"></div>
+      <div 
+        className={`fixed inset-0 bg-gray-900 bg-opacity-50 z-30 lg:hidden ${
+          sidebarOpen ? "block" : "hidden"
+        }`} 
+        aria-hidden="true"
+        onClick={() => setSidebarOpen(false)}
+      ></div>
 
       {/* Sidebar */}
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:!flex flex-col  absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar  sidebar-expanded  shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-500 ease-in-out ${
+        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar sidebar-expanded shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-500 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         } ${
           variant === "v2"
@@ -344,7 +353,7 @@ function Sidebar({ variant = "default" }) {
           </div>
         </div>
 
-        <div className="pt-3 hidden lg:inline-flex justify-center mt-auto">
+        <div className="pt-3 flex justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
             <button
               onClick={() => {

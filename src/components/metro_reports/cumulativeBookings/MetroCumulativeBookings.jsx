@@ -173,7 +173,7 @@ export default function MetroCumulativeBookings() {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "settledPaymentAMount",
+      field: "settledPaymentAmount",
       headerName: "Amount Settled by Finance Team",
       Width: "260",
       headerClass: "text-blue-v2",
@@ -190,7 +190,7 @@ export default function MetroCumulativeBookings() {
     {
       field: "remarks",
       headerName: "Remarks",
-      maxWidth: 160,
+      maxWidth: 110,
       hide: email === "esdadmin@gmail.com",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
@@ -207,7 +207,7 @@ export default function MetroCumulativeBookings() {
                 <div>
                   <h1 className="text-xs">
                     Settled Amount:{" "}
-                    <span>{params.data.settledPaymentAMount ?? "N/A"}</span>
+                    <span>{params.data.settledPaymentAmount ?? "N/A"}</span>
                   </h1>
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export default function MetroCumulativeBookings() {
     {
       field: "utr",
       headerName: "UTR Number",
-      maxWidth: "150",
+      Width: "260",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
@@ -292,7 +292,8 @@ export default function MetroCumulativeBookings() {
         const settlementId = params.data.settlementId;
 
         // Use the last clicked time if available, else fall back to API-provided time
-        const lastRefreshTimeStr =localRefreshMap.get(settlementId) ||params.data.lastRefreshedDateTim;
+        const lastRefreshTimeStr =
+          localRefreshMap.get(settlementId) || params.data.lastRefreshedDateTim;
 
         const lastRefreshTime = new Date(lastRefreshTimeStr);
         const now = new Date();
@@ -347,31 +348,35 @@ export default function MetroCumulativeBookings() {
                 >
                   Pay Now
                 </button>
-                {params.data.status !== "Verified" &&
-                  params.data.status !== "Not Settled" &&
-                  params.data.status !== "Completed" && (
-                    <button
-                      className={`mt-2.5 `}
-                      disabled={params.data.lastRefreshedDateTim||isDisabled}
-                      onClick={() => {
-                        HandleRefreshButton(
-                          params.data.txnDate,
-                          params.data.cbxapirefno,
-                          params.data.settlementId
-                        );
+                {(params.data.status === "In Progress" ||
+                  params.data.status === "Inquiry Initiated" ||
+                  params.data.status === "Risk Validation in progress") && (
+                  <button
+                    className={`mt-2.5 `}
+                    disabled={params.data.lastRefreshedDateTim || isDisabled}
+                    onClick={() => {
+                      HandleRefreshButton(
+                        params.data.txnDate,
+                        params.data.cbxapirefno,
+                        params.data.settlementId
+                      );
 
-                        // Track local click to disable the button immediately
-                        localRefreshMap.set(
-                          settlementId,
-                          new Date().toISOString()
-                        );
-                      }}
-                    >
-                      <span>
-                        <IoIosRefresh className={`text-[24px] text-blue-v2 ${isDisabled ? "text-gray-300 cursor-not-allowed" : ""}`} />
-                      </span>
-                    </button>
-                  )}
+                      // Track local click to disable the button immediately
+                      localRefreshMap.set(
+                        settlementId,
+                        new Date().toISOString()
+                      );
+                    }}
+                  >
+                    <span>
+                      <IoIosRefresh
+                        className={`text-[24px] text-blue-v2 ${
+                          isDisabled ? "text-gray-300 cursor-not-allowed" : ""
+                        }`}
+                      />
+                    </span>
+                  </button>
+                )}
               </>
             ) : (
               <>
@@ -432,7 +437,11 @@ export default function MetroCumulativeBookings() {
         date: getCurrentDate(),
       };
       if (res.data.status == 200) {
-        RefreshButton(Payload);
+        setTimeout(async () => {
+          await RefreshButton(Payload);
+
+          // After RefreshButton is called, then call the API
+        }, 2000);
         Swal.fire({
           title: "Success!",
           html: `Payment of <b>Rs.${Amount_Date.amount}</b> has been Initiated Succesfully.`,
@@ -445,10 +454,13 @@ export default function MetroCumulativeBookings() {
           showConfirmButton: false,
         }).then(() => {
           // Call the API after the SweetAlert modal closes
-          fetchAllMetroCumulativeBookingDetailsReport({
-            fromDate: userObject.fromDate || getCurrentDate(),
-            toDate: userObject.toDate || getCurrentDate(),
-          });
+          setTimeout(() => {
+            // After RefreshButton, call the API
+            fetchAllMetroCumulativeBookingDetailsReport({
+              fromDate: userObject.fromDate || getCurrentDate(),
+              toDate: userObject.toDate || getCurrentDate(),
+            });
+          }, 1000);
         });
       } else {
         Swal.fire({
@@ -457,10 +469,13 @@ export default function MetroCumulativeBookings() {
           icon: "error",
           confirmButtonText: "OK",
         }).then(() => {
-          fetchAllMetroCumulativeBookingDetailsReport({
-            fromDate: userObject.fromDate || getCurrentDate(),
-            toDate: userObject.toDate || getCurrentDate(),
-          });
+          setTimeout(() => {
+            // After RefreshButton, call the API
+            fetchAllMetroCumulativeBookingDetailsReport({
+              fromDate: userObject.fromDate || getCurrentDate(),
+              toDate: userObject.toDate || getCurrentDate(),
+            });
+          }, 1000);
         });
       }
     } catch {
@@ -470,15 +485,19 @@ export default function MetroCumulativeBookings() {
         icon: "error",
         confirmButtonText: "OK",
       }).then(() => {
-        fetchAllMetroCumulativeBookingDetailsReport({
-          fromDate: userObject.fromDate || getCurrentDate(),
-          toDate: userObject.toDate || getCurrentDate(),
-        });
+        setTimeout(() => {
+            // After RefreshButton, call the API
+            fetchAllMetroCumulativeBookingDetailsReport({
+              fromDate: userObject.fromDate || getCurrentDate(),
+              toDate: userObject.toDate || getCurrentDate(),
+            });
+          }, 1000);
       });
     }
   };
 
   // verify amount
+
   const handleVerifySettlement = async () => {
     const verifyPayload = {
       ...SetteledDetails,
@@ -719,6 +738,7 @@ export default function MetroCumulativeBookings() {
                 setOpenModal(false);
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              disabled={isSaveInitiatAmountLoading}
             >
               {isSaveInitiatAmountLoading ? (
                 <span className="px-8">

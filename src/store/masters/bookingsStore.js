@@ -32,19 +32,27 @@ export const useBookingsStore = create(
       pageSize: 10,
       isLoading: false,
       allCompleteBookingsReports: [],
+      allCompletedZooCounterBookingsReport:[],
       allTransactionPaymentReports: [],
+      allNehruUserWisePaymentDetailsReports:[],
       isCompleteBookingsReportsLoading: false,
+      isCompletedZooCounterBookingsReportLoading: false,
       isTransactionPaymentReportsLoading: false,
       isCompleteBookings: false,
+      isCompletedZooCounterBookings:false,
       bookingMessage: "",
-
+       isPaymentTransactionNAvigate:false,
+       isPosPaymentTransactionNAvigate:false,
+      PosIndividualNAvigate:false,
+      PosPaymentTransactionNAvigate:false,
       Generate_deep_link_data: [],
       isGenerate_deep_linkLoading: false,
       //
       CheckPosTsxStatusData: [],
-      isTransactionPaymentReportsLoading: false,
-      //
-
+      // regenerate ticket
+      isReGenerateTicketLoading: false,
+      //  cgg
+      isCggLoading: false,
       serializeFilters: (filters) =>
         Object.entries(filters)
           .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -57,7 +65,15 @@ export const useBookingsStore = create(
       setCheckPosTsxStatusData: (CheckPosTsxStatusData) => {
         set({ CheckPosTsxStatusData });
       },
-
+      setPaymentTransactionNAvigate: (PaymentTransactionNAvigate) => {
+        set({ PaymentTransactionNAvigate });
+      },
+      setPosIndividualNAvigate: (PosIndividualNAvigate) => {
+        set({ PosIndividualNAvigate });
+      },
+      setPosPaymentTransactionNAvigate: (PosPaymentTransactionNAvigate) => {
+        set({ PosPaymentTransactionNAvigate });
+      },
       setIsBookingFormVisible: (isBookingFormVisible) => {
         set({ isBookingFormVisible });
       },
@@ -70,7 +86,9 @@ export const useBookingsStore = create(
       setisCompleteBookings: (isCompleteBookings) => {
         set({ isCompleteBookings });
       },
-
+      setisCompletedZooCounterBookings: (isCompletedZooCounterBookings) => {
+        set({ isCompletedZooCounterBookings });
+      },
       setSelectedBookingsList: (selectedBookingsList) => {
         set({ selectedBookingsList });
       },
@@ -296,9 +314,12 @@ export const useBookingsStore = create(
         const Payload1 = {
           startDate: payload.startDate,
           endDate: payload.endDate,
+          bookingDateFrom: payload.bookingDateFrom,
+          bookingDateTo: payload.bookingDateTo,
           departmentId: payload.departmentId,
           entityTypeId: payload.entityTypeId,
-          mobileNumber:payload.mobileNumber
+          mobileNumber: payload.mobileNumber,
+          parkId: payload.parkId,
         };
         const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
         set({ isCompleteBookingsReportsLoading: true });
@@ -315,6 +336,35 @@ export const useBookingsStore = create(
           set({
             error: error.message,
             isCompleteBookingsReportsLoading: false,
+          });
+        }
+      },
+      //new zoo reports
+       fetchCompletedZooCounterBookingsReport: async (payload) => {
+        const Payload1 = {
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          departmentId: payload.departmentId,
+          entityTypeId: payload.entityTypeId,
+          mobileNumber: payload.mobileNumber,
+          bookingDateFrom: payload.bookingDateFrom,
+          bookingDateTo: payload.bookingDateTo,
+        };
+        const finalPyload = payload.bookingSource == "" ? Payload1 : payload;
+        set({ isCompletedZooCounterBookingsReportLoading: true });
+        try {
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_COMPLETED_ZOO_COUNTER_BOOKINGS;
+          const method = "get";
+          const response = await apiService[method](url, finalPyload);
+          set({
+            allCompletedZooCounterBookingsReport: response.data,
+            isCompletedZooCounterBookingsReportLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isCompletedZooCounterBookingsReportLoading: false,
           });
         }
       },
@@ -335,6 +385,25 @@ export const useBookingsStore = create(
           set({
             error: error.message,
             isTransactionPaymentReportsLoading: false,
+          });
+        }
+      },
+      //NEW POS Payment transactions
+        fetchNehruUserWisePaymentDetailsReports: async (payload) => {
+        set({ isNehruUserWisePaymentDetailsReportsLoading: true });
+        try {
+          const url =
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_NEHRU_USER_WISE_PAYMENT_DETAILS;
+          const method = "get";
+          const response = await apiService[method](url, payload);
+          set({
+            allNehruUserWisePaymentDetailsReports: response.data,
+            isNehruUserWisePaymentDetailsReportsLoading: false,
+          });
+        } catch (error) {
+          set({
+            error: error.message,
+            isNehruUserWisePaymentDetailsReportsLoading: false,
           });
         }
       },
@@ -376,19 +445,66 @@ export const useBookingsStore = create(
           });
         }
       },
-      
+
       // cgg toggle
 
       saveCggDetails: async (CggPayload) => {
+        set({ isCggLoading: true });
         try {
           const url = `${API_ENDPOINTS.MASTERS.BOOKING.CGG_TOGGLE}?IsCggEnable=${CggPayload.IsCggEnable}`;
           const method = "put";
 
           const response = await apiService[method](url);
-
+          set({
+            isCggLoading: false,
+          });
           return { success: true, data: response };
         } catch ({ error, xhr }) {
+          set({
+            error: error.message,
+            isCggLoading: false,
+          });
           return { error: error.response.data.message };
+        }
+      },
+      // regenerate park ticket
+
+      FetchReGenerateTicket: async (reGenerateDetails) => {
+        set({ isReGenerateTicketLoading: true });
+        try {
+          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.GET_RE_GENERATE_TICKET}`;
+          const method = "post";
+          const response = await apiService[method](url, reGenerateDetails);
+          set({
+            isReGenerateTicketLoading: false,
+          });
+          return { response: response };
+        } catch (error) {
+          set({
+            error: error.message,
+            isReGenerateTicketLoading: false,
+          });
+        }
+      },
+
+      FetchVerifyTicket: async (VerifyDetails, isUpi) => {
+        console.log("isUpi", isUpi);
+        set({ isVerifyTicketLoading: true });
+        try {
+          const url = isUpi
+            ? `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`
+            : `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${VerifyDetails}`;
+          const method = "post";
+          const response = await apiService[method](url);
+          set({
+            isVerifyTicketLoading: false,
+          });
+          return { response: response };
+        } catch (error) {
+          set({
+            error: error.message,
+            isVerifyTicketLoading: false,
+          });
         }
       },
     }),
