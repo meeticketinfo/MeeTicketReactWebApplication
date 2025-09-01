@@ -64,7 +64,7 @@ const AmrabadPaymentTransactionsForm = ({
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+          <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-3 py-3">
             <div>
               <label
                 htmlFor="fromDate"

@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import {
   formatToStandardDate,
+  formatToCurrency,
   getCurrentDate,
 } from "../../../../utils/TypographyHelper";
 import Select from "react-select";
@@ -10,7 +11,7 @@ import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/C
 import AmrabadPaymentTransactionsForm from "./AmrabadPaymentTransactionsForm";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
-import viewIcon from "../../../../images/Eye.png";
+import { AiOutlineEye } from "react-icons/ai";
 function AmrabadPaymentTransactionsList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
@@ -18,6 +19,8 @@ function AmrabadPaymentTransactionsList() {
   const [verifyData, setVerifyData] = useState("");
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
+  const [RegenerateTicketOrderId, setRegenerateTicketOrderId] = useState("");
+  const [openRegenerateTicketModal, setOpenRegenerateTicketModal] = useState(false);
   const {
     isAmrabadTransactionPaymentReportsLoading,
     allAmrabadTransactionPaymentReports,
@@ -25,7 +28,9 @@ function AmrabadPaymentTransactionsList() {
     fetchAmrabadVerifyStatus,
     isFetchAmrabadVerifyStatusLoading,
     fetchAmrabadPaymentTransactionRefund,
-    isFetchAmrabadPaymentTransactionRefundLoading
+    isFetchAmrabadPaymentTransactionRefundLoading,
+    fetchAmrabadRegenerateTicket,
+    isFetchAmrabadRegenerateTicketLoading
   } = useAmrabadConsolidatedStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-payment-report-filters")
@@ -60,6 +65,7 @@ function AmrabadPaymentTransactionsList() {
     {
       field: "userName",
       headerName: "User Name",
+      minWidth: 100,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -100,7 +106,7 @@ function AmrabadPaymentTransactionsList() {
       field: "amountPaid",
       headerName: "Amount Paid",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
     },
     {
       field: "bookingType",
@@ -139,41 +145,10 @@ function AmrabadPaymentTransactionsList() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "paymentMode",
+      field: "refund_Intiate_Date",
       headerName: "Refund Initiated Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      headerName: "Initiate Refund",
-      field: "InitiateRefund",
-      maxWidth: 130,
-      //   hide: email === "esdadmin@gmail.com",
-      cellRenderer: (params) => {
-        // console.log("params",params)
-        return (
-          <div className="flex align-center gap-2">
-            <>
-              <button
-                className={` ${
-                 true
-                    ? "bg-green-400"
-                    : "bg-green-100 cursor-not-allowed "
-                } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                // disabled={params.data.refundStatus != "Not Refunded"}
-                onClick={() => {
-                  setRefundOrderId(params.data.transaactionID);
-                  setInitiatRefundModal(true);
-                }}
-              >
-                Initiate
-              </button>
-            </>
-          </div>
-        );
-      },
-      flex: 1,
-      headerClass: "text-blue-v2",
     },
     {
       field: "VerifyTicket",
@@ -207,29 +182,92 @@ function AmrabadPaymentTransactionsList() {
       },
     },
     {
+      field: "VerifyTicket",
+      headerName: "Generate Ticket",
+      maxWidth: 160,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => {
+        const isDisabled = params.data.isTicketGenerated;
+        // || params.data.isTicketGenerated;
+
+        return (
+          <div className="flex justify-center mt-1">
+            <button
+              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                isDisabled
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-v2 text-white hover:bg-blue-v1"
+              }`}
+              onClick={() => {
+                if (!isDisabled) {
+                  setRegenerateTicketOrderId(params.data.transaactionID);
+                  setOpenRegenerateTicketModal(true);
+                }
+              }}
+              disabled={isDisabled}
+            >
+              Generate Ticket 
+            </button>
+          </div>
+        );
+      },
+    },
+    {
+      headerName: "Initiate Refund",
+      field: "InitiateRefund",
+      maxWidth: 130,
+      //   hide: email === "esdadmin@gmail.com",
+      cellRenderer: (params) => {
+        // console.log("params",params)
+        const isDisabled = params.data.canInitiateRefund;
+        return (
+          <div className="flex justify-center mt-1">
+            <>
+              <button
+              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                isDisabled
+                  ? "bg-blue-v2 text-white hover:bg-blue-v1"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+                // disabled={params.data.refundStatus != "Not Refunded"}
+                onClick={() => {
+                  setRefundOrderId(params.data.transaactionID);
+                  setInitiatRefundModal(true);
+                }}
+              >
+                Initiate
+              </button>
+            </>
+          </div>
+        );
+      },
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+    {
       field: "actions",
       headerName: "Actions",
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const orderId = params?.data?.transaactionID;
-        const canView = orderId && orderId !== "Not Generated";
+        const PaytmStatus = params?.data?.actual_PaytmStatus;
+        const canView = PaytmStatus && PaytmStatus === "TXN_SUCCESS" && params?.data?.amountPaid > 0;
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex justify-center mt-1">
             {canView ? (
               <NavLink
                 end
-                to={`/amrabad-admin/ticket-view-details/${orderId}`}
-                className="flex items-center gap-1 text-blue-600 hover:underline"
+                to={`/amrabad-admin/ticket-view-details/${params?.data?.transaactionID}`}
+                className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View ticket"
               >
-                <span className="text-blue-600"><img src={viewIcon} /></span>
-                <span className="text-[#1964FE] font-semibold text-sm">View ticket</span>
+                <span className="text-white text-base"><AiOutlineEye /></span>
+                <span className="text-white">View ticket</span>
               </NavLink>
             ) : (
-              <span className="text-gray-400 text-xs">Not available</span>
+              <span className="text-gray-400">Not available</span>
             )}
           </div>
         );
@@ -385,6 +423,63 @@ function AmrabadPaymentTransactionsList() {
     }
   };
 
+  const handleRegenerateTicket = async () => {
+    try {
+      const res = await fetchAmrabadRegenerateTicket({orderId:RegenerateTicketOrderId});
+      console.log("API Response:", res);
+      setOpenRegenerateTicketModal(false);
+      if (res.response?.status === 200) {
+        const resultMsg = res.response?.data?.message;
+        Swal.fire({
+          title: "Success!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${resultMsg}
+            </div>`,
+          confirmButtonText: "OK",
+          icon: "success",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+            icon: "small-swal-icon",
+          },
+          timer: 2000,
+          width: "360px",
+          showConfirmButton: false,
+        });
+      }
+      else {
+        setOpenRegenerateTicketModal(false);
+        Swal.fire({
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${res.response?.data?.message}
+            </div>`,
+          icon: "info",
+          width: "360px",
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
+      }
+    }
+    catch (err) {
+      console.error("Error during regenerate ticket:", err);
+      setOpenRegenerateTicketModal(false);
+      Swal.fire({
+        title: "Failed!",
+        text: `Regenerate ticket failed. Please try again.`,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+    finally {
+      setOpenRegenerateTicketModal(false);
+    }
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -505,6 +600,50 @@ function AmrabadPaymentTransactionsList() {
             </div>
           </div>
         </PopupModal>
+
+        {/* regenerate ticket modal */}
+        <PopupModal
+          popupModalId="first-modal"
+          isOpen={openRegenerateTicketModal}
+          onClose={() => setOpenRegenerateTicketModal(false)}
+          size="small"
+          overlayClassName="bg-gray-800 bg-opacity-60"
+          contentClassName="bg-white"
+          defaultBodyPadding={true}
+        >
+          <div className="px-10 py-14">
+            <h1 className="text-blue-v1 font-semibold">
+              Are you sure you want to proceed with the regenerate ticket?
+            </h1>
+            <div className="flex justify-center gap-8 mt-4 z-30">
+              <button
+                onClick={async () => {
+                  await handleRegenerateTicket();
+                }}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              >
+                {isFetchAmrabadRegenerateTicketLoading ? (
+                  <span className="px-8">
+                    <l-tailspin
+                      size="15"
+                      stroke="5"
+                      speed="0.9"
+                      color="white"
+                    ></l-tailspin>
+                  </span>
+                ) : (
+                  "Proceed"
+                )}
+              </button>
+              <button
+                onClick={() => setOpenRegenerateTicketModal(false)}
+                className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
+              >
+                Deny
+              </button>
+            </div>
+          </div>
+      </PopupModal>
     </div>
   );
 }

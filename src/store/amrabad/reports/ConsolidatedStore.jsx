@@ -154,4 +154,20 @@ export const useAmrabadConsolidatedStore = create((set) => ({
       throw error;
     }
   },
+  fetchAmrabadRegenerateTicket: async (payload) => {
+    set({ isFetchAmrabadRegenerateTicketLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.AMRABAD_REGENERATE_TICKET}`;
+      const method = "post";
+      const response = await apiService[method](url,payload);
+  
+      set({
+        isFetchAmrabadRegenerateTicketLoading: false,
+      });
+      return { response: response };
+    } catch (error) {
+      set({ isFetchAmrabadRegenerateTicketLoading: false });
+      throw error;
+    }
+  },
 }));

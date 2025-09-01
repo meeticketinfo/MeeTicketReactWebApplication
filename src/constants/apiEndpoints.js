@@ -330,6 +330,7 @@ export const API_ENDPOINTS = {
     GET_REFUND_TRANSACTION_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
     GET_REFUND_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
     GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+    AMRABAD_REGENERATE_TICKET:`${AMRABAD_API_BASE_URL}WebBooking/RegenerateTicket`,
     AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
     AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
     AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
