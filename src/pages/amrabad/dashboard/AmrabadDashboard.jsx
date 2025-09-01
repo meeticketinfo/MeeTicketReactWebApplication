@@ -10,9 +10,8 @@ import AmarabadPckagesNames from "./AmarabadPckagesNames";
 
 function AmrabadDashboard() {
   const {
-    amrabadDashboardData,
-    fetchAmrabadDashboardData,
-    fetchAmrabadDashboardBookingsSummaryData,
+    amrabadDashboardBookingsFullSummaryData,
+    fetchAmrabadDashboardBookingsFullSummaryData,
   } = useAmrabadDashboardStore();
 
   const initialValues = {
@@ -20,12 +19,10 @@ function AmrabadDashboard() {
     toDate: "",
   };
   useEffect(() => {
-    fetchAmrabadDashboardData(initialValues);
-    fetchAmrabadDashboardBookingsSummaryData(initialValues);
+    fetchAmrabadDashboardBookingsFullSummaryData(initialValues);
   }, []);
   const onSubmit = (values) => {
-    fetchAmrabadDashboardData(values);
-    fetchAmrabadDashboardBookingsSummaryData(values);
+    fetchAmrabadDashboardBookingsFullSummaryData(values);
   };
   return (
     <>
@@ -90,14 +87,15 @@ function AmrabadDashboard() {
           </>
         )}
       </Formik>
-      <h3 className="text-xl text-gray-800 mt-2">Packages Summary Count</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-0 mt-2">
+      {/* New Metrics Cards */}
+      <h3 className="text-xl text-gray-800 mt-6 mb-4">Packages Summary Count</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-0 mb-6">
         {/* Total Bookings Card */}
         <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
               <CountUp
-                end={amrabadDashboardData.totalBookings || 0}
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalBookings || 0}
                 duration={2}
                 prefix=""
                 separator=","
@@ -112,30 +110,12 @@ function AmrabadDashboard() {
           </div>
         </div>
 
+        {/* Total Credited Amount Card */}
         <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
               <CountUp
-                end={amrabadDashboardData.totalTicketCount || 0}
-                duration={2}
-                prefix=""
-                separator=","
-              />
-            </div>
-            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
-              <IoTicketSharp className="text-blue-600 text-lg" />
-            </div>
-          </div>
-          <div className="text-xs sm:text-sm text-gray-500 font-medium">
-            Total Tickets
-          </div>
-        </div>
-        {/* Total Amount Card */}
-        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-md sm:text-2xl md:text-xl font-bold text-gray-700 leading-tight">
-              <CountUp
-                end={amrabadDashboardData.totalAmount || 0}
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalCreditedAmount || 0}
                 duration={2}
                 prefix="₹"
                 separator=","
@@ -146,7 +126,67 @@ function AmrabadDashboard() {
             </div>
           </div>
           <div className="text-xs sm:text-sm text-gray-500 font-medium">
-            Total Amount
+            Total Credited Amount
+          </div>
+        </div>
+
+        {/* Total Current Amount Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalCurrentAmount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <FaIndianRupeeSign className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Current Amount
+          </div>
+        </div>
+
+        {/* Total Refunded Amount Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalRefundedAmount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <FaIndianRupeeSign className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Refunded Amount
+          </div>
+        </div>
+
+        {/* Total Refunded Process Amount Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalRefundedProcessAmount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <FaIndianRupeeSign className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Refunded Process Amount
           </div>
         </div>
       </div>

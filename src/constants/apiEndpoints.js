@@ -334,17 +334,6 @@ export const API_ENDPOINTS = {
     AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
     AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
     AMRABAD_AVAILABILITY_OUTER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
-    // Filter endpoints for bookings
-    GET_AMRABAD_BOOKINGS_BY_FILTERS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByFilters`,
-    GET_AMRABAD_BOOKINGS_BY_DATE_RANGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByDateRange`,
-    GET_AMRABAD_BOOKINGS_BY_PAYMENT_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPaymentStatus`,
-    GET_AMRABAD_BOOKINGS_BY_BOOKING_SOURCE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByBookingSource`,
-    GET_AMRABAD_BOOKINGS_BY_PACKAGE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPackage`,
-    GET_AMRABAD_BOOKINGS_BY_HOUSE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByHouse`,
-    GET_AMRABAD_BOOKINGS_BY_MOBILE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByMobile`,
-    GET_AMRABAD_BOOKINGS_BY_ORDER_ID:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByOrderId`,
-    GET_AMRABAD_BOOKINGS_BY_PAYMENT_MODE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByPaymentMode`,
-    GET_AMRABAD_BOOKINGS_BY_BOOKING_MODE:`${AMRABAD_API_BASE_URL}Reports/GetBookingsByBookingMode`,
     
     // Utility endpoints for filter options
     GET_AMRABAD_PACKAGE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPackageOptions`,
@@ -359,6 +348,8 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_DASHBOARD_count:`${AMRABAD_API_BASE_URL}DashBoard/Dashboard`,
       GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetBookingsSummary`,
       GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardRoomBookingSummary`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_FULL_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardFullSummary`,
+
     },
     USER:{
       GET_USER_PACKAGES:`${AMRABAD_API_BASE_URL}WebBooking/GetAllPackages`,
