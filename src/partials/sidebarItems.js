@@ -374,6 +374,11 @@ const sidebarItems = [
         icon: RiPassPendingLine,
         path: "/pending-pass",
       },
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/rtc-total-transaction",
+      },
     ],
   },
   // Tourism
