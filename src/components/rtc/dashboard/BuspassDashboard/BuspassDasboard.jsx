@@ -4,51 +4,35 @@ import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { superballs } from "ldrs";
 import CountUp from "react-countup";
 import { Field, Form, Formik } from "formik";
-import { useRtcDashboardStore } from "../../../../store/rtc/RtcDashboardStore";
 import HyderabadPassesDashboard from "./HyderabadPassesDashboard";
+import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 function BuspassDasboard() {
   superballs.register();
-  const {
-    fetchallPassData,
-    fetchallPassTypeData,
-    fetchallbuspasses,
-    fetchallDashboardReportData,
-  } = useRtcDashboardStore();
-  const [activeTab, setActiveTab] = useState("buspass");
+  const { fetchBuspassDashboard,buspassDashboard,isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
   const initialValues = {
     fromDate: "",
     toDate: "",
   };
 ;
-
   useEffect(() => {
-    fetchallPassData({
+    fetchBuspassDashboard({
       fromDate: "",
       toDate: "",
-    });
-    fetchallPassTypeData({
-      fromDate: "",
-      toDate: "",
-    });
-    fetchallDashboardReportData({
-      fromDate: getCurrentDate(),
-      toDate: getCurrentDate(),
-      passTypeId: "",
-    });
-    fetchallbuspasses();
+    })
   }, []);
 
   // overAll on submit
   const overAllOnSubmit = (values) => {
-    fetchallPassData({ ...values, active: true });
+    fetchBuspassDashboard({ ...values, active: true });
   };
   return (
     <>
+      
       <div className="grid grid-cols-12 gap-6">
      
-        {activeTab === "buspass" && (
-          <>
+
             <div className="col-span-full ">
               <Formik initialValues={initialValues} onSubmit={overAllOnSubmit}>
                 {({ values, setFieldValue }) => (
@@ -128,13 +112,17 @@ function BuspassDasboard() {
                         <h3 className="text-lg font-semibold text-gray-800">
                           Total Count
                         </h3>
-                        <p className="text-sm text-[#F1F6FB]0">
+                        <p className="text-sm text-gray-500">
                           All Passes Count
                         </p>
                       </div>
                     </div>
                     <div className="text-xl font-bold text-gray-800 mb-6">
-                      <CountUp end={12847} duration={2} separator="," />
+                      <CountUp 
+                        end={buspassDashboard?.overallDetails?.totalCount || 0} 
+                        duration={2} 
+                        separator="," 
+                      />
                     </div>
                   </div>
 
@@ -144,7 +132,11 @@ function BuspassDasboard() {
                         ID Cards
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={2156} duration={2} separator="," />
+                        <CountUp 
+                          end={buspassDashboard?.overallDetails?.idCardsCount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
@@ -152,7 +144,11 @@ function BuspassDasboard() {
                         New Passes
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={8234} duration={2} separator="," />
+                        <CountUp 
+                          end={buspassDashboard?.overallDetails?.newPassCount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
@@ -160,55 +156,76 @@ function BuspassDasboard() {
                         Renewal Passes
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={2457} duration={2} separator="," />
+                        <CountUp 
+                          end={buspassDashboard?.overallDetails?.renewalPassCount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                   </div>
                 </div>
 
+                {/* Total Amount Card */}
                 <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
                   <div className="flex justify-between items-center gap-3 mb-0">
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <IoTicketSharp className="w-5 h-5 text-blue-600" />
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <FaIndianRupeeSign className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-800">
-                          Total Count
+                          Total Amount
                         </h3>
-                        <p className="text-sm text-[#F1F6FB]0">
-                          All Passes Count
+                        <p className="text-sm text-gray-500">
+                          All Passes Amount
                         </p>
                       </div>
                     </div>
                     <div className="text-xl font-bold text-gray-800 mb-6">
-                      <CountUp end={12847} duration={2} separator="," />
+                      ₹<CountUp 
+                        end={buspassDashboard?.overallDetails?.totalAmount || 0} 
+                        duration={2} 
+                        separator="," 
+                      />
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                       <span className="text-sm font-medium text-gray-600">
-                        ID Cards
+                        ID Cards 
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={2156} duration={2} separator="," />
+                        ₹<CountUp 
+                          end={buspassDashboard?.overallDetails?.idCardsAmount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                       <span className="text-sm font-medium text-gray-600">
-                        New Passes
+                        New Passes 
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={8234} duration={2} separator="," />
+                        ₹<CountUp 
+                          end={buspassDashboard?.overallDetails?.newPassAmount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                       <span className="text-sm font-medium text-gray-600">
-                        Renewal Passes
+                        Renewal Passes 
                       </span>
                       <span className="text-sm font-semibold text-gray-800">
-                        <CountUp end={2457} duration={2} separator="," />
+                        ₹<CountUp 
+                          end={buspassDashboard?.overallDetails?.renewalPassAmount || 0} 
+                          duration={2} 
+                          separator="," 
+                        />
                       </span>
                     </div>
                   </div>
@@ -218,8 +235,6 @@ function BuspassDasboard() {
             <div className="col-span-full mb-8">
               <HyderabadPassesDashboard />
             </div>
-          </>
-        )}
       </div>
     </>
   );

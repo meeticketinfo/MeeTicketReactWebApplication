@@ -68,7 +68,7 @@ const apiService = {
     formData.append("file", file);
     Object.keys(additionalData).forEach((key) =>
       formData.append(key, additionalData[key])
-    );
+    ); 
 
     return api.post(url, formData, {
       headers: {

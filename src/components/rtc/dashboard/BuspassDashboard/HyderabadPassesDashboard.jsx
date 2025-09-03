@@ -1,36 +1,13 @@
 import React from "react";
 import { FaBus } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
 
 const HyderabadPassesDashboard = () => {
-  // Sample data - replace with actual data from your store
+  const { buspassDashboard } = useBuspassDashboardStore();
   
-  const passData = {
-    ordinary: {
-      totalCount: 2145,
-      totalAmount: 321750,
-      newCount: 2145,
-      newAmount: 321750,
-      renewalCount: 2145,
-      renewalAmount: 321750,
-    },
-    metroExpress: {
-      totalCount: 2145,
-      totalAmount: 321750,
-      newCount: 2145,
-      newAmount: 321750,
-      renewalCount: 2145,
-      renewalAmount: 321750,
-    },
-    metroDeluxe: {
-      totalCount: 2145,
-      totalAmount: 321750,
-      newCount: 2145,
-      newAmount: 321750,
-      renewalCount: 2145,
-      renewalAmount: 321750,
-    },
-  };
+  // Get hyderabadPasses data from the store
+  const hyderabadPasses = buspassDashboard?.hyderabadPasses || [];
 
   const PassCard = ({ title, icon, data, iconStyle = "" }) => (
     <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 w-full lg:flex-1 min-w-0 border border-gray-200">
@@ -103,31 +80,46 @@ const HyderabadPassesDashboard = () => {
     </div>
   );
 
+  // Helper function to get icon style based on pass type
+  const getIconStyle = (index) => {
+    const styles = [
+      "", // No special style for first card
+      "border-b-2 border-gray-400", // Second card
+      "border-b-2 border-gray-400 border-t-2", // Third card
+    ];
+    return styles[index] || "";
+  };
+
   return (
     <div className="w-full">
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Hyderabad Passes</h2>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <PassCard
-          title="Ordinary Bus Pass"
-          icon={<FaBus />}
-          data={passData.ordinary}
-        />
-        <PassCard
-          title="Metro Express Bus Pass"
-          icon={<FaBus />}
-          data={passData.metroExpress}
-          iconStyle="border-b-2 border-gray-400"
-        />
-        <PassCard
-          title="Metro Deluxe Bus Pass"
-          icon={<FaBus />}
-          data={passData.metroDeluxe}
-          iconStyle="border-b-2 border-gray-400 border-t-2"
-        />
-      </div>
+      {hyderabadPasses.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {hyderabadPasses.map((pass, index) => (
+            <PassCard
+              key={pass.passName}
+              title={pass.passName}
+              icon={<FaBus />}
+              data={{
+                totalCount: pass.totalCount,
+                totalAmount: pass.totalAmount,
+                newCount: pass.newCount,
+                newAmount: pass.newAmount,
+                renewalCount: pass.renewalCount,
+                renewalAmount: pass.renewalAmount,
+              }}
+              iconStyle={getIconStyle(index)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="text-gray-500 text-lg">No Hyderabad Pass data available</div>
+        </div>
+      )}
     </div>
   );
 };
