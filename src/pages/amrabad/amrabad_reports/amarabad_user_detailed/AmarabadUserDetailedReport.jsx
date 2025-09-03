@@ -85,6 +85,12 @@ const AmarabadUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
+      field: "name",
+      headerName: "User Name",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
       field: "mobileNumber",
       headerName: "Mobile No.",
       maxWidth: "120",
