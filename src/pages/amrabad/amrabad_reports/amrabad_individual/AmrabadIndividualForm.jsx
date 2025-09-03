@@ -16,6 +16,10 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
   const getNextMonthDate = () => {
     const now = new Date();
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    // Ensure next month date is not the same as current date
+    if (nextMonth.getTime() === now.getTime()) {
+      nextMonth.setDate(nextMonth.getDate() + 1);
+    }
     const year = nextMonth.getFullYear();
     const month = String(nextMonth.getMonth() + 1).padStart(2, "0");
     const day = String(nextMonth.getDate()).padStart(2, "0");
@@ -97,9 +101,29 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
-                    setFieldValue("toDate", fromDateValue);
+                  
+                  // Check if selected fromDate is today
+                  const today = new Date();
+                  const selectedDate = new Date(fromDateValue);
+                  const isToday = today.toDateString() === selectedDate.toDateString();
+                  
+                  if (isToday) {
+                    // If fromDate is today, set toDate to tomorrow
+                    const tomorrow = new Date(selectedDate);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const tomorrowString = tomorrow.toISOString().split('T')[0];
+                    setFieldValue("toDate", tomorrowString);
+                  } else if (new Date(fromDateValue) >= new Date(values.toDate)) {
+                    // For Purchase Date, add 1 day. For Booking Date, allow same day
+                    if (values.typeOfBooking === "Purchase") {
+                      const nextDay = new Date(selectedDate);
+                      nextDay.setDate(nextDay.getDate() + 1);
+                      const nextDayString = nextDay.toISOString().split('T')[0];
+                      setFieldValue("toDate", nextDayString);
+                    } else {
+                      // For Booking Date, set toDate to the same as fromDate
+                      setFieldValue("toDate", fromDateValue);
+                    }
                   }
                 }}
               />
@@ -116,10 +140,34 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
+                min={(() => {
+                  if (!values.fromDate) return getCurrentDate();
+                  const fromDate = new Date(values.fromDate);
+                  // For Purchase Date, min is next day. For Booking Date, min is same day
+                  if (values.typeOfBooking === "Purchase") {
+                    const nextDay = new Date(fromDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    return nextDay.toISOString().split('T')[0];
+                  } else {
+                    // For Booking Date, allow same day
+                    return fromDate.toISOString().split('T')[0];
+                  }
+                })()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
-                  setFieldValue("toDate", toDateValue);
+                  const fromDate = new Date(values.fromDate);
+                  const toDate = new Date(toDateValue);
+                  
+                  // For Purchase Date, prevent same day. For Booking Date, allow same day
+                  if (values.typeOfBooking === "Purchase" && fromDate.toDateString() === toDate.toDateString()) {
+                    // Set toDate to next day after fromDate for Purchase Date
+                    const nextDay = new Date(fromDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    const nextDayString = nextDay.toISOString().split('T')[0];
+                    setFieldValue("toDate", nextDayString);
+                  } else {
+                    setFieldValue("toDate", toDateValue);
+                  }
                 }}
               />
             </div>
@@ -225,7 +273,7 @@ const AmrabadIndividualForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Web">Web</option>
+                <option value="Website">WebSite</option>
                 <option value="Mobile">Mobile</option>
               </Field>
             </div>

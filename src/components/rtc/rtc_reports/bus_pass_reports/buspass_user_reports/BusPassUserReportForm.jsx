@@ -1,9 +1,9 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../utils/Helper";
-import { useAmrabadUserStore } from "../../../../store/amrabad/reports/UserReportStore";
+import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
 
-const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
+const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const {
@@ -74,24 +74,9 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  
-                  // Check if selected fromDate is today
-                  const today = new Date();
-                  const selectedDate = new Date(fromDateValue);
-                  const isToday = today.toDateString() === selectedDate.toDateString();
-                  
-                  if (isToday) {
-                    // If fromDate is today, set toDate to tomorrow
-                    const tomorrow = new Date(selectedDate);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    const tomorrowString = tomorrow.toISOString().slice(0, 16);
-                    setFieldValue("toDate", tomorrowString);
-                  } else if (new Date(fromDateValue) >= new Date(values.toDate)) {
-                    // If fromDate is same as or later than toDate, set toDate to next day after fromDate
-                    const nextDay = new Date(selectedDate);
-                    nextDay.setDate(nextDay.getDate() + 1);
-                    const nextDayString = nextDay.toISOString().slice(0, 16);
-                    setFieldValue("toDate", nextDayString);
+                  if (new Date(fromDateValue) > new Date(values.toDate)) {
+                    // Automatically update toDate if it's earlier than fromDate
+                    setFieldValue("toDate", fromDateValue);
                   }
                 }}
               />
@@ -110,27 +95,9 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
-                  const fromDate = new Date(values.fromDate);
-                  const toDate = new Date(toDateValue);
-                  
-                  // Prevent selecting the same date as fromDate
-                  if (fromDate.toDateString() === toDate.toDateString()) {
-                    // Set toDate to next day after fromDate
-                    const nextDay = new Date(fromDate);
-                    nextDay.setDate(nextDay.getDate() + 1);
-                    const nextDayString = nextDay.toISOString().slice(0, 16);
-                    setFieldValue("toDate", nextDayString);
-                  } else {
-                    setFieldValue("toDate", toDateValue);
-                  }
+                  setFieldValue("toDate", toDateValue);
                 }}
-                min={(() => {
-                  if (!values.fromDate) return "";
-                  const fromDate = new Date(values.fromDate);
-                  const nextDay = new Date(fromDate);
-                  nextDay.setDate(nextDay.getDate() + 1);
-                  return nextDay.toISOString().slice(0, 16);
-                })()}
+                min={values.fromDate}
               />
             </div>
             {/* mobile number */}
@@ -180,4 +147,4 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
   );
 };
 
-export default AmrabadUserReportForm;
+export default BusPassUserReportForm;

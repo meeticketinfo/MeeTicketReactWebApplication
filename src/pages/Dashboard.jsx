@@ -5,9 +5,10 @@ import useAuthStore from "../store/authStore";
 import MetroDashboard from "../components/metro_reports/MetroDashboard";
 import { useNavigate } from "react-router-dom";
 import ToursimDashboard from "../components/tourism/ToursimDashboard";
-import RtcDasboard from "../components/rtc/RtcDasboard";
 import AmrabadDashboard from "./amrabad/dashboard/AmrabadDashboard";
 import SalarjangMuseumDashboard from "./park_admin/SalarjangMuseumDashboard";
+import BuspassDasboard from "../components/rtc/dashboard/BuspassDashboard/BuspassDasboard";
+import MainDashboard from "../components/rtc/dashboard/MainDashboard/mainDashboard";
 
 function Dashboard() {
   const { roleDetails, decodedTokenData } = useAuthStore();
@@ -20,7 +21,7 @@ function Dashboard() {
     if (roleDetails?.name === "ROLE_METROADMIN") {
       return <MetroDashboard />;
     } else if (roleDetails?.name === "Role_RTCADMIN") {
-      return <RtcDasboard />;
+      return <MainDashboard />;
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
     } else if (roleDetails?.name === "Role_AmrabadAdmin") {
