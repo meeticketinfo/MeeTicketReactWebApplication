@@ -28,7 +28,8 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
   const getNextDayDate = (dateString) => {
     if (!dateString) return dateString;
     const date = new Date(dateString);
-    date.setDate(date.getDate() + 2);
+    // Ensure next day date is not the same as the input date
+    date.setDate(date.getDate() + 1);
     return date.toISOString().split('T')[0];
   };
 
@@ -105,8 +106,20 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
+                  
+                  // Check if selected fromDate is today
+                  const today = new Date();
+                  const selectedDate = new Date(fromDateValue);
+                  const isToday = today.toDateString() === selectedDate.toDateString();
+                  
+                  if (isToday) {
+                    // If fromDate is today, set toDate to tomorrow
+                    const tomorrow = new Date(selectedDate);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const tomorrowString = tomorrow.toISOString().split('T')[0];
+                    setFieldValue("toDate", tomorrowString);
+                  } else if (new Date(fromDateValue) >= new Date(values.toDate)) {
+                    // For availability reports, allow same day selection
                     setFieldValue("toDate", fromDateValue);
                   }
                 }}
@@ -124,9 +137,18 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
+                min={(() => {
+                  if (!values.fromDate) return getCurrentDate();
+                  const fromDate = new Date(values.fromDate);
+                  // For availability reports, allow same day selection
+                  return fromDate.toISOString().split('T')[0];
+                })()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
+                  const fromDate = new Date(values.fromDate);
+                  const toDate = new Date(toDateValue);
+                  
+                  // For availability reports, allow same day selection
                   setFieldValue("toDate", toDateValue);
                 }}
               />
