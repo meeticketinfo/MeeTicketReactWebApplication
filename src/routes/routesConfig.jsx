@@ -160,6 +160,7 @@ import MainReport from "../pages/admin_monthly_reports/MainReport";
 import BusPassUserReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_reports/BusPassUserReport";
 import BusPassUserDetailedReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserDetailedReport";
 import BusPassUserTransactionsOrderTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserTransactionsOrderTracker";
+import BusPassMainTotalTransactionReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/BusPassMainTotalTransactionReport";
 import MainIntercityTotalTransaction from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/mainIntercityTotalTransactionReport";
 import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
 import IntercityNotGenerated from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
@@ -476,7 +477,10 @@ export const routes = [
   },
 
   // rtc Routs
-
+  {
+    path: "/bus-pass-total-transaction",
+    element: <ProtectedRoute element={<BusPassMainTotalTransactionReport />} />,
+  },
   {
     path: "/day-pass",
     element: <ProtectedRoute element={<DayPassReport />} />,

@@ -379,6 +379,11 @@ const sidebarItems = [
         icon: MdEventAvailable,
         path: "/bus-pass-user-report",
       },
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-total-transaction",
+      },
     ],
   },
   //intercity
