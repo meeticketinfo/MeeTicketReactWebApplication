@@ -134,6 +134,7 @@ export const RtcAdmin = [
   "mst-pass",
   "express-pass",
   "student-pass",
+  "intercity-total-transaction",
   // "pending-pass",
 ];
 
@@ -155,4 +156,8 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
+];
+export const Intercity = [
+  "dashboard",
+  "intercity-total-transaction",
 ];
