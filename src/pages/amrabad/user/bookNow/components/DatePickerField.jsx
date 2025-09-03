@@ -11,7 +11,8 @@ const DatePickerField = ({
   isDateAvailable,
   startDate,
   endDate,
-  isCheckout = false
+  isCheckout = false,
+  isSingleMonth = false
 }) => {
   const getDayClassName = (date) => {
     if (isCheckout) {
@@ -79,7 +80,7 @@ const DatePickerField = ({
             filterDate={filterDate}
             renderDayContents={renderDayContents}
             placeholderText={placeholderText}
-            showDisabledMonthNavigation
+            showDisabledMonthNavigation={!isSingleMonth}
             calendarStartDay={0}
             formatWeekDay={(nameOfDay) => nameOfDay.slice(0, 3).toUpperCase()}
             toggleCalendarOnIconClick={true}

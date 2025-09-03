@@ -6,21 +6,24 @@ import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
 
 // Main Booking Form Component
-export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
+export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate, isSingleMonth }) => {
   const { GetCalendar, isCalendarLoading, fetchCalendar } = useUserBookingStore();
 
   useEffect(() => {
     fetchCalendar(packageId, houseId);
   }, [packageId, houseId]);
 
-  const [startDate, setStartDate] = useState(new Date(fromDate));
+  const [startDate, setStartDate] = useState(() => {
+    return fromDate ? new Date(fromDate) : new Date();
+  });
   const [endDate, setEndDate] = useState(() => {
-    const tomorrow = new Date(toDate);
     if (toDate) {
       return new Date(toDate);
     }
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow;
+    // If no toDate provided, set to next day from startDate
+    const nextDay = fromDate ? new Date(fromDate) : new Date();
+    nextDay.setDate(nextDay.getDate() + 1);
+    return nextDay;
   });
   const [houseCount, setHouseCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState("");
@@ -76,6 +79,12 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   }, {});
 
   const getLocalDateString = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      console.error('Invalid date provided to getLocalDateString:', date);
+      return null;
+    }
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -202,6 +211,12 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const maxAvailableHouses = getMaxAvailableHouses(startDate, endDate);
 
   const handleCheckInDateChange = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      console.error('Invalid check-in date provided:', date);
+      return;
+    }
+    
     setStartDate(date);
 
     const nextDay = new Date(date);
@@ -219,6 +234,12 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   const handleCheckOutDateChange = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      console.error('Invalid check-out date provided:', date);
+      return;
+    }
+    
     setEndDate(date);
 
     // Reset house count if it exceeds new maximum
@@ -232,13 +253,31 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   const isDateAvailable = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      return false;
+    }
+    
     const dateString = getLocalDateString(date);
+    if (!dateString) {
+      return false;
+    }
+    
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
     return isAvailable;
   };
 
   const renderDayContents = (day, date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      return <div className="text-gray-400">{day}</div>;
+    }
+    
     const dateString = getLocalDateString(date);
+    if (!dateString) {
+      return <div className="text-gray-400">{day}</div>;
+    }
+    
     const dayData = availableDatesMapWithFallback[dateString];
 
     if (!dayData) {
@@ -269,7 +308,16 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   const filterDate = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      return false;
+    }
+    
     const dateString = getLocalDateString(date);
+    if (!dateString) {
+      return false;
+    }
+    
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
 
     if (calendarData && calendarData.length > 0) {
@@ -282,6 +330,11 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   const filterCheckoutDate = (date) => {
+    // Validate date before processing
+    if (!date || isNaN(date.getTime())) {
+      return false;
+    }
+    
     if (date <= startDate) {
       return false;
     }
@@ -293,6 +346,10 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     }
 
     const dateString = getLocalDateString(date);
+    if (!dateString) {
+      return false;
+    }
+    
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
 
     return isAvailable;
@@ -324,6 +381,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           startDate={startDate}
           endDate={endDate}
           isCheckout={false}
+          isSingleMonth={isSingleMonth}
         />
 
         {/* Check-out Date */}
@@ -339,6 +397,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           startDate={startDate}
           endDate={endDate}
           isCheckout={true}
+          isSingleMonth={isSingleMonth}
         />
 
         {/* Number of Houses */}

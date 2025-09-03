@@ -142,10 +142,10 @@ const AmarabadBookingDetails = () => {
                     toast.success("Booking completed successfully!");
                     navigate(`/amrabad-resort/confirmed-details/${orderId}`);
                 } else {
-                    toast.error(bookingResponse.data?.message || bookingResponse.message || "Failed to complete booking");
+                    toast.error(bookingResponse.response?.data?.message || bookingResponse.message || "Failed to complete booking");
                 }
             } else {
-                toast.error(transactionResponse.data?.message || transactionResponse.message || "Transaction failed");
+                toast.error(transactionResponse.response?.data?.message || transactionResponse.message || "Transaction failed");
             }
         } catch (error) {
             console.error("Booking error:", error);
