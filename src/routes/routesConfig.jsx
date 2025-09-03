@@ -157,6 +157,7 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
+import BusPassMainTotalTransactionReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/BusPassMainTotalTransactionReport";
 import MainIntercityTotalTransaction from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/mainIntercityTotalTransactionReport";
 import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
 import IntercityNotGenerated from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
@@ -473,7 +474,10 @@ export const routes = [
   },
 
   // rtc Routs
-
+  {
+    path: "/bus-pass-total-transaction",
+    element: <ProtectedRoute element={<BusPassMainTotalTransactionReport />} />,
+  },
   {
     path: "/day-pass",
     element: <ProtectedRoute element={<DayPassReport />} />,
