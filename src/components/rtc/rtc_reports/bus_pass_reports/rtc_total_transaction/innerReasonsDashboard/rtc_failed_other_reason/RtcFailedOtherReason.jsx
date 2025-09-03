@@ -3,70 +3,72 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
-import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
-
-
 import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
-import { getStartOfCurrentDay,getEndOfCurrentDay } from "../../../../../../../utils/Helper";
+import {
+  getStartOfCurrentDay,
+  getEndOfCurrentDay,
+} from "../../../../../../../utils/Helper";
 import Breadcrumb from "../../../../../../Breadcrumb";
+import BusPassFailedOtherReasonChart from "../../charts/BusPassFailedOtherReasonChart";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
-const FailedOtherReason = () => {
+const RtcFailedOtherReason = () => {
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-  busPassTotalCommonStore();
-  // const {
-  //   fetchOtherReasonsPieChart,
-  //   OtherReasonsPieChartData,
-  //   isOtherReasonsPieChartLoading,
-  // } = useMetroTotalTransactionsStore();
-  // console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
+    busPassTotalCommonStore();
+  const {
+    fetchRtcOtherReasonsPieChart,
+    RtcOtherReasonsPieChartData,
+    RtcisOtherReasonsPieChartLoading,
+    AllBusPassesData,
+    fetchAllBusPasses,
+  } = useBusPassTotalTransactionStore();
+  console.log("RtcOtherReasonsPieChartData", RtcOtherReasonsPieChartData);
 
-  // const filtersToUse = {
-  //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-  //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-  //   mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+  const filtersToUse = {
+    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+    BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
+  };
 
-  // };
-
-  // useEffect(() => {
-  //   fetchOtherReasonsPieChart(filtersToUse);
-  // }, []);
+    useEffect(() => {
+      fetchRtcOtherReasonsPieChart(filtersToUse);
+      fetchAllBusPasses();
+    }, []);
 
   const initialValues = {
-    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate ?? outerFilters.toDate )?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber )?? "",
-    BusPassType: (innerFilters.BusPassType ?? outerFilters.BusPassType )?? "",
+    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    // fetchOtherReasonsPieChart(values);
+    fetchRtcOtherReasonsPieChart(values);
   };
-  
-    const totalCount = Array.isArray(OtherReasonsPieChartData)
-  ? OtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
-  : 0;
-     const breadcrumbItems = [
+
+    const totalCount = Array.isArray(RtcOtherReasonsPieChartData)
+      ? RtcOtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
+      : 0;
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions ',
+      label: "Total Transactions ",
       path: `/bus-pass-total-transaction`,
-      onclick:()=>resetInnerFilters(),
+      onclick: () => resetInnerFilters(),
     },
     {
-      label: 'Failed (Other Reasons)',  
-      isLast: true
-    }
+      label: "Failed (Other Reasons)",
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-          <div className="mb-6">
-          <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
@@ -144,30 +146,31 @@ const FailedOtherReason = () => {
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   />
                 </div>
-              
-                  {/* bus pass type */}
-            <div>
-              <label
-                htmlFor="BusPassType"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Bus Pass Type
-              </label>
-              <Field
-                as="select"
-                name="BusPassType"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("BusPassType", e.target.value);
-                }}
-              >
-                <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
-                
-              </Field>
-            </div>
+
+                {/* bus pass type */}
+                <div>
+                  <label
+                    htmlFor="BusPassType"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Bus Pass Type
+                  </label>
+                  <Field
+                    as="select"
+                    name="BusPassType"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onChange={(e) => {
+                      setFieldValue("BusPassType", e.target.value);
+                    }}
+                  >
+                    <option value="">All</option>
+                    {
+                      AllBusPassesData?.map((item) => (
+                        <option value={item.passTypeId}>{item.passTypeName}</option>
+                      ))
+                    }
+                  </Field>
+                </div>
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"
@@ -187,11 +190,12 @@ const FailedOtherReason = () => {
                         BusPassType: "",
                       });
                       // resetInnerFilters();
-                      // fetchOtherReasonsPieChart({
-                      //   fromDate: endOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      // });
+                      fetchRtcOtherReasonsPieChart({
+                        fromDate: endOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        BusPassType: "",
+                      });
                     }}
                   >
                     Reset
@@ -206,13 +210,13 @@ const FailedOtherReason = () => {
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                 {/* <Loader/> */}
 
-                {isOtherReasonsPieChartLoading && (
+                {RtcisOtherReasonsPieChartLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
-                <FailedOtherReasonChart
-                  data={totalCount !== 0 ? OtherReasonsPieChartData : []}
+                <BusPassFailedOtherReasonChart
+                  data={totalCount !== 0 ? RtcOtherReasonsPieChartData : []}
                   title="Failed Other Reasons"
                   angleKey="subCategoryCount"
                   calloutLabelKey="subCategory"
@@ -226,4 +230,4 @@ const FailedOtherReason = () => {
   );
 };
 
-export default FailedOtherReason;
+export default RtcFailedOtherReason;

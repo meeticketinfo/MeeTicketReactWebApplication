@@ -191,6 +191,9 @@ export const API_ENDPOINTS = {
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
+    BUS_PASS: {
+      GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    },
   },
   REPORTS: {
     BOOKING_REPORTS: {
@@ -236,6 +239,14 @@ export const API_ENDPOINTS = {
       GET_STUDENT_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentApplicationDetails`,
       GET_PENDING_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentPendingApplicationDetails`,
       UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}RTCDashboard/updateStudentApplicationStatus`,
+      RTC_TOTAL_TRANSACTIONS_REPORT:{
+        GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionOuterReport`,
+        GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionInnerReport`,
+        GET_RTC_OTHER_REASON_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureDueToOtherReasonsReport`,
+        GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
+        GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
+        GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
+      }
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,

@@ -88,7 +88,7 @@ const BusPassNotGeneratedChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/metro-not-generated-report"
+            to="/bus-pass-not-generated-report"
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -134,7 +134,7 @@ const BusPassNotGeneratedChart = ({
                           }}
                         />
                         <Link
-                          to="/metro-not-generated-report"
+                          to="/bus-pass-not-generated-report"
                           className="text-[#000] hover:underline text-xs"
                           onClick={() => {
                             setInnerFilters({
@@ -150,7 +150,7 @@ const BusPassNotGeneratedChart = ({
                     </td>
                     <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                       <Link
-                        to="/metro-not-generated-report"
+                        to="/bus-pass-not-generated-report"
                         onClick={() => {
                           setInnerFilters({
                             ...innerFilters,
