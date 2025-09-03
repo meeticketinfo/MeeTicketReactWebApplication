@@ -374,6 +374,31 @@ const sidebarItems = [
         icon: RiPassPendingLine,
         path: "/pending-pass",
       },
+      {
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/bus-pass-user-report",
+      },
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-total-transaction",
+      },
+    ],
+  },
+  //intercity
+  {
+    title: "Intercity Reports",
+    icon: FaBus,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/intercity-total-transaction",
+      },
     ],
   },
   // Tourism
