@@ -130,10 +130,11 @@ export const SupportAdmin = [
 export const RtcAdmin = [
   "dashboard",
   // "day-pass",
-  "ordinary-pass",
-  "mst-pass",
-  "express-pass",
-  "student-pass",
+  // "ordinary-pass",
+  // "mst-pass",
+  // "express-pass",
+  // "student-pass",
+  "bus-pass-user-report",
   // "pending-pass",
 ];
 

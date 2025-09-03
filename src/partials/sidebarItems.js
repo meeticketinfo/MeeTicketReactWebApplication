@@ -374,6 +374,11 @@ const sidebarItems = [
         icon: RiPassPendingLine,
         path: "/pending-pass",
       },
+      {
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/bus-pass-user-report",
+      },
     ],
   },
   // Tourism
