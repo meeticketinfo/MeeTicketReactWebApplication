@@ -377,7 +377,7 @@ const sidebarItems = [
       {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
-        path: "/rtc-total-transaction",
+        path: "/bus-pass-total-transaction",
       },
     ],
   },

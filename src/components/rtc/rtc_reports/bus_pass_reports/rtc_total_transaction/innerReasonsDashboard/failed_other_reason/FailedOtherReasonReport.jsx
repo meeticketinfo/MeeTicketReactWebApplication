@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect, useState } from "react"; 
 import { Link } from "react-router-dom";
-
 import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
-
+import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../utils/Helper";
+import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-
-import MetroNotGeneratedReportForm from "./MetroNotGeneratedReportForm";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 
-const MetroNotGeneratedReport = () => {
+const FailedOtherReasonReport = () => {
+  const startOfDay = getStartOfCurrentDay();
+      const endOfDay = getEndOfCurrentDay();
   const {
     innerFilters,
     outerFilters,
@@ -31,21 +29,20 @@ const MetroNotGeneratedReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
+
   useEffect(() => {
     fetchMetroTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-      phoneNumber:
-        (innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
+      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
+      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
+      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
+      BusPassType: (deepInnerFilters.BusPassType) ?? "",
       status: innerFilters.status ?? "",
       subCategory: innerFilters.subCategory ?? "",
-
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
+
   const columnDefs = [
     {
       headerName: "S.No",
@@ -166,39 +163,41 @@ const MetroNotGeneratedReport = () => {
       ),
     },
   ];
-  const breadcrumbItems = [
+    const breadcrumbItems = [
     {
       label: 'Total Transactions',
-      path: `/metro-total-transaction`
+      path: `/bus-pass-total-transaction`
     },
      {
-      label: 'Payment Successful but Ticket not Generated',  
-      path: `/metro-not-generated`,
-       onclick:()=>{resetDeepInnerFilters()
+      label: 'Failed (Other Reasons)',  
+      path: `/metro-failed-other-reason`,
+      onclick:()=>{resetDeepInnerFilters()
         
       },
     },
     {
-      label: 'Payment Successful but Ticket not Generated Report',  
+      label: 'Failed (Other Reasons) Report',  
       isLast: true
     }
   ];
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
+         <div className="mb-6">
+          <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
           />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Successful but Ticket not Generated  Report
+              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-not-generated"
+              to="/metro-failed-other-reason"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -210,7 +209,7 @@ const MetroNotGeneratedReport = () => {
         </div>
 
         <div>
-          <MetroNotGeneratedReportForm
+          <FailedOtherReasonReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
@@ -237,4 +236,4 @@ const MetroNotGeneratedReport = () => {
   );
 };
 
-export default MetroNotGeneratedReport;
+export default FailedOtherReasonReport;

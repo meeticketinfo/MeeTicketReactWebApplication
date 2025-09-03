@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
 import { toast } from "react-toastify";
-import apiService from "../../services/apiService";
-import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+// import apiService from "../../services/apiService";
+// import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 
-export const useRtcTotalTransactionStore = create((set) => ({
+export const useBusPassTotalTransactionStore = create((set) => ({
   // by Reason
   // AmarabadTransactionByReasonData: [],
   // isAmarabadTransactionByReasonLoading: false,

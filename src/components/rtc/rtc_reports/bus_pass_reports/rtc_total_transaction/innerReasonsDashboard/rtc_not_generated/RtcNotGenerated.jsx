@@ -1,42 +1,44 @@
 import React, { useEffect } from "react";
-import AdminLayout from "../../../../../layouts/AdminLayout";
+
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
 
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+
+
 import MetroNotGeneratedChart from "../../charts/MetroNotGeneratedChart";
-import Breadcrumb from "../../../../../components/Breadcrumb";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import Breadcrumb from "../../../../../../Breadcrumb";
 
-const MetroFailedGateway = () => {
+
+const RtcNotGenerated = () => {
   const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-    useMetroTotalCommonStore();
-  const {
-    fetchTicketNotGeneratedPieChart,
-    TicketNotGeneratedPieChartData,
-    isTicketNotGeneratedPieChartLoading,
-  } = useMetroTotalTransactionsStore();
-  console.log("TicketNotGeneratedPieChartData", TicketNotGeneratedPieChartData);
+  busPassTotalCommonStore();
+  
+ 
   useEffect(() => {
-    fetchTicketNotGeneratedPieChart({
-      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-      mobileNumber:
-        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    });
+    // fetchTicketNotGeneratedPieChart({
+    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+    //   mobileNumber:
+    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+    //   BusPassType:
+    //     (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
+    // });
   }, []);
 
   const initialValues = {
     fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
     toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
     mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+    BusPassType: (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    fetchTicketNotGeneratedPieChart(values);
+    // fetchTicketNotGeneratedPieChart(values);
   };
   const totalCount = Array.isArray(TicketNotGeneratedPieChartData)
     ? TicketNotGeneratedPieChartData.reduce(
@@ -48,7 +50,7 @@ const MetroFailedGateway = () => {
       const breadcrumbItems = [
     {
       label: 'Total Transactions ',
-      path: `/metro-total-transaction`,
+      path: `/bus-pass-total-transaction`,
       onclick:()=>resetInnerFilters(),
     },
     {
@@ -72,7 +74,7 @@ const MetroFailedGateway = () => {
           </div>
           <div className="">
             <Link
-              to="/metro-total-transaction"
+              to="/bus-pass-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -140,6 +142,30 @@ const MetroFailedGateway = () => {
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   />
                 </div>
+
+                  {/* bus pass type */}
+            <div>
+              <label
+                htmlFor="BusPassType"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Bus Pass Type
+              </label>
+              <Field
+                as="select"
+                name="BusPassType"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("BusPassType", e.target.value);
+                }}
+              >
+                <option value="">All</option>
+                <option value="Single">Single</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+                
+              </Field>
+            </div>
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"
@@ -156,13 +182,15 @@ const MetroFailedGateway = () => {
                         fromDate: startOfDay,
                         toDate: startOfDay,
                         mobileNumber: "",
+                        BusPassType: "",
                       });
                       // resetInnerFilters();
-                      fetchTicketNotGeneratedPieChart({
-                        fromDate: startOfDay,
-                        toDate: endOfDay,
-                        mobileNumber: "",
-                      });
+                      // fetchTicketNotGeneratedPieChart({
+                      //   fromDate: startOfDay,
+                      //   toDate: endOfDay,
+                      //   mobileNumber: "",
+                      //   BusPassType: "",
+                      // });
                     }}
                   >
                     Reset
@@ -196,4 +224,4 @@ const MetroFailedGateway = () => {
   );
 };
 
-export default MetroFailedGateway;
+export default RtcNotGenerated;

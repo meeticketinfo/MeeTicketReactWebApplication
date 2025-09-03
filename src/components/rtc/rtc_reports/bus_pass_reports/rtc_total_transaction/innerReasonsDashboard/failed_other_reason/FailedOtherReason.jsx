@@ -1,77 +1,82 @@
 import React, { useEffect } from "react";
-import AdminLayout from "../../../../../layouts/AdminLayout";
+
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import MetroFailedGatewayChart from "../../charts/MetroFailedGatewayChart";
-import Breadcrumb from "../../../../../components/Breadcrumb";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 
-const MetroFailedGateway = () => {
+import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
+
+
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import { getStartOfCurrentDay,getEndOfCurrentDay } from "../../../../../../../utils/Helper";
+import Breadcrumb from "../../../../../../Breadcrumb";
+
+const FailedOtherReason = () => {
   const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-    useMetroTotalCommonStore();
-  const {
-    fetchGateWayPieChart,
-    PaymentGatewayPieChartData,
-    isPaymentGatewayPieChartLoading,
-  } = useMetroTotalTransactionsStore();
-  console.log("PaymentGatewayPieChartData", PaymentGatewayPieChartData);
-  useEffect(() => {
-    fetchGateWayPieChart({
-      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ??startOfDay,
-      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-      mobileNumber:
-        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    });
-  }, []);
+  busPassTotalCommonStore();
+  // const {
+  //   fetchOtherReasonsPieChart,
+  //   OtherReasonsPieChartData,
+  //   isOtherReasonsPieChartLoading,
+  // } = useMetroTotalTransactionsStore();
+  // console.log("OtherReasonsPieChartData", OtherReasonsPieChartData);
+
+  // const filtersToUse = {
+  //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+  //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+  //   mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+
+  // };
+
+  // useEffect(() => {
+  //   fetchOtherReasonsPieChart(filtersToUse);
+  // }, []);
 
   const initialValues = {
     fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+    toDate: (innerFilters.toDate ?? outerFilters.toDate )?? endOfDay,
+    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber )?? "",
+    BusPassType: (innerFilters.BusPassType ?? outerFilters.BusPassType )?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    fetchGateWayPieChart(values);
+    // fetchOtherReasonsPieChart(values);
   };
   
-
-    const totalCount = Array.isArray(PaymentGatewayPieChartData)
-  ? PaymentGatewayPieChartData.reduce((sum, item) => sum + item.count, 0)
+    const totalCount = Array.isArray(OtherReasonsPieChartData)
+  ? OtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
   : 0;
-
-       const breadcrumbItems = [
+     const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/metro-total-transaction`,
+      label: 'Total Transactions ',
+      path: `/bus-pass-total-transaction`,
       onclick:()=>resetInnerFilters(),
     },
     {
-      label: 'Failed (Payment Gateway)',  
+      label: 'Failed (Other Reasons)',  
       isLast: true
     }
   ];
-
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
+          <div className="mb-6">
+          <Breadcrumb 
             customItems={breadcrumbItems}
             className="mb-4"
           />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Payment Gateway)
+              Failed (Other Reasons)
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-total-transaction"
+              to="/bus-pass-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -139,6 +144,30 @@ const MetroFailedGateway = () => {
                     className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   />
                 </div>
+              
+                  {/* bus pass type */}
+            <div>
+              <label
+                htmlFor="BusPassType"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Bus Pass Type
+              </label>
+              <Field
+                as="select"
+                name="BusPassType"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("BusPassType", e.target.value);
+                }}
+              >
+                <option value="">All</option>
+                <option value="Single">Single</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+                
+              </Field>
+            </div>
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"
@@ -152,16 +181,17 @@ const MetroFailedGateway = () => {
                     className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                     onClick={() => {
                       setValues({
-                        fromDate: startOfDay,
+                        fromDate: endOfDay,
                         toDate: endOfDay,
                         mobileNumber: "",
+                        BusPassType: "",
                       });
                       // resetInnerFilters();
-                      fetchGateWayPieChart({
-                        fromDate: startOfDay,
-                        toDate: endOfDay,
-                        mobileNumber: "",
-                      });
+                      // fetchOtherReasonsPieChart({
+                      //   fromDate: endOfDay,
+                      //   toDate: endOfDay,
+                      //   mobileNumber: "",
+                      // });
                     }}
                   >
                     Reset
@@ -170,21 +200,22 @@ const MetroFailedGateway = () => {
               </Form>
             )}
           </Formik>
+
           <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
             <div className="flex">
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                 {/* <Loader/> */}
 
-                {isPaymentGatewayPieChartLoading && (
+                {isOtherReasonsPieChartLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroFailedGatewayChart
-                  data={totalCount !== 0 ? PaymentGatewayPieChartData : []}
-                  title="Failed (Payment Gateway)"
-                  angleKey="reasonCount"
-                  calloutLabelKey="failureReason"
+                <FailedOtherReasonChart
+                  data={totalCount !== 0 ? OtherReasonsPieChartData : []}
+                  title="Failed Other Reasons"
+                  angleKey="subCategoryCount"
+                  calloutLabelKey="subCategory"
                 />
               </div>
             </div>
@@ -195,4 +226,4 @@ const MetroFailedGateway = () => {
   );
 };
 
-export default MetroFailedGateway;
+export default FailedOtherReason;

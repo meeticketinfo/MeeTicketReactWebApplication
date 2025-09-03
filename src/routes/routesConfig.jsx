@@ -157,7 +157,7 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
-import RtcMainTotalTransactionReport from "../components/rtc/rtc_reports/rtc_total_transaction/RtcMainTotalTransactionReport";
+import BusPassMainTotalTransactionReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/BusPassMainTotalTransactionReport";
 
 export const routes = [
   {
@@ -472,8 +472,8 @@ export const routes = [
 
   // rtc Routs
   {
-    path: "/rtc-total-transaction",
-    element: <ProtectedRoute element={<RtcMainTotalTransactionReport />} />,
+    path: "/bus-pass-total-transaction",
+    element: <ProtectedRoute element={<BusPassMainTotalTransactionReport />} />,
   },
   {
     path: "/day-pass",

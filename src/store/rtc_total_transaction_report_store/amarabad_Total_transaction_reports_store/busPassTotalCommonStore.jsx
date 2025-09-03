@@ -1,33 +1,28 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const RtcTotalCommonStore = create(
+const busPassTotalCommonStore = create(
   persist(
     (set, get) => ({
       outerFilters: {
         fromDate: "",
         toDate: "",
         status: "",
-        package: "",
-        house: "",
         mobileNumber: "",
+        BusPassType: "",
       },
       innerFilters: {
         fromDate: "",
         toDate: "",
-        package: "",
-        house: "",
+        BusPassType: "",
         mobileNumber: "",
         status: "",
-        subCategory: "",
       },
       deepInnerFilters: {
         startDate: "",
         endDate: "",
-        package: "",
-        house: "",
+        BusPassType: "",
         mobileNumber: "",
-        bookingSource: "",
         status: "",
       },
 
@@ -45,8 +40,7 @@ const RtcTotalCommonStore = create(
             fromDate: "",
             toDate: "",
             status: "",
-            package: "",
-            house: "",
+            BusPassType: "",
             mobileNumber: "",
             ...newFilters,
           },
@@ -65,11 +59,9 @@ const RtcTotalCommonStore = create(
           innerFilters: { 
             fromDate: "",
             toDate: "",
-            package: "",
-            house: "",
+            BusPassType: "",
             mobileNumber: "",
             status: "",
-            subCategory: "",
             ...newFilters,
           },
         }),
@@ -87,20 +79,18 @@ const RtcTotalCommonStore = create(
           deepInnerFilters: {
             startDate: "",
             endDate: "",
-            package: "",
-            house: "",
+            BusPassType: "",
             mobileNumber: "",
-            bookingSource: "",
             status: "",
             ...newFilters,
           },
         }),
     }),
     {
-      name: "amrabad-total-transaction-filters",
+      name: "bus-pass-total-transaction-filters",
       getStorage: () => localStorage,
     }
   )
 );
 
-export default RtcTotalCommonStore;
+export default busPassTotalCommonStore;

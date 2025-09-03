@@ -17,7 +17,7 @@ const FailedOtherReasonReportForm = ({
     startDate: (deepInnerFilters.startDate??innerFilters.fromDate) ?? startOfDay,
     endDate: (deepInnerFilters.endDate??innerFilters.toDate) ?? endOfDay,
     phoneNumber: (deepInnerFilters.mobileNumber??innerFilters.mobileNumber) ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode??"",
+    BusPassType: deepInnerFilters.BusPassType??"",
   };
 
   const onSubmit = (values) => {
@@ -103,27 +103,26 @@ const FailedOtherReasonReportForm = ({
                 }}
               />
             </div>
-            {/*Payment Mode */}
             <div>
               <label
-                htmlFor="PaymentMode"
+                htmlFor="BusPassType"
                 className="block text-xs font-medium text-gray-700"
               >
-                Payment Mode
+                Bus Pass Type
               </label>
               <Field
                 as="select"
-                name="PaymentMode"
+                name="BusPassType"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
-                  setFieldValue("PaymentMode", e.target.value);
+                  setFieldValue("BusPassType", e.target.value);
                 }}
               >
-                <option value="">Select Mode</option>
-                <option value="upi">UPI</option>
-                <option value="creditCard">Credit Card</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="netBanking">Net Banking</option>
+                <option value="">All</option>
+                <option value="Single">Single</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+                
               </Field>
             </div>
             <div className="flex items-end">

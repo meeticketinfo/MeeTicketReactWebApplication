@@ -1,9 +1,11 @@
 import React from 'react'
+import AdminLayout from '../../../../../layouts/AdminLayout'
+import BusPassOuterTotalTransactionReport from './outer_report/BusPassOuterTotalTransactionReport'
 // import OuterTotalTransactionReport from './outer_report/OuterTotalTransactionReport'
-import AdminLayout from '../../../../layouts/AdminLayout'
 
 
-const RtcMainTotalTransactionReport = () => {
+
+const BusPassMainTotalTransactionReport = () => {
   return (
      <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
@@ -14,10 +16,10 @@ const RtcMainTotalTransactionReport = () => {
             </h1>
           </div>
         </div>
-        {/* <OuterTotalTransactionReport/> */}
+        <BusPassOuterTotalTransactionReport/>
       </div>
     </AdminLayout>
   )
 }
 
-export default RtcMainTotalTransactionReport
+export default BusPassMainTotalTransactionReport
