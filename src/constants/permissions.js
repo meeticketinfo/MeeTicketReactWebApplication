@@ -157,7 +157,3 @@ export const Amrabad = [
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
 ];
-export const Intercity = [
-  "dashboard",
-  "intercity-total-transaction",
-];
