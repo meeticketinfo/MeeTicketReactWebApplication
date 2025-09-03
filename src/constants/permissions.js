@@ -135,6 +135,7 @@ export const RtcAdmin = [
   // "express-pass",
   // "student-pass",
   "bus-pass-user-report",
+  "intercity-total-transaction",
   // "pending-pass",
 ];
 

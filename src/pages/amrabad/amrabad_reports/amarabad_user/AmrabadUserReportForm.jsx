@@ -74,9 +74,24 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
-                    setFieldValue("toDate", fromDateValue);
+                  
+                  // Check if selected fromDate is today
+                  const today = new Date();
+                  const selectedDate = new Date(fromDateValue);
+                  const isToday = today.toDateString() === selectedDate.toDateString();
+                  
+                  if (isToday) {
+                    // If fromDate is today, set toDate to tomorrow
+                    const tomorrow = new Date(selectedDate);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const tomorrowString = tomorrow.toISOString().slice(0, 16);
+                    setFieldValue("toDate", tomorrowString);
+                  } else if (new Date(fromDateValue) >= new Date(values.toDate)) {
+                    // If fromDate is same as or later than toDate, set toDate to next day after fromDate
+                    const nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    const nextDayString = nextDay.toISOString().slice(0, 16);
+                    setFieldValue("toDate", nextDayString);
                   }
                 }}
               />
@@ -95,9 +110,27 @@ const AmrabadUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
-                  setFieldValue("toDate", toDateValue);
+                  const fromDate = new Date(values.fromDate);
+                  const toDate = new Date(toDateValue);
+                  
+                  // Prevent selecting the same date as fromDate
+                  if (fromDate.toDateString() === toDate.toDateString()) {
+                    // Set toDate to next day after fromDate
+                    const nextDay = new Date(fromDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    const nextDayString = nextDay.toISOString().slice(0, 16);
+                    setFieldValue("toDate", nextDayString);
+                  } else {
+                    setFieldValue("toDate", toDateValue);
+                  }
                 }}
-                min={values.fromDate}
+                min={(() => {
+                  if (!values.fromDate) return "";
+                  const fromDate = new Date(values.fromDate);
+                  const nextDay = new Date(fromDate);
+                  nextDay.setDate(nextDay.getDate() + 1);
+                  return nextDay.toISOString().slice(0, 16);
+                })()}
               />
             </div>
             {/* mobile number */}
