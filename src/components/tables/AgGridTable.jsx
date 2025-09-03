@@ -69,10 +69,16 @@ const AgGridTable = ({
           ExportName && typeof ExportName === "string"
             ? `${ExportName}.xlsx`
             : "Report.xlsx",
-        // columnKeys: gridApi
-        // .getColumnDefs()
-        // .filter(col => col.field !== "actions")
-        // .map(col => col.field),
+        columnKeys: gridApi
+          .getColumnDefs()
+          .filter(col => {
+            // Exclude columns with "Actions" in field name or header name
+            const fieldName = col.field || '';
+            const headerName = col.headerName || '';
+            return !fieldName.toLowerCase().includes('actions') && 
+                   !headerName.toLowerCase().includes('actions');
+          })
+          .map(col => col.field || col.colId || col.headerName),
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];

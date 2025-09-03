@@ -157,6 +157,9 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
+import MainIntercityTotalTransaction from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/mainIntercityTotalTransactionReport";
+import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
+import IntercityNotGenerated from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
 
 export const routes = [
   {
@@ -761,4 +764,37 @@ export const routes = [
     path: "/amrabad-uncategorized-view-track-order",
     element: <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder/>} />,
   },
+
+  //intercity
+  {
+    path: "/intercity-total-transaction",
+    element: <ProtectedRoute element={<MainIntercityTotalTransaction />} />,
+  },
+
+  // {
+  //   path: "/intercity-failed-other-reason",
+  //   element: <ProtectedRoute element={<IntercityFailedOtherReason/>} />,
+  // },
+  // {
+  //   path: "/intercity-failed-gateway",
+  //   element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
+  // },
+  
+  // {
+  //   path: "/intercity-failed-gateway-report",
+  //   element: <ProtectedRoute element={<IntercityFailedGatewayReport/>} />,
+  // },
+  {
+    path: "/intercity-not-generated",
+    element: <ProtectedRoute element={<IntercityNotGenerated/>} />,
+  },
+
+  {
+    path: "/intercity-not-generated-report",
+    element: <ProtectedRoute element={<IntercityNotGeneratedReport/>} />,
+  },
+  // {
+  //   path: "/intercity-total-report",
+  //   element: <ProtectedRoute element={<IntercityTotalReport/>} />,
+  // },
 ];
