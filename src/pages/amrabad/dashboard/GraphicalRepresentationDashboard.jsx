@@ -460,7 +460,7 @@ const GraphicalRepresentationDashboard = () => {
                         ),
                     "roomName"
                   )}
-                  title={`Room Distribution by ${selectedHouseDataField
+                  title={`House Distribution by ${selectedHouseDataField
                     .replace(/([A-Z])/g, " $1")
                     .replace(/^./, (str) => str.toUpperCase())}`}
                   angleKey={selectedHouseDataField}
@@ -485,7 +485,7 @@ const GraphicalRepresentationDashboard = () => {
                           ),
                       "roomName"
                     )}
-                    title={`Room Distribution by ${selectedHouseDataField
+                    title={`House Distribution by ${selectedHouseDataField
                       .replace(/([A-Z])/g, " $1")
                       .replace(/^./, (str) => str.toUpperCase())}`}
                     valueKey={selectedHouseDataField}
