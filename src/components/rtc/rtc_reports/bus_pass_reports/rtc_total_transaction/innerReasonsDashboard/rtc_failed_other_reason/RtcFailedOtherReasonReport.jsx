@@ -7,7 +7,8 @@ import Breadcrumb from "../../../../../../Breadcrumb";
 import RtcFailedOtherReasonReportForm from "./RtcFailedOtherReasonReportForm";
 import AgGridTable from "../../../../../../tables/AgGridTable";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
 
 const RtcFailedOtherReasonReport = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -32,10 +33,10 @@ const RtcFailedOtherReasonReport = () => {
 
   useEffect(() => {
     fetchRtcTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
-      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      BusPassType: (innerFilters.BusPassType ?? deepInnerFilters.BusPassType) ?? "",
+      startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? startOfDay,
+      endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? endOfDay,
+      phoneNumber:(innerFilters.mobileNumber || deepInnerFilters.mobileNumber) ?? "",
+      BusPassType: (innerFilters.BusPassType || deepInnerFilters.BusPassType) ?? "",
       status: innerFilters.status ?? "",
       subCategory: innerFilters.subCategory ?? "",
       pageNumber: currentPage + 1,
@@ -174,6 +175,7 @@ const RtcFailedOtherReasonReport = () => {
       isLast: true
     }
   ];
+
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">

@@ -1,6 +1,7 @@
 import { Formik, Form, Field } from "formik";
 import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
 import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useEffect } from "react";
 
 
 const RtcNotGeneratedReportForm = ({
@@ -10,12 +11,15 @@ const RtcNotGeneratedReportForm = ({
 }) => {
    const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = busPassTotalCommonStore();
   
-  const { fetchRtcTotalTransactions } = useBusPassTotalTransactionStore();
+  const { fetchRtcTotalTransactions, AllBusPassesData,fetchAllBusPasses } = useBusPassTotalTransactionStore();
+  useEffect(() => {
+    fetchAllBusPasses();
+  }, []);
   const initialValues = {
-    startDate: (deepInnerFilters.startDate??innerFilters.fromDate) ?? "",
-    endDate: (deepInnerFilters.endDate??innerFilters.toDate) ?? "",
-    phoneNumber: (deepInnerFilters.mobileNumber??innerFilters.mobileNumber) ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode??"",
+    startDate: (deepInnerFilters.startDate||innerFilters.fromDate) ?? "",
+    endDate: (deepInnerFilters.endDate||innerFilters.toDate) ?? "",
+    phoneNumber: (deepInnerFilters.mobileNumber||innerFilters.mobileNumber) ?? "",
+    BusPassType: (deepInnerFilters.BusPassType||innerFilters.BusPassType) ?? "",
   };
 
   const onSubmit = (values) => {
@@ -117,9 +121,11 @@ const RtcNotGeneratedReportForm = ({
                 }}
               >
                 <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
+                {
+                  AllBusPassesData?.map((item) => (
+                    <option value={item.passTypeId}>{item.passTypeName}</option>
+                  ))
+                }
                 
               </Field>
             </div> 

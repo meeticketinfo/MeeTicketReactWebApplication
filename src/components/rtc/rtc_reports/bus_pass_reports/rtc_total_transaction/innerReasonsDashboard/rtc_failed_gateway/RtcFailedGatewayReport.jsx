@@ -31,12 +31,12 @@ const RtcFailedGatewayReport = () => {
   console.log("outerFilters", innerFilters);
   useEffect(() => {
     fetchRtcTotalTransactions({
-      startDate: deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
-      endDate: deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
+      startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? "",
+      endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? "",
       phoneNumber:
-        innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber ?? "",
+        (innerFilters.mobileNumber || deepInnerFilters.mobileNumber) ?? "",
       BusPassType:
-        innerFilters.BusPassType ?? deepInnerFilters.BusPassType ?? "",
+        (innerFilters.BusPassType || deepInnerFilters.BusPassType) ?? "",
       status: innerFilters.status ?? "",
       subCategory: innerFilters.subCategory ?? "",
 

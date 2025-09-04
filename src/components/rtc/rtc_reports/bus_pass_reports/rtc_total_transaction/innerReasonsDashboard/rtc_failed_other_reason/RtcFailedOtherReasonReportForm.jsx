@@ -24,10 +24,10 @@ const RtcFailedOtherReasonReportForm = ({
     fetchAllBusPasses();
   }, []);
   const initialValues = {
-    startDate: (deepInnerFilters.startDate??innerFilters.fromDate) ?? startOfDay,
-    endDate: (deepInnerFilters.endDate??innerFilters.toDate) ?? endOfDay,
-    phoneNumber: (deepInnerFilters.mobileNumber??innerFilters.mobileNumber) ?? "",
-    BusPassType:(deepInnerFilters.BusPassType??innerFilters.BusPassType) ?? "",
+    startDate: (deepInnerFilters.startDate||innerFilters.fromDate) ?? startOfDay,
+    endDate: (deepInnerFilters.endDate||innerFilters.toDate) ?? endOfDay,
+    phoneNumber: (deepInnerFilters.mobileNumber||innerFilters.mobileNumber) ?? "",
+    BusPassType:(deepInnerFilters.BusPassType||innerFilters.BusPassType) ?? "",
   };
 
   const onSubmit = (values) => {

@@ -14,6 +14,7 @@ const RtcFailedGateWayReportForm = ({
     setDeepInnerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
+    outerFilters,
   } = busPassTotalCommonStore();
   console.log("outerFilters", innerFilters);
   const { fetchRtcTotalTransactions, AllBusPassesData, fetchAllBusPasses } = useBusPassTotalTransactionStore();
@@ -21,10 +22,10 @@ const RtcFailedGateWayReportForm = ({
     fetchAllBusPasses();
   }, []);
   const initialValues = {
-    startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-    endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-    phoneNumber: (deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber) ?? "",
-    BusPassType:(deepInnerFilters.BusPassType??innerFilters.BusPassType) ?? "",
+    startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? "",
+    endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? "",
+    phoneNumber: (deepInnerFilters.mobileNumber || innerFilters.mobileNumber) ?? "",
+    BusPassType:(deepInnerFilters.BusPassType||innerFilters.BusPassType) ?? "",
   };
 
   const onSubmit = (values) => {
