@@ -245,6 +245,10 @@ export const API_ENDPOINTS = {
       GET_STUDENT_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentApplicationDetails`,
       GET_PENDING_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentPendingApplicationDetails`,
       UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}RTCDashboard/updateStudentApplicationStatus`,
+      USER_REPORT:{
+      GET_BUSSPASS_USER_OUTER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserOuterReport`,
+      GET_BUSSPASS_USER_INNER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserInnerReport`,
+      },
       RTC_TOTAL_TRANSACTIONS_REPORT:{
         GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionOuterReport`,
         GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionInnerReport`,

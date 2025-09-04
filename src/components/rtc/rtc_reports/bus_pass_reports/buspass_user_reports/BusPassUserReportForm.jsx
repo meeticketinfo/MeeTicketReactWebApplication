@@ -1,22 +1,22 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
 const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const {
-    isAmrabadUserReportsLoading,
-    fetchAmrabadUserReports,
-  } = useAmrabadUserStore();
+    const {
+      isBusPassUserReportsLoading,
+      allBusPassUserReports,
+      fetchBusPassUserReports,
+    } = useBuspassUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    MobileNo: searchParams.get("MobileNo") || "",
   };
 
   const onSubmit = (values) => {
@@ -29,10 +29,10 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     setSearchParams(newSearchParams);
     localStorage.setItem("userAmrabadReportSearchParams", newSearchParams);
 
-    fetchAmrabadUserReports({
+    fetchBusPassUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
+      MobileNo: values.MobileNo,
       pageNumber:pageNumber,
       pageSize: pageSize,
     });
@@ -50,7 +50,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     setSearchParams(new URLSearchParams());
     localStorage.setItem("userAmrabadReportSearchParams", "");
     setValues(payload);
-    fetchAmrabadUserReports({ ...payload, pageNumber: pageNumber, pageSize: pageSize });
+    fetchBusPassUserReports({ ...payload, pageNumber: pageNumber, pageSize: pageSize });
     localStorage.setItem("userAmrabadReportSearchParams", "");
   };
 
@@ -111,7 +111,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNumber"
+                name="MobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -120,7 +120,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNumber", e.target.value);
+                  setFieldValue("MobileNo", e.target.value);
                 }}
               />
             </div>
@@ -128,7 +128,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isAmrabadUserReportsLoading}
+                disabled={isBusPassUserReportsLoading}
               >
                 Search
               </button>
