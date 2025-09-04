@@ -24,7 +24,7 @@ export const useBookingHistoryStore = create((set) => ({
       set({
         isUserBookingHistoryLoading: false,
       });
-      toast(error.message || "Some thing went wrong");
+      toast(error.response.data.message || "Some thing went wrong");
     }
   },
 
