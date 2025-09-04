@@ -43,6 +43,12 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+  
+
+  
+
+
+
 // METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
@@ -314,6 +320,7 @@ export const API_ENDPOINTS = {
     GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardAllPassesInfo`,
     GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
     GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/GetBusPassDashboard`,
   },
   TOURSIM_DASHBOARD: {
     GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,
