@@ -1,9 +1,9 @@
 import { Formik, Form, Field } from "formik";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
 const BusPassUserDetailedReportForm = ({
   pageNumber,
@@ -12,10 +12,11 @@ const BusPassUserDetailedReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isAmrabadUserDetailedReportsLoading,
-    fetchAmrabadUserDetailedReports,
-  } = useAmrabadUserStore();
-const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+    isBusPassUserDetailedReportsLoading,
+    allBusPassUserDetailedReports,
+    fetchBusPassUserDetailedReports,
+  } = useBuspassUserStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
   // Load packages on component mount
   useEffect(() => {
@@ -54,7 +55,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     packageId: searchParams.get("packageId") || "",
     houseId: searchParams.get("houseId") || "",
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    MobileNo: searchParams.get("MobileNo") || "",
   };
 
   const onSubmit = (values) => {
@@ -67,10 +68,10 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
     setSearchParams(newSearchParams);
     localStorage.setItem("userDetailedAmrabadReportSearchParams", newSearchParams.toString());
 
-    fetchAmrabadUserDetailedReports({
+    fetchBusPassUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
+      MobileNo: values.MobileNo,
       packageId: values.packageId || "",
       houseId: values.houseId || "",
       pageNumber: pageNumber,
@@ -128,7 +129,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
             {/* mobile number */}
             <div>
               <label
-                htmlFor="phoneNumber"
+                htmlFor="MobileNo"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -136,7 +137,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNumber"
+                name="MobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -145,7 +146,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNumber", e.target.value);
+                  setFieldValue("MobileNo", e.target.value);
                 }}
               />
             </div>
@@ -156,21 +157,21 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               >
                 Packages
               </label>
-                             <Field
-                 as="select"
-                 name="packageId"
-                 placeholder="Select Package"
-                 onChange={(e) => {
-                   const packageId = e.target.value;
-                   setFieldValue("packageId", packageId);
-                   // Clear house selection when package changes
-                   setFieldValue("houseId", "");
-                   if (packageId) {
-                     getHouses(packageId);
-                   }
-                 }}
-                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-               >
+              <Field
+                as="select"
+                name="packageId"
+                placeholder="Select Package"
+                onChange={(e) => {
+                  const packageId = e.target.value;
+                  setFieldValue("packageId", packageId);
+                  // Clear house selection when package changes
+                  setFieldValue("houseId", "");
+                  if (packageId) {
+                    getHouses(packageId);
+                  }
+                }}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
                 <option value="">Select Package</option>
                 {AllPackages.map((item) => (
                   <option key={item.packageId} value={item.packageId}>
@@ -205,7 +206,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isAmrabadUserDetailedReportsLoading}
+                disabled={isBusPassUserDetailedReportsLoading}
               >
                 Search
               </button>

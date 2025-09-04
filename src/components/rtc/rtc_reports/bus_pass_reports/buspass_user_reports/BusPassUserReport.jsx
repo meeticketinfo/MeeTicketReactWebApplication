@@ -4,17 +4,17 @@ import BusPassUserReportForm from "./BusPassUserReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
 const BusPassUserReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const {
-    isAmrabadUserReportsLoading,
-    allAmrabadUserReports,
-    fetchAmrabadUserReports,
-  } = useAmrabadUserStore();
+    isBusPassUserReportsLoading,
+    allBusPassUserReports,
+    fetchBusPassUserReports,
+  } = useBuspassUserStore();
   const [currentPage, setCurrentPage] = useState(0);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
@@ -27,15 +27,23 @@ const BusPassUserReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "mobileNumber",
+      field: "login_MobilNumber",
       // maxWidth: 120,
       flex: 1,
-      headerName: "Mobile No.",
+      headerName: "Login Mobile No.",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "registration",
+      field: "form_MobileNumber",
+      // maxWidth: 120,
+      flex: 1,
+      headerName: "Form Mobile No.",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "registrationDate",
       // maxWidth: 200,
       flex: 1,
       headerName: "Registration Date",
@@ -64,11 +72,11 @@ const BusPassUserReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/bus-pass-user-detailed-report?mobileNumber=${params.data.mobileNumber
+          to={`/bus-pass-user-detailed-report?mobileNo=${params.data.login_MobilNumber
             }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
             }`}
           onClick={() => {
-            localStorage.setItem("userAmrabadReportSearchParams", `mobileNumber=${searchParams.get("mobileNumber") ? params.data.mobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+            localStorage.setItem("userAmrabadReportSearchParams", `mobileNo=${searchParams.get("mobileNo") ? params.data.login_MobilNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
 
           }}
         >
@@ -76,14 +84,14 @@ const BusPassUserReport = () => {
         </Link>
       ),
     },
-  
+
   ]
 
   const loadUserReport = (page = 0) => {
-    fetchAmrabadUserReports({
+    fetchBusPassUserReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNumber: searchParams.get("mobileNumber") || "",
+      MobileNo: searchParams.get("MobileNo") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -111,17 +119,17 @@ const BusPassUserReport = () => {
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={allAmrabadUserReports}
+            rowData={allBusPassUserReports}
             columnDefs={columnDefs}
-            isFetchLoading={isAmrabadUserReportsLoading}
+            isFetchLoading={isBusPassUserReportsLoading}
             isPagination={false}
-            tableHeight={allAmrabadUserReports?.length > 10 ? 560 : 330}
+            tableHeight={allBusPassUserReports?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={allAmrabadUserReports?.[0]?.totalCount}
+            totalCount={allBusPassUserReports?.[0]?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
           />

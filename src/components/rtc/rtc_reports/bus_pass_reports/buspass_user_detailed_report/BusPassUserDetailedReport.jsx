@@ -5,7 +5,7 @@ import AgGridTable from "../../../../tables/AgGridTable";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
 const BusPassUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
@@ -15,10 +15,10 @@ const BusPassUserDetailedReport = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
   const {
-    isAmrabadUserDetailedReportsLoading,
-    allAmrabadUserDetailedReports,
-    fetchAmrabadUserDetailedReports,
-  } = useAmrabadUserStore();
+    isBusPassUserDetailedReportsLoading,
+    allBusPassUserDetailedReports,
+    fetchBusPassUserDetailedReports,
+  } = useBuspassUserStore();
   const columnDefs = [
     {
       headerName: "S.No",
@@ -30,8 +30,8 @@ const BusPassUserDetailedReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "purchaseDate",
-      headerName: "Date and Time of Transaction",
+      field: "transactionDateandTime",
+      headerName: "Transaction Date & Time",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -61,7 +61,7 @@ const BusPassUserDetailedReport = () => {
           state={{
             orderId: params.data.orderId,
             date: params.data.purchaseDate,
-            mobileNumber: params.data.mobileNumber,
+            MobileNo: params.data.MobileNo,
             packageNames: params.data.packageNames,
             houseNames: params.data.houseNames,
             status: params.data.transactionStatus,
@@ -75,62 +75,62 @@ const BusPassUserDetailedReport = () => {
       ),
     },
     {
-      field: "orderId",
-      headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
       field: "mobileNumber",
-      headerName: "Mobile No.",
-      maxWidth: "120",
+      headerName: "Mobile Number",
+      maxWidth: "150",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "packageNames",
-      headerName: "Package Name",
+      field: "typeOfBusPass",
+      headerName: "Type of Bus Pass",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "houseNames",
-      headerName: "House Name",
+      field: "modeOfTransaction",
+      headerName: "Mode of Transaction",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "amount",
-      headerName: "Total Amount",
+      field: "confirmedTransactionAmount",
+      headerName: "Amount",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "paymentStatus",
-      headerName: "Payment Status",
+      field: "modeOfPayment",
+      headerName: "Mode of Payment",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "currentTransactionStatus",
+      field: "transactionStatus",
+      headerName: "Transaction Status",
+      maxWidth: "160",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "ticketStatus",
       headerName: "Ticket Status",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "modeOfBooking",
-      headerName: "Payment Mode",
-      maxWidth: "160",
+      field: "orderId",
+      headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "bookingId",
+      field: "applicationId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -145,10 +145,10 @@ const BusPassUserDetailedReport = () => {
     },
   ]
   const loadUserReport = (page = 0) => {
-    fetchAmrabadUserDetailedReports({
+    fetchBusPassUserDetailedReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNumber: searchParams.get("mobileNumber") || "",
+      MobileNo: searchParams.get("MobileNo") || "",
       packageId: searchParams.get("packageId") || "",
       houseId: searchParams.get("houseId") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
@@ -201,18 +201,18 @@ const BusPassUserDetailedReport = () => {
             <BusPassUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage} />
             <AgGridTable
               ExportName="UserDetailedReport"
-              rowData={allAmrabadUserDetailedReports}
+              rowData={allBusPassUserDetailedReports}
               columnDefs={columnDefs}
-              isFetchLoading={isAmrabadUserDetailedReportsLoading}
+              isFetchLoading={isBusPassUserDetailedReportsLoading}
               IsReactPaginate={true}
               isPagination={false}
-              tableHeight={allAmrabadUserDetailedReports?.length > 10 ? 550 : 300}
+              tableHeight={allBusPassUserDetailedReports?.length > 10 ? 550 : 300}
               setPageLimit={setPAGE_LIMIT}
               showTotalCount={true}
               pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
-              totalCount={allAmrabadUserDetailedReports?.[0]?.totalCount}
+              totalCount={allBusPassUserDetailedReports?.[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
             />
           </div>
