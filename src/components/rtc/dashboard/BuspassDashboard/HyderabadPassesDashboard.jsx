@@ -99,7 +99,7 @@ const HyderabadPassesDashboard = () => {
           </div>
           <div >
             <div className="text-lg sm:text-xl font-bold text-gray-800 mb-1 flex items-center justify-center gap-1">
-              <FaIndianRupeeSign className="text-green-600 text-xs sm:text-sm" />
+              <FaIndianRupeeSign className="text-gray-600 text-xs sm:text-sm" />
               <CountUp 
                 end={data.totalAmount} 
                 duration={2.5}
@@ -131,7 +131,7 @@ const HyderabadPassesDashboard = () => {
           </div>
           <div>
             <div className="text-lg sm:text-xl font-bold text-gray-800 mb-1 flex items-center justify-center gap-1">
-              <FaIndianRupeeSign className="text-green-600 text-xs sm:text-sm" />
+              <FaIndianRupeeSign className="text-gray-600 text-xs sm:text-sm" />
               <CountUp 
                 end={data.newAmount} 
                 duration={2.5}
@@ -163,7 +163,7 @@ const HyderabadPassesDashboard = () => {
           </div>
           <div>
             <div className="text-lg sm:text-xl font-bold text-gray-800 mb-1 flex items-center justify-center gap-1">
-              <FaIndianRupeeSign className="text-green-600 text-xs sm:text-sm" />
+              <FaIndianRupeeSign className="text-gray-600 text-xs sm:text-sm" />
               <CountUp 
                 end={data.renewalAmount} 
                 duration={2.5}

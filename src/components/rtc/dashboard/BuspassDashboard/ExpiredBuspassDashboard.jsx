@@ -16,10 +16,12 @@ const ExpiredBuspassDashboard = () => {
         <div className={`w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center ${iconColor}`}>
           {icon}
         </div>
+        
         <div className="bg-blue-100 text-gray-700 px-4 py-2 mt-1 ml-2 rounded-full text-sm font-medium">
           Count: <CountUp end={count} duration={2.5} separator="," />
         </div>
-      </div>
+        </div>
+    
       <h3 className="text- font-bold text-gray-800 text-start text-sm">{title}</h3>
     </div>
   );
