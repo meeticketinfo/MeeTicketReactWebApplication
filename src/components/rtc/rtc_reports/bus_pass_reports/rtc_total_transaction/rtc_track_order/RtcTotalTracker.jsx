@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import AdminLayout from "../../../../layouts/AdminLayout";
-import Breadcrumb from "../../../../components/Breadcrumb";
-import AgGridTable from "../../../../components/tables/AgGridTable";
-import { useMetroTotalTransactionsStore } from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import { formatToCurrency } from "../../../../utils/TypographyHelper";
-import { formatDateTime } from "../../../../utils/Helper";
-import useMetroTotalCommonStore from "../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
+import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import AdminLayout from "../../../../../../layouts/AdminLayout";
+import Breadcrumb from "../../../../../Breadcrumb";
+import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
+import AgGridTable from "../../../../../tables/AgGridTable";
+import { formatDateTime } from "../../../../../../utils/Helper";
 
-const MetroTotalTracker = () => {
+const RtcTotalTracker = () => {
   const location = useLocation();
   const { orderId, mobileNumber, parkName, date, amount, bookingId } =
     location.state || {};
-const {  outerFilters } = useMetroTotalCommonStore();
+  const { outerFilters } = busPassTotalCommonStore();
   const {
-    MetroTransactionTrackingStatusByOrderIdData,
-    isFetchMetroTransactionTrackingStatusByOrderId,
-    fetchMetroTransactionTrackingStatusByOrderId,
-  } = useMetroTotalTransactionsStore(); 
+    fetchRtcTransactionTrackingStatusByOrderId,
+    RtcTransactionTrackingStatusByOrderIdData,
+    isFetchRtcTransactionTrackingStatusByOrderId,
+  } = useBusPassTotalTransactionStore();
 
   const [columnDefs] = useState([
     {
@@ -84,7 +84,7 @@ const {  outerFilters } = useMetroTotalCommonStore();
   ]);
 
   useEffect(() => {
-    fetchMetroTransactionTrackingStatusByOrderId(orderId);
+    fetchRtcTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
   const TimeFormate = (dateParam) => {
@@ -117,13 +117,13 @@ const {  outerFilters } = useMetroTotalCommonStore();
     },
   ];
 
-  const TrackRouteConfig={
-    FailedDueToOtherReasons:"/metro-failed-other-reason-report",
-    FailedFromGateway:"/metro-failed-gateway-report",
-    PaymentSuccessButTicketNotGenerated:"/metro-not-generated-report",
-    Success:"/metro-total-report",
-    Uncategorized:"/metro-total-report"
-  }
+  const TrackRouteConfig = {
+    FailedDueToOtherReasons: "/bus-pass-failed-other-reason-report",
+    FailedFromGateway: "/bus-pass-failed-gateway-report",
+    PaymentSuccessButTicketNotGenerated: "/bus-pass-not-generated-report",
+    Success: "/bus-pass-total-report",
+    Uncategorized: "/bus-pass-total-report",
+  };
 
   return (
     <>
@@ -138,7 +138,11 @@ const {  outerFilters } = useMetroTotalCommonStore();
             </div>
             <div className="">
               <Link
-                to={outerFilters.status!=""?TrackRouteConfig[outerFilters.status]:"/metro-total-report"}
+                to={
+                  outerFilters.status != ""
+                    ? TrackRouteConfig[outerFilters.status]
+                    : "/bus-pass-total-report"
+                }
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -205,9 +209,9 @@ const {  outerFilters } = useMetroTotalCommonStore();
           <div>
             <AgGridTable
               ExportName="UserStatusTransactionReport"
-              rowData={MetroTransactionTrackingStatusByOrderIdData}
+              rowData={RtcTransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchMetroTransactionTrackingStatusByOrderId}
+              isFetchLoading={isFetchRtcTransactionTrackingStatusByOrderId}
             />
           </div>
         </div>
@@ -216,4 +220,4 @@ const {  outerFilters } = useMetroTotalCommonStore();
   );
 };
 
-export default MetroTotalTracker;
+export default RtcTotalTracker;

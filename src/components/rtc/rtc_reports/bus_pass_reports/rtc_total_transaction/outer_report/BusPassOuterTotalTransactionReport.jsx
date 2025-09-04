@@ -6,6 +6,35 @@ import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_tot
 import BusPassTotalTransactionChart from "../charts/BusPassTotalTransactionChart";
 import { getStartOfCurrentDay,getEndOfCurrentDay } from "../../../../../../utils/Helper";
 
+const data=[
+  {
+    "paymentCategory": "Failed (Other Reasons)",
+    "paymentCategoryKey": "FailedDueToOtherReasons",
+    "count": 2
+  },
+  {
+    "paymentCategory": "Failed (Payment Gateway)",
+    "paymentCategoryKey": "FailedFromGateway",
+    "count": 3
+  },
+  {
+    "paymentCategory": "Payment Successful but Ticket not Generated",
+    "paymentCategoryKey": "PaymentSuccessButTicketNotGenerated",
+    "count": 100
+  },
+  {
+    "paymentCategory": "Successful",
+    "paymentCategoryKey": "Success",
+    "count": 137
+  },
+  {
+    "paymentCategory": "Uncategorized",
+    "paymentCategoryKey": "Uncategorized",
+    "count": 481
+  }
+]
+
+
 const BusPassOuterTotalTransactionReport = () => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -17,9 +46,11 @@ const BusPassOuterTotalTransactionReport = () => {
     resetInnerFilters,
   } = busPassTotalCommonStore();
   const {
-    fetchMetroTransactionByReason,
-    MetroTransactionByReasonData,
-    isMetroTransactionByReasonLoading,
+    fetchRtcTransactionByReason,
+    RtcTransactionByReasonData,
+    isRtcTransactionByReasonLoading,
+    AllBusPassesData,
+    fetchAllBusPasses,
   } = useBusPassTotalTransactionStore();
   useEffect(() => {
     setInnerFilters({
@@ -28,13 +59,15 @@ const BusPassOuterTotalTransactionReport = () => {
       mobileNumber: outerFilters.mobileNumber ?? "",
       BusPassType: outerFilters.BusPassType ?? "",
     });
-    // fetchMetroTransactionByReason({
-    //   fromDate: outerFilters.fromDate ?? startOfDay,
-    //   toDate: outerFilters.toDate ?? endOfDay,
-    //   mobileNumber: outerFilters.mobileNumber ?? "",
-    // });
+    fetchRtcTransactionByReason({
+      fromDate: outerFilters.fromDate ?? startOfDay,
+      toDate: outerFilters.toDate ?? endOfDay,
+      mobileNumber: outerFilters.mobileNumber ?? "",
+      BusPassType: outerFilters.BusPassType ?? "",
+    });
+    fetchAllBusPasses();
   }, []);
-  console.log("outerFilters", outerFilters);
+  console.log("RtcTransactionByReasonData", RtcTransactionByReasonData);
   const initialValues = {
     fromDate: outerFilters.fromDate ?? startOfDay,
     toDate: outerFilters.toDate ?? endOfDay,
@@ -44,11 +77,11 @@ const BusPassOuterTotalTransactionReport = () => {
   const onSubmit = (values) => {
     setOuterFilters(values);
     setInnerFilters(values);
-    // fetchMetroTransactionByReason(values);
+    fetchRtcTransactionByReason(values);
   };
-  // const totalCount = Array.isArray(MetroTransactionByReasonData)
-  //   ? MetroTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
-  //   : 0;
+  const totalCount = Array.isArray(RtcTransactionByReasonData)
+    ? RtcTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
+    : 0;
   return (
     <>
       <ToastContainer />
@@ -126,9 +159,11 @@ const BusPassOuterTotalTransactionReport = () => {
                 }}
               >
                 <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
+                {
+                  AllBusPassesData?.map((item) => (
+                    <option value={item.passTypeId}>{item.passTypeName}</option>
+                  ))
+                }
                 
               </Field>
             </div>
@@ -164,12 +199,12 @@ const BusPassOuterTotalTransactionReport = () => {
                     mobileNumber: "",
                     BusPassType: "",
                   });
-                  // fetchMetroTransactionByReason({
-                  //   fromDate: startOfDay,
-                  //   toDate: endOfDay,
-                  //   mobileNumber: "",
-                  //   BusPassType: "",
-                  // });
+                  fetchRtcTransactionByReason({
+                    fromDate: startOfDay,
+                    toDate: endOfDay,
+                    mobileNumber: "",
+                    BusPassType: "",
+                  });
                 }}
               >
                 Reset
@@ -183,13 +218,13 @@ const BusPassOuterTotalTransactionReport = () => {
           <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
             {/* <Loader/> */}
 
-            {false && (
+            {isRtcTransactionByReasonLoading && (
               <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                 <div className="loader"></div>
               </div>
             )}
             <BusPassTotalTransactionChart
-              // data={totalCount !== 0 ? [] : []}
+              data={totalCount !== 0 ? RtcTransactionByReasonData : []}
               title="Total Transactions"
               angleKey="count"
               calloutLabelKey="paymentCategory"

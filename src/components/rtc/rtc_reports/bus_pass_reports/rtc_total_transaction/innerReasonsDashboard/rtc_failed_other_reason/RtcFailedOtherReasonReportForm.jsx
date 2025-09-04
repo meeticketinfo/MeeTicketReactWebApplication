@@ -1,29 +1,39 @@
 import { Formik, Form, Field } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import { useEffect } from "react";
 
-const FailedOtherReasonReportForm = ({
+
+const RtcFailedOtherReasonReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
 }) => {
   const startOfDay = getStartOfCurrentDay();
     const endOfDay = getEndOfCurrentDay();
-  const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = useMetroTotalCommonStore();
+  const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = busPassTotalCommonStore();
   console.log("outerFilters", innerFilters);
-  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
+  const {
+    fetchRtcTotalTransactions,
+    AllBusPassesData,
+    fetchAllBusPasses,
+   
+  } = useBusPassTotalTransactionStore();
+  useEffect(() => {
+    fetchAllBusPasses();
+  }, []);
   const initialValues = {
-    startDate: (deepInnerFilters.startDate??innerFilters.fromDate) ?? startOfDay,
-    endDate: (deepInnerFilters.endDate??innerFilters.toDate) ?? endOfDay,
-    phoneNumber: (deepInnerFilters.mobileNumber??innerFilters.mobileNumber) ?? "",
-    BusPassType: deepInnerFilters.BusPassType??"",
+    startDate: (deepInnerFilters.startDate||innerFilters.fromDate) ?? startOfDay,
+    endDate: (deepInnerFilters.endDate||innerFilters.toDate) ?? endOfDay,
+    phoneNumber: (deepInnerFilters.mobileNumber||innerFilters.mobileNumber) ?? "",
+    BusPassType:(deepInnerFilters.BusPassType||innerFilters.BusPassType) ?? "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
     setDeepInnerFilters(values)
-    fetchMetroTotalTransactions({
+    fetchRtcTotalTransactions({
       ...values,
       status: innerFilters.status,
       subCategory:innerFilters.subCategory,
@@ -119,9 +129,11 @@ const FailedOtherReasonReportForm = ({
                 }}
               >
                 <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
+                {
+                  AllBusPassesData?.map((item) => (
+                    <option value={item.passTypeId}>{item.passTypeName}</option>
+                  ))
+                }
                 
               </Field>
             </div>
@@ -140,4 +152,4 @@ const FailedOtherReasonReportForm = ({
   );
 };
 
-export default FailedOtherReasonReportForm;
+export default RtcFailedOtherReasonReportForm;

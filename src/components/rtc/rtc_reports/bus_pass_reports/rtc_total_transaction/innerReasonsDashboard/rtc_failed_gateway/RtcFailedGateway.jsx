@@ -8,25 +8,32 @@ import {
 } from "../../../../../../../utils/Helper";
 import Breadcrumb from "../../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import BusPassFailedGatewayChart from "../../charts/BusPassFailedGatewayChart";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcFailedGateway = () => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     busPassTotalCommonStore();
-  // const {
-  //   fetchGateWayPieChart,
-  //   PaymentGatewayPieChartData,
-  //   isPaymentGatewayPieChartLoading,
-  // } = useMetroTotalTransactionsStore();
+
+  const {
+    fetchRtcGateWayPieChart,
+    RtcGateWayPieChartData,
+    RtcisGateWayPieChartLoading,
+    AllBusPassesData,
+    fetchAllBusPasses,
+  } = useBusPassTotalTransactionStore();
 
   useEffect(() => {
-    // fetchGateWayPieChart({
-    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ??startOfDay,
-    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    //   mobileNumber:
-    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    // });
+    fetchRtcGateWayPieChart({
+      fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+      toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+      mobileNumber:
+        innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+      BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
+    });
+    fetchAllBusPasses();
   }, []);
 
   const initialValues = {
@@ -37,11 +44,11 @@ const RtcFailedGateway = () => {
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    // fetchGateWayPieChart(values);
+    fetchRtcGateWayPieChart(values);
   };
 
-  const totalCount = Array.isArray(PaymentGatewayPieChartData)
-    ? PaymentGatewayPieChartData.reduce((sum, item) => sum + item.count, 0)
+  const totalCount = Array.isArray(RtcGateWayPieChartData)
+    ? RtcGateWayPieChartData.reduce((sum, item) => sum + item.count, 0)
     : 0;
 
   const breadcrumbItems = [
@@ -154,7 +161,11 @@ const RtcFailedGateway = () => {
                     }}
                   >
                     <option value="">All</option>
-                    <option value="Single">Single</option>
+                    {
+                      AllBusPassesData?.map((item) => (
+                        <option value={item.passTypeId}>{item.passTypeName}</option>
+                      ))
+                    }
                     <option value="Monthly">Monthly</option>
                     <option value="Yearly">Yearly</option>
                   </Field>
@@ -178,11 +189,12 @@ const RtcFailedGateway = () => {
                         BusPassType: "",
                       });
                       // resetInnerFilters();
-                      // fetchGateWayPieChart({
-                      //   fromDate: startOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      // });
+                      fetchRtcGateWayPieChart({
+                        fromDate: startOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        BusPassType: "",
+                      });
                     }}
                   >
                     Reset
@@ -196,13 +208,13 @@ const RtcFailedGateway = () => {
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                 {/* <Loader/> */}
 
-                {isPaymentGatewayPieChartLoading && (
+                {RtcisGateWayPieChartLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroFailedGatewayChart
-                  data={totalCount !== 0 ? PaymentGatewayPieChartData : []}
+                <BusPassFailedGatewayChart
+                  data={totalCount !== 0 ? RtcGateWayPieChartData : []}
                   title="Failed (Payment Gateway)"
                   angleKey="reasonCount"
                   calloutLabelKey="failureReason"

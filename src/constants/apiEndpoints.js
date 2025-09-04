@@ -43,6 +43,12 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+  
+
+  
+
+
+
 // METRO PROD
 // export const METRO_API_BASE_URL =
 // "https://uat.meeticket.telangana.gov.in/metroapiv2/";
@@ -191,6 +197,9 @@ export const API_ENDPOINTS = {
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
+    BUS_PASS: {
+      GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    },
   },
   REPORTS: {
     BOOKING_REPORTS: {
@@ -239,6 +248,14 @@ export const API_ENDPOINTS = {
       USER_REPORT:{
       GET_BUSSPASS_USER_OUTER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserOuterReport`,
       GET_BUSSPASS_USER_INNER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserInnerReport`,
+      },
+      RTC_TOTAL_TRANSACTIONS_REPORT:{
+        GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionOuterReport`,
+        GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionInnerReport`,
+        GET_RTC_OTHER_REASON_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureDueToOtherReasonsReport`,
+        GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
+        GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
+        GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
       }
     },
     GRIVEANCE_REPORTS: {
@@ -307,6 +324,7 @@ export const API_ENDPOINTS = {
     GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardAllPassesInfo`,
     GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
     GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/GetBusPassDashboard`,
   },
   TOURSIM_DASHBOARD: {
     GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,
