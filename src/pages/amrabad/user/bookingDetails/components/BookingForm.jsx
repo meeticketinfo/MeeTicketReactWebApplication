@@ -4,16 +4,16 @@ import { useEffect } from "react";
 import { useUserBookingStore } from "../../../../../store/amrabad/user/userBookingStore";
 
 const initialValues = {
-    firstName: "Sampath",
-    lastName: "Bingi",
-    email: "bingisampat@gmail.com",
-    country: "India",
-    address: "1234567890",
-    town: "Hyderabad",
-    state: "Telangana",
-    pincode: "500001",
-    mobile: "9876543210",
-    aadhar: "123456789012",
+    firstName: "",
+    lastName: "",
+    email: "",
+    country: "",
+    address: "",
+    town: "",
+    state: "",
+    pincode: "",
+    mobile: "",
+    aadhar: "",
     message: "",
 };
 
