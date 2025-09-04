@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from "react"; 
-import { Link } from "react-router-dom";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import AgGridTable from "../../../../../components/tables/AgGridTable";
-import FailedOtherReasonReportForm from "./FailedOtherReasonReportForm";
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-import Breadcrumb from "../../../../../components/Breadcrumb";
+import React, { useEffect, useState } from "react";
 
-const FailedOtherReasonReport = () => {
-  const startOfDay = getStartOfCurrentDay();
-      const endOfDay = getEndOfCurrentDay();
+import { Link } from "react-router-dom";
+
+import { ToastContainer } from "react-toastify";
+import busPassTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+
+import AdminLayout from "../../../../../layouts/AdminLayout";
+import Breadcrumb from "../../../../Breadcrumb";
+import BusPassTotalTransactionForm from "./outer_report/BusPassTotalTransactionForm";
+import AgGridTable from "../../../../tables/AgGridTable";
+import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { formatDateTime } from "../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+// import { formatDateTime } from "../../../../../utils/Helper";
+// import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+
+const BusPassTotalReport = () => {
   const {
     innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-    resetInnerFilters
-  } = useMetroTotalCommonStore();
+  } = busPassTotalCommonStore();
+
   const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+    fetchRtcTotalTransactions,
+    RtcTotalTransactionsData,
+    isRtcTotalTransactionsLoading,
+  } = useBusPassTotalTransactionStore();
+
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
@@ -31,18 +36,31 @@ const FailedOtherReasonReport = () => {
   };
 
   useEffect(() => {
-    fetchMetroTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? startOfDay,
-      endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? endOfDay,
-      phoneNumber:(innerFilters.mobileNumber ?? deepInnerFilters.mobileNumber) ?? "",
-      BusPassType: (deepInnerFilters.BusPassType) ?? "",
-      status: innerFilters.status ?? "",
-      subCategory: innerFilters.subCategory ?? "",
+    fetchRtcTotalTransactions({
+      startDate: (deepInnerFilters.startDate || outerFilters.fromDate) ?? "",
+      endDate: (deepInnerFilters.endDate || outerFilters.toDate) ?? "",
+      phoneNumber:
+        (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
+      BusPassType:(deepInnerFilters.BusPassType || outerFilters.BusPassType) ?? "",
+      status: outerFilters.status ?? "",
+      subCategory: "",
+
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage]);
-
+  }, [
+    PAGE_LIMIT, 
+    currentPage, 
+    deepInnerFilters.startDate, 
+    deepInnerFilters.endDate, 
+    deepInnerFilters.mobileNumber, 
+    deepInnerFilters.BusPassType, 
+    outerFilters.fromDate, 
+    outerFilters.toDate, 
+    outerFilters.mobileNumber, 
+    outerFilters.BusPassType, 
+    outerFilters.status
+  ]);
   const columnDefs = [
     {
       headerName: "S.No",
@@ -71,9 +89,9 @@ const FailedOtherReasonReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/bus-pass-total-traker"}
           state={{
-            orderId: params.data.orderId,
+            orderId: params.data.bP_OrderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
             status: params.data.transactionStatus,
@@ -92,21 +110,21 @@ const FailedOtherReasonReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+    
     {
-      field: "fromStationName",
-      headerName: "From Station",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "toStationName",
-      headerName: "To Station",
+      field: "passTypeName",
+      headerName: "Type of Bus Pass",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+    {
+        field: "noOfTickets",
+        headerName: "Mode of Transaction",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
     {
       field: "amount",
       headerName: "Amount",
@@ -115,17 +133,11 @@ const FailedOtherReasonReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-    {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+   
 
     {
       field: "paymentMode",
-      headerName: "Payment Mode",
+      headerName: "Mode of Payment",
       maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -141,7 +153,7 @@ const FailedOtherReasonReport = () => {
       ),
     },
     {
-      field: "orderId",
+      field: "bP_OrderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -163,41 +175,38 @@ const FailedOtherReasonReport = () => {
       ),
     },
   ];
-    const breadcrumbItems = [
+
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions',
-      path: `/bus-pass-total-transaction`
+      label: "Total Transactions ",
+      path: `/bus-pass-total-transaction`,
+      onclick: () => resetDeepInnerFilters(),
     },
-     {
-      label: 'Failed (Other Reasons)',  
-      path: `/metro-failed-other-reason`,
-      onclick:()=>{resetDeepInnerFilters()
-        
-      },
-    },
+
     {
-      label: 'Failed (Other Reasons) Report',  
-      isLast: true
-    }
+      label: `Total ${
+        outerFilters.status ? outerFilters.status : "Transaction"
+      } Report`,
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-         <div className="mb-6">
-          <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
+              Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-failed-other-reason"
+              to="/bus-pass-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -209,16 +218,16 @@ const FailedOtherReasonReport = () => {
         </div>
 
         <div>
-          <FailedOtherReasonReportForm
+          <BusPassTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
+            rowData={RtcTotalTransactionsData}
             columnDefs={columnDefs}
-            isFetchLoading={isMetroTotalTransactionsLoading}
+            isFetchLoading={isRtcTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -226,8 +235,8 @@ const FailedOtherReasonReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={MetroTotalTransactionsData[0]?.totalCount}
-            tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={RtcTotalTransactionsData[0]?.totalCount}
+            tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>
@@ -236,4 +245,4 @@ const FailedOtherReasonReport = () => {
   );
 };
 
-export default FailedOtherReasonReport;
+export default BusPassTotalReport;

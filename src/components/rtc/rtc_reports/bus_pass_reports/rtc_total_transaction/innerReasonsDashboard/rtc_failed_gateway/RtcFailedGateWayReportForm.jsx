@@ -1,8 +1,10 @@
 import { Formik, Form, Field } from "formik";
-import useMetroTotalCommonStore from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useEffect } from "react";
 
-const MetroFailedGateWayReportForm = ({
+
+const RtcFailedGateWayReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
@@ -12,20 +14,24 @@ const MetroFailedGateWayReportForm = ({
     setDeepInnerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = useMetroTotalCommonStore();
+    outerFilters,
+  } = busPassTotalCommonStore();
   console.log("outerFilters", innerFilters);
-  const { fetchMetroTotalTransactions } = useMetroTotalTransactionsStore();
+  const { fetchRtcTotalTransactions, AllBusPassesData, fetchAllBusPasses } = useBusPassTotalTransactionStore();
+  useEffect(() => {
+    fetchAllBusPasses();
+  }, []);
   const initialValues = {
-    startDate: (deepInnerFilters.startDate ?? innerFilters.fromDate) ?? "",
-    endDate: (deepInnerFilters.endDate ?? innerFilters.toDate) ?? "",
-    phoneNumber: (deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber) ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode ?? "",
+    startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? "",
+    endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? "",
+    phoneNumber: (deepInnerFilters.mobileNumber || innerFilters.mobileNumber) ?? "",
+    BusPassType:(deepInnerFilters.BusPassType||innerFilters.BusPassType) ?? "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
     setDeepInnerFilters(values);
-    fetchMetroTotalTransactions({
+    fetchRtcTotalTransactions({
       ...values,
       status: innerFilters.status,
       subCategory: innerFilters.subCategory,
@@ -105,27 +111,29 @@ const MetroFailedGateWayReportForm = ({
                 }}
               />
             </div>
-            {/*Payment Mode */}
             <div>
               <label
-                htmlFor="PaymentMode"
+                htmlFor="BusPassType"
                 className="block text-xs font-medium text-gray-700"
               >
-                Payment Mode
+                Bus Pass Type
               </label>
               <Field
                 as="select"
-                name="PaymentMode"
+                name="BusPassType"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
-                  setFieldValue("PaymentMode", e.target.value);
+                  setFieldValue("BusPassType", e.target.value);
                 }}
               >
-                <option value="">Select Mode</option>
-                <option value="upi">UPI</option>
-                <option value="creditCard">Credit Card</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="netBanking">Net Banking</option>
+                <option value="">All</option>
+                {
+                  AllBusPassesData?.map((item) => (
+                    <option value={item.passTypeId}>{item.passTypeName}</option>
+                  ))
+                }
+                
+                
               </Field>
             </div>
             <div className="flex items-end">
@@ -143,4 +151,4 @@ const MetroFailedGateWayReportForm = ({
   );
 };
 
-export default MetroFailedGateWayReportForm;
+export default RtcFailedGateWayReportForm;

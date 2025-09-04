@@ -4,68 +4,75 @@ import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
 
-
-import MetroNotGeneratedChart from "../../charts/MetroNotGeneratedChart";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import {
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../../utils/Helper";
 import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../../../Breadcrumb";
 
+import BusPassNotGeneratedChart from "../../charts/BusPassNotGeneratedChart";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcNotGenerated = () => {
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-  busPassTotalCommonStore();
-  
- 
+    busPassTotalCommonStore();
+
+    const {
+      fetchRtcTicketNotGeneratedPieChart,
+      RtcTicketNotGeneratedPieChartData,
+      RtcisTicketNotGeneratedPieChartLoading,
+      AllBusPassesData,
+      fetchAllBusPasses,
+    } = useBusPassTotalTransactionStore();
+
   useEffect(() => {
-    // fetchTicketNotGeneratedPieChart({
-    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    //   mobileNumber:
-    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    //   BusPassType:
-    //     (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
-    // });
+    fetchRtcTicketNotGeneratedPieChart({
+      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
+      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
+      mobileNumber:
+        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
+    });
+    fetchAllBusPasses();
   }, []);
 
   const initialValues = {
-    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    BusPassType: (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
+    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters(values);
-    // fetchTicketNotGeneratedPieChart(values);
+    fetchRtcTicketNotGeneratedPieChart(values);
   };
-  const totalCount = Array.isArray(TicketNotGeneratedPieChartData)
-    ? TicketNotGeneratedPieChartData.reduce(
+  const totalCount = Array.isArray(RtcTicketNotGeneratedPieChartData)
+    ? RtcTicketNotGeneratedPieChartData.reduce(
         (sum, item) => sum + item.totalCount,
         0
       )
     : 0;
 
-      const breadcrumbItems = [
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions ',
+      label: "Total Transactions ",
       path: `/bus-pass-total-transaction`,
-      onclick:()=>resetInnerFilters(),
+      onclick: () => resetInnerFilters(),
     },
     {
-      label: 'Payment Successful but Ticket not Generated',  
-      isLast: true
-    }
+      label: "Payment Successful but Ticket not Generated",
+      isLast: true,
+    },
   ];
 
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -143,29 +150,30 @@ const RtcNotGenerated = () => {
                   />
                 </div>
 
-                  {/* bus pass type */}
-            <div>
-              <label
-                htmlFor="BusPassType"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Bus Pass Type
-              </label>
-              <Field
-                as="select"
-                name="BusPassType"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("BusPassType", e.target.value);
-                }}
-              >
-                <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
-                
-              </Field>
-            </div>
+                {/* bus pass type */}
+                <div>
+                  <label
+                    htmlFor="BusPassType"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Bus Pass Type
+                  </label>
+                  <Field
+                    as="select"
+                    name="BusPassType"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onChange={(e) => {
+                      setFieldValue("BusPassType", e.target.value);
+                    }}
+                  >
+                    <option value="">All</option>
+                    {
+                      AllBusPassesData?.map((item) => (
+                        <option value={item.passTypeId}>{item.passTypeName}</option>
+                      ))
+                    }
+                  </Field>
+                </div>
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"
@@ -185,12 +193,12 @@ const RtcNotGenerated = () => {
                         BusPassType: "",
                       });
                       // resetInnerFilters();
-                      // fetchTicketNotGeneratedPieChart({
-                      //   fromDate: startOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      //   BusPassType: "",
-                      // });
+                      fetchRtcTicketNotGeneratedPieChart({
+                        fromDate: startOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        BusPassType: "",
+                      });
                     }}
                   >
                     Reset
@@ -204,13 +212,13 @@ const RtcNotGenerated = () => {
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                 {/* <Loader/> */}
 
-                {isTicketNotGeneratedPieChartLoading && (
+                {RtcisTicketNotGeneratedPieChartLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroNotGeneratedChart
-                  data={totalCount !== 0 ? TicketNotGeneratedPieChartData : []}
+                <BusPassNotGeneratedChart
+                  data={totalCount !== 0 ? RtcTicketNotGeneratedPieChartData : []}
                   title="Payment Successful but Ticket not Generated"
                   angleKey="subCategoryCount"
                   calloutLabelKey="subCategory"
