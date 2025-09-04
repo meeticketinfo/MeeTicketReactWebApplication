@@ -13,7 +13,7 @@ const BusPassUserDetailedReport = () => {
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-  const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
+  const userBusPassReportSearchParams = localStorage.getItem("userBusPassReportSearchParams");
   const {
     isBusPassUserDetailedReportsLoading,
     allBusPassUserDetailedReports,
@@ -60,13 +60,12 @@ const BusPassUserDetailedReport = () => {
           to={"/bus-pass-user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.purchaseDate,
-            MobileNo: params.data.MobileNo,
-            packageNames: params.data.packageNames,
-            houseNames: params.data.houseNames,
+            date: params.data.transactionDateandTime,
+            mobileNo: params.data.login_MobilNumber,
+            typeOfBusPass:params.data.typeOfBusPass,
             status: params.data.transactionStatus,
-            amount: params.data.amount,
-            bookingId: params.data.bookingId,
+            amount: params.data.confirmedTransactionAmount,
+            bookingId: params.data.applicationId,
             // backTitle: title(),
           }}
         >
@@ -75,7 +74,7 @@ const BusPassUserDetailedReport = () => {
       ),
     },
     {
-      field: "mobileNumber",
+      field: "login_MobilNumber",
       headerName: "Mobile Number",
       maxWidth: "150",
       headerClass: "text-blue-v2",
@@ -85,13 +84,6 @@ const BusPassUserDetailedReport = () => {
       field: "typeOfBusPass",
       headerName: "Type of Bus Pass",
       maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "modeOfTransaction",
-      headerName: "Mode of Transaction",
-      maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -148,9 +140,8 @@ const BusPassUserDetailedReport = () => {
     fetchBusPassUserDetailedReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      MobileNo: searchParams.get("MobileNo") || "",
-      packageId: searchParams.get("packageId") || "",
-      houseId: searchParams.get("houseId") || "",
+      mobileNo: searchParams.get("mobileNo") || "",
+      paymentMode: searchParams.get("paymentMode") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -167,7 +158,7 @@ const BusPassUserDetailedReport = () => {
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/amrabad-user-report?${userAmrabadReportSearchParams}`
+      path: `/bus-pass-user-report?${userBusPassReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
@@ -190,7 +181,7 @@ const BusPassUserDetailedReport = () => {
             </div>
             <div className="">
               <Link
-                to={`/bus-pass-user-report?${userAmrabadReportSearchParams}`}
+                to={`/bus-pass-user-report?${userBusPassReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back

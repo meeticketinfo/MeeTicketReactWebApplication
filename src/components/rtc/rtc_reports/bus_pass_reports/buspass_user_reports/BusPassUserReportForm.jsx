@@ -16,7 +16,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    MobileNo: searchParams.get("MobileNo") || "",
+    mobileNo: searchParams.get("mobileNo") || "",
   };
 
   const onSubmit = (values) => {
@@ -27,12 +27,12 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userAmrabadReportSearchParams", newSearchParams);
+    localStorage.setItem("userBusPassReportSearchParams", newSearchParams);
 
     fetchBusPassUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      MobileNo: values.MobileNo,
+      mobileNo: values.mobileNo,
       pageNumber:pageNumber,
       pageSize: pageSize,
     });
@@ -48,10 +48,10 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-    localStorage.setItem("userAmrabadReportSearchParams", "");
+    localStorage.setItem("userBusPassReportSearchParams", "");
     setValues(payload);
     fetchBusPassUserReports({ ...payload, pageNumber: pageNumber, pageSize: pageSize });
-    localStorage.setItem("userAmrabadReportSearchParams", "");
+    localStorage.setItem("userBusPassReportSearchParams", "");
   };
 
   return (
@@ -103,7 +103,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
             {/* mobile number */}
             <div>
               <label
-                htmlFor="phoneNumber"
+                htmlFor="mobileNo"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -111,7 +111,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <Field
                 type="text"
                 maxLength="10"
-                name="MobileNo"
+                name="mobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -120,7 +120,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("MobileNo", e.target.value);
+                  setFieldValue("mobileNo", e.target.value);
                 }}
               />
             </div>

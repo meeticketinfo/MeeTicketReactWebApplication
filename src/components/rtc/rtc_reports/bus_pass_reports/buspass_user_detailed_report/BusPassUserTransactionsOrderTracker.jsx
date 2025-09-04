@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import AgGridTable from "../../../../tables/AgGridTable";
+import AdminLayout from "../../../../../layouts/AdminLayout";
+import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useAmrabadTrackOrderStore } from "../../../../../store/amrabad/reports/TransactionTrackOrderStore";
+import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
@@ -29,10 +31,10 @@ const SimpleModal = ({ open, onClose, children }) => {
 
 const BusPassUserTransactionsOrderTracker = () => {
   const location = useLocation();
-  const { orderId, mobileNumber, packageNames, houseNames, date, amount, bookingId, backTitle } = location.state || {};
+  const { orderId, mobileNo, typeOfBusPass, houseNames, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const userAmrabadReportSearchParams = localStorage.getItem("userAmrabadReportSearchParams");
-  const userDetailedAmrabadReportSearchParams = localStorage.getItem("userDetailedAmrabadReportSearchParams");
+  const userBusPassReportSearchParams = localStorage.getItem("userBusPassReportSearchParams");
+  const userDetailedBusPassReportSearchParams = localStorage.getItem("userDetailedBusPassReportSearchParams");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
@@ -52,11 +54,10 @@ const BusPassUserTransactionsOrderTracker = () => {
     }
   };
   const {
-    AmrabadTransactionTrackingStatusByOrderIdData,
-    isFetchAmrabadTransactionTrackingStatusByOrderId,
-    fetchAmrabadTransactionTrackingStatusByOrderId,
-  } = useAmrabadTrackOrderStore();
-
+    fetchRtcTransactionTrackingStatusByOrderId,
+    RtcTransactionTrackingStatusByOrderIdData,
+    isFetchRtcTransactionTrackingStatusByOrderId,
+  } = useBusPassTotalTransactionStore();
   const [columnDefs] = useState([
     {
       headerName: "S.No",
@@ -115,17 +116,17 @@ const BusPassUserTransactionsOrderTracker = () => {
   ]);
 
   useEffect(() => {
-    fetchAmrabadTransactionTrackingStatusByOrderId(orderId);
+    fetchRtcTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/bus-pass-user-report?${userAmrabadReportSearchParams}`
+      path: `/bus-pass-user-report?${userBusPassReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
-      path: `/bus-pass-user-detailed-report?${userDetailedAmrabadReportSearchParams}`
+      path: `/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`
     },
     {
       label: 'User Transaction Order Tracking Report',
@@ -146,7 +147,7 @@ const BusPassUserTransactionsOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/bus-pass-user-detailed-report?${userDetailedAmrabadReportSearchParams}`}
+                to={`/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -166,7 +167,7 @@ const BusPassUserTransactionsOrderTracker = () => {
               <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
                <p className="text-sm font-semibold text-gray-900">
                 {orderId || 'N/A'}
-                {orderId && orderId != "Not Generated" && (
+                {/* {orderId && orderId != "Not Generated" && (
                   <NavLink
                     end
                     to={`/amrabad-admin/ticket-view-details/${orderId}`}
@@ -176,7 +177,7 @@ const BusPassUserTransactionsOrderTracker = () => {
                   >
                     <span>View Ticket Details</span>
                   </NavLink>
-                )}
+                )} */}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
@@ -186,29 +187,26 @@ const BusPassUserTransactionsOrderTracker = () => {
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
-              <p className="text-sm font-semibold text-gray-900">{mobileNumber || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{mobileNo || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Package Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{packageNames || 'N/A'}</p>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Type of Bus pass</h3>
+              <p className="text-sm font-semibold text-gray-900">{typeOfBusPass || 'N/A'}</p>
             </div>
-            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">House Name</h3>
-              <p className="text-sm font-semibold text-gray-900">{houseNames || 'N/A'}</p>
-            </div>
+           
           </div>
 
           <div>
             <AgGridTable
               showSearch={false}
               ExportName="UserStatusTransactionReport"
-              rowData={AmrabadTransactionTrackingStatusByOrderIdData}
+              rowData={RtcTransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchAmrabadTransactionTrackingStatusByOrderId}
+              isFetchLoading={isFetchRtcTransactionTrackingStatusByOrderId}
             />
           </div>
         </div>

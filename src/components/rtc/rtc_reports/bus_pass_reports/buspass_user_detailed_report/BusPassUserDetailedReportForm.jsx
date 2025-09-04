@@ -41,7 +41,7 @@ const BusPassUserDetailedReportForm = ({
         }
       }
       localStorage.setItem(
-        "userDetailedAmrabadReportSearchParams",
+        "userDetailedBusPassReportSearchParams",
         newSearchParams.toString()
       );
     }
@@ -53,9 +53,8 @@ const BusPassUserDetailedReportForm = ({
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    packageId: searchParams.get("packageId") || "",
-    houseId: searchParams.get("houseId") || "",
-    MobileNo: searchParams.get("MobileNo") || "",
+    paymentMode: searchParams.get("paymentMode") || "",
+    mobileNo: searchParams.get("mobileNo") || "",
   };
 
   const onSubmit = (values) => {
@@ -66,14 +65,13 @@ const BusPassUserDetailedReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userDetailedAmrabadReportSearchParams", newSearchParams.toString());
+    localStorage.setItem("userDetailedBusPassReportSearchParams", newSearchParams.toString());
 
     fetchBusPassUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      MobileNo: values.MobileNo,
-      packageId: values.packageId || "",
-      houseId: values.houseId || "",
+      mobileNo: values.mobileNo,
+      paymentMode: values.paymentMode || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -129,7 +127,7 @@ const BusPassUserDetailedReportForm = ({
             {/* mobile number */}
             <div>
               <label
-                htmlFor="MobileNo"
+                htmlFor="mobileNo"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -137,7 +135,7 @@ const BusPassUserDetailedReportForm = ({
               <Field
                 type="text"
                 maxLength="10"
-                name="MobileNo"
+                name="mobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -146,62 +144,33 @@ const BusPassUserDetailedReportForm = ({
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("MobileNo", e.target.value);
+                  setFieldValue("mobileNo", e.target.value);
                 }}
               />
             </div>
-            <div>
+           <div>
               <label
-                htmlFor="packageId"
+                htmlFor="paymentMode"
                 className="block text-xs font-medium text-gray-700"
               >
-                Packages
+                Payment Mode
               </label>
               <Field
                 as="select"
-                name="packageId"
-                placeholder="Select Package"
+                name="paymentMode"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
-                  const packageId = e.target.value;
-                  setFieldValue("packageId", packageId);
-                  // Clear house selection when package changes
-                  setFieldValue("houseId", "");
-                  if (packageId) {
-                    getHouses(packageId);
-                  }
+                  setFieldValue("paymentMode", e.target.value);
                 }}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">Select Package</option>
-                {AllPackages.map((item) => (
-                  <option key={item.packageId} value={item.packageId}>
-                    {item.packageName}
-                  </option>
-                ))}
+                <option value="">Select Mode</option>
+                <option value="upi">UPI</option>
+                <option value="creditCard">Credit Card</option>
+                <option value="debitCard">Debit Card</option>
+                <option value="netBanking">Net Banking</option>
               </Field>
             </div>
-            <div>
-              <label
-                htmlFor="houseId"
-                className="block text-xs font-medium text-gray-700"
-              >
-                House
-              </label>
-              <Field
-                as="select"
-                name="houseId"
-                placeholder="Select House"
-                disabled={values.packageId == ""}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select House</option>
-                {AllHouses.map((item) => (
-                  <option key={item.roomId} value={item.roomId}>
-                    {item.roomName}
-                  </option>
-                ))}
-              </Field>
-            </div>
+         
             <div className="flex items-end">
               <button
                 type="submit"

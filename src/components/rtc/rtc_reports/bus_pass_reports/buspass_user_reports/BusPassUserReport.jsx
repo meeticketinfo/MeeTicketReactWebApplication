@@ -34,14 +34,14 @@ const BusPassUserReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "form_MobileNumber",
-      // maxWidth: 120,
-      flex: 1,
-      headerName: "Form Mobile No.",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+    // {
+    //   field: "form_MobileNumber",
+    //   // maxWidth: 120,
+    //   flex: 1,
+    //   headerName: "Form Mobile No.",
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value ?? "N/A",
+    // },
     {
       field: "registrationDate",
       // maxWidth: 200,
@@ -91,7 +91,7 @@ const BusPassUserReport = () => {
     fetchBusPassUserReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      MobileNo: searchParams.get("MobileNo") || "",
+      mobileNo: searchParams.get("mobileNo") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
