@@ -273,7 +273,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
               >
                 <option value="">Select Payment Status</option>
                 <option value="CONFIRMED">Confirmed</option>
-                <option value="FAILED">Failed</option>
+                <option value="CANCELLED">Cancelled</option>
               </Field>
             </div>
 
