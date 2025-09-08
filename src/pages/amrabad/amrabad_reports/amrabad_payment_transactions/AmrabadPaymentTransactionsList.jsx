@@ -189,7 +189,7 @@ function AmrabadPaymentTransactionsList() {
       cellRenderer: (params) => {
         const isDisabled = params.data.isTicketGenerated;
         // || params.data.isTicketGenerated;
-
+      
         return (
           <div className="flex justify-center mt-1">
             <button
@@ -251,7 +251,7 @@ function AmrabadPaymentTransactionsList() {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         const PaytmStatus = params?.data?.actual_PaytmStatus;
-        const canView = PaytmStatus && PaytmStatus === "TXN_SUCCESS" && params?.data?.amountPaid > 0;
+        const canView =  (PaytmStatus === "TXN_SUCCESS" && params?.data?.isTicketGenerated===true);
         return (
           <div className="flex justify-center mt-1">
             {canView ? (
