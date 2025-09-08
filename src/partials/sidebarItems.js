@@ -375,6 +375,11 @@ const sidebarItems = [
         path: "/pending-pass",
       },
       {
+        title: "Booking Report",
+        icon: MdEventAvailable,
+        path: "/bus-pass-booking-report",
+      },
+      {
         title: "User Report",
         icon: MdEventAvailable,
         path: "/bus-pass-user-report",

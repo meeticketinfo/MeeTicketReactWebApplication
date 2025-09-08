@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
-
 import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
@@ -21,20 +20,19 @@ const RtcNotGenerated = () => {
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     busPassTotalCommonStore();
 
-    const {
-      fetchRtcTicketNotGeneratedPieChart,
-      RtcTicketNotGeneratedPieChartData,
-      RtcisTicketNotGeneratedPieChartLoading,
-      AllBusPassesData,
-      fetchAllBusPasses,
-    } = useBusPassTotalTransactionStore();
+  const {
+    fetchRtcTicketNotGeneratedPieChart,
+    RtcTicketNotGeneratedPieChartData,
+    RtcisTicketNotGeneratedPieChartLoading,
+    AllBusPassesData,
+    fetchAllBusPasses,
+  } = useBusPassTotalTransactionStore();
 
   useEffect(() => {
     fetchRtcTicketNotGeneratedPieChart({
-      fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-      toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-      mobileNumber:
-        (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
+      fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+      toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+      mobileNumber:innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
       BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
     });
     fetchAllBusPasses();
@@ -167,11 +165,11 @@ const RtcNotGenerated = () => {
                     }}
                   >
                     <option value="">All</option>
-                    {
-                      AllBusPassesData?.map((item) => (
-                        <option value={item.passTypeId}>{item.passTypeName}</option>
-                      ))
-                    }
+                    {AllBusPassesData?.map((item) => (
+                      <option value={item.passTypeId}>
+                        {item.passTypeName}
+                      </option>
+                    ))}
                   </Field>
                 </div>
                 <div className="flex items-end gap-2">
@@ -218,7 +216,9 @@ const RtcNotGenerated = () => {
                   </div>
                 )}
                 <BusPassNotGeneratedChart
-                  data={totalCount !== 0 ? RtcTicketNotGeneratedPieChartData : []}
+                  data={
+                    totalCount !== 0 ? RtcTicketNotGeneratedPieChartData : []
+                  }
                   title="Payment Successful but Ticket not Generated"
                   angleKey="subCategoryCount"
                   calloutLabelKey="subCategory"

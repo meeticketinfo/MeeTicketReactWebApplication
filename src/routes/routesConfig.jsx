@@ -168,12 +168,13 @@ import RtcFailedOtherReason from "../components/rtc/rtc_reports/bus_pass_reports
 import RtcFailedGateway from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_gateway/RtcFailedGateway";
 import RtcNotGenerated from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_not_generated/RtcNotGenerated";
 import BusPassTotalReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/busPassTotalReport";
-
 import RtcFailedGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_gateway/RtcFailedGatewayReport";
-
 import RtcFailedOtherReasonReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_other_reason/RtcFailedOtherReasonReport";
 import RtcNotGeneratedReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_not_generated/RtcNotGeneratedReport";
 import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/rtc_track_order/RtcTotalTracker";
+
+import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
+import ViewBusPass from "../components/rtc/components/ViewBusPass";
 
 export const routes = [
   {
@@ -537,6 +538,11 @@ export const routes = [
   },
 
   {
+    path: "/bus-pass-booking-report",
+    element: <ProtectedRoute element={<BusPassBookingReport />} />,
+  },
+
+  {
     path: "/day-pass",
     element: <ProtectedRoute element={<DayPassReport />} />,
   },
@@ -573,6 +579,11 @@ export const routes = [
     element: (
       <ProtectedRoute element={<BusPassUserTransactionsOrderTracker />} />
     ),
+  },
+
+  {
+    path: "/bus-pass-view-pass",
+    element: <ProtectedRoute element={<ViewBusPass />} />,
   },
   // Tourism
   {
