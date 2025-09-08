@@ -60,7 +60,8 @@ export const usePaymentStore = create((set) => ({
   cancelTicket: async (data) => {
     set({ loadingCancelTicket: true });
     try {
-      const response = await apiService.post(API_ENDPOINTS.AMRABAD.USER.CANCEL_TICKET, data);
+      const param = `?bookingId=${data.bookingId}&reason=${data.reason}&IsCancelled=${true}`;
+      const response = await apiService.put(`${API_ENDPOINTS.AMRABAD.USER.CANCEL_TICKET_WEB}${param}`);
       return response.data;
     } catch (error) {
       toast.error(error.response.data.message || "Some thing went wrong");

@@ -19,32 +19,37 @@ const BookingHistory = () => {
     fetchUserBookingHistory();
   }, [fetchUserBookingHistory]);
 
+  // Remove duplicate bookings based on bookingId
+  const uniqueBookings = GetUserBookingHistory.filter((booking, index, self) => 
+    index === self.findIndex(b => b.bookingId === booking.bookingId)
+  );
+
   const tabs = [
-    { id: "all", label: "All Bookings", count: GetUserBookingHistory.length },
+    { id: "all", label: "All Bookings", count: uniqueBookings.length },
     {
       id: "upcoming",
       label: "Upcoming",
-      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Upcoming").length,
+      count: uniqueBookings.filter((booking) => booking.historyStatus === "Upcoming").length,
     },
     {
       id: "cancelled",
       label: "Cancelled",
-      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Cancelled")
+      count: uniqueBookings.filter((booking) => booking.historyStatus === "Cancelled")
         .length,
     },
     {
       id: "past",
       label: "Past",
-      count: GetUserBookingHistory.filter((booking) => booking.historyStatus === "Past").length,
+      count: uniqueBookings.filter((booking) => booking.historyStatus === "Past").length,
     },
   ];
 
   const config = {
-    all: { component: <AllBookings data={GetUserBookingHistory} searchQuery={searchQuery} /> },
+    all: { component: <AllBookings data={uniqueBookings} searchQuery={searchQuery} /> },
     upcoming: {
       component: (
         <UpcomingBookings
-          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Upcoming")}
+          data={uniqueBookings.filter((booking) => booking.historyStatus === "Upcoming")}
           searchQuery={searchQuery}
         />
       ),
@@ -52,7 +57,7 @@ const BookingHistory = () => {
     cancelled: {
       component: (
         <CancelledBookings
-          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Cancelled")}
+          data={uniqueBookings.filter((booking) => booking.historyStatus === "Cancelled")}
           searchQuery={searchQuery}
         />
       ),
@@ -60,7 +65,7 @@ const BookingHistory = () => {
     past: {
       component: (
         <PastBookings
-          data={GetUserBookingHistory.filter((booking) => booking.historyStatus === "Past")}
+          data={uniqueBookings.filter((booking) => booking.historyStatus === "Past")}
           searchQuery={searchQuery}
         />
       ),

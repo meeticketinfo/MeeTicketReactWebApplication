@@ -13,7 +13,9 @@ const CancelTicketModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
   const handleConfirm = async () => {
     const response = await cancelTicket({
       bookingId: bookingId,
-      reason: cancellationReason
+      reason: cancellationReason,
+      
+      
     });
     if (response.statusCode === 200) {
       onConfirm();
