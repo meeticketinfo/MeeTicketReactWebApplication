@@ -118,13 +118,13 @@ const BusPassTotalReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-        field: "noOfTickets",
-        headerName: "Mode of Transaction",
-        maxWidth: "120",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
+    // {
+    //     field: "noOfTickets",
+    //     headerName: "Mode of Transaction",
+    //     maxWidth: "120",
+    //     headerClass: "text-blue-v2",
+    //     valueFormatter: (params) => params.value ?? "N/A",
+    //   },
     {
       field: "amount",
       headerName: "Amount",
@@ -138,7 +138,7 @@ const BusPassTotalReport = () => {
     {
       field: "paymentMode",
       headerName: "Mode of Payment",
-      maxWidth: "140",
+      maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -171,7 +171,7 @@ const BusPassTotalReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
+        <span title={params.value ?? "N/A"}>{params.value ?? "N/A"}</span>
       ),
     },
   ];

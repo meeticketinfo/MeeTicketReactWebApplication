@@ -23,6 +23,7 @@ export const useBookingHistoryStore = create((set) => ({
     } catch (error) {
       set({
         isUserBookingHistoryLoading: false,
+        GetUserBookingHistory: [],
       });
       toast(error.response.data.message || "Some thing went wrong");
     }

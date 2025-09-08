@@ -160,9 +160,9 @@ const AmrabadFailedGatewayReport = ( ) => {
         maxWidth: "220",
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "N/A",
-        cellRenderer: (params) => (
-          <span title={params.value}>{params.value}</span>
-        ),
+        // cellRenderer: (params) => (
+        //   <span title={params.value}>{params.value}</span>
+        // ),
       },
       {
         field: "orderId",

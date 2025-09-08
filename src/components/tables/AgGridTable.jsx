@@ -69,16 +69,10 @@ const AgGridTable = ({
           ExportName && typeof ExportName === "string"
             ? `${ExportName}.xlsx`
             : "Report.xlsx",
-        columnKeys: gridApi
-          .getColumnDefs()
-          .filter(col => {
-            // Exclude columns with "Actions" in field name or header name
-            const fieldName = col.field || '';
-            const headerName = col.headerName || '';
-            return !fieldName.toLowerCase().includes('actions') && 
-                   !headerName.toLowerCase().includes('actions');
-          })
-          .map(col => col.field || col.colId || col.headerName),
+        // columnKeys: gridApi
+        // .getColumnDefs()
+        // .filter(col => col.field !== "actions")
+        // .map(col => col.field),
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];
@@ -103,11 +97,6 @@ const AgGridTable = ({
         },
         processCellCallback: (params) => {
           let value = params.value;
-
-          // Handle S.No column for totals row - keep empty instead of "N/A"
-          if (params.column.getColId() === "0" && params.node.rowPinned === "bottom") {
-            return "";
-          }
 
           // Ensure "Refund ID" and empty values show "N/A"
           if (value === null || value === undefined || value === "") {
@@ -151,21 +140,21 @@ const AgGridTable = ({
   return (
     <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
       {/* Search and Export Buttons */}
-      <div className="ag-grid-toolbar flex flex-col sm:flex-row justify-between items-start sm:items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm gap-2 sm:gap-0">
+      <div className="ag-grid-toolbar flex justify-between items-end p-1 bg-white rounded-2xl mb-2 shadow-sm backdrop-blur-sm">
         {showSearch && (
-          <div className="w-full sm:w-auto">
+          <div>
             <input
               type="text"
               placeholder="Search..."
               value={quickFilterText} // Controlled input
               onChange={handleQuickFilterChange}
-              className={`w-full sm:w-auto border border-gray-300 rounded-xl shadow-sm focus:outline-none bg-white text-xs sm:text-sm px-2 py-1 sm:py-1.5`}
+              className={` border border-gray-300  rounded-xl shadow-sm focus:outline-none bg-white text-sm`}
             />
           </div>
         )}
-        <div className="flex items-center gap-2 md:gap-4 ml-auto flex-wrap">
-          {(showTotalCount && rowData.length > 0) && <span className="text-xs md:text-sm font-semibold text-gray-500 py-1 md:py-1.5 px-2 md:px-3 bg-gray-100 rounded-xl border whitespace-nowrap">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
-          <div className="flex bg-gray-100 p-1 md:p-2 rounded-xl gap-2 md:gap-4 items-end shadow-md border border-v1">
+        <div className="flex items-center gap-4 ml-auto">
+          {(showTotalCount && rowData.length > 0) && <span className="text-sm font-semibold text-gray-500 py-1.5 px-3 bg-gray-100 rounded-xl border">Total Count: <span className="text-blue-v2">{totalCount}</span></span>}
+          <div className="flex bg-gray-100 p-2 rounded-xl gap-4 items-end shadow-md border border-v1">
             <button onClick={handleExportExcel} className="ag-grid-button">
               <FaFileCsv className="text-blue-v2 text-xl" />
             </button>

@@ -4,13 +4,14 @@ import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStor
 import { useEffect } from "react";
 import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
 import { useAmrabadBookingStore } from "../amrabad_consolidated/store/amarabadBookingstore";
+import { useAmrabadHouseWiseReportStore } from "../amrabad_individual/store/amarabadHouseWiseReportStore";
 
 const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fromDate, toDate, packageId, roomId, bookingDate }) => {
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
 
   const { fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
-  
+  const { fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading } = useAmrabadHouseWiseReportStore();
   // Clear saved filters when component mounts to ensure fresh state
   useEffect(() => {
     // Clear any previously saved filters when component mounts
@@ -58,7 +59,7 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
     const savedFilters = JSON.parse(
       localStorage.getItem("amrabad-availability-inner-report-filters")
     );
-    fetchAllAmrabadBookings({
+    fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,
       bookingSource: "Booking",
@@ -255,9 +256,9 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchAllAmrabadBookingsLoading}
+                disabled={isFetchAllAmrabadHouseWiseReportsLoading}
               >
-                {isFetchAllAmrabadBookingsLoading ? 'Searching...' : 'Search'}
+                {isFetchAllAmrabadHouseWiseReportsLoading ? 'Searching...' : 'Search'}
               </button>
               {/* <button
                 type="button"

@@ -47,7 +47,7 @@ const RtcTotalTracker = () => {
       },
     },
     {
-      field: "transactionStatus",
+      field: "bpTransactionStatus",
       flex: 1,
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
