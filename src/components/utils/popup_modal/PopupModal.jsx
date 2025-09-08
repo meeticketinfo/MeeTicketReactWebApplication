@@ -22,9 +22,9 @@ const PopupModal = ({
 }) => {
   const sizeClasses = {
     small: "max-w-md w-full",
-    medium: "max-w-4xl w-full",
-    large: "max-w-6xl w-full",
-    Extralarge: "max-w-6xl w-full",
+    medium: "max-w-2xl sm:max-w-3xl md:max-w-4xl w-full",
+    large: "max-w-4xl sm:max-w-5xl md:max-w-6xl w-full",
+    Extralarge: "max-w-4xl sm:max-w-5xl md:max-w-6xl w-full",
   };
 
   useEffect(() => {
@@ -78,11 +78,11 @@ const PopupModal = ({
           leaveTo="transform scale-95"
         >
           <div
-            className={`${contentClassName} ${sizeClasses[size]} relative rounded-lg my-8`}
+            className={`${contentClassName} ${sizeClasses[size]} relative rounded-lg my-2 sm:my-4 md:my-6 lg:my-8 mx-2 sm:mx-4`}
             onClick={(e) => e.stopPropagation()}
           >
             {title && (
-              <div className={`px-6 py-4 border-b border-gray-200 ${titleColour}`}>
+              <div className={`px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 ${titleColour}`}>
                 <h3 className={titleClassName}>{title}</h3>
               </div>
             )}
@@ -91,22 +91,22 @@ const PopupModal = ({
             <div
               className={`${
                 defaultBodyPadding ? "" : ""
-              } ${overFlow?"overflow-y-auto max-h-[60vh]":"max-h-[90vh]"}`}
+              } ${overFlow ? "overflow-y-auto max-h-[75vh] sm:max-h-[80vh] md:max-h-[85vh] lg:max-h-[90vh]" : "max-h-[95vh]"}`}
               style={size === "Extralarge" ? { maxHeight: "85vh" } : {}}
             >
               {children}
             </div>
 
             {footer && (
-              <div className="px-6 py-4 border-t border-gray-200">{footer}</div>
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200">{footer}</div>
             )}
 
             {closeButton && (
               <button
-                className="absolute top-1 right-2 text-black font-semibold hover:text-gray-700 flex items-center content-center px-6 py-4"
+                className="absolute top-1 right-1 sm:right-2 text-black font-semibold hover:text-gray-700 flex items-center content-center px-2 sm:px-6 py-2 sm:py-4"
                 onClick={onClose}
               >
-                <IoClose className="text-xl" />
+                <IoClose className="text-lg sm:text-xl" />
               </button>
             )}
           </div>

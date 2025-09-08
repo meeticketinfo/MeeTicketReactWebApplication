@@ -101,13 +101,13 @@ const RtcFailedGatewayReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "noOfTickets",
-      headerName: "Mode of Transaction",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+    // {
+    //   field: "noOfTickets",
+    //   headerName: "Mode of Transaction",
+    //   maxWidth: "120",
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value ?? "N/A",
+    // },
     {
       field: "amount",
       headerName: "Amount",
@@ -120,7 +120,7 @@ const RtcFailedGatewayReport = () => {
     {
       field: "paymentMode",
       headerName: "Mode of Payment",
-      maxWidth: "140",
+      maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
