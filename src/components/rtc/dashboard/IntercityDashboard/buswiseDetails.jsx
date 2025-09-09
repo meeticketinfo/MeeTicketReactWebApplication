@@ -70,9 +70,9 @@ const BuswiseDetails = () => {
   );
 
   const BusServiceCard = ({ service }) => (
-    <div className="bg-white rounded-xl shadow-md p-6  transition-shadow duration-200 border border-gray-200">
+    <div className="bg-white rounded-xl shadow-md p-3  transition-shadow duration-200 border border-gray-200">
       {/* Header with bus icon and service name */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-0">
         <div className="text-2xl text-blue-600">
           <FaBus />
         </div>
@@ -80,13 +80,13 @@ const BuswiseDetails = () => {
       </div>
       
       {/* Total Tickets */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-2">
         <span className="text-sm text-gray-600">Total Tickets</span>
         <span className="text-xl font-bold text-gray-800">{service.totalTickets.toLocaleString()}</span>
       </div>
       
       {/* Adults & Children Breakdown */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex gap-3 mb-0">
         <div className="flex-1 bg-blue-50 rounded-lg p-3 text-center">
           <div className="text-xs text-gray-600 mb-1">Adults</div>
           <div className="text-lg font-bold text-blue-600">{service.adults.toLocaleString()}</div>
@@ -131,7 +131,7 @@ const BuswiseDetails = () => {
       </div>
       
       {/* Bus Service Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredServices.map((service, index) => (
           <BusServiceCard key={index} service={service} />
         ))}
