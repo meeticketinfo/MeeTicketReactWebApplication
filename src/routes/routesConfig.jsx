@@ -162,7 +162,7 @@ import BusPassUserDetailedReport from "../components/rtc/rtc_reports/bus_pass_re
 import BusPassUserTransactionsOrderTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserTransactionsOrderTracker";
 import BusPassMainTotalTransactionReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/BusPassMainTotalTransactionReport";
 import MainIntercityTotalTransaction from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/mainIntercityTotalTransactionReport";
-import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
+// import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
 import IntercityNotGenerated from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
 import RtcFailedOtherReason from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_other_reason/RtcFailedOtherReason";
 import RtcFailedGateway from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_gateway/RtcFailedGateway";
@@ -172,9 +172,12 @@ import RtcFailedGatewayReport from "../components/rtc/rtc_reports/bus_pass_repor
 import RtcFailedOtherReasonReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_other_reason/RtcFailedOtherReasonReport";
 import RtcNotGeneratedReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_not_generated/RtcNotGeneratedReport";
 import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/rtc_track_order/RtcTotalTracker";
-
+import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGeneratedReport";
 import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
 import ViewBusPass from "../components/rtc/components/ViewBusPass";
+import IntercityFailedOtherReason from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReason";
+import IntercityFailedOtherReasonReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReasonReport";
+import IntercityFailedGateway from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGateway";
 
 export const routes = [
   {
@@ -862,14 +865,18 @@ export const routes = [
     element: <ProtectedRoute element={<MainIntercityTotalTransaction />} />,
   },
 
-  // {
-  //   path: "/intercity-failed-other-reason",
-  //   element: <ProtectedRoute element={<IntercityFailedOtherReason/>} />,
-  // },
-  // {
-  //   path: "/intercity-failed-gateway",
-  //   element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
-  // },
+  {
+    path: "/intercity-failed-other-reason",
+    element: <ProtectedRoute element={<IntercityFailedOtherReason/>} />,
+  },
+  {
+    path: "/intercity-failed-other-reasons-report",
+    element: <ProtectedRoute element={<IntercityFailedOtherReasonReport/>} />,
+  },
+  {
+    path: "/intercity-failed-gateway",
+    element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
+  },
 
   // {
   //   path: "/intercity-failed-gateway-report",

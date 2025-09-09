@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../../../tables/AgGridTable";
+
+import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AgGridTable from "../../../../../../../components/tables/AgGridTable";
+import IntercityFailedOtherReasonReportForm from "./IntercityFailedOtherReasonReportForm";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../../../utils/Helper";
+import {
+  formatDateTime,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import IntercityNotGeneratedReportForm from "./IntercityNotGeneratedReportForm";
-import Breadcrumb from "../../../../../../../components/Breadcrumb";
 
-const IntercityNotGeneratedReport = () => {
-
-
+const IntercityFailedOtherReasonReport = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const packageName = searchParams.get("package");
@@ -22,9 +26,16 @@ const IntercityNotGeneratedReport = () => {
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
   const subCategory = searchParams.get("subCategory");
-  const {innerFilters,outerFilters,deepInnerFilters,resetDeepInnerFilters} = useAmrabadTotalCommonStore();
 
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
+  const {
+    innerFilters,
+    outerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+    resetInnerFilters
+  } = AmarabadTotalCommonStore();
   const {
     fetchAmrabadTotalTransactions,
     AmrabadTotalTransactionsData,
@@ -35,23 +46,26 @@ const IntercityNotGeneratedReport = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
+
   useEffect(() => {
     fetchAmrabadTotalTransactions({
-      startDate: fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
-      endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
-      phoneNumber:
-        mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
+      startDate:
+       fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? startOfDay  ,
+      endDate:
+        toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? endOfDay,
+      phoneNumber:  
+      mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ??  "",
       PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: innerFilters.status ?? "",
       subCategory: subCategory ?? innerFilters.subCategory ?? "",
-      package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
+      package:
+        packageName ?? innerFilters.package ?? outerFilters.package ?? "",
       house: house ?? innerFilters.house ?? outerFilters.house ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage, packageName, house, mobileNumber, fromDate, toDate, subCategory]);  
-  
+  }, [PAGE_LIMIT, currentPage]);
+
   const columnDefs = [
     {
       headerName: "S.No",
@@ -80,7 +94,8 @@ const IntercityNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/intercity-not-generated-view-track-order"}
+          to={"/intercity-view-track-order"}
+
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -88,7 +103,7 @@ const IntercityNotGeneratedReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
-            subCategory: params.data.subCategory, 
+            subCategory: params.data.subCategory,
             packageName: params.data.packageName,
             houseName: params.data.roomName,
           }}
@@ -98,14 +113,13 @@ const IntercityNotGeneratedReport = () => {
       ),
     },
 
-      
-      {
-        field: "userName",
-        headerName: "User Name",
-        maxWidth: "120",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
+    {
+      field: "userName",
+      headerName: "User Name",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
 
     {
       field: "mobileNumber",
@@ -193,37 +207,38 @@ const IntercityNotGeneratedReport = () => {
   ];
   const breadcrumbItems = [
     {
-      label: 'Total Transactions Report',
-      path: `/amarabad-total-transaction`
-    },
-     {
-      label: 'Ticket Not Generated Transactions Report',  
-      path: `/amrabad-not-generated`,
-      //  onclick:()=>{resetDeepInnerFilters()
-        
-      // },
+      label: "Total Transactions Report",
+      path: `/amrabad-failed-other-reason`,
     },
     {
-      label: subCategory ? `${subCategory.replace(/([A-Z])/g, " $1").trim()}` : "Payment Successful but Ticket not Generated Report",  
-      isLast: true
-    }
+      label: "Total Failed (Other Reasons)",
+      path: `/amrabad-failed-other-reason`,
+      onclick: () => {
+        resetDeepInnerFilters();
+      },
+    },
+    {
+      label: (subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim() || "Total Failed (Other Reasons) Report",
+      isLast: true,
+    },
   ];
   return (
     <AdminLayout>
-      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <div className="mb-6">
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+        </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Successful but Ticket not Generated - {(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()} Report
+             Total Failed (Other Reasons) -
+              {(subCategory || innerFilters.subCategory || "").replace(/([A-Z])/g, " $1").trim()}{" "}
+              Report
             </h1>
           </div>
           <div className="">
             <Link
-              to={`/amrabad-not-generated?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
+              to={`/intercity-failed-other-reason?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -235,7 +250,7 @@ const IntercityNotGeneratedReport = () => {
         </div>
 
         <div>
-          <IntercityNotGeneratedReportForm
+          <IntercityFailedOtherReasonReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
@@ -246,7 +261,7 @@ const IntercityNotGeneratedReport = () => {
             toDate={toDate}
             subCategory={subCategory}
           />
-           <AgGridTable
+          <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={AmrabadTotalTransactionsData}
             columnDefs={columnDefs}
@@ -268,4 +283,4 @@ const IntercityNotGeneratedReport = () => {
   );
 };
 
-export default IntercityNotGeneratedReport;
+export default IntercityFailedOtherReasonReport ;

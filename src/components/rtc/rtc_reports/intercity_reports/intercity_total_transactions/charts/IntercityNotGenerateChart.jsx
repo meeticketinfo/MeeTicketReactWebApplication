@@ -165,7 +165,7 @@ const IntercityNotGeneratedChart = ({
                       </td>
                       <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                         to={`/amrabad-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
+                         to={`/intercity-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
                          onClick={() => {
                           setInnerFilters({
                             ...innerFilters,

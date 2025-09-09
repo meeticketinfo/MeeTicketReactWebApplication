@@ -19,7 +19,7 @@ const MainDashboard = () => {
               >
                 Bus Pass
               </button>
-              {/* <button
+              <button
                 onClick={() => setActiveTab("intercity")}
                 className={`px-6 py-3 text-sm font-medium transition-colors relative ${
                   activeTab === "intercity"
@@ -28,7 +28,7 @@ const MainDashboard = () => {
                 }`}
               >
                 Intercity
-              </button> */}
+              </button>
             </div>
             {/* Half line under tabs */}
             <div className="w-1/2 h-px bg-gray-300 mt-0"></div>
@@ -36,7 +36,7 @@ const MainDashboard = () => {
         </div>
         <div className="col-span-full p-2">
       {activeTab === "buspass" && <BuspassDasboard />}
-      {/* {activeTab === "intercity" && <IntercitypassDasboard />} */}
+      {activeTab === "intercity" && <IntercitypassDasboard />}
       </div>
     </div>
   );
