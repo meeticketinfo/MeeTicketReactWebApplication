@@ -380,15 +380,21 @@ const sidebarItems = [
         path: "/bus-pass-booking-report",
       },
       {
+        title: "Total Transactions",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-total-transaction",
+      },
+      {
         title: "User Report",
         icon: MdEventAvailable,
         path: "/bus-pass-user-report",
       },
       {
-        title: "Total Transactions",
+        title: "Refund Transactions",
         icon: RiDashboard3Fill,
-        path: "/bus-pass-total-transaction",
+        path: "/bus-pass-refund-report",
       },
+
     ],
   },
   //intercity

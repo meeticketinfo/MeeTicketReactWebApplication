@@ -175,6 +175,9 @@ import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_
 
 import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
 import ViewBusPass from "../components/rtc/components/ViewBusPass";
+import BusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/BusPassRefundTransactions";
+import BusPassRefundTransactionsReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassRefundTransactionsReport";
+import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/MainBusPassRefundTransactions";
 
 export const routes = [
   {
@@ -580,7 +583,14 @@ export const routes = [
       <ProtectedRoute element={<BusPassUserTransactionsOrderTracker />} />
     ),
   },
-
+  {
+    path: "/bus-pass-refund-report",
+    element: <ProtectedRoute element={<MainBusPassRefundTransactions />} />,
+  },
+  {
+    path: "/bus-pass-refund-inner-report",
+    element: <ProtectedRoute element={<BusPassRefundTransactionsReport />} />,
+  },
   {
     path: "/bus-pass-view-pass",
     element: <ProtectedRoute element={<ViewBusPass />} />,
