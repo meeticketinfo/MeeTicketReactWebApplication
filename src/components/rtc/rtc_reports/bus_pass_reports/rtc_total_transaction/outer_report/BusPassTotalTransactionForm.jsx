@@ -21,9 +21,9 @@ const BusPassTotalTransactionForm = ({
   const { fetchRtcTotalTransactions, AllBusPassesData, fetchAllBusPasses } =
     useBusPassTotalTransactionStore();
 
-    useEffect(() => {
-      fetchAllBusPasses();
-    }, []);
+  useEffect(() => {
+    fetchAllBusPasses();
+  }, []);
   const initialValues = {
     startDate:
       (deepInnerFilters.startDate || outerFilters.fromDate) ?? startOfDay,
@@ -84,6 +84,7 @@ const BusPassTotalTransactionForm = ({
               <Field
                 type="datetime-local"
                 name="endDate"
+                max={values.startDate}
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
