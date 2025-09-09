@@ -185,5 +185,11 @@ fetchRtcTransactionTrackingStatusByOrderId: async (orderID="") => {
     });
   }
 },
+
+
+// Bus pass verify status
+// bus pass generate ticket
+// bus pass initiate refund
+// view bus pass 
   
 }));

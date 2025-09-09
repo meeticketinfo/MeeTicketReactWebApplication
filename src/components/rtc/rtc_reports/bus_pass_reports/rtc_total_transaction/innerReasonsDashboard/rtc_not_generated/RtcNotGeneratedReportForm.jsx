@@ -72,6 +72,7 @@ const RtcNotGeneratedReportForm = ({
               <Field
                 type="datetime-local"
                 name="endDate"
+                max={values.startDate}
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
@@ -122,7 +123,7 @@ const RtcNotGeneratedReportForm = ({
               >
                 <option value="">All</option>
                 {
-                  AllBusPassesData?.map((item) => (
+                  AllBusPassesData?.filter((item) => item.isActive).map((item) => (
                     <option value={item.passTypeId}>{item.passTypeName}</option>
                   ))
                 }

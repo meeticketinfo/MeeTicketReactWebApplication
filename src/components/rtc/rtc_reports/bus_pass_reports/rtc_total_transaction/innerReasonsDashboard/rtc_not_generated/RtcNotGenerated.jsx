@@ -125,6 +125,7 @@ const RtcNotGenerated = () => {
                   <Field
                     type="datetime-local"
                     name="toDate"
+                    max={values.fromDate}
                     className={`mt-1 block w-full px-2 py-1 border
                                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
@@ -165,7 +166,7 @@ const RtcNotGenerated = () => {
                     }}
                   >
                     <option value="">All</option>
-                    {AllBusPassesData?.map((item) => (
+                    {AllBusPassesData?.filter((item) => item.isActive).map((item) => (
                       <option value={item.passTypeId}>
                         {item.passTypeName}
                       </option>
@@ -186,7 +187,7 @@ const RtcNotGenerated = () => {
                     onClick={() => {
                       setValues({
                         fromDate: startOfDay,
-                        toDate: startOfDay,
+                        toDate: endOfDay,
                         mobileNumber: "",
                         BusPassType: "",
                       });

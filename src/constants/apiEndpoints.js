@@ -43,11 +43,12 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+
+  // RTC BUS PASS DEV
+
+  export const RTC_BUS_PASS_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
   
-
-  
-
-
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -256,6 +257,11 @@ export const API_ENDPOINTS = {
         GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
         GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
         GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
+        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/ViewBusPass`,
       }
     },
     GRIVEANCE_REPORTS: {
