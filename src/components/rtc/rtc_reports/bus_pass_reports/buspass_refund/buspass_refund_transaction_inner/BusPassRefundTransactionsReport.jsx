@@ -17,12 +17,12 @@ const BusPassRefundTransactionsReport = () => {
     const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
     const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
     const [RefundOrderId, setRefundOrderId] = useState("");
-    const amrabadRefundTransactionSearchParams = localStorage.getItem("amrabadRefundInnerTransactionSearchParams") || "";
+    const amrabadRefundTransactionSearchParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams") || "";
     const {
-        isFetchBusPassRefundTransactionsReport,
-        refundBusPassTransactionsReport,
+        isFetchBusPassRefundTransactionsInnerReport,
+        refundBusPassTransactionsInnerReport,
         refundTransactionsPagination,
-        fetchBusPassRefundTransactionsReport,
+        fetchBusPassRefundTransactionsInnerReport,
         fetchBusPassInitiateRefundOrderId,
         isInitiateRefund,
     } = useRtcRefundStore();
@@ -35,7 +35,7 @@ const BusPassRefundTransactionsReport = () => {
             headerClass: "text-blue-v2",
         },
         {
-            field: "dateandTimeofTransaction",
+            field: "transactionDateandTime",
             headerName: "Date and Time of Transaction",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => {
@@ -62,11 +62,11 @@ const BusPassRefundTransactionsReport = () => {
                     <div className="flex align-center gap-2">
                         <>
                             <button
-                                className={` ${params.data.refundStatus === "Not Refund"
+                                className={` ${params.data.refundStatus === "NotRefund"
                                     ? "bg-green-400"
                                     : "bg-green-100 cursor-not-allowed "
                                     } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                                disabled={params.data.refundStatus != "Not Refund"}
+                                disabled={params.data.refundStatus != "NotRefund"}
                                 onClick={() => {
                                     setRefundOrderId(params.data.orderID);
                                     setInitiatRefundModal(true);
@@ -92,20 +92,15 @@ const BusPassRefundTransactionsReport = () => {
         {
             field: "mobileNumber",
             minWidth: 100,
-            headerName: "Mobile Number of user",
+            headerName: "Mobile Number",
             headerClass: "text-blue-v2",
-            valueFormatter: (params) => `${params.value} ` || "N/A",
+            valueFormatter: (params) =>
+                params.value || params.value === " " ? params.value : "N/A",
+
         },
         {
-            field: "package",
-            headerName: "Package Name",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
-        {
-            field: "houseName",
-            headerName: "House Name",
-            maxWidth: "140",
+            field: "typeofBusPass",
+            headerName: "Type of Bus Pass",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "N/A",
         },
@@ -118,65 +113,50 @@ const BusPassRefundTransactionsReport = () => {
                 formatToCurrency(params.value, "INR", "en-IN") || "00:00",
         },
         {
-            field: "noofTicketsBooked",
+            field: "noOfTickets",
             headerName: "No of Tickets",
             maxWidth: "120",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "0",
         },
         {
-            field: "modeofBooking",
-            headerName: "Mode of Booking",
-            maxWidth: "120",
+            field: "modeofTransaction",
+            headerName: "Mode of Transaction",
+            // maxWidth: "120",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "N/A",
         },
         {
-            field: "paymentMode",
-            headerName: "Payment mode",
+            field: "modeofPayment",
+            headerName: "Mode of Payment",
             maxWidth: "130",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
-        {
-            field: "transactionStatus",
-            headerName: "Transaction Status",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
          {
             field: "orderID",
             headerName: "Order ID",
-            Width: "390",
+            // Width: "390",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
         {
-            field: "bookingId",
+            field: "bookingID",
             headerName: "Booking ID",
-            Width: "260",
+            // Width: "260",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
-        },
-        {
-            field: "refundStatus",
-            headerName: "Refund Status",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
         },
     ];
 
     const loadRefundTransactionsReport = (page = 0) => {
         try {
-            fetchBusPassRefundTransactionsReport({
+            fetchBusPassRefundTransactionsInnerReport({
                 fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
                 toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-                packageId: searchParams.get("packageId") || "",
-                roomId: +searchParams.get("roomId") || "",
-                modeOfBooking: +searchParams.get("modeOfBooking") || "",
-                modeOfPayment: searchParams.get("modeOfPayment") === "null" ? "" : searchParams.get("modeOfPayment") || "",
                 mobileNumber: searchParams.get("mobileNumber") || "",
-                refundStatus: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
+                busPassType: searchParams.get("BusPassType") || "",
+                status: searchParams.get("RefundStatus") === "null" ? "" : searchParams.get("RefundStatus") || "",
                 pageNumber: page + 1,
                 pageSize: PAGE_LIMIT,
             });
@@ -255,7 +235,7 @@ const BusPassRefundTransactionsReport = () => {
     const breadcrumbItems = [
         {
             label: 'Refund Transactions',
-            path: `/amrabad-refund-transaction-report?${amrabadRefundTransactionSearchParams}`
+            path: `//bus-pass-refund-report?${amrabadRefundTransactionSearchParams}`
         },
         {
             label: `Refund Transactions Report ${searchParams.get("RefundStatus") ? `(${searchParams.get("RefundStatus")})` : ""}`,
@@ -279,7 +259,7 @@ const BusPassRefundTransactionsReport = () => {
                         </div>
                         <div className="">
                             <Link
-                                to={`/amrabad-refund-transaction-report?${amrabadRefundTransactionSearchParams}`}
+                                to={`/bus-pass-refund-report?${amrabadRefundTransactionSearchParams}`}
                                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
                             >
                                 Back
@@ -295,10 +275,10 @@ const BusPassRefundTransactionsReport = () => {
                         <AgGridTable
                             showSearch={false}
                             ExportName="UserStatusTransactionReport"
-                            rowData={Array.isArray(refundBusPassTransactionsReport) ? refundBusPassTransactionsReport : []}
+                            rowData={Array.isArray(refundBusPassTransactionsInnerReport) ? refundBusPassTransactionsInnerReport : []}
                             columnDefs={columnDefs}
-                            isFetchLoading={isFetchBusPassRefundTransactionsReport}
-                            tableHeight={Array.isArray(refundBusPassTransactionsReport) && refundBusPassTransactionsReport?.length > 10 ? 560 : 330}
+                            isFetchLoading={isFetchBusPassRefundTransactionsInnerReport}
+                            tableHeight={Array.isArray(refundBusPassTransactionsInnerReport) && refundBusPassTransactionsInnerReport?.length > 10 ? 560 : 330}
                             isPagination={false}
                             IsReactPaginate={true}
                             setPageLimit={setPAGE_LIMIT}

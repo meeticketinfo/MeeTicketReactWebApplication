@@ -8,6 +8,10 @@ export const useRtcRefundStore = create((set) => ({
 
     isFetchBusPassRefundTransactionsReport: false,
     refundBusPassTransactionsReport: [],
+
+    isFetchBusPassRefundTransactionsInnerReport: false,
+    refundBusPassTransactionsInnerReport: [],
+
     // Pagination state for refund transactions report
     refundTransactionsPagination: {
         totalCount: 0,
@@ -19,6 +23,7 @@ export const useRtcRefundStore = create((set) => ({
     BusPassRefundTransactions: [],
 
     isInitiateRefund: false,
+    InitiateRefundByOrderIdData:[],
 
     fetchBusPassRefundTransactions: async (queryParams) => {
         const queryString = new URLSearchParams(queryParams).toString();
@@ -42,24 +47,18 @@ export const useRtcRefundStore = create((set) => ({
             });
         }
     },
+
+
+    
     fetchBusPassRefundTransactionsReport: async (queryParams) => {
         const queryString = new URLSearchParams(queryParams).toString();
         set({ isFetchBusPassRefundTransactionsReport: true });
         try {
             const response = await apiService.get(
-                `${API_ENDPOINTS.BusPass.REPORTS.GET_REFUND_TRANSACTION_REPORT}?${queryString}`
+                `${API_ENDPOINTS.REPORTS.RTC_REPORTS.REFUND_TRANSACTIONS_REPORT.GET_REFUND_TRANSACTIONS_REPORT}?${queryString}`
             );
-            
-            // Extract records and pagination data from the response
-            const { records, totalCount, pageNumber, pageSize } = response.data;
-            
             set({
-                refundBusPassTransactionsReport: records || [],
-                refundTransactionsPagination: {
-                    totalCount: totalCount || 0,
-                    pageNumber: pageNumber || 1,
-                    pageSize: pageSize || 10
-                }
+                refundBusPassTransactionsReport: response.data || [],
             });
             return { response: response.data };
         } catch (error) {
@@ -72,12 +71,53 @@ export const useRtcRefundStore = create((set) => ({
             });
         }
     },
+
+
+    fetchBusPassRefundTransactionsInnerReport: async (queryParams) => { 
+        const queryString = new URLSearchParams(queryParams).toString();
+        set({ isFetchBusPassRefundTransactionsInnerReport: true });
+        try {
+            const response = await apiService.get(
+                `${API_ENDPOINTS.REPORTS.RTC_REPORTS.REFUND_TRANSACTIONS_REPORT.GET_REFUND_TRANSACTIONS_INNER_REPORT}?${queryString}`
+            );
+            set({
+                refundBusPassTransactionsInnerReport: response.data.records || [],
+                refundTransactionsPagination: {
+                    totalCount: response.data.totalCount || 0,
+                    pageNumber: response.data.pageNumber || 1,
+                    pageSize: response.data.pageSize || 10
+                }
+            });
+            return { response: response.data };
+        } catch (error) {
+            set({
+                error: error.message,
+            });
+        } finally {
+            set({
+                isFetchBusPassRefundTransactionsInnerReport: false,
+            });
+        }
+    },      
+
+
+
+
+
+
+
+
+
+
+
+
+
     fetchBusPassInitiateRefundOrderId: async (orderID) => {
         set({ isInitiateRefund: true });
         try {
-            const url = `${API_ENDPOINTS.BusPass.REPORTS.GET_INITIATE_REFUND}`;
+            const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.REFUND_TRANSACTIONS_REPORT.GET_INITIATE_REFUND_BY_ORDER_ID}/${orderID}`;
             const method = "post";
-            const response = await apiService[method](url, { orderId: orderID });
+            const response = await apiService[method](url);
 
             set({
                 InitiateRefundByOrderIdData: response.data,

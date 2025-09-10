@@ -10,31 +10,42 @@ function BusPassRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
   const {
-  amrabadRefundTransactions,
-  isFetchBusPassRefundTransactions,
-  fetchBusPassRefundTransactions
+  isFetchBusPassRefundTransactionsReport,
+  refundBusPassTransactionsReport,
+  fetchBusPassRefundTransactionsReport
   } = useRtcRefundStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
-    localStorage.removeItem("amrabadRefundInnerTransactionSearchParams");
-    const payload = {
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-      packageId: searchParams.get("packageId") || "",
-      roomId: +searchParams.get("roomId") || "",
-      mobileNumber: +searchParams.get("mobileNumber") || "",
-    };
-    fetchBusPassRefundTransactions(payload);
+    const preservedParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams");
+    if (preservedParams && !searchParams.toString()) {
+      const urlParams = new URLSearchParams(preservedParams);
+      const payload = {
+        fromDate: cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
+        toDate: cleanString(urlParams.get("toDate"), "_", ":") || endOfDay,
+        mobileNumber: urlParams.get("mobileNumber") || "",
+        BusPassType: urlParams.get("BusPassType") || "",
+      };
+      fetchBusPassRefundTransactionsReport(payload);
+    } else {
+      const payload = {
+        fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
+        toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+        mobileNumber: searchParams.get("mobileNumber") || "",
+        BusPassType: searchParams.get("BusPassType") || "",
+      };
+      fetchBusPassRefundTransactionsReport(payload);
+    }
   }, []);
 
-  // overAll on submit
   const totalCount =
-    amrabadRefundTransactions?.reduce(
+    refundBusPassTransactionsReport?.reduce(
       (sum, item) => sum + item.count,
       0
     ) || 0;
+
+    
 
   return (
     <>
@@ -49,13 +60,14 @@ function BusPassRefundTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isFetchBusPassRefundTransactions && (
+              {isFetchBusPassRefundTransactionsReport && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
               <BusPassRefundTransactionsChart
-                data={totalCount !== 0 ? amrabadRefundTransactions : []}
+                data={totalCount !== 0 ? refundBusPassTransactionsReport : []}
+                // data={refundBusPassTransactionsReport}
                 title="Payment success & Ticket Not Generated"
                 angleKey="count"
                 calloutLabelKey="status"

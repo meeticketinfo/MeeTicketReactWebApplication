@@ -410,7 +410,18 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
       },
+      {     
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/intercity-user-report",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiDashboard3Fill,
+        path: "/intercity-refund-report",
+      },
     ],
+
   },
   // Tourism
   {

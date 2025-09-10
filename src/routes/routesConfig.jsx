@@ -181,6 +181,7 @@ import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pas
 import IntercityFailedOtherReason from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReason";
 import IntercityFailedOtherReasonReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReasonReport";
 import IntercityFailedGateway from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGateway";
+import MainIntercityRefundTransactionReport from "../components/rtc/rtc_reports/intercity_reports/intercity_refund_transaction/intercity_refund_outer_report/MainIntercityRefundTransactionReport";
 
 export const routes = [
   {
@@ -905,4 +906,8 @@ export const routes = [
   //   path: "/intercity-total-report",
   //   element: <ProtectedRoute element={<IntercityTotalReport/>} />,
   // },
+  {
+    path: "/intercity-refund-report",
+    element: <ProtectedRoute element={<MainIntercityRefundTransactionReport />} />,
+  },
 ];
