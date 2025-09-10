@@ -63,6 +63,7 @@ function AmrabadConsolidatedList() {
 
   const columnDefs = useMemo(() => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,

@@ -6,6 +6,26 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
+
+// Helper function to get current datetime in the format required for datetime-local max attribute
+const getCurrentDateTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+// Helper function to get current date with 23:59 time for To Date field
+const getCurrentDateWithEndTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}T23:59`;
+};
 import Breadcrumb from "../../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import BusPassFailedGatewayChart from "../../charts/BusPassFailedGatewayChart";
@@ -43,6 +63,12 @@ const RtcFailedGateway = () => {
     BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
   };
   const onSubmit = (values) => {
+    // Validate date range
+    if (values.fromDate && values.toDate && new Date(values.fromDate) > new Date(values.toDate)) {
+      alert("From Date cannot be greater than To Date. Please select a valid date range.");
+      return;
+    }
+
     setInnerFilters(values);
     fetchRtcGateWayPieChart(values);
   };
@@ -99,13 +125,14 @@ const RtcFailedGateway = () => {
                   <Field
                     type="datetime-local"
                     name="fromDate"
+                    max={getCurrentDateTime()}
                     className={`mt-1 block w-full px-2 py-1 border
                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const fromDateValue = e.target.value;
                       setFieldValue("fromDate", fromDateValue);
-                      if (new Date(fromDateValue) > new Date(values.endDate)) {
-                        // Automatically update toDate if it's earlier than fromDate
+                      // If fromDate is greater than toDate, update toDate to match fromDate
+                      if (values.toDate && new Date(fromDateValue) > new Date(values.toDate)) {
                         setFieldValue("toDate", fromDateValue);
                       }
                     }}
@@ -121,11 +148,15 @@ const RtcFailedGateway = () => {
                   <Field
                     type="datetime-local"
                     name="toDate"
-                    max={values.fromDate}
+                    max={getCurrentDateWithEndTime()}
                     className={`mt-1 block w-full px-2 py-1 border
                                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const toDateValue = e.target.value;
+                      // If toDate is less than fromDate, update fromDate to match toDate
+                      if (values.fromDate && new Date(toDateValue) < new Date(values.fromDate)) {
+                        setFieldValue("fromDate", toDateValue);
+                      }
                       setFieldValue("toDate", toDateValue);
                     }}
                   />

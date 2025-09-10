@@ -21,6 +21,7 @@ const BusPassUserDetailedReport = () => {
   } = useBuspassUserStore();
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
@@ -60,7 +61,7 @@ const BusPassUserDetailedReport = () => {
           to={"/bus-pass-user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.transactionDateandTime,
+            date: params.data.transactionDateandTime ,
             mobileNo: params.data.login_MobilNumber,
             typeOfBusPass:params.data.typeOfBusPass,
             status: params.data.transactionStatus,
@@ -89,7 +90,7 @@ const BusPassUserDetailedReport = () => {
     },
     {
       field: "confirmedTransactionAmount",
-      headerName: "Amount",
+      headerName: "Total Amount",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",

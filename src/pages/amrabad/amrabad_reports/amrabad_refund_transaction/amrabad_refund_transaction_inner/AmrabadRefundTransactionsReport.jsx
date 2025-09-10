@@ -28,6 +28,7 @@ const AmrabadRefundTransactionsReport = () => {
     } = useAmrabadRefundStore();
     const columnDefs = [
         {
+            field: "sno",
             headerName: "S.No",
             valueGetter: (params) =>
                 currentPage * PAGE_LIMIT + params.node.rowIndex + 1,

@@ -69,6 +69,7 @@ const AmarabdAvailabilityInnerList = () => {
 
  const columnDefs = useMemo(() => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         // Calculate serial number based on current page and row position
