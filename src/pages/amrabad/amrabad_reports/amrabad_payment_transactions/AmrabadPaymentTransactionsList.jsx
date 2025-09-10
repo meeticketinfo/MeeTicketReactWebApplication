@@ -46,6 +46,7 @@ function AmrabadPaymentTransactionsList() {
 
   const [columnDefs] = useState([
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,

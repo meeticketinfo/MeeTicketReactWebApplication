@@ -9,27 +9,7 @@ import {
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
 
-// Helper function to get current datetime in the format required for datetime-local max attribute
-const getCurrentDateTime = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
-// Helper function to get current date with 23:59 time for To Date field
-const getCurrentDateWithEndTime = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}T23:59`;
-};
-
-const BusPassRefundTransactionsReportForm = ({
+const IntercityRefundTransactionsReportForm = ({
   pageNumber,
   pageSize,
   setCurrentPage,
@@ -66,12 +46,6 @@ const BusPassRefundTransactionsReportForm = ({
   };
 
   const onSubmit = (values) => {
-    // Validate date range
-    if (values.fromDate && values.toDate && new Date(values.fromDate) > new Date(values.toDate)) {
-      alert("From Date cannot be greater than To Date. Please select a valid date range.");
-      return;
-    }
-
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach((key) => {
       if (values[key]) {
@@ -111,14 +85,13 @@ const BusPassRefundTransactionsReportForm = ({
               <Field
                 type="datetime-local"
                 name="fromDate"
-                max={getCurrentDateTime()}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  // If fromDate is greater than toDate, update toDate to match fromDate
-                  if (values.toDate && new Date(fromDateValue) > new Date(values.toDate)) {
+                  if (new Date(fromDateValue) > new Date(values.toDate)) {
+                    // Automatically update toDate if it's earlier than fromDate
                     setFieldValue("toDate", fromDateValue);
                   }
                 }}
@@ -134,15 +107,10 @@ const BusPassRefundTransactionsReportForm = ({
               <Field
                 type="datetime-local"
                 name="toDate"
-                max={getCurrentDateWithEndTime()}
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
-                  // If toDate is less than fromDate, update fromDate to match toDate
-                  if (values.fromDate && new Date(toDateValue) < new Date(values.fromDate)) {
-                    setFieldValue("fromDate", toDateValue);
-                  }
                   setFieldValue("toDate", toDateValue);
                 }}
                 min={values.fromDate}
@@ -235,4 +203,5 @@ const BusPassRefundTransactionsReportForm = ({
   );
 };
 
-export default BusPassRefundTransactionsReportForm;
+export default IntercityRefundTransactionsReportForm;
+    

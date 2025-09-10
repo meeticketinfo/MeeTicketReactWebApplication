@@ -8,7 +8,7 @@ import PopupModal from "../../../../../utils/popup_modal/PopupModal";
 import Breadcrumb from "../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../utils/Helper";
+import { cleanString, formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../utils/Helper";
 const BusPassRefundTransactionsReport = () => {
     const [searchParams] = useSearchParams();
     const fromDate = getStartOfCurrentDay();
@@ -28,6 +28,7 @@ const BusPassRefundTransactionsReport = () => {
     } = useRtcRefundStore();
     const columnDefs = [
         {
+            field: "sno",
             headerName: "S.No",
             valueGetter: (params) =>
                 currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -36,20 +37,13 @@ const BusPassRefundTransactionsReport = () => {
         },
         {
             field: "transactionDateandTime",
-            headerName: "Date and Time of Transaction",
+            headerName: "Transaction Date & Time",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => {
                 if (!params.value) return "N/A";
-                const date = new Date(params.value);
-                return date.toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                });
-            },
+                return formatDateTime(params.value);
+              },
+     
         },
         {
             headerName: "Actions",
@@ -83,11 +77,21 @@ const BusPassRefundTransactionsReport = () => {
         },
         {
             field: "refundStatus",
-            headerName: "RefundStatus",
+            headerName: "Refund Status",
             maxWidth: "130",
             headerClass: "text-blue-v2",
             valueFormatter: (params) =>
                 params.value || params.value === " " ? params.value : "N/A",
+        },
+        {
+            field: "refundDate",
+            headerName: "Refund Date",
+            // maxWidth: "130",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => {
+                if (!params.value) return "N/A";
+                return formatDateTime(params.value);
+              },
         },
         {
             field: "mobileNumber",
@@ -129,7 +133,7 @@ const BusPassRefundTransactionsReport = () => {
         {
             field: "modeofPayment",
             headerName: "Mode of Payment",
-            maxWidth: "130",
+            // maxWidth: "130",
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },

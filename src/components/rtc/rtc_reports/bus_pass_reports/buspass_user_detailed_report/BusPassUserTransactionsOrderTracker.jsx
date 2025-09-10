@@ -60,6 +60,7 @@ const BusPassUserTransactionsOrderTracker = () => {
   } = useBusPassTotalTransactionStore();
   const [columnDefs] = useState([
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       maxWidth: "80",
@@ -71,7 +72,7 @@ const BusPassUserTransactionsOrderTracker = () => {
       headerName: "Request Time Stamp",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return " ";
+        if (!params.value) return "";
         return formatDateTime(params.value);
       },
     },
