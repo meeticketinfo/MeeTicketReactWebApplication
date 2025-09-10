@@ -205,6 +205,7 @@ const BusPassUserDetailedReport = () => {
               currentPage={currentPage}
               totalCount={allBusPassUserDetailedReports?.[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
+              showSearch={false}
             />
           </div>
         </div>

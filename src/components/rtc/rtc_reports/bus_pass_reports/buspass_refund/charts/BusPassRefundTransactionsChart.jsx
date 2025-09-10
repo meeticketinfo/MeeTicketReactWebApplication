@@ -101,7 +101,7 @@ const BusPassRefundTransactionsChart = ({
             <Link
               to={`/bus-pass-refund-inner-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
-                localStorage.setItem("amrabadRefundInnerTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
+                localStorage.setItem("busPassRefundInnerTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
             >
               <span className="font-semibold text-sm text-[#57a4d8] ml-2 underline">

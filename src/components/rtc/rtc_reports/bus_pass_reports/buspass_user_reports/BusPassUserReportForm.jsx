@@ -12,7 +12,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     } = useBuspassUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-
+console.log(searchParams.get("mobileNo"));
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
@@ -20,6 +20,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
   };
 
   const onSubmit = (values) => {
+    console.log(values);
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach(key => {
       if (values[key]) {
@@ -32,7 +33,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     fetchBusPassUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNo: values.mobileNo,
+      mobileNo: values.mobileNo || "",
       pageNumber:pageNumber,
       pageSize: pageSize,
     });
@@ -43,7 +44,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
-      mobileNumber: "",
+      mobileNo: "",
     };
 
     // Clear URL search params
