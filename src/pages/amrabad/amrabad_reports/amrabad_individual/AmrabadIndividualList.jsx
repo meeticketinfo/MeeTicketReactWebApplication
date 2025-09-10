@@ -163,7 +163,7 @@ export default function AdminBookings() {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "totalAmount",
+      field: "housePaidAmount",
       headerName: "Amount Paid (House Wise)",
       // flex: 1,
       headerClass: "text-blue-v2",
