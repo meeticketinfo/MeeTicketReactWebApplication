@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import apiService from "../../services/apiService";
 
-export const useRtcRefundStore = create((set) => ({
+export const useIntercityRefundTransactionStore = create((set) => ({
     allBusPassUserReports: [],
     isBusPassUserReportsLoading: false,
 

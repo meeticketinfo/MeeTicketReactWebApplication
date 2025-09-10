@@ -12,6 +12,19 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     } = useBuspassUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+  
+  // Get current date and time in the format required for datetime-local input
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  
+  const maxDateTime = getCurrentDateTime();
 console.log(searchParams.get("mobileNo"));
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
@@ -70,6 +83,7 @@ console.log(searchParams.get("mobileNo"));
               <Field
                 type="datetime-local"
                 name="fromDate"
+                max={maxDateTime}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
@@ -92,6 +106,7 @@ console.log(searchParams.get("mobileNo"));
               <Field
                 type="datetime-local"
                 name="toDate"
+                max={maxDateTime}
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {

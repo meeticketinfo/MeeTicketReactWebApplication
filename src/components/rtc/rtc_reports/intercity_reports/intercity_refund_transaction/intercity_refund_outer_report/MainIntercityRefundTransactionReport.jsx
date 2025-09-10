@@ -2,6 +2,7 @@ import React from "react";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import { ToastContainer } from "react-toastify";
 import IntercityRefundOuterReportForm from "./IntercityRefundOuterReportForm";
+import IntercityRefundTransactions from "./IntercityRefundTransactions";
 
 const MainIntercityRefundTransactionReport = () => {
   return (
@@ -15,7 +16,7 @@ const MainIntercityRefundTransactionReport = () => {
             </h1>
           </div>
         </div>
-        <IntercityRefundOuterReportForm/>
+        <IntercityRefundTransactions/>
       </div>
     </AdminLayout>
   );

@@ -46,6 +46,7 @@ const RtcFailedOtherReasonReport = () => {
 
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
