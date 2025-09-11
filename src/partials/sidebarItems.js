@@ -375,15 +375,26 @@ const sidebarItems = [
         path: "/pending-pass",
       },
       {
-        title: "User Report",
+        title: "Booking Report",
         icon: MdEventAvailable,
-        path: "/bus-pass-user-report",
+        path: "/bus-pass-booking-report",
       },
       {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/bus-pass-total-transaction",
       },
+      {
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/bus-pass-user-report",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-refund-report",
+      },
+
     ],
   },
   //intercity
@@ -399,7 +410,18 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
       },
+      {     
+        title: "User Report",
+        icon: MdEventAvailable,
+        path: "/intercity-user-report",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiDashboard3Fill,
+        path: "/intercity-refund-report",
+      },
     ],
+
   },
   // Tourism
   {

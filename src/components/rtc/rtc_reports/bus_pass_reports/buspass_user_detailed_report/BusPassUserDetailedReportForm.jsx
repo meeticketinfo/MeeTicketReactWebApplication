@@ -1,9 +1,9 @@
 import { Formik, Form, Field } from "formik";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
 const BusPassUserDetailedReportForm = ({
   pageNumber,
@@ -12,10 +12,11 @@ const BusPassUserDetailedReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isAmrabadUserDetailedReportsLoading,
-    fetchAmrabadUserDetailedReports,
-  } = useAmrabadUserStore();
-const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+    isBusPassUserDetailedReportsLoading,
+    allBusPassUserDetailedReports,
+    fetchBusPassUserDetailedReports,
+  } = useBuspassUserStore();
+  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
   // Load packages on component mount
   useEffect(() => {
@@ -40,7 +41,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
         }
       }
       localStorage.setItem(
-        "userDetailedAmrabadReportSearchParams",
+        "userDetailedBusPassReportSearchParams",
         newSearchParams.toString()
       );
     }
@@ -48,16 +49,41 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+  
+  // Helper function to get current datetime in the format required for datetime-local max attribute
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  // Helper function to get current date with 23:59 time for To Date field
+  const getCurrentDateWithEndTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}T23:59`;
+  };
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    packageId: searchParams.get("packageId") || "",
-    houseId: searchParams.get("houseId") || "",
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    paymentMode: searchParams.get("paymentMode") || "",
+    mobileNo: searchParams.get("mobileNo") || "",
   };
 
   const onSubmit = (values) => {
+    // Validate date range
+    if (values.fromDate && values.toDate && new Date(values.fromDate) > new Date(values.toDate)) {
+      alert("From Date cannot be greater than To Date. Please select a valid date range.");
+      return;
+    }
+
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach((key) => {
       if (values[key] && values[key] !== "") {
@@ -65,14 +91,13 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userDetailedAmrabadReportSearchParams", newSearchParams.toString());
+    localStorage.setItem("userDetailedBusPassReportSearchParams", newSearchParams.toString());
 
-    fetchAmrabadUserDetailedReports({
+    fetchBusPassUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
-      packageId: values.packageId || "",
-      houseId: values.houseId || "",
+      mobileNo: values.mobileNo,
+      paymentMode: values.paymentMode || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -94,13 +119,14 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               <Field
                 type="datetime-local"
                 name="fromDate"
+                max={getCurrentDateTime()}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
+                  // If fromDate is greater than toDate, update toDate to match fromDate
+                  if (values.toDate && new Date(fromDateValue) > new Date(values.toDate)) {
                     setFieldValue("toDate", fromDateValue);
                   }
                 }}
@@ -116,10 +142,15 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               <Field
                 type="datetime-local"
                 name="toDate"
+                max={getCurrentDateWithEndTime()}
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
+                  // If toDate is less than fromDate, update fromDate to match toDate
+                  if (values.fromDate && new Date(toDateValue) < new Date(values.fromDate)) {
+                    setFieldValue("fromDate", toDateValue);
+                  }
                   setFieldValue("toDate", toDateValue);
                 }}
                 min={values.fromDate}
@@ -128,7 +159,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
             {/* mobile number */}
             <div>
               <label
-                htmlFor="phoneNumber"
+                htmlFor="mobileNo"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -136,7 +167,7 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNumber"
+                name="mobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -145,67 +176,38 @@ const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNumber", e.target.value);
+                  setFieldValue("mobileNo", e.target.value);
                 }}
               />
             </div>
-            <div>
+           <div>
               <label
-                htmlFor="packageId"
+                htmlFor="paymentMode"
                 className="block text-xs font-medium text-gray-700"
               >
-                Packages
-              </label>
-                             <Field
-                 as="select"
-                 name="packageId"
-                 placeholder="Select Package"
-                 onChange={(e) => {
-                   const packageId = e.target.value;
-                   setFieldValue("packageId", packageId);
-                   // Clear house selection when package changes
-                   setFieldValue("houseId", "");
-                   if (packageId) {
-                     getHouses(packageId);
-                   }
-                 }}
-                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-               >
-                <option value="">Select Package</option>
-                {AllPackages.map((item) => (
-                  <option key={item.packageId} value={item.packageId}>
-                    {item.packageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="houseId"
-                className="block text-xs font-medium text-gray-700"
-              >
-                House
+                Payment Mode
               </label>
               <Field
                 as="select"
-                name="houseId"
-                placeholder="Select House"
-                disabled={values.packageId == ""}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                name="paymentMode"
+                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  setFieldValue("paymentMode", e.target.value);
+                }}
               >
-                <option value="">Select House</option>
-                {AllHouses.map((item) => (
-                  <option key={item.roomId} value={item.roomId}>
-                    {item.roomName}
-                  </option>
-                ))}
+                <option value="">Select Mode</option>
+                <option value="upi">UPI</option>
+                <option value="creditCard">Credit Card</option>
+                <option value="debitCard">Debit Card</option>
+                <option value="netBanking">Net Banking</option>
               </Field>
             </div>
+         
             <div className="flex items-end">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isAmrabadUserDetailedReportsLoading}
+                disabled={isBusPassUserDetailedReportsLoading}
               >
                 Search
               </button>

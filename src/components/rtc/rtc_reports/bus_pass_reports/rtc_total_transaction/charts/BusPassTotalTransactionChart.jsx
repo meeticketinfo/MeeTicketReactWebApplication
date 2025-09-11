@@ -82,11 +82,11 @@ const BusPassTotalTransactionChart = ({
   }, [data, title, angleKey, calloutLabelKey]);
 
       const routes={
-        FailedDueToOtherReasons:"/metro-failed-other-reason",
-        FailedFromGateway:"/metro-failed-gateway",
-        PaymentSuccessButTicketNotGenerated:"/metro-not-generated",
-        Success:"/metro-total-report",
-        Uncategorized:"/metro-total-report"
+        FailedDueToOtherReasons:"/bus-pass-failed-other-reason",
+        FailedFromGateway:"/bus-pass-failed-gateway",
+        PaymentSuccessButTicketNotGenerated:"/bus-pass-not-generated",
+        Success:"/bus-pass-total-report",
+        Uncategorized:"/bus-pass-total-report"
       }
   return (
     <div className="gap-4 md:gap-8 w-full p-3 md:p-6">
@@ -96,7 +96,7 @@ const BusPassTotalTransactionChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/metro-total-report"
+            to="/bus-pass-total-report"
             onClick={() => {
               setOuterFilters({ ...outerFilters, status: "" });
             }}

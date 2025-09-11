@@ -88,7 +88,7 @@ const BusPassFailedOtherReasonChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 sm:px-4 py-2 text-sm sm:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/metro-failed-other-reason-report"
+            to="/bus-pass-failed-other-reason-report"
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -135,7 +135,7 @@ const BusPassFailedOtherReasonChart = ({
                             }}
                           />
                           <Link
-                            to="/metro-failed-other-reason-report"
+                            to="/bus-pass-failed-other-reason-report"
                             className="text-[#000] hover:underline text-xs sm:text-sm break-words"
                             onClick={() => {
                               setInnerFilters({
@@ -151,7 +151,7 @@ const BusPassFailedOtherReasonChart = ({
                       </td>
                       <td className="px-2 sm:px-3 lg:px-4 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                          to="/metro-failed-other-reason-report"
+                          to="/bus-pass-failed-other-reason-report"
                           onClick={() => {
                             setInnerFilters({
                               ...innerFilters,

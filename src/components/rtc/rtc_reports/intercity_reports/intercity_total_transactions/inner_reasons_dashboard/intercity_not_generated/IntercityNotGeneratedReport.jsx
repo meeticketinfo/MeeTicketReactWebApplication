@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../../../components/tables/AgGridTable";
-import AdminLayout from "../../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
-import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
-import useAmrabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import AmarabadNotGeneratedReportForm from "./AmarabadNotGeneratedReportForm";
-import Breadcrumb from "../../../../../../components/Breadcrumb";
+import AgGridTable from "../../../../../../tables/AgGridTable";
+import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import { formatDateTime } from "../../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
+import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
+import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import IntercityNotGeneratedReportForm from "./IntercityNotGeneratedReportForm";
+import Breadcrumb from "../../../../../../../components/Breadcrumb";
 
 const IntercityNotGeneratedReport = () => {
 
@@ -80,7 +80,7 @@ const IntercityNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/amrabad-not-generated-view-track-order"}
+          to={"/intercity-not-generated-view-track-order"}
           state={{
             orderId: params.data.orderId,
             date: params.data.createdDate,
@@ -235,7 +235,7 @@ const IntercityNotGeneratedReport = () => {
         </div>
 
         <div>
-          <AmarabadNotGeneratedReportForm
+          <IntercityNotGeneratedReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}

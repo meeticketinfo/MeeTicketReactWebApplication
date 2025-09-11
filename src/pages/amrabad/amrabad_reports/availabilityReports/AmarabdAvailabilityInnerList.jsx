@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import AmarabadAvailabilityInnerForm from './AmarabadAvailabilityInnerForm';  
 import { useAmarabadAvailabilityReportsStore } from './store/AmarabadAvailabilityReportsStore';
 import { formatToCurrency, formatToStandardDate } from "../../../../utils/TypographyHelper";
@@ -7,6 +7,7 @@ import AgGridTable from '../../../../components/tables/AgGridTable';
 import { getCurrentDate } from '../../../../utils/TypographyHelper';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAmrabadBookingStore } from '../amrabad_consolidated/store/amarabadBookingstore';
+import { useAmrabadHouseWiseReportStore } from '../amrabad_individual/store/amarabadHouseWiseReportStore';
 
 const AmarabdAvailabilityInnerList = () => {
   const location = useLocation();
@@ -18,10 +19,12 @@ const AmarabdAvailabilityInnerList = () => {
     // totalCount,
   } = useAmarabadAvailabilityReportsStore();
 
+  const { allAmrabadHouseWiseReports, fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading, totalCount } = useAmrabadHouseWiseReportStore();
+
   const {
     allAmrabadBookings,
     fetchAllAmrabadBookings,
-    totalCount,
+    // totalCount,
     isFetchAllAmrabadBookingsLoading,
   } = useAmrabadBookingStore();
 
@@ -48,7 +51,7 @@ const AmarabdAvailabilityInnerList = () => {
     return date.toISOString().split('T')[0];
   };
   useEffect(() => {
-    fetchAllAmrabadBookings({
+    fetchAllAmrabadHouseWiseReports({
       startDate: removeTimeFromDate(bookingDate) || (savedFilters?.fromDate ?? getCurrentDate()),
       endDate: getNextDayDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
       bookingSource: "Booking",
@@ -64,171 +67,183 @@ const AmarabdAvailabilityInnerList = () => {
     });
   }, [currentPage, PAGE_LIMIT, fromDate, toDate, packageId, roomId]);
 
-  const [columnDefs] = useState([
+ const columnDefs = useMemo(() => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        // Calculate serial number based on current page and row position
+        const serialNumber = currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+        return serialNumber;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
     {
-      field: "userName",
-      headerName: "User Name",
-      flex: 1,
+      field: "transactionID",
+      headerName: "Transaction Id",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
-      minWidth: 130,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      minWidth: 150,
+      maxWidth: 150,
+      valueFormatter: (params) =>
+        !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
-    
     {
-      field: "orderID",
-      headerName: "Order ID",
-      flex: 1,
+      field: "userName",
+      headerName: "User Name",
+      // flex: 1,
+      minWidth: 150,
+      maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "packageName",
       headerName: "Package Name",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "houseName",
       headerName: "House Name",
-      flex: 1,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "noofHousesBooked",
-      headerName: "No. of Houses",
+      field: "noofHouses",
+      headerName: "No.of houses", 
       minWidth: 120,
+      maxWidth: 120,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
+
     {
-      field: "purchaseDate",
+      field: "purchasedDate",
       headerName: "Purchased Date",
       minWidth: 150,
+      maxWidth: 150,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ? formatToStandardDate(params.value) : "N/A",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "fromDate",
       headerName: "From Date",
-      minWidth: 130,
+      minWidth: 120,
+      maxWidth: 120,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ? formatToStandardDate(params.value) : "N/A",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
+    
     {
       field: "toDate",
       headerName: "To Date",
-      minWidth: 130,
+      minWidth: 120,
+      maxWidth: 120,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ? formatToStandardDate(params.value) : "N/A",
+      // valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "actualAmount",
       headerName: "Actual Amount",
-      minWidth: 140,
+      minWidth: 130,
+      maxWidth: 130,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => 
-        params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0.00",
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "discountApplicable",
       headerName: "Discount Applicable",
       minWidth: 160,
+      maxWidth: 160,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => 
-        params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "amount",
+      field: "housePaidAmount",
+      headerName: "Amount Paid (House Wise)",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },
+    {
+      field: "totalAmount",
       headerName: "Total Amount",
-      minWidth: 140,
+      minWidth: 130,
+      maxWidth: 130,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => 
-        params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "paymentType",
+      field: "modeofPayment",
       headerName: "Mode of Payment",
       minWidth: 150,
+      maxWidth: 150,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "modeofBooking",
       headerName: "Mode of Booking",
       minWidth: 150,
+      maxWidth: 150,
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "mid",
-      headerName: "MID",
-      minWidth: 150,
+      field: "orderId",
+      headerName: "Order ID",
+      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "paymentStatus",
-      headerName: "Payment Status",
-      minWidth: 140,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-      
-    },
-
-    {
-      field: "paymentTransactionID",
-      headerName: "Payment Transaction ID",
-      minWidth: 140,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "actualPaytmStatus",
-      headerName: "Actual Paytm Status",
-      minWidth: 160,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       headerName: "Actions",
       field: "actions",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <NavLink
-            end
-            // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
-            to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            // onClick={() => {
-            //   setisAmrabadCompleteBookings(true);
-            // }}
-            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-          >
-            <span className="text-blue-v2"> View Ticket</span>
-          </NavLink>
-        </div>
-      ),
+      cellRenderer: (params) => {
+        return (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: "200px" }}>
+            <NavLink
+              end
+              to={`/amrabad-admin/ticket-view-details/${params.data.orderId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-100 text-blue-v2 px-4 py-2 rounded-md hover:bg-gray-200 transition text-sm"
+            >
+              <span>View Ticket</span>
+            </NavLink>
+          </div>
+        );
+      },
       flex: 1,
       headerClass: "text-blue-v2",
+      width: 200,
     },
-  ]);
+  ], [currentPage, PAGE_LIMIT]);
 
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
@@ -249,12 +264,12 @@ const AmarabdAvailabilityInnerList = () => {
       <div>
         <AgGridTable
           ExportName="Availability Inner Report"
-          rowData={allAmrabadBookings || []}
+          rowData={allAmrabadHouseWiseReports || []}
           columnDefs={columnDefs}
-          isFetchLoading={isFetchAllAmrabadBookingsLoading}
+          isFetchLoading={isFetchAllAmrabadHouseWiseReportsLoading}
           isPagination={false}
           tableHeight={
-            (allAmrabadBookings?.length || 0) > 10 ? 560 : 330
+            (allAmrabadHouseWiseReports?.length || 0) > 10 ? 560 : 330
           }
           // tableHeight={amrabadAvailabilityInnerReports?.data?.length > 10 ? 560 : 330}
           IsReactPaginate={true}

@@ -1,49 +1,52 @@
-import React, { useEffect, useState } from "react";
-import AdminLayout from "../../../layouts/AdminLayout";
+import React, { useEffect, useState } from "react"; 
 import { Link } from "react-router-dom";
-import useMetroTotalCommonStore from "../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
-import AgGridTable from "../../../components/tables/AgGridTable";
-import OuterTotalTransactionForm from "./outer_report/OuterTotalTransactionForm";
-import { useMetroTotalTransactionsStore } from "../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
-import { formatDateTime } from "../../../utils/Helper";
-import { formatToCurrency } from "../../../utils/TypographyHelper";
-import Breadcrumb from "../../../components/Breadcrumb";
-import { ToastContainer } from "react-toastify";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
-const MetroTotalReport = () => {
+import Breadcrumb from "../../../../../../Breadcrumb";
+import RtcFailedOtherReasonReportForm from "./RtcFailedOtherReasonReportForm";
+import AgGridTable from "../../../../../../tables/AgGridTable";
+import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import { formatDateTime, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
+
+const RtcFailedOtherReasonReport = () => {
+  const startOfDay = getStartOfCurrentDay();
+      const endOfDay = getEndOfCurrentDay();
   const {
     innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = useMetroTotalCommonStore();
+    resetInnerFilters
+  } = busPassTotalCommonStore();
   const {
-    fetchMetroTotalTransactions,
-    MetroTotalTransactionsData,
-    isMetroTotalTransactionsLoading,
-  } = useMetroTotalTransactionsStore();
+    fetchRtcTotalTransactions,
+    RtcTotalTransactionsData,
+    isRtcTotalTransactionsLoading,
+  } = useBusPassTotalTransactionStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", outerFilters);
-  useEffect(() => {
-    fetchMetroTotalTransactions({
-      startDate: (deepInnerFilters.startDate ?? outerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate ?? outerFilters.toDate) ?? "",
-      phoneNumber:
-        (deepInnerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
-      status: outerFilters.status ?? "",
-      subCategory: "",
 
+  useEffect(() => {
+    fetchRtcTotalTransactions({
+      startDate: (deepInnerFilters.startDate || innerFilters.fromDate) ?? startOfDay,
+      endDate: (deepInnerFilters.endDate || innerFilters.toDate) ?? endOfDay,
+      phoneNumber:(innerFilters.mobileNumber || deepInnerFilters.mobileNumber) ?? "",
+      BusPassType: (innerFilters.BusPassType || deepInnerFilters.BusPassType) ?? "",
+      status: innerFilters.status ?? "",
+      subCategory: innerFilters.subCategory ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
+
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
@@ -70,9 +73,9 @@ const MetroTotalReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/metro-total-traker"}
+          to={"/bus-pass-total-traker"}
           state={{
-            orderId: params.data.orderId,
+            orderId: params.data.bP_OrderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
             status: params.data.transactionStatus,
@@ -91,21 +94,21 @@ const MetroTotalReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "fromStationName",
-      headerName: "From Station",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+    
     {
       field: "toStationName",
-      headerName: "To Station",
+      headerName: "Type of Bus Pass",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
+    // {
+    //     field: "noOfTickets",
+    //     headerName: "Mode of Transaction",
+    //     maxWidth: "120",
+    //     headerClass: "text-blue-v2",
+    //     valueFormatter: (params) => params.value ?? "N/A",
+    //   },
     {
       field: "amount",
       headerName: "Amount",
@@ -114,18 +117,12 @@ const MetroTotalReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-    {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+   
 
     {
       field: "paymentMode",
-      headerName: "Payment Mode",
-      maxWidth: "140",
+      headerName: "Mode of Payment",
+      maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -140,7 +137,7 @@ const MetroTotalReport = () => {
       ),
     },
     {
-      field: "orderId",
+      field: "bP_OrderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -162,37 +159,42 @@ const MetroTotalReport = () => {
       ),
     },
   ];
-  const breadcrumbItems = [
+    const breadcrumbItems = [
     {
-      label: "Total Transactions ",
-      path: `/metro-total-transaction`,
-      onclick: () => resetDeepInnerFilters(),
+      label: 'Total Transactions',
+      path: `/bus-pass-total-transaction`
     },
-
+     {
+      label: 'Failed (Other Reasons)',  
+      path: `/bus-pass-failed-other-reason`,
+      onclick:()=>{resetDeepInnerFilters()
+        
+      },
+    },
     {
-      label: `Total ${
-        outerFilters.status ? outerFilters.status : "Transaction"
-      } Report`,
-      isLast: true,
-    },
+      label: 'Failed (Other Reasons) Report',  
+      isLast: true
+    }
   ];
+
   return (
     <AdminLayout>
-      <ToastContainer />
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <div className="mb-6">
-          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+         <div className="mb-6">
+          <Breadcrumb 
+            customItems={breadcrumbItems}
+            className="mb-4"
+          />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
-              Report
+              Failed (Other Reasons) -{innerFilters.subCategory.replace(/([A-Z])/g, ' $1').trim()} Report
             </h1>
           </div>
           <div className="">
             <Link
-              to="/metro-total-transaction"
+              to="/bus-pass-failed-other-reason"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -204,16 +206,16 @@ const MetroTotalReport = () => {
         </div>
 
         <div>
-          <OuterTotalTransactionForm
+          <RtcFailedOtherReasonReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
+            rowData={RtcTotalTransactionsData}
             columnDefs={columnDefs}
-            isFetchLoading={isMetroTotalTransactionsLoading}
+            isFetchLoading={isRtcTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -221,8 +223,8 @@ const MetroTotalReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={MetroTotalTransactionsData[0]?.totalCount}
-            tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={RtcTotalTransactionsData[0]?.totalCount}
+            tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>
@@ -231,4 +233,4 @@ const MetroTotalReport = () => {
   );
 };
 
-export default MetroTotalReport;
+export default RtcFailedOtherReasonReport;

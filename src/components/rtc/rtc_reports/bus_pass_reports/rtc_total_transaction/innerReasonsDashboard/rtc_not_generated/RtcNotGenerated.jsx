@@ -3,69 +3,100 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
+import {
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../../utils/Helper";
 
+// Helper function to get current datetime in the format required for datetime-local max attribute
+const getCurrentDateTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
-import MetroNotGeneratedChart from "../../charts/MetroNotGeneratedChart";
-import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
+// Helper function to get current date with 23:59 time for To Date field
+const getCurrentDateWithEndTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}T23:59`;
+};
 import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../../../Breadcrumb";
 
+import BusPassNotGeneratedChart from "../../charts/BusPassNotGeneratedChart";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcNotGenerated = () => {
   const startOfDay = getStartOfCurrentDay();
-    const endOfDay = getEndOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-  busPassTotalCommonStore();
-  
- 
+    busPassTotalCommonStore();
+
+  const {
+    fetchRtcTicketNotGeneratedPieChart,
+    RtcTicketNotGeneratedPieChartData,
+    RtcisTicketNotGeneratedPieChartLoading,
+    AllBusPassesData,
+    fetchAllBusPasses,
+  } = useBusPassTotalTransactionStore();
+
   useEffect(() => {
-    // fetchTicketNotGeneratedPieChart({
-    //   fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    //   toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    //   mobileNumber:
-    //     (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    //   BusPassType:
-    //     (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
-    // });
+    fetchRtcTicketNotGeneratedPieChart({
+      fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+      toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+      mobileNumber:innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+      BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
+    });
+    fetchAllBusPasses();
   }, []);
 
   const initialValues = {
-    fromDate: (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
-    toDate: (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    mobileNumber: (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-    BusPassType: (innerFilters.BusPassType ?? outerFilters.BusPassType) ?? "",
+    fromDate: innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    toDate: innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
+    mobileNumber: innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    BusPassType: innerFilters.BusPassType ?? outerFilters.BusPassType ?? "",
   };
   const onSubmit = (values) => {
+    // Validate date range
+    if (values.fromDate && values.toDate && new Date(values.fromDate) > new Date(values.toDate)) {
+      alert("From Date cannot be greater than To Date. Please select a valid date range.");
+      return;
+    }
+
     setInnerFilters(values);
-    // fetchTicketNotGeneratedPieChart(values);
+    fetchRtcTicketNotGeneratedPieChart(values);
   };
-  const totalCount = Array.isArray(TicketNotGeneratedPieChartData)
-    ? TicketNotGeneratedPieChartData.reduce(
+  const totalCount = Array.isArray(RtcTicketNotGeneratedPieChartData)
+    ? RtcTicketNotGeneratedPieChartData.reduce(
         (sum, item) => sum + item.totalCount,
         0
       )
     : 0;
 
-      const breadcrumbItems = [
+  const breadcrumbItems = [
     {
-      label: 'Total Transactions ',
+      label: "Total Transactions ",
       path: `/bus-pass-total-transaction`,
-      onclick:()=>resetInnerFilters(),
+      onclick: () => resetInnerFilters(),
     },
     {
-      label: 'Payment Successful but Ticket not Generated',  
-      isLast: true
-    }
+      label: "Payment Successful but Ticket not Generated",
+      isLast: true,
+    },
   ];
 
   return (
     <AdminLayout>
       <div className="px-4  py-8 w-full max-w-9xl mx-auto">
-        <Breadcrumb 
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+        <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -98,13 +129,14 @@ const RtcNotGenerated = () => {
                   <Field
                     type="datetime-local"
                     name="fromDate"
+                    max={getCurrentDateTime()}
                     className={`mt-1 block w-full px-2 py-1 border
                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const fromDateValue = e.target.value;
                       setFieldValue("fromDate", fromDateValue);
-                      if (new Date(fromDateValue) > new Date(values.endDate)) {
-                        // Automatically update toDate if it's earlier than fromDate
+                      // If fromDate is greater than toDate, update toDate to match fromDate
+                      if (values.toDate && new Date(fromDateValue) > new Date(values.toDate)) {
                         setFieldValue("toDate", fromDateValue);
                       }
                     }}
@@ -120,10 +152,15 @@ const RtcNotGenerated = () => {
                   <Field
                     type="datetime-local"
                     name="toDate"
+                    max={getCurrentDateWithEndTime()}
                     className={`mt-1 block w-full px-2 py-1 border
                                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     onChange={(e) => {
                       const toDateValue = e.target.value;
+                      // If toDate is less than fromDate, update fromDate to match toDate
+                      if (values.fromDate && new Date(toDateValue) < new Date(values.fromDate)) {
+                        setFieldValue("fromDate", toDateValue);
+                      }
                       setFieldValue("toDate", toDateValue);
                     }}
                   />
@@ -143,29 +180,30 @@ const RtcNotGenerated = () => {
                   />
                 </div>
 
-                  {/* bus pass type */}
-            <div>
-              <label
-                htmlFor="BusPassType"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Bus Pass Type
-              </label>
-              <Field
-                as="select"
-                name="BusPassType"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("BusPassType", e.target.value);
-                }}
-              >
-                <option value="">All</option>
-                <option value="Single">Single</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Yearly">Yearly</option>
-                
-              </Field>
-            </div>
+                {/* bus pass type */}
+                <div>
+                  <label
+                    htmlFor="BusPassType"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Bus Pass Type
+                  </label>
+                  <Field
+                    as="select"
+                    name="BusPassType"
+                    className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onChange={(e) => {
+                      setFieldValue("BusPassType", e.target.value);
+                    }}
+                  >
+                    <option value="">All</option>
+                    {AllBusPassesData?.filter((item) => item.isActive).map((item) => (
+                      <option value={item.passTypeId}>
+                        {item.passTypeName}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"
@@ -180,17 +218,17 @@ const RtcNotGenerated = () => {
                     onClick={() => {
                       setValues({
                         fromDate: startOfDay,
-                        toDate: startOfDay,
+                        toDate: endOfDay,
                         mobileNumber: "",
                         BusPassType: "",
                       });
                       // resetInnerFilters();
-                      // fetchTicketNotGeneratedPieChart({
-                      //   fromDate: startOfDay,
-                      //   toDate: endOfDay,
-                      //   mobileNumber: "",
-                      //   BusPassType: "",
-                      // });
+                      fetchRtcTicketNotGeneratedPieChart({
+                        fromDate: startOfDay,
+                        toDate: endOfDay,
+                        mobileNumber: "",
+                        BusPassType: "",
+                      });
                     }}
                   >
                     Reset
@@ -204,13 +242,15 @@ const RtcNotGenerated = () => {
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                 {/* <Loader/> */}
 
-                {isTicketNotGeneratedPieChartLoading && (
+                {RtcisTicketNotGeneratedPieChartLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
-                <MetroNotGeneratedChart
-                  data={totalCount !== 0 ? TicketNotGeneratedPieChartData : []}
+                <BusPassNotGeneratedChart
+                  data={
+                    totalCount !== 0 ? RtcTicketNotGeneratedPieChartData : []
+                  }
                   title="Payment Successful but Ticket not Generated"
                   angleKey="subCategoryCount"
                   calloutLabelKey="subCategory"

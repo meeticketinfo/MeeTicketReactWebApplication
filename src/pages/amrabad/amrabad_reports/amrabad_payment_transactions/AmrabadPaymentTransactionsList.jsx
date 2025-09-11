@@ -190,6 +190,7 @@ function AmrabadPaymentTransactionsList() {
         const isDisabled = params.data.isTicketGenerated;
         // || params.data.isTicketGenerated;
 
+      
         return (
           <div className="flex justify-center mt-1">
             <button

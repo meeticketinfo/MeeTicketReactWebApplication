@@ -1,59 +1,95 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { useAmrabadUserStore } from "../../../../../store/amrabad/reports/UserReportStore";
-
-const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage }) => {
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../utils/Helper";
+import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+ 
+const BusPassUserReportForm = ({
+  PageIndex,
+  pageNumber,
+  pageSize,
+  SetcurrentPage,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const {
-    isAmrabadUserReportsLoading,
-    fetchAmrabadUserReports,
-  } = useAmrabadUserStore();
+    isBusPassUserReportsLoading,
+    allBusPassUserReports,
+    fetchBusPassUserReports,
+  } = useBuspassUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-
+ 
+  // Get current date and time in the format required for datetime-local input
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+ 
+  const getCurrentDateWithEndTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}T23:59`;
+  };
+ 
+ 
+  const maxDateTime = getCurrentDateTime();
+  console.log(searchParams.get("mobileNo"));
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    mobileNumber: searchParams.get("mobileNumber") || "",
+    mobileNo: searchParams.get("mobileNo") || "",
   };
-
+ 
   const onSubmit = (values) => {
+    console.log(values);
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach(key => {
+    Object.keys(values).forEach((key) => {
       if (values[key]) {
         newSearchParams.set(key, cleanString(values[key], ":", "_"));
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userAmrabadReportSearchParams", newSearchParams);
-
-    fetchAmrabadUserReports({
+    localStorage.setItem("userBusPassReportSearchParams", newSearchParams);
+ 
+    fetchBusPassUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
-      pageNumber:pageNumber,
+      mobileNo: values.mobileNo || "",
+      pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    SetcurrentPage(0)
+    SetcurrentPage(0);
   };
-
+ 
   const resetForm = (setValues) => {
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
-      mobileNumber: "",
+      mobileNo: "",
     };
-
+ 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-    localStorage.setItem("userAmrabadReportSearchParams", "");
+    localStorage.setItem("userBusPassReportSearchParams", "");
     setValues(payload);
-    fetchAmrabadUserReports({ ...payload, pageNumber: pageNumber, pageSize: pageSize });
-    localStorage.setItem("userAmrabadReportSearchParams", "");
+    fetchBusPassUserReports({
+      ...payload,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+    });
+    localStorage.setItem("userBusPassReportSearchParams", "");
   };
-
+ 
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -69,6 +105,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <Field
                 type="datetime-local"
                 name="fromDate"
+                max={maxDateTime}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
@@ -95,15 +132,22 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
+                  // If toDate is less than fromDate, update fromDate to match toDate
+                  if (
+                    values.fromDate &&
+                    new Date(toDateValue) < new Date(values.fromDate)
+                  ) {
+                    setFieldValue("fromDate", toDateValue);
+                  }
                   setFieldValue("toDate", toDateValue);
                 }}
-                min={values.fromDate}
+                max={getCurrentDateWithEndTime()}
               />
             </div>
             {/* mobile number */}
             <div>
               <label
-                htmlFor="phoneNumber"
+                htmlFor="mobileNo"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -111,7 +155,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNumber"
+                name="mobileNo"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -120,7 +164,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNumber", e.target.value);
+                  setFieldValue("mobileNo", e.target.value);
                 }}
               />
             </div>
@@ -128,7 +172,7 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isAmrabadUserReportsLoading}
+                disabled={isBusPassUserReportsLoading}
               >
                 Search
               </button>
@@ -146,5 +190,5 @@ const BusPassUserReportForm = ({ PageIndex,pageNumber, pageSize, SetcurrentPage 
     </>
   );
 };
-
+ 
 export default BusPassUserReportForm;

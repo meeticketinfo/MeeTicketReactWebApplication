@@ -43,11 +43,12 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+
+  // RTC BUS PASS DEV
+
+  export const RTC_BUS_PASS_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
   
-
-  
-
-
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -197,6 +198,9 @@ export const API_ENDPOINTS = {
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
+    BUS_PASS: {
+      GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    },
   },
   REPORTS: {
     BOOKING_REPORTS: {
@@ -242,6 +246,28 @@ export const API_ENDPOINTS = {
       GET_STUDENT_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentApplicationDetails`,
       GET_PENDING_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentPendingApplicationDetails`,
       UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}RTCDashboard/updateStudentApplicationStatus`,
+      USER_REPORT:{
+      GET_BUSSPASS_USER_OUTER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserOuterReport`,
+      GET_BUSSPASS_USER_INNER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserInnerReport`,
+      },
+      REFUND_TRANSACTIONS_REPORT:{
+        GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
+        GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
+        GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+      },
+      RTC_TOTAL_TRANSACTIONS_REPORT:{
+        GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionOuterReport`,
+        GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionInnerReport`,
+        GET_RTC_OTHER_REASON_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureDueToOtherReasonsReport`,
+        GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
+        GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
+        GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
+        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/ViewBusPass`,
+      }
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,
@@ -383,6 +409,7 @@ export const API_ENDPOINTS = {
       ADD_NEW_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/AddNewBookingDetails`,
       SAVE_CARD_PAYMENT_TRANSACTIONS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/SaveCardPaymentTransactions`,
       CANCEL_TICKET:`${AMRABAD_API_BASE_URL}MobileApplication/CancellationBooking`,
+      CANCEL_TICKET_WEB:`${AMRABAD_API_BASE_URL}WebBooking/UpdateBookingCancellation`,
     }
   },
   FAILED_TRANSACTIONS: {

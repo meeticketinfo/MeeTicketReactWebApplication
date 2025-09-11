@@ -66,6 +66,7 @@ const AmarabadViewTrackOrder = () => {
 
   const [columnDefs] = useState([
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       maxWidth: "80",

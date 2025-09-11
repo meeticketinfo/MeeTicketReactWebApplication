@@ -171,7 +171,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 }}
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium">
                 Purchase / Booking
               </label>
@@ -184,7 +184,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
                 <option value="Purchase">Purchase Date</option>
                 <option value="Booking">Booking Date</option>
               </Field>
-            </div>
+            </div> */}
             <div>
               <label className="block text-sm font-medium">Package</label>
               <Field
@@ -272,7 +272,7 @@ const AmrabadConsolidatedForm = ({ PageIndex, pageSize, SetcurrentPage }) => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select Payment Status</option>
-                <option value="CONFIRMED">Confirmed</option>
+                <option value="BOOKED">Booked</option>
                 <option value="CANCELLED">Cancelled</option>
               </Field>
             </div>

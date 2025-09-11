@@ -54,6 +54,7 @@ const AmrabadFailedGatewayReport = ( ) => {
   }, [PAGE_LIMIT, currentPage]);
   const columnDefs = [
       {
+        field: "sno",
         headerName: "S.No",
         valueGetter: (params) => {
           const pageOffset = currentPage * PAGE_LIMIT;
@@ -160,9 +161,9 @@ const AmrabadFailedGatewayReport = ( ) => {
         maxWidth: "220",
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "N/A",
-        cellRenderer: (params) => (
-          <span title={params.value}>{params.value}</span>
-        ),
+        // cellRenderer: (params) => (
+        //   <span title={params.value}>{params.value}</span>
+        // ),
       },
       {
         field: "orderId",

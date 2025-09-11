@@ -1,46 +1,46 @@
 import { create } from "zustand";
-import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
-import apiService from "../../../services/apiService";
+import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+import apiService from "../../services/apiService";
 
 export const useBuspassUserStore = create((set) => ({
-  allAmrabadUserReports: [],
-  isAmrabadUserReportsLoading: false,
+  allBusPassUserReports: [],
+  isBusPassUserReportsLoading: false,
 
-  isAmrabadUserDetailedReportsLoading:false,
-  allAmrabadUserDetailedReports:[],
+  isBusPassUserDetailedReportsLoading:false,
+  allBusPassUserDetailedReports:[],
 
 
-  fetchAmrabadUserReports: async (payload) => {
-    set({ isAmrabadUserReportsLoading: true });
+  fetchBusPassUserReports: async (payload) => {
+    set({ isBusPassUserReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_USER_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.USER_REPORT.GET_BUSSPASS_USER_OUTER_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNo=${payload.mobileNo}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({
-        allAmrabadUserReports: response.data,
-        isAmrabadUserReportsLoading: false,
+        allBusPassUserReports: response.data,
+        isBusPassUserReportsLoading: false,
       });
     } catch (error) {
       set({
         error: error.message,
-        isAmrabadUserReportsLoading: false,
+        isBusPassUserReportsLoading: false,
       });
     }
   },
-  fetchAmrabadUserDetailedReports: async (payload) => {
-    set({ isAmrabadUserDetailedReportsLoading: true });
+  fetchBusPassUserDetailedReports: async (payload) => {
+    set({ isBusPassUserDetailedReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.AMRABAD.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&packageId=${payload.packageId}&houseId=${payload.houseId}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.USER_REPORT.GET_BUSSPASS_USER_INNER_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNo=${payload.mobileNo}&paymentMode=${payload.paymentMode}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({
-        allAmrabadUserDetailedReports: response.data,
-        isAmrabadUserDetailedReportsLoading: false,
+        allBusPassUserDetailedReports: response.data,
+        isBusPassUserDetailedReportsLoading: false,
       });
     } catch (error) {
       set({
         error: error.message,
-        isAmrabadUserDetailedReportsLoading: false,
+        isBusPassUserDetailedReportsLoading: false,
       });
     }
   },
