@@ -55,10 +55,10 @@ function AmrabadPaymentTransactionsList() {
 
   const [columnDefs] = useState([
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
-      minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
@@ -157,7 +157,7 @@ function AmrabadPaymentTransactionsList() {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
-        // || params.data.isTicketGenerated;
+        // || params.data.isTicketGe nerated;
 
         return (
           <div className="flex justify-center mt-1">
