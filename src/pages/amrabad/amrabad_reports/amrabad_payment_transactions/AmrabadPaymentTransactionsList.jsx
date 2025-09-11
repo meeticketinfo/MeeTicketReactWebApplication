@@ -51,7 +51,7 @@ function AmrabadPaymentTransactionsList() {
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
-  }, [fetchAmrabadPaymentTransactions]);
+  }, [fetchAmrabadPaymentTransactions,currentPage, PAGE_LIMIT]);
 
   const [columnDefs] = useState([
     {
