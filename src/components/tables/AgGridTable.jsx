@@ -118,9 +118,8 @@ const AgGridTable = ({
           if (columnId === "bpTransactionStatus" || columnId === "transactionStatus") {
             if (value === "INITIATE") return "Request Sent";
             if (value === "INPROCESS") return "Deep Link Status";
-            if (value === "FINAL_STATUS")
-              return params.node?.data?.resultStatus || "N/A";
-            return "Payment Status Check";
+            if (value === "FINAL_STATUS") return params.node?.data?.resultStatus || "N/A";
+            return params.node?.data?.transactionStatus || "Payment Status Check";
           }
 
           // Handle specific fields that should always be treated as text
