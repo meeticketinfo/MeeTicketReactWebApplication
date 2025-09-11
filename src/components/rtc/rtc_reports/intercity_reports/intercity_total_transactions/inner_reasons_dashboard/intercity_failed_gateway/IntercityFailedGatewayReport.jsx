@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import AgGridTable from "../../../../../../components/tables/AgGridTable";
-import AdminLayout from "../../../../../../layouts/AdminLayout";
-import { formatDateTime } from "../../../../../../utils/Helper";
-import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
-import Breadcrumb from "../../../../../../components/Breadcrumb";
-import IntercityFailedGateWayReportForm from "./IntercityFailedGateWayReportForm";
+import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import AgGridTable from "../../../../../../../components/tables/AgGridTable";
+import AdminLayout from "../../../../../../../layouts/AdminLayout";
+import { formatDateTime } from "../../../../../../../utils/Helper";
+import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
+import Breadcrumb from "../../../../../../../components/Breadcrumb";
+import IntercityFailedGatewayReportForm from "./IntercityFailedGateWayReportForm";
 
 const IntercityFailedGatewayReport = ( ) => {
     const location = useLocation();
@@ -219,7 +219,7 @@ const IntercityFailedGatewayReport = ( ) => {
           </div>
           <div className="">
             <Link
-              to={`/amrabad-failed-gateway?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
+              to={`/intercity-failed-gateway?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
                onClick={() => {
                 resetDeepInnerFilters();
@@ -231,7 +231,7 @@ const IntercityFailedGatewayReport = ( ) => {
         </div>
 
         <div>
-          <IntercityFailedGateWayReportForm
+          <IntercityFailedGatewayReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}

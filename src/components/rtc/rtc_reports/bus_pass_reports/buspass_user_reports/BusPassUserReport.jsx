@@ -20,6 +20,7 @@ const BusPassUserReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -30,7 +31,7 @@ const BusPassUserReport = () => {
       field: "login_MobilNumber",
       // maxWidth: 120,
       flex: 1,
-      headerName: "Login Mobile No.",
+      headerName: "Mobile Number",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -65,8 +66,8 @@ const BusPassUserReport = () => {
       },
     },
     {
-      field: "viewTransaction",
-      headerName: "Action",
+      field: "action",
+      headerName: "Actions",
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
@@ -132,6 +133,7 @@ const BusPassUserReport = () => {
             totalCount={allBusPassUserReports?.[0]?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
+            showSearch={false}
           />
         </div>
       </div>

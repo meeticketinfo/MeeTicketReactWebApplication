@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { superballs } from "ldrs";
 import { useSearchParams } from "react-router-dom";
-import BusPassRefundTransactionsForm from "./BusPassRefundTransactionsForm";
-import BusPassRefundTransactionsChart from "../charts/BusPassRefundTransactionsChart.jsx";
+import IntercityRefundTransactionsChart from "../../../bus_pass_reports/buspass_refund/charts/IntercityRefundTransactionsChart.jsx";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../utils/Helper";
 import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
+import IntercityRefundOuterReportForm from "./IntercityRefundOuterReportForm.jsx";
 
-function BusPassRefundTransactions() {
+function IntercityRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
   const {
@@ -51,7 +51,7 @@ function BusPassRefundTransactions() {
     <>
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-full ">
-          <BusPassRefundTransactionsForm/>
+          <IntercityRefundOuterReportForm/>
         </div>
 
         {/* Transactions by reason chart */}
@@ -65,7 +65,7 @@ function BusPassRefundTransactions() {
                   <div className="loader"></div>
                 </div>
               )}
-              <BusPassRefundTransactionsChart
+              <IntercityRefundTransactionsChart
                 data={totalCount !== 0 ? refundBusPassTransactionsReport : []}
                 // data={refundBusPassTransactionsReport}
                 title="Payment success & Ticket Not Generated"
@@ -80,4 +80,4 @@ function BusPassRefundTransactions() {
   );
 }
 
-export default BusPassRefundTransactions;
+export default IntercityRefundTransactions;

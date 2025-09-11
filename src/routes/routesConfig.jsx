@@ -181,6 +181,13 @@ import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pas
 import IntercityFailedOtherReason from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReason";
 import IntercityFailedOtherReasonReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReasonReport";
 import IntercityFailedGateway from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGateway";
+import MainIntercityRefundTransactionReport from "../components/rtc/rtc_reports/intercity_reports/intercity_refund_transaction/intercity_refund_outer_report/MainIntercityRefundTransactionReport";
+import IntercityRefundTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_refund_transaction/intercity_refund_inner_report/IntercityRefundTransactionsReport";
+import IntercityUserReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserReport";
+import IntercityUserDetailedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserDetailedReport";
+import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserTrackOrder";
+import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
+import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
 
 export const routes = [
   {
@@ -888,10 +895,10 @@ export const routes = [
     element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
   },
 
-  // {
-  //   path: "/intercity-failed-gateway-report",
-  //   element: <ProtectedRoute element={<IntercityFailedGatewayReport/>} />,
-  // },
+  {
+    path: "/intercity-failed-gateway-report",
+    element: <ProtectedRoute element={<IntercityFailedGatewayReport/>} />,
+  },
   {
     path: "/intercity-not-generated",
     element: <ProtectedRoute element={<IntercityNotGenerated />} />,
@@ -901,8 +908,29 @@ export const routes = [
     path: "/intercity-not-generated-report",
     element: <ProtectedRoute element={<IntercityNotGeneratedReport />} />,
   },
-  // {
-  //   path: "/intercity-total-report",
-  //   element: <ProtectedRoute element={<IntercityTotalReport/>} />,
-  // },
+  {
+    path: "/intercity-total-report",
+    element: <ProtectedRoute element={<InetercityTotalReport/>} />,
+  },
+  {
+    path: "/intercity-refund-report",
+    element: <ProtectedRoute element={<MainIntercityRefundTransactionReport />} />,
+  },
+  {
+    path: "/intercity-refund-inner-report",
+    element: <ProtectedRoute element={<IntercityRefundTransactionsReport />} />,
+  },
+
+  {
+    path: "/intercity-user-report",
+    element: <ProtectedRoute element={<IntercityUserReport />} />,
+  },
+  {
+    path: "/intercity-user-detailed-report",
+    element: <ProtectedRoute element={<IntercityUserDetailedReport />} />,
+  },
+  {
+    path: "/intercity-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<IntercityUserTrackOrder />} />,
+  },
 ];

@@ -85,7 +85,7 @@ const IntercityFailedGateway = () => {
           </div>
           <div className="">
             <Link
-              to={`/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
+              to={`/intercity-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();

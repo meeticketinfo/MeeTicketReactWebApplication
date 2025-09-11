@@ -29,7 +29,9 @@ const SimpleModal = ({ open, onClose, children }) => {
   );
 };
 
-const BusPassUserTransactionsOrderTracker = () => {
+
+
+const IntercityUserTrackOrder = () => {
   const location = useLocation();
   const { orderId, mobileNo, typeOfBusPass, houseNames, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
@@ -148,7 +150,7 @@ const BusPassUserTransactionsOrderTracker = () => {
             </div>
             <div className="">
               <Link
-                to={`/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`}
+                to={`/intercity-user-detailed-report?${userDetailedBusPassReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -247,4 +249,4 @@ const BusPassUserTransactionsOrderTracker = () => {
   );
 };
 
-export default BusPassUserTransactionsOrderTracker;
+export default IntercityUserTrackOrder;

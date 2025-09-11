@@ -250,6 +250,11 @@ export const API_ENDPOINTS = {
       GET_BUSSPASS_USER_OUTER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserOuterReport`,
       GET_BUSSPASS_USER_INNER_REPORT:`${RTC_API_BASE_URL}RTCDashboard/UserInnerReport`,
       },
+      REFUND_TRANSACTIONS_REPORT:{
+        GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
+        GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
+        GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+      },
       RTC_TOTAL_TRANSACTIONS_REPORT:{
         GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionOuterReport`,
         GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}RTCDashboard/TotalTransactionInnerReport`,

@@ -12,7 +12,7 @@ const reasonStyles = {
   "Payment success but ticket not generated": { color: "#D9E4FF", count: 12 },
 };
 const colors = ["#4A90E2", "#002147", "#5A6F8F", "#205375", "#D9E4FF"];
-const BusPassRefundTransactionsChart = ({
+const IntercityRefundTransactionsChart = ({
   data,
   title,
   angleKey,
@@ -78,7 +78,7 @@ const BusPassRefundTransactionsChart = ({
         <h2 className="text-lg font-bold">Refund Transactions</h2>
         <div className="flex items-center gap-2 bg-[#C0DDFF] rounded-lg px-4 py-3 shadow-sm">
           <span className="text-lg text-[#404040] font-semibold">Total Refund Transactions</span>
-          <Link to={`/bus-pass-refund-inner-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
+          <Link to={`/intercity-refund-inner-report?${searchParams.toString()}`} className="font-semibold text-lg text-[#57a4d8] ml-2 underline">
             {totalCount}
           </Link>
         </div>
@@ -99,7 +99,7 @@ const BusPassRefundTransactionsChart = ({
               <span className="text-xs text-gray-800">{item.status}</span>
             </div>
             <Link
-              to={`/bus-pass-refund-inner-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
+              to={`/intercity-refund-inner-report?${searchParams.toString()}&RefundStatus=${item.refundStatus}`}
               onClick={() => {
                 localStorage.setItem("busPassRefundInnerTransactionSearchParams", `${searchParams.toString()}&RefundStatus=${item.refundStatus}`)
               }}
@@ -115,4 +115,4 @@ const BusPassRefundTransactionsChart = ({
   );
 };
 
-export default BusPassRefundTransactionsChart;
+export default IntercityRefundTransactionsChart;

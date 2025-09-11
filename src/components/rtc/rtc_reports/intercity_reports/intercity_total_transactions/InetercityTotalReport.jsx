@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
-
+import IntercityTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 import { ToastContainer } from "react-toastify";
-import busPassTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
-
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../Breadcrumb";
-import BusPassTotalTransactionForm from "./outer_report/BusPassTotalTransactionForm";
+import BusPassTotalTransactionForm from "../../bus_pass_reports/rtc_total_transaction/outer_report/BusPassTotalTransactionForm";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { formatDateTime } from "../../../../../utils/Helper";
@@ -15,14 +13,14 @@ import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 // import { formatDateTime } from "../../../../../utils/Helper";
 // import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 
-const BusPassTotalReport = () => {
+const InetercityTotalReport = () => {
   const {
     innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = busPassTotalCommonStore();
-
+  } = IntercityTotalCommonStore();
+  console.log("outerFilters", outerFilters);
   const {
     fetchRtcTotalTransactions,
     RtcTotalTransactionsData,
@@ -180,7 +178,7 @@ const BusPassTotalReport = () => {
   const breadcrumbItems = [
     {
       label: "Total Transactions ",
-      path: `/bus-pass-total-transaction`,
+      path: `/intercity-total-transaction`,
       onclick: () => resetDeepInnerFilters(),
     },
 
@@ -194,7 +192,7 @@ const BusPassTotalReport = () => {
   return (
     <AdminLayout>
       <ToastContainer />
-      <div className="px-4  py-8 w-full max-w-9xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
           <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         </div>
@@ -207,7 +205,7 @@ const BusPassTotalReport = () => {
           </div>
           <div className="">
             <Link
-              to="/bus-pass-total-transaction"
+              to="/intercity-total-transaction"
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -246,4 +244,4 @@ const BusPassTotalReport = () => {
   );
 };
 
-export default BusPassTotalReport;
+export default InetercityTotalReport;

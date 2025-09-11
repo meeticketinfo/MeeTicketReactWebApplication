@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import BusPassUserDetailedReportForm from "./BusPassUserDetailedReportForm";
+import IntercityUserDetailedReportForm from "./IntercityUserDetailedReportForm";
 import AgGridTable from "../../../../tables/AgGridTable";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
 import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
-const BusPassUserDetailedReport = () => {
+const IntercityUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-  const userBusPassReportSearchParams = localStorage.getItem("userBusPassReportSearchParams");
+  const userIntercityReportSearchParams = localStorage.getItem(
+    "userIntercityReportSearchParams"
+  );
   const {
     isBusPassUserDetailedReportsLoading,
     allBusPassUserDetailedReports,
@@ -58,12 +64,12 @@ const BusPassUserDetailedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/bus-pass-user-transactions-order-tracker"}
+          to={"/intercity-user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.transactionDateandTime ,
+            date: params.data.transactionDateandTime,
             mobileNo: params.data.login_MobilNumber,
-            typeOfBusPass:params.data.typeOfBusPass,
+            typeOfBusPass: params.data.typeOfBusPass,
             status: params.data.transactionStatus,
             amount: params.data.confirmedTransactionAmount,
             bookingId: params.data.applicationId,
@@ -136,7 +142,7 @@ const BusPassUserDetailedReport = () => {
         <span title={params.value}>{params.value || "N/A"}</span>
       ),
     },
-  ]
+  ];
   const loadUserReport = (page = 0) => {
     fetchBusPassUserDetailedReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
@@ -158,22 +164,19 @@ const BusPassUserDetailedReport = () => {
 
   const breadcrumbItems = [
     {
-      label: 'User Report',
-      path: `/bus-pass-user-report?${userBusPassReportSearchParams}`
+      label: "User Report",
+      path: `/intercity-user-report?${userIntercityReportSearchParams}`,
     },
     {
-      label: 'User Detailed Report',
-      isLast: true
-    }
+      label: "User Detailed Report",
+      isLast: true,
+    },
   ];
   return (
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb
-            customItems={breadcrumbItems}
-            className="mb-4"
-          />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
@@ -182,7 +185,7 @@ const BusPassUserDetailedReport = () => {
             </div>
             <div className="">
               <Link
-                to={`/bus-pass-user-report?${userBusPassReportSearchParams}`}
+                to={`/intercity-user-report?${userIntercityReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -190,15 +193,21 @@ const BusPassUserDetailedReport = () => {
             </div>
           </div>
           <div>
-            <BusPassUserDetailedReportForm pageNumber={1} pageSize={PAGE_LIMIT} setcurrentPage={setCurrentPage} />
+            <IntercityUserDetailedReportForm
+              pageNumber={1}
+              pageSize={PAGE_LIMIT}
+              setcurrentPage={setCurrentPage}
+            />
             <AgGridTable
-              ExportName="UserDetailedReport"
+              ExportName="IntercityUserDetailedReport"
               rowData={allBusPassUserDetailedReports}
               columnDefs={columnDefs}
               isFetchLoading={isBusPassUserDetailedReportsLoading}
               IsReactPaginate={true}
               isPagination={false}
-              tableHeight={allBusPassUserDetailedReports?.length > 10 ? 550 : 300}
+              tableHeight={
+                allBusPassUserDetailedReports?.length > 10 ? 550 : 300
+              }
               setPageLimit={setPAGE_LIMIT}
               showTotalCount={true}
               pageLimit={PAGE_LIMIT}
@@ -215,4 +224,4 @@ const BusPassUserDetailedReport = () => {
   );
 };
 
-export default BusPassUserDetailedReport;
+export default IntercityUserDetailedReport;
