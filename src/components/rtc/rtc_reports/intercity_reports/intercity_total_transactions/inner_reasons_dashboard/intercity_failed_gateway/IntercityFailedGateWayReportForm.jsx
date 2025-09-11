@@ -1,9 +1,9 @@
 import { Formik, Form, Field } from "formik";
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import { usePackagesStore } from "../../../../../../store/amrabad/masters/packagesStore";
+import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
+import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 
-const IntercityFailedGateWayReportForm = ({
+const IntercityFailedGatewayReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
@@ -218,4 +218,4 @@ const IntercityFailedGateWayReportForm = ({
   );
 };
 
-export default IntercityFailedGateWayReportForm;
+export default IntercityFailedGatewayReportForm;

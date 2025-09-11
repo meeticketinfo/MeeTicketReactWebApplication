@@ -97,7 +97,7 @@ const AgGridTable = ({
         processCellCallback: (params) => {
           let value = params.value;
           const columnId = params.column.getColId();
-
+console.log(params);
           if (
             (columnId === "requestTimestamp" ||
               columnId === "responseTimestamp") &&
@@ -118,9 +118,10 @@ const AgGridTable = ({
           if (columnId === "bpTransactionStatus" || columnId === "transactionStatus") {
             if (value === "INITIATE") return "Request Sent";
             if (value === "INPROCESS") return "Deep Link Status";
+            if (value === "STATUSCALL") return "Payment Status Check";
             if (value === "FINAL_STATUS")
               return params.node?.data?.resultStatus || "N/A";
-            return "Payment Status Check";
+            return params.node?.data?.transactionStatus || "Payment Status Check";
           }
 
           // Handle specific fields that should always be treated as text

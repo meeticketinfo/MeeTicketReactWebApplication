@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
-
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-
+import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 // Define reason styles (color + count)
 const reasonStyles = {
   "User Returned": { color: "#4A90E2", count: 5 },
@@ -21,7 +19,7 @@ const IntercityTotalTransactionChart = ({
   // filters,
 }) => {
   const { setOuterFilters, outerFilters, resetOuterFilters } =
-    AmarabadTotalCommonStore();
+  IntercityTotalCommonStore();
 
   const chartRef = useRef(null);
   const totalCount =
@@ -112,7 +110,7 @@ const IntercityTotalTransactionChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to="/amrabad-total-report"
+            to="/intercity-total-report"
             onClick={() => {
               setOuterFilters({ ...outerFilters, status: "" });
             }}
@@ -183,8 +181,8 @@ const IntercityTotalTransactionChart = ({
                         </div>
                       </td>
                       <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
-                        <Link
-                          to={routes[item.paymentCategoryKey] || "#"}
+                      <Link
+                          to={routes[item.paymentCategoryKey]}
                           onClick={() => {
                             setOuterFilters({
                               ...outerFilters,
@@ -193,10 +191,7 @@ const IntercityTotalTransactionChart = ({
                           }}
                           className="text-[#4A90E2] font-semibold hover:underline text-xs md:text-sm"
                         >
-                          {item.reasonCount ||
-                            item.count ||
-                            item.subCategoryCount ||
-                            0}
+                          {item.count}
                         </Link>
                       </td>
                     </tr>

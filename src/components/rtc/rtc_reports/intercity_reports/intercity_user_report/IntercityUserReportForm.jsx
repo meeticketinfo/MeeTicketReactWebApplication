@@ -7,7 +7,7 @@ import {
 } from "../../../../../utils/Helper";
 import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
 
-const BusPassUserReportForm = ({
+const IntercityUserReportForm = ({
   PageIndex,
   pageNumber,
   pageSize,
@@ -105,7 +105,6 @@ const BusPassUserReportForm = ({
               <Field
                 type="datetime-local"
                 name="fromDate"
-                max={maxDateTime}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
@@ -141,7 +140,6 @@ const BusPassUserReportForm = ({
                   }
                   setFieldValue("toDate", toDateValue);
                 }}
-                max={getCurrentDateWithEndTime()}
               />
             </div>
             {/* mobile number */}
@@ -191,4 +189,4 @@ const BusPassUserReportForm = ({
   );
 };
 
-export default BusPassUserReportForm;
+export default IntercityUserReportForm;
