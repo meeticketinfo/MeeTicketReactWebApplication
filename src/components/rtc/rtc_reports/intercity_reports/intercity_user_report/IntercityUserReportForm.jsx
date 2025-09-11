@@ -6,8 +6,8 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
 import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
- 
-const BusPassUserReportForm = ({
+
+const IntercityUserReportForm = ({
   PageIndex,
   pageNumber,
   pageSize,
@@ -21,7 +21,7 @@ const BusPassUserReportForm = ({
   } = useBuspassUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
- 
+
   // Get current date and time in the format required for datetime-local input
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -32,7 +32,7 @@ const BusPassUserReportForm = ({
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
- 
+
   const getCurrentDateWithEndTime = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -40,8 +40,8 @@ const BusPassUserReportForm = ({
     const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}T23:59`;
   };
- 
- 
+  
+
   const maxDateTime = getCurrentDateTime();
   console.log(searchParams.get("mobileNo"));
   const initialValues = {
@@ -49,7 +49,7 @@ const BusPassUserReportForm = ({
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNo: searchParams.get("mobileNo") || "",
   };
- 
+
   const onSubmit = (values) => {
     console.log(values);
     const newSearchParams = new URLSearchParams();
@@ -60,7 +60,7 @@ const BusPassUserReportForm = ({
     });
     setSearchParams(newSearchParams);
     localStorage.setItem("userBusPassReportSearchParams", newSearchParams);
- 
+
     fetchBusPassUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
@@ -70,14 +70,14 @@ const BusPassUserReportForm = ({
     });
     SetcurrentPage(0);
   };
- 
+
   const resetForm = (setValues) => {
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
       mobileNo: "",
     };
- 
+
     // Clear URL search params
     setSearchParams(new URLSearchParams());
     localStorage.setItem("userBusPassReportSearchParams", "");
@@ -89,7 +89,7 @@ const BusPassUserReportForm = ({
     });
     localStorage.setItem("userBusPassReportSearchParams", "");
   };
- 
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -105,7 +105,6 @@ const BusPassUserReportForm = ({
               <Field
                 type="datetime-local"
                 name="fromDate"
-                max={maxDateTime}
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
@@ -141,7 +140,6 @@ const BusPassUserReportForm = ({
                   }
                   setFieldValue("toDate", toDateValue);
                 }}
-                max={getCurrentDateWithEndTime()}
               />
             </div>
             {/* mobile number */}
@@ -190,5 +188,5 @@ const BusPassUserReportForm = ({
     </>
   );
 };
- 
-export default BusPassUserReportForm;
+
+export default IntercityUserReportForm;

@@ -45,7 +45,7 @@ const BusPassTotalTransactionChart = ({
               const total = data.reduce((sum, item) => sum + item[angleKey], 0);
               const percentage = ((datum[angleKey] / total) * 100).toFixed(2);
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = window.innerWidth < 768 ? 15 : 25; // Shorter wrap on mobile
+              const wrapLength = window.innerWidth < 768 ? 15 : 55; // Shorter wrap on mobile
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"

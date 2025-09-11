@@ -123,13 +123,13 @@ const BusPassRefundTransactionsReport = () => {
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "0",
         },
-        {
-            field: "modeofTransaction",
-            headerName: "Mode of Transaction",
-            // maxWidth: "120",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
+        // {
+        //     field: "modeofTransaction",
+        //     headerName: "Mode of Transaction",
+        //     // maxWidth: "120",
+        //     headerClass: "text-blue-v2",
+        //     valueFormatter: (params) => params.value || "N/A",
+        // },
         {
             field: "modeofPayment",
             headerName: "Mode of Payment",
