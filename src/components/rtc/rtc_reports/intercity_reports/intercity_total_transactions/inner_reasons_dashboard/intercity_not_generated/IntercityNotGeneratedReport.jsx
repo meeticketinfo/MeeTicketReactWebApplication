@@ -223,7 +223,7 @@ const IntercityNotGeneratedReport = () => {
           </div>
           <div className="">
             <Link
-              to={`/amrabad-not-generated?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
+              to={`/intercity-not-generated?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();

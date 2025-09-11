@@ -94,7 +94,7 @@ const IntercityFailedGatewayChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to={`/amrabad-failed-gateway-report?package=${
+            to={`/intercity-failed-gateway-report?package=${
               packageName || ""
             }&house=${house || ""}&mobileNumber=${
               mobileNumber || ""
@@ -145,7 +145,7 @@ const IntercityFailedGatewayChart = ({
                             }}
                           />
                           <Link
-                            to={`/amrabad-failed-gateway-report?package=${
+                            to={`/intercity-failed-gateway-report?package=${
                               packageName || ""
                             }&house=${house || ""}&mobileNumber=${
                               mobileNumber || ""
@@ -174,7 +174,7 @@ const IntercityFailedGatewayChart = ({
                       </td>
                       <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                          to={`/amrabad-failed-gateway-report?package=${
+                          to={`/intercity-failed-gateway-report?package=${
                             packageName || ""
                           }&house=${house || ""}&mobileNumber=${
                             mobileNumber || ""
