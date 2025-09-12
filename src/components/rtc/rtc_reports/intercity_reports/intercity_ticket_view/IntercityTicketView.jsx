@@ -121,6 +121,22 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
           {/* Header with Logos */}
           <div className="flex sm:flex-row justify-between items-start px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 gap-4">
             {/* Left Logo Section */}
+            <div className="text-right">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
+                <img
+                  src={logo2}
+                  alt="Meeticket Logo"
+                  className={`transition-all duration-300 ${
+                    isScrolled
+                      ? "w-[40px] sm:w-[50px] md:w-[60px]"
+                      : "w-[80px] sm:w-[85px] md:w-[100px]"
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Right Logo Section */}
+
             <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
               <img
                 src={Logo}
@@ -131,21 +147,6 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
                     : "w-[80px] sm:w-[85px] md:w-[100px]"
                 }`}
               />
-            </div>
-
-            {/* Right Logo Section */}
-            <div className="text-right">
-            <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
-              <img
-                src={logo2}
-                alt="Meeticket Logo"
-                className={`transition-all duration-300 ${
-                  isScrolled
-                    ? "w-[40px] sm:w-[50px] md:w-[60px]"
-                    : "w-[80px] sm:w-[85px] md:w-[100px]"
-                }`}
-              />
-            </div>
             </div>
           </div>
 
@@ -182,58 +183,114 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
               <table className="w-full border border-none">
                 <tbody>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900 w-48">PNR No.</td>
+                    <td className="px-3 py-2 font-bold text-gray-900 w-48">
+                      PNR No.
+                    </td>
                     <td className="px-3 py-2 text-gray-900">{data.pnrNo}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900 w-48">UID Number</td>
-                    <td className="px-3 py-2 text-gray-900">{data.uidNumber}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900 w-48">
+                      UID Number
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.uidNumber}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Ticket No.</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Ticket No.
+                    </td>
                     <td className="px-3 py-2 text-gray-900">{data.ticketNo}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Date of Journey</td>
-                    <td className="px-3 py-2 text-gray-900">{data.dateOfJourney}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Date of Journey
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.dateOfJourney}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">RJ Ticket No.</td>
-                    <td className="px-3 py-2 text-gray-900">{data.rjTicketNo}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Service Category</td>
-                    <td className="px-3 py-2 text-gray-900">{data.serviceCategory}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      RJ Ticket No.
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.rjTicketNo}
+                    </td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Service Category
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.serviceCategory}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Service Code/Name</td>
-                    <td className="px-3 py-2 text-gray-900">{data.serviceCode}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Service Code/Name
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.serviceCode}
+                    </td>
                     <td className="px-3 py-2 font-bold text-gray-900">To</td>
                     <td className="px-3 py-2 text-gray-900">{data.to}</td>
                   </tr>
                   <tr className="border-b border-none">
                     <td className="px-3 py-2 font-bold text-gray-900">From</td>
                     <td className="px-3 py-2 text-gray-900">{data.from}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Dropping Point</td>
-                    <td className="px-3 py-2 text-gray-900">{data.droppingPoint}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Dropping Point
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.droppingPoint}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Pick Point</td>
-                    <td className="px-3 py-2 text-gray-900">{data.pickPoint}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Arrival On</td>
-                    <td className="px-3 py-2 text-gray-900">{data.arrivalOn}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Pick Point
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.pickPoint}
+                    </td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Arrival On
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.arrivalOn}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Pickup Point Address</td>
-                    <td className="px-3 py-2 text-gray-900">{data.pickupPointAddress}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Depart On</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Pickup Point Address
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.pickupPointAddress}
+                    </td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Depart On
+                    </td>
                     <td className="px-3 py-2 text-gray-900">{data.departOn}</td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Status</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Status
+                    </td>
                     <td className="px-3 py-2 text-gray-900">{data.status}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">No. of Seats</td>
-                    <td className="px-3 py-2 text-gray-900">{data.noOfSeats}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      No. of Seats
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.noOfSeats}
+                    </td>
                   </tr>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-gray-900">Start Time at Origin</td>
-                    <td className="px-3 py-2 text-gray-900">{data.startTimeAtOrigin}</td>
-                    <td className="px-3 py-2 font-bold text-gray-900">Concession</td>
-                    <td className="px-3 py-2 text-gray-900">{data.concession}</td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Start Time at Origin
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.startTimeAtOrigin}
+                    </td>
+                    <td className="px-3 py-2 font-bold text-gray-900">
+                      Concession
+                    </td>
+                    <td className="px-3 py-2 text-gray-900">
+                      {data.concession}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -244,80 +301,106 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="grid grid-cols-1 gap-2">
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">PNR No.:</span>
+                    <span className="font-bold text-gray-900">PNR No.</span>
                     <span className="text-gray-900">{data.pnrNo}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Ticket No.:</span>
+                    <span className="font-bold text-gray-900">Ticket No.</span>
                     <span className="text-gray-900">{data.ticketNo}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">RJ Ticket No.:</span>
+                    <span className="font-bold text-gray-900">
+                      RJ Ticket No.
+                    </span>
                     <span className="text-gray-900">{data.rjTicketNo}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Service Code/Name:</span>
-                    <span className="text-gray-900 text-right">{data.serviceCode}</span>
+                    <span className="font-bold text-gray-900">
+                      Service Code/Name
+                    </span>
+                    <span className="text-gray-900 text-right">
+                      {data.serviceCode}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">From:</span>
+                    <span className="font-bold text-gray-900">From</span>
                     <span className="text-gray-900">{data.from}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Pick Point:</span>
-                    <span className="text-gray-900 text-right">{data.pickPoint}</span>
+                    <span className="font-bold text-gray-900">Pick Point</span>
+                    <span className="text-gray-900 text-right">
+                      {data.pickPoint}
+                    </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-gray-900">Pickup Point Address:</span>
-                    <span className="text-gray-900 text-sm mt-1">{data.pickupPointAddress}</span>
+                    <span className="font-bold text-gray-900">
+                      Pickup Point Address
+                    </span>
+                    <span className="text-gray-900 text-sm mt-1">
+                      {data.pickupPointAddress}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Status:</span>
+                    <span className="font-bold text-gray-900">Status</span>
                     <span className="text-gray-900">{data.status}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Start Time at Origin:</span>
-                    <span className="text-gray-900 text-right">{data.startTimeAtOrigin}</span>
+                    <span className="font-bold text-gray-900">
+                      Start Time at Origin
+                    </span>
+                    <span className="text-gray-900 text-right">
+                      {data.startTimeAtOrigin}
+                    </span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="grid grid-cols-1 gap-2">
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">UID Number:</span>
+                    <span className="font-bold text-gray-900">UID Number</span>
                     <span className="text-gray-900">{data.uidNumber}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Date of Journey:</span>
+                    <span className="font-bold text-gray-900">
+                      Date of Journey
+                    </span>
                     <span className="text-gray-900">{data.dateOfJourney}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Service Category:</span>
-                    <span className="text-gray-900">{data.serviceCategory}</span>
+                    <span className="font-bold text-gray-900">
+                      Service Category
+                    </span>
+                    <span className="text-gray-900">
+                      {data.serviceCategory}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">To:</span>
+                    <span className="font-bold text-gray-900">To</span>
                     <span className="text-gray-900">{data.to}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Dropping Point:</span>
+                    <span className="font-bold text-gray-900">
+                      Dropping Point
+                    </span>
                     <span className="text-gray-900">{data.droppingPoint}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Arrival On:</span>
+                    <span className="font-bold text-gray-900">Arrival On</span>
                     <span className="text-gray-900">{data.arrivalOn}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Depart On:</span>
+                    <span className="font-bold text-gray-900">Depart On</span>
                     <span className="text-gray-900">{data.departOn}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">No. of Seats:</span>
+                    <span className="font-bold text-gray-900">
+                      No. of Seats
+                    </span>
                     <span className="text-gray-900">{data.noOfSeats}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-bold text-gray-900">Concession:</span>
+                    <span className="font-bold text-gray-900">Concession</span>
                     <span className="text-gray-900">{data.concession}</span>
                   </div>
                 </div>
@@ -330,10 +413,9 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
             <h3 className="text-lg font-bold text-gray-900 mb-4 border-b-2 border-gray-300 pb-2">
               PASSENGER DETAILS
             </h3>
-            {/* Desktop Table View */}
-            <div className="hidden lg:block overflow-x-auto">
+            <div className="overflow-x-auto">
               <table className="w-full border border-gray-200">
-                <thead>
+                <thead className="hidden md:table-header-group">
                   <tr className="bg-gray-100">
                     <th className="px-3 py-2 text-left text-sm font-semibold text-blue-600">
                       S.No
@@ -354,56 +436,41 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
                 </thead>
                 <tbody>
                   {data.passengers.map((passenger, index) => (
-                    <tr key={index} className="border-b border-gray-200">
-                      <td className="px-3 py-2 text-sm">{passenger.sno}</td>
-                      <td className="px-3 py-2 text-sm font-medium">
-                        {passenger.name}
+                    <tr key={index} className="border-b border-gray-200 md:table-row block bg-gray-50 mb-3 rounded-lg">
+                      <td className="px-3 py-2 text-sm md:table-cell block">
+                        <div className="flex justify-between md:contents">
+                          <span className="font-bold text-gray-900 md:hidden">S.No</span>
+                          <span>{passenger.sno}</span>
+                        </div>
                       </td>
-                      <td className="px-3 py-2 text-sm text-center">
-                        {passenger.age}
+                      <td className="px-3 py-2 text-sm font-medium md:table-cell block">
+                        <div className="flex justify-between md:contents">
+                          <span className="font-bold text-gray-900 md:hidden">Name</span>
+                          <span className="text-right md:text-left">{passenger.name}</span>
+                        </div>
                       </td>
-                      <td className="px-3 py-2 text-sm text-center">
-                        {passenger.gender}
+                      <td className="px-3 py-2 text-sm text-center md:table-cell block">
+                        <div className="flex justify-between md:contents">
+                          <span className="font-bold text-gray-900 md:hidden">Age</span>
+                          <span>{passenger.age}</span>
+                        </div>
                       </td>
-                      <td className="px-3 py-2 text-sm text-center">
-                        {passenger.seatNo}
+                      <td className="px-3 py-2 text-sm text-center md:table-cell block">
+                        <div className="flex justify-between md:contents">
+                          <span className="font-bold text-gray-900 md:hidden">Gender</span>
+                          <span>{passenger.gender}</span>
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 text-sm text-center md:table-cell block">
+                        <div className="flex justify-between md:contents">
+                          <span className="font-bold text-gray-900 md:hidden">Seat No.</span>
+                          <span>{passenger.seatNo}</span>
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
-
-            {/* Mobile Card View */}
-            <div className="lg:hidden space-y-3">
-              {data.passengers.map((passenger, index) => (
-                <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="flex justify-between">
-                      <span className="font-bold text-gray-900">S.No:</span>
-                      <span className="text-gray-900">{passenger.sno}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-bold text-gray-900">Age:</span>
-                      <span className="text-gray-900">{passenger.age}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-bold text-gray-900">Gender:</span>
-                      <span className="text-gray-900">{passenger.gender}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-bold text-gray-900">Seat No.:</span>
-                      <span className="text-gray-900">{passenger.seatNo}</span>
-                    </div>
-                  </div>
-                  <div className="mt-2 pt-2 border-t border-gray-300">
-                    <div className="flex justify-between">
-                      <span className="font-bold text-gray-900">Name:</span>
-                      <span className="text-gray-900 font-medium text-right">{passenger.name}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -417,45 +484,61 @@ const IntercityTicketView = ({ ticketData, isScrolled = false }) => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-bold text-gray-900">Basic Fare</span>
-                  <span className="text-gray-900">₹ {data.fareDetails.basicFare}</span>
+                  <span className="text-gray-900">
+                    ₹ {data.fareDetails.basicFare}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-bold text-gray-900">Reservation & Levy Fee</span>
-                  <span className="text-gray-900">₹ {data.fareDetails.reservationLevyFee}</span>
+                  <span className="font-bold text-gray-900">
+                    Reservation & Levy Fee
+                  </span>
+                  <span className="text-gray-900">
+                    ₹ {data.fareDetails.reservationLevyFee}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-gray-900">GST</span>
-                  <span className="text-gray-900">₹ {data.fareDetails.gst}</span>
+                  <span className="text-gray-900">
+                    ₹ {data.fareDetails.gst}
+                  </span>
                 </div>
               </div>
-              
+
               {/* Right Column */}
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-bold text-gray-900">Toll Fee</span>
-                  <span className="text-gray-900">₹ {data.fareDetails.tollFee}</span>
+                  <span className="text-gray-900">
+                    ₹ {data.fareDetails.tollFee}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-gray-900">Service Fee</span>
-                  <span className="text-gray-900">₹ {data.fareDetails.serviceFee}</span>
+                  <span className="text-gray-900">
+                    ₹ {data.fareDetails.serviceFee}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-bold text-gray-900">Concession Amt</span>
-                  <span className="text-gray-900">{data.fareDetails.concessionAmt}</span>
+                  <span className="font-bold text-gray-900">
+                    Concession Amt
+                  </span>
+                  <span className="text-gray-900">
+                    {data.fareDetails.concessionAmt}
+                  </span>
                 </div>
               </div>
             </div>
             {/* Horizontal Line */}
             <div className="mt-4 mb-4 border-t border-gray-300"></div>
             {/* Total Fare */}
-             <div className="flex justify-center sm:justify-end gap-4 sm:gap-14 mt-4">
-               <span className="text-lg font-bold text-gray-900">
-                 TOTAL FARE :
-               </span>
-               <span className="text-xl font-bold text-gray-900">
-                 ₹ {data.fareDetails.totalFare}
-               </span>
-             </div>
+            <div className="flex justify-center sm:justify-end gap-4 sm:gap-14 mt-4">
+              <span className="text-lg font-bold text-gray-900">
+                TOTAL FARE :
+              </span>
+              <span className="text-xl font-bold text-gray-900">
+                ₹ {data.fareDetails.totalFare}
+              </span>
+            </div>
           </div>
 
           {/* ID Proof Note */}
