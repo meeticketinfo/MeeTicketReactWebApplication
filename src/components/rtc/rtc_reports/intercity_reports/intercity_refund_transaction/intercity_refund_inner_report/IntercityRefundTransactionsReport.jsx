@@ -7,12 +7,12 @@ import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
 import PopupModal from "../../../../../utils/popup_modal/PopupModal";
 import Breadcrumb from "../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
-import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
 import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
+import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 const IntercityRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -24,13 +24,13 @@ const IntercityRefundTransactionsReport = () => {
   const amrabadRefundTransactionSearchParams =
     localStorage.getItem("busPassRefundInnerTransactionSearchParams") || "";
   const {
-    isFetchBusPassRefundTransactionsInnerReport,
-    refundBusPassTransactionsInnerReport,
+    isFetchIntercityRefundTransactionsInnerReport,
+    refundIntercityTransactionsInnerReport,
     refundTransactionsPagination,
-    fetchBusPassRefundTransactionsInnerReport,
-    fetchBusPassInitiateRefundOrderId,
+    fetchIntercityRefundTransactionsInnerReport,
+    fetchIntercityInitiateRefundOrderId,
     isInitiateRefund,
-  } = useRtcRefundStore();
+  } = useIntercityRefundReportStore();
   const columnDefs = [
     {
       headerName: "S.No",
@@ -40,7 +40,7 @@ const IntercityRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "transactionDateandTime",
+      field: "dateofTransaction",
       headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -88,28 +88,30 @@ const IntercityRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "refundStatus",
-      headerName: "RefundStatus",
-      maxWidth: "130",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
       field: "mobileNumber",
-      minWidth: 100,
+      minWidth: 90,
       headerName: "Mobile Number",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
     },
     {
-      field: "typeofBusPass",
-      headerName: "Type of Bus Pass",
+      field: "departureLocation",
+      headerName: "Departure Location",
+      flex:1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
     },
-    {
+     {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      flex:1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
+    },
+     {
       field: "amount",
       headerName: "Amount",
       maxWidth: "100",
@@ -117,50 +119,61 @@ const IntercityRefundTransactionsReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
+     {
+      field: "ticketQuantity",
+      headerName: "Ticket Quantity",
+      maxWidth: "130",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
+    },
     {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
+      field: "paymentMode",
+      headerName: "Payment Mode",
+      maxWidth: "150",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "transactionStatus",
+      headerName: "Transaction Status",
+      maxWidth: "230",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
+    },
+    {
+      field: "orderID",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+   
+    {
+      field: "bookingID",
+      headerName: "Booking ID",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "modeofTransaction",
-      headerName: "Mode of Transaction",
+      field: "refundStatus",
+      headerName: "Refund Status",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "modeofPayment",
-      headerName: "Mode of Payment",
-      maxWidth: "130",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "orderID",
-      headerName: "Order ID",
-      // Width: "390",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "bookingID",
-      headerName: "Booking ID",
-      // Width: "260",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
     },
   ];
 
   const loadRefundTransactionsReport = (page = 0) => {
     try {
-      fetchBusPassRefundTransactionsInnerReport({
+      fetchIntercityRefundTransactionsInnerReport({
         fromDate:
           cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
         mobileNumber: searchParams.get("mobileNumber") || "",
+        destinationLocation:searchParams.get("destinationLocation"),
+        arrivalLocation:searchParams.get("arrivalLocation"),
         busPassType: searchParams.get("BusPassType") || "",
         status:
           searchParams.get("RefundStatus") === "null"
@@ -184,7 +197,7 @@ const IntercityRefundTransactionsReport = () => {
   const handleInitiateRefund = async () => {
     console.log("RefundOrderId", RefundOrderId);
     try {
-      const res = await fetchBusPassInitiateRefundOrderId(RefundOrderId);
+      const res = await fetchIntercityInitiateRefundOrderId(RefundOrderId);
       console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {
@@ -287,15 +300,15 @@ const IntercityRefundTransactionsReport = () => {
               showSearch={false}
               ExportName="UserStatusTransactionReport"
               rowData={
-                Array.isArray(refundBusPassTransactionsInnerReport)
-                  ? refundBusPassTransactionsInnerReport
+                Array.isArray(refundIntercityTransactionsInnerReport)
+                  ? refundIntercityTransactionsInnerReport
                   : []
               }
               columnDefs={columnDefs}
-              isFetchLoading={isFetchBusPassRefundTransactionsInnerReport}
+              isFetchLoading={isFetchIntercityRefundTransactionsInnerReport}
               tableHeight={
-                Array.isArray(refundBusPassTransactionsInnerReport) &&
-                refundBusPassTransactionsInnerReport?.length > 10
+                Array.isArray(refundIntercityTransactionsInnerReport) &&
+                refundIntercityTransactionsInnerReport?.length > 10
                   ? 560
                   : 330
               }

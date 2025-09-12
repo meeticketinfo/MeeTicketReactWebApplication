@@ -461,6 +461,7 @@ export const API_ENDPOINTS = {
   },
   REPORTS:{
    GET_REFUND_TRANSACTION_DASHBOARD:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
+   GET_REFUND_TRANSACTION_INNER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
   },
   },
 };

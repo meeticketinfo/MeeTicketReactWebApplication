@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
-import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
 import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 const IntercityRefundOuterReportForm = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const {
-      refundBusPassTransactionsReport,
-      isFetchBusPassRefundTransactionsReport,
-      fetchBusPassRefundTransactionsReport,
-    } = useRtcRefundStore();
+      refundIntercityTransactionsReport,
+      isFetchIntercityRefundTransactionsReport,
+      fetchIntercityRefundTransactionsReport,
+    } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -72,7 +72,7 @@ const IntercityRefundOuterReportForm = () => {
         mobileNumber: values.mobileNumber,
       };
 
-      fetchBusPassRefundTransactionsReport(payload);
+      fetchIntercityRefundTransactionsReport(payload);
     };
 
     const resetForm = (setValues) => {
@@ -88,7 +88,7 @@ const IntercityRefundOuterReportForm = () => {
 
       localStorage.setItem("busPassRefundInnerTransactionSearchParams", "");
       setValues(payload);
-      fetchBusPassRefundTransactionsReport(payload);
+      fetchIntercityRefundTransactionsReport(payload);
     };
 
   return (
@@ -168,7 +168,7 @@ const IntercityRefundOuterReportForm = () => {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  //   disabled={isFetchBusPassRefundTransactionsReport}
+                  //   disabled={isfetchIntercityRefundTransactionsReport}
                 >
                   Search
                 </button>
@@ -176,7 +176,7 @@ const IntercityRefundOuterReportForm = () => {
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
-                  //   disabled={isFetchBusPassRefundTransactionsReport}
+                  //   disabled={isFetchIntercityRefundTransactionsReport}
                 >
                   Reset
                 </button>

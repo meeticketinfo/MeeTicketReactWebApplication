@@ -7,7 +7,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
-import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
+import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 
 const IntercityRefundTransactionsReportForm = ({
   pageNumber,
@@ -16,9 +16,9 @@ const IntercityRefundTransactionsReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isFetchBusPassRefundTransactionsInnerReport,
-    fetchBusPassRefundTransactionsInnerReport,
-  } = useRtcRefundStore();
+    isFetchIntercityRefundTransactionsInnerReport,
+    fetchIntercityRefundTransactionsInnerReport,
+  } = useIntercityRefundReportStore();
   const refundTransactionSearchParams = localStorage.getItem(
     "busPassRefundInnerTransactionSearchParams"
   );
@@ -38,7 +38,8 @@ const IntercityRefundTransactionsReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNumber: searchParams.get("mobileNumber") || "",
-    BusPassType: searchParams.get("BusPassType") || "",
+    destinationLocation:searchParams.get("destinationLocation"),
+    arrivalLocation:searchParams.get("arrivalLocation"),
     refundStatus:
       (searchParams.get("RefundStatus") !== "null" &&
         searchParams.get("RefundStatus")) ||
@@ -54,12 +55,13 @@ const IntercityRefundTransactionsReportForm = ({
     });
     setSearchParams(newSearchParams);
     
-    // Call the correct API function with proper parameters
-    fetchBusPassRefundTransactionsInnerReport({
+    // Call the Intercity refund inner report API with proper parameters
+    fetchIntercityRefundTransactionsInnerReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
-      busPassType: values.BusPassType,
+      destinationLocation:values.destinationLocation,
+      arrivalLocation:values.arrivalLocation,
       status: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,
@@ -191,9 +193,9 @@ const IntercityRefundTransactionsReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchBusPassRefundTransactionsInnerReport}
+                disabled={isFetchIntercityRefundTransactionsInnerReport}
               >
-                {isFetchBusPassRefundTransactionsInnerReport ? "Searching..." : "Search"}
+                {isFetchIntercityRefundTransactionsInnerReport ? "Searching..." : "Search"}
               </button>
             </div>
           </Form>
