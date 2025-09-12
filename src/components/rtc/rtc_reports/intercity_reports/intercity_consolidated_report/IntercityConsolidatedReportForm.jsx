@@ -26,10 +26,7 @@ const IntercityConsolidatedReportForm = ({
     { id: "del", name: "Delhi" },
     { id: "ccu", name: "Kolkata" },
   ];
-  const mappedOptions = options.map((o) => ({ label: o.name, value: o.id }));
-  // const fetchCities = useCallback(async (q) => {
-  //   console.log("query", q);
-  // }, []);
+  // const mappedOptions = options.map((o) => ({ label: o.name, value: o.id }));
 
   const fetchCities = (q) => {
     console.log("query", q);
@@ -280,13 +277,24 @@ const IntercityConsolidatedReportForm = ({
                 Departure Location
               </label>
 
-              <DebounceSearchableDropdown
+              {/* <DebounceSearchableDropdown
                 name="city"
                 value={values.departureLocation}
                 onChange={(val) => setFieldValue("departureLocation", val)}
-                options={mappedOptions}
+                Options={options}
+                Label="name"
+                Value="id"
                 onSearch={fetchCities}
-                placeholder="e.g. hyderabad"    
+                placeholder="e.g. hyderabad"
+              /> */}
+              <DebounceSearchableDropdown
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(v) => setFieldValue("departureLocation", v)}
+                options={options}
+                onSearch={fetchCities}
+                Label="name"
+                Value="id"
               />
             </div>
             {/* arrival location */}

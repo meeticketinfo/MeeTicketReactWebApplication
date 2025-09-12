@@ -1,69 +1,84 @@
-// src/components/SearchableDropdown.js
-import React, { useState, useRef, useEffect } from "react";
+// src/components/DebounceSearchableDropdown.js
+import React, { useState, useEffect, useRef } from "react";
 import { useDebounce } from "./useDebounce";
 
-/**
- * Props:
- *  - name: string
- *  - value: primitive selected value from parent
- *  - onChange: (value) => void
- *  - options: [{ label, value }, ...]
- *  - onSearch: (query) => void
- *  - placeholder, minLength, debounceMs
- */
 export default function DebounceSearchableDropdown({
   name,
   value,
   onChange,
   options = [],
   onSearch,
+  Label = "name",
+  Value = "id",
   placeholder = "Search...",
-  minLength = 2,
+  minLength = 1,
   debounceMs = 300,
 }) {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
   const debounced = useDebounce(input, debounceMs);
-  const containerRef = useRef(null);
+  const ref = useRef(null);
 
-  // reflect parent's selected value (show label if available)
+  // This prevents reopening immediately after a selection
+  const justSelectedRef = useRef(false);
+
+  const normalize = (o) => ({
+    label: o?.[Label] ?? o?.label ?? "",
+    value: o?.[Value] ?? o?.value ?? null,
+  });
+
+  // sync input from selected value only when parent explicit value changes
   useEffect(() => {
-    const matched = options.find((o) => o.value === value);
+    const matched = options.map(normalize).find((o) => o.value === value);
     if (matched) setInput(matched.label);
-    else if (value === "" || value == null) setInput("");
-  }, [value, options]);
+    // if parent clears value, leave input as-is so user can continue typing
+  }, [value, options, Label, Value]);
 
+  // call parent with debounced query
   useEffect(() => {
     if (debounced && debounced.length >= minLength) {
       onSearch && onSearch(debounced);
-
-      if (options.length > 0) setOpen(true);
     } else {
       setOpen(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
+  // open when options arrive AND the current typed input qualifies
   useEffect(() => {
-    if (!options || options.length === 0) setOpen(false);
-  }, [options]);
-
-  useEffect(() => {
-    function onDoc(e) {
-      if (!containerRef.current) return;
-      if (!containerRef.current.contains(e.target)) setOpen(false);
+    const qualifies = debounced && debounced.length >= minLength;
+    if (qualifies && options && options.length > 0) {
+      // if we just selected an item, skip reopening once
+      if (justSelectedRef.current) {
+        justSelectedRef.current = false;
+        return;
+      }
+      setOpen(true);
+    } else {
+      setOpen(false);
     }
+  }, [options, debounced, minLength]);
+
+  // close when clicking outside
+  useEffect(() => {
+    const onDoc = (e) => {
+      if (!ref.current) return;
+      if (!ref.current.contains(e.target)) setOpen(false);
+    };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  function handleSelect(opt) {
-    setInput(opt.label);
-    onChange && onChange(opt.value);
+  function handleSelect(o) {
+    const n = normalize(o);
+    setInput(n.label);
+    onChange && onChange(n.value);
+    justSelectedRef.current = true; // mark we selected so we won't reopen immediately
     setOpen(false);
   }
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md">
+    <div ref={ref} className="relative w-full">
       <input
         name={name}
         type="text"
@@ -71,9 +86,13 @@ export default function DebounceSearchableDropdown({
         placeholder={placeholder}
         onChange={(e) => setInput(e.target.value)}
         onFocus={() => {
-          if (options && options.length > 0) setOpen(true);
+          if (options && options.length > 0 && input.length >= minLength) {
+            // don't override the justSelected behavior here
+            if (!justSelectedRef.current) setOpen(true);
+            else justSelectedRef.current = false;
+          }
         }}
-        className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none  bg-white text-sm"
         autoComplete="off"
         aria-autocomplete="list"
         aria-expanded={open}
@@ -84,22 +103,24 @@ export default function DebounceSearchableDropdown({
         <ul
           id={`${name}-listbox`}
           role="listbox"
-          className="absolute z-50 mt-2 w-full bg-white border rounded-md shadow-lg max-h-56 overflow-auto"
+          className="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-52 overflow-auto"
         >
-          {options.map((opt, i) => (
-            <li
-              key={opt.value ?? i}
-              role="option"
-              onMouseDown={(e) => {
-                // ensure selection before input blur
-                e.preventDefault();
-                handleSelect(opt);
-              }}
-              className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {opt.label}
-            </li>
-          ))}
+          {options.map((o, i) => {
+            const n = normalize(o);
+            return (
+              <li
+                key={n.value ?? i}
+                role="option"
+                onMouseDown={(e) => {
+                  e.preventDefault(); // ensure selection happens before blur
+                  handleSelect(o);
+                }}
+                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+              >
+                {n.label}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
