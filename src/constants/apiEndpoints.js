@@ -50,7 +50,7 @@ export const RTC_INTERCITY_API_BASE_URL =
   // RTC BUS PASS DEV
 
   export const RTC_BUS_PASS_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+  "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
   
 
 // METRO PROD
@@ -265,11 +265,12 @@ export const API_ENDPOINTS = {
         GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
         GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
         GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
-        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
-        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
-        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
-        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
-        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/ViewBusPass`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
+        GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}RTCDashboard/GetBookingDetailsOuterReport`,
       }
     },
     GRIVEANCE_REPORTS: {
@@ -457,7 +458,7 @@ export const API_ENDPOINTS = {
   },
   INTERCITY:{
   MASTERS:{
-  GET_DESTINATION_LOCATION:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllCities`,
+  GET_DESTINATION_CITIES:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllCities`,
   },
   REPORTS:{
    GET_REFUND_TRANSACTION_DASHBOARD:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
