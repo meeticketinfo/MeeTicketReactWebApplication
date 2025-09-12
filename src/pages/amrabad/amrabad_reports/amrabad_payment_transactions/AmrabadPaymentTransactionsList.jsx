@@ -470,6 +470,9 @@ function AmrabadPaymentTransactionsList() {
       console.error("Error during regenerate ticket:", err);
       setOpenRegenerateTicketModal(false);
       Swal.fire({
+        html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+        ${err.response?.data?.message}
+      </div>`,
         title: "Failed!",
         text: `Regenerate ticket failed. Please try again.`,
         icon: "error",

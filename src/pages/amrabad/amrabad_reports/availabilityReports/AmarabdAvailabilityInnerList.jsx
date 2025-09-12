@@ -53,7 +53,7 @@ const AmarabdAvailabilityInnerList = () => {
   useEffect(() => {
     fetchAllAmrabadHouseWiseReports({
       startDate: removeTimeFromDate(bookingDate) || (savedFilters?.fromDate ?? getCurrentDate()),
-      endDate: getNextDayDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
+      endDate: removeTimeFromDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
       bookingSource: "Booking",
       mobileNumber: savedFilters?.phoneNumber || "",
       PaymentMode: savedFilters?.PaymentMode || "",
