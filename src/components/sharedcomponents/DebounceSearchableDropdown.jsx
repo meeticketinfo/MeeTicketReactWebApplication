@@ -8,19 +8,21 @@ export default function DebounceSearchableDropdown({
   onChange,
   options = [],
   onSearch,
-  Label = "name",
-  Value = "id",
+  Label = "",
+  Value = "",
   placeholder = "Search...",
-  minLength = 1,
-  debounceMs = 300,
+  minLength = 3,
+  debounceMs = 200,
+  uniqueId = null,
 }) {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
   const debounced = useDebounce(input, debounceMs);
   const ref = useRef(null);
 
-  // This prevents reopening immediately after a selection
+  // prevent immediate reopen after selection
   const justSelectedRef = useRef(false);
+  const justSelectedTimerRef = useRef(null);
 
   const normalize = (o) => ({
     label: o?.[Label] ?? o?.label ?? "",
@@ -28,10 +30,17 @@ export default function DebounceSearchableDropdown({
   });
 
   // sync input from selected value only when parent explicit value changes
+  const prevValueRef = useRef(value);
   useEffect(() => {
-    const matched = options.map(normalize).find((o) => o.value === value);
-    if (matched) setInput(matched.label);
-    // if parent clears value, leave input as-is so user can continue typing
+    if (prevValueRef.current !== value) {
+      const matched = options.map(normalize).find((o) => o.value === value);
+      if (matched) {
+        setInput(matched.label);
+      } else if (value === null || value === undefined || value === "") {
+        setInput("");
+      }
+      prevValueRef.current = value;
+    }
   }, [value, options, Label, Value]);
 
   // call parent with debounced query
@@ -47,35 +56,76 @@ export default function DebounceSearchableDropdown({
   // open when options arrive AND the current typed input qualifies
   useEffect(() => {
     const qualifies = debounced && debounced.length >= minLength;
+
     if (qualifies && options && options.length > 0) {
-      // if we just selected an item, skip reopening once
-      if (justSelectedRef.current) {
-        justSelectedRef.current = false;
-        return;
-      }
+      // skip reopening if we just selected an item
+      if (justSelectedRef.current) return;
       setOpen(true);
     } else {
       setOpen(false);
     }
   }, [options, debounced, minLength]);
 
-  // close when clicking outside
+  // clear timer on unmount
+  useEffect(() => {
+    return () => {
+      if (justSelectedTimerRef.current) {
+        clearTimeout(justSelectedTimerRef.current);
+        justSelectedTimerRef.current = null;
+      }
+    };
+  }, []);
+
+  // close when clicking outside — use 'click' so it runs after option onClick
   useEffect(() => {
     const onDoc = (e) => {
       if (!ref.current) return;
       if (!ref.current.contains(e.target)) setOpen(false);
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    document.addEventListener("click", onDoc);
+    return () => document.removeEventListener("click", onDoc);
   }, []);
 
   function handleSelect(o) {
     const n = normalize(o);
     setInput(n.label);
     onChange && onChange(n.value);
-    justSelectedRef.current = true; // mark we selected so we won't reopen immediately
+
+    // mark as just selected and prevent immediate reopen
+    justSelectedRef.current = true;
     setOpen(false);
+
+    if (justSelectedTimerRef.current) clearTimeout(justSelectedTimerRef.current);
+    justSelectedTimerRef.current = setTimeout(() => {
+      justSelectedRef.current = false;
+      justSelectedTimerRef.current = null;
+    }, 250);
   }
+
+  function handleInputChange(e) {
+    const newValue = e.target.value;
+    setInput(newValue);
+
+    // user typed again — don't consider 'just selected' anymore
+    if (justSelectedRef.current) {
+      justSelectedRef.current = false;
+      if (justSelectedTimerRef.current) {
+        clearTimeout(justSelectedTimerRef.current);
+        justSelectedTimerRef.current = null;
+      }
+    }
+
+    // If user edits the input and it no longer matches the selected label,
+    // clear the parent's value so it can be replaced by a new selection.
+    const currentSelected = options.map(normalize).find((o) => o.value === value);
+    if (currentSelected && newValue !== currentSelected.label) {
+      onChange && onChange(null);
+    }
+  }
+
+  // Generate unique ID for this dropdown instance
+  const dropdownId = uniqueId || `${name}-${Math.random().toString(36).substr(2, 9)}`;
+  const listboxId = `${dropdownId}-listbox`;
 
   return (
     <div ref={ref} className="relative w-full">
@@ -84,24 +134,28 @@ export default function DebounceSearchableDropdown({
         type="text"
         value={input}
         placeholder={placeholder}
-        onChange={(e) => setInput(e.target.value)}
+        onChange={handleInputChange}
         onFocus={() => {
-          if (options && options.length > 0 && input.length >= minLength) {
-            // don't override the justSelected behavior here
-            if (!justSelectedRef.current) setOpen(true);
-            else justSelectedRef.current = false;
+          // only open when there are results and user hasn't just selected
+          if (
+            options &&
+            options.length > 0 &&
+            input.length >= minLength &&
+            !justSelectedRef.current
+          ) {
+            setOpen(true);
           }
         }}
-      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none  bg-white text-sm"
+        className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none bg-white text-sm"
         autoComplete="off"
         aria-autocomplete="list"
         aria-expanded={open}
-        aria-controls={`${name}-listbox`}
+        aria-controls={listboxId}
       />
 
       {open && options && options.length > 0 && (
         <ul
-          id={`${name}-listbox`}
+          id={listboxId}
           role="listbox"
           className="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-52 overflow-auto"
         >
@@ -109,13 +163,13 @@ export default function DebounceSearchableDropdown({
             const n = normalize(o);
             return (
               <li
-                key={n.value ?? i}
+                key={`${dropdownId}-${n.value ?? i}`}
                 role="option"
-                onMouseDown={(e) => {
-                  e.preventDefault(); // ensure selection happens before blur
+                onClick={(e) => {
+                  e.stopPropagation(); // avoid bubbling to document click handler
                   handleSelect(o);
                 }}
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-xs whitespace-nowrap"
               >
                 {n.label}
               </li>

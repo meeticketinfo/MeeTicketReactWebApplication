@@ -2,7 +2,7 @@ import { Formik, Form, Field } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
-// import { DebounceSearchableDropdown } from "../../../../sharedcomponents/DebounceSearchableDropdown";
+import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 
 const IntercityConsolidatedReportForm = ({
   onSearch,
@@ -19,17 +19,36 @@ const IntercityConsolidatedReportForm = ({
       return null;
     }
   }, []);
-  const options = [
-    { id: "blr", name: "Bengaluru" },
-    { id: "bom", name: "Mumbai" },
-    { id: "maa", name: "Chennai" },
-    { id: "del", name: "Delhi" },
-    { id: "ccu", name: "Kolkata" },
-  ];
-  // const mappedOptions = options.map((o) => ({ label: o.name, value: o.id }));
+  const { fetchCitiesData } = useIntercityMastersStore();
 
-  const fetchCities = (q) => {
-    console.log("query", q);
+  // Separate state for each dropdown to prevent interference
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+    }
   };
 
   const initialValues = {
@@ -276,25 +295,16 @@ const IntercityConsolidatedReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
-
-              {/* <DebounceSearchableDropdown
-                name="city"
-                value={values.departureLocation}
-                onChange={(val) => setFieldValue("departureLocation", val)}
-                Options={options}
-                Label="name"
-                Value="id"
-                onSearch={fetchCities}
-                placeholder="e.g. hyderabad"
-              /> */}
               <DebounceSearchableDropdown
                 name="departureLocation"
                 value={values.departureLocation}
                 onChange={(v) => setFieldValue("departureLocation", v)}
-                options={options}
-                onSearch={fetchCities}
-                Label="name"
-                Value="id"
+                options={departureCities}
+                onSearch={fetchDepartureCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search departure city..."
+                uniqueId="departure-location-dropdown"
               />
             </div>
             {/* arrival location */}
@@ -302,11 +312,16 @@ const IntercityConsolidatedReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
-              <Field
-                type="text"
+              <DebounceSearchableDropdown
                 name="arrivalLocation"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                placeholder="e.g. Vijayawada"
+                value={values.arrivalLocation}
+                onChange={(v) => setFieldValue("arrivalLocation", v)}
+                options={arrivalCities}
+                onSearch={fetchArrivalCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search arrival city..."
+                uniqueId="arrival-location-dropdown"
               />
             </div>
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
@@ -338,6 +353,8 @@ const IntercityConsolidatedReportForm = ({
                     seatLayoutType: "",
                     entityId: null,
                     departmentId: null,
+                    departureLocation: "",
+                    arrivalLocation: "",
                   });
                 }}
               >
