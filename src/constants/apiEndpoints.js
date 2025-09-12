@@ -267,6 +267,12 @@ export const API_ENDPOINTS = {
         GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
         GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/ViewBusPass`,
+      },
+      INTERCITY_REPORTS:{
+        GET_INTERCITY_PAYMENT_TRANSACTION_REPORT:`${RTC_API_BASE_URL}RTCDashboard/PaymentTransactionsReport`,
+        GET_INTERCITY_VERIFY_STATUS:`${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
+        GET_INTERCITY_REGENERATE_TICKET:`${RTC_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_INTERCITY_PAYMENT_TRANSACTION_REFUND:`${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
       }
     },
     GRIVEANCE_REPORTS: {
