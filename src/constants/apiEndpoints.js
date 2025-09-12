@@ -43,6 +43,9 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+//RTC Intercity
+export const RTC_INTERCITY_API_BASE_URL =
+"https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
 
   // RTC BUS PASS DEV
 
@@ -451,5 +454,13 @@ export const API_ENDPOINTS = {
     
     //total transaction report
     GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
-  }
+  },
+  INTERCITY:{
+  MASTERS:{
+  GET_DESTINATION_LOCATION:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllCities`,
+  },
+  REPORTS:{
+   GET_REFUND_TRANSACTION_DASHBOARD:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
+  },
+  },
 };
