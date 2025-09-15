@@ -34,8 +34,6 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
     return date.toISOString().split('T')[0];
   };
 
-  console.log("bookingDate", getNextDayDate(bookingDate));
-
   const initialValues = {
     fromDate: removeTimeFromDate(bookingDate) || getCurrentDate(),
     toDate: getNextDayDate(bookingDate) || getCurrentDate(),
@@ -59,6 +57,7 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
     const savedFilters = JSON.parse(
       localStorage.getItem("amrabad-availability-inner-report-filters")
     );
+    console.log(values)
     fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,

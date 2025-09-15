@@ -94,7 +94,7 @@ const RtcNotGeneratedReport = () => {
     },
     
     {
-      field: "toStationName",
+      field: "passTypeName",
       headerName: "Type of Bus Pass",
       maxWidth: "160",
       headerClass: "text-blue-v2",

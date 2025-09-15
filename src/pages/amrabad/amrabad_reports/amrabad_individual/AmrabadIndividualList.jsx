@@ -71,6 +71,12 @@ export default function AdminBookings() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
+      field: "bookingStatus",
+      headerName: "Booking Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
       field: "mobileNumber",
       headerName: "Mobile Number",
       // flex: 1,

@@ -35,6 +35,7 @@ const AmarabdAvailabilityInnerList = () => {
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-availability-inner-report-filters")
   );
+  console.log("savedFilters", savedFilters);
 
 // Helper function to remove time from date string
   const removeTimeFromDate = (dateString) => {
@@ -86,6 +87,13 @@ const AmarabdAvailabilityInnerList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
+    {
+      field: "bookingStatus",
+      headerName: "Booking Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    
     {
       field: "mobileNumber",
       headerName: "Mobile Number",

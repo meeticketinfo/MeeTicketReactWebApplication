@@ -80,8 +80,9 @@ export const useRtcRefundStore = create((set) => ({
             const response = await apiService.get(
                 `${API_ENDPOINTS.REPORTS.RTC_REPORTS.REFUND_TRANSACTIONS_REPORT.GET_REFUND_TRANSACTIONS_INNER_REPORT}?${queryString}`
             );
+            console.log("response", response);
             set({
-                refundBusPassTransactionsInnerReport: response.data.records || [],
+                refundBusPassTransactionsInnerReport: response.data || [],
                 refundTransactionsPagination: {
                     totalCount: response.data.totalCount || 0,
                     pageNumber: response.data.pageNumber || 1,
