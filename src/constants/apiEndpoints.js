@@ -48,6 +48,10 @@ export const RTC_API_BASE_URL =
 
   export const RTC_BUS_PASS_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+
+  // RTC INTERCITY DEV
+  export const RTC_INTERCITY_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
   
 
 // METRO PROD
@@ -273,6 +277,9 @@ export const API_ENDPOINTS = {
         GET_INTERCITY_VERIFY_STATUS:`${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
         GET_INTERCITY_REGENERATE_TICKET:`${RTC_API_BASE_URL}RTCDashboard/GenerateTicket`,
         GET_INTERCITY_PAYMENT_TRANSACTION_REFUND:`${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
+
+        GET_INTERCITY_TOTAL_TRANSACTIONS:`${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionOuterReport`,
+        GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentSuccessButNotGeneratedSubCategoryReport`,
       }
     },
     GRIVEANCE_REPORTS: {

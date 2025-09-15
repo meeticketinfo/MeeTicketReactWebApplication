@@ -7,14 +7,12 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
-import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
-import AmrabadNotGeneratedChart from "../../../../../../../pages/amrabad/amrabad_reports/amrabad_total_transactions/charts/AmarabadNotGenerateChart";
 import IntercityNotGeneratedChart from "../../charts/IntercityNotGenerateChart";
-
+    
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 const IntercityNotGenerated = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -29,30 +27,29 @@ const IntercityNotGenerated = () => {
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     AmarabadTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+
   const {
-    fetchTicketNotGeneratedPieChart,
-    TicketNotGeneratedPieChartData,
-    isTicketNotGeneratedPieChartLoading,
-  } = useAmarabadTotalTransactionStore();
+    fetchPaymentsuccessButTicketNotGenerated,
+    paymentsuccessButTicketNotGenerated,
+    isPaymentsuccessButTicketNotGeneratedLoading,
+  } = useIntercityTotalTransactionStore();
+
+  
 
   useEffect(() => {
-    fetchTicketNotGeneratedPieChart({
+    fetchPaymentsuccessButTicketNotGenerated({
       fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
       toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
       mobileNumber:
         mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
-      package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+      arrivalLocation: innerFilters.arrivalLocation ?? "",
+      departureLocation: innerFilters.departureLocation ?? "",
     });
-    getPackages();
-  }, [packageName, house, mobileNumber, fromDate, toDate]);
+  }, [mobileNumber, fromDate, toDate]);
 
   const initialValues = {
     fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
     toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
     mobileNumber: mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
     arrivalLocation: innerFilters.arrivalLocation ?? "",
     departureLocation: innerFilters.departureLocation ?? "",
@@ -60,15 +57,15 @@ const IntercityNotGenerated = () => {
   const onSubmit = (values) => {
     setInnerFilters({
       ...values,
-      subCategory: subCategory || innerFilters.subCategory || "",
+      subCategory: subCategory ?? innerFilters.subCategory ?? "",
     });
-    fetchTicketNotGeneratedPieChart(values);
+    fetchPaymentsuccessButTicketNotGenerated(values);
   };
 
   const breadcrumbItems = [
     {
       label: "Total Transactions Report",
-      path: `/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
+      path: `/intercity-total-transaction?package=${packageName ?? ""}&house=${house ?? ""}&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`,
       onclick: () => resetInnerFilters(),
     },
     {
@@ -89,7 +86,7 @@ const IntercityNotGenerated = () => {
           </div>
           <div className="">
             <Link
-              to={`/intercity-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
+              to={`/intercity-total-transaction?&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -276,7 +273,7 @@ const IntercityNotGenerated = () => {
                           departureLocation: "",
                         });
                         resetInnerFilters();
-                        fetchTicketNotGeneratedPieChart({
+                        fetchPaymentsuccessButTicketNotGenerated({
                           fromDate: startOfDay,
                           toDate: endOfDay,
                           mobileNumber: "",
@@ -295,18 +292,16 @@ const IntercityNotGenerated = () => {
                 <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
                   <div className="flex">
                     <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
-                      {isTicketNotGeneratedPieChartLoading && (
+                      {isPaymentsuccessButTicketNotGeneratedLoading && (
                         <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                           <div className="loader"></div>
                         </div>
                       )}
                       <IntercityNotGeneratedChart
-                        data={TicketNotGeneratedPieChartData || []}
+                        data={paymentsuccessButTicketNotGenerated || []}
                         title="Payment Successful but Ticket not Generated"
                         angleKey="subCategoryCount"
                         calloutLabelKey="subCategory"
-                        packageName={values.package}
-                        house={values.house}
                         mobileNumber={values.mobileNumber}
                         fromDate={values.fromDate}
                         toDate={values.toDate}

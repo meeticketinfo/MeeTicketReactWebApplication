@@ -63,7 +63,6 @@ const BusPassOuterTotalTransactionReport = () => {
     outerFilters,
     resetOuterFilters,
     setInnerFilters,
-    resetInnerFilters,
   } = busPassTotalCommonStore();
   const {
     fetchRtcTransactionByReason,
