@@ -22,7 +22,7 @@ const IntercityRefundTransactionsReport = () => {
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const amrabadRefundTransactionSearchParams =
-    localStorage.getItem("busPassRefundInnerTransactionSearchParams") || "";
+    localStorage.getItem("intercityRefundInnerTransactionSearchParams") || "";
   const {
     isFetchIntercityRefundTransactionsInnerReport,
     refundIntercityTransactionsInnerReport,
@@ -172,9 +172,8 @@ const IntercityRefundTransactionsReport = () => {
           cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
         mobileNumber: searchParams.get("mobileNumber") || "",
-        destinationLocation:searchParams.get("destinationLocation"),
-        arrivalLocation:searchParams.get("arrivalLocation"),
-        busPassType: searchParams.get("BusPassType") || "",
+        destinationLocation:searchParams.get("destinationLocation") || "",
+        arrivalLocation:searchParams.get("arrivalLocation") || "",
         status:
           searchParams.get("RefundStatus") === "null"
             ? ""

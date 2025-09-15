@@ -18,14 +18,15 @@ function IntercityRefundTransactions() {
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
-    const preservedParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams");
+    const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
     if (preservedParams && !searchParams.toString()) {
       const urlParams = new URLSearchParams(preservedParams);
       const payload = {
         fromDate: cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(urlParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: urlParams.get("mobileNumber") || "",
-        BusPassType: urlParams.get("BusPassType") || "",
+        destinationLocation: urlParams.get("destinationLocation") || "",
+        arrivalLocation: urlParams.get("arrivalLocation") || "",
       };
       fetchIntercityRefundTransactionsReport(payload);
     } else {
@@ -33,7 +34,8 @@ function IntercityRefundTransactions() {
         fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: searchParams.get("mobileNumber") || "",
-        BusPassType: searchParams.get("BusPassType") || "",
+        destinationLocation: searchParams.get("destinationLocation") || "",
+        arrivalLocation: searchParams.get("arrivalLocation") || "",
       };
       fetchIntercityRefundTransactionsReport(payload);
     }

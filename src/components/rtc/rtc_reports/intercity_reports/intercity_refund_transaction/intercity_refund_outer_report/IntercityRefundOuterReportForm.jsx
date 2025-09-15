@@ -8,88 +8,123 @@ import {
 } from "../../../../../../utils/Helper";
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
+import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
+import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
 const IntercityRefundOuterReportForm = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const {
-      refundIntercityTransactionsReport,
-      isFetchIntercityRefundTransactionsReport,
-      fetchIntercityRefundTransactionsReport,
-    } = useIntercityRefundReportStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const {
+    refundIntercityTransactionsReport,
+    isFetchIntercityRefundTransactionsReport,
+    fetchIntercityRefundTransactionsReport,
+  } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+  const {fetchCitiesData}=useIntercityMastersStore();
+// Separate state for each dropdown to prevent interference
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
 
-    useEffect(() => {
-      const preservedParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams");
-      if (preservedParams && !searchParams.toString()) {
-        const urlParams = new URLSearchParams(preservedParams);
-        urlParams.delete("RefundStatus");
-        setSearchParams(urlParams);
-      } else {
-        const newSearchParams = new URLSearchParams(searchParams);
-        newSearchParams.delete("RefundStatus");
-        setSearchParams(newSearchParams);
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
       }
-      if (searchParams.toString() || preservedParams) {
-        fetchAllBusPasses();
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
       }
-    }, [searchParams]);
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
 
-    const { AllBusPassesData, fetchAllBusPasses } =
-      useBusPassTotalTransactionStore();
-    const getInitialValues = () => {
-      const preservedParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams");
-      const paramsToUse = preservedParams && !searchParams.toString()
-        ? new URLSearchParams(preservedParams)
-        : searchParams;
-
-      return {
-        fromDate: cleanString(paramsToUse.get("fromDate"), "_", ":") || startOfDay,
-        toDate: cleanString(paramsToUse.get("toDate"), "_", ":") || endOfDay,
-        mobileNumber: paramsToUse.get("mobileNumber") || "",
-        BusPassType: paramsToUse.get("BusPassType") || "",
-      };
-    };
-
-    const initialValues = getInitialValues();
-
-    const overAllOnSubmit = (values) => {
-      const newSearchParams = new URLSearchParams();
-      Object.keys(values).forEach((key) => {
-        if (values[key]) {
-          newSearchParams.set(key, cleanString(values[key], ":", "_"));
-        }
-      });
+  useEffect(() => {
+    const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
+    if (preservedParams && !searchParams.toString()) {
+      const urlParams = new URLSearchParams(preservedParams);
+      urlParams.delete("RefundStatus");
+      setSearchParams(urlParams);
+    } else {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete("RefundStatus");
       setSearchParams(newSearchParams);
-      localStorage.setItem(
-        "busPassRefundInnerTransactionSearchParams",
-        newSearchParams
-      );
+    }
+    if (searchParams.toString() || preservedParams) {
+      fetchAllBusPasses();
+    }
+  }, [searchParams]);
 
-      const payload = {
-        fromDate: values.fromDate,
-        toDate: values.toDate,
-        busPassType: values.BusPassType,
-        mobileNumber: values.mobileNumber,
-      };
+  const { AllBusPassesData, fetchAllBusPasses } =
+    useBusPassTotalTransactionStore();
+  const getInitialValues = () => {
+    const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
+    const paramsToUse = preservedParams && !searchParams.toString()
+      ? new URLSearchParams(preservedParams)
+      : searchParams;
 
-      fetchIntercityRefundTransactionsReport(payload);
+    return {
+      fromDate: cleanString(paramsToUse.get("fromDate"), "_", ":") || startOfDay,
+      toDate: cleanString(paramsToUse.get("toDate"), "_", ":") || endOfDay,
+      mobileNumber: paramsToUse.get("mobileNumber") || "",
+      destinationLocation: paramsToUse.get("destinationLocation") || "",
+      arrivalLocation: paramsToUse.get("arrivalLocation") || "",
+    };
+  };
+
+  const initialValues = getInitialValues();
+
+  const overAllOnSubmit = (values) => {
+    const newSearchParams = new URLSearchParams();
+    Object.keys(values).forEach((key) => {
+      if (values[key]) {
+        newSearchParams.set(key, cleanString(values[key], ":", "_"));
+      }
+    });
+    setSearchParams(newSearchParams);
+    localStorage.setItem(
+      "intercityRefundInnerTransactionSearchParams",
+      newSearchParams
+    );
+
+    const payload = {
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      destinationLocation: values.destinationLocation,
+      arrivalLocation:values.arrivalLocation,
+      mobileNumber: values.mobileNumber,
     };
 
-    const resetForm = (setValues) => {
-      const payload = {
-        fromDate: startOfDay,
-        toDate: endOfDay,
-        BusPassType: "",
-        mobileNumber: "",
-      };
+    fetchIntercityRefundTransactionsReport(payload);
+  };
 
-      // Clear URL search params
-      setSearchParams(new URLSearchParams());
-
-      localStorage.setItem("busPassRefundInnerTransactionSearchParams", "");
-      setValues(payload);
-      fetchIntercityRefundTransactionsReport(payload);
+  const resetForm = (setValues) => {
+    const payload = {
+      fromDate: startOfDay,
+      toDate: endOfDay,
+      destinationLocation: "",
+      arrivalLocation:"",
+      mobileNumber: "",
     };
+
+    // Clear URL search params
+    setSearchParams(new URLSearchParams());
+
+    localStorage.setItem("intercityRefundInnerTransactionSearchParams", "");
+    setValues(payload);
+    fetchIntercityRefundTransactionsReport(payload);
+  };
 
   return (
     <>
@@ -163,12 +198,46 @@ const IntercityRefundOuterReportForm = () => {
                   }}
                 />
               </div>
+              {/* departure location */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Departure Location
+                </label>
+                <DebounceSearchableDropdown
+                  name="destinationLocation"
+                  value={values.destinationLocation}
+                  onChange={(v) => setFieldValue("destinationLocation", v)}
+                  options={departureCities}
+                  onSearch={fetchDepartureCities}
+                  Label="cityName"
+                  Value="cityId"
+                  placeholder="Search departure city..."
+                  uniqueId="departure-location-dropdown"
+                />
+              </div>
+              {/* arrival location */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Arrival Location
+                </label>
+                <DebounceSearchableDropdown
+                  name="arrivalLocation"
+                  value={values.arrivalLocation}
+                  onChange={(v) => setFieldValue("arrivalLocation", v)}
+                  options={arrivalCities}
+                  onSearch={fetchArrivalCities}
+                  Label="cityName"
+                  Value="cityId"
+                  placeholder="Search arrival city..."
+                  uniqueId="arrival-location-dropdown"
+                />
+              </div>
 
               <div className="flex gap-2 items-end">
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  //   disabled={isfetchIntercityRefundTransactionsReport}
+                //   disabled={isfetchIntercityRefundTransactionsReport}
                 >
                   Search
                 </button>
@@ -176,7 +245,7 @@ const IntercityRefundOuterReportForm = () => {
                   type="button"
                   className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
-                  //   disabled={isFetchIntercityRefundTransactionsReport}
+                //   disabled={isFetchIntercityRefundTransactionsReport}
                 >
                   Reset
                 </button>

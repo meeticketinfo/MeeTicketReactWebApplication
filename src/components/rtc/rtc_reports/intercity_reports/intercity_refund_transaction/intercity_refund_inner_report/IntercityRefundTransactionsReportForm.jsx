@@ -1,13 +1,13 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
-import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
+import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
 
 const IntercityRefundTransactionsReportForm = ({
   pageNumber,
@@ -20,26 +20,45 @@ const IntercityRefundTransactionsReportForm = ({
     fetchIntercityRefundTransactionsInnerReport,
   } = useIntercityRefundReportStore();
   const refundTransactionSearchParams = localStorage.getItem(
-    "busPassRefundInnerTransactionSearchParams"
+    "intercityRefundInnerTransactionSearchParams"
   );
-
-  const {  AllBusPassesData, fetchAllBusPasses } =
-    useBusPassTotalTransactionStore();
-
-  // Load packages on component mount
-  useEffect(() => {
-    fetchAllBusPasses();
-  }, []);
-
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNumber: searchParams.get("mobileNumber") || "",
-    destinationLocation:searchParams.get("destinationLocation"),
-    arrivalLocation:searchParams.get("arrivalLocation"),
+    destinationLocation: searchParams.get("destinationLocation"),
+    arrivalLocation: searchParams.get("arrivalLocation"),
     refundStatus:
       (searchParams.get("RefundStatus") !== "null" &&
         searchParams.get("RefundStatus")) ||
@@ -54,14 +73,14 @@ const IntercityRefundTransactionsReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-    
+
     // Call the Intercity refund inner report API with proper parameters
     fetchIntercityRefundTransactionsInnerReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
-      destinationLocation:values.destinationLocation,
-      arrivalLocation:values.arrivalLocation,
+      destinationLocation: values.destinationLocation,
+      arrivalLocation: values.arrivalLocation,
       status: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,
@@ -125,7 +144,7 @@ const IntercityRefundTransactionsReportForm = ({
                 htmlFor="mobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Mobile number
+                Mobile Number
               </label>
               <Field
                 type="text"
@@ -143,29 +162,39 @@ const IntercityRefundTransactionsReportForm = ({
                 }}
               />
             </div>
-
+            {/* departure location */}
             <div>
-              <label
-                htmlFor="BusPassType"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Bus Pass Type
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
               </label>
-              <Field
-                as="select"
-                name="BusPassType"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("BusPassType", e.target.value);
-                }}
-              >
-                <option value="">All</option>
-                {AllBusPassesData?.filter((item) => item.isActive).map(
-                  (item) => (
-                    <option key={item.passTypeId} value={item.passTypeName}>{item.passTypeName}</option>
-                  )
-                )}
-              </Field>
+              <DebounceSearchableDropdown
+                name="destinationLocation"
+                value={values.destinationLocation}
+                onChange={(v) => setFieldValue("destinationLocation", v)}
+                options={departureCities}
+                onSearch={fetchDepartureCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search departure city..."
+                uniqueId="departure-location-dropdown"
+              />
+            </div>
+            {/* arrival location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Arrival Location
+              </label>
+              <DebounceSearchableDropdown
+                name="arrivalLocation"
+                value={values.arrivalLocation}
+                onChange={(v) => setFieldValue("arrivalLocation", v)}
+                options={arrivalCities}
+                onSearch={fetchArrivalCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search arrival city..."
+                uniqueId="arrival-location-dropdown"
+              />
             </div>
 
             {/* status */}
@@ -206,4 +235,3 @@ const IntercityRefundTransactionsReportForm = ({
 };
 
 export default IntercityRefundTransactionsReportForm;
-    
