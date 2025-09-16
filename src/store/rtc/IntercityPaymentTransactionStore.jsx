@@ -1,0 +1,92 @@
+import { create } from "zustand";
+import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+import apiService from "../../services/apiService";
+
+export const useIntercityPaymentTransactionStore = create((set) => ({
+  isFetchIntercityPaymentTransactionsLoading: false,
+  intercityPaymentTransactions: [],
+  isFetchIntercityVerifyStatusLoading: false,
+  isFetchIntercityRegenerateTicketLoading: false,
+  isFetchIntercityPaymentTransactionRefundLoading: false,
+
+
+
+
+  fetchIntercityPaymentTransactions: async (payload) => {
+    set({ isFetchIntercityPaymentTransactionsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_TRANSACTION_REPORT}?${queryString}`
+      );
+      set({
+        intercityPaymentTransactions: response.data,
+        isFetchIntercityPaymentTransactionsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isFetchIntercityPaymentTransactionsLoading: false,
+      });
+    } finally {
+      set({ isFetchIntercityPaymentTransactionsLoading: false });
+    }
+  },
+
+  // Intercity Verify Status
+  fetchIntercityVerifyStatus: async (orderId) => {
+    set({ isFetchIntercityVerifyStatusLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_VERIFY_STATUS}/${orderId}`;
+      const method = "post";
+      const response = await apiService[method](url);
+      // Ensure correct setting of the bookingDetails state
+      set({
+        isFetchIntercityVerifyStatusLoading: false,
+      });
+      return { response: response };
+    } catch (error) {
+      set({ isFetchIntercityVerifyStatusLoading: false });
+      return { success: false };
+    }
+  },
+
+  // Intercity Regenerate Ticket
+  fetchIntercityRegenerateTicket: async (orderId) => {
+    set({ isFetchIntercityRegenerateTicketLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_REGENERATE_TICKET}/${orderId}`;
+      const method = "post";
+      const response = await apiService[method](url);
+      set({
+        isFetchIntercityRegenerateTicketLoading: false,
+      });
+      set({ isFetchIntercityRegenerateTicketLoading: false });
+      return { response: response };
+    } catch (error) {
+      set({ isFetchIntercityRegenerateTicketLoading: false });
+      return { success: false };
+    } finally {
+      set({ isFetchIntercityRegenerateTicketLoading: false });
+    }
+  },
+
+  // Intercity Payment Transaction Refund
+  fetchIntercityPaymentTransactionRefund: async (orderId) => {
+    set({ isFetchIntercityPaymentTransactionRefundLoading: true });
+    try {
+      const url = `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_TRANSACTION_REFUND}/${orderId}`;
+      const method = "post";
+      const response = await apiService[method](url);
+      set({
+        isFetchIntercityPaymentTransactionRefundLoading: false,
+      });
+      return { response: response };
+    } catch (error) {   
+      set({ isFetchIntercityPaymentTransactionRefundLoading: false });
+      return { success: false };
+    } finally {
+      set({ isFetchIntercityPaymentTransactionRefundLoading: false });
+    }
+  },
+  
+}));

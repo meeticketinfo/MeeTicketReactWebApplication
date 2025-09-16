@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link } from "react-router-dom";
-
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 // Define reason styles (color + count)
 const reasonStyles = {
@@ -25,9 +24,9 @@ const IntercityNotGeneratedChart = ({
   toDate,
   // filters,
 }) => {
-  const { setInnerFilters, innerFilters, resetInnerFilters,setOuterFilters,outerFilters } =
-  AmarabadTotalCommonStore();
-
+  const { setInnerFilters, innerFilters,outerFilters } =
+  IntercityTotalCommonStore();
+  console.log("outerFilters", outerFilters);
   const chartRef = useRef(null);
   const totalCount = data?.reduce((sum, item) => (sum+(item.count) || item.totalCount || 0), 0) || 0;
   useEffect(() => {
@@ -92,7 +91,7 @@ const IntercityNotGeneratedChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-3 md:px-4 py-2 text-sm md:text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to={`/intercity-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=`}
+            to={`/intercity-not-generated-report?status=${outerFilters.status || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
@@ -142,7 +141,7 @@ const IntercityNotGeneratedChart = ({
                             }}
                           />
                           <Link 
-                          to={`/intercity-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
+                          to={`/intercity-not-generated-report?&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}&status=${outerFilters.status || ''}`}
 
                           className="text-[#000] hover:underline text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight"
                           onClick={() => {
@@ -165,7 +164,7 @@ const IntercityNotGeneratedChart = ({
                       </td>
                       <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                         to={`/intercity-not-generated-report?package=${packageName || ''}&house=${house || ''}&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}`}
+                         to={`/intercity-not-generated-report?&mobileNumber=${mobileNumber || ''}&fromDate=${fromDate || ''}&toDate=${toDate || ''}&subCategory=${encodeURIComponent(item.subCategory || '')}&status=${outerFilters.status || ''}`}
                          onClick={() => {
                           setInnerFilters({
                             ...innerFilters,

@@ -420,6 +420,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-refund-report",
       },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/intercity-payment-transactions",
+      },
     ],
 
   },
