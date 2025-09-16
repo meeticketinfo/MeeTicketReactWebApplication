@@ -5,27 +5,24 @@ import IntercityTotalCommonStore from "../../../../../store/rtc_total_transactio
 import { ToastContainer } from "react-toastify";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../Breadcrumb";
-import BusPassTotalTransactionForm from "../../bus_pass_reports/rtc_total_transaction/outer_report/BusPassTotalTransactionForm";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-// import { formatDateTime } from "../../../../../utils/Helper";
-// import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import { useIntercityTotalTransactionStore } from "./store/IntercityTotalTransactionStore";
+// import IntercityTotalTransactionForm from "./outer_report/intercityTotalTransactionForm";
 
 const InetercityTotalReport = () => {
   const {
-    innerFilters,
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
   } = IntercityTotalCommonStore();
-  console.log("outerFilters", outerFilters);
+
   const {
-    fetchRtcTotalTransactions,
-    RtcTotalTransactionsData,
-    isRtcTotalTransactionsLoading,
-  } = useBusPassTotalTransactionStore();
+    fetchTotalTransactionsReport,
+    totalTransactionsReport,
+    isTotalTransactionsReportLoading,
+  } = useIntercityTotalTransactionStore();
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
@@ -34,12 +31,19 @@ const InetercityTotalReport = () => {
   };
 
   useEffect(() => {
-    fetchRtcTotalTransactions({
+    fetchTotalTransactionsReport({
       startDate: (deepInnerFilters.startDate || outerFilters.fromDate) ?? "",
       endDate: (deepInnerFilters.endDate || outerFilters.toDate) ?? "",
       phoneNumber:
         (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
-      BusPassType:(deepInnerFilters.BusPassType || outerFilters.BusPassType) ?? "",
+      BusPassType:
+        (deepInnerFilters.BusPassType || outerFilters.BusPassType) ?? "",
+      departureLocation:
+        (deepInnerFilters.departureLocation || outerFilters.departureLocation) ?? "",
+      arrivalLocation:
+        (deepInnerFilters.arrivalLocation || outerFilters.arrivalLocation) ?? "",
+      busType:
+        (deepInnerFilters.busType || outerFilters.busType) ?? "",
       status: outerFilters.status ?? "",
       subCategory: "",
 
@@ -47,17 +51,23 @@ const InetercityTotalReport = () => {
       pageSize: PAGE_LIMIT,
     });
   }, [
-    PAGE_LIMIT, 
-    currentPage, 
-    deepInnerFilters.startDate, 
-    deepInnerFilters.endDate, 
-    deepInnerFilters.mobileNumber, 
-    deepInnerFilters.BusPassType, 
-    outerFilters.fromDate, 
-    outerFilters.toDate, 
-    outerFilters.mobileNumber, 
-    outerFilters.BusPassType, 
-    outerFilters.status
+    PAGE_LIMIT,
+    currentPage,
+    deepInnerFilters.startDate,
+    deepInnerFilters.endDate,
+    deepInnerFilters.mobileNumber,
+    deepInnerFilters.BusPassType,
+    deepInnerFilters.departureLocation,
+    deepInnerFilters.arrivalLocation,
+    deepInnerFilters.busType,
+    outerFilters.fromDate,
+    outerFilters.toDate,
+    outerFilters.mobileNumber,
+    outerFilters.BusPassType,
+    outerFilters.departureLocation,
+    outerFilters.arrivalLocation,
+    outerFilters.busType,
+    outerFilters.status,
   ]);
   const columnDefs = [
     {
@@ -103,27 +113,41 @@ const InetercityTotalReport = () => {
       ),
     },
     {
+      field: "userName",
+      headerName: "User Name",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
       field: "mobileNumber",
       headerName: "Mobile No.",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    
+
     {
-      field: "passTypeName",
+      field: "busType",
       headerName: "Type of Bus Pass",
       maxWidth: "160",
       headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,
+    },
+    {
+        field: "departureLocation",
+        headerName: "Departure Location",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+    {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    // {
-    //     field: "noOfTickets",
-    //     headerName: "Mode of Transaction",
-    //     maxWidth: "120",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value ?? "N/A",
-    //   },
     {
       field: "amount",
       headerName: "Amount",
@@ -132,11 +156,10 @@ const InetercityTotalReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-   
 
     {
       field: "paymentMode",
-      headerName: "Mode of Payment",
+      headerName: "Payment Mode",
       maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -152,7 +175,7 @@ const InetercityTotalReport = () => {
       ),
     },
     {
-      field: "bP_OrderId",
+      field: "orderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -217,16 +240,16 @@ const InetercityTotalReport = () => {
         </div>
 
         <div>
-          <BusPassTotalTransactionForm
+          {/* <IntercityTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
-          />
+          /> */}
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={RtcTotalTransactionsData}
+            rowData={totalTransactionsReport}
             columnDefs={columnDefs}
-            isFetchLoading={isRtcTotalTransactionsLoading}
+            isFetchLoading={isTotalTransactionsReportLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -234,8 +257,8 @@ const InetercityTotalReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={RtcTotalTransactionsData[0]?.totalCount}
-            tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={totalTransactionsReport[0]?.totalCount}
+            tableHeight={totalTransactionsReport.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>

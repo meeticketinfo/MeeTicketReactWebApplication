@@ -189,6 +189,7 @@ import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_rep
 import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
 import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
 import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
+import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 
 export const routes = [
   {
@@ -937,5 +938,10 @@ export const routes = [
   {
     path: "/intercity-user-transactions-order-tracker",
     element: <ProtectedRoute element={<IntercityUserTrackOrder />} />,
+  },
+
+  {
+    path: "/intercity-payment-transactions",
+    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
   },
 ];
