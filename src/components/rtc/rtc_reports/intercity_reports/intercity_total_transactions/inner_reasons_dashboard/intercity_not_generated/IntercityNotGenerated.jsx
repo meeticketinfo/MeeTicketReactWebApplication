@@ -65,7 +65,7 @@ const IntercityNotGenerated = () => {
   const breadcrumbItems = [
     {
       label: "Total Transactions Report",
-      path: `/intercity-total-transaction?package=${packageName ?? ""}&house=${house ?? ""}&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`,
+      path: `/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`,
       onclick: () => resetInnerFilters(),
     },
     {
