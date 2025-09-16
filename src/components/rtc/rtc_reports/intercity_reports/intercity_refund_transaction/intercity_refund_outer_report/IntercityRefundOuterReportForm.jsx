@@ -61,13 +61,8 @@ const IntercityRefundOuterReportForm = () => {
       newSearchParams.delete("RefundStatus");
       setSearchParams(newSearchParams);
     }
-    if (searchParams.toString() || preservedParams) {
-      fetchAllBusPasses();
-    }
   }, [searchParams]);
 
-  const { AllBusPassesData, fetchAllBusPasses } =
-    useBusPassTotalTransactionStore();
   const getInitialValues = () => {
     const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
     const paramsToUse = preservedParams && !searchParams.toString()
