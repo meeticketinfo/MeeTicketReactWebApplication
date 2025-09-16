@@ -2,12 +2,12 @@ import Dashboard from "../pages/Dashboard";
 import AdminUsers from "../pages/admin/users/AdminUsers";
 import AdminParks from "../pages/admin/parks/AdminParks";
 import AdminFacilities from "../pages/admin/facilities/AdminFacilities";
-import AdminUsersTable from "../pages/admin/users/AdminUserTable";
+
 import WorkingDays from "../pages/admin/working_days/WorkingDays";
 import Holidays from "../pages/admin/holidays/Holidays";
 import Login from "../auth/login/Login";
 import ServiceVariant from "../pages/admin/service_varient/serviceVarient";
-import EntryScanUsers from "../pages/admin/entry_Scan_users/EntryScanUsers";
+
 import Payments from "../pages/admin/payments/Payments";
 import Services from "../pages/admin/services/services";
 import AdminBookings from "../pages/admin/bookings/Bookings";
@@ -16,16 +16,16 @@ import BookTickets from "../pages/admin/BookTickets/BookTickets";
 import GateKeepers from "../pages/park_admin/users/GateKeepers";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import BookingDetails from "../pages/admin/BookTickets/BookingDetails";
-import DepartmentList from "../components/department_management/DepartmentList";
+
 import Departments from "../pages/admin/departments/Departments";
-import EntityTypeList from "../components/entity_type_management/EntityTypeList";
+
 import EntityTypes from "../pages/admin/entity_types/EntityTypes";
 import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
 import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
 import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
 import NotFound from "../pages/Error/NotFound";
 import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
-import ServiceUnifiedCreator from "../components/facilities_management/ServiceUnifiedCreator";
+
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 import Unauthorized from "../pages/Error/Unauthorized";
@@ -46,7 +46,7 @@ import FacilityBookings from "../pages/admin/BookTickets/FacilityBookings";
 import BankTransactions from "../pages/admin/BookTickets/BankTransactions";
 import MetroCumulativeBookings from "../components/metro_reports/cumulativeBookings/MetroCumulativeBookings";
 import CustomBookTickets from "../pages/admin/BookTickets/CustomBookTickets";
-import GrievanceConsolidateReportList from "../components/grievance/grievance_consolidate/GrievanceConsolidateReportList";
+
 import GrievanceConsolidateReport from "../components/grievance/grievance_consolidate/GrievanceConsolidateReport";
 import GrievanceIncident from "../components/grievance/grievance_incident/GrievanceIncident";
 import GrievanceIndividualReport from "../components/grievance/grievance_individual/GrievanceIndividualReport";
@@ -68,7 +68,7 @@ import UserTransactionReport from "../components/payments_management/UserTransac
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
-import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
+
 import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
 import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
 import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
@@ -107,7 +107,6 @@ import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_fail
 import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionReport from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionReport";
-import OuterTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/outer_report/OuterTotalTransactionReport";
 import MainTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/MainTotalTransactionReport";
 import MetroTotalReport from "../pages/metro_transaction_reports/metro_total_transactions/MetroTotalReport";
 import FailedOtherReason from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/failed_other_reason/FailedOtherReason";
@@ -146,7 +145,6 @@ import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_
 import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
 import AmrabadTotalReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/AmrabadTotalReport";
-import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
 // import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
 import AmrabadFailedOtherReasonReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReasonReport";
 import AmarabadNotGeneratedReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmarabadNotGeneratedReport";
@@ -175,7 +173,6 @@ import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_
 import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGeneratedReport";
 import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
 import ViewBusPass from "../components/rtc/components/ViewBusPass";
-import BusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/BusPassRefundTransactions";
 import BusPassRefundTransactionsReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassRefundTransactionsReport";
 import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/MainBusPassRefundTransactions";
 import IntercityFailedOtherReason from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReason";
@@ -189,6 +186,8 @@ import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_rep
 import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
 import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
 import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
+
+import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 
 export const routes = [
@@ -882,6 +881,10 @@ export const routes = [
   {
     path: "/intercity-consolidated-report",
     element: <ProtectedRoute element={<IntercityConsolidatedReport />} />,
+  },
+  {
+    path: "/intercity-individual-report",
+    element: <ProtectedRoute element={<IntercityIndividualReport />} />,
   },
   {
     path: "/intercity-total-transaction",

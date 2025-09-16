@@ -1,10 +1,10 @@
 import { Formik, Form, Field } from "formik";
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 
-const IntercityConsolidatedReportForm = ({
+const IntercityIndividualReportForm = ({
   onSearch,
   pageNumber,
   pageSize,
@@ -12,25 +12,22 @@ const IntercityConsolidatedReportForm = ({
 }) => {
   const savedFilters = useMemo(() => {
     try {
-      return JSON.parse(
-        localStorage.getItem("intercity-consolidated-filters")
-      );
+      return JSON.parse(localStorage.getItem("intercity-individual-filters"));
     } catch {
       return null;
     }
-  }, []); 
+  }, []);
   const { fetchCitiesData } = useIntercityMastersStore();
 
-  // Separate state for each dropdown to prevent interference
+  // Separate state for each dropdown to prevent interference 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
 
   const fetchDepartureCities = async (q) => {
     try {
       const response = await fetchCitiesData(q);
-      console.log("q",q)
       if (response?.response?.result) {
-        setDepartureCities(response.response.result);
+        setDepartureCities(response?.response?.result);
       }
     } catch (error) {
       console.error("Error fetching departure cities:", error);
@@ -43,12 +40,13 @@ const IntercityConsolidatedReportForm = ({
     try {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
-        setArrivalCities(response.response.result);
+        setArrivalCities(response?.response?.result);
       }
     } catch (error) {
       console.error("Error fetching arrival cities:", error);
       setArrivalCities([]);
     } finally {
+      
     }
   };
 
@@ -83,13 +81,10 @@ const IntercityConsolidatedReportForm = ({
       : "",
   };
 
-  const onSubmit = (values, { resetForm }) => {
+  const onSubmit = (values) => {
     console.log("values", values);
 
-    localStorage.setItem(
-      "intercity-consolidated-filters",
-      JSON.stringify(values)
-    );
+    localStorage.setItem("intercity-individual-filters", JSON.stringify(values));
   };
 
   return (
@@ -201,7 +196,6 @@ const IntercityConsolidatedReportForm = ({
                 <option value="MeeTicketApp">Mee TicketApp</option>
               </Field>
             </div>
-
             {/* payment mode */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -215,7 +209,7 @@ const IntercityConsolidatedReportForm = ({
                 <option value="">All</option>
                 <option value="Credit Card">Credit Card</option>
                 <option value="UPI">UPI</option>
-                <option value="Cash">Cash</option> 
+                <option value="Cash">Cash</option>
               </Field>
             </div>
             {/* order id */}
@@ -340,7 +334,7 @@ const IntercityConsolidatedReportForm = ({
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
-                  localStorage.removeItem("intercity-consolidated-filters");
+                  localStorage.removeItem("intercity-individual-filters");
                   setValues({
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
@@ -369,4 +363,4 @@ const IntercityConsolidatedReportForm = ({
   );
 };
 
-export default IntercityConsolidatedReportForm;
+export default IntercityIndividualReportForm;

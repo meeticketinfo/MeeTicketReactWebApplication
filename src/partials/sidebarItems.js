@@ -411,6 +411,11 @@ const sidebarItems = [
         path: "/intercity-consolidated-report",
       },
       {
+        title: "Individual Report",
+        icon: RiDashboard3Fill,
+        path: "/intercity-individual-report",
+      },
+      {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
