@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserDetailedReportForm = ({
   pageNumber,
@@ -12,10 +12,10 @@ const IntercityUserDetailedReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isBusPassUserDetailedReportsLoading,
-    allBusPassUserDetailedReports,
-    fetchBusPassUserDetailedReports,
-  } = useBuspassUserStore();
+    isIntercityUserDetailedReportsLoading,
+    allIntercityUserDetailedReports,
+    fetchIntercityUserDetailedReports,
+  } = useIntercityUserStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
   // Load packages on component mount
@@ -41,7 +41,7 @@ const IntercityUserDetailedReportForm = ({
         }
       }
       localStorage.setItem(
-        "userDetailedBusPassReportSearchParams",
+        "userDetailedIntercityReportSearchParams",
         newSearchParams.toString()
       );
     }
@@ -74,7 +74,7 @@ const IntercityUserDetailedReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     paymentMode: searchParams.get("paymentMode") || "",
-    mobileNo: searchParams.get("mobileNo") || "",
+    MobileNumber: searchParams.get("MobileNumber") || "",
   };
 
   const onSubmit = (values) => {
@@ -91,12 +91,12 @@ const IntercityUserDetailedReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userDetailedBusPassReportSearchParams", newSearchParams.toString());
+    localStorage.setItem("userDetailedIntercityReportSearchParams", newSearchParams.toString());
 
-    fetchBusPassUserDetailedReports({
+    fetchIntercityUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNo: values.mobileNo,
+      MobileNumber: values.MobileNumber,
       paymentMode: values.paymentMode || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
@@ -157,7 +157,7 @@ const IntercityUserDetailedReportForm = ({
             {/* mobile number */}
             <div>
               <label
-                htmlFor="mobileNo"
+                htmlFor="MobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -165,7 +165,7 @@ const IntercityUserDetailedReportForm = ({
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNo"
+                name="MobileNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -174,7 +174,7 @@ const IntercityUserDetailedReportForm = ({
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNo", e.target.value);
+                  setFieldValue("MobileNumber", e.target.value);
                 }}
               />
             </div>
@@ -205,7 +205,7 @@ const IntercityUserDetailedReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isBusPassUserDetailedReportsLoading}
+                disabled={isIntercityUserDetailedReportsLoading}
               >
                 Search
               </button>

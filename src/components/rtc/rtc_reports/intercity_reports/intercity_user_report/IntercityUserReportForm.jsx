@@ -5,7 +5,7 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserReportForm = ({
   PageIndex,
@@ -15,10 +15,10 @@ const IntercityUserReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isBusPassUserReportsLoading,
-    allBusPassUserReports,
-    fetchBusPassUserReports,
-  } = useBuspassUserStore();
+    isIntercityUserReportsLoading,
+    allIntercityUserReports,
+    fetchIntercityUserReports,
+  } = useIntercityUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -43,11 +43,11 @@ const IntercityUserReportForm = ({
   
 
   const maxDateTime = getCurrentDateTime();
-  console.log(searchParams.get("mobileNo"));
+  console.log(searchParams.get("MobileNumber"));
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    mobileNo: searchParams.get("mobileNo") || "",
+    MobileNumber: searchParams.get("MobileNumber") || "",
   };
 
   const onSubmit = (values) => {
@@ -59,12 +59,12 @@ const IntercityUserReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userBusPassReportSearchParams", newSearchParams);
+    localStorage.setItem("userIntercityReportSearchParams", newSearchParams);
 
-    fetchBusPassUserReports({
+    fetchIntercityUserReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
-      mobileNo: values.mobileNo || "",
+      MobileNumber: values.MobileNumber || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -75,19 +75,19 @@ const IntercityUserReportForm = ({
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
-      mobileNo: "",
+      MobileNumber: "",
     };
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-    localStorage.setItem("userBusPassReportSearchParams", "");
+    localStorage.setItem("userIntercityReportSearchParams", "");
     setValues(payload);
-    fetchBusPassUserReports({
+    fetchIntercityUserReports({
       ...payload,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    localStorage.setItem("userBusPassReportSearchParams", "");
+    localStorage.setItem("userIntercityReportSearchParams", "");
   };
 
   return (
@@ -145,7 +145,7 @@ const IntercityUserReportForm = ({
             {/* mobile number */}
             <div>
               <label
-                htmlFor="mobileNo"
+                htmlFor="MobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
                 Phone Number
@@ -153,7 +153,7 @@ const IntercityUserReportForm = ({
               <Field
                 type="text"
                 maxLength="10"
-                name="mobileNo"
+                name="MobileNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
                 placeholder="Enter phone number"
                 onKeyPress={(e) => {
@@ -162,7 +162,7 @@ const IntercityUserReportForm = ({
                   }
                 }}
                 onChange={(e) => {
-                  setFieldValue("mobileNo", e.target.value);
+                  setFieldValue("MobileNumber", e.target.value);
                 }}
               />
             </div>
@@ -170,7 +170,7 @@ const IntercityUserReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isBusPassUserReportsLoading}
+                disabled={isIntercityUserReportsLoading}
               >
                 Search
               </button>

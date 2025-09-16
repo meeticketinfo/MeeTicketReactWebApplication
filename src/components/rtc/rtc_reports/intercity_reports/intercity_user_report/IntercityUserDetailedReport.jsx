@@ -9,7 +9,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
@@ -21,10 +21,10 @@ const IntercityUserDetailedReport = () => {
     "userIntercityReportSearchParams"
   );
   const {
-    isBusPassUserDetailedReportsLoading,
-    allBusPassUserDetailedReports,
-    fetchBusPassUserDetailedReports,
-  } = useBuspassUserStore();
+    isIntercityUserDetailedReportsLoading,
+    allIntercityUserDetailedReports,
+    fetchIntercityUserDetailedReports,
+  } = useIntercityUserStore();
   const columnDefs = [
     {
       field: "sno",
@@ -68,7 +68,7 @@ const IntercityUserDetailedReport = () => {
           state={{
             orderId: params.data.orderId,
             date: params.data.transactionDateandTime,
-            mobileNo: params.data.login_MobilNumber,
+            MobileNumber: params.data.login_MobilNumber,
             typeOfBusPass: params.data.typeOfBusPass,
             status: params.data.transactionStatus,
             amount: params.data.confirmedTransactionAmount,
@@ -144,10 +144,10 @@ const IntercityUserDetailedReport = () => {
     },
   ];
   const loadUserReport = (page = 0) => {
-    fetchBusPassUserDetailedReports({
+    fetchIntercityUserDetailedReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNo: searchParams.get("mobileNo") || "",
+      MobileNumber: searchParams.get("MobileNumber") || "",
       paymentMode: searchParams.get("paymentMode") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
@@ -200,20 +200,20 @@ const IntercityUserDetailedReport = () => {
             />
             <AgGridTable
               ExportName="IntercityUserDetailedReport"
-              rowData={allBusPassUserDetailedReports}
+              rowData={allIntercityUserDetailedReports}
               columnDefs={columnDefs}
-              isFetchLoading={isBusPassUserDetailedReportsLoading}
+              isFetchLoading={isIntercityUserDetailedReportsLoading}
               IsReactPaginate={true}
               isPagination={false}
               tableHeight={
-                allBusPassUserDetailedReports?.length > 10 ? 550 : 300
+                allIntercityUserDetailedReports?.length > 10 ? 550 : 300
               }
               setPageLimit={setPAGE_LIMIT}
               showTotalCount={true}
               pageLimit={PAGE_LIMIT}
               handlePageClick={handlePageClick}
               currentPage={currentPage}
-              totalCount={allBusPassUserDetailedReports?.[0]?.totalCount}
+              totalCount={allIntercityUserDetailedReports?.[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
               showSearch={false}
             />
