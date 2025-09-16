@@ -6,6 +6,7 @@ import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
 import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 
 const BusPassUserDetailedReport = () => {
   const [searchParams] = useSearchParams();
@@ -89,11 +90,11 @@ const BusPassUserDetailedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "confirmedTransactionAmount",
+      field: "initiateTransactionAmount",
       headerName: "Total Amount",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
       field: "modeOfPayment",

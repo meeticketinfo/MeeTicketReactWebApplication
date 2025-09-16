@@ -1,0 +1,608 @@
+.ticket-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  font-family: 'Arial Nova', Arial, sans-serif;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* New Bus Ticket Styles */
+.font-arial-nova {
+  font-family: 'Arial Nova', Arial, sans-serif;
+}
+
+.font-arial-nova * {
+  font-family: 'Arial Nova', Arial, sans-serif;
+}
+
+/* Bus Ticket Specific Styles */
+.bus-ticket-container {
+  font-family: 'Arial Nova', Arial, sans-serif;
+  background-color: white;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.bus-ticket-container * {
+  font-family: 'Arial Nova', Arial, sans-serif;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ticket-details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d1d5db;
+  margin-bottom: 16px;
+}
+
+.ticket-details-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #4b5563;
+  margin-right: 8px;
+}
+
+.detail-value {
+  color: #111827;
+}
+
+.service-number {
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.depart-time {
+  color: #059669;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.dropping-time {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.passenger-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.passenger-table th {
+  background-color: #dbeafe; /* Light blue background */
+  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: bold;
+  color: #374151;
+  font-size: 14px;
+}
+
+.passenger-table td {
+  border: 1px solid #d1d5db;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.passenger-table th:first-child,
+.passenger-table td:first-child {
+  text-align: center;
+}
+
+.passenger-table th:nth-child(3),
+.passenger-table th:nth-child(4),
+.passenger-table th:nth-child(5),
+.passenger-table th:nth-child(6),
+.passenger-table td:nth-child(3),
+.passenger-table td:nth-child(4),
+.passenger-table td:nth-child(5),
+.passenger-table td:nth-child(6) {
+  text-align: center;
+}
+
+.passenger-name {
+  font-weight: 500;
+}
+
+.total-fare-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 32px 0;
+}
+
+.total-fare-label {
+  font-size: 20px;
+  font-weight: bold;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-fare-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2563eb; /* Blue color for total fare */
+}
+
+.important-note {
+  text-align: center;
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 32px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .ticket-details-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .detail-label {
+    margin-right: 0;
+  }
+  
+  .passenger-table {
+    font-size: 12px;
+  }
+  
+  .passenger-table th,
+  .passenger-table td {
+    padding: 8px 12px;
+  }
+  
+  .total-fare-container {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+/* Print styles */
+@media print {
+  .bus-ticket-container {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .bus-ticket-container * {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+/* Screen-only scrolling */
+@media screen {
+  .ticket-container {
+    overflow-y: auto;
+    max-height: 100vh;
+    height: auto;
+  }
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.left-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.government-text {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.state-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.state-logo-circle {
+  width: 80px;
+  height: 80px;
+  border: 3px solid #228B22;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  position: relative;
+}
+
+.inner-circle {
+  width: 60px;
+  height: 60px;
+  background-color: #8B4513;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.monument-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+.telugu-text {
+  font-size: 8px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+.telugu-text-below {
+  font-size: 12px;
+  color: #000;
+  text-align: center;
+}
+
+.right-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.meeticket-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meeticket-logo-circle {
+  width: 80px;
+  height: 80px;
+  border: 3px solid #228B22;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #000;
+  text-align: center;
+}
+
+.meeticket-text {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  background-color: #000;
+  margin: 15px 0;
+}
+
+.important-note {
+  margin-bottom: 20px;
+  padding: 15px 0;
+}
+
+.note-text {
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.guidelines-link {
+  font-size: 14px;
+}
+
+.link-label {
+  font-weight: bold;
+}
+
+.guidelines-url {
+  color: #0066cc;
+  text-decoration: underline;
+  margin-left: 5px;
+}
+
+.reservation-voucher {
+  margin-bottom: 25px;
+}
+
+.voucher-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.voucher-details {
+  padding: 15px 0;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.left-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.detail-item .label {
+  font-weight: bold;
+  margin-right: 10px;
+  min-width: 160px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.detail-item .value {
+  font-size: 14px;
+  flex: 1;
+  word-wrap: break-word;
+}
+
+.status-confirmed {
+  color: #008000;
+  font-weight: bold;
+}
+
+.passenger-details {
+  margin-bottom: 25px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.passenger-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+}
+
+.passenger-table th,
+.passenger-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.passenger-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+  color: #0066cc;
+  text-align: center;
+}
+
+.passenger-table td {
+  text-align: left;
+}
+
+.passenger-table td:nth-child(3),
+.passenger-table td:nth-child(4),
+.passenger-table td:nth-child(5) {
+  text-align: center;
+}
+
+.fare-details {
+  margin-bottom: 25px;
+}
+
+.fare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.fare-left-column, .fare-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fare-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.fare-label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #000;
+}
+
+.fare-value {
+  font-size: 14px;
+  color: #000;
+}
+
+.total-fare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 15px 20px;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.total-fare-label {
+  font-weight: bold;
+  font-size: 16px;
+  color: #000;
+}
+
+.total-fare-value {
+  font-weight: bold;
+  font-size: 18px;
+  color: #000;
+}
+
+.id-proof-note {
+  margin-bottom: 25px;
+}
+
+.id-proof-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.id-proof-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
+  margin: 0;
+}
+
+/* Print styles */
+@media print {
+  .ticket-container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+  
+  .ticket-header {
+    page-break-inside: avoid;
+  }
+  
+  .reservation-voucher {
+    page-break-inside: avoid;
+  }
+  
+  .passenger-details {
+    page-break-inside: avoid;
+  }
+  
+  .fare-details {
+    page-break-inside: avoid;
+  }
+  
+  .id-proof-note {
+    page-break-inside: avoid;
+  }
+}
+
+/* Scrolling enhancements - screen only */
+@media screen {
+  .ticket-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .ticket-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .ticket-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  .ticket-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+}
+
+/* Ensure proper scrolling on all devices */
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Mobile responsiveness - screen only */
+@media screen and (max-width: 768px) {
+  .ticket-container {
+    padding: 10px;
+    max-height: none;
+    margin: 0;
+  }
+  
+  .details-grid,
+  .fare-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .ticket-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .state-logo-circle,
+  .meeticket-logo-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .inner-circle {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .monument-icon {
+    font-size: 16px;
+  }
+  
+  .meeticket-text {
+    font-size: 12px;
+  }
+  
+  .detail-item .label {
+    min-width: 120px;
+  }
+}
