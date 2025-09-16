@@ -5,11 +5,10 @@ import AgGridTable from "../../../../../../tables/AgGridTable";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import { formatDateTime } from "../../../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import IntercityNotGeneratedReportForm from "./IntercityNotGeneratedReportForm";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 
 const IntercityNotGeneratedReport = () => {
 
@@ -22,38 +21,39 @@ const IntercityNotGeneratedReport = () => {
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
   const subCategory = searchParams.get("subCategory");
+  const status = searchParams.get("status");
   const {innerFilters,outerFilters,deepInnerFilters,resetDeepInnerFilters} = useAmrabadTotalCommonStore();
 
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   const {
-    fetchAmrabadTotalTransactions,
-    AmrabadTotalTransactionsData,
-    isAmrabadTotalTransactionsLoading,
-  } = useAmarabadTotalTransactionStore();
+    fetchTotalTransactionsReport,
+    totalTransactionsReport,
+    isTotalTransactionsReportLoading,
+  } = useIntercityTotalTransactionStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  console.log("outerFilters", innerFilters);
   useEffect(() => {
-    fetchAmrabadTotalTransactions({
+    fetchTotalTransactionsReport({
       startDate: fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
       endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
       phoneNumber:
         mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
-      status: innerFilters.status ?? "",
-      subCategory: subCategory ?? innerFilters.subCategory ?? "",
+      arrivalLocation: deepInnerFilters.arrivalLocation ?? innerFilters.arrivalLocation ?? outerFilters.arrivalLocation ?? "",
+      departureLocation: deepInnerFilters.departureLocation ?? innerFilters.departureLocation ?? outerFilters.departureLocation ?? "",
+      status: status ?? innerFilters.status ?? outerFilters.status ?? "",
+      subCategory: subCategory ?? innerFilters.subCategory ?? outerFilters.subCategory ?? "",
       package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
       house: house ?? innerFilters.house ?? outerFilters.house ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage, packageName, house, mobileNumber, fromDate, toDate, subCategory]);  
+  }, [PAGE_LIMIT, currentPage, mobileNumber, fromDate, toDate, subCategory, innerFilters.status, innerFilters.subCategory, outerFilters.package, outerFilters.house, outerFilters.status,status]);  
   
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
@@ -80,55 +80,56 @@ const IntercityNotGeneratedReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/intercity-not-generated-view-track-order"}
+          to={"/bus-pass-total-traker"}
           state={{
-            orderId: params.data.orderId,
+            orderId: params.data.bP_OrderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
-            subCategory: params.data.subCategory, 
-            packageName: params.data.packageName,
-            houseName: params.data.roomName,
           }}
         >
           View Track Order
         </Link>
       ),
     },
-
-      
-      {
-        field: "userName",
-        headerName: "User Name",
-        maxWidth: "120",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
-
     {
-      field: "mobileNumber",
-      headerName: "Mobile Number of User",
+      field: "userName",
+      headerName: "User Name",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "packageName",
-      headerName: "Package Name",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "houseNames",
-      headerName: "House Name",
-      maxWidth: "160",
+      field: "mobileNumber",
+      headerName: "Mobile No.",
+      maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
 
+    {
+      field: "busType",
+      headerName: "Type of Bus Pass",
+      maxWidth: "160",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+        field: "departureLocation",
+        headerName: "Departure Location",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+    {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "amount",
       headerName: "Amount",
@@ -137,24 +138,11 @@ const IntercityNotGeneratedReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-    {
-      field: "noOfHouses",
-      headerName: "No of Houses Booked",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "bookingType",
-      headerName: "Mode of Booking",
-      maxWidth: "140",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+
     {
       field: "paymentMode",
       headerName: "Payment Mode",
-      maxWidth: "140",
+      maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -187,18 +175,18 @@ const IntercityNotGeneratedReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
+        <span title={params.value ?? "N/A"}>{params.value ?? "N/A"}</span>
       ),
     },
   ];
   const breadcrumbItems = [
     {
       label: 'Total Transactions Report',
-      path: `/amarabad-total-transaction`
+      path: `/intercity-total-transaction`
     },
      {
       label: 'Ticket Not Generated Transactions Report',  
-      path: `/amrabad-not-generated`,
+      path: `/intercity-not-generated`,
       //  onclick:()=>{resetDeepInnerFilters()
         
       // },
@@ -248,9 +236,9 @@ const IntercityNotGeneratedReport = () => {
           />
            <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={AmrabadTotalTransactionsData}
+            rowData={totalTransactionsReport}
             columnDefs={columnDefs}
-            isFetchLoading={isAmrabadTotalTransactionsLoading}
+            isFetchLoading={isTotalTransactionsReportLoading}
             isPagination={false}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
@@ -258,8 +246,8 @@ const IntercityNotGeneratedReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={AmrabadTotalTransactionsData[0]?.totalCount}
-            tableHeight={AmrabadTotalTransactionsData.length > 10 ? 550 : 300}
+            totalCount={totalTransactionsReport[0]?.totalCount}
+            tableHeight={totalTransactionsReport.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
           />
         </div>

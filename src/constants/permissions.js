@@ -138,6 +138,7 @@ export const RtcAdmin = [
   "intercity-total-transaction",
   "intercity-user-report",
   "intercity-refund-report",
+  "intercity-payment-transactions",
   // "pending-pass",
 ];
 
