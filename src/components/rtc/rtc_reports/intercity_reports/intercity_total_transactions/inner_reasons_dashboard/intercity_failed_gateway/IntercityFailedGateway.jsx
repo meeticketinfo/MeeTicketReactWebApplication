@@ -6,10 +6,11 @@ import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../u
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedGatewayChart from "../../../../../../../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/charts/IntercityFailedGatewayChart";
 
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 const IntercityFailedGateway = () => {
   const location = useLocation();
@@ -24,30 +25,28 @@ const IntercityFailedGateway = () => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-  AmarabadTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  IntercityTotalCommonStore();
   const {
-    fetchGateWayPieChart,
-    PaymentGatewayPieChartData,
-    isPaymentGatewayPieChartLoading,
-  } = useAmarabadTotalTransactionStore();
+    fetchPaymentFailedGateway,
+    paymentFailedGateway,
+    isPaymentFailedGatewayLoading,
+  } = useIntercityTotalTransactionStore();
   useEffect(() => {
-    fetchGateWayPieChart({
+    fetchPaymentFailedGateway({
       fromDate: fromDate ?? (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
       toDate: toDate ?? (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
       mobileNumber:
         mobileNumber ?? (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
-      package: packageName ?? (innerFilters.package ?? outerFilters.package) ?? "",
-      house: house ?? (innerFilters.house ?? outerFilters.house) ?? "",
+      arrivalLocation: innerFilters.arrivalLocation ?? "",
+      departureLocation: innerFilters.departureLocation ?? "",
     });
-    getPackages()
-  }, [packageName, house, mobileNumber, fromDate, toDate]);
+  }, [ mobileNumber, fromDate, toDate]);
 
   const initialValues = {
     fromDate: fromDate ?? (innerFilters.fromDate ?? outerFilters.fromDate) ?? startOfDay,
     toDate: toDate ?? (innerFilters.toDate ?? outerFilters.toDate) ?? endOfDay,
-    package: packageName ?? (innerFilters.package ?? outerFilters.package) ?? "",
-    house: house ?? (innerFilters.house ?? outerFilters.house) ?? "",
+    arrivalLocation: innerFilters.arrivalLocation ?? "",
+    departureLocation: innerFilters.departureLocation ?? "",
     mobileNumber: mobileNumber ?? (innerFilters.mobileNumber ?? outerFilters.mobileNumber) ?? "",
   };
   const onSubmit = (values) => {
@@ -55,13 +54,13 @@ const IntercityFailedGateway = () => {
       ...values,
       subCategory: subCategory || innerFilters.subCategory || "",
     });
-    fetchGateWayPieChart(values);
+    fetchPaymentFailedGateway(values);
   };
 
        const breadcrumbItems = [
     {
       label: 'Total Transactions Report',
-      path: `/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
+          path: `/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
       onclick:()=>resetInnerFilters(),
     },
     {
@@ -141,53 +140,103 @@ const IntercityFailedGateway = () => {
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="package"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Packages
-                  </label>
-                  <Field
-                    as="select"
-                    name="package"
-                    placeholder="Select Package"
-                    onChange={(e) => {
-                      const packageId = e.target.value;
-                      getHouses(packageId);
-                      setFieldValue("package", packageId);
-                    }}
-                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  >
-                    <option value="">Select Package</option>
-                    {AllPackages.map((item) => (
-                      <option key={item.packageId} value={item.packageId}>
-                        {item.packageName}
-                      </option>
-                    ))}
-                  </Field>
-                </div>
-                <div>
-                  <label
-                    htmlFor="house"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    House
-                  </label>
-                  <Field
-                    as="select"
-                    name="house"
-                    placeholder="Select House"
-                    disabled={values.package == ""}
-                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  >
-                    <option value="">Select House</option>
-                    {AllHouses.map((item) => (
-                      <option key={item.roomId} value={item.roomId}>
-                        {item.roomName}
-                      </option>
-                    ))}
-                  </Field>
-                </div>
+                    <label
+                      htmlFor="arrivalLocation"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Arrival Location
+                    </label>
+                    <Field
+                      as="select"
+                      name="arrivalLocation"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      onChange={(e) => {
+                        setFieldValue("arrivalLocation", e.target.value);
+                      }}
+                    >
+                      <option value="">Select</option>
+                      <option value="hyderabad">Hyderabad</option>
+                      <option value="warangal">Warangal</option>
+                      <option value="karimnagar">Karimnagar</option>
+                      <option value="nizamabad">Nizamabad</option>
+                      <option value="adilabad">Adilabad</option>
+                      <option value="khammam">Khammam</option>
+                      <option value="medak">Medak</option>
+                      <option value="rangareddy">Rangareddy</option>
+                      <option value="nalgonda">Nalgonda</option>
+                      <option value="mahabubnagar">Mahabubnagar</option>
+                      <option value="siddipet">Siddipet</option>
+                      <option value="yadadri">Yadadri</option>
+                      <option value="suryapet">Suryapet</option>
+                      <option value="jagtial">Jagtial</option>
+                      <option value="rajanna">Rajanna</option>
+                      <option value="peddapalli">Peddapalli</option>
+                      <option value="jayashankar">Jayashankar</option>
+                      <option value="bhupalpally">Bhupalpally</option>
+                      <option value="mulugu">Mulugu</option>
+                      <option value="bhadradri">Bhadradri</option>
+                      <option value="ashwaraopet">Ashwaraopet</option>
+                      <option value="kothagudem">Kothagudem</option>
+                      <option value="mancherial">Mancherial</option>
+                      <option value="komaram">Komaram</option>
+                      <option value="kumuram">Kumuram</option>
+                      <option value="other">Other</option>
+                    </Field>
+                  </div>
+
+                  {/* Departure Location */}
+                  <div>
+                    <label
+                      htmlFor="departureLocation"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Departure Location
+                    </label>
+                    <Field
+                      as="select"
+                      name="departureLocation"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      onChange={(e) => {
+                        setFieldValue("departureLocation", e.target.value);
+                      }}
+                    >
+                      <option value="">Select</option>
+                      <option value="hyderabad">Hyderabad</option>
+                      <option value="warangal">Warangal</option>
+                      <option value="karimnagar">Karimnagar</option>
+                      <option value="nizamabad">Nizamabad</option>
+                      <option value="adilabad">Adilabad</option>
+                      <option value="khammam">Khammam</option>
+                      <option value="medak">Medak</option>
+                      <option value="rangareddy">Rangareddy</option>
+                      <option value="nalgonda">Nalgonda</option>
+                      <option value="mahabubnagar">Mahabubnagar</option>
+                      <option value="siddipet">Siddipet</option>
+                      <option value="yadadri">Yadadri</option>
+                      <option value="suryapet">Suryapet</option>
+                      <option value="jagtial">Jagtial</option>
+                      <option value="rajanna">Rajanna</option>
+                      <option value="peddapalli">Peddapalli</option>
+                      <option value="jayashankar">Jayashankar</option>
+                      <option value="bhupalpally">Bhupalpally</option>
+                      <option value="mulugu">Mulugu</option>
+                      <option value="bhadradri">Bhadradri</option>
+                      <option value="ashwaraopet">Ashwaraopet</option>
+                      <option value="kothagudem">Kothagudem</option>
+                      <option value="mancherial">Mancherial</option>
+                      <option value="komaram">Komaram</option>
+                      <option value="kumuram">Kumuram</option>
+                      <option value="other">Other</option>
+                    </Field>
+                  </div>
+                    {/* <div>
+                      <label
+                        htmlFor="busType"
+                        className="block text-xs font-medium text-gray-700"
+                      >
+                        Bus Type
+                      </label>
+                    </div> */}
                 <div>
                   <label
                     htmlFor="mobileNumber"
@@ -220,7 +269,7 @@ const IntercityFailedGateway = () => {
                         mobileNumber: "",
                       });
                       resetInnerFilters();
-                      fetchGateWayPieChart({
+                      fetchPaymentFailedGateway({
                         fromDate: startOfDay,
                         toDate: endOfDay,
                         mobileNumber: "",
@@ -239,13 +288,13 @@ const IntercityFailedGateway = () => {
               <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
                
 
-                {isPaymentGatewayPieChartLoading && (
+                {isPaymentFailedGatewayLoading && (
                   <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                     <div className="loader"></div>
                   </div>
                 )}
                 <IntercityFailedGatewayChart
-                  data={PaymentGatewayPieChartData || []}
+                  data={paymentFailedGateway || []}
                   title="Failed (Payment Gateway)"
                   angleKey="reasonCount"
                   calloutLabelKey="failureReason"

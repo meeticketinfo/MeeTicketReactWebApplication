@@ -13,20 +13,26 @@ import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityNotGeneratedChart from "../../charts/IntercityNotGenerateChart";
     
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 const IntercityNotGenerated = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const packageName = searchParams.get("package");
-  const house = searchParams.get("house");
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
   const subCategory = searchParams.get("subCategory");
-  
+  const status = searchParams.get("status");
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-    AmarabadTotalCommonStore();
+
+  console.log("searchParams", searchParams);
+  const {
+    outerFilters,
+    innerFilters,
+    setDeepInnerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+  } = IntercityTotalCommonStore();
 
   const {
     fetchPaymentsuccessButTicketNotGenerated,
@@ -55,7 +61,7 @@ const IntercityNotGenerated = () => {
     departureLocation: innerFilters.departureLocation ?? "",
   };
   const onSubmit = (values) => {
-    setInnerFilters({
+    setDeepInnerFilters({
       ...values,
       subCategory: subCategory ?? innerFilters.subCategory ?? "",
     });
@@ -66,7 +72,7 @@ const IntercityNotGenerated = () => {
     {
       label: "Total Transactions Report",
       path: `/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`,
-      onclick: () => resetInnerFilters(),
+      // onclick: () => resetInnerFilters(),
     },
     {
       label: "Ticket Not Generated Transactions Report",
@@ -89,7 +95,7 @@ const IntercityNotGenerated = () => {
               to={`/intercity-total-transaction?&mobileNumber=${mobileNumber ?? ""}&fromDate=${fromDate ?? ""}&toDate=${toDate ?? ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
-                resetInnerFilters();
+                resetDeepInnerFilters();
               }}
             >
               Back
@@ -159,8 +165,7 @@ const IntercityNotGenerated = () => {
                     />
                   </div>
 
-                  {/* Arrival Location */}
-                  <div>
+                 <div>
                     <label
                       htmlFor="arrivalLocation"
                       className="block text-xs font-medium text-gray-700"
@@ -249,7 +254,8 @@ const IntercityNotGenerated = () => {
                       <option value="kumuram">Kumuram</option>
                       <option value="other">Other</option>
                     </Field>
-                  </div>
+                  </div>      {/* Arrival Location */}
+             
 
                   <div className="flex items-end gap-2">
                     <button
@@ -266,19 +272,15 @@ const IntercityNotGenerated = () => {
                         setValues({
                           fromDate: startOfDay,
                           toDate: endOfDay,
-                          package: "",
-                          house: "",
                           mobileNumber: "",
                           arrivalLocation: "",
                           departureLocation: "",
                         });
-                        resetInnerFilters();
+                        resetDeepInnerFilters();
                         fetchPaymentsuccessButTicketNotGenerated({
                           fromDate: startOfDay,
                           toDate: endOfDay,
                           mobileNumber: "",
-                          package: "",
-                          house: "",
                           arrivalLocation: "",
                           departureLocation: "",
                         });

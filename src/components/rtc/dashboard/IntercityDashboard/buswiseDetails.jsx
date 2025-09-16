@@ -2,115 +2,123 @@ import React, { useState } from "react";
 import { FaBus } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
+import { IoTicketSharp } from "react-icons/io5";
+import CountUp from "react-countup";
 
-const BuswiseDetails = () => {
+const BuswiseDetails = ({ intercityDashboard }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Sample data for bus services - replace with actual data from your store
-  const busServices = [
-    {
-      name: "Garuda Plus",
-      totalTickets: 6543,
-      adults: 4321,
-      children: 2222,
-      totalAmount: 1234560
-    },
-    {
-      name: "Rajadhani",
-      totalTickets: 7123,
-      adults: 4782,
-      children: 2341,
-      totalAmount: 1398765
-    },
-    {
-      name: "Super Luxury",
-      totalTickets: 8876,
-      adults: 5984,
-      children: 2892,
-      totalAmount: 1776540
-    },
-    {
-      name: "Deluxe",
-      totalTickets: 5432,
-      adults: 3654,
-      children: 1778,
-      totalAmount: 1087650
-    },
-    {
-      name: "Express",
-      totalTickets: 987,
-      adults: 669,
-      children: 318,
-      totalAmount: 193456
-    },
-    {
-      name: "Indra",
-      totalTickets: 1432,
-      adults: 970,
-      children: 462,
-      totalAmount: 281234
-    },
-    {
-      name: "Garuda",
-      totalTickets: 765,
-      adults: 518,
-      children: 247,
-      totalAmount: 150123
-    },
-    {
-      name: "Vennela",
-      totalTickets: 2543,
-      adults: 1723,
-      children: 820,
-      totalAmount: 498765
-    }
-  ];
-  const filteredServices = busServices.filter(service =>
-    service.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const BusServiceCard = ({ service }) => (
-    <div className="bg-white rounded-xl shadow-md p-3  transition-shadow duration-200 border border-gray-200">
-      {/* Header with bus icon and service name */}
-      <div className="flex items-center gap-3 mb-0">
-        <div className="text-2xl text-blue-600">
-          <FaBus />
+  // BusTypeSummary Component
+  const BusTypeCard = ({ data }) => (
+    <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+      {/* Header with bus icon and bus type name */}
+      <div className="flex items-center gap-1 mb-3">
+        <div className="w-10 h-10 bg-[#EFF6FF] rounded-lg flex items-center justify-center">
+          <FaBus className="text-2xl text-blue-600" />
         </div>
-        <h3 className="text-lg font-bold text-gray-800">{service.name}</h3>
+        <h3 className="text-base font-semibold text-gray-800">
+          {data.busType}
+        </h3>
       </div>
       
-      {/* Total Tickets */}
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-gray-600">Total Tickets</span>
-        <span className="text-xl font-bold text-gray-800">{service.totalTickets.toLocaleString()}</span>
+      {/* Total Bookings */}
+      <div className="flex justify-between items-center mb-0 pb-1 pt-1 border-b border-t border-gray-200">
+        <span className="text-sm text-gray-600 font-normal">Total Bookings</span>
+        <span className="text-xl font-bold text-gray-800">
+          <CountUp end={data.totalBookings || 0} duration={2} separator="," />
+        </span>
+      </div>
+      <div className="flex justify-between items-center mb-0 pb-0 pt-2 border-gray-200">
+        <div className="flex items-center gap-2">
+          <IoTicketSharp className="w-4 h-4 text-gray-400" />
+          <span className="text-sm text-gray-600 font-normal">Total Tickets</span>
+        </div>
+        <span className="text-xl font-bold text-gray-800">
+          <CountUp end={data.totalTickets || 0} duration={2} separator="," />
+        </span>
       </div>
       
-      {/* Adults & Children Breakdown */}
-      <div className="flex gap-3 mb-0">
-        <div className="flex-1 bg-blue-50 rounded-lg p-3 text-center">
-          <div className="text-xs text-gray-600 mb-1">Adults</div>
-          <div className="text-lg font-bold text-blue-600">{service.adults.toLocaleString()}</div>
+      {/* Male/Female breakdown for tickets */}
+      <div className="flex gap-2 mb-0 pb-2 border-gray-200">
+        <div className="flex-1 bg-[#EFF6FF] flex justify-between rounded-lg px-3 py-1.5 items-center">
+          <span className="text-xs text-blue-600 font-normal">Male</span>
+          <span className="text-sm font-bold text-blue-600 ml-1">
+            <CountUp end={data.malePassengers || 0} duration={2} separator="," />
+          </span>
         </div>
-        <div className="flex-1 bg-green-50 rounded-lg p-3 text-center">
-          <div className="text-xs text-gray-600 mb-1">Children</div>
-          <div className="text-lg font-bold text-green-600">{service.children.toLocaleString()}</div>
+        <div className="flex-1 bg-[#EFF6FF] flex justify-between rounded-lg px-3 py-1.5 items-center">
+          <span className="text-xs text-green-600 font-normal">Female</span>
+          <span className="text-sm text-green-500 ml-1">
+            <CountUp end={data.femalePassengers || 0} duration={2} separator="," />
+          </span>
         </div>
       </div>
       
-      {/* Total Amount */}
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Total Amount</span>
-        <div className="flex items-center gap-1">
-          <FaIndianRupeeSign className="text-green-600 text-sm" />
-          <span className="text-xl font-bold text-green-600">{service.totalAmount.toLocaleString()}</span>
+      {/* Total Cancelled */}
+      <div className="flex justify-between items-center mb-0 pb-0 pt-1 border-gray-200">
+        <div className="flex items-center gap-2">
+          <IoTicketSharp className="w-4 h-4 text-gray-400" />
+          <span className="text-sm text-gray-600 font-normal">Total Cancelled</span>
+        </div>
+        <span className="text-xl font-bold text-gray-800">
+          <CountUp end={data.totalCancelledSeats || 0} duration={2} separator="," />
+        </span>
+      </div>
+      
+      {/* Male/Female breakdown for cancelled */}
+      <div className="flex gap-2 mb-2 pb-2 border-gray-200 border-b">
+        <div className="flex-1 bg-[#EFF6FF] flex justify-between rounded-lg px-3 py-1.5 items-center">
+          <span className="text-xs text-blue-600 font-normal">Male</span>
+          <span className="text-sm font-bold text-blue-600 ml-1">
+            <CountUp end={data.cancelledMale || 0} duration={2} separator="," />
+          </span>
+        </div>
+        <div className="flex-1 bg-[#EFF6FF] flex justify-between rounded-lg px-3 py-1.5 items-center">
+          <span className="text-xs text-green-600 font-normal">Female</span>
+          <span className="text-sm font-bold text-green-600 ml-1">
+            <CountUp end={data.cancelledFemale || 0} duration={2} separator="," />
+          </span>
+        </div>
+      </div>
+      
+      {/* Financial Information */}
+      <div className="space-y-2 mb-0">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600 font-normal">₹ Total Credited Amount</span>
+          <span className="text-lg text-green-500">
+            ₹<CountUp end={data.totalCreditedAmount || 0} duration={2} separator="," />
+          </span>
+        </div>
+        
+        {/* Current Amount */}
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600 font-normal">₹ Current Amount</span>
+          <span className="text-lg  text-green-600">
+            ₹<CountUp end={data.totalCurrentAmount || 0} duration={2} separator="," />
+          </span>
+        </div>
+        
+        {/* Refunded Amount */}
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600 font-normal">₹ Refunded Amount</span>
+          <span className="text-lg text-green-600">
+            ₹<CountUp end={data.totalRefundedAmount || 0} duration={2} separator="," />
+          </span>
         </div>
       </div>
     </div>
   );
 
+
+  // Filter bus type summary data based on search query
+  const filteredBusTypes = intercityDashboard?.busTypeSummary?.filter(busType =>
+    busType.busType?.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
+
   return (
     <div className="w-full">
-      {/* Header Section */}
+
       <div className="bg-[white] rounded-lg shadow-sm p-6 border border-gray-200">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Bus-wise Details</h2>
@@ -131,14 +139,14 @@ const BuswiseDetails = () => {
       </div>
       
       {/* Bus Service Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredServices.map((service, index) => (
-          <BusServiceCard key={index} service={service} />
-        ))}
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+            {filteredBusTypes.map((busType, index) => (
+              <BusTypeCard key={index} data={busType} />
+            ))}
+          </div>
       
       {/* No results message */}
-      {filteredServices.length === 0 && (
+      {filteredBusTypes.length === 0 && (
         <div className="text-center py-8">
           <p className="text-gray-500 text-lg">No bus services found matching your search.</p>
         </div>

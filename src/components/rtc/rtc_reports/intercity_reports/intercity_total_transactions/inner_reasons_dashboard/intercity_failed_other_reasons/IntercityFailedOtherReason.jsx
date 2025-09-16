@@ -1,75 +1,118 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
-// import FailedOtherReasonChart from "../../charts/FailedOtherReasonChart";
-// import { useMetroTotalTransactionsStore } from "../../../../../store/metro_transaction_reports_store/metro_total/MetroTotalTransactionsStore";
 import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
-// import Breadcrumb from "../../../../../../components/Breadcrumb";
 import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedOtherReasonsChart from "../../charts/IntercityFailedOtherReasonsChart";
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
+
 const IntercityFailedOtherReason = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const packageName = searchParams.get("package");
-  const house = searchParams.get("house");
+  const busType = searchParams.get("busType");
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
-  const subCategory = searchParams.get("subCategory");
-  
+  const arrivalLocation = searchParams.get("arrivalLocation");
+  const departureLocation = searchParams.get("departureLocation");
+  const status = searchParams.get("status");
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
-    AmarabadTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+    IntercityTotalCommonStore();
+console.log("innerFilters", outerFilters);
+  const {  getPackages,} = usePackagesStore();
   const {
-    fetchOtherReasonsPieChart,
-    OtherReasonsPieChartData,
-    isOtherReasonsPieChartLoading,
-  } = useAmarabadTotalTransactionStore();
+    fetchPaymentFailedOtherReasons,
+    paymentFailedOtherReasons,
+    isPaymentFailedOtherReasonsLoading,
+  } = useIntercityTotalTransactionStore();
+
+  // Pagination state
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const filtersToUse = {
-    fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    fromDate:
+      fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
     toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-    mobileNumber: mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
-    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    mobileNumber:
+      mobileNumber ??
+      innerFilters.mobileNumber ??
+      outerFilters.mobileNumber ??
+      "",
+    arrivalLocation:
+      arrivalLocation ??
+      innerFilters.arrivalLocation ??
+      outerFilters.arrivalLocation ??
+      "",
+    departureLocation:
+      departureLocation ??
+      innerFilters.departureLocation ??
+      outerFilters.departureLocation ??
+      "",
+    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
   };
 
   useEffect(() => {
-    fetchOtherReasonsPieChart(filtersToUse);
+    fetchPaymentFailedOtherReasons({
+      ...filtersToUse,
+      pageNumber: currentPage + 1,
+      pageSize: PAGE_LIMIT,
+    });
     getPackages();
-  }, [packageName, house, mobileNumber, fromDate, toDate]);
+  }, [arrivalLocation, departureLocation, mobileNumber, fromDate, toDate, currentPage, PAGE_LIMIT]);
 
   const initialValues = {
-    fromDate: fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
+    fromDate:
+      fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
     toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
-    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
-    mobileNumber: mobileNumber ?? innerFilters.mobileNumber ?? outerFilters.mobileNumber ?? "",
+    arrivalLocation:
+      arrivalLocation ??
+      innerFilters.arrivalLocation ??
+      outerFilters.arrivalLocation ??
+      "",
+    departureLocation:
+      departureLocation ??
+      innerFilters.departureLocation ??
+      outerFilters.departureLocation ??
+      "",
+    mobileNumber:
+      mobileNumber ??
+      innerFilters.mobileNumber ??
+      outerFilters.mobileNumber ??
+      "",
+    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters({
       ...values,
-      subCategory: subCategory || innerFilters.subCategory || "",
+      arrivalLocation: arrivalLocation || innerFilters.arrivalLocation || "",
+      departureLocation:
+        departureLocation || innerFilters.departureLocation || "",
     });
-    fetchOtherReasonsPieChart(values);
+    fetchPaymentFailedOtherReasons({
+      ...values,
+      pageNumber: currentPage + 1,
+      pageSize: PAGE_LIMIT,
+    });
   };
 
-  // const totalCount = Array.isArray(OtherReasonsPieChartData)
-  //   ? OtherReasonsPieChartData.reduce((sum, item) => sum + item.count, 0)
-  //   : 0;
   const breadcrumbItems = [
     {
       label: "Total Transactions Report",
-      path: `/amarabad-total-transaction?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`,
+      path: `/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${
+        mobileNumber || ""
+      }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&arrivalLocation=${
+        arrivalLocation || ""
+      }&departureLocation=${departureLocation || ""}&busType=${busType || ""}`,
       onclick: () => resetInnerFilters(),
     },
     {
@@ -92,7 +135,13 @@ const IntercityFailedOtherReason = () => {
           </div>
           <div className="">
             <Link
-              to={`/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}`}
+              to={`/intercity-total-transaction?status=${
+                status ?? ""
+              }&mobileNumber=${mobileNumber || ""}&fromDate=${
+                fromDate || ""
+              }&toDate=${toDate || ""}&arrivalLocation=${
+                arrivalLocation || ""
+              }&departureLocation=${departureLocation || ""}&busType=${busType || ""}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -122,7 +171,9 @@ const IntercityFailedOtherReason = () => {
                       onChange={(e) => {
                         const fromDateValue = e.target.value;
                         setFieldValue("fromDate", fromDateValue);
-                        if (new Date(fromDateValue) > new Date(values.endDate)) {
+                        if (
+                          new Date(fromDateValue) > new Date(values.endDate)
+                        ) {
                           // Automatically update toDate if it's earlier than fromDate
                           setFieldValue("toDate", fromDateValue);
                         }
@@ -149,56 +200,92 @@ const IntercityFailedOtherReason = () => {
                   </div>
                   <div>
                     <label
-                      htmlFor="package"
+                      htmlFor="arrivalLocation"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Packages
+                      Arrival Location
                     </label>
                     <Field
                       as="select"
-                      name="package"
-                      placeholder="Select Package"
+                      name="arrivalLocation"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       onChange={(e) => {
-                        const packageId = e.target.value;
-                        setFieldValue("package", packageId);
-                        if (packageId === "") {
-                          // Clear house when package is unselected
-                          setFieldValue("house", "");
-                        } else {
-                          // Get houses only when package is selected
-                          getHouses(packageId);
-                        }
+                        setFieldValue("arrivalLocation", e.target.value);
                       }}
-                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     >
-                      <option value="">Select Package</option>
-                      {AllPackages.map((item) => (
-                        <option key={item.packageId} value={item.packageId}>
-                          {item.packageName}
-                        </option>
-                      ))}
+                      <option value="">Select</option>
+                      <option value="hyderabad">Hyderabad</option>
+                      <option value="warangal">Warangal</option>
+                      <option value="karimnagar">Karimnagar</option>
+                      <option value="nizamabad">Nizamabad</option>
+                      <option value="adilabad">Adilabad</option>
+                      <option value="khammam">Khammam</option>
+                      <option value="medak">Medak</option>
+                      <option value="rangareddy">Rangareddy</option>
+                      <option value="nalgonda">Nalgonda</option>
+                      <option value="mahabubnagar">Mahabubnagar</option>
+                      <option value="siddipet">Siddipet</option>
+                      <option value="yadadri">Yadadri</option>
+                      <option value="suryapet">Suryapet</option>
+                      <option value="jagtial">Jagtial</option>
+                      <option value="rajanna">Rajanna</option>
+                      <option value="peddapalli">Peddapalli</option>
+                      <option value="jayashankar">Jayashankar</option>
+                      <option value="bhupalpally">Bhupalpally</option>
+                      <option value="mulugu">Mulugu</option>
+                      <option value="bhadradri">Bhadradri</option>
+                      <option value="ashwaraopet">Ashwaraopet</option>
+                      <option value="kothagudem">Kothagudem</option>
+                      <option value="mancherial">Mancherial</option>
+                      <option value="komaram">Komaram</option>
+                      <option value="kumuram">Kumuram</option>
+                      <option value="other">Other</option>
                     </Field>
                   </div>
+
+                  {/* Departure Location */}
                   <div>
                     <label
-                      htmlFor="house"
+                      htmlFor="departureLocation"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      House
+                      Departure Location
                     </label>
                     <Field
                       as="select"
-                      name="house"
-                      placeholder="Select House"
-                      disabled={values.package == ""}
-                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      name="departureLocation"
+                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      onChange={(e) => {
+                        setFieldValue("departureLocation", e.target.value);
+                      }}
                     >
-                      <option value="">Select House</option>
-                      {AllHouses.map((item) => (
-                        <option key={item.roomId} value={item.roomId}>
-                          {item.roomName}
-                        </option>
-                      ))}
+                      <option value="">Select</option>
+                      <option value="hyderabad">Hyderabad</option>
+                      <option value="warangal">Warangal</option>
+                      <option value="karimnagar">Karimnagar</option>
+                      <option value="nizamabad">Nizamabad</option>
+                      <option value="adilabad">Adilabad</option>
+                      <option value="khammam">Khammam</option>
+                      <option value="medak">Medak</option>
+                      <option value="rangareddy">Rangareddy</option>
+                      <option value="nalgonda">Nalgonda</option>
+                      <option value="mahabubnagar">Mahabubnagar</option>
+                      <option value="siddipet">Siddipet</option>
+                      <option value="yadadri">Yadadri</option>
+                      <option value="suryapet">Suryapet</option>
+                      <option value="jagtial">Jagtial</option>
+                      <option value="rajanna">Rajanna</option>
+                      <option value="peddapalli">Peddapalli</option>
+                      <option value="jayashankar">Jayashankar</option>
+                      <option value="bhupalpally">Bhupalpally</option>
+                      <option value="mulugu">Mulugu</option>
+                      <option value="bhadradri">Bhadradri</option>
+                      <option value="ashwaraopet">Ashwaraopet</option>
+                      <option value="kothagudem">Kothagudem</option>
+                      <option value="mancherial">Mancherial</option>
+                      <option value="komaram">Komaram</option>
+                      <option value="kumuram">Kumuram</option>
+                      <option value="other">Other</option>
                     </Field>
                   </div>
                   <div>
@@ -231,14 +318,21 @@ const IntercityFailedOtherReason = () => {
                           fromDate: startOfDay,
                           toDate: endOfDay,
                           mobileNumber: "",
+                          arrivalLocation: "",
+                          departureLocation: "",
+                          busType: "",
                         });
                         resetInnerFilters();
-                        fetchOtherReasonsPieChart({
+                        setCurrentPage(0);
+                        fetchPaymentFailedOtherReasons({
                           fromDate: startOfDay,
                           toDate: endOfDay,
-                          package: "",
-                          house: "",
                           mobileNumber: "",
+                          arrivalLocation: "",
+                          departureLocation: "",
+                          busType: "",
+                          pageNumber: 1,
+                          pageSize: PAGE_LIMIT,
                         });
                       }}
                     >
@@ -250,23 +344,22 @@ const IntercityFailedOtherReason = () => {
                 <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
                   <div className="flex">
                     <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
-                     
-
-                      {false && (
+                      {isPaymentFailedOtherReasonsLoading && (
                         <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                           <div className="loader"></div>
                         </div>
                       )}
                       <IntercityFailedOtherReasonsChart
-                        data={OtherReasonsPieChartData || []}
+                        data={paymentFailedOtherReasons || []}
                         title="Failed Other Reasons"
                         angleKey="subCategoryCount"
                         calloutLabelKey="subCategory"
-                        packageName={values.package}
-                        house={values.house}
-                        mobileNumber={values.mobileNumber}  
+                        arrivalLocation={values.arrivalLocation}
+                        departureLocation={values.departureLocation}
+                        mobileNumber={values.mobileNumber}
                         fromDate={values.fromDate}
                         toDate={values.toDate}
+                        busType={values.busType}
                       />
                     </div>
                   </div>

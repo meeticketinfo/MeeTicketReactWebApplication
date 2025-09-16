@@ -2,6 +2,7 @@ import { Formik, Form, Field } from "formik";
 import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 const IntercityFailedGatewayReportForm = ({
   pageNumber,
@@ -15,12 +16,12 @@ const IntercityFailedGatewayReportForm = ({
   subCategory,
 }) => {
   const {
+    outerFilters,
     innerFilters,
     setDeepInnerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-    outerFilters,
-  } = AmarabadTotalCommonStore();
+  } = IntercityTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
   console.log("outerFilters", innerFilters);
   const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
@@ -59,7 +60,7 @@ const IntercityFailedGatewayReportForm = ({
 
   return (
     <>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+ <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
             <div>
@@ -102,60 +103,7 @@ const IntercityFailedGatewayReportForm = ({
                 }}
               />
             </div>
-            <div>
-              <label
-                htmlFor="package"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Packages
-              </label>
-              <Field
-                as="select"
-                name="package"
-                placeholder="Select Package"
-                onChange={(e) => {
-                  const packageId = e.target.value;
-                  setFieldValue("package", packageId);
-                  if (packageId === "") {
-                    // Clear house when package is unselected
-                    setFieldValue("house", "");
-                  } else {
-                    // Get houses only when package is selected
-                    getHouses(packageId);
-                  }
-                }}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select Package</option>
-                {AllPackages.map((item) => (
-                  <option key={item.packageId} value={item.packageId}>
-                    {item.packageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="house"
-                className="block text-xs font-medium text-gray-700"
-              >
-                House
-              </label>
-              <Field
-                as="select"
-                name="house"
-                placeholder="Select House"
-                disabled={values.package == ""}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select House</option>
-                {AllHouses.map((item) => (
-                  <option key={item.roomId} value={item.roomId}>
-                    {item.roomName}
-                  </option>
-                ))}
-              </Field>
-            </div>
+
             {/* mobile number */}
             <div>
               <label
@@ -181,6 +129,55 @@ const IntercityFailedGatewayReportForm = ({
               />
             </div>
             {/*Payment Mode */}
+
+            <div>
+              <label
+                htmlFor="arrivalLocation"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Arrival Location
+              </label>
+              <Field
+                as="select"
+                name="arrivalLocation"
+                placeholder="Select Arrival Location"
+                onChange={(e) => {
+                  const arrivalLocationId = e.target.value;
+                        getArrivalLocations(arrivalLocationId);
+                  setFieldValue("arrivalLocation", arrivalLocationId);
+                }}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select Arrival Location</option>
+                {/* {AllArrivalLocations.map((item) => (
+                  <option key={item.arrivalLocationId} value={item.arrivalLocationId}>
+                        {item.arrivalLocationName}
+                  </option>
+                ))} */}
+              </Field>
+            </div>
+            <div>
+              <label
+                htmlFor="departureLocation"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Departure Location
+              </label>
+              <Field
+                as="select"
+                name="departureLocation"
+                placeholder="Select Departure Location"
+                disabled={!values.arrivalLocation || values.arrivalLocation === ""}
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select Departure Location</option>
+                {/* {AllDepartureLocations.map((item) => (
+                  <option key={item.departureLocationId} value={item.departureLocationId}>
+                    {item.departureLocationName}
+                  </option>
+                ))} */}
+              </Field>
+            </div>
             <div>
               <label
                 htmlFor="PaymentMode"
@@ -203,6 +200,7 @@ const IntercityFailedGatewayReportForm = ({
                 <option value="netBanking">Net Banking</option>
               </Field>
             </div>
+
             <div className="flex items-end">
               <button
                 type="submit"

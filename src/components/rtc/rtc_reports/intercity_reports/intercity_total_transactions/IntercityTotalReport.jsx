@@ -9,6 +9,7 @@ import AgGridTable from "../../../../tables/AgGridTable";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 import { useIntercityTotalTransactionStore } from "./store/IntercityTotalTransactionStore";
+import IntercityTotalTransactionForm from "./outer_report/intercityTotalTransactionForm";
 // import IntercityTotalTransactionForm from "./outer_report/intercityTotalTransactionForm";
 
 const InetercityTotalReport = () => {
@@ -135,16 +136,23 @@ const InetercityTotalReport = () => {
       valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,
     },
     {
+      field: "ticketQuantity",
+      headerName: "Ticket Quantity",
+      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
         field: "departureLocation",
         headerName: "Departure Location",
-        maxWidth: "120",
+        // maxWidth: "120",
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "N/A",
       },
     {
       field: "arrivalLocation",
       headerName: "Arrival Location",
-      maxWidth: "120",
+      // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -240,11 +248,11 @@ const InetercityTotalReport = () => {
         </div>
 
         <div>
-          {/* <IntercityTotalTransactionForm
+          <IntercityTotalTransactionForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
-          /> */}
+          />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={totalTransactionsReport}

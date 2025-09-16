@@ -50,13 +50,18 @@ const RtcNotGeneratedReportForm = ({
     }
 
     console.log("values", values);
-     setDeepInnerFilters(values)
-     fetchRtcTotalTransactions({
+    setDeepInnerFilters(values);
+    
+    // Ensure pageNumber and pageSize have default values if undefined
+    const currentPageNumber = pageNumber || 1;
+    const currentPageSize = pageSize || 20;
+    
+    fetchRtcTotalTransactions({
       ...values,
       status: innerFilters.status,
-      subCategory:innerFilters.subCategory,
-      pageNumber: pageNumber,
-      pageSize: pageSize,
+      subCategory: innerFilters.subCategory,
+      pageNumber: currentPageNumber,
+      pageSize: currentPageSize,
     });
     SetcurrentPage(0);
   };

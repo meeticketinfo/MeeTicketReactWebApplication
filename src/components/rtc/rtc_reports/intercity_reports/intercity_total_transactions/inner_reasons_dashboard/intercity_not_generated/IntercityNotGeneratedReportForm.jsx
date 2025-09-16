@@ -1,12 +1,11 @@
 import { Formik, Form, Field } from "formik";
-import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
-
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 const IntercityNotGeneratedReportForm = ({
   pageNumber,
   pageSize,
-  SetcurrentPage, 
+  SetcurrentPage,
   packageName,
   house,
   mobileNumber,
@@ -14,24 +13,31 @@ const IntercityNotGeneratedReportForm = ({
   toDate,
   subCategory,
 }) => {
-   const { innerFilters,setDeepInnerFilters,deepInnerFilters,resetDeepInnerFilters } = useAmrabadTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
+  const { fetchTotalTransactionsReport } = useIntercityTotalTransactionStore();
+  const {
+    innerFilters,
+    setDeepInnerFilters,
+    deepInnerFilters,
+    resetDeepInnerFilters,
+  } = IntercityTotalCommonStore();
+
   const initialValues = {
-        startDate: fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
+    startDate:
+      fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
     endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
-    phoneNumber: mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode??"",
-    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+    phoneNumber:
+      mobileNumber ??
+      deepInnerFilters.mobileNumber ??
+      innerFilters.mobileNumber ??
+      "",
     arrivalLocation: deepInnerFilters.arrivalLocation ?? "",
     departureLocation: deepInnerFilters.departureLocation ?? "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
-     setDeepInnerFilters(values)
-      fetchAmrabadTotalTransactions({
+    setDeepInnerFilters(values);
+    fetchTotalTransactionsReport({
       ...values,
       status: innerFilters.status,
       subCategory: subCategory ?? innerFilters.subCategory,
@@ -111,7 +117,7 @@ const IntercityNotGeneratedReportForm = ({
                 }}
               />
             </div>
-        
+
             {/* Arrival Location */}
             <div>
               <label

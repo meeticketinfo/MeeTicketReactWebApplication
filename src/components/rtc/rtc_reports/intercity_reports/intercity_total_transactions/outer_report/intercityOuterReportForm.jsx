@@ -11,6 +11,7 @@ import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_tra
 import IntercityTotalTransactionChart from "../charts/IntercityTotalTransactionChart";
 
 import { useIntercityTotalTransactionStore } from "../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 const IntercityOuterReportForm = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -20,7 +21,7 @@ const IntercityOuterReportForm = () => {
     outerFilters,
     resetOuterFilters,
     setInnerFilters,
-  } = AmarabadTotalCommonStore();
+  } = IntercityTotalCommonStore();
 
   const {
     fetchIntercityTotalTransactions,
@@ -73,7 +74,7 @@ const IntercityOuterReportForm = () => {
       arrivalLocation: values.arrivalLocation || "",
       mobileNumber: values.mobileNumber || "",
     };
-    
+    console.log("sanitizedValues", sanitizedValues);
     setOuterFilters(sanitizedValues);
     setInnerFilters(sanitizedValues);
     fetchIntercityTotalTransactions(sanitizedValues);

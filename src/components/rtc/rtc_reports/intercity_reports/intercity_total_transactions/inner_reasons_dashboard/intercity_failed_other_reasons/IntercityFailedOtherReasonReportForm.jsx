@@ -1,29 +1,30 @@
 import { Formik, Form, Field } from "formik";
-import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
+import useIntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 
 const IntercityFailedOtherReasonReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
-  packageName,
-  house,
   mobileNumber,
   fromDate,
   toDate,
-  subCategory,
+  arrivalLocation,
+  departureLocation,
+  busType,
+  status,
 }) => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const { innerFilters, setDeepInnerFilters, deepInnerFilters } =
-    useAmrabadTotalCommonStore();
-  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
+  const { innerFilters, setDeepInnerFilters, deepInnerFilters, outerFilters } =
+    useIntercityTotalCommonStore();
+  const { fetchTotalTransactionsReport } = useIntercityTotalTransactionStore();
+  const { AllArrivalLocations, getArrivalLocations, AllDepartureLocations, getDepartureLocations } = usePackagesStore();
   const initialValues = {
     startDate:
       fromDate ??
@@ -37,18 +38,27 @@ const IntercityFailedOtherReasonReportForm = ({
       deepInnerFilters.mobileNumber ??
       innerFilters.mobileNumber ??
       "",
-    package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-    house: house ?? innerFilters.house ?? outerFilters.house ?? "",
-    PaymentMode: deepInnerFilters.PaymentMode ?? "",
+    arrivalLocation:
+      arrivalLocation ??
+      innerFilters.arrivalLocation ??
+      outerFilters.arrivalLocation ??
+      "",
+    departureLocation:
+      departureLocation ??
+      innerFilters.departureLocation ??
+      outerFilters.departureLocation ??
+      "",
+    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
   };
 
   const onSubmit = (values) => {
-    console.log("values", values);
     setDeepInnerFilters(values);
-    fetchAmrabadTotalTransactions({
+    fetchTotalTransactionsReport({
       ...values,
-      status: innerFilters.status,
-      subCategory: subCategory ?? innerFilters.subCategory,
+      status: status ?? innerFilters.status,
+      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation,
+      departureLocation: departureLocation ?? innerFilters.departureLocation,
+      busType: busType ?? innerFilters.busType,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -129,50 +139,50 @@ const IntercityFailedOtherReasonReportForm = ({
 
             <div>
               <label
-                htmlFor="package"
+                htmlFor="arrivalLocation"
                 className="block text-xs font-medium text-gray-700"
               >
-                Packages
+                Arrival Location
               </label>
               <Field
                 as="select"
-                name="package"
-                placeholder="Select Package"
+                name="arrivalLocation"
+                placeholder="Select Arrival Location"
                 onChange={(e) => {
-                  const packageId = e.target.value;
-                  getHouses(packageId);
-                  setFieldValue("package", packageId);
+                  const arrivalLocationId = e.target.value;
+                        getArrivalLocations(arrivalLocationId);
+                  setFieldValue("arrivalLocation", arrivalLocationId);
                 }}
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">Select Package</option>
-                {AllPackages.map((item) => (
-                  <option key={item.packageId} value={item.packageId}>
-                    {item.packageName}
+                <option value="">Select Arrival Location</option>
+                {/* {AllArrivalLocations.map((item) => (
+                  <option key={item.arrivalLocationId} value={item.arrivalLocationId}>
+                        {item.arrivalLocationName}
                   </option>
-                ))}
+                ))} */}
               </Field>
             </div>
             <div>
               <label
-                htmlFor="house"
+                htmlFor="departureLocation"
                 className="block text-xs font-medium text-gray-700"
               >
-                House
+                Departure Location
               </label>
               <Field
                 as="select"
-                name="house"
-                placeholder="Select House"
-                disabled={!values.package || values.package === ""}
+                name="departureLocation"
+                placeholder="Select Departure Location"
+                disabled={!values.arrivalLocation || values.arrivalLocation === ""}
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">Select House</option>
-                {AllHouses.map((item) => (
-                  <option key={item.roomId} value={item.roomId}>
-                    {item.roomName}
+                <option value="">Select Departure Location</option>
+                {/* {AllDepartureLocations.map((item) => (
+                  <option key={item.departureLocationId} value={item.departureLocationId}>
+                    {item.departureLocationName}
                   </option>
-                ))}
+                ))} */}
               </Field>
             </div>
             <div>
