@@ -184,9 +184,8 @@ import IntercityUserReport from "../components/rtc/rtc_reports/intercity_reports
 import IntercityUserDetailedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserDetailedReport";
 import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserTrackOrder";
 import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
-import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
+import IntercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/IntercityTotalReport";
 import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
-
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 
@@ -919,7 +918,7 @@ export const routes = [
   },
   {
     path: "/intercity-total-report",
-    element: <ProtectedRoute element={<InetercityTotalReport/>} />,
+    element: <ProtectedRoute element={<IntercityTotalReport/>} />,
   },
   {
     path: "/intercity-refund-report",
