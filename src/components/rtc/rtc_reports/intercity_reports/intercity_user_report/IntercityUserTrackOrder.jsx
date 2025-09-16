@@ -6,7 +6,7 @@ import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
@@ -35,8 +35,8 @@ const IntercityUserTrackOrder = () => {
   const location = useLocation();
   const { orderId, mobileNo, typeOfBusPass, houseNames, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const userBusPassReportSearchParams = localStorage.getItem("userBusPassReportSearchParams");
-  const userDetailedBusPassReportSearchParams = localStorage.getItem("userDetailedBusPassReportSearchParams");
+  const userIntercityReportSearchParams = localStorage.getItem("userIntercityReportSearchParams");
+  const userDetailedIntercityReportSearchParams = localStorage.getItem("userDetailedIntercityReportSearchParams");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
@@ -56,10 +56,10 @@ const IntercityUserTrackOrder = () => {
     }
   };
   const {
-    fetchRtcTransactionTrackingStatusByOrderId,
-    RtcTransactionTrackingStatusByOrderIdData,
-    isFetchRtcTransactionTrackingStatusByOrderId,
-  } = useBusPassTotalTransactionStore();
+    fetchIntercityTransactionTrackingStatusByOrderId,
+    IntercityTransactionTrackingStatusByOrderIdData,
+    isFetchIntercityTransactionTrackingStatusByOrderId,
+  } = useIntercityUserStore();
   const [columnDefs] = useState([
     {
       field: "sno",
@@ -119,17 +119,17 @@ const IntercityUserTrackOrder = () => {
   ]);
 
   useEffect(() => {
-    fetchRtcTransactionTrackingStatusByOrderId(orderId);
+    fetchIntercityTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
   const breadcrumbItems = [
     {
       label: 'User Report',
-      path: `/bus-pass-user-report?${userBusPassReportSearchParams}`
+      path: `/intercity-user-report?${userIntercityReportSearchParams}`
     },
     {
       label: 'User Detailed Report',
-      path: `/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`
+      path: `/intercity-user-detailed-report?${userDetailedIntercityReportSearchParams}`
     },
     {
       label: 'User Transaction Order Tracking Report',
@@ -150,7 +150,7 @@ const IntercityUserTrackOrder = () => {
             </div>
             <div className="">
               <Link
-                to={`/intercity-user-detailed-report?${userDetailedBusPassReportSearchParams}`}
+                to={`/intercity-user-detailed-report?${userDetailedIntercityReportSearchParams}`}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -207,9 +207,9 @@ const IntercityUserTrackOrder = () => {
             <AgGridTable
               showSearch={false}
               ExportName="UserStatusTransactionReport"
-              rowData={RtcTransactionTrackingStatusByOrderIdData}
+              rowData={IntercityTransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchRtcTransactionTrackingStatusByOrderId}
+              isFetchLoading={isFetchIntercityTransactionTrackingStatusByOrderId}
             />
           </div>
         </div>

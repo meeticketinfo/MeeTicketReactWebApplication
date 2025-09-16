@@ -3,44 +3,46 @@ import { superballs } from "ldrs";
 import { useSearchParams } from "react-router-dom";
 import IntercityRefundTransactionsChart from "../../../bus_pass_reports/buspass_refund/charts/IntercityRefundTransactionsChart.jsx";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../utils/Helper";
-import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
 import IntercityRefundOuterReportForm from "./IntercityRefundOuterReportForm.jsx";
+import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore.jsx";
 
 function IntercityRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
   const {
-  isFetchBusPassRefundTransactionsReport,
-  refundBusPassTransactionsReport,
-  fetchBusPassRefundTransactionsReport
-  } = useRtcRefundStore();
+  isFetchIntercityRefundTransactionsReport,
+  refundIntercityTransactionsReport,
+  fetchIntercityRefundTransactionsReport
+  } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
-    const preservedParams = localStorage.getItem("busPassRefundInnerTransactionSearchParams");
+    const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
     if (preservedParams && !searchParams.toString()) {
       const urlParams = new URLSearchParams(preservedParams);
       const payload = {
         fromDate: cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(urlParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: urlParams.get("mobileNumber") || "",
-        BusPassType: urlParams.get("BusPassType") || "",
+        destinationLocation: urlParams.get("destinationLocation") || "",
+        arrivalLocation: urlParams.get("arrivalLocation") || "",
       };
-      fetchBusPassRefundTransactionsReport(payload);
+      fetchIntercityRefundTransactionsReport(payload);
     } else {
       const payload = {
         fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: searchParams.get("mobileNumber") || "",
-        BusPassType: searchParams.get("BusPassType") || "",
+        destinationLocation: searchParams.get("destinationLocation") || "",
+        arrivalLocation: searchParams.get("arrivalLocation") || "",
       };
-      fetchBusPassRefundTransactionsReport(payload);
+      fetchIntercityRefundTransactionsReport(payload);
     }
   }, []);
 
   const totalCount =
-    refundBusPassTransactionsReport?.reduce(
+    refundIntercityTransactionsReport?.reduce(
       (sum, item) => sum + item.count,
       0
     ) || 0;
@@ -60,14 +62,14 @@ function IntercityRefundTransactions() {
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}
 
-              {isFetchBusPassRefundTransactionsReport && (
+              {isFetchIntercityRefundTransactionsReport && (
                 <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                   <div className="loader"></div>
                 </div>
               )}
               <IntercityRefundTransactionsChart
-                data={totalCount !== 0 ? refundBusPassTransactionsReport : []}
-                // data={refundBusPassTransactionsReport}
+                data={totalCount !== 0 ? refundIntercityTransactionsReport : []}
+                // data={refundIntercityTransactionsReport}
                 title="Payment success & Ticket Not Generated"
                 angleKey="count"
                 calloutLabelKey="status"

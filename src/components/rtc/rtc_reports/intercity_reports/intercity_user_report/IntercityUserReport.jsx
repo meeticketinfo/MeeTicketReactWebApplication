@@ -4,17 +4,17 @@ import IntercityUserReportForm from "./IntercityUserReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
+import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const {
-    isBusPassUserReportsLoading,
-    allBusPassUserReports,
-    fetchBusPassUserReports,
-  } = useBuspassUserStore();
+    isIntercityUserReportsLoading,
+    allIntercityUserReports,
+    fetchIntercityUserReports,
+  } = useIntercityUserStore();
   const [currentPage, setCurrentPage] = useState(0);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
@@ -28,7 +28,7 @@ const IntercityUserReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "login_MobilNumber",
+      field: "login_MobileNumber",
       // maxWidth: 120,
       flex: 1,
       headerName: "Mobile Number",
@@ -73,11 +73,11 @@ const IntercityUserReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/intercity-user-detailed-report?mobileNo=${params.data.login_MobilNumber
+          to={`/intercity-user-detailed-report?MobileNumber=${params.data.login_MobilNumber
             }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
             }`}
           onClick={() => {
-            localStorage.setItem("userAmrabadReportSearchParams", `mobileNo=${searchParams.get("mobileNo") ? params.data.login_MobilNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+            localStorage.setItem("userAmrabadReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobilNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
 
           }}
         >
@@ -89,10 +89,10 @@ const IntercityUserReport = () => {
   ]
 
   const loadUserReport = (page = 0) => {
-    fetchBusPassUserReports({
+    fetchIntercityUserReports({
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNo: searchParams.get("mobileNo") || "",
+      MobileNumber: searchParams.get("MobileNumber") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -116,21 +116,21 @@ const IntercityUserReport = () => {
             </h1>
           </div>
         </div>
-                <IntercityUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
+        <IntercityUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
         <div>
           <AgGridTable
             ExportName="IntercityUserReport"
-            rowData={allBusPassUserReports}
+            rowData={allIntercityUserReports}
             columnDefs={columnDefs}
-            isFetchLoading={isBusPassUserReportsLoading}
+            isFetchLoading={isIntercityUserReportsLoading}
             isPagination={false}
-            tableHeight={allBusPassUserReports?.length > 10 ? 560 : 330}
+            tableHeight={allIntercityUserReports?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={allBusPassUserReports?.[0]?.totalCount}
+            totalCount={allIntercityUserReports?.[0]?.totalCount}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
             showSearch={false}
