@@ -99,14 +99,14 @@ const IntercityNotGeneratedReportForm = ({
                 htmlFor="phoneNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Phone Number
+                Mobile No
               </label>
               <Field
                 type="text"
                 maxLength="10"
                 name="phoneNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
+                placeholder="Enter Mobile No"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) {
                     e.preventDefault(); // Prevent non-numeric characters

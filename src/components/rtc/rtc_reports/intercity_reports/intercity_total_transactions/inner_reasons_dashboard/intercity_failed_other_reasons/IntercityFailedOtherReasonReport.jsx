@@ -13,8 +13,6 @@ import {
 } from "../../../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
-import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
-import useAmrabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 const IntercityFailedOtherReasonReport = () => {
   const location = useLocation();
@@ -34,7 +32,6 @@ const IntercityFailedOtherReasonReport = () => {
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-    resetInnerFilters
   } = AmarabadTotalCommonStore();
   const {
     fetchTotalTransactionsReport,
@@ -72,7 +69,23 @@ const IntercityFailedOtherReasonReport = () => {
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-  }, [PAGE_LIMIT, currentPage]);
+  }, [PAGE_LIMIT,
+    currentPage,
+    deepInnerFilters.fromDate,
+    deepInnerFilters.toDate,
+    deepInnerFilters.mobileNumber,
+    deepInnerFilters.BusPassType,
+    deepInnerFilters.departureLocation,
+    deepInnerFilters.arrivalLocation,
+    deepInnerFilters.busType,
+    outerFilters.fromDate,
+    outerFilters.toDate,
+    outerFilters.mobileNumber,
+    outerFilters.BusPassType,
+    outerFilters.departureLocation,
+    outerFilters.arrivalLocation,
+    outerFilters.busType,
+    outerFilters.status,]);
 
   const columnDefs = [
     {
@@ -103,9 +116,9 @@ const IntercityFailedOtherReasonReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/bus-pass-total-traker"}
+          to={"/intercity-total-transactions-order-tracker"}
           state={{
-            orderId: params.data.bP_OrderId,
+            orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
             status: params.data.transactionStatus,
@@ -140,16 +153,23 @@ const IntercityFailedOtherReasonReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-        field: "departureLocation",
-        headerName: "Departure Location",
-        maxWidth: "120",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
+      field: "totalCount",
+      headerName: "Ticket Quantity",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+   
     {
       field: "arrivalLocation",
       headerName: "Arrival Location",
-      maxWidth: "120",
+      // maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "departureLocation",
+      headerName: "Departure Location",
+      // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },

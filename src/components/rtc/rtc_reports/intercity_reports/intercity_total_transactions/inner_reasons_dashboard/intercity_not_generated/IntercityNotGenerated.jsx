@@ -155,12 +155,12 @@ const IntercityNotGenerated = () => {
                       htmlFor="mobileNumber"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Mobile Number
+                      Mobile No
                     </label>
                     <Field
                       type="text"
                       name="mobileNumber"
-                      placeholder="Enter Mobile Number"
+                      placeholder="Enter Mobile No"
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     />
                   </div>

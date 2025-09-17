@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; 
 import IntercityTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 import { ToastContainer } from "react-toastify";
 import AdminLayout from "../../../../../layouts/AdminLayout";
@@ -17,6 +17,7 @@ const InetercityTotalReport = () => {
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
+    innerFilters,
   } = IntercityTotalCommonStore();
 
   const {
@@ -31,22 +32,29 @@ const InetercityTotalReport = () => {
     setCurrentPage(event.selected);
   };
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const mobileNumber = searchParams.get("mobileNumber");
+  const fromDate = searchParams.get("fromDate");
+  const toDate = searchParams.get("toDate");
+  const subCategory = searchParams.get("subCategory");
+  const status = searchParams.get("status");
+
   useEffect(() => {
     fetchTotalTransactionsReport({
-      startDate: (deepInnerFilters.startDate || outerFilters.fromDate) ?? "",
-      endDate: (deepInnerFilters.endDate || outerFilters.toDate) ?? "",
+      startDate: fromDate ?? (deepInnerFilters.startDate || outerFilters.fromDate) ?? "",
+      endDate: toDate ?? (deepInnerFilters.endDate || outerFilters.toDate) ?? "",
       phoneNumber:
-        (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
+        mobileNumber ?? (deepInnerFilters.mobileNumber || outerFilters.mobileNumber) ?? "",
       BusPassType:
-        (deepInnerFilters.BusPassType || outerFilters.BusPassType) ?? "",
+        subCategory ?? (deepInnerFilters.BusPassType || outerFilters.BusPassType) ?? "",
       departureLocation:
-        (deepInnerFilters.departureLocation || outerFilters.departureLocation) ?? "",
+        subCategory ?? (deepInnerFilters.departureLocation || outerFilters.departureLocation) ?? "",
       arrivalLocation:
-        (deepInnerFilters.arrivalLocation || outerFilters.arrivalLocation) ?? "",
+        subCategory ?? (deepInnerFilters.arrivalLocation || outerFilters.arrivalLocation) ?? "",
       busType:
-        (deepInnerFilters.busType || outerFilters.busType) ?? "",
-      status: outerFilters.status ?? "",
-      subCategory: "",
+        subCategory ?? (deepInnerFilters.busType || outerFilters.busType) ?? "",
+      status: status ?? outerFilters.status ?? "",
+      // subCategory: subCategory ?? innerFilters.subCategory ?? outerFilters.subCategory ?? "",
 
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
@@ -99,9 +107,9 @@ const InetercityTotalReport = () => {
       cellRenderer: (params) => (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
-          to={"/bus-pass-total-traker"}
+          to={"/intercity-total-transactions-order-tracker"}
           state={{
-            orderId: params.data.bP_OrderId,
+            orderId: params.data.orderId,
             date: params.data.createdDate,
             mobileNumber: params.data.mobileNumber,
             status: params.data.transactionStatus,
@@ -136,22 +144,22 @@ const InetercityTotalReport = () => {
       valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,
     },
     {
-      field: "ticketQuantity",
+      field: "totalCount",
       headerName: "Ticket Quantity",
-      maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+   
+    {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-        field: "departureLocation",
-        headerName: "Departure Location",
-        // maxWidth: "120",
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
-    {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
+      field: "departureLocation",
+      headerName: "Departure Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -252,6 +260,14 @@ const InetercityTotalReport = () => {
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
+            mobileNumber={outerFilters.mobileNumber}
+            fromDate={outerFilters.fromDate}
+            toDate={outerFilters.toDate}
+            subCategory={outerFilters.subCategory}
+            status={outerFilters.status}
+            arrivalLocation={outerFilters.arrivalLocation}
+            departureLocation={outerFilters.departureLocation}
+            busType={outerFilters.busType}
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"

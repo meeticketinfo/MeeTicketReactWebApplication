@@ -3,6 +3,7 @@ import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_
 import { useAmarabadTotalTransactionStore } from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
+import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 
 const IntercityFailedGatewayReportForm = ({
   pageNumber,
@@ -23,8 +24,7 @@ const IntercityFailedGatewayReportForm = ({
     resetDeepInnerFilters,
   } = IntercityTotalCommonStore();
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  console.log("outerFilters", innerFilters);
-  const { fetchAmrabadTotalTransactions } = useAmarabadTotalTransactionStore();
+  const {fetchTotalTransactionsReport} = useIntercityTotalTransactionStore();
   const initialValues = {
     startDate:
       fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
@@ -47,7 +47,7 @@ const IntercityFailedGatewayReportForm = ({
   const onSubmit = (values) => {
     console.log("values", values);
     setDeepInnerFilters(values);
-    fetchAmrabadTotalTransactions({
+    fetchTotalTransactionsReport({
       ...values,
       status: innerFilters.status,
       subCategory: subCategory ?? innerFilters.subCategory,
@@ -62,7 +62,7 @@ const IntercityFailedGatewayReportForm = ({
     <>
  <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 py-3">
+          <Form className="grid grid-cols-1 md:grid-cols-6 gap-3 py-3">
             <div>
               <label
                 htmlFor="startDate"
@@ -110,14 +110,14 @@ const IntercityFailedGatewayReportForm = ({
                 htmlFor="phoneNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Phone Number
+                Mobile No
               </label>
               <Field
                 type="text"
                 maxLength="10"
                 name="phoneNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
+                placeholder="Enter Mobile No"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) {
                     e.preventDefault(); // Prevent non-numeric characters
@@ -148,7 +148,7 @@ const IntercityFailedGatewayReportForm = ({
                 }}
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">Select Arrival Location</option>
+                <option value="">Select</option>
                 {/* {AllArrivalLocations.map((item) => (
                   <option key={item.arrivalLocationId} value={item.arrivalLocationId}>
                         {item.arrivalLocationName}
@@ -170,7 +170,7 @@ const IntercityFailedGatewayReportForm = ({
                 disabled={!values.arrivalLocation || values.arrivalLocation === ""}
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">Select Departure Location</option>
+                <option value="">Select</option>
                 {/* {AllDepartureLocations.map((item) => (
                   <option key={item.departureLocationId} value={item.departureLocationId}>
                     {item.departureLocationName}
@@ -178,29 +178,6 @@ const IntercityFailedGatewayReportForm = ({
                 ))} */}
               </Field>
             </div>
-            <div>
-              <label
-                htmlFor="PaymentMode"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Payment Mode
-              </label>
-              <Field
-                as="select"
-                name="PaymentMode"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("PaymentMode", e.target.value);
-                }}
-              >
-                <option value="">Select Mode</option>
-                <option value="upi">UPI</option>
-                <option value="creditCard">Credit Card</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="netBanking">Net Banking</option>
-              </Field>
-            </div>
-
             <div className="flex items-end">
               <button
                 type="submit"

@@ -127,7 +127,7 @@ const IntercityTotalTransactionChart = ({
         <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[70%]">
           <div
             ref={chartRef}
-            className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full"
+            className="h-[00px] sm:h-[350px] md:h-[400px] w-full max-w-full"
           />
         </div>
 

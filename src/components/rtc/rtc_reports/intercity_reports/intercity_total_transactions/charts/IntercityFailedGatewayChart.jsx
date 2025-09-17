@@ -145,13 +145,15 @@ const IntercityFailedGatewayChart = ({
                             }}
                           />
                           <Link
-                            to={`/intercity-failed-gateway-report??status=${
-                              outerFilters.status || ""
-                            }&mobileNumber=${mobileNumber || ""}&fromDate=${
-                              fromDate || ""
-                            }&toDate=${toDate || ""}&status=${
-                              outerFilters.status || ""
-                            }&subCategory=`}
+                              to={`/intercity-failed-gateway-report??status=${
+                                outerFilters.status || ""
+                              }&mobileNumber=${mobileNumber || ""}&fromDate=${
+                                fromDate || ""
+                              }&toDate=${toDate || ""}&status=${
+                                outerFilters.status || ""
+                              }&subCategory=${encodeURIComponent(
+                                item.failureReasonKey || ""
+                              )}`}
                             className="text-[#000] hover:underline text-xs"
                             onClick={() => {
                               setInnerFilters({

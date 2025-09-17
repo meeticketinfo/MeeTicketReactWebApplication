@@ -174,7 +174,7 @@ function IntercitypassDasboard() {
                 {/* Row 1: Ticket-related metrics (3 cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Total Bookings Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg h-[125px] shadow-sm p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -191,7 +191,7 @@ function IntercitypassDasboard() {
                   </div>
 
                   {/* Total Tickets Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -219,7 +219,7 @@ function IntercitypassDasboard() {
                   </div>
 
                   {/* Total Cancelled Tickets Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -250,7 +250,7 @@ function IntercitypassDasboard() {
                 {/* Row 2: Financial metrics (3 cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Total Credited Amount Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -268,7 +268,7 @@ function IntercitypassDasboard() {
                   </div>
 
                   {/* Total Current Amount Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -286,7 +286,7 @@ function IntercitypassDasboard() {
                   </div>
 
                   {/* Total Cancelled Amount Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
@@ -307,7 +307,7 @@ function IntercitypassDasboard() {
                 {/* Row 3: Refund-related financial metrics (2 cards) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Total Refund Processed Amount Card */}
-                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm p-6 border border-gray-200">
+                  <div className="bg-[#F1F2FBCC] rounded-lg shadow-sm h-[125px] p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">

@@ -140,6 +140,20 @@ const IntercityFailedGateway = () => {
                   />
                 </div>
                 <div>
+                  <label
+                    htmlFor="mobileNumber"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Mobile No
+                  </label>  
+                  <Field
+                    type="text"
+                    name="mobileNumber"
+                    placeholder="Enter Mobile No"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  />
+                </div>
+                <div>
                     <label
                       htmlFor="arrivalLocation"
                       className="block text-xs font-medium text-gray-700"
@@ -237,20 +251,7 @@ const IntercityFailedGateway = () => {
                         Bus Type
                       </label>
                     </div> */}
-                <div>
-                  <label
-                    htmlFor="mobileNumber"
-                    className="block text-xs font-medium text-gray-700"
-                  >
-                    Mobile Number
-                  </label>
-                  <Field
-                    type="text"
-                    name="mobileNumber"
-                    placeholder="Enter Mobile Number"
-                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  />
-                </div>
+            
                 <div className="flex items-end gap-2">
                   <button
                     type="submit"

@@ -189,6 +189,7 @@ import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity
 
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
+import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
 
 export const routes = [
   {
@@ -941,6 +942,10 @@ export const routes = [
   {
     path: "/intercity-user-transactions-order-tracker",
     element: <ProtectedRoute element={<IntercityUserTrackOrder />} />,
+  },
+  {
+    path: "/intercity-total-transactions-order-tracker",
+    element: <ProtectedRoute element={<IntercityTotalTransactionTrackOrder />} />,
   },
 
   {
