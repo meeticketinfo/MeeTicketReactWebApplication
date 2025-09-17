@@ -12,23 +12,27 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
 
 
 
-  fetchIntercityPaymentTransactions: async (payload) => {
+  fetchIntercityPaymentTransactions: async (payload = {}) => {
     set({ isFetchIntercityPaymentTransactionsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_TRANSACTION_REPORT}?${queryString}`
+        `${API_ENDPOINTS.INTERCITY.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&paymentStatus=${payload.paymentStatus}&phoneNumber=${payload.phoneNumber}&arrivalLocation=${payload.arrivalLocation}&destinationLocation=${payload.destinationLocation}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`
       );
       set({
         intercityPaymentTransactions: response.data,
         isFetchIntercityPaymentTransactionsLoading: false,
       });
+      return { response: response.data };
     } catch (error) {
       set({
         error: error.message,
+        intercityPaymentTransactions: [],
+      });
+      console.error('API Error:', error);
+    } finally {
+      set({
         isFetchIntercityPaymentTransactionsLoading: false,
       });
-    } finally {
-      set({ isFetchIntercityPaymentTransactionsLoading: false });
     }
   },
 

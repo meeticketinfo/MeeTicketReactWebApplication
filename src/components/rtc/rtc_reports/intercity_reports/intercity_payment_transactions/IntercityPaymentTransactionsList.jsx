@@ -4,12 +4,12 @@ import AgGridTable from "../../../../../components/tables/AgGridTable";
 import {
   getCurrentDate,
 } from "../../../../../utils/TypographyHelper";
-import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
 import IntercityPaymentTransactionsForm from "./IntercityPaymentTransactionsForm";
 import PopupModal from "../../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import { AiOutlineEye } from "react-icons/ai";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
+import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
 function IntercityPaymentTransactionsList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
@@ -23,12 +23,9 @@ function IntercityPaymentTransactionsList() {
   const {
     isFetchIntercityPaymentTransactionsLoading,
     intercityPaymentTransactions,
-    fetchIntercityPaymentTransactions
+    fetchIntercityPaymentTransactions,
   } = useIntercityPaymentTransactionStore();
   const {
-    isAmrabadTransactionPaymentReportsLoading,
-    allAmrabadTransactionPaymentReports,
-    fetchAmrabadPaymentTransactions,
     fetchAmrabadVerifyStatus,
     isFetchAmrabadVerifyStatusLoading,
     fetchAmrabadPaymentTransactionRefund,
@@ -36,30 +33,24 @@ function IntercityPaymentTransactionsList() {
     isFetchAmrabadRegenerateTicketLoading,
   } = useAmrabadConsolidatedStore();
   const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-payment-report-filters")
+    localStorage.getItem("intercity-payment-report-filters")
   );
-
+console.log("intercityPaymentTransactions",intercityPaymentTransactions);
   useEffect(() => {
-    fetchAmrabadPaymentTransactions({
+    fetchIntercityPaymentTransactions({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
       endDate: savedFilters?.toDate ?? getCurrentDate(),
-      purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
-      package: savedFilters?.package ?? "",
-      house: savedFilters?.house ?? "",
       paymentStatus: savedFilters?.paymentStatus
         ? savedFilters.paymentStatus
         : "",
-      modeOfBooking: savedFilters?.modeOfBooking
-        ? savedFilters.modeOfBooking
-        : "",
+    
       phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
-      transactionId: savedFilters?.transactionId
-        ? savedFilters.transactionId
-        : "",
+      arrivalLocation:savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
+      destinationLocation:savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
-  }, [fetchAmrabadPaymentTransactions, currentPage, PAGE_LIMIT]);
+  }, [fetchIntercityPaymentTransactions, currentPage, PAGE_LIMIT]);
 
   const [columnDefs] = useState([
     {
@@ -71,66 +62,80 @@ function IntercityPaymentTransactionsList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "userName",
+      field: "orderID",
       headerName: "Order ID",
-      minWidth: 100,
-      // flex: 1,
+      minWidth: 200,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
-      // flex: 1,
+      minWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "transaactionID",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
+      minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "packageName",
+      field: "amount",
       headerName: "Amount",
+      maxWidth: 100,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => params.value ? `₹${params.value}` : "N/A",
     },
     {
       field: "purchaseDate",
       headerName: "Purchase Date",
+      minWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN');
+      },
     },
     {
-      field: "currentTransactionStatus",
+      field: "paymentStatus",
       headerName: "Payment Status",
+      maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "actual_PaytmStatus",
-      headerName: "Actual Paytm Status",
+      field: "acutalPaymentStatus",
+      headerName: "Actual Payment Status",
+      maxWidth: 200,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "refund_Intiate_Date",
+      field: "refundDate",
       headerName: "Refund Date",
+      minWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN');
+      },
     },
-
     {
       field: "refundId",
       headerName: "Refund ID",
+      minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "refundStatus",
       headerName: "Refund Status",
+      maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -184,7 +189,7 @@ function IntercityPaymentTransactionsList() {
               }`}
               onClick={() => {
                 if (!isDisabled) {
-                  setRegenerateTicketOrderId(params.data.transaactionID);
+                  setRegenerateTicketOrderId(params.data.orderID);
                   setOpenRegenerateTicketModal(true);
                 }
               }}
@@ -234,17 +239,17 @@ function IntercityPaymentTransactionsList() {
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const PaytmStatus = params?.data?.actual_PaytmStatus;
+        const PaytmStatus = params?.data?.acutalPaymentStatus;
         const canView =
           PaytmStatus &&
           PaytmStatus === "TXN_SUCCESS" &&
-          params?.data?.amountPaid > 0;
+          params?.data?.amount > 0;
         return (
           <div className="flex justify-center mt-1">
             {canView ? (
               <NavLink
                 end
-                to={`/amrabad-admin/ticket-view-details/${params?.data?.transaactionID}`}
+                to={`/intercity-admin/ticket-view-details/${params?.data?.orderID}`}
                 className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -269,7 +274,7 @@ function IntercityPaymentTransactionsList() {
 
   const handleVerifyTicket = async () => {
     try {
-      const res = await fetchAmrabadVerifyStatus(verifyData);
+      const res = await fetchIntercityVerifyStatus(verifyData);
       // console.log("API Response:", res);
 
       if (res.response?.data?.status === 200) {
@@ -325,7 +330,7 @@ function IntercityPaymentTransactionsList() {
     } finally {
       // Delay API call to ensure SweetAlert has closed
       setTimeout(() => {
-        fetchAmrabadPaymentTransactions({
+        fetchIntercityPaymentTransactions({
           startDate: savedFilters?.fromDate ?? getCurrentDate(),
           endDate: savedFilters?.toDate ?? getCurrentDate(),
           purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
@@ -482,19 +487,19 @@ function IntercityPaymentTransactionsList() {
         />
         <AgGridTable
           ExportName="Payment Transactions"
-          rowData={allAmrabadTransactionPaymentReports?.data || []}
+          rowData={intercityPaymentTransactions || []}
           columnDefs={columnDefs}
-          isFetchLoading={isAmrabadTransactionPaymentReportsLoading}
+          isFetchLoading={isFetchIntercityPaymentTransactionsLoading}
           isPagination={false}
           tableHeight={
-            allAmrabadTransactionPaymentReports?.data?.length > 10 ? 560 : 330
+            intercityPaymentTransactions?.data?.length > 10 ? 560 : 330
           }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={allAmrabadTransactionPaymentReports.totalCount}
+          totalCount={intercityPaymentTransactions?.[0]?.totalCount || 0}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}
