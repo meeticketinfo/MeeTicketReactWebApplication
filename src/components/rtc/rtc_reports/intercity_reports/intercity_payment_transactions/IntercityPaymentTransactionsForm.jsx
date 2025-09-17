@@ -1,32 +1,63 @@
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
+import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 const IntercityPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
   SetcurrentPage,
 }) => {
   const {
-    fetchIntercityPaymentTransactions,      
+    fetchIntercityPaymentTransactions,
   } = useIntercityPaymentTransactionStore();
   const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-payment-report-filters")
+    localStorage.getItem("intercity-payment-report-filters")
   );
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    
+
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
       : null,
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+    arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
+    destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
+  };
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+    }
   };
 
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
   const onSubmit = (values, { resetForm }) => {
     console.log("values", values);
 
     localStorage.setItem(
-      "amrabad-payment-report-filters",
+      "intercity-payment-report-filters",
       JSON.stringify(values)
     );
     fetchIntercityPaymentTransactions({
@@ -34,6 +65,8 @@ const IntercityPaymentTransactionsForm = ({
       endDate: values.toDate,
       paymentStatus: values.paymentStatus || "",
       phoneNumber: values.phoneNumber || "",
+      arrivalLocation:values.arrivalLocation || "",
+      destinationLocation:values.destinationLocation || "",
       PageIndex,
       pageSize,
     });
@@ -86,7 +119,7 @@ const IntercityPaymentTransactionsForm = ({
                 }}
               />
             </div>
-        
+
             <div>
               <label className="block text-sm font-medium">
                 Payment Status
@@ -120,12 +153,45 @@ const IntercityPaymentTransactionsForm = ({
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               />
             </div>
-
+            {/* departure location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+              <DebounceSearchableDropdown
+                name="destinationLocation"
+                value={values.destinationLocation}
+                onChange={(v) => setFieldValue("destinationLocation", v)}
+                options={departureCities}
+                onSearch={fetchDepartureCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search departure city..."
+                uniqueId="departure-location-dropdown"
+              />
+            </div>
+            {/* arrival location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Arrival Location
+              </label>
+              <DebounceSearchableDropdown
+                name="arrivalLocation"
+                value={values.arrivalLocation}
+                onChange={(v) => setFieldValue("arrivalLocation", v)}
+                options={arrivalCities}
+                onSearch={fetchArrivalCities}
+                Label="cityName"
+                Value="cityId"
+                placeholder="Search arrival city..."
+                uniqueId="arrival-location-dropdown"
+              />
+            </div>
             <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+              // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
@@ -135,7 +201,7 @@ const IntercityPaymentTransactionsForm = ({
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem(
-                    "amrabad-consolidated-report-filters"
+                    "intercity-consolidated-report-filters"
                   );
                   resetForm({
                     values: {
