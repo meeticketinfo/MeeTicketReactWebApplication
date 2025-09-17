@@ -10,6 +10,8 @@ import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_tot
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
+import SearchableDropdown from "../../../../../searchable_dropdown/SearchableDropdown";
+
 const IntercityRefundOuterReportForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -20,6 +22,7 @@ const IntercityRefundOuterReportForm = () => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const {fetchCitiesData}=useIntercityMastersStore();
+
 // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
@@ -198,16 +201,25 @@ const IntercityRefundOuterReportForm = () => {
                 <label className="block text-xs font-medium text-gray-700">
                   Departure Location
                 </label>
-                <DebounceSearchableDropdown
+                <SearchableDropdown
                   name="destinationLocation"
                   value={values.destinationLocation}
-                  onChange={(v) => setFieldValue("destinationLocation", v)}
-                  options={departureCities}
+                  onChange={(value) => setFieldValue("destinationLocation", value)}
                   onSearch={fetchDepartureCities}
-                  Label="cityName"
-                  Value="cityId"
+                  options={departureCities}
+                  displayKey="cityName"
+                  valueKey="cityId"
                   placeholder="Search departure city..."
-                  uniqueId="departure-location-dropdown"
+                  minSearchLength={2}
+                  debounceMs={300}
+                  className="mt-1"
+                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  loading={isFetchIntercityRefundTransactionsReport}
+                  noResultsText="No cities found"
+                  loadingText="Searching cities..."
+                  initialDisplayText={values.destinationLocation}
                 />
               </div>
               {/* arrival location */}
