@@ -283,6 +283,11 @@ export const API_ENDPOINTS = {
         GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionInnerReport`,
         GET_INTERCITY_PAYMENT_FAILED_GATEWAY:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureFromGatewaySubCategoryReport`,
         GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureDueToOtherReasons`,
+        GET_INTERCITY_TICKET_VIEW:`${RTC_INTERCITY_API_BASE_URL}Bookings/TicketPreview`,
+        GET_INTERCITY_INDIVIDUAL_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetIndividualReport`,
+        GET_INTERCITY_BUS_TYPES:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllBusTypes`,
+        GET_INTERCITY_SEAT_LAYOUTS:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllSeatLayoutTypes`,
+        
       }
     },
     GRIVEANCE_REPORTS: {

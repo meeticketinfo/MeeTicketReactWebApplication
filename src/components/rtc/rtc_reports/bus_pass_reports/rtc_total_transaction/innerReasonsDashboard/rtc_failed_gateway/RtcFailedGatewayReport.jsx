@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
-import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
-import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
 import RtcFailedGateWayReportForm from "./RtcFailedGateWayReportForm";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";

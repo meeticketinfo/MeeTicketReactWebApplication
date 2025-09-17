@@ -950,7 +950,7 @@ export const routes = [
 
   //intercity admin routes
   {
-    path: "/intercity-ticket-view-details",
+    path: "/intercity-ticket-view-details/:id",
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
 ];

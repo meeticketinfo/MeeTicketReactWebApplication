@@ -1,11 +1,10 @@
 import { Formik, Form, Field } from "formik";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 
 const IntercityIndividualReportForm = ({
-  onSearch,
   pageNumber,
   pageSize,
   SetcurrentPage,
@@ -17,11 +16,17 @@ const IntercityIndividualReportForm = ({
       return null;
     }
   }, []);
-  const { fetchCitiesData } = useIntercityMastersStore();
 
-  // Separate state for each dropdown to prevent interference 
+  const { fetchCitiesData, fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData,IntercitySeatLayoutsData,IntercityBusTypesData } = useIntercityMastersStore();
+
+  // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+
+  useEffect(() => {
+    fetchIntercityBusTypesData();
+    fetchIntercitySeatLayoutsData();
+  }, [fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData]);
 
   const fetchDepartureCities = async (q) => {
     try {
@@ -46,7 +51,6 @@ const IntercityIndividualReportForm = ({
       console.error("Error fetching arrival cities:", error);
       setArrivalCities([]);
     } finally {
-      
     }
   };
 
@@ -79,12 +83,19 @@ const IntercityIndividualReportForm = ({
     arrivalLocation: savedFilters?.arrivalLocation
       ? savedFilters.arrivalLocation
       : "",
+    ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
+    returnTicketId: savedFilters?.returnTicketId
+      ? savedFilters.returnTicketId
+      : "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
 
-    localStorage.setItem("intercity-individual-filters", JSON.stringify(values));
+    localStorage.setItem(
+      "intercity-individual-filters",
+      JSON.stringify(values)
+    );
   };
 
   return (
@@ -136,22 +147,6 @@ const IntercityIndividualReportForm = ({
                 }}
               />
             </div>
-            {/* booking/purchase date */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Booking/Purchase Date
-              </label>
-              <select
-                onChange={(e) => {
-                  setIsBookingDate(e.target.value === "true");
-                }}
-                name="bookingDate"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="false">Purchase Date</option>
-                <option value="true">Booking Date</option>
-              </select>
-            </div>
             {/* mobile no */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -179,22 +174,6 @@ const IntercityIndividualReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter PNR"
               />
-            </div>
-            {/* type of booking */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Type of Booking
-              </label>
-              <Field
-                as="select"
-                name="typeOfBooking"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                onChange={(e) => setFieldValue("typeOfBooking", e.target.value)}
-              >
-                <option value="">ALL</option>
-                <option value="Counter">Counter</option>
-                <option value="MeeTicketApp">Mee TicketApp</option>
-              </Field>
             </div>
             {/* payment mode */}
             <div>
@@ -236,6 +215,30 @@ const IntercityIndividualReportForm = ({
                 placeholder="Enter Transaction ID"
               />
             </div>
+            {/* Ticket id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="ticketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Ticket Id"
+              />
+            </div>
+            {/* Return Ticket Id id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="returnTicketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return Ticket Id"
+              />
+            </div>
             {/* seat layout type */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -247,9 +250,9 @@ const IntercityIndividualReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
-                <option value="Seater">Seater</option>
-                <option value="Sleeper">Sleeper</option>
-                <option value="Seater, Sleeper">Seater, Sleeper</option>
+                {IntercitySeatLayoutsData.map((item) => (
+                  <option value={item.seatLayoutTypeName}>{item.seatLayoutTypeName}</option>
+                ))}
               </Field>
             </div>
             {/* type of bus */}
@@ -263,10 +266,9 @@ const IntercityIndividualReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
-                <option value="Garuda">Garuda</option>
-                <option value="Super Luxury">Super Luxury</option>
-                <option value="Ultra Deluxe">Ultra Deluxe</option>
-                <option value="Indra">Indra</option>
+                {IntercityBusTypesData.map((item) => (
+                  <option value={item.busTypeName}>{item.busTypeName}</option> 
+                ))}
               </Field>
             </div>
             {/* booking status */}
@@ -350,6 +352,8 @@ const IntercityIndividualReportForm = ({
                     departmentId: null,
                     departureLocation: "",
                     arrivalLocation: "",
+                    ticketId: "",
+                    returnTicketId: "",
                   });
                 }}
               >

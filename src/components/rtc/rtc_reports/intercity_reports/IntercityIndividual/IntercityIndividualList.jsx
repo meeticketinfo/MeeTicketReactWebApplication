@@ -7,97 +7,61 @@ import {
   formatToStandardDate,
   getCurrentDate,
 } from "../../../../../utils/TypographyHelper";
-import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
-import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import useAuthStore from "../../../../../store/authStore";
-import { useParkStore } from "../../../../../store/masters/parksStore";
 import IntercityIndividualReportForm from "./IntercityIndividualReportForm";
+import { useIntercityIndividualStore } from "./InterCityIndividualStore";
 function IntercityIndividualList() {
-  const { roleDetails } = useAuthStore();
-
-  const role = roleDetails?.name;
-  const {
-    fetchCompleteBookingsReport,
-    allCompleteBookingsReports,
-    setisCompleteBookings,
-    isCompleteBookingsReportsLoading,
-  } = useBookingsStore();
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-  const {
-    allParkBankTransactions,
-    fetchParkBankTransactions,
-    isFetchAllParkBankTransactionsLoading,
-    allParks,
-    fetchAllParks,
-  } = useParkStore();
-  const [isBookingDate, setIsBookingDate] = useState(false);
   const savedFilters = JSON.parse(
-    localStorage.getItem("completed-booking-report-filters")
+    localStorage.getItem("intercity-individual-filters")
   );
-
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+  const {
+    fetchIntercityIndividualData,
+    IntercityIndividualData,
+    isFetchIntercityIndividualData,
+  } = useIntercityIndividualStore();
   useEffect(() => {
-    fetchCompleteBookingsReport({
-      startDate: savedFilters?.fromDate
+    fetchIntercityIndividualData({
+      fromDate: savedFilters?.fromDate
         ? savedFilters.fromDate
         : getCurrentDate(),
-      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-      bookingSource: savedFilters?.typeOfBooking
+      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
+      bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
+      pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
+        ? savedFilters.pnrOrReturnPnr
+        : "",
+      typeOfBooking: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
         : "",
-      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId: savedFilters?.departmentId
-        ? savedFilters.departmentId
-        : null,
-      entityTypeId: savedFilters?.entityTypeId
-        ? savedFilters.entityTypeId
-        : null,
-      parkId: savedFilters?.parkId ? savedFilters.parkId : null,
+      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+      transactionId: savedFilters?.transactionId
+        ? savedFilters.transactionId
+        : "",
+      seatLayoutType: savedFilters?.seatLayoutType
+        ? savedFilters.seatLayoutType
+        : "",
+      busType: savedFilters?.busType ? savedFilters.busType : "",
+      bookingStatus: savedFilters?.bookingStatus
+        ? savedFilters.bookingStatus
+        : "",
+      departureLocation: savedFilters?.departureLocation
+        ? savedFilters.departureLocation
+        : "",
+      arrivalLocation: savedFilters?.arrivalLocation
+        ? savedFilters.arrivalLocation
+        : "",
+      ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
+      returnTicketId: savedFilters?.returnTicketId
+        ? savedFilters.returnTicketId
+        : "",
     });
     console.log("savedFilters", savedFilters);
-  }, [fetchCompleteBookingsReport]);
-
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllParks();
-    if (role === "ROLE_SUPERADMIN") {
-      fetchAllDepartmentTypes();
-    }
-  }, []);
-  const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    entityId: savedFilters?.entityId ? savedFilters.entityId : null,
-    departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-    typeOfBooking: savedFilters?.typeOfBooking
-      ? savedFilters.typeOfBooking
-      : "",
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-    parkId: savedFilters?.parkId ? savedFilters.parkId : null,
-  };
-
-  const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
-
-    localStorage.setItem(
-      "completed-booking-report-filters",
-      JSON.stringify(values)
-    );
-    fetchCompleteBookingsReport({
-      startDate: !isBookingDate ? values.fromDate : null,
-      endDate: !isBookingDate ? values.toDate : null,
-      bookingDateFrom: isBookingDate ? values.fromDate : null,
-      bookingDateTo: isBookingDate ? values.toDate : null,
-      departmentId: values.departmentId,
-      entityTypeId: values.entityId,
-      bookingSource: values.typeOfBooking,
-      mobileNumber: values.phoneNumber ? values.phoneNumber : null,
-      parkId: values.parkId ? values.parkId : null,
-    });
-    console.log("values", values);
-  };
+  }, [fetchIntercityIndividualData]);
 
   const [columnDefs] = useState([
     {
@@ -169,23 +133,42 @@ function IntercityIndividualList() {
         !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
     {
+      field: "gender",
+      headerName: "Gender",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+    },
+    {
+      field: "gender",
+      headerName: "Concession Type",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+    },
+    {
+      field: "gender",
+      headerName: "Ticket ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+    },
+    {
+      field: "gender",
+      headerName: "Return Journey Ticket ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+    },
+    {
       field: "purchaseDate",
       headerName: "MID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
     {
@@ -240,19 +223,116 @@ function IntercityIndividualList() {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
+      headerName: "Total Levies Fee Charges break down Summary",
+      headerClass: "text-blue-v2",
+      children: [
+        {
+          field: "resultStatus",
+          headerName: "Passenger fee",
+          // flex: 1,
+          headerClass: "text-blue-v2",
+          valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+          field: "resultStatus",
+          headerName: "Water bottle",
+          // flex: 1,
+          headerClass: "text-blue-v2",
+          valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+          field: "resultStatus",
+          headerName: "Safety cess",
+          // flex: 1,
+          headerClass: "text-blue-v2",
+          valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+          field: "resultStatus",
+          headerName: "SRT",
+          // flex: 1,
+          headerClass: "text-blue-v2",
+          valueFormatter: (params) => params.value || "N/A",
+        },
+        {
+          field: "resultStatus",
+          headerName: "Total Toll fare",
+          // flex: 1,
+          headerClass: "text-blue-v2",
+          valueFormatter: (params) => params.value || "N/A",
+        },
+      ],
+    },
+    {
+      field: "resultStatus",
+      headerName: "Total Levies Fee",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Service fee",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Service Tax",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Flexi Fare",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Each Ticket Amount",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Total Amount",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Payment Transaction ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      field: "resultStatus",
+      headerName: "Booking  Status",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+
+    {
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <NavLink
             end
-            to={`/entity-bookings/view-details/${params.data.bookingID}`}
-            onClick={() => {
-              setisCompleteBookings(true);
-            }}
+            to={`/intercity-admin/ticket-view-details/${params.data.paymentTransactionId}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
           >
-            <span className="text-blue-v2"> Booking Details</span>
+            <span className="text-blue-v2"> View Ticket</span>
           </NavLink>
         </div>
       ),
@@ -260,18 +340,30 @@ function IntercityIndividualList() {
       headerClass: "text-blue-v2",
     },
   ]);
+
   return (
     <div>
-    <IntercityIndividualReportForm/>
-      <AgGridTable
-        ExportName="Individual Report"
-        // isFetchLoading={isCompleteBookingsReportsLoading}
-        // rowData={allCompleteBookingsReports || []}
-        columnDefs={columnDefs}
-        // onPageChange={handlePageChange}
-        // totalRecords={totalEntityBookingRecords}
-        // enableAdvancedFilter={true}
+      <IntercityIndividualReportForm
+        pageNumber={currentPage + 1}
+        pageSize={PAGE_LIMIT}
+        SetcurrentPage={setCurrentPage}
       />
+       <AgGridTable
+            ExportName="Intercity Individual Report"
+            // rowData={RtcTotalTransactionsData}
+            columnDefs={columnDefs}
+            // isFetchLoading={isFetchIntercityIndividualData}
+            // isPagination={false}
+            // IsReactPaginate={true}
+            // setPageLimit={setPAGE_LIMIT}
+            // pageLimit={PAGE_LIMIT}
+            // handlePageClick={handlePageClick}
+            // currentPage={currentPage}
+            // showTotalCount={true}
+            // totalCount={RtcTotalTransactionsData[0]?.totalCount}
+            // tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
+            // SetcurrentPage={setCurrentPage}
+          />
     </div>
   );
 }

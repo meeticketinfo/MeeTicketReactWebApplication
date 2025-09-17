@@ -4,7 +4,7 @@ import {
   formatToCurrency,
   getCurrentDate,
 } from "../../../../../utils/TypographyHelper";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { NavLink } from "react-router-dom";
 import ViewBusPass from "../../../components/ViewBusPass";
