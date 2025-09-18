@@ -121,7 +121,7 @@ const IntercityRefundTransactionsReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
      {
-      field: "ticketQuantity",
+      field: "noOfTickets",
       headerName: "Ticket Quantity",
       maxWidth: "130",
       headerClass: "text-blue-v2",

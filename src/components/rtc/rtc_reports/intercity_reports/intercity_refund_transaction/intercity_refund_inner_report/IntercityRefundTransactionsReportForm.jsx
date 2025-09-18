@@ -7,7 +7,6 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
-import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
 import SearchableDropdown from "../../../../../searchable_dropdown/SearchableDropdown";
 
@@ -64,6 +63,7 @@ const IntercityRefundTransactionsReportForm = ({
     mobileNumber: searchParams.get("mobileNumber") || "",
     destinationLocation: searchParams.get("destinationLocation"),
     arrivalLocation: searchParams.get("arrivalLocation"),
+    paymentMode:searchParams.get("paymentMode"),
     refundStatus:
       (searchParams.get("RefundStatus") !== "null" &&
         searchParams.get("RefundStatus")) ||
@@ -86,6 +86,7 @@ const IntercityRefundTransactionsReportForm = ({
       mobileNumber: values.mobileNumber,
       destinationLocation: values.destinationLocation,
       arrivalLocation: values.arrivalLocation,
+      paymentMode:values.paymentMode,
       status: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,
@@ -220,7 +221,22 @@ const IntercityRefundTransactionsReportForm = ({
                 uniqueId="arrival-location-dropdown"
               />
             </div>
-
+             {/* payment mode */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Payment Mode
+              </label>
+              <Field
+                as="select"
+                name="paymentMode"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+              </Field>
+            </div>
             {/* status */}
             <div>
               <label
