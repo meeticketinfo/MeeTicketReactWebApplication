@@ -138,6 +138,18 @@ const SearchableDropdown = ({
     userHasTyped.current = true;
   };
 
+  // Handle mouse down for better touchpad support
+  const handleOptionMouseDown = (e, option) => {
+    e.preventDefault();
+    handleOptionSelect(option);
+  };
+
+  // Handle touch end for mobile/touchpad support
+  const handleOptionTouchEnd = (e, option) => {
+    e.preventDefault();
+    handleOptionSelect(option);
+  };
+
   // Handle focus
   const handleFocus = () => {
     if (input.length >= minSearchLength && options.length > 0) {
@@ -276,7 +288,10 @@ const SearchableDropdown = ({
                     key={`${name}-option-${normalized.value || index}`}
                     role="option"
                     onClick={() => handleOptionSelect(option)}
+                    onMouseDown={(e) => handleOptionMouseDown(e, option)}
+                    onTouchEnd={(e) => handleOptionTouchEnd(e, option)}
                     className={optionClassName}
+                    style={{ cursor: 'pointer' }}
                   >
                     {normalized.label}
                   </li>
