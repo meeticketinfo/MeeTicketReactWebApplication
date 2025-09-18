@@ -24,6 +24,9 @@ const IntercityRefundOuterReportForm = () => {
   // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+  
+  // Add reset trigger state to force SearchableDropdown re-render
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const fetchDepartureCities = async (q) => {
     try {
@@ -119,6 +122,12 @@ const IntercityRefundOuterReportForm = () => {
 
     localStorage.setItem("intercityRefundInnerTransactionSearchParams", "");
     setValues(payload);
+    
+    // Clear dropdown options and trigger reset
+    setDepartureCities([]);
+    setArrivalCities([]);
+    setResetTrigger(prev => prev + 1);
+    
     fetchIntercityRefundTransactionsReport(payload);
   };
 
@@ -200,7 +209,7 @@ const IntercityRefundOuterReportForm = () => {
                   Departure Location
                 </label>
                 <SearchableDropdown
-                  key={`departure-${values.departureLocation || 'empty'}`}
+                  key={`departure-${resetTrigger}-${values.destinationLocation || 'empty'}`}
                   name="destinationLocation"
                   value={values.destinationLocation}
                   onChange={(value) => setFieldValue("destinationLocation", value)}
@@ -227,7 +236,7 @@ const IntercityRefundOuterReportForm = () => {
                   Arrival Location
                 </label>
                 <SearchableDropdown
-                  key={`arrival-${values.arrivalLocation || 'empty'}`}
+                  key={`arrival-${resetTrigger}-${values.arrivalLocation || 'empty'}`}
                   name="arrivalLocation"
                   value={values.arrivalLocation}
                   onChange={(value) => setFieldValue("arrivalLocation", value)}
