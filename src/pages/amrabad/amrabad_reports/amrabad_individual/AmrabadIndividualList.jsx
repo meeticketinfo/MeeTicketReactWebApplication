@@ -71,6 +71,12 @@ export default function AdminBookings() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
+      field: "bookingStatus",
+      headerName: "Booking Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
       field: "mobileNumber",
       headerName: "Mobile Number",
       // flex: 1,
@@ -164,7 +170,7 @@ export default function AdminBookings() {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "totalAmount",
+      field: "housePaidAmount",
       headerName: "Amount Paid (House Wise)",
       // flex: 1,
       headerClass: "text-blue-v2",

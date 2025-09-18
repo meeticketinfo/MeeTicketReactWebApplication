@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link, useSearchParams } from "react-router-dom";
-import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 
 // Define reason styles (color + count)
 const reasonStyles = {
