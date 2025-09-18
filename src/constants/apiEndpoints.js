@@ -43,11 +43,14 @@ export const TOURISM_API_BASE_URL =
 export const RTC_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
+//RTC Intercity
+export const RTC_INTERCITY_API_BASE_URL =
+"https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
 
   // RTC BUS PASS DEV
 
   export const RTC_BUS_PASS_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+  "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
   
 
 // METRO PROD
@@ -262,11 +265,24 @@ export const API_ENDPOINTS = {
         GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/FailureFromGatewayReport`,
         GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}RTCDashboard/PaymentSuccessButNotGeneratedReport`,
         GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}RTCDashboard/TransactionOrderTrackingReport`,
-        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
-        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
-        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/GenerateTicket`,
-        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
-        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}RTCDashboard/ViewBusPass`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
+        GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}RTCDashboard/GetBookingDetailsOuterReport`,
+      },
+      INTERCITY_REPORTS:{
+        GET_INTERCITY_PAYMENT_TRANSACTION_REPORT:`${RTC_API_BASE_URL}RTCDashboard/PaymentTransactionsReport`,
+        GET_INTERCITY_VERIFY_STATUS:`${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
+        GET_INTERCITY_REGENERATE_TICKET:`${RTC_API_BASE_URL}RTCDashboard/GenerateTicket`,
+        GET_INTERCITY_PAYMENT_TRANSACTION_REFUND:`${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
+
+        GET_INTERCITY_TOTAL_TRANSACTIONS:`${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionOuterReport`,
+        GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentSuccessButNotGeneratedSubCategoryReport`,
+        GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionInnerReport`,
+        GET_INTERCITY_PAYMENT_FAILED_GATEWAY:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureFromGatewaySubCategoryReport`,
+        GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureDueToOtherReasons`,
       }
     },
     GRIVEANCE_REPORTS: {
@@ -451,5 +467,17 @@ export const API_ENDPOINTS = {
     
     //total transaction report
     GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
-  }
+  },
+  INTERCITY:{
+  MASTERS:{
+  GET_DESTINATION_CITIES:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllCities`,
+  },
+  REPORTS:{
+   GET_REFUND_TRANSACTION_DASHBOARD:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
+   GET_REFUND_TRANSACTION_INNER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
+   GET_USER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetUserOuterReport`,
+   GET_USER_DETAILED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
+   GET_USER_REPORT_TRACK_ORDER:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionTrackingStatus`
+  },
+  },
 };

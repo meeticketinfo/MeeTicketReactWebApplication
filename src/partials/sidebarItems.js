@@ -406,6 +406,16 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
+        title: "Consolidated Report",
+        icon: RiDashboard3Fill,
+        path: "/intercity-consolidated-report",
+      },
+      {
+        title: "Individual Report",
+        icon: RiDashboard3Fill,
+        path: "/intercity-individual-report",
+      },
+      {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
@@ -419,6 +429,11 @@ const sidebarItems = [
         title: "Refund Transactions",
         icon: RiDashboard3Fill,
         path: "/intercity-refund-report",
+      },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/intercity-payment-transactions",
       },
     ],
 

@@ -9,52 +9,46 @@ import AgGridTable from "../../../../tables/AgGridTable";
 import { NavLink } from "react-router-dom";
 import ViewBusPass from "../../../components/ViewBusPass";
 import PopupModal from "../../../../utils/popup_modal/PopupModal";
-
-const obj = [
-  {
-    paymentTransactionID: "1234567890",
-    "Type of Bus passes": "1234567890",
-    "Login Mobile No": "1234567890",
-    userName: "1234567890",
-    "User Mobile No": "1234567890",
-    "Order ID": "1234567890",
-    "Booking Date": "1234567890",
-    "Bus Pass Validity Start Time": "1234567890",
-    "Bus Pass Validity End Time": "1234567890",
-    "ID Card Amount": "1234567890",
-    "Bus Pass Amount": "1234567890",
-    "Total Amount": "1234567890",
-    "Booking  Status": "1234567890",
-    "Type of  Pass": "1234567890",
-    paymentType: "1234567890",
-    paymentStatus: "1234567890",
-    actualPaytmStatus: "1234567890",
-  },
-];
+import Swal from "sweetalert2";
+import { toast, ToastContainer } from "react-toastify";
 
 const BusPassBookingReportList = () => {
-  const [isViewBusPassOpen, setIsViewBusPassOpen] = useState(false);
   const savedFilters = JSON.parse(
     localStorage.getItem("bus-pass-booking-report-filters")
   );
-  const { AllBusPassesData, fetchAllBusPasses } =
-    useBusPassTotalTransactionStore();
+  const [isViewBusPassOpen, setIsViewBusPassOpen] = useState(false);
+
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
-  const [verifyData, setVerifyData] = useState("");
+  const [verifyData, setVerifyData] = useState(null);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const [RegenerateTicketOrderId, setRegenerateTicketOrderId] = useState("");
+  const [RegeneratePassPayload, setRegeneratePassPayload] = useState(null);
+  console.log("RegeneratePassPayload", RegeneratePassPayload);
+  const [ViewTicketDetails, setViewTicketDetails] = useState({});
+
   const [openRegenerateTicketModal, setOpenRegenerateTicketModal] =
     useState(false);
+  const {
+    AllBusPassesData,
+    fetchAllBusPasses,
+    fetchRtcBusPassBookingData,
+    RtcBusPassBookingRecordsData,
+    isFetchRtcBusPassBookingData,
+    fetchRtcBusPassVerifyStatusData,
+    isFetchRtcBusPassVerifyStatusData,
+    fetchRtcBusPassInitiateData,
+    isFetchRtcBusPassInitiateData,
+    fetchRtcGeneratePassData,
+    isFetchRtcGeneratePassData,
+  } = useBusPassTotalTransactionStore();
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
+    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
     transactionId: savedFilters?.transactionId
       ? savedFilters.transactionId
@@ -69,207 +63,243 @@ const BusPassBookingReportList = () => {
   };
   useEffect(() => {
     fetchAllBusPasses();
-  }, []);
+    fetchRtcBusPassBookingData({
+      fromDate: savedFilters?.fromDate
+        ? savedFilters.fromDate
+        : getCurrentDate(),
+      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+      transactionId: savedFilters?.transactionId
+        ? savedFilters.transactionId
+        : "",
+      BusPassType: savedFilters?.BusPassType ? savedFilters.BusPassType : "",
+      typeOfPayment: savedFilters?.typeOfPayment
+        ? savedFilters.typeOfPayment
+        : "",
+      bookingStatus: savedFilters?.bookingStatus
+        ? savedFilters.bookingStatus
+        : "",
+      pageNumber: currentPage + 1,
+      pageSize: PAGE_LIMIT,
+    });
+  }, [currentPage, PAGE_LIMIT]);
 
-  // const handleVerifyTicket = async () => {
-  //   try {
-  //     const res = await fetchAmrabadVerifyStatus(verifyData);
-  //     // console.log("API Response:", res);
+  const handleVerifyTicket = async () => {
+    try {
+      const res = await fetchRtcBusPassVerifyStatusData(verifyData);
+      console.log("API Response:", res);
 
-  //     if (res.response?.data?.status === 200) {
-  //       setOpenVerifyModal(false);
-  //       const resultMsg = res.response?.data?.data?.resultStatus;
+      if (res.response?.status === 200) {
+        setOpenVerifyModal(false);
+        const resultMsg = res.response?.data?.resultMsg;
+        const resultStatus = res.response?.data?.resultStatus;
+        Swal.fire({
+          title: resultStatus,
 
-  //       Swal.fire({
-  //         title: "Success!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${resultMsg}
+         </div>`,
 
-  //         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //          ${resultMsg}
-  //        </div>`,
+          confirmButtonText: "OK",
+          icon: resultStatus === "TXN_SUCCESS" ? "success" : "info",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+            icon: "small-swal-icon",
+          },
+          timer: 2500,
+          width: "360px",
+          showConfirmButton: false,
+        });
+      } else {
+        setOpenVerifyModal(false);
+        Swal.fire({
+          // title: "Oops!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+           ${res.response?.data?.data?.resultMsg || res.response?.data?.message}
+         </div>`,
+          icon: "info",
+          width: "360px",
 
-  //         confirmButtonText: "OK",
-  //         icon: "success",
-  //         customClass: {
-  //           confirmButton: "swal-custom-btn",
-  //           popup: "elegant-swal-popup",
-  //           icon: "small-swal-icon",
-  //         },
-  //         timer: 2000,
-  //         width: "360px",
-  //         showConfirmButton: false,
-  //       });
-  //     } else {
-  //       setOpenVerifyModal(false);
-  //       Swal.fire({
-  //         // title: "Oops!",
-  //         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //          ${res.response?.data?.data?.resultMsg || res.response?.data?.message}
-  //        </div>`,
-  //         icon: "info",
-  //         width: "360px",
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
+      }
+    } catch (err) {
+      console.error("Error during verify:", err);
+      setOpenVerifyModal(false);
+      Swal.fire({
+        title: "Failed!",
+        text: `Verify failed. Please try again.`,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setTimeout(() => {
+        fetchRtcBusPassBookingData({
+          fromDate: savedFilters?.fromDate
+            ? savedFilters.fromDate
+            : getCurrentDate(),
+          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+          mobileNumber: savedFilters?.phoneNumber
+            ? savedFilters.phoneNumber
+            : "",
+          transactionId: savedFilters?.transactionId
+            ? savedFilters.transactionId
+            : "",
+          BusPassType: savedFilters?.BusPassType
+            ? savedFilters.BusPassType
+            : "",
+          typeOfPayment: savedFilters?.typeOfPayment
+            ? savedFilters.typeOfPayment
+            : "",
+          bookingStatus: savedFilters?.bookingStatus
+            ? savedFilters.bookingStatus
+            : "",
+          pageNumber: currentPage + 1,
+          pageSize: PAGE_LIMIT,
+        });
+      }, 2100);
+    }
+  };
 
-  //         customClass: {
-  //           popup: "custom-swal-popup",
-  //           confirmButton: "swal-custom-btn",
-  //           icon: "small-swal-icon",
-  //         },
-  //         confirmButtonText: "OK",
-  //         background: "#ffffff",
-  //       });
-  //     }
-  //   } catch (err) {
-  //     console.error("Error during verify:", err);
-  //     setOpenVerifyModal(false);
-  //     Swal.fire({
-  //       title: "Failed!",
-  //       text: `Verify failed. Please try again.`,
-  //       icon: "error",
-  //       confirmButtonText: "OK",
-  //     });
-  //   } finally {
-
-  //     setTimeout(() => {
-  //       fetchAmrabadPaymentTransactions({
-  //         startDate: savedFilters?.fromDate ?? getCurrentDate(),
-  //         endDate: savedFilters?.toDate ?? getCurrentDate(),
-  //         purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
-  //         package: savedFilters?.package ?? "",
-  //         house: savedFilters?.house ?? "",
-  //         paymentStatus: savedFilters?.paymentStatus
-  //           ? savedFilters.paymentStatus
-  //           : "",
-
-  //         modeOfBooking: savedFilters?.modeOfBooking
-  //           ? savedFilters.modeOfBooking
-  //           : "",
-  //         phoneNumber: savedFilters?.phoneNumber
-  //           ? savedFilters.phoneNumber
-  //           : "",
-  //         transactionId: savedFilters?.transactionId
-  //           ? savedFilters.transactionId
-  //           : "",
-  //         PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-  //         pageSize: PAGE_LIMIT,
-  //       });
-  //     }, 2100);
-  //   }
-  // };
   //   initiate refund
 
-  // const handleInitiateRefund = async () => {
+  const handleInitiateRefund = async () => {
+    try {
+      const res = await fetchRtcBusPassInitiateData(RefundOrderId);
+      console.log("API Response:", res);
+      setInitiatRefundModal(false);
+      if (res.response?.status === 200) {
+        const resultMsg = res.response?.data?.resultMsg;
+        const resultStatus = res.response?.data?.resultStatus;
+        Swal.fire({
+          title: resultStatus,
 
-  //     try {
-  //       const res = await fetchAmrabadPaymentTransactionRefund({orderId:RefundOrderId});
-  //       console.log("API Response:", res);
-  //       setInitiatRefundModal(false);
-  //       if (res.response?.status === 200) {
-  //         const resultMsg = res.response?.data?.message;
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+               ${resultMsg}
+              </div>`,
 
-  //         Swal.fire({
-  //           title: "Success!",
+          confirmButtonText: "OK",
+          icon: resultStatus === "TXN_SUCCESS" ? "success" : "info",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+            icon: "small-swal-icon",
+          },
+          timer: 2000,
+          width: "360px",
+          showConfirmButton: false,
+        });
+      } else {
+        setInitiatRefundModal(false);
+        Swal.fire({
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+                ${res.response?.data?.message}
+              </div>`,
+          icon: "info",
+          width: "360px",
 
-  //           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //               ${resultMsg}
-  //             </div>`,
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
+      }
+    } catch (err) {
+      setInitiatRefundModal(false);
+      console.log("err", err);
+      Swal.fire({
+        title: "Failed!",
+        text: err.response.data || "Refund failed. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      fetchRtcBusPassBookingData({
+        fromDate: savedFilters?.fromDate
+          ? savedFilters.fromDate
+          : getCurrentDate(),
+        toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+        mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+        transactionId: savedFilters?.transactionId
+          ? savedFilters.transactionId
+          : "",
+        BusPassType: savedFilters?.BusPassType ? savedFilters.BusPassType : "",
+        typeOfPayment: savedFilters?.typeOfPayment
+          ? savedFilters.typeOfPayment
+          : "",
+        bookingStatus: savedFilters?.bookingStatus
+          ? savedFilters.bookingStatus
+          : "",
+        pageNumber: currentPage + 1,
+        pageSize: PAGE_LIMIT,
+      });
+    }
+  };
 
-  //           confirmButtonText: "OK",
-  //           icon: "success",
-  //           customClass: {
-  //             confirmButton: "swal-custom-btn",
-  //             popup: "elegant-swal-popup",
-  //             icon: "small-swal-icon",
-  //           },
-  //           timer: 2000,
-  //           width: "360px",
-  //           showConfirmButton: false,
-  //         });
-  //       } else {
-  //         setInitiatRefundModal(false);
-  //         Swal.fire({
-  //           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //               ${res.response?.data?.message}
-  //             </div>`,
-  //           icon: "info",
-  //           width: "360px",
-
-  //           customClass: {
-  //             popup: "custom-swal-popup",
-  //             confirmButton: "swal-custom-btn",
-  //             icon: "small-swal-icon",
-  //           },
-  //           confirmButtonText: "OK",
-  //           background: "#ffffff",
-  //         });
-  //       }
-  //     } catch (err) {
-  //       setInitiatRefundModal(false);
-  //       Swal.fire({
-  //         title: "Failed!",
-  //         text: `Refund failed. Please try again.`,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     } finally {
-
-  //     }
-  //   };
-
-  // const handleRegenerateTicket = async () => {
-  //   try {
-  //     const res = await fetchAmrabadRegenerateTicket({orderId:RegenerateTicketOrderId});
-  //     console.log("API Response:", res);
-  //     setOpenRegenerateTicketModal(false);
-  //     if (res.response?.status === 200) {
-  //       const resultMsg = res.response?.data?.message;
-  //       Swal.fire({
-  //         title: "Success!",
-  //         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //             ${resultMsg}
-  //           </div>`,
-  //         confirmButtonText: "OK",
-  //         icon: "success",
-  //         customClass: {
-  //           confirmButton: "swal-custom-btn",
-  //           popup: "elegant-swal-popup",
-  //           icon: "small-swal-icon",
-  //         },
-  //         timer: 2000,
-  //         width: "360px",
-  //         showConfirmButton: false,
-  //       });
-  //     }
-  //     else {
-  //       setOpenRegenerateTicketModal(false);
-  //       Swal.fire({
-  //         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-  //             ${res.response?.data?.message}
-  //           </div>`,
-  //         icon: "info",
-  //         width: "360px",
-  //         customClass: {
-  //           popup: "custom-swal-popup",
-  //           confirmButton: "swal-custom-btn",
-  //           icon: "small-swal-icon",
-  //         },
-  //         confirmButtonText: "OK",
-  //         background: "#ffffff",
-  //       });
-  //     }
-  //   }
-  //   catch (err) {
-  //     console.error("Error during regenerate ticket:", err);
-  //     setOpenRegenerateTicketModal(false);
-  //     Swal.fire({
-  //       title: "Failed!",
-  //       text: `Regenerate ticket failed. Please try again.`,
-  //       icon: "error",
-  //       confirmButtonText: "OK",
-  //     });
-  //   }
-  //   finally {
-  //     setOpenRegenerateTicketModal(false);
-  //   }
-  // };
+  const handleRegenerateTicket = async () => {
+    //  console.log("RegeneratePassPayload",RegeneratePassPayload)
+    try {
+      const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
+      console.log("API Response:", res);
+      setOpenRegenerateTicketModal(false);
+      if (res.response?.status === 200) {
+        const resultMsg = res.response?.data?.message;
+        Swal.fire({
+          title: "Success!",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${resultMsg}
+            </div>`,
+          confirmButtonText: "OK",
+          icon: "success",
+          customClass: {
+            confirmButton: "swal-custom-btn",
+            popup: "elegant-swal-popup",
+            icon: "small-swal-icon",
+          },
+          timer: 2000,
+          width: "360px",
+          showConfirmButton: false,
+        });
+      } else {
+        setOpenRegenerateTicketModal(false);
+        Swal.fire({
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${res.response?.data?.message}
+            </div>`,
+          icon: "info",
+          width: "360px",
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
+      }
+    } catch (err) {
+      console.error("Error during regenerate ticket:", err);
+      setOpenRegenerateTicketModal(false);
+      Swal.fire({
+        title: "Failed!",
+        text: `Regenerate ticket failed. Please try again.`,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setOpenRegenerateTicketModal(false);
+    }
+  };
 
   const columnDefs = useMemo(
     () => [
@@ -282,14 +312,14 @@ const BusPassBookingReportList = () => {
         headerClass: "text-blue-v2",
       },
       {
-        field: "paymentTransactionID",
+        field: "transactionId",
         headerName: "Transaction ID",
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
       {
-        field: "Type of Bus passes",
+        field: "passTypeName",
         headerName: "Type of Bus passes",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -297,7 +327,7 @@ const BusPassBookingReportList = () => {
       },
       // ------------------
       {
-        field: "Login Mobile No",
+        field: "loginMobileNo",
         headerName: "Login Mobile No",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -311,23 +341,28 @@ const BusPassBookingReportList = () => {
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
       {
-        field: "User Mobile No",
+        field: "userMobileNo",
         headerName: "User Mobile No",
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
-
       {
-        field: "Order ID",
+        field: "orderId",
         headerName: "Order ID",
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
-
       {
-        field: "Booking Date",
+        field: "bookingId",
+        headerName: "Booking Id",
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      },
+      {
+        field: "bookingDate",
         headerName: "Booking Date",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -335,7 +370,7 @@ const BusPassBookingReportList = () => {
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
-        field: "Bus Pass Validity Start Time",
+        field: "busPassValidityStartTime",
         headerName: "Bus Pass Validity Start Time",
         // maxWidth: 170,
         headerClass: "text-blue-v2",
@@ -343,7 +378,7 @@ const BusPassBookingReportList = () => {
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
-        field: "Bus Pass Validity End Time",
+        field: "busPassValidityEndTime",
         headerName: "Bus Pass Validity End Time",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -351,9 +386,8 @@ const BusPassBookingReportList = () => {
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       // -------------------
-
       {
-        field: "ID Card Amount",
+        field: "idCardAmount",
         headerName: "ID Card Amount",
         // minWidth: 130,
         maxWidth: 140,
@@ -363,7 +397,7 @@ const BusPassBookingReportList = () => {
         // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
       },
       {
-        field: "Bus Pass Amount",
+        field: "busPassAmount",
         headerName: "Bus Pass Amount",
         maxWidth: 150,
         // flex: 1,
@@ -372,7 +406,7 @@ const BusPassBookingReportList = () => {
         // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
       },
       {
-        field: "Total Amount",
+        field: "totalAmount",
         headerName: "Total Amount",
         minWidth: 130,
         maxWidth: 130,
@@ -382,7 +416,7 @@ const BusPassBookingReportList = () => {
         // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
       },
       {
-        field: "Booking  Status",
+        field: "bookingStatus",
         headerName: "Booking  Status",
         minWidth: 160,
         maxWidth: 160,
@@ -390,9 +424,8 @@ const BusPassBookingReportList = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
-
       {
-        field: "Type of  Pass",
+        field: "typeOfPass",
         headerName: "Type of  Pass",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -400,7 +433,7 @@ const BusPassBookingReportList = () => {
       },
 
       {
-        field: "paymentType",
+        field: "paymentMode",
         headerName: "Payment Type",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -408,14 +441,14 @@ const BusPassBookingReportList = () => {
       },
 
       {
-        field: "paymentStatus",
+        field: "currentPaymentStatus",
         headerName: "Payment Status",
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
       {
-        field: "actualPaytmStatus",
+        field: "paytmPaymentStatus",
         headerName: "Actual Paytm Status",
         // flex: 1,
         headerClass: "text-blue-v2",
@@ -435,7 +468,7 @@ const BusPassBookingReportList = () => {
         valueFormatter: (params) => params.value || "N/A",
       },
       {
-        field: "refund_Intiate_Date",
+        field: "refundDate",
         headerName: "Refund Initiated Date",
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value || "N/A",
@@ -447,7 +480,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 140,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
+          const isDisabled = params.data.paytmPaymentStatus === "TXN_SUCCESS";
           // || params.data.isTicketGenerated;
 
           return (
@@ -460,7 +493,7 @@ const BusPassBookingReportList = () => {
                 }`}
                 onClick={() => {
                   if (!isDisabled) {
-                    setVerifyData(params.data.transaactionID);
+                    setVerifyData(params.data.orderId);
                     setOpenVerifyModal(true);
                   }
                 }}
@@ -478,9 +511,8 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isTicketGenerated;
+          const isDisabled = params.data.isPassGenerated;
           // || params.data.isTicketGenerated;
-
           return (
             <div className="flex justify-center mt-1">
               <button
@@ -491,7 +523,10 @@ const BusPassBookingReportList = () => {
                 }`}
                 onClick={() => {
                   if (!isDisabled) {
-                    setRegenerateTicketOrderId(params.data.transaactionID);
+                    const finalPayload = true
+                      ? params.data.bookingRequestJson
+                      : params.data.renewalRequestJson;
+                    setRegeneratePassPayload(finalPayload);
                     setOpenRegenerateTicketModal(true);
                   }
                 }}
@@ -510,7 +545,9 @@ const BusPassBookingReportList = () => {
         //   hide: email === "esdadmin@gmail.com",
         cellRenderer: (params) => {
           // console.log("params",params)
-          const isDisabled = params.data.canInitiateRefund;
+          // const isDisabled = params.data.canInitiateRefund;
+
+          const isDisabled = true;
           return (
             <div className="flex justify-center mt-1">
               <>
@@ -522,7 +559,7 @@ const BusPassBookingReportList = () => {
                   }`}
                   // disabled={params.data.refundStatus != "Not Refunded"}
                   onClick={() => {
-                    setRefundOrderId(params.data.transaactionID);
+                    setRefundOrderId(params.data.orderId);
                     setInitiatRefundModal(true);
                   }}
                 >
@@ -541,21 +578,22 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          // const isDisabled = params.data.isTicketGenerated;
-          // || params.data.isTicketGenerated;
-
+          const isDisabled = !params.data.bookingId;
           return (
             <div className="flex justify-center mt-1">
               <button
                 className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                  false
+                  isDisabled
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-blue-v2 text-white hover:bg-blue-v1"
                 }`}
                 onClick={() => {
                   setIsViewBusPassOpen(true);
+                  setViewTicketDetails({
+                    passId: params.data.bookingId,
+                  });
                 }}
-                disabled={false}
+                disabled={isDisabled}
               >
                 View Bus Pass
               </button>
@@ -568,8 +606,12 @@ const BusPassBookingReportList = () => {
   );
 
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
-
+    fetchRtcBusPassBookingData({
+      ...values,
+      pageNumber: currentPage + 1,
+      pageSize: PAGE_LIMIT,
+    });
+    // toast.error("error.message");
     localStorage.setItem(
       "bus-pass-booking-report-filters",
       JSON.stringify(values)
@@ -578,8 +620,9 @@ const BusPassBookingReportList = () => {
 
   return (
     <div>
+      <ToastContainer />
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, resetForm }) => (
+        {({ values, setFieldValue, resetForm, setValues }) => (
           <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 gap-3 py-3">
             {/* from date */}
             <div>
@@ -735,6 +778,26 @@ const BusPassBookingReportList = () => {
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
+                  setValues({
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    transactionId: "",
+                    BusPassType: "",
+                    typeOfPayment: "",
+                    bookingStatus: "",
+                  });
+                  fetchRtcBusPassBookingData({
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    transactionId: "",
+                    BusPassType: "",
+                    typeOfPayment: "",
+                    bookingStatus: "",
+                    pageNumber: currentPage + 1,
+                    pageSize: PAGE_LIMIT,
+                  });
                   localStorage.removeItem("bus-pass-booking-report-filters");
                 }}
               >
@@ -746,9 +809,9 @@ const BusPassBookingReportList = () => {
       </Formik>
       <AgGridTable
         ExportName="UserStatusTransactionReport"
-        rowData={obj}
+        rowData={RtcBusPassBookingRecordsData}
         columnDefs={columnDefs}
-        // isFetchLoading={isRtcTotalTransactionsLoading}
+        isFetchLoading={isFetchRtcBusPassBookingData}
         isPagination={false}
         IsReactPaginate={true}
         setPageLimit={setPAGE_LIMIT}
@@ -756,14 +819,16 @@ const BusPassBookingReportList = () => {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        // totalCount={allBusPassBookingReports[0]?.totalCount}
-        // tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
+        totalCount={RtcBusPassBookingRecordsData[0]?.totalCount}
+        tableHeight={RtcBusPassBookingRecordsData.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
+        showSearch={false}
       />
 
       <ViewBusPass
         isOpen={isViewBusPassOpen}
         onClose={() => setIsViewBusPassOpen(false)}
+        AipData={ViewTicketDetails}
       />
       {/* verify */}
       <PopupModal
@@ -787,7 +852,7 @@ const BusPassBookingReportList = () => {
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {false ? (
+              {isFetchRtcBusPassVerifyStatusData ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"
@@ -834,7 +899,7 @@ const BusPassBookingReportList = () => {
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {false ? (
+              {isFetchRtcBusPassInitiateData ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"

@@ -7,9 +7,10 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-import { useAmarabadTotalTransactionStore } from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalTransactionStore";
-import AmrabadTotalTransactionChart from "../../../../../../pages/amrabad/amrabad_reports/amrabad_total_transactions/charts/AmrabadTotalTransactionChart";
+
 import IntercityTotalTransactionChart from "../charts/IntercityTotalTransactionChart";
+
+import { useIntercityTotalTransactionStore } from "../store/IntercityTotalTransactionStore";
 
 const IntercityOuterReportForm = () => {
   const startOfDay = getStartOfCurrentDay();
@@ -22,14 +23,10 @@ const IntercityOuterReportForm = () => {
   } = AmarabadTotalCommonStore();
 
   const {
-    AmarabadTransactionByReasonData,
-    fetchAmarabadTransactionByReason,
-    isAmarabadTransactionByReasonLoading,
-  } = useAmarabadTotalTransactionStore();
-  console.log(
-    "AmarabadTransactionByReasonData",
-    AmarabadTransactionByReasonData
-  );
+    fetchIntercityTotalTransactions,
+    intercityTotalTransactions,
+    isIntercityTotalTransactionsLoading,
+  } = useIntercityTotalTransactionStore();
 
   // Mock location data - you can replace this with actual API calls
   const departureLocations = [
@@ -49,43 +46,40 @@ const IntercityOuterReportForm = () => {
   ];
 
   useEffect(() => {
-    setInnerFilters({
+    const sanitizedFilters = {
       fromDate: outerFilters.fromDate ?? startOfDay,
       toDate: outerFilters.toDate ?? endOfDay,
-      package: "",
-      house: "",
       departureLocation: outerFilters.departureLocation ?? "",
       arrivalLocation: outerFilters.arrivalLocation ?? "",
       mobileNumber: outerFilters.mobileNumber ?? "",
-    });
-    fetchAmarabadTransactionByReason({
-      fromDate: outerFilters.fromDate ?? startOfDay,
-      toDate: outerFilters.toDate ?? endOfDay,
-      package: "",
-      house: "",
-      departureLocation: outerFilters.departureLocation ?? "",
-      arrivalLocation: outerFilters.arrivalLocation ?? "",
-      mobileNumber: outerFilters.mobileNumber ?? "",
-    });
+    };
+    
+    setInnerFilters(sanitizedFilters);
+    fetchIntercityTotalTransactions(sanitizedFilters);
   }, []);
 
   const initialValues = {
     fromDate: outerFilters.fromDate ?? startOfDay,
     toDate: outerFilters.toDate ?? endOfDay,
-    package: "",
-    house: "",
     departureLocation: outerFilters.departureLocation ?? "",
     arrivalLocation: outerFilters.arrivalLocation ?? "",
     mobileNumber: outerFilters.mobileNumber ?? "",
   };
   const onSubmit = (values) => {
-    console.log("valuesssss", values);
-    setOuterFilters(values);
-    setInnerFilters(values);
-    fetchAmarabadTransactionByReason(values);
+    const sanitizedValues = {
+      fromDate: values.fromDate || "",
+      toDate: values.toDate || "",
+      departureLocation: values.departureLocation || "",
+      arrivalLocation: values.arrivalLocation || "",
+      mobileNumber: values.mobileNumber || "",
+    };
+    
+    setOuterFilters(sanitizedValues);
+    setInnerFilters(sanitizedValues);
+    fetchIntercityTotalTransactions(sanitizedValues);
   };
-  const totalCount = Array.isArray(AmarabadTransactionByReasonData)
-    ? AmarabadTransactionByReasonData.reduce((sum, item) => sum + item.count, 0)
+  const totalCount = Array.isArray(intercityTotalTransactions)
+    ? intercityTotalTransactions.reduce((sum, item) => sum + item.count, 0)
     : 0;
   return (
     <>
@@ -201,36 +195,18 @@ const IntercityOuterReportForm = () => {
                 type="button"
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                 onClick={() => {
-                  setValues({
+                  const resetValues = {
                     fromDate: startOfDay,
                     toDate: endOfDay,
                     departureLocation: "",
                     arrivalLocation: "",
                     mobileNumber: "",
-                  });
-                  // resetOuterFilters();
-                  // resetInnerFilters();
-                  resetOuterFilters({
-                    fromDate: startOfDay,
-                    toDate: endOfDay,
-                    departureLocation: "",
-                    arrivalLocation: "",
-                    mobileNumber: "",
-                  });
-                  setInnerFilters({
-                    fromDate: startOfDay,
-                    toDate: endOfDay,
-                    departureLocation: "",
-                    arrivalLocation: "",
-                    mobileNumber: "",
-                  });
-                  fetchAmarabadTransactionByReason({
-                    fromDate: startOfDay, 
-                    toDate: endOfDay,
-                    departureLocation: "",
-                    arrivalLocation: "",
-                    mobileNumber: "",
-                  });
+                  };
+                  
+                  setValues(resetValues);
+                  resetOuterFilters(resetValues);
+                  setInnerFilters(resetValues);
+                  fetchIntercityTotalTransactions(resetValues);
                 }}
               >
                 Reset
@@ -245,13 +221,13 @@ const IntercityOuterReportForm = () => {
           <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
             {/* <Loader/> */}
 
-            {isAmarabadTransactionByReasonLoading && (
+            {isIntercityTotalTransactionsLoading && (
               <div className="ag-table-body-loader backdrop-blur-sm bg-white/30 z-10 items-start pt-[150px]">
                 <div className="loader"></div>
               </div>
             )}
             <IntercityTotalTransactionChart
-              data={totalCount !== 0 ? AmarabadTransactionByReasonData : []}
+              data={totalCount !== 0 ? intercityTotalTransactions : []}
               title="Total Transactions"
               angleKey="count"
               calloutLabelKey="paymentCategory"
