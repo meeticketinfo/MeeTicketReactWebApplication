@@ -6,7 +6,7 @@ import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;

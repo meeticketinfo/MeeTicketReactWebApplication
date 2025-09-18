@@ -27,12 +27,12 @@ const getCurrentDateWithEndTime = () => {
   const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}T23:59`;
 };
-import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../../../Breadcrumb";
 
 import BusPassNotGeneratedChart from "../../charts/BusPassNotGeneratedChart";
-import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcNotGenerated = () => {
   const startOfDay = getStartOfCurrentDay();

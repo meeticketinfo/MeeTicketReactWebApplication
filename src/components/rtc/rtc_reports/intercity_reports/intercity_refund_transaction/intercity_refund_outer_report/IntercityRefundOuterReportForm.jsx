@@ -6,7 +6,7 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
-import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";

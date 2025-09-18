@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
-import busPassTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import busPassTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../Breadcrumb";
 import BusPassTotalTransactionForm from "./outer_report/BusPassTotalTransactionForm";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 // import { formatDateTime } from "../../../../../utils/Helper";

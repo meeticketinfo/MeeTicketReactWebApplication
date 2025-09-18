@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from "formik";
-import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
-import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../../utils/Helper";
 import { useEffect } from "react";
 

@@ -26,6 +26,8 @@ const BusPassRefundTransactionsReport = () => {
         fetchBusPassInitiateRefundOrderId,
         isInitiateRefund,
     } = useRtcRefundStore();
+
+    console.log("refundBusPassTransactionsInnerReport", refundBusPassTransactionsInnerReport);
     const columnDefs = [
         {
             field: "sno",

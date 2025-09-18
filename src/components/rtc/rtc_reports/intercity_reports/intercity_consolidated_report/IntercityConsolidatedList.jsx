@@ -1,100 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { Field, Form, Formik } from "formik";
 import { NavLink } from "react-router-dom";
-import Select from "react-select";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { formatToStandardDate, getCurrentDate } from "../../../../../utils/TypographyHelper";
-import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
-import { useEntityTypesStore } from "../../../../../store/masters/entityTypesStore";
-import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
-import useAuthStore from "../../../../../store/authStore";
-import { useParkStore } from "../../../../../store/masters/parksStore";
+import {
+  formatToStandardDate,
+  getCurrentDate,
+} from "../../../../../utils/TypographyHelper";
 import IntercityConsolidatedReportForm from "./IntercityConsolidatedReportForm";
 function IntercityConsolidatedList() {
-  const { roleDetails } = useAuthStore();
-
-  const role = roleDetails?.name;
-  const {
-    fetchCompleteBookingsReport,
-    allCompleteBookingsReports,
-    setisCompleteBookings,
-    isCompleteBookingsReportsLoading,
-  } = useBookingsStore();
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-  const {
-    allParkBankTransactions,
-    fetchParkBankTransactions,
-    isFetchAllParkBankTransactionsLoading,
-    allParks,
-    fetchAllParks,
-  } = useParkStore();
-  const [isBookingDate, setIsBookingDate] = useState(false);
   const savedFilters = JSON.parse(
-    localStorage.getItem("completed-booking-report-filters")
+    localStorage.getItem("intercity-consolidated-filters")
   );
-
-  useEffect(() => {
-    fetchCompleteBookingsReport({
-      startDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-      bookingSource: savedFilters?.typeOfBooking
-        ? savedFilters.typeOfBooking
-        : "",
-      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId: savedFilters?.departmentId
-        ? savedFilters.departmentId
-        : null,
-      entityTypeId: savedFilters?.entityTypeId
-        ? savedFilters.entityTypeId
-        : null,
-      parkId: savedFilters?.parkId ? savedFilters.parkId : null,
-    });
-    console.log("savedFilters", savedFilters);
-  }, [fetchCompleteBookingsReport]);
-
-  useEffect(() => {
-    fetchAllEntityTypes();
-    fetchAllParks();
-    if (role === "ROLE_SUPERADMIN") {
-      fetchAllDepartmentTypes();
-    }
-  }, []);
-  const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    entityId: savedFilters?.entityId ? savedFilters.entityId : null,
-    departmentId: savedFilters?.departmentId ? savedFilters.departmentId : null,
-    typeOfBooking: savedFilters?.typeOfBooking
-      ? savedFilters.typeOfBooking
-      : "",
-    phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-    parkId: savedFilters?.parkId ? savedFilters.parkId : null,
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
   };
+  // useEffect(() => {
+  //   fetchCompleteBookingsReport({
+  //     fromDate: savedFilters?.fromDate
+  //       ? savedFilters.fromDate
+  //       : getCurrentDate(),
+  //     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+  //     mobileNumber: savedFilters?.mobileNumber
+  //       ? savedFilters.mobileNumber
+  //       : null,
+  //     bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : null,
+  //     pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
+  //       ? savedFilters.pnrOrReturnPnr
+  //       : null,
+  //     typeOfBooking: savedFilters?.typeOfBooking
+  //       ? savedFilters.typeOfBooking
+  //       : null,
+  //     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : null,
+  //     orderId: savedFilters?.orderId ? savedFilters.orderId : null,
+  //     transactionId: savedFilters?.transactionId
+  //       ? savedFilters.transactionId
+  //       : null,
+  //     seatLayoutType: savedFilters?.seatLayoutType
+  //       ? savedFilters.seatLayoutType
+  //       : null,
+  //     busType: savedFilters?.busType ? savedFilters.busType : null,
+  //     bookingStatus: savedFilters?.bookingStatus
+  //       ? savedFilters.bookingStatus
+  //       : null,
+  //     departureLocation: savedFilters?.departureLocation
+  //       ? savedFilters.departureLocation
+  //       : "",
+  //     arrivalLocation: savedFilters?.arrivalLocation
+  //       ? savedFilters.arrivalLocation
+  //       : "",
+  // ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
+  // returnTicketId: savedFilters?.returnTicketId
+  //   ? savedFilters.returnTicketId
+  //   : "",
+  //   });
 
-  const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
-
-    localStorage.setItem(
-      "completed-booking-report-filters",
-      JSON.stringify(values)
-    );
-    fetchCompleteBookingsReport({
-      startDate: !isBookingDate ? values.fromDate : null,
-      endDate: !isBookingDate ? values.toDate : null,
-      bookingDateFrom: isBookingDate ? values.fromDate : null,
-      bookingDateTo: isBookingDate ? values.toDate : null,
-      departmentId: values.departmentId,
-      entityTypeId: values.entityId,
-      bookingSource: values.typeOfBooking,
-      mobileNumber: values.phoneNumber ? values.phoneNumber : null,
-      parkId: values.parkId ? values.parkId : null,
-    });
-    console.log("values", values);
-  };
+  // }, []);
 
   const [columnDefs] = useState([
     {
@@ -169,20 +130,7 @@ function IntercityConsolidatedList() {
       field: "purchaseDate",
       headerName: "MID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
     {
@@ -260,37 +208,25 @@ function IntercityConsolidatedList() {
   return (
     <div>
       <IntercityConsolidatedReportForm
-        onSearch={(values) => {
-          fetchCompleteBookingsReport({
-            startDate: !isBookingDate ? values.fromDate : null,
-            endDate: !isBookingDate ? values.toDate : null,
-            bookingDateFrom: isBookingDate ? values.fromDate : null,
-            bookingDateTo: isBookingDate ? values.toDate : null,
-            departmentId: values.departmentId,
-            entityTypeId: values.entityId,
-            bookingSource: values.typeOfBooking,
-            mobileNumber: values.phoneNumber ? values.phoneNumber : null,
-            parkId: values.parkId ? values.parkId : null,
-            paymentMode: values.paymentMode || null,
-            orderId: values.orderId || null,
-            transactionId: values.transactionId || null,
-            seatLayoutType: values.seatLayoutType || null,
-            busType: values.busType || null,
-            bookingStatus: values.bookingStatus || null,
-            departureLocation: values.departureLocation || null,
-            arrivalLocation: values.arrivalLocation || null,
-            pnrOrReturnPnr: values.pnrOrReturnPnr || null,
-          });
-        }}
+        pageNumber={currentPage + 1}
+        pageSize={PAGE_LIMIT}
+        SetcurrentPage={setCurrentPage}
       />
       <AgGridTable
-        ExportName="Completed Bookings Details"
-        isFetchLoading={isCompleteBookingsReportsLoading}
-        rowData={allCompleteBookingsReports || []}
+        ExportName="Intercity Consolidated Report"
+        // rowData={RtcTotalTransactionsData}
         columnDefs={columnDefs}
-        // onPageChange={handlePageChange}
-        // totalRecords={totalEntityBookingRecords}
-        // enableAdvancedFilter={true}
+        // isFetchLoading={isRtcTotalTransactionsLoading}
+        // isPagination={false}
+        // IsReactPaginate={true}
+        // setPageLimit={setPAGE_LIMIT}
+        // pageLimit={PAGE_LIMIT}
+        // handlePageClick={handlePageClick}
+        // currentPage={currentPage}
+        // showTotalCount={true}
+        // totalCount={RtcTotalTransactionsData[0]?.totalCount}
+        // tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
+        // SetcurrentPage={setCurrentPage}
       />
     </div>
   );

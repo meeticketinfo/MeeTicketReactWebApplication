@@ -35,6 +35,7 @@ const AmarabdAvailabilityInnerList = () => {
   const savedFilters = JSON.parse(
     localStorage.getItem("amrabad-availability-inner-report-filters")
   );
+  console.log("savedFilters", savedFilters);
 
 // Helper function to remove time from date string
   const removeTimeFromDate = (dateString) => {
@@ -53,7 +54,7 @@ const AmarabdAvailabilityInnerList = () => {
   useEffect(() => {
     fetchAllAmrabadHouseWiseReports({
       startDate: removeTimeFromDate(bookingDate) || (savedFilters?.fromDate ?? getCurrentDate()),
-      endDate: getNextDayDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
+      endDate: removeTimeFromDate(bookingDate) || (savedFilters?.toDate ?? getCurrentDate()),
       bookingSource: "Booking",
       mobileNumber: savedFilters?.phoneNumber || "",
       PaymentMode: savedFilters?.PaymentMode || "",
@@ -86,6 +87,13 @@ const AmarabdAvailabilityInnerList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
+    {
+      field: "bookingStatus",
+      headerName: "Booking Status",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
@@ -180,7 +188,7 @@ const AmarabdAvailabilityInnerList = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "totalAmount",
+      field: "housePaidAmount",
       headerName: "Amount Paid (House Wise)",
       // flex: 1,
       headerClass: "text-blue-v2",

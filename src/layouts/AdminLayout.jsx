@@ -18,7 +18,7 @@ function AdminLayout({ children }) {
       <div className="absolute bg-gray-300 w-80 h-80 rounded-full opacity-30 -top-36 -left-20" />
       <div className="absolute bg-gray-300 w-40 h-40 rounded-full opacity-20 top-40 -right-20 hidden md:block" />
       {/* <div className="absolute bg-gray-300 w-80 h-80 rounded-full opacity-20 top-10 right-80" /> */}
-      <div className="absolute bg-gray-300 w-48 h-48 rounded-full opacity-25 -bottom-32 left-40" />
+    
       {/* <ToastContainer position="top-right" autoClose={3000} /> */}
       {/* Sidebar */}
       <Sidebar
@@ -27,11 +27,11 @@ function AdminLayout({ children }) {
       />
 
       {/* Content area */}
-      <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="relative flex flex-col flex-1 overflow-hidden">
         {/*  Site header */}
         <Header />
 
-        <main className="grow">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
           {/* Dashboard actions */}
           {children}
         </main>
