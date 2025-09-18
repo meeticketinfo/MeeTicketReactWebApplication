@@ -20,6 +20,8 @@ const IntercityFailedGatewayChart = ({
   mobileNumber,
   fromDate,
   toDate,
+  arrivalLocation,
+  departureLocation,
 
   // filters,
 }) => {
@@ -98,12 +100,14 @@ const IntercityFailedGatewayChart = ({
               fromDate || ""
             }&toDate=${toDate || ""}&status=${
               outerFilters.status || ""
-            }&subCategory=`}
+            }&subCategory=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
                 status: outerFilters.status,
                 subCategory: "",
+                arrivalLocation: arrivalLocation,
+                departureLocation: departureLocation,
               });
             }}
             className="text-[#007AFF] font-bold underline ml-1"
@@ -147,7 +151,7 @@ const IntercityFailedGatewayChart = ({
                           <Link
                               to={`/intercity-failed-gateway-report??status=${
                                 outerFilters.status || ""
-                              }&mobileNumber=${mobileNumber || ""}&fromDate=${
+                              }&mobileNumber=${mobileNumber || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&fromDate=${
                                 fromDate || ""
                               }&toDate=${toDate || ""}&status=${
                                 outerFilters.status || ""
@@ -163,6 +167,8 @@ const IntercityFailedGatewayChart = ({
                                 mobileNumber: mobileNumber,
                                 fromDate: fromDate,
                                 toDate: toDate,
+                                arrivalLocation: arrivalLocation,
+                                departureLocation: departureLocation,
                               });
                             }}
                           >
@@ -174,7 +180,7 @@ const IntercityFailedGatewayChart = ({
                         <Link
                           to={`/intercity-failed-gateway-report??status=${
                             outerFilters.status || ""
-                          }&mobileNumber=${mobileNumber || ""}&fromDate=${
+                          }&mobileNumber=${mobileNumber || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&fromDate=${
                             fromDate || ""
                           }&toDate=${toDate || ""}&status=${
                             outerFilters.status || ""
@@ -189,6 +195,8 @@ const IntercityFailedGatewayChart = ({
                               mobileNumber: mobileNumber,
                               fromDate: fromDate,
                               toDate: toDate,
+                              arrivalLocation: arrivalLocation,
+                              departureLocation: departureLocation,
                             });
                           }}
                           className="text-[#4A90E2] font-semibold hover:underline text-sm"
