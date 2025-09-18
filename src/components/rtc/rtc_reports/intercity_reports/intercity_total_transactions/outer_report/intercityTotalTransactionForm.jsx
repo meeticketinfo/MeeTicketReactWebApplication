@@ -30,7 +30,7 @@ const IntercityTotalTransactionForm = ({
     fetchTotalTransactionsReport,
   } = useIntercityTotalTransactionStore();
 
-  const { fetchCitiesData } = useIntercityMastersStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
@@ -91,9 +91,6 @@ const IntercityTotalTransactionForm = ({
     fetchTotalTransactionsReport({
       ...values,
       status: status ?? innerFilters.status,
-      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation,
-      departureLocation: departureLocation ?? innerFilters.departureLocation,
-      busType: busType ?? innerFilters.busType,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -103,7 +100,7 @@ const IntercityTotalTransactionForm = ({
       <ToastContainer />
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 py-3">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 py-3">
             <div>
               <label
                 htmlFor="startDate"
@@ -168,6 +165,25 @@ const IntercityTotalTransactionForm = ({
                   setFieldValue("phoneNumber", e.target.value);
                 }}
               />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Bus Type
+              </label>
+              <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
             </div>
             <div>
                 <label className="block text-xs font-medium text-gray-700">

@@ -12,6 +12,8 @@ import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedOtherReasonsChart from "../../charts/IntercityFailedOtherReasonsChart";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
+import { useIntercityMastersStore } from "../../../../../../../store/intercity/masters/intercityMastersStore";
+import SearchableDropdown from "../../../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityFailedOtherReason = () => {
   const location = useLocation();
@@ -27,8 +29,9 @@ const IntercityFailedOtherReason = () => {
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
-console.log("innerFilters", outerFilters);
-  const {  getPackages,} = usePackagesStore();
+  const { getPackages } = usePackagesStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
+    useIntercityMastersStore();
   const {
     fetchPaymentFailedOtherReasons,
     paymentFailedOtherReasons,
@@ -38,6 +41,41 @@ console.log("innerFilters", outerFilters);
   // Pagination state
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+        // setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure locations:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival locations:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    fetchIntercityBusTypesData();
+    fetchDepartureCities();
+    fetchArrivalCities();
+  }, []);
 
   const filtersToUse = {
     fromDate:
@@ -68,7 +106,15 @@ console.log("innerFilters", outerFilters);
       pageSize: PAGE_LIMIT,
     });
     getPackages();
-  }, [arrivalLocation, departureLocation, mobileNumber, fromDate, toDate, currentPage, PAGE_LIMIT]);
+  }, [
+    arrivalLocation,
+    departureLocation,
+    mobileNumber,
+    fromDate,
+    toDate,
+    currentPage,
+    PAGE_LIMIT,
+  ]);
 
   const initialValues = {
     fromDate:
@@ -141,7 +187,9 @@ console.log("innerFilters", outerFilters);
                 fromDate || ""
               }&toDate=${toDate || ""}&arrivalLocation=${
                 arrivalLocation || ""
-              }&departureLocation=${departureLocation || ""}&busType=${busType || ""}`}
+              }&departureLocation=${departureLocation || ""}&busType=${
+                busType || ""
+              }`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -155,7 +203,7 @@ console.log("innerFilters", outerFilters);
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue, setValues }) => (
               <>
-                <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2">
+                <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
                   <div>
                     <label
                       htmlFor="startDate"
@@ -213,96 +261,81 @@ console.log("innerFilters", outerFilters);
                     />
                   </div>
                   <div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Bus Type
+                    </label>
+                    <Field
+                      as="select"
+                      name="busType"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    >
+                      <option value="">All</option>
+                      {IntercityBusTypesData?.filter(
+                        (item) => item.isActive
+                      ).map((item) => (
+                        <option value={item.busTypesName}>
+                          {item.busTypesName}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700">
+                      Departure Location
+                    </label>
+                    <SearchableDropdown
+                      name="departureLocation"
+                      value={values.departureLocation}
+                      onChange={(value) =>
+                        setFieldValue("departureLocation", value)
+                      }
+                      onSearch={fetchDepartureCities}
+                      options={departureCities}
+                      displayKey="cityName"
+                      valueKey="cityId"
+                      placeholder="Search"
+                      minSearchLength={2}
+                      debounceMs={300}
+                      className="mt-1"
+                      inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                      optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                      // loading={isIntercityTotalTransactionsLoading}
+                      noResultsText="No cities found"
+                      loadingText="Searching cities..."
+                      initialDisplayText={values.departureLocation}
+                    />
+                  </div>
+                  <div>
                     <label
                       htmlFor="arrivalLocation"
                       className="block text-xs font-medium text-gray-700"
                     >
                       Arrival Location
                     </label>
-                    <Field
-                      as="select"
+                    <SearchableDropdown
                       name="arrivalLocation"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      onChange={(e) => {
-                        setFieldValue("arrivalLocation", e.target.value);
-                      }}
-                    >
-                      <option value="">Select</option>
-                      <option value="hyderabad">Hyderabad</option>
-                      <option value="warangal">Warangal</option>
-                      <option value="karimnagar">Karimnagar</option>
-                      <option value="nizamabad">Nizamabad</option>
-                      <option value="adilabad">Adilabad</option>
-                      <option value="khammam">Khammam</option>
-                      <option value="medak">Medak</option>
-                      <option value="rangareddy">Rangareddy</option>
-                      <option value="nalgonda">Nalgonda</option>
-                      <option value="mahabubnagar">Mahabubnagar</option>
-                      <option value="siddipet">Siddipet</option>
-                      <option value="yadadri">Yadadri</option>
-                      <option value="suryapet">Suryapet</option>
-                      <option value="jagtial">Jagtial</option>
-                      <option value="rajanna">Rajanna</option>
-                      <option value="peddapalli">Peddapalli</option>
-                      <option value="jayashankar">Jayashankar</option>
-                      <option value="bhupalpally">Bhupalpally</option>
-                      <option value="mulugu">Mulugu</option>
-                      <option value="bhadradri">Bhadradri</option>
-                      <option value="ashwaraopet">Ashwaraopet</option>
-                      <option value="kothagudem">Kothagudem</option>
-                      <option value="mancherial">Mancherial</option>
-                      <option value="komaram">Komaram</option>
-                      <option value="kumuram">Kumuram</option>
-                      <option value="other">Other</option>
-                    </Field>
+                      value={values.arrivalLocation}
+                      onChange={(value) =>
+                        setFieldValue("arrivalLocation", value)
+                      }
+                      onSearch={fetchArrivalCities}
+                      options={arrivalCities}
+                      displayKey="cityName"
+                      valueKey="cityId"
+                      placeholder="Search"
+                      minSearchLength={2}
+                      debounceMs={300}
+                      className="mt-1"
+                      inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                      dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                      optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                      // loading={isIntercityTotalTransactionsLoading}
+                      noResultsText="No cities found"
+                      loadingText="Searching cities..."
+                      initialDisplayText={values.arrivalLocation}
+                    />
                   </div>
-
-                  {/* Departure Location */}
-                  <div>
-                    <label
-                      htmlFor="departureLocation"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Departure Location
-                    </label>
-                    <Field
-                      as="select"
-                      name="departureLocation"
-                      className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      onChange={(e) => {
-                        setFieldValue("departureLocation", e.target.value);
-                      }}
-                    >
-                      <option value="">Select</option>
-                      <option value="hyderabad">Hyderabad</option>
-                      <option value="warangal">Warangal</option>
-                      <option value="karimnagar">Karimnagar</option>
-                      <option value="nizamabad">Nizamabad</option>
-                      <option value="adilabad">Adilabad</option>
-                      <option value="khammam">Khammam</option>
-                      <option value="medak">Medak</option>
-                      <option value="rangareddy">Rangareddy</option>
-                      <option value="nalgonda">Nalgonda</option>
-                      <option value="mahabubnagar">Mahabubnagar</option>
-                      <option value="siddipet">Siddipet</option>
-                      <option value="yadadri">Yadadri</option>
-                      <option value="suryapet">Suryapet</option>
-                      <option value="jagtial">Jagtial</option>
-                      <option value="rajanna">Rajanna</option>
-                      <option value="peddapalli">Peddapalli</option>
-                      <option value="jayashankar">Jayashankar</option>
-                      <option value="bhupalpally">Bhupalpally</option>
-                      <option value="mulugu">Mulugu</option>
-                      <option value="bhadradri">Bhadradri</option>
-                      <option value="ashwaraopet">Ashwaraopet</option>
-                      <option value="kothagudem">Kothagudem</option>
-                      <option value="mancherial">Mancherial</option>
-                      <option value="komaram">Komaram</option>
-                      <option value="kumuram">Kumuram</option>
-                      <option value="other">Other</option>
-                    </Field>
-                  </div>
-               
                   <div className="flex items-end gap-2">
                     <button
                       type="submit"

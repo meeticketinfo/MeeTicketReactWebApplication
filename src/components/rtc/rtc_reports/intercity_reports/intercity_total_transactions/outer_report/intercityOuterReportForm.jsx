@@ -22,9 +22,10 @@ const IntercityOuterReportForm = () => {
     fetchIntercityTotalTransactions,
     intercityTotalTransactions,
     isIntercityTotalTransactionsLoading,
+   
   } = useIntercityTotalTransactionStore();
 
-  const { fetchCitiesData } = useIntercityMastersStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
@@ -65,10 +66,12 @@ const IntercityOuterReportForm = () => {
       departureLocation: outerFilters.departureLocation ?? "",
       arrivalLocation: outerFilters.arrivalLocation ?? "",
       mobileNumber: outerFilters.mobileNumber ?? "",
+      busType: outerFilters.busType ?? "",
     };
 
     setInnerFilters(sanitizedFilters);
     fetchIntercityTotalTransactions(sanitizedFilters);
+    fetchIntercityBusTypesData();
   }, []);
 
   const initialValues = {
@@ -77,6 +80,7 @@ const IntercityOuterReportForm = () => {
     departureLocation: outerFilters.departureLocation ?? "",
     arrivalLocation: outerFilters.arrivalLocation ?? "",
     mobileNumber: outerFilters.mobileNumber ?? "",
+    busType: outerFilters.busType ?? "",
   };
   const onSubmit = (values) => {
     const sanitizedValues = {
@@ -85,6 +89,7 @@ const IntercityOuterReportForm = () => {
       departureLocation: values.departureLocation || "",
       arrivalLocation: values.arrivalLocation || "",
       mobileNumber: values.mobileNumber || "",
+      busType: values.busType || "",
     };
     setOuterFilters(sanitizedValues);
     setInnerFilters(sanitizedValues);
@@ -98,7 +103,7 @@ const IntercityOuterReportForm = () => {
       <ToastContainer />
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
             <div>
               <label
                 htmlFor="startDate"
@@ -154,6 +159,25 @@ const IntercityOuterReportForm = () => {
               />
             </div>
             <div>
+              <label className="block text-xs font-medium text-gray-700">
+               Bus Type
+              </label>
+              <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
+            </div>
+            <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Departure Location
                 </label>
@@ -172,7 +196,7 @@ const IntercityOuterReportForm = () => {
                   inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                   optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={isIntercityTotalTransactionsLoading}
+                  // loading={isIntercityTotalTransactionsLoading}
                   noResultsText="No cities found"
                   loadingText="Searching cities..."
                   initialDisplayText={values.departureLocation}
@@ -202,7 +226,7 @@ const IntercityOuterReportForm = () => {
                 inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                loading={isIntercityTotalTransactionsLoading}
+                // loading={isIntercityTotalTransactionsLoading}
                 noResultsText="No cities found"
                 loadingText="Searching cities..."
                 initialDisplayText={values.arrivalLocation}
@@ -226,6 +250,7 @@ const IntercityOuterReportForm = () => {
                       departureLocation: "",
                     arrivalLocation: "",
                     mobileNumber: "",
+                    busType: "",
                   };
 
                   setValues(resetValues);

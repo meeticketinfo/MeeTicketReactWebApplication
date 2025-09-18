@@ -115,6 +115,9 @@ const InetercityTotalReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            arrivalLocation: params.data.arrivalLocation,
+            departureLocation: params.data.departureLocation,
+            busType: params.data.busType,
           }}
         >
           View Track Order
@@ -144,22 +147,24 @@ const InetercityTotalReport = () => {
       valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,
     },
     {
-      field: "totalCount",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
    
+    
     {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
+      field: "departureLocation",
+      headerName: "Departure Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "departureLocation",
-      headerName: "Departure Location",
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",

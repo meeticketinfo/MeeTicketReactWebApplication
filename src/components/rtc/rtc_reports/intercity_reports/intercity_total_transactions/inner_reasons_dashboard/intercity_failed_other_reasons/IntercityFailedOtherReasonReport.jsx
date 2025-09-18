@@ -17,8 +17,9 @@ import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTra
 const IntercityFailedOtherReasonReport = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const packageName = searchParams.get("package");
-  const house = searchParams.get("house");
+  const arrivalLocation = searchParams.get("arrivalLocation");
+  const departureLocation = searchParams.get("departureLocation");
+  const busType = searchParams.get("busType");
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
@@ -60,12 +61,11 @@ const IntercityFailedOtherReasonReport = () => {
         deepInnerFilters.mobileNumber ??
         innerFilters.mobileNumber ??
         "",
-      PaymentMode: deepInnerFilters.PaymentMode ?? "",
       status: status ?? innerFilters.status ?? "",
       subCategory: subCategory ?? innerFilters.subCategory ?? "",
-      package:
-        packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
+      departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
+      busType: busType ?? innerFilters.busType ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -153,16 +153,8 @@ const IntercityFailedOtherReasonReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "totalCount",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-   
-    {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
-      // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -173,6 +165,14 @@ const IntercityFailedOtherReasonReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+    {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      // maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+  
     {
       field: "amount",
       headerName: "Amount",
@@ -262,9 +262,7 @@ const IntercityFailedOtherReasonReport = () => {
             <Link
               to={`/intercity-failed-other-reason?status=${
                 status || ""
-              }&package=${packageName || ""}&house=${
-                house || ""
-              }&mobileNumber=${mobileNumber || ""}&fromDate=${
+              }arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&busType=${busType || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${
                 fromDate || ""
               }&toDate=${toDate || ""}&subCategory=${encodeURIComponent(
                 subCategory || ""
@@ -284,14 +282,15 @@ const IntercityFailedOtherReasonReport = () => {
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
-            packageName={packageName}
-            house={house}
             mobileNumber={mobileNumber}
             fromDate={fromDate}
             toDate={toDate}
+            arrivalLocation={arrivalLocation}
+            departureLocation={departureLocation}
+            busType={busType}
             status={status}
             subCategory={subCategory}
-          />
+              />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={totalTransactionsReport}

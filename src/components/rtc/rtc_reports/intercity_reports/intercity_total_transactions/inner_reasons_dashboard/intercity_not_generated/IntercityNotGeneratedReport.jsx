@@ -15,13 +15,14 @@ const IntercityNotGeneratedReport = () => {
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const packageName = searchParams.get("package");
-  const house = searchParams.get("house");
   const mobileNumber = searchParams.get("mobileNumber");
   const fromDate = searchParams.get("fromDate");
   const toDate = searchParams.get("toDate");
   const subCategory = searchParams.get("subCategory");
   const status = searchParams.get("status");
+  const arrivalLocation = searchParams.get("arrivalLocation");
+  const departureLocation = searchParams.get("departureLocation");
+  const busType = searchParams.get("busType");
   const {innerFilters,outerFilters,deepInnerFilters,resetDeepInnerFilters} = useAmrabadTotalCommonStore();
 
   const {
@@ -44,8 +45,9 @@ const IntercityNotGeneratedReport = () => {
       departureLocation: deepInnerFilters.departureLocation ?? innerFilters.departureLocation ?? outerFilters.departureLocation ?? "",
       status: status ?? innerFilters.status ?? outerFilters.status ?? "",
       subCategory: subCategory ?? innerFilters.subCategory ?? outerFilters.subCategory ?? "",
-      package: packageName ?? innerFilters.package ?? outerFilters.package ?? "",
-      house: house ?? innerFilters.house ?? outerFilters.house ?? "",
+      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? outerFilters.arrivalLocation ?? "",
+      departureLocation: departureLocation ?? innerFilters.departureLocation ?? outerFilters.departureLocation ?? "",
+      busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
@@ -133,22 +135,23 @@ const IntercityNotGeneratedReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "totalCount",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-   
+
     {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
+      field: "departureLocation",
+      headerName: "Departure Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+       
     {
-      field: "departureLocation",
-      headerName: "Departure Location",
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -234,7 +237,7 @@ const IntercityNotGeneratedReport = () => {
           </div>
           <div className="">
             <Link
-              to={`/intercity-not-generated?package=${packageName || ""}&house=${house || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
+              to={`/intercity-not-generated?arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&busType=${busType || ""}&mobileNumber=${mobileNumber || ""}&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=${encodeURIComponent(subCategory || "")}`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetDeepInnerFilters();
@@ -254,7 +257,10 @@ const IntercityNotGeneratedReport = () => {
             fromDate={fromDate}
             toDate={toDate}
             subCategory={subCategory}
-          />
+            arrivalLocation={arrivalLocation}
+            departureLocation={departureLocation}
+            busType={busType}
+            />
            <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={totalTransactionsReport}

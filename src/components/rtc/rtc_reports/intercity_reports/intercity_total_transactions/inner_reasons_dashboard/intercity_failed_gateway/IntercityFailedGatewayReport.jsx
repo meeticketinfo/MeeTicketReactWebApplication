@@ -17,6 +17,9 @@ const IntercityFailedGatewayReport = () => {
   const toDate = searchParams.get("toDate");
   const subCategory = searchParams.get("subCategory");
   const status = searchParams.get("status");
+  const arrivalLocation = searchParams.get("arrivalLocation");
+  const departureLocation = searchParams.get("departureLocation");
+  const busType = searchParams.get("busType");
   const {
     innerFilters,
     outerFilters,
@@ -49,6 +52,9 @@ const IntercityFailedGatewayReport = () => {
         innerFilters.mobileNumber ??
         "",
       PaymentMode: deepInnerFilters.mobileNumber ?? "",
+      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
+      departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
+      busType: busType ?? innerFilters.busType ?? "",
       status: innerFilters.status ?? "",
       subCategory: subCategory ?? innerFilters.subCategory ?? "",
       pageNumber: currentPage + 1,
@@ -139,22 +145,22 @@ const IntercityFailedGatewayReport = () => {
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "totalCount",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-   
-    {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
-      // maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+
     {
       field: "departureLocation",
       headerName: "Departure Location",
+      // maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },   
+    {
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
       // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -269,7 +275,10 @@ const IntercityFailedGatewayReport = () => {
             fromDate={fromDate}
             toDate={toDate}
             subCategory={subCategory}
-          />
+            arrivalLocation={arrivalLocation}
+            departureLocation={departureLocation}
+            busType={busType}
+            />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
             rowData={totalTransactionsReport}

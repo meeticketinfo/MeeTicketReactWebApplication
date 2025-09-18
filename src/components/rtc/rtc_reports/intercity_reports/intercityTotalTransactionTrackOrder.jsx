@@ -37,13 +37,13 @@ const IntercityTotalTransactionTrackOrder = () => {
   const navigate = useNavigate();
   const {
     orderId,
-    mobileNo,
-    typeOfBusPass,
-    houseNames,
+    mobileNumber,
     date,
     amount,
     bookingId,
-    backTitle,
+    arrivalLocation,
+    departureLocation,
+    busType,
   } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -223,7 +223,7 @@ const IntercityTotalTransactionTrackOrder = () => {
                 Mobile Number
               </h3>
               <p className="text-sm font-semibold text-gray-900">
-                {mobileNo || "N/A"}
+                {mobileNumber || "N/A"}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
@@ -234,10 +234,26 @@ const IntercityTotalTransactionTrackOrder = () => {
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">
-                Type of Bus pass
+                Arrival Location
               </h3>
               <p className="text-sm font-semibold text-gray-900">
-                {typeOfBusPass || "N/A"}
+                {arrivalLocation || "N/A"}
+              </p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Departure Location
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {departureLocation || "N/A"}
+              </p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Bus Type
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {busType || "N/A"}
               </p>
             </div>
           </div>

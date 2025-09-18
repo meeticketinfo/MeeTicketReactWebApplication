@@ -4,6 +4,9 @@ import { useAmarabadTotalTransactionStore } from "../../../../../../../store/ama
 import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import { useIntercityMastersStore } from "../../../../../../../store/intercity/masters/intercityMastersStore";
+import SearchableDropdown from "../../../../../../searchable_dropdown/SearchableDropdown";
+import { useState, useEffect } from "react";
 
 const IntercityFailedGatewayReportForm = ({
   pageNumber,
@@ -15,6 +18,9 @@ const IntercityFailedGatewayReportForm = ({
   fromDate,
   toDate,
   subCategory,
+  arrivalLocation,
+  departureLocation,
+  busType,
 }) => {
   const {
     outerFilters,
@@ -23,8 +29,42 @@ const IntercityFailedGatewayReportForm = ({
     deepInnerFilters,
     resetDeepInnerFilters,
   } = IntercityTotalCommonStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-  const {fetchTotalTransactionsReport} = useIntercityTotalTransactionStore();
+  const { fetchTotalTransactionsReport } = useIntercityTotalTransactionStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
+    useIntercityMastersStore();
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure locations:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival locations:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    fetchIntercityBusTypesData();
+    fetchDepartureCities();
+    fetchArrivalCities();
+  }, []);
+
   const initialValues = {
     startDate:
       fromDate ?? deepInnerFilters.startDate ?? innerFilters.fromDate ?? "",
@@ -42,6 +82,11 @@ const IntercityFailedGatewayReportForm = ({
       deepInnerFilters.mobileNumber ??
       innerFilters.mobileNumber ??
       "",
+    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
+    arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
+    departureLocation:
+      departureLocation ?? innerFilters.departureLocation ?? "",
+    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
   };
 
   const onSubmit = (values) => {
@@ -54,15 +99,14 @@ const IntercityFailedGatewayReportForm = ({
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    getPackages();
     SetcurrentPage(0);
   };
 
   return (
     <>
- <Formik initialValues={initialValues} onSubmit={onSubmit}>
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-6 gap-3 py-3">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-3 py-3">
             <div>
               <label
                 htmlFor="startDate"
@@ -131,52 +175,76 @@ const IntercityFailedGatewayReportForm = ({
             {/*Payment Mode */}
 
             <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Bus Type
+              </label>
+              <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+              <SearchableDropdown
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(value) => setFieldValue("departureLocation", value)}
+                onSearch={fetchDepartureCities}
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
+              />
+            </div>
+            <div>
               <label
                 htmlFor="arrivalLocation"
                 className="block text-xs font-medium text-gray-700"
               >
                 Arrival Location
               </label>
-              <Field
-                as="select"
+              <SearchableDropdown
                 name="arrivalLocation"
-                placeholder="Select Arrival Location"
-                onChange={(e) => {
-                  const arrivalLocationId = e.target.value;
-                        getArrivalLocations(arrivalLocationId);
-                  setFieldValue("arrivalLocation", arrivalLocationId);
-                }}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select</option>
-                {/* {AllArrivalLocations.map((item) => (
-                  <option key={item.arrivalLocationId} value={item.arrivalLocationId}>
-                        {item.arrivalLocationName}
-                  </option>
-                ))} */}
-              </Field>
-            </div>
-            <div>
-              <label
-                htmlFor="departureLocation"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Departure Location
-              </label>
-              <Field
-                as="select"
-                name="departureLocation"
-                placeholder="Select Departure Location"
-                disabled={!values.arrivalLocation || values.arrivalLocation === ""}
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select</option>
-                {/* {AllDepartureLocations.map((item) => (
-                  <option key={item.departureLocationId} value={item.departureLocationId}>
-                    {item.departureLocationName}
-                  </option>
-                ))} */}
-              </Field>
+                value={values.arrivalLocation}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
+                onSearch={fetchArrivalCities}
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
+              />
             </div>
             <div className="flex items-end">
               <button

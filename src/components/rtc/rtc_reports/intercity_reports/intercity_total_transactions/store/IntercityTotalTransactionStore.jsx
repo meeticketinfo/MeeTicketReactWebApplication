@@ -71,7 +71,6 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
       );
-      console.log("response", response);
       set({
         intercityTotalTransactions: response.data,
         isIntercityTotalTransactionsLoading: false,
