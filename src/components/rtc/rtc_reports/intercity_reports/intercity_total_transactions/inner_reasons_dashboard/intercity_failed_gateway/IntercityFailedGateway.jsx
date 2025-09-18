@@ -13,6 +13,7 @@ import SearchableDropdown from "../../../../../../searchable_dropdown/Searchable
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
 import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 import { useIntercityMastersStore } from "../../../../../../../store/intercity/masters/intercityMastersStore";
+import Select from "react-select";
 const IntercityFailedGateway = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);  
@@ -36,6 +37,14 @@ const IntercityFailedGateway = () => {
 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+  const [selectedBusType, setSelectedBusType] = useState(null);
+
+  const busTypeOptions = IntercityBusTypesData
+    ?.filter((item) => item.isActive)
+    ?.map((item) => ({
+      value: item.busTypesName,
+      label: item.busTypesName,
+    })) || [];
 
   const fetchDepartureCities = async (q) => {
     try {
@@ -94,9 +103,6 @@ const IntercityFailedGateway = () => {
       outerFilters.mobileNumber ??
       "",
     busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
-    arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
-    departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
-    busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
   };
   const onSubmit = (values) => {
     setInnerFilters({
@@ -104,8 +110,6 @@ const IntercityFailedGateway = () => {
       arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
       departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
       busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
-      arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
-      departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
     });
     fetchPaymentFailedGateway(values);
   };
@@ -218,16 +222,37 @@ const IntercityFailedGateway = () => {
                       >
                         Bus Type
                       </label>
-                      <Field
-                        as="select"
-                        name="busType"
-                        className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                      >
-                        <option value="">All</option>
-                        {IntercityBusTypesData?.filter((item) => item.isActive).map((item) => (
-                          <option value={item.busTypesName}>{item.busTypesName}</option>
-                        ))}
-                      </Field>
+                      <Select
+                value={selectedBusType}
+                onChange={(selectedOption) => setSelectedBusType(selectedOption)}
+                options={[
+                  { value: "", label: "All" },
+                  ...busTypeOptions
+                ]}
+                isSearchable={true}
+                isClearable={true}
+                placeholder="Search bus type..."
+                className="mt-1"
+                classNamePrefix="react-select"
+                filterOption={(option, inputValue) => {
+                  if (!inputValue) return true;
+                  return option.label.toLowerCase().startsWith(inputValue.toLowerCase());
+                }}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    minHeight: '33px',
+                    fontSize: '14px',
+                    borderRadius: '6px',
+                    borderColor: '#d1d5db',
+                   
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    margin: '0px',
+                  }),
+                }}
+              />
                     </div>
 
                   <div>
@@ -235,6 +260,7 @@ const IntercityFailedGateway = () => {
                       Departure Location
                     </label>
                     <SearchableDropdown
+                      key={`departure-${values.departureLocation || 'empty'}`}
                       name="departureLocation"
                       value={values.departureLocation}
                       onChange={(value) =>
@@ -265,6 +291,7 @@ const IntercityFailedGateway = () => {
                       Arrival Location
                     </label>
                     <SearchableDropdown
+                      key={`arrival-${values.arrivalLocation || 'empty'}`}
                       name="arrivalLocation"
                       value={values.arrivalLocation}
                       onChange={(value) =>
@@ -303,7 +330,7 @@ const IntercityFailedGateway = () => {
                           fromDate: startOfDay,
                           toDate: endOfDay,
                           mobileNumber: "",
-                          arrivalLocation: arrivalLocation ?? "",
+                          arrivalLocation: "",
                           departureLocation: "",
                           busType: "",
                         });
@@ -312,7 +339,7 @@ const IntercityFailedGateway = () => {
                           fromDate: startOfDay,
                           toDate: endOfDay,
                           mobileNumber: "",
-                          arrivalLocation: arrivalLocation ?? "",
+                          arrivalLocation: "",
                           departureLocation: "",
                           busType: "",
                         });

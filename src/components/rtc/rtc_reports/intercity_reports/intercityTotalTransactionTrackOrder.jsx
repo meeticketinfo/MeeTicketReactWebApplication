@@ -197,7 +197,7 @@ const IntercityTotalTransactionTrackOrder = () => {
               </h3>
               <p className="text-sm font-semibold text-gray-900">
                 {orderId || "N/A"}
-                {/* {orderId && orderId != "Not Generated" && (
+                {orderId && orderId != "Not Generated" && (
                   <NavLink
                     end
                     to={`/amrabad-admin/ticket-view-details/${orderId}`}
@@ -207,7 +207,7 @@ const IntercityTotalTransactionTrackOrder = () => {
                   >
                     <span>View Ticket Details</span>
                   </NavLink>
-                )} */}
+                )}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
