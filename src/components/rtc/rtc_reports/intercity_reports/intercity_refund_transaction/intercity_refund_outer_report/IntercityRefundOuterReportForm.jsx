@@ -27,9 +27,11 @@ const IntercityRefundOuterReportForm = () => {
   
   // Add reset trigger state to force SearchableDropdown re-render
   const [resetTrigger, setResetTrigger] = useState(0);
-
+  const [DepartureLoading, setDepartureLoading] = useState(false);
+  const [ArrivalLoading, setArrivalLoading] = useState(false);
   const fetchDepartureCities = async (q) => {
     try {
+      setDepartureLoading(true);
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
@@ -38,11 +40,13 @@ const IntercityRefundOuterReportForm = () => {
       console.error("Error fetching departure cities:", error);
       setDepartureCities([]);
     } finally {
+      setDepartureLoading(false);
     }
   };
 
   const fetchArrivalCities = async (q) => {
     try {
+      setArrivalLoading(true);
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setArrivalCities(response.response.result);
@@ -51,6 +55,7 @@ const IntercityRefundOuterReportForm = () => {
       console.error("Error fetching arrival cities:", error);
       setArrivalCities([]);
     } finally {
+      setArrivalLoading(false);
     }
   };
 
@@ -224,7 +229,7 @@ const IntercityRefundOuterReportForm = () => {
                   inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                   optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={loadingCities}
+                  loading={DepartureLoading}
                   noResultsText="No cities found"
                   loadingText="Searching cities..."
                   initialDisplayText={values.destinationLocation}
@@ -251,7 +256,7 @@ const IntercityRefundOuterReportForm = () => {
                   inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                   optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={isFetchIntercityRefundTransactionsReport}
+                  loading={ArrivalLoading}
                   noResultsText="No cities found"
                   loadingText="Searching cities..."
                   initialDisplayText={values.arrivalLocation}
