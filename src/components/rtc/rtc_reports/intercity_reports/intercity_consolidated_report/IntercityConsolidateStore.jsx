@@ -12,10 +12,10 @@ export const useIntercityConsolidateStore = create((set) => ({
   fetchIntercityConsolidateData: async (payload) => {
     set({ isFetchIntercityConsolidateData: true });
     try {
-      const params = `?fromDate=${payload.fromDate}&toDate=${payload.fromDate}&phoneNumber=${payload.mobileNumber}&busType=${payload.busType}&seatLayoutType=${payload.seatLayoutType}&paymentMode=${payload.paymentMode}&transactionId=${payload.transactionId}&bookingStatus=${payload.bookingStatus}&pNRNumber=${payload.pnrOrReturnPnr}&returnPNRNumber=${payload.pnrOrReturnPnr}&fromStationId=${payload.departureLocation}&toStationId=${payload.arrivalLocation}&ticketId=${payload.ticketId}&returnTicketId=${payload.returnTicketId}&pageNumber=${1}&pageSize=${20}`;
+      const params = `purchaseOrBooking=${payload.purchaseOrBooking}&fromDate=${payload.fromDate}&toDate=${payload.fromDate}&mobileNumber=${payload.mobileNumber}&typeOfBus=${payload.typeOfBus}&seatLayoutType=${payload.seatLayoutType}&paymentMode=${payload.paymentMode}&transactionId=${payload.transactionId}&bookingStatus=${payload.bookingStatus}&PNRNumber=${payload.PNRNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&pageNumber=${1}&pageSize=${20}`;
       const method = "get";
       const response = await apiService[method](
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_INDIVIDUAL_REPORT}?${params}`
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_CONSOLIDATED_REPORT}?${params}`
       );
       set({
         IntercityConsolidateData: response.data,
