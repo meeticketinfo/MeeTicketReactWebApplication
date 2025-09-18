@@ -8,6 +8,8 @@ import {
 } from "../../../../../../utils/Helper";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
+import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
+import SearchableDropdown from "../../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityRefundTransactionsReportForm = ({
   pageNumber,
@@ -24,6 +26,9 @@ const IntercityRefundTransactionsReportForm = ({
   );
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+  const {fetchCitiesData, loadingCities}=useIntercityMastersStore();
+
+// Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
 
@@ -167,16 +172,25 @@ const IntercityRefundTransactionsReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
                 name="destinationLocation"
                 value={values.destinationLocation}
-                onChange={(v) => setFieldValue("destinationLocation", v)}
-                options={departureCities}
+                onChange={(value) => setFieldValue("destinationLocation", value)}
                 onSearch={fetchDepartureCities}
-                Label="cityName"
-                Value="cityId"
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search departure city..."
-                uniqueId="departure-location-dropdown"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                loading={loadingCities}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.destinationLocation}
               />
             </div>
             {/* arrival location */}
@@ -184,15 +198,25 @@ const IntercityRefundTransactionsReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
                 name="arrivalLocation"
                 value={values.arrivalLocation}
-                onChange={(v) => setFieldValue("arrivalLocation", v)}
-                options={arrivalCities}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
                 onSearch={fetchArrivalCities}
-                Label="cityName"
-                Value="cityId"
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                loading={isFetchIntercityRefundTransactionsInnerReport}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
                 uniqueId="arrival-location-dropdown"
               />
             </div>
@@ -215,7 +239,7 @@ const IntercityRefundTransactionsReportForm = ({
               >
                 <option value="">Select Status</option>
                 <option value="Refund">Refunded</option>
-                <option value="NotRefund">Not Refunded</option>
+                <option value="Not Refund">Not Refunded</option>
               </Field>
             </div>
             <div className="flex items-end">

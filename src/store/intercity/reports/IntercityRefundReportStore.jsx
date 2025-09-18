@@ -81,7 +81,7 @@ export const useIntercityRefundReportStore = create((set) => ({
                 `${API_ENDPOINTS.INTERCITY.REPORTS.GET_REFUND_TRANSACTION_INNER_REPORT}?${queryString}`
             );
             set({
-                refundIntercityTransactionsInnerReport: response.data.records || [],
+                refundIntercityTransactionsInnerReport: response.data || [],
                 refundTransactionsPagination: {
                     totalCount: response.data.totalCount || 0,
                     pageNumber: response.data.pageNumber || 1,
