@@ -484,7 +484,7 @@ export const API_ENDPOINTS = {
    GET_REFUND_TRANSACTION_INNER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
    //user report
    GET_USER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetUserOuterReport`,
-   GET_USER_DETAILED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
+   GET_USER_DETAILED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetUserInnerReport`,
    GET_USER_REPORT_TRACK_ORDER:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionTrackingStatus`,
   // payment transactions
   GET_PAYMENT_TRANSACTION_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionsReport`

@@ -6,9 +6,7 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
-import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
-import DebounceSearchableDropdown from "../../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
 import SearchableDropdown from "../../../../../searchable_dropdown/SearchableDropdown";
 
@@ -21,11 +19,14 @@ const IntercityRefundOuterReportForm = () => {
   } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const {fetchCitiesData, loadingCities}=useIntercityMastersStore();
+  const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
 
-// Separate state for each dropdown to prevent interference
+  // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+  
+  // Add reset trigger state to force SearchableDropdown re-render
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const fetchDepartureCities = async (q) => {
     try {
@@ -100,7 +101,7 @@ const IntercityRefundOuterReportForm = () => {
       fromDate: values.fromDate,
       toDate: values.toDate,
       destinationLocation: values.destinationLocation,
-      arrivalLocation:values.arrivalLocation,
+      arrivalLocation: values.arrivalLocation,
       mobileNumber: values.mobileNumber,
     };
 
@@ -112,7 +113,7 @@ const IntercityRefundOuterReportForm = () => {
       fromDate: startOfDay,
       toDate: endOfDay,
       destinationLocation: "",
-      arrivalLocation:"",
+      arrivalLocation: "",
       mobileNumber: "",
     };
 
@@ -121,6 +122,12 @@ const IntercityRefundOuterReportForm = () => {
 
     localStorage.setItem("intercityRefundInnerTransactionSearchParams", "");
     setValues(payload);
+    
+    // Clear dropdown options and trigger reset
+    setDepartureCities([]);
+    setArrivalCities([]);
+    setResetTrigger(prev => prev + 1);
+    
     fetchIntercityRefundTransactionsReport(payload);
   };
 
@@ -202,6 +209,7 @@ const IntercityRefundOuterReportForm = () => {
                   Departure Location
                 </label>
                 <SearchableDropdown
+                  key={`departure-${resetTrigger}-${values.destinationLocation || 'empty'}`}
                   name="destinationLocation"
                   value={values.destinationLocation}
                   onChange={(value) => setFieldValue("destinationLocation", value)}
@@ -228,6 +236,7 @@ const IntercityRefundOuterReportForm = () => {
                   Arrival Location
                 </label>
                 <SearchableDropdown
+                  key={`arrival-${resetTrigger}-${values.arrivalLocation || 'empty'}`}
                   name="arrivalLocation"
                   value={values.arrivalLocation}
                   onChange={(value) => setFieldValue("arrivalLocation", value)}

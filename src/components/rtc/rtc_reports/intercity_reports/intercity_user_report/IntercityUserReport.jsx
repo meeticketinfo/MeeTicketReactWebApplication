@@ -71,13 +71,14 @@ const IntercityUserReport = () => {
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
+        console.log("params",params.data.login_MobileNumber),
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/intercity-user-detailed-report?MobileNumber=${params.data.login_MobilNumber
+          to={`/intercity-user-detailed-report?MobileNumber=${searchParams.get("MobileNumber") || params.data.login_MobileNumber
             }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
             }`}
           onClick={() => {
-            localStorage.setItem("userAmrabadReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobilNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+            localStorage.setItem("userIntercityReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
 
           }}
         >

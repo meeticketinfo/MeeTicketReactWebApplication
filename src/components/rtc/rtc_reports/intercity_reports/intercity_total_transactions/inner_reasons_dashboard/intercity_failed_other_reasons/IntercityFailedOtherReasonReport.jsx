@@ -306,6 +306,7 @@ const IntercityFailedOtherReasonReport = () => {
             totalCount={totalTransactionsReport[0]?.totalCount}
             tableHeight={totalTransactionsReport.length > 10 ? 550 : 300}
             SetcurrentPage={setCurrentPage}
+            showSearch={false}
           />
         </div>
       </div>

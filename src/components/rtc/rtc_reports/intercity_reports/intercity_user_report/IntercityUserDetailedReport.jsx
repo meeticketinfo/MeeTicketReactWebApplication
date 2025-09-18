@@ -37,8 +37,8 @@ const IntercityUserDetailedReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "transactionDateandTime",
-      headerName: "Transaction Date & Time",
+      field: "dateandTimeOfTransaction",
+      headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -67,12 +67,13 @@ const IntercityUserDetailedReport = () => {
           to={"/intercity-user-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
-            date: params.data.transactionDateandTime,
-            MobileNumber: params.data.login_MobilNumber,
-            typeOfBusPass: params.data.typeOfBusPass,
+            date: params.data.dateandTimeOfTransaction,
+            MobileNumber: params.data.mobileNumber,
+            departureLocation: params.data.departureLocation,
+            arrivalLocation: params.data.arrivalLocation,
             status: params.data.transactionStatus,
-            amount: params.data.confirmedTransactionAmount,
-            bookingId: params.data.applicationId,
+            amount: params.data.initiateAmount,
+            bookingId: params.data.bookingId,
             // backTitle: title(),
           }}
         >
@@ -80,37 +81,49 @@ const IntercityUserDetailedReport = () => {
         </Link>
       ),
     },
+     {
+      field: "orderId",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+       {
+      field: "userName",
+      headerName: "User Name",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
-      field: "login_MobilNumber",
+      field: "mobileNumber",
       headerName: "Mobile Number",
       maxWidth: "150",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "typeOfBusPass",
-      headerName: "Type of Bus Pass",
-      maxWidth: "140",
+      field: "departureLocation",
+      headerName: "Departure Location ",
+      minWidth: "200",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "confirmedTransactionAmount",
+      field: "arrivalLocation",
+      headerName: "Arrival Location",
+      minWidth: "160",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "initiateAmount",
       headerName: "Total Amount",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "modeOfPayment",
-      headerName: "Mode of Payment",
-      maxWidth: "160",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "transactionStatus",
-      headerName: "Transaction Status",
+      field: "paymentStatus",
+      headerName: "Payment Status",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
@@ -122,14 +135,15 @@ const IntercityUserDetailedReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
+   
     {
-      field: "orderId",
-      headerName: "Order ID",
+      field: "paymentMode",
+      headerName: "Payment mode",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "applicationId",
+     {
+      field: "bookingId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",

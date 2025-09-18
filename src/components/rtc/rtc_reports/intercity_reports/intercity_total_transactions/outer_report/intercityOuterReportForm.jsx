@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
-
+import Select from "react-select";
 import { ToastContainer } from "react-toastify";
 import {
   getEndOfCurrentDay,
@@ -22,13 +22,21 @@ const IntercityOuterReportForm = () => {
     fetchIntercityTotalTransactions,
     intercityTotalTransactions,
     isIntercityTotalTransactionsLoading,
-   
   } = useIntercityTotalTransactionStore();
 
-  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
+    useIntercityMastersStore();
 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+  const [selectedBusType, setSelectedBusType] = useState(null);
+
+  const busTypeOptions =
+    IntercityBusTypesData?.map((item) => ({
+      value: item.busTypesName,
+      label: item.busTypesName,
+    })) || [];
+
   const fetchDepartureCities = async (q) => {
     try {
       const response = await fetchCitiesData(q);
@@ -56,9 +64,6 @@ const IntercityOuterReportForm = () => {
     }
   };
 
-
-
-
   useEffect(() => {
     const sanitizedFilters = {
       fromDate: outerFilters.fromDate ?? startOfDay,
@@ -73,6 +78,21 @@ const IntercityOuterReportForm = () => {
     fetchIntercityTotalTransactions(sanitizedFilters);
     fetchIntercityBusTypesData();
   }, []);
+
+  // Initialize selected bus type when data is available
+  useEffect(() => {
+    if (IntercityBusTypesData && outerFilters.busType) {
+      const busType = IntercityBusTypesData.find(
+        (item) => item.busTypesName === outerFilters.busType && item.isActive
+      );
+      if (busType) {
+        setSelectedBusType({
+          value: busType.busTypesName,
+          label: busType.busTypesName,
+        });
+      }
+    }
+  }, [IntercityBusTypesData, outerFilters.busType]);
 
   const initialValues = {
     fromDate: outerFilters.fromDate ?? startOfDay,
@@ -89,7 +109,7 @@ const IntercityOuterReportForm = () => {
       departureLocation: values.departureLocation || "",
       arrivalLocation: values.arrivalLocation || "",
       mobileNumber: values.mobileNumber || "",
-      busType: values.busType || "",
+      busType: selectedBusType?.value || "",
     };
     setOuterFilters(sanitizedValues);
     setInnerFilters(sanitizedValues);
@@ -160,48 +180,66 @@ const IntercityOuterReportForm = () => {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-700">
-               Bus Type
+                Bus Type
               </label>
-              <Field
-                as="select"
-                name="busType"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                {IntercityBusTypesData?.filter((item) => item.isActive).map(
-                  (item) => (
-                    <option value={item.busTypesName}>
-                      {item.busTypesName}
-                    </option>
-                  )
-                )}
-              </Field>
+              <Select
+                value={selectedBusType}
+                onChange={(selectedOption) =>
+                  setSelectedBusType(selectedOption)
+                }
+                options={[{ value: "", label: "All" }, ...busTypeOptions]}
+                isSearchable={true}
+                isClearable={true}
+                placeholder="Search bus type..."
+                className="mt-1"
+                classNamePrefix="react-select"
+                filterOption={(option, inputValue) => {
+                  if (!inputValue) return true;
+                  return option.label
+                    .toLowerCase()
+                    .startsWith(inputValue.toLowerCase());
+                }}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    minHeight: "33px",
+                    fontSize: "14px",
+                    borderRadius: "6px",
+                    borderColor: "#d1d5db",
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    margin: "0px",
+                  }),
+                }}
+              />
             </div>
             <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Departure Location
-                </label>
-                <SearchableDropdown
-                  name="departureLocation"
-                  value={values.departureLocation}
-                  onChange={(value) => setFieldValue("departureLocation", value)}
-                  onSearch={fetchDepartureCities}
-                  options={departureCities}
-                  displayKey="cityName"
-                  valueKey="cityId"
-                  placeholder="Search"
-                  minSearchLength={2}
-                  debounceMs={300}
-                  className="mt-1"
-                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  // loading={isIntercityTotalTransactionsLoading}
-                  noResultsText="No cities found"
-                  loadingText="Searching cities..."
-                  initialDisplayText={values.departureLocation}
-                />
-              </div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+              <SearchableDropdown
+                key={`departure-${values.departureLocation || 'empty'}`}
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(value) => setFieldValue("departureLocation", value)}
+                onSearch={fetchDepartureCities}
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
+              />
+            </div>
             <div>
               <label
                 htmlFor="arrivalLocation"
@@ -210,11 +248,10 @@ const IntercityOuterReportForm = () => {
                 Arrival Location
               </label>
               <SearchableDropdown
+                key={`arrival-${values.arrivalLocation || 'empty'}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
-                onChange={(value) =>
-                  setFieldValue("arrivalLocation", value)
-                }
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
                 onSearch={fetchArrivalCities}
                 options={arrivalCities}
                 displayKey="cityName"
@@ -247,13 +284,17 @@ const IntercityOuterReportForm = () => {
                   const resetValues = {
                     fromDate: startOfDay,
                     toDate: endOfDay,
-                      departureLocation: "",
+                    departureLocation: "",
                     arrivalLocation: "",
                     mobileNumber: "",
                     busType: "",
                   };
 
                   setValues(resetValues);
+                  setSelectedBusType(null);
+                  // Clear the city arrays to force dropdowns to reset
+                  setDepartureCities([]);
+                  setArrivalCities([]);
                   resetOuterFilters(resetValues);
                   setInnerFilters(resetValues);
                   fetchIntercityTotalTransactions(resetValues);
