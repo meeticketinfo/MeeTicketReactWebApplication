@@ -2,8 +2,10 @@ import { Formik, Form, Field } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
-import { useIntercityConsolidateStore } from "./IntercityConsolidateStore";
+
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import { useIntercityConsolidateStore } from "./IntercityConsolidateStore";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityConsolidatedReportForm = ({
   pageNumber,
@@ -17,13 +19,15 @@ const IntercityConsolidatedReportForm = ({
       return null;
     }
   }, []);
-  const { fetchIntercityIndividualData } = useIntercityConsolidateStore();
+  const [resetTrigger, setResetTrigger] = useState(0);
+
+  const { fetchIntercityConsolidateData } = useIntercityConsolidateStore();
   const {
     fetchCitiesData,
     fetchIntercityBusTypesData,
     fetchIntercitySeatLayoutsData,
-    IntercitySeatLayoutsData,
     IntercityBusTypesData,
+    IntercitySeatLayoutsData,
   } = useIntercityMastersStore();
 
   // Separate state for each dropdown to prevent interference
@@ -62,20 +66,21 @@ const IntercityConsolidatedReportForm = ({
   };
 
   const initialValues = {
-    purchaseOrBooking:savedFilters?.purchaseOrBooking ? savedFilters.purchaseOrBooking : "",
+    purchaseOrBooking: savedFilters?.purchaseOrBooking
+      ? savedFilters.purchaseOrBooking
+      : "",
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
     bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-    PNRNumber: savedFilters?.PNRNumber
-      ? savedFilters.PNRNumber
-      : "",
+    PNRNumber: savedFilters?.PNRNumber ? savedFilters.PNRNumber : "",
     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     orderId: savedFilters?.orderId ? savedFilters.orderId : "",
     transactionId: savedFilters?.transactionId
       ? savedFilters.transactionId
       : "",
     typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
+
     departureLocation: savedFilters?.departureLocation
       ? savedFilters.departureLocation
       : "",
@@ -86,9 +91,13 @@ const IntercityConsolidatedReportForm = ({
 
   const onSubmit = (values) => {
     console.log("values", values);
-    fetchIntercityIndividualData(values);
+    fetchIntercityConsolidateData({
+      ...values,
+      pageNumber: pageNumber,
+      PageSize: pageSize,
+    });
     localStorage.setItem(
-      "intercity-individual-filters",
+      "intercity-consolidated-filters",
       JSON.stringify(values)
     );
   };
@@ -185,7 +194,7 @@ const IntercityConsolidatedReportForm = ({
                 placeholder="Enter PNR"
               />
             </div>
-             {/* type of bus */}
+            {/* type of bus */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
                 Type of Bus
@@ -205,7 +214,7 @@ const IntercityConsolidatedReportForm = ({
                 )}
               </Field>
             </div>
-        
+
             {/* order id */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -235,16 +244,27 @@ const IntercityConsolidatedReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
-              <DebounceSearchableDropdown
+
+              <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="departureLocation"
                 value={values.departureLocation}
-                onChange={(v) => setFieldValue("departureLocation", v)}
-                options={departureCities}
+                onChange={(value) => setFieldValue("departureLocation", value)}
                 onSearch={fetchDepartureCities}
-                Label="cityName"
-                Value="cityId"
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search departure city..."
-                uniqueId="departure-location-dropdown"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={loadingCities}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
               />
             </div>
             {/* arrival location */}
@@ -252,19 +272,30 @@ const IntercityConsolidatedReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
-              <DebounceSearchableDropdown
+
+              <SearchableDropdown
                 name="arrivalLocation"
                 value={values.arrivalLocation}
-                onChange={(v) => setFieldValue("arrivalLocation", v)}
-                options={arrivalCities}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
                 onSearch={fetchArrivalCities}
-                Label="cityName"
-                Value="cityId"
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isFetchIntercityRefundTransactionsReport}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
                 uniqueId="arrival-location-dropdown"
               />
             </div>
-              
+
             {/* payment mode */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -296,9 +327,9 @@ const IntercityConsolidatedReportForm = ({
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
-                  localStorage.removeItem("intercity-individual-filters");
+                  localStorage.removeItem("intercity-consolidated-filters");
                   setValues({
-                    purchaseOrBooking:"",
+                    purchaseOrBooking: "",
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
                     mobileNumber: "",
@@ -311,6 +342,25 @@ const IntercityConsolidatedReportForm = ({
                     departureLocation: "",
                     arrivalLocation: "",
                   });
+                  fetchIntercityConsolidateData({
+                    purchaseOrBooking: "",
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    bookingDate: "",
+                    PNRNumber: "",
+                    paymentMode: "",
+                    orderId: "",
+                    transactionId: "",
+                    typeOfBus: "",
+                    departureLocation: "",
+                    arrivalLocation: "",
+                    pageNumber: pageNumber,
+                    PageSize: pageSize,
+                  });
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger((prev) => prev + 1);
                 }}
               >
                 Reset

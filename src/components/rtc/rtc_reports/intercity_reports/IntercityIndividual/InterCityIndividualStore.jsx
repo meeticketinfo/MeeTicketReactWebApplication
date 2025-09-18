@@ -18,15 +18,15 @@ export const useIntercityIndividualStore = create((set) => ({
         payload.busType
       }&seatLayoutType=${payload.seatLayoutType}&paymentMode=${
         payload.paymentMode
-      }&transactionId=${payload.transactionId}&bookingStatus=${
+      }&transactionId=${payload.transactionId}&orderId=${payload.orderId}&bookingStatus=${
         payload.bookingStatus
-      }&pNRNumber=${payload.pnrOrReturnPnr}&returnPNRNumber=${
-        payload.pnrOrReturnPnr
-      }&fromStationId=${payload.departureLocation}&toStationId=${
+      }&pNRNumber=${payload.pnrNumber}&returnPNRNumber=${
+        payload.returnPnrNumber
+      }&departureLocationName=${payload.departureLocation}&arrivalLocationName=${
         payload.arrivalLocation
       }&ticketId=${payload.ticketId}&returnTicketId=${
         payload.returnTicketId
-      }&pageNumber=${1}&pageSize=${20}`;
+      }&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
       const method = "get";
       const response = await apiService[method](
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_INDIVIDUAL_REPORT}${params}`

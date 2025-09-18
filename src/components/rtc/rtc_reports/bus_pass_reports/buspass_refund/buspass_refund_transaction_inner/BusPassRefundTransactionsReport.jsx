@@ -288,7 +288,7 @@ const BusPassRefundTransactionsReport = () => {
                             handlePageClick={handlePageClick}
                             currentPage={currentPage}
                             showTotalCount={true}
-                            totalCount={refundTransactionsPagination.totalCount}
+                            totalCount={refundBusPassTransactionsInnerReport[0].totalCount}
                             SetcurrentPage={setCurrentPage}
                         />
                     </div>

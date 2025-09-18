@@ -304,9 +304,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     </td>
                     <td className="px-1 py-2  text-gray-900 w-2">:</td>
                     <td className="px-3 py-2 text-[15px] text-gray-900">
-                      {IntercityTicketViewData.pnrnumber
-                        ? IntercityTicketViewData.pnrnumber
-                        : "N/A"}
+                   { id?? "N/A"}
                     </td>
 
                     <td className="px-3 py-2 text-[15px] font-bold text-black w-48">
@@ -559,9 +557,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   <span className="font-bold text-[15px] text-black">Basic Fare</span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.basicFare
-                      ? IntercityTicketViewData?.total?.basicFare
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.basicFare?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -570,18 +566,14 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   </span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.reservationFee
-                      ? IntercityTicketViewData?.total?.reservationFee
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.reservationFee?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-black text-[15px]">GST</span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.gstSum
-                      ? IntercityTicketViewData?.total?.gstSum
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.gstSum?? "N/A"}
                   </span>
                 </div>
               </div>
@@ -592,18 +584,14 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   <span className="font-bold text-black">Toll Fee</span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.tollSum
-                      ? IntercityTicketViewData?.total?.tollSum
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.tollSum?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-black">Service Fee</span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.serviceSum
-                      ? IntercityTicketViewData?.total?.serviceSum
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.serviceSum?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -612,9 +600,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   </span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.concessionAmt
-                      ? IntercityTicketViewData?.total?.concessionAmt
-                      : "N/A"}
+                    {IntercityTicketViewData?.total?.concessionAmt?? "N/A"}
                   </span>
                 </div>
               </div>

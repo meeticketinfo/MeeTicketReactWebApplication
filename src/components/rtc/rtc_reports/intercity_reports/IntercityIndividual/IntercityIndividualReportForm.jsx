@@ -4,6 +4,7 @@ import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useIntercityIndividualStore } from "./InterCityIndividualStore";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityIndividualReportForm = ({
   pageNumber,
@@ -25,7 +26,7 @@ const IntercityIndividualReportForm = ({
     IntercitySeatLayoutsData,
     IntercityBusTypesData,
   } = useIntercityMastersStore();
-
+  const [resetTrigger, setResetTrigger] = useState(0);
   // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
@@ -66,8 +67,9 @@ const IntercityIndividualReportForm = ({
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
     bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-    pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
-      ? savedFilters.pnrOrReturnPnr
+    pnrNumber: savedFilters?.pnrNumber ? savedFilters.pnrNumber : "",
+    returnPnrNumber: savedFilters?.returnPnrNumber
+      ? savedFilters.returnPnrNumber
       : "",
     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     orderId: savedFilters?.orderId ? savedFilters.orderId : "",
@@ -95,7 +97,11 @@ const IntercityIndividualReportForm = ({
 
   const onSubmit = (values) => {
     console.log("values", values);
-    fetchIntercityIndividualData(values);
+    fetchIntercityIndividualData({
+      ...values,  
+      pageNumber:pageNumber,
+      PageSize:pageSize
+    });
     localStorage.setItem(
       "intercity-individual-filters",
       JSON.stringify(values)
@@ -167,16 +173,28 @@ const IntercityIndividualReportForm = ({
                 }}
               />
             </div>
-            {/* pnr no / return pnr */}
+            {/* pnr no */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
-                PNR No / Return PNR No
+                PNR No
               </label>
               <Field
                 type="text"
-                name="pnrOrReturnPnr"
+                name="pnrNumber"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter PNR"
+              />
+            </div>
+            {/*  return pnr */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return PNR No
+              </label>
+              <Field
+                type="text"
+                name="returnPnrNumber"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return PNR"
               />
             </div>
             {/* payment mode */}
@@ -304,16 +322,26 @@ const IntercityIndividualReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
+                key={`departure-${resetTrigger}`}
                 name="departureLocation"
                 value={values.departureLocation}
-                onChange={(v) => setFieldValue("departureLocation", v)}
-                options={departureCities}
+                onChange={(value) => setFieldValue("departureLocation", value)}
                 onSearch={fetchDepartureCities}
-                Label="cityName"
-                Value="cityId"
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search departure city..."
-                uniqueId="departure-location-dropdown"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={loadingCities}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
               />
             </div>
             {/* arrival location */}
@@ -321,15 +349,26 @@ const IntercityIndividualReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
-                onChange={(v) => setFieldValue("arrivalLocation", v)}
-                options={arrivalCities}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
                 onSearch={fetchArrivalCities}
-                Label="cityName"
-                Value="cityId"
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isFetchIntercityRefundTransactionsReport}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
                 uniqueId="arrival-location-dropdown"
               />
             </div>
@@ -354,7 +393,8 @@ const IntercityIndividualReportForm = ({
                     toDate: getCurrentDate(),
                     mobileNumber: "",
                     bookingDate: "",
-                    pnrOrReturnPnr: "",
+                    pnrNumber: "",
+                    returnPnrNumber: "",
                     paymentMode: "",
                     orderId: "",
                     transactionId: "",
@@ -366,6 +406,29 @@ const IntercityIndividualReportForm = ({
                     ticketId: "",
                     returnTicketId: "",
                   });
+                  fetchIntercityIndividualData({
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    bookingDate: "",
+                    pnrNumber: "",
+                    returnPnrNumber: "",
+                    paymentMode: "",
+                    orderId: "",
+                    transactionId: "",
+                    seatLayoutType: "",
+                    busType: "",
+                    bookingStatus: "",
+                    departureLocation: "",
+                    arrivalLocation: "",
+                    ticketId: "",
+                    returnTicketId: "",
+                    pageNumber:pageNumber,
+                    PageSize:pageSize
+                  });
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger((prev) => prev + 1);
                 }}
               >
                 Reset
