@@ -21,7 +21,7 @@ const IntercityRefundOuterReportForm = () => {
   } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const {fetchCitiesData}=useIntercityMastersStore();
+  const {fetchCitiesData, loadingCities}=useIntercityMastersStore();
 
 // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
@@ -216,7 +216,7 @@ const IntercityRefundOuterReportForm = () => {
                   inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                   optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={isFetchIntercityRefundTransactionsReport}
+                  loading={loadingCities}
                   noResultsText="No cities found"
                   loadingText="Searching cities..."
                   initialDisplayText={values.destinationLocation}

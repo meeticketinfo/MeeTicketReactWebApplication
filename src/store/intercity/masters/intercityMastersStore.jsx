@@ -10,9 +10,11 @@ export const useIntercityMastersStore = create((set) => ({
 
   // GET RTC TRACK ORDER
   CitiesData: [],
+  loadingCities: false,
   isCities: false,
   fetchCitiesData: async (p = "") => {
     set({ isCities: true });
+    set({ loadingCities: true });
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.INTERCITY.MASTERS.GET_DESTINATION_CITIES}?pageNumber=1&pageSize=100&search=${p}`
@@ -30,6 +32,7 @@ export const useIntercityMastersStore = create((set) => ({
     } finally {
       set({
         isCities: false,
+        loadingCities: false,
       });
     }
   },
