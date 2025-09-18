@@ -25,7 +25,7 @@ const SearchableDropdown = ({
 }) => {
   const [input, setInput] = useState(initialDisplayText || "");
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(loading);
   
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
@@ -84,9 +84,6 @@ const SearchableDropdown = ({
         const normalized = normalizeOption(matchedOption);
         setInput(normalized.label);
         hasInitialDisplayText.current = true;
-      } else if (value === "" || value === null) {
-        setInput("");
-        hasInitialDisplayText.current = false;
       }
     }
   }, [value, options, normalizeOption, initialValue]);
@@ -256,7 +253,7 @@ const SearchableDropdown = ({
         )}
         
         {/* Loading indicator */}
-        {isLoading && (
+        {loading && (
           <div className="absolute right-8 top-1/2 transform -translate-y-1/2">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
           </div>
@@ -266,17 +263,13 @@ const SearchableDropdown = ({
       {/* Dropdown */}
       {isOpen && (
         <div className={dropdownClassName}>
-          {isLoading ? (
+          {loading ? (
             <div className="px-3 py-2 text-gray-500 text-sm text-center">
               {loadingText}
             </div>
-          ) : options.length === 0 ? (
-            <div className="px-3 py-2 text-gray-500 text-sm text-center">
-              {noResultsText}
-            </div>
           ) : (
             <ul role="listbox" className="py-1">
-              {options.map((option, index) => {
+              {options.length > 0 ? options.map((option, index) => {
                 const normalized = normalizeOption(option);
                 return (
                   <li
@@ -288,7 +281,11 @@ const SearchableDropdown = ({
                     {normalized.label}
                   </li>
                 );
-              })}
+              }) : (
+                <li className="px-3 py-2 text-gray-500 text-sm text-center">
+                  {noResultsText}
+                </li>
+              )}
             </ul>
           )}
         </div>
