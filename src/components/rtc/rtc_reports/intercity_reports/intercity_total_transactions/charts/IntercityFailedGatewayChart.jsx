@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { AgCharts } from "ag-charts-community";
 import { Link, useSearchParams } from "react-router-dom";
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
+import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 const reasonStyles = {
   "User Returned": { color: "#4A90E2", count: 5 },
@@ -17,16 +17,16 @@ const IntercityFailedGatewayChart = ({
   title,
   angleKey,
   calloutLabelKey,
-  packageName,
-  house,
   mobileNumber,
   fromDate,
   toDate,
+  arrivalLocation,
+  departureLocation,
 
   // filters,
 }) => {
   const { innerFilters, setInnerFilters, outerFilters } =
-    AmarabadTotalCommonStore();
+    IntercityTotalCommonStore();
   const chartRef = useRef(null);
 
   // Calculate total count
@@ -94,16 +94,20 @@ const IntercityFailedGatewayChart = ({
         <div className="bg-[#A7D3FF] text-[#404040] font-semibold rounded-xl px-4 py-2 text-base shadow-sm flex items-center">
           Total Transactions&nbsp;
           <Link
-            to={`/intercity-failed-gateway-report?package=${
-              packageName || ""
-            }&house=${house || ""}&mobileNumber=${
-              mobileNumber || ""
-            }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&subCategory=`}
+            to={`/intercity-failed-gateway-report??status=${
+              outerFilters.status || ""
+            }&mobileNumber=${mobileNumber || ""}&fromDate=${
+              fromDate || ""
+            }&toDate=${toDate || ""}&status=${
+              outerFilters.status || ""
+            }&subCategory=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}`}
             onClick={() => {
               setInnerFilters({
                 ...innerFilters,
                 status: outerFilters.status,
                 subCategory: "",
+                arrivalLocation: arrivalLocation,
+                departureLocation: departureLocation,
               });
             }}
             className="text-[#007AFF] font-bold underline ml-1"
@@ -145,26 +149,26 @@ const IntercityFailedGatewayChart = ({
                             }}
                           />
                           <Link
-                            to={`/intercity-failed-gateway-report?package=${
-                              packageName || ""
-                            }&house=${house || ""}&mobileNumber=${
-                              mobileNumber || ""
-                            }&fromDate=${fromDate || ""}&toDate=${
-                              toDate || ""
-                            }&subCategory=${encodeURIComponent(
-                              item.failureReasonKey || ""
-                            )}`}
+                              to={`/intercity-failed-gateway-report??status=${
+                                outerFilters.status || ""
+                              }&mobileNumber=${mobileNumber || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&fromDate=${
+                                fromDate || ""
+                              }&toDate=${toDate || ""}&status=${
+                                outerFilters.status || ""
+                              }&subCategory=${encodeURIComponent(
+                                item.failureReasonKey || ""
+                              )}`}
                             className="text-[#000] hover:underline text-xs"
                             onClick={() => {
                               setInnerFilters({
                                 ...innerFilters,
                                 status: outerFilters.status,
                                 subCategory: item.failureReasonKey,
-                                package: packageName,
-                                house: house,
                                 mobileNumber: mobileNumber,
                                 fromDate: fromDate,
                                 toDate: toDate,
+                                arrivalLocation: arrivalLocation,
+                                departureLocation: departureLocation,
                               });
                             }}
                           >
@@ -174,12 +178,12 @@ const IntercityFailedGatewayChart = ({
                       </td>
                       <td className="px-3 py-2 text-right border border-b-[#B7B7B7]">
                         <Link
-                          to={`/intercity-failed-gateway-report?package=${
-                            packageName || ""
-                          }&house=${house || ""}&mobileNumber=${
-                            mobileNumber || ""
-                          }&fromDate=${fromDate || ""}&toDate=${
-                            toDate || ""
+                          to={`/intercity-failed-gateway-report??status=${
+                            outerFilters.status || ""
+                          }&mobileNumber=${mobileNumber || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&fromDate=${
+                            fromDate || ""
+                          }&toDate=${toDate || ""}&status=${
+                            outerFilters.status || ""
                           }&subCategory=${encodeURIComponent(
                             item.failureReasonKey || ""
                           )}`}
@@ -188,11 +192,11 @@ const IntercityFailedGatewayChart = ({
                               ...innerFilters,
                               status: outerFilters.status,
                               subCategory: item.failureReasonKey,
-                              package: packageName,
-                              house: house,
                               mobileNumber: mobileNumber,
                               fromDate: fromDate,
                               toDate: toDate,
+                              arrivalLocation: arrivalLocation,
+                              departureLocation: departureLocation,
                             });
                           }}
                           className="text-[#4A90E2] font-semibold hover:underline text-sm"

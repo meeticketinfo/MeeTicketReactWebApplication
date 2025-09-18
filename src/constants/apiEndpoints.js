@@ -358,6 +358,7 @@ export const API_ENDPOINTS = {
     GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
     GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
     GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/GetBusPassDashboard`,
+    GET_INTERCITY_DASHBOARD: `${RTC_INTERCITY_API_BASE_URL}Reports/IntercityDashboard`,
   },
   TOURSIM_DASHBOARD: {
     GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,

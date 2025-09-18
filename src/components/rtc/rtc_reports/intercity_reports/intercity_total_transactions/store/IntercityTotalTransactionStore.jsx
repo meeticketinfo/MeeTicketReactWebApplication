@@ -33,7 +33,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
         status: payload.status || "",
         subCategory: payload.subCategory || "",
         pageNumber: payload.pageNumber || 1,
-        pageSize: payload.pageSize || 10,
+        pageSize: payload.pageSize || 20,
       };
 
       const response = await apiService.get(
@@ -71,7 +71,6 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
       );
-      console.log("response", response);
       set({
         intercityTotalTransactions: response.data,
         isIntercityTotalTransactionsLoading: false,
@@ -123,8 +122,20 @@ export const useIntercityTotalTransactionStore = create((set) => ({
  fetchPaymentFailedGateway: async (payload) => {
   set({ isPaymentFailedGatewayLoading: true });
   try {
+    // Sanitize payload to ensure no undefined values are sent
+    const sanitizedPayload = {
+      fromDate: payload.fromDate || "",
+      toDate: payload.toDate || "",
+      mobileNumber: payload.mobileNumber || "",
+      departureLocation: payload.departureLocation || "",
+      arrivalLocation: payload.arrivalLocation || "",
+      busType: payload.busType || "",
+      pageNumber: payload.pageNumber || 1,
+      pageSize: payload.pageSize || 10,
+    };
+
     const response = await apiService.get(
-      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_GATEWAY}?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&busType=${payload.busType}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`
+      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_GATEWAY}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
     );
     set({
       paymentFailedGateway: response.data,
@@ -137,6 +148,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       paymentFailedGateway: [],
       isPaymentFailedGatewayLoading: false,
     });
+    toast.error(error.message);
   }
   finally {
     set({ isPaymentFailedGatewayLoading: false });
@@ -146,8 +158,20 @@ export const useIntercityTotalTransactionStore = create((set) => ({
  fetchPaymentFailedOtherReasons: async (payload) => {
   set({ isPaymentFailedOtherReasonsLoading: true });
   try {
+    // Sanitize payload to ensure no undefined values are sent
+    const sanitizedPayload = {
+      fromDate: payload.fromDate || "",
+      toDate: payload.toDate || "",
+      mobileNumber: payload.mobileNumber || "",
+      departureLocation: payload.departureLocation || "",
+      arrivalLocation: payload.arrivalLocation || "",
+      busType: payload.busType || "",
+      pageNumber: payload.pageNumber || 1,
+      pageSize: payload.pageSize || 10,
+    };
+
     const response = await apiService.get(
-      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS}?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&busType=${payload.busType}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`
+      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
     );
     set({
       paymentFailedOtherReasons: response.data,
@@ -160,6 +184,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       paymentFailedOtherReasons: [],
       isPaymentFailedOtherReasonsLoading: false,
     });
+    toast.error(error.message);
   }
   finally {
     set({ isPaymentFailedOtherReasonsLoading: false });

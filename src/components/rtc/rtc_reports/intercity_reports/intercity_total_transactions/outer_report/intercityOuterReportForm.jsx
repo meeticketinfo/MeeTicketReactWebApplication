@@ -1,49 +1,63 @@
 import { Field, Form, Formik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ToastContainer } from "react-toastify";
 import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
-import AmarabadTotalCommonStore from "../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
-
 import IntercityTotalTransactionChart from "../charts/IntercityTotalTransactionChart";
-
+import SearchableDropdown from "../../../../../../components/searchable_dropdown/SearchableDropdown";
 import { useIntercityTotalTransactionStore } from "../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
+import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
 
 const IntercityOuterReportForm = () => {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const {
-    setOuterFilters,
-    outerFilters,
-    resetOuterFilters,
-    setInnerFilters,
-  } = AmarabadTotalCommonStore();
+  const { setOuterFilters, outerFilters, resetOuterFilters, setInnerFilters } =
+    IntercityTotalCommonStore();
 
   const {
     fetchIntercityTotalTransactions,
     intercityTotalTransactions,
     isIntercityTotalTransactionsLoading,
+   
   } = useIntercityTotalTransactionStore();
 
-  // Mock location data - you can replace this with actual API calls
-  const departureLocations = [
-    { id: "hyd", name: "Hyderabad" },
-    { id: "mum", name: "Mumbai" },
-    { id: "del", name: "Delhi" },
-    { id: "ban", name: "Bangalore" },
-    { id: "che", name: "Chennai" },
-  ];
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
 
-  const arrivalLocations = [
-    { id: "hyd", name: "Hyderabad" },
-    { id: "mum", name: "Mumbai" },
-    { id: "del", name: "Delhi" },
-    { id: "ban", name: "Bangalore" },
-    { id: "che", name: "Chennai" },
-  ];
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+        // setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure locations:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival locations:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
+
+
+
 
   useEffect(() => {
     const sanitizedFilters = {
@@ -52,10 +66,12 @@ const IntercityOuterReportForm = () => {
       departureLocation: outerFilters.departureLocation ?? "",
       arrivalLocation: outerFilters.arrivalLocation ?? "",
       mobileNumber: outerFilters.mobileNumber ?? "",
+      busType: outerFilters.busType ?? "",
     };
-    
+
     setInnerFilters(sanitizedFilters);
     fetchIntercityTotalTransactions(sanitizedFilters);
+    fetchIntercityBusTypesData();
   }, []);
 
   const initialValues = {
@@ -64,6 +80,7 @@ const IntercityOuterReportForm = () => {
     departureLocation: outerFilters.departureLocation ?? "",
     arrivalLocation: outerFilters.arrivalLocation ?? "",
     mobileNumber: outerFilters.mobileNumber ?? "",
+    busType: outerFilters.busType ?? "",
   };
   const onSubmit = (values) => {
     const sanitizedValues = {
@@ -72,8 +89,8 @@ const IntercityOuterReportForm = () => {
       departureLocation: values.departureLocation || "",
       arrivalLocation: values.arrivalLocation || "",
       mobileNumber: values.mobileNumber || "",
+      busType: values.busType || "",
     };
-    
     setOuterFilters(sanitizedValues);
     setInnerFilters(sanitizedValues);
     fetchIntercityTotalTransactions(sanitizedValues);
@@ -86,7 +103,7 @@ const IntercityOuterReportForm = () => {
       <ToastContainer />
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 p-2">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
             <div>
               <label
                 htmlFor="startDate"
@@ -132,7 +149,7 @@ const IntercityOuterReportForm = () => {
                 htmlFor="mobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-               Mobile No
+                Mobile No
               </label>
               <Field
                 type="text"
@@ -142,26 +159,49 @@ const IntercityOuterReportForm = () => {
               />
             </div>
             <div>
-              <label
-                htmlFor="departureLocation"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Departure Location
+              <label className="block text-xs font-medium text-gray-700">
+               Bus Type
               </label>
               <Field
                 as="select"
-                name="departureLocation"
-                placeholder="Select"
+                name="busType"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
-                {departureLocations.map((location) => (
-                  <option key={location.id} value={location.id}>
-                    {location.name}
-                  </option>
-                ))}
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
               </Field>
             </div>
+            <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Departure Location
+                </label>
+                <SearchableDropdown
+                  name="departureLocation"
+                  value={values.departureLocation}
+                  onChange={(value) => setFieldValue("departureLocation", value)}
+                  onSearch={fetchDepartureCities}
+                  options={departureCities}
+                  displayKey="cityName"
+                  valueKey="cityId"
+                  placeholder="Search"
+                  minSearchLength={2}
+                  debounceMs={300}
+                  className="mt-1"
+                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  // loading={isIntercityTotalTransactionsLoading}
+                  noResultsText="No cities found"
+                  loadingText="Searching cities..."
+                  initialDisplayText={values.departureLocation}
+                />
+              </div>
             <div>
               <label
                 htmlFor="arrivalLocation"
@@ -169,19 +209,28 @@ const IntercityOuterReportForm = () => {
               >
                 Arrival Location
               </label>
-              <Field
-                as="select"
+              <SearchableDropdown
                 name="arrivalLocation"
-                placeholder="Select"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                {arrivalLocations.map((location) => (
-                  <option key={location.id} value={location.id}>
-                    {location.name}
-                  </option>
-                ))}
-              </Field>
+                value={values.arrivalLocation}
+                onChange={(value) =>
+                  setFieldValue("arrivalLocation", value)
+                }
+                onSearch={fetchArrivalCities}
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
+              />
             </div>
             <div className="flex items-end gap-2">
               <button
@@ -198,11 +247,12 @@ const IntercityOuterReportForm = () => {
                   const resetValues = {
                     fromDate: startOfDay,
                     toDate: endOfDay,
-                    departureLocation: "",
+                      departureLocation: "",
                     arrivalLocation: "",
                     mobileNumber: "",
+                    busType: "",
                   };
-                  
+
                   setValues(resetValues);
                   resetOuterFilters(resetValues);
                   setInnerFilters(resetValues);
