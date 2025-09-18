@@ -26,7 +26,7 @@ const IntercityIndividualReportForm = ({
     IntercitySeatLayoutsData,
     IntercityBusTypesData,
   } = useIntercityMastersStore();
-
+  const [resetTrigger, setResetTrigger] = useState(0);
   // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
@@ -322,7 +322,8 @@ const IntercityIndividualReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
+                key={`departure-${resetTrigger}`}
                 name="departureLocation"
                 value={values.departureLocation}
                 onChange={(value) => setFieldValue("departureLocation", value)}
@@ -348,7 +349,8 @@ const IntercityIndividualReportForm = ({
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
-              <DebounceSearchableDropdown
+              <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
                 onChange={(value) => setFieldValue("arrivalLocation", value)}
@@ -424,6 +426,9 @@ const IntercityIndividualReportForm = ({
                     pageNumber:pageNumber,
                     PageSize:pageSize
                   });
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger((prev) => prev + 1);
                 }}
               >
                 Reset

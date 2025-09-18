@@ -19,6 +19,7 @@ const IntercityConsolidatedReportForm = ({
       return null;
     }
   }, []);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const { fetchIntercityConsolidateData } = useIntercityConsolidateStore();
   const {
@@ -86,7 +87,6 @@ const IntercityConsolidatedReportForm = ({
     arrivalLocation: savedFilters?.arrivalLocation
       ? savedFilters.arrivalLocation
       : "",
-    
   };
 
   const onSubmit = (values) => {
@@ -246,6 +246,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
 
               <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="departureLocation"
                 value={values.departureLocation}
                 onChange={(value) => setFieldValue("departureLocation", value)}
@@ -357,6 +358,9 @@ const IntercityConsolidatedReportForm = ({
                     pageNumber: pageNumber,
                     PageSize: pageSize,
                   });
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger((prev) => prev + 1);
                 }}
               >
                 Reset
