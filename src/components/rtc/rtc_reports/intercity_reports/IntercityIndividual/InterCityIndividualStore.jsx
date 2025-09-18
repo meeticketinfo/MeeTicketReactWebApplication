@@ -20,8 +20,8 @@ export const useIntercityIndividualStore = create((set) => ({
         payload.paymentMode
       }&transactionId=${payload.transactionId}&bookingStatus=${
         payload.bookingStatus
-      }&pNRNumber=${payload.pnrOrReturnPnr}&returnPNRNumber=${
-        payload.pnrOrReturnPnr
+      }&pNRNumber=${payload.pnrNumber}&returnPNRNumber=${
+        payload.returnPnrNumber
       }&fromStationId=${payload.departureLocation}&toStationId=${
         payload.arrivalLocation
       }&ticketId=${payload.ticketId}&returnTicketId=${

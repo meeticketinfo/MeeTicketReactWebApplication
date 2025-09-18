@@ -66,8 +66,9 @@ const IntercityIndividualReportForm = ({
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
     bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-    pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
-      ? savedFilters.pnrOrReturnPnr
+    pnrNumber: savedFilters?.pnrNumber ? savedFilters.pnrNumber : "",
+    returnPnrNumber: savedFilters?.returnPnrNumber
+      ? savedFilters.returnPnrNumber
       : "",
     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     orderId: savedFilters?.orderId ? savedFilters.orderId : "",
@@ -167,16 +168,28 @@ const IntercityIndividualReportForm = ({
                 }}
               />
             </div>
-            {/* pnr no / return pnr */}
+            {/* pnr no */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
-                PNR No / Return PNR No
+                PNR No
               </label>
               <Field
                 type="text"
-                name="pnrOrReturnPnr"
+                name="pnrNumber"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter PNR"
+              />
+            </div>
+            {/*  return pnr */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return PNR No
+              </label>
+              <Field
+                type="text"
+                name="returnPnrNumber"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return PNR"
               />
             </div>
             {/* payment mode */}
@@ -354,7 +367,26 @@ const IntercityIndividualReportForm = ({
                     toDate: getCurrentDate(),
                     mobileNumber: "",
                     bookingDate: "",
-                    pnrOrReturnPnr: "",
+                    pnrNumber: "",
+                    returnPnrNumber: "",
+                    paymentMode: "",
+                    orderId: "",
+                    transactionId: "",
+                    seatLayoutType: "",
+                    busType: "",
+                    bookingStatus: "",
+                    departureLocation: "",
+                    arrivalLocation: "",
+                    ticketId: "",
+                    returnTicketId: "",
+                  });
+                  fetchIntercityIndividualData({
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    bookingDate: "",
+                    pnrNumber: "",
+                    returnPnrNumber: "",
                     paymentMode: "",
                     orderId: "",
                     transactionId: "",

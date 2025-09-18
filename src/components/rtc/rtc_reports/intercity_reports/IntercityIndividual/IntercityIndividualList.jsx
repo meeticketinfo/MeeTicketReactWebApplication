@@ -25,14 +25,16 @@ function IntercityIndividualList() {
   } = useIntercityIndividualStore();
   useEffect(() => {
     fetchIntercityIndividualData({
-      fromDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      fromDate: savedFilters.fromDate ?? getCurrentDate(),
+      toDate: savedFilters.toDate ?? getCurrentDate(),
       mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
       bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
+      pnrNumber: savedFilters?.pnrNumber ? savedFilters.pnrNumber : "",
+      returnPnrNumber: savedFilters?.returnPnrNumber
+        ? savedFilters.returnPnrNumber
+        : "",
       pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
-        ? savedFilters.pnrOrReturnPnr
+        ? savedFilters.pnrNumber
         : "",
       typeOfBooking: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
@@ -61,7 +63,7 @@ function IntercityIndividualList() {
         : "",
     });
     console.log("savedFilters", savedFilters);
-  }, [fetchIntercityIndividualData]);
+  }, [currentPage, PAGE_LIMIT]);
 
   const [columnDefs] = useState([
     {
@@ -72,14 +74,14 @@ function IntercityIndividualList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "paymentTransactionId",
+      field: "pnrNumber",
       headerName: "PNR Number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "referencE_ID",
+      field: "returnPNRNumber",
       headerName: "Return PNR No",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -88,35 +90,35 @@ function IntercityIndividualList() {
     // ------------------
 
     {
-      field: "parkName",
+      field: "departureLocation",
       headerName: "Departure Location",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "departmentName",
+      field: "arrivalLocation",
       headerName: "Arrival Location",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "entityTypeName",
+      field: "phoneNumber",
       headerName: "Mobile number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totalTicketsBooked",
+      field: "busType",
       headerName: " Bus Type",
       maxWidth: 170,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "mid",
+      field: "seatLayoutType",
       headerName: "Seat Layout Type",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -129,85 +131,80 @@ function IntercityIndividualList() {
       headerName: "Travel type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "gender",
       headerName: "Gender",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "gender",
+      field: "concessionType",
       headerName: "Concession Type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "gender",
+      field: "ticketID",
       headerName: "Ticket ID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "gender",
+      field: "returnJourneyTicketID",
       headerName: "Return Journey Ticket ID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "purchaseDate",
+      field: "mid",
       headerName: "MID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
     {
-      field: "bookinG_DATE",
+      field: "purchaseDate",
       headerName: "Purchase Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
-      field: "bookingSource",
+      field: "travelDate",
       headerName: "Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "createD_BY",
+      field: "returnDate",
       headerName: "Return Journey Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totaL_AMOUNT",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "paymentType",
+      field: "orderId",
       headerName: "Order ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "status",
+      field: "modeOfPayment",
       headerName: "Payment Mode",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -216,7 +213,7 @@ function IntercityIndividualList() {
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "resultStatus",
+      field: "basicFare",
       headerName: "Basic Fare",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -227,35 +224,35 @@ function IntercityIndividualList() {
       headerClass: "text-blue-v2",
       children: [
         {
-          field: "resultStatus",
+          field: "passengerFee",
           headerName: "Passenger fee",
           // flex: 1,
           headerClass: "text-blue-v2",
           valueFormatter: (params) => params.value || "N/A",
         },
         {
-          field: "resultStatus",
+          field: "waterBottle",
           headerName: "Water bottle",
           // flex: 1,
           headerClass: "text-blue-v2",
           valueFormatter: (params) => params.value || "N/A",
         },
         {
-          field: "resultStatus",
+          field: "safetyCess",
           headerName: "Safety cess",
           // flex: 1,
           headerClass: "text-blue-v2",
           valueFormatter: (params) => params.value || "N/A",
         },
         {
-          field: "resultStatus",
+          field: "srt",
           headerName: "SRT",
           // flex: 1,
           headerClass: "text-blue-v2",
           valueFormatter: (params) => params.value || "N/A",
         },
         {
-          field: "resultStatus",
+          field: "totalTollFare",
           headerName: "Total Toll fare",
           // flex: 1,
           headerClass: "text-blue-v2",
@@ -264,56 +261,56 @@ function IntercityIndividualList() {
       ],
     },
     {
-      field: "resultStatus",
+      field: "totalLeviesFee",
       headerName: "Total Levies Fee",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "serviceFee",
       headerName: "Service fee",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "serviceTax_GST",
       headerName: "Service Tax",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "flexiFare",
       headerName: "Flexi Fare",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "eachTicketAmount",
       headerName: "Each Ticket Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "totalAmount",
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "paymentGatewayTransactionId",
       headerName: "Payment Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "resultStatus",
+      field: "bookingStatus",
       headerName: "Booking  Status",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -321,19 +318,54 @@ function IntercityIndividualList() {
     },
 
     {
-      headerName: "Actions",
-      field: "actions",
+      headerName: "Ticket",
+      field: "Ticket",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <NavLink
-            end
-            to={`/intercity-admin/ticket-view-details/${params.data.paymentTransactionId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-          >
-            <span className="text-blue-v2"> View Ticket</span>
-          </NavLink>
+          {params.data.pnrNumber ? (
+            <NavLink
+              end
+              to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+            >
+              Return Journey
+            </NavLink>
+          ) : (
+            <span
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              aria-disabled="true"
+              tabIndex={-1}
+            >
+              Return Journey
+            </span>
+          )}
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+    {
+      headerName: "Ticket",
+      field: "Ticket",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          {params.data.returnPNRNumber ? (
+            <NavLink
+              end
+              to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+            >
+              Return Journey
+            </NavLink>
+          ) : (
+            <span
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              aria-disabled="true"
+              tabIndex={-1}
+            >
+              Return Journey
+            </span>
+          )}
         </div>
       ),
       flex: 1,
@@ -348,22 +380,22 @@ function IntercityIndividualList() {
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
       />
-       <AgGridTable
-            ExportName="Intercity Individual Report"
-            // rowData={RtcTotalTransactionsData}
-            columnDefs={columnDefs}
-            // isFetchLoading={isFetchIntercityIndividualData}
-            // isPagination={false}
-            // IsReactPaginate={true}
-            // setPageLimit={setPAGE_LIMIT}
-            // pageLimit={PAGE_LIMIT}
-            // handlePageClick={handlePageClick}
-            // currentPage={currentPage}
-            // showTotalCount={true}
-            // totalCount={RtcTotalTransactionsData[0]?.totalCount}
-            // tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
-            // SetcurrentPage={setCurrentPage}
-          />
+      <AgGridTable
+        ExportName="Intercity Individual Report"
+        rowData={IntercityIndividualData}
+        columnDefs={columnDefs}
+        isFetchLoading={isFetchIntercityIndividualData}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        showTotalCount={true}
+        totalCount={IntercityIndividualData[0]?.totalRecords}
+        tableHeight={IntercityIndividualData.length > 10 ? 550 : 300}
+        SetcurrentPage={setCurrentPage}
+      />
     </div>
   );
 }
