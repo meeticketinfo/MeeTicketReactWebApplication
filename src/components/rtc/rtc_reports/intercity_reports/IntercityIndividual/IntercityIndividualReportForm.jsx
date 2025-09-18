@@ -4,6 +4,7 @@ import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useIntercityIndividualStore } from "./InterCityIndividualStore";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityIndividualReportForm = ({
   pageNumber,
@@ -96,7 +97,11 @@ const IntercityIndividualReportForm = ({
 
   const onSubmit = (values) => {
     console.log("values", values);
-    fetchIntercityIndividualData(values);
+    fetchIntercityIndividualData({
+      ...values,  
+      pageNumber:pageNumber,
+      PageSize:pageSize
+    });
     localStorage.setItem(
       "intercity-individual-filters",
       JSON.stringify(values)
@@ -320,13 +325,22 @@ const IntercityIndividualReportForm = ({
               <DebounceSearchableDropdown
                 name="departureLocation"
                 value={values.departureLocation}
-                onChange={(v) => setFieldValue("departureLocation", v)}
-                options={departureCities}
+                onChange={(value) => setFieldValue("departureLocation", value)}
                 onSearch={fetchDepartureCities}
-                Label="cityName"
-                Value="cityId"
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search departure city..."
-                uniqueId="departure-location-dropdown"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={loadingCities}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
               />
             </div>
             {/* arrival location */}
@@ -337,12 +351,22 @@ const IntercityIndividualReportForm = ({
               <DebounceSearchableDropdown
                 name="arrivalLocation"
                 value={values.arrivalLocation}
-                onChange={(v) => setFieldValue("arrivalLocation", v)}
-                options={arrivalCities}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
                 onSearch={fetchArrivalCities}
-                Label="cityName"
-                Value="cityId"
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
                 placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isFetchIntercityRefundTransactionsReport}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
                 uniqueId="arrival-location-dropdown"
               />
             </div>
@@ -397,6 +421,8 @@ const IntercityIndividualReportForm = ({
                     arrivalLocation: "",
                     ticketId: "",
                     returnTicketId: "",
+                    pageNumber:pageNumber,
+                    PageSize:pageSize
                   });
                 }}
               >

@@ -12,7 +12,7 @@ export const useIntercityConsolidateStore = create((set) => ({
   fetchIntercityConsolidateData: async (payload) => {
     set({ isFetchIntercityConsolidateData: true });
     try {
-      const params = `purchaseOrBooking=${payload.purchaseOrBooking}&fromDate=${payload.fromDate}&toDate=${payload.fromDate}&mobileNumber=${payload.mobileNumber}&typeOfBus=${payload.typeOfBus}&seatLayoutType=${payload.seatLayoutType}&paymentMode=${payload.paymentMode}&transactionId=${payload.transactionId}&bookingStatus=${payload.bookingStatus}&PNRNumber=${payload.PNRNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&pageNumber=${1}&pageSize=${20}`;
+      const params = `purchaseOrBooking=${payload.purchaseOrBooking}&fromDate=${payload.fromDate}&toDate=${payload.fromDate}&mobileNumber=${payload.mobileNumber}&typeOfBus=${payload.typeOfBus}&paymentMode=${payload.paymentMode}&transactionId=${payload.transactionId}&PNRNumber=${payload.PNRNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
       const method = "get";
       const response = await apiService[method](
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_CONSOLIDATED_REPORT}?${params}`

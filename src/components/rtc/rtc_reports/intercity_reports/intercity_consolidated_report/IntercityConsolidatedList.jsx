@@ -17,26 +17,22 @@ function IntercityConsolidatedList() {
     setCurrentPage(event.selected);
   };
   const {
-      fetchIntercityConsolidateData,
-      IntercityConsolidateData,
-      isFetchIntercityConsolidateData,
-    } = useIntercityConsolidateStore();
+    fetchIntercityConsolidateData,
+    IntercityConsolidateData,
+    isFetchIntercityConsolidateData,
+  } = useIntercityConsolidateStore();
   useEffect(() => {
     fetchIntercityConsolidateData({
-      purchaseOrBooking:savedFilters?.purchaseOrBooking
+      purchaseOrBooking: savedFilters?.purchaseOrBooking
         ? savedFilters.purchaseOrBooking
         : "",
       fromDate: savedFilters?.fromDate
         ? savedFilters.fromDate
         : getCurrentDate(),
       toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-      mobileNumber: savedFilters?.mobileNumber
-        ? savedFilters.mobileNumber
-        : "",
+      mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
       bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-      PNRNumber: savedFilters?.PNRNumber
-        ? savedFilters.PNRNumber
-        : "",
+      PNRNumber: savedFilters?.PNRNumber ? savedFilters.PNRNumber : "",
       typeOfBooking: savedFilters?.typeOfBooking
         ? savedFilters.typeOfBooking
         : "",
@@ -45,10 +41,11 @@ function IntercityConsolidatedList() {
       transactionId: savedFilters?.transactionId
         ? savedFilters.transactionId
         : "",
+
+      typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
       seatLayoutType: savedFilters?.seatLayoutType
         ? savedFilters.seatLayoutType
         : "",
-      typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
       bookingStatus: savedFilters?.bookingStatus
         ? savedFilters.bookingStatus
         : "",
@@ -58,17 +55,21 @@ function IntercityConsolidatedList() {
       arrivalLocation: savedFilters?.arrivalLocation
         ? savedFilters.arrivalLocation
         : "",
+      pageNumber: currentPage,
+      PageSize: PAGE_LIMIT,
     });
+  }, [currentPage, PAGE_LIMIT]);
 
-  }, []);
-
-  const [columnDefs] = useState([
+  const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      minWidth: 80,
-      maxWidth: 80,
+      maxWidth: 70,
       headerClass: "text-blue-v2",
+      valueGetter: (params) => {
+        const pageOffset = currentPage * PAGE_LIMIT;
+        return pageOffset + params.node.rowIndex + 1;
+      },
     },
     {
       field: "pnrNumber",
@@ -103,6 +104,7 @@ function IntercityConsolidatedList() {
     {
       field: "mobileNumber",
       headerName: "Mobile number",
+      maxWidth: 140,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -115,7 +117,7 @@ function IntercityConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "mid",
+      field: "seatLayoutType",
       headerName: "Seat Layout Type",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -126,6 +128,7 @@ function IntercityConsolidatedList() {
     {
       field: "travelType",
       headerName: "Travel type",
+      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
@@ -139,8 +142,9 @@ function IntercityConsolidatedList() {
     },
 
     {
-      field: "purchaseDate",
+      field: "bookingDate",
       headerName: "Purchase Date",
+      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
@@ -148,68 +152,110 @@ function IntercityConsolidatedList() {
     {
       field: "purchaseDate",
       headerName: "Travel Date",
+      maxWidth: 170,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "createD_BY",
+      field: "returnJourneyTravelDate",
       headerName: "Return Journey Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totaL_AMOUNT",
+      field: "ticketQuantity",
       headerName: "Ticket Quantity",
+      maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
     },
     {
-      field: "paymentType",
+      field: "orderId",
       headerName: "Order ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "status",
+      field: "paymentMode",
       headerName: "Payment Mode",
       // flex: 1,
+      maxWidth: 130,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "resultStatus",
+      field: "basicFare",
       headerName: "Basic Fare",
       // flex: 1,
+      maxWidth: 100,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      headerName: "Actions",
-      field: "actions",
+      headerName: "Ticket",
+      field: "Ticket",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <NavLink
-            end
-            to={`/entity-bookings/view-details/${params.data.bookingID}`}
-            onClick={() => {
-              setisCompleteBookings(true);
-            }}
-            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-          >
-            <span className="text-blue-v2"> Booking Details</span>
-          </NavLink>
+          {params.data.pnrNumber ? (
+            <NavLink
+              end
+              to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Onwards Journey
+            </NavLink>
+          ) : (
+            <span
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              aria-disabled="true"
+              tabIndex={-1}
+            >
+              Onwards Journey
+            </span>
+          )}
         </div>
       ),
       flex: 1,
       headerClass: "text-blue-v2",
     },
-  ]);
+    {
+      headerName: "Ticket",
+      field: "Ticket",
+      cellRenderer: (params) => (
+        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+          {params.data.returnPNRNumber ? (
+            <NavLink
+              end
+              to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Return Journey
+            </NavLink>
+          ) : (
+            <span
+              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              aria-disabled="true"
+              tabIndex={-1}
+            >
+              Return Journey
+            </span>
+          )}
+        </div>
+      ),
+      flex: 1,
+      headerClass: "text-blue-v2",
+    },
+  ];
   return (
     <div>
       <IntercityConsolidatedReportForm
@@ -232,6 +278,7 @@ function IntercityConsolidatedList() {
         totalCount={IntercityConsolidateData[0]?.totalCount}
         tableHeight={IntercityConsolidateData.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
+        showSearch={false}
       />
     </div>
   );
