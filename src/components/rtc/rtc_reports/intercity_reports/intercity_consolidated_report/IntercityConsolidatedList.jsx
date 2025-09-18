@@ -6,6 +6,7 @@ import {
   getCurrentDate,
 } from "../../../../../utils/TypographyHelper";
 import IntercityConsolidatedReportForm from "./IntercityConsolidatedReportForm";
+import { useIntercityConsolidateStore } from "./IntercityConsolidateStore";
 function IntercityConsolidatedList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-consolidated-filters")
@@ -15,47 +16,51 @@ function IntercityConsolidatedList() {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-  // useEffect(() => {
-  //   fetchCompleteBookingsReport({
-  //     fromDate: savedFilters?.fromDate
-  //       ? savedFilters.fromDate
-  //       : getCurrentDate(),
-  //     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-  //     mobileNumber: savedFilters?.mobileNumber
-  //       ? savedFilters.mobileNumber
-  //       : null,
-  //     bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : null,
-  //     pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
-  //       ? savedFilters.pnrOrReturnPnr
-  //       : null,
-  //     typeOfBooking: savedFilters?.typeOfBooking
-  //       ? savedFilters.typeOfBooking
-  //       : null,
-  //     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : null,
-  //     orderId: savedFilters?.orderId ? savedFilters.orderId : null,
-  //     transactionId: savedFilters?.transactionId
-  //       ? savedFilters.transactionId
-  //       : null,
-  //     seatLayoutType: savedFilters?.seatLayoutType
-  //       ? savedFilters.seatLayoutType
-  //       : null,
-  //     busType: savedFilters?.busType ? savedFilters.busType : null,
-  //     bookingStatus: savedFilters?.bookingStatus
-  //       ? savedFilters.bookingStatus
-  //       : null,
-  //     departureLocation: savedFilters?.departureLocation
-  //       ? savedFilters.departureLocation
-  //       : "",
-  //     arrivalLocation: savedFilters?.arrivalLocation
-  //       ? savedFilters.arrivalLocation
-  //       : "",
-  // ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
-  // returnTicketId: savedFilters?.returnTicketId
-  //   ? savedFilters.returnTicketId
-  //   : "",
-  //   });
+  const {
+      fetchIntercityConsolidateData,
+      IntercityConsolidateData,
+      isFetchIntercityConsolidateData,
+    } = useIntercityConsolidateStore();
+  useEffect(() => {
+    fetchIntercityConsolidateData({
+      purchaseOrBooking:savedFilters?.purchaseOrBooking
+        ? savedFilters.purchaseOrBooking
+        : "",
+      fromDate: savedFilters?.fromDate
+        ? savedFilters.fromDate
+        : getCurrentDate(),
+      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      mobileNumber: savedFilters?.mobileNumber
+        ? savedFilters.mobileNumber
+        : "",
+      bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
+      PNRNumber: savedFilters?.PNRNumber
+        ? savedFilters.PNRNumber
+        : "",
+      typeOfBooking: savedFilters?.typeOfBooking
+        ? savedFilters.typeOfBooking
+        : "",
+      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
+      transactionId: savedFilters?.transactionId
+        ? savedFilters.transactionId
+        : "",
+      seatLayoutType: savedFilters?.seatLayoutType
+        ? savedFilters.seatLayoutType
+        : "",
+      typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
+      bookingStatus: savedFilters?.bookingStatus
+        ? savedFilters.bookingStatus
+        : "",
+      departureLocation: savedFilters?.departureLocation
+        ? savedFilters.departureLocation
+        : "",
+      arrivalLocation: savedFilters?.arrivalLocation
+        ? savedFilters.arrivalLocation
+        : "",
+    });
 
-  // }, []);
+  }, []);
 
   const [columnDefs] = useState([
     {
@@ -66,14 +71,14 @@ function IntercityConsolidatedList() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "paymentTransactionId",
+      field: "pnrNumber",
       headerName: "PNR Number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "referencE_ID",
+      field: "returnPNRNumber",
       headerName: "Return PNR No",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -82,28 +87,28 @@ function IntercityConsolidatedList() {
     // ------------------
 
     {
-      field: "parkName",
+      field: "departureLocation",
       headerName: "Departure Location",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "departmentName",
+      field: "arrivalLocation",
       headerName: "Arrival Location",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "entityTypeName",
+      field: "mobileNumber",
       headerName: "Mobile number",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "totalTicketsBooked",
+      field: "busType",
       headerName: " Bus Type",
       maxWidth: 170,
       headerClass: "text-blue-v2",
@@ -119,7 +124,7 @@ function IntercityConsolidatedList() {
     // -------------------
 
     {
-      field: "mobileNumber",
+      field: "travelType",
       headerName: "Travel type",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -127,21 +132,21 @@ function IntercityConsolidatedList() {
         !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
     {
-      field: "purchaseDate",
+      field: "mid",
       headerName: "MID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
     {
-      field: "bookinG_DATE",
+      field: "purchaseDate",
       headerName: "Purchase Date",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
-      field: "bookingSource",
+      field: "purchaseDate",
       headerName: "Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -214,19 +219,19 @@ function IntercityConsolidatedList() {
       />
       <AgGridTable
         ExportName="Intercity Consolidated Report"
-        // rowData={RtcTotalTransactionsData}
+        rowData={IntercityConsolidateData}
         columnDefs={columnDefs}
-        // isFetchLoading={isRtcTotalTransactionsLoading}
-        // isPagination={false}
-        // IsReactPaginate={true}
-        // setPageLimit={setPAGE_LIMIT}
-        // pageLimit={PAGE_LIMIT}
-        // handlePageClick={handlePageClick}
-        // currentPage={currentPage}
-        // showTotalCount={true}
-        // totalCount={RtcTotalTransactionsData[0]?.totalCount}
-        // tableHeight={RtcTotalTransactionsData.length > 10 ? 550 : 300}
-        // SetcurrentPage={setCurrentPage}
+        isFetchLoading={isFetchIntercityConsolidateData}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        showTotalCount={true}
+        totalCount={IntercityConsolidateData[0]?.totalCount}
+        tableHeight={IntercityConsolidateData.length > 10 ? 550 : 300}
+        SetcurrentPage={setCurrentPage}
       />
     </div>
   );
