@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 
-import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
+import busPassTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import {
   getStartOfCurrentDay,
@@ -31,7 +31,7 @@ const getCurrentDateWithEndTime = () => {
 };
 import Breadcrumb from "../../../../../../Breadcrumb";
 import BusPassFailedOtherReasonChart from "../../charts/BusPassFailedOtherReasonChart";
-import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcFailedOtherReason = () => {
   const startOfDay = getStartOfCurrentDay();

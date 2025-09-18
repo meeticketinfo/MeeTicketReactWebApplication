@@ -5,7 +5,7 @@ import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSea
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 
 const IntercityConsolidatedReportForm = ({
-  onSearch,
+  
   pageNumber,
   pageSize,
   SetcurrentPage,
@@ -81,6 +81,10 @@ const IntercityConsolidatedReportForm = ({
     arrivalLocation: savedFilters?.arrivalLocation
       ? savedFilters.arrivalLocation
       : "",
+      ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
+      returnTicketId: savedFilters?.returnTicketId
+        ? savedFilters.returnTicketId
+        : "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -242,6 +246,30 @@ const IntercityConsolidatedReportForm = ({
                 placeholder="Enter Transaction ID"
               />
             </div>
+             {/* Ticket id */}
+             <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="ticketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Ticket Id"
+              />
+            </div>
+            {/* Return Ticket Id id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="returnTicketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return Ticket Id"
+              />
+            </div>
             {/* seat layout type */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -356,6 +384,8 @@ const IntercityConsolidatedReportForm = ({
                     departmentId: null,
                     departureLocation: "",
                     arrivalLocation: "",
+                    ticketId: "",
+                    returnTicketId: "",
                   });
                 }}
               >

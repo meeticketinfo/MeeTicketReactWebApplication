@@ -154,45 +154,45 @@ const GraphicalRepresentationDashboard = () => {
   }, [selectedDataField]);
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="bg-white p-3 sm:p-4 md:p-6 max-h-full overflow-hidden">
       {/* Header */}
-      <div className="mb-6">
-        <h3 className="text-xl text-gray-800 mt-2">Graphical Representation</h3>
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-lg sm:text-xl text-gray-800 mt-2 font-semibold">Graphical Representation</h3>
       </div>
 
       {/* Tab Navigation */}
-      <div className="relative mb-6">
-        <div className="flex">
+      <div className="relative mb-4 sm:mb-6">
+        <div className="flex flex-col sm:flex-row">
           <button
             onClick={() => setActiveTab("package")}
-            className={`px-6 py-3 text-sm font-medium transition-colors relative ${
+            className={`px-4 sm:px-6 py-3 sm:py-3 text-sm font-medium transition-colors relative w-full sm:w-auto touch-manipulation active:scale-95 ${
               activeTab === "package"
-                ? "text-blue-700 border-b-2 border-b-blue-700"
-                : "text-gray-500 hover:text-gray-700"
+                ? "text-blue-700 border-b-2 border-b-blue-700 bg-blue-50 sm:bg-transparent"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50 sm:hover:bg-transparent"
             }`}
           >
             Package Level
           </button>
           <button
             onClick={() => setActiveTab("house")}
-            className={`px-6 py-3 text-sm font-medium transition-colors relative ${
+            className={`px-4 sm:px-6 py-3 sm:py-3 text-sm font-medium transition-colors relative w-full sm:w-auto touch-manipulation active:scale-95 ${
               activeTab === "house"
-                ? "text-blue-700 border-b-2 border-b-blue-700"
-                : "text-gray-500 hover:text-gray-700"
+                ? "text-blue-700 border-b-2 border-b-blue-700 bg-blue-50 sm:bg-transparent"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50 sm:hover:bg-transparent"
             }`}
           >
             Houses Level
           </button>
         </div>
         {/* Half line under tabs */}
-        <div className="w-1/2 h-px bg-gray-300 mt-0"></div>
+        <div className="w-1/2 h-px bg-gray-300 mt-0 hidden sm:block"></div>
       </div>
 
       {/* Package Level Content */}
       {activeTab === "package" && (
         <div className="space-y-6">
           {/* Package Selection for Package Level */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select Package
@@ -202,7 +202,7 @@ const GraphicalRepresentationDashboard = () => {
                 onChange={(e) =>
                   setSelectedPackageForPackageLevel(e.target.value)
                 }
-                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2`}
+                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2.5 sm:py-2 touch-manipulation`}
                 disabled={!AllPackages || AllPackages.length === 0}
               >
                 {!AllPackages || AllPackages.length === 0 ? (
@@ -227,7 +227,7 @@ const GraphicalRepresentationDashboard = () => {
               <select
                 value={selectedDataField}
                 onChange={(e) => setSelectedDataField(e.target.value)}
-                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2`}
+                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2.5 sm:py-2 touch-manipulation`}
                 disabled={
                   !amrabadDashboardBookingsFullSummaryData?.detailed ||
                   amrabadDashboardBookingsFullSummaryData.detailed.length === 0
@@ -253,11 +253,11 @@ const GraphicalRepresentationDashboard = () => {
               <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
             </div>
           ) : (
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
               {/* Package vs Room Analysis */}
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
+              <div className="flex flex-col gap-4 sm:gap-6">
                 {/* Package Level Pie Chart */}
-                <div className="bg-[#F8F8F8] rounded-xl p-6 shadow-sm border border-gray-200">
+                <div className="bg-[#F8F8F8] rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-200 overflow-hidden">
                   {amrabadDashboardBookingsFullSummaryData?.detailed &&
                   amrabadDashboardBookingsFullSummaryData.detailed.length >
                     0 ? (
@@ -280,8 +280,8 @@ const GraphicalRepresentationDashboard = () => {
                       calloutLabelKey="packageName"
                     />
                   ) : (
-                    <div className="flex justify-center items-center h-64">
-                      <p className="text-gray-500">
+                    <div className="flex justify-center items-center h-48 sm:h-64">
+                      <p className="text-gray-500 text-sm sm:text-base">
                         No detailed data available
                       </p>
                     </div>
@@ -289,8 +289,8 @@ const GraphicalRepresentationDashboard = () => {
                 </div>
 
                 {/* Room Level Bar Chart */}
-                <div className="bg-[#F8F8F8] rounded-xl p-6 shadow-sm border border-gray-200">
-                  <div className="h-80">
+                <div className="bg-[#F8F8F8] rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="h-64 sm:h-72 lg:h-80">
                     {amrabadDashboardBookingsFullSummaryData?.detailed &&
                     amrabadDashboardBookingsFullSummaryData.detailed.length >
                       0 ? (
@@ -340,7 +340,7 @@ const GraphicalRepresentationDashboard = () => {
                       })()
                     ) : (
                       <div className="flex justify-center items-center h-full">
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 text-sm sm:text-base">
                           No detailed data available for package chart
                         </p>
                       </div>
@@ -357,7 +357,7 @@ const GraphicalRepresentationDashboard = () => {
       {activeTab === "house" && (
         <div className="space-y-6">
           {/* Package, House, and Data Field Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select Package
@@ -365,7 +365,7 @@ const GraphicalRepresentationDashboard = () => {
               <select
                 value={selectedPackage}
                 onChange={(e) => setSelectedPackage(e.target.value)}
-                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2`}
+                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2.5 sm:py-2 touch-manipulation`}
                 disabled={!AllPackages || AllPackages.length === 0}
               >
                 {!AllPackages || AllPackages.length === 0 ? (
@@ -390,7 +390,7 @@ const GraphicalRepresentationDashboard = () => {
               <select
                 value={selectedHouse}
                 onChange={(e) => setSelectedHouse(e.target.value)}
-                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2`}
+                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2.5 sm:py-2 touch-manipulation`}
                 disabled={selectedPackage === "all" || !AllHouses || AllHouses.length === 0}
               >
                 {selectedPackage === "all" ? (
@@ -417,7 +417,7 @@ const GraphicalRepresentationDashboard = () => {
               <select
                 value={selectedHouseDataField}
                 onChange={(e) => setSelectedHouseDataField(e.target.value)}
-                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2`}
+                className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm px-3 py-2.5 sm:py-2 touch-manipulation`}
                 disabled={
                   !amrabadDashboardBookingsFullSummaryData?.detailed ||
                   amrabadDashboardBookingsFullSummaryData.detailed.length === 0
@@ -444,9 +444,9 @@ const GraphicalRepresentationDashboard = () => {
             </div>
           ) : amrabadDashboardBookingsFullSummaryData?.detailed &&
             amrabadDashboardBookingsFullSummaryData.detailed.length > 0 ? (
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
+              <div className="flex flex-col gap-4 sm:gap-6">
               {/* Package Level Pie Chart */}
-              <div className="bg-[#F8F8F8] rounded-xl p-6 shadow-sm border border-gray-200">
+              <div className="bg-[#F8F8F8] rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-200 overflow-hidden">
                 <HousePieChart
                   data={combineRoomData(
                     selectedPackage === "all" 
@@ -469,9 +469,9 @@ const GraphicalRepresentationDashboard = () => {
               </div>
 
               {/* Total Amount Bar Chart */}
-              <div className="bg-[#F8F8F8] rounded-xl p-6 shadow-sm border border-gray-200 relative">
+              <div className="bg-[#F8F8F8] rounded-xl p-3 sm:p-4 lg:p-6 shadow-sm border border-gray-200 relative overflow-hidden">
                 <div className="absolute inset-0 border-2 border-blue-500 rounded-xl pointer-events-none"></div>
-                <div className="h-80">
+                <div className="h-64 sm:h-72 lg:h-80">
                   <HouseBarChart
                     data={combineRoomData(
                       selectedPackage === "all" 
@@ -531,24 +531,24 @@ const HousePieChart = ({ data, title, angleKey, calloutLabelKey }) => {
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 640 ? 8 : 10,
             color: "black",
-            maxWidth: 150,
+            maxWidth: window.innerWidth < 640 ? 100 : 150,
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = 20;
+              const wrapLength = window.innerWidth < 640 ? 15 : 20;
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"
               );
               return `${wrappedText.trim()}\n${datum[angleKey] || 0}`;
             },
-            offset: 15,
+            offset: window.innerWidth < 640 ? 10 : 15,
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 640 ? 8 : 10,
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -577,31 +577,31 @@ const HousePieChart = ({ data, title, angleKey, calloutLabelKey }) => {
   }, [data, angleKey, calloutLabelKey]);
 
   return (
-    <div className="gap-8 w-full">
-      <div className="flex flex-row gap-2 items-center justify-center mb-4">
-        <h2 className="text-lg font-medium">{title}</h2>
+    <div className="gap-4 sm:gap-6 lg:gap-8 w-full">
+      <div className="flex flex-row gap-2 items-center justify-center mb-3 sm:mb-4">
+        <h2 className="text-base sm:text-lg font-medium text-center">{title}</h2>
       </div>
-      <div className="flex flex-row justify-between gap-4 items-start">
+      <div className="flex flex-col lg:flex-row justify-between gap-4 sm:gap-6 items-start">
         {/* Pie Chart */}
-        <div className="flex justify-center flex-1">
-          <div ref={chartRef} className="" />
+        <div className="flex justify-center flex-1 w-full lg:w-auto">
+          <div ref={chartRef} className="w-full max-w-sm sm:max-w-md lg:max-w-lg" />
         </div>
 
         {/* Legend/List View Toggle */}
-        <div className="flex-1">
+        <div className="flex-1 w-full lg:max-w-sm xl:max-w-md">
           <div className="flex justify-center mb-3">
             <div className="flex bg-gray-100 rounded-lg p-1"></div>
           </div>
 
-          <div className="w-full">
-            <div className="border border-[#B7B7B7] rounded-lg overflow-hidden">
-              <table className="w-full min-w-[280px]">
+          <div className="w-full overflow-x-auto">
+            <div className="border border-[#B7B7B7] rounded-lg overflow-hidden min-w-[280px]">
+              <table className="w-full">
                 <thead>
                   <tr className="bg-[#D9E4FF]">
-                    <th className="text-left px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
+                    <th className="text-left px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">
                       Rooms
                     </th>
-                    <th className="text-right px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
+                    <th className="text-right px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">
                       Count
                     </th>
                   </tr>
@@ -609,21 +609,21 @@ const HousePieChart = ({ data, title, angleKey, calloutLabelKey }) => {
                 <tbody>
                   {data?.map((item, index) => (
                     <tr key={index}>
-                      <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                        <div className="flex items-start gap-1 md:gap-2">
+                      <td className="px-2 sm:px-3 md:px-4 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                        <div className="flex items-start gap-1 sm:gap-2">
                           <div
-                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0 mt-1"
+                            className="w-2 sm:w-3 h-2 sm:h-3 rounded-full shrink-0 mt-1"
                             style={{
                               backgroundColor: colors[index % colors.length],
                             }}
                           />
-                          <div className="text-[#000] text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight">
+                          <div className="text-[#000] text-xs sm:text-sm break-words max-w-[100px] sm:max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight">
                             {item[calloutLabelKey]}
                           </div>
                         </div>
                       </td>
-                      <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
-                        <span className="text-[#4A90E2] font-semibold text-xs md:text-sm">
+                      <td className="px-2 sm:px-3 md:px-4 py-2 text-right border border-b-[#B7B7B7]">
+                        <span className="text-[#4A90E2] font-semibold text-xs sm:text-sm">
                           {item[angleKey]?.toLocaleString("en-US") || 0}
                         </span>
                       </td>
@@ -768,24 +768,24 @@ const DetailedPackagePieChart = ({
           calloutLabelKey: calloutLabelKey,
           calloutLabel: {
             enabled: true,
-            fontSize: 10,
+            fontSize: window.innerWidth < 640 ? 8 : 10,
             color: "black",
-            maxWidth: 120,
+            maxWidth: window.innerWidth < 640 ? 100 : 120,
             formatter: ({ datum, angleKey, calloutLabelKey }) => {
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = 20;
+              const wrapLength = window.innerWidth < 640 ? 15 : 20;
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"
               );
               return `${wrappedText.trim()}\n${datum[angleKey] || 0}`;
             },
-            offset: 15,
+            offset: window.innerWidth < 640 ? 10 : 15,
             minAngle: 0,
           },
           sectorLabel: {
             enabled: true,
-            fontSize: 9,
+            fontSize: window.innerWidth < 640 ? 7 : 9,
             fontWeight: "bold",
             color: "#000",
             formatter: ({ datum, angleKey }) => {
@@ -818,27 +818,27 @@ const DetailedPackagePieChart = ({
   }, [data, angleKey, calloutLabelKey]);
 
   return (
-    <div className="gap-8 w-full">
-      <div className="flex flex-row gap-2 items-center justify-center mb-4">
-        <h2 className="text-lg font-medium">{title}</h2>
+    <div className="gap-4 sm:gap-6 lg:gap-8 w-full">
+      <div className="flex flex-row gap-2 items-center justify-center mb-3 sm:mb-4">
+        <h2 className="text-base sm:text-lg font-medium text-center">{title}</h2>
       </div>
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start lg:items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start lg:items-center justify-between">
         {/* Pie Chart */}
         <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[70%]">
-          <div ref={chartRef} className="" />
+          <div ref={chartRef} className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto" />
         </div>
 
         {/* Legend/List View Toggle */}
-        <div>
-          <div className="w-full lg:min-w-[300px] xl:min-w-[340px] lg:w-[60%] xl:w-[50%] mx-auto">
-            <div className="border border-[#B7B7B7] rounded-lg overflow-hidden">
-              <table className="w-full min-w-[280px]">
+        <div className="w-full lg:max-w-sm xl:max-w-md">
+          <div className="w-full overflow-x-auto">
+            <div className="border border-[#B7B7B7] rounded-lg overflow-hidden min-w-[280px]">
+              <table className="w-full">
                 <thead>
                   <tr className="bg-[#D9E4FF]">
-                    <th className="text-left px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
+                    <th className="text-left px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">
                       Packages
                     </th>
-                    <th className="text-right px-2 md:px-4 py-2 text-[#205375] font-semibold text-xs md:text-sm">
+                    <th className="text-right px-2 sm:px-3 md:px-4 py-2 text-[#205375] font-semibold text-xs sm:text-sm">
                       Count
                     </th>
                   </tr>
@@ -846,21 +846,21 @@ const DetailedPackagePieChart = ({
                 <tbody>
                   {data?.map((item, index) => (
                     <tr key={index}>
-                      <td className="px-2 md:px-3 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
-                        <div className="flex items-start gap-1 md:gap-2">
+                      <td className="px-2 sm:px-3 md:px-4 py-2 border border-b-[#B7B7B7] border-r-[#B7B7B7]">
+                        <div className="flex items-start gap-1 sm:gap-2">
                           <div
-                            className="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0 mt-1"
+                            className="w-2 sm:w-3 h-2 sm:h-3 rounded-full shrink-0 mt-1"
                             style={{
                               backgroundColor: colors[index % colors.length],
                             }}
                           />
-                          <div className="text-[#000] text-xs md:text-sm break-words max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight">
+                          <div className="text-[#000] text-xs sm:text-sm break-words max-w-[100px] sm:max-w-[120px] md:max-w-[150px] lg:max-w-[200px] leading-tight">
                             {item[calloutLabelKey]}
                           </div>
                         </div>
                       </td>
-                      <td className="px-2 md:px-3 py-2 text-right border border-b-[#B7B7B7]">
-                        <span className="text-[#4A90E2] font-semibold text-xs md:text-sm">
+                      <td className="px-2 sm:px-3 md:px-4 py-2 text-right border border-b-[#B7B7B7]">
+                        <span className="text-[#4A90E2] font-semibold text-xs sm:text-sm">
                           {item[angleKey]?.toLocaleString("en-US") || 0}
                         </span>
                       </td>

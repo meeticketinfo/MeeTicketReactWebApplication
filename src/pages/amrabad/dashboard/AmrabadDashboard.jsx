@@ -25,7 +25,7 @@ function AmrabadDashboard() {
     fetchAmrabadDashboardBookingsFullSummaryData(values);
   };
   return (
-    <>
+    <div className="min-h-0 max-h-full overflow-hidden">
       {/* Cards */}
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue }) => (
@@ -196,10 +196,10 @@ function AmrabadDashboard() {
       </div>
 
       {/* Graphical Representation Dashboard */}
-      <div>
+      <div className="min-h-0 max-h-full overflow-hidden">
         <GraphicalRepresentationDashboard />
       </div>
-    </>
+    </div>
   );
 }
 

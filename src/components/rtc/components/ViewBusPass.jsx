@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PopupModal from "../../utils/popup_modal/PopupModal";
 import IdentityCard from "./view_bus_pass_cards/IdentityCard";
 import BusPassCard from "./view_bus_pass_cards/BusPassCard";
-import { useBusPassTotalTransactionStore } from "../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { useBusPassTotalTransactionStore } from "../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 // Beautiful Loader Component
 const BusPassLoader = () => {
