@@ -63,12 +63,17 @@ const BusPassTotalTransactionForm = ({
 
     setDeepInnerFilters(values);
     console.log("values", values);
+    
+    // Ensure pageNumber and pageSize have default values if undefined
+    const currentPageNumber = pageNumber || 1;
+    const currentPageSize = pageSize || 20;
+    
     fetchRtcTotalTransactions({
       ...values,
       status: outerFilters.status,
       subCategory: "",
-      pageNumber: pageNumber,
-      pageSize: pageSize,
+      pageNumber: currentPageNumber,
+      pageSize: currentPageSize,
     });
     SetcurrentPage(0);
   };
