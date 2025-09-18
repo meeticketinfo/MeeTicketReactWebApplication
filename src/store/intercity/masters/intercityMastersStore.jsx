@@ -44,9 +44,9 @@ export const useIntercityMastersStore = create((set) => ({
           `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_BUS_TYPES}`
         );
         set({
-          IntercityBusTypesData: response.data,
+          IntercityBusTypesData: response.data.result,
         });
-        return { response: response.data };
+        return { response: response.data.result };
       } catch (error) {
         toast.error(error.message);
         set({
@@ -70,9 +70,9 @@ export const useIntercityMastersStore = create((set) => ({
           `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_SEAT_LAYOUTS}`
         );
         set({
-          IntercitySeatLayoutsData: response.data,
+          IntercitySeatLayoutsData: response.data.result,
         });
-        return { response: response.data };
+        return { response: response.data.result };
       } catch (error) {
         toast.error(error.message);
         set({

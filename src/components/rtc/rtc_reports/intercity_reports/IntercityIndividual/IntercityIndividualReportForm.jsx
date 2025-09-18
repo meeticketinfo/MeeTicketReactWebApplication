@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import { useIntercityIndividualStore } from "./InterCityIndividualStore";
 
 const IntercityIndividualReportForm = ({
   pageNumber,
@@ -16,8 +17,14 @@ const IntercityIndividualReportForm = ({
       return null;
     }
   }, []);
-
-  const { fetchCitiesData, fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData,IntercitySeatLayoutsData,IntercityBusTypesData } = useIntercityMastersStore();
+  const { fetchIntercityIndividualData } = useIntercityIndividualStore();
+  const {
+    fetchCitiesData,
+    fetchIntercityBusTypesData,
+    fetchIntercitySeatLayoutsData,
+    IntercitySeatLayoutsData,
+    IntercityBusTypesData,
+  } = useIntercityMastersStore();
 
   // Separate state for each dropdown to prevent interference
   const [departureCities, setDepartureCities] = useState([]);
@@ -57,26 +64,23 @@ const IntercityIndividualReportForm = ({
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : null,
-    bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : null,
+    mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
+    bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
     pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
       ? savedFilters.pnrOrReturnPnr
-      : null,
-    typeOfBooking: savedFilters?.typeOfBooking
-      ? savedFilters.typeOfBooking
-      : null,
-    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : null,
-    orderId: savedFilters?.orderId ? savedFilters.orderId : null,
+      : "",
+    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
+    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
     transactionId: savedFilters?.transactionId
       ? savedFilters.transactionId
-      : null,
+      : "",
     seatLayoutType: savedFilters?.seatLayoutType
       ? savedFilters.seatLayoutType
-      : null,
-    busType: savedFilters?.busType ? savedFilters.busType : null,
+      : "",
+    busType: savedFilters?.busType ? savedFilters.busType : "",
     bookingStatus: savedFilters?.bookingStatus
       ? savedFilters.bookingStatus
-      : null,
+      : "",
     departureLocation: savedFilters?.departureLocation
       ? savedFilters.departureLocation
       : "",
@@ -91,7 +95,7 @@ const IntercityIndividualReportForm = ({
 
   const onSubmit = (values) => {
     console.log("values", values);
-
+    fetchIntercityIndividualData(values);
     localStorage.setItem(
       "intercity-individual-filters",
       JSON.stringify(values)
@@ -250,9 +254,13 @@ const IntercityIndividualReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
-                {IntercitySeatLayoutsData.map((item) => (
-                  <option value={item.seatLayoutTypeName}>{item.seatLayoutTypeName}</option>
-                ))}
+                {IntercitySeatLayoutsData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.seatLayoutTypesName}>
+                      {item.seatLayoutTypesName}
+                    </option>
+                  )
+                )}
               </Field>
             </div>
             {/* type of bus */}
@@ -266,9 +274,13 @@ const IntercityIndividualReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
-                {IntercityBusTypesData.map((item) => (
-                  <option value={item.busTypeName}>{item.busTypeName}</option> 
-                ))}
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
               </Field>
             </div>
             {/* booking status */}
@@ -340,7 +352,6 @@ const IntercityIndividualReportForm = ({
                   setValues({
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
-                    typeOfBooking: "",
                     mobileNumber: "",
                     bookingDate: "",
                     pnrOrReturnPnr: "",
@@ -348,8 +359,8 @@ const IntercityIndividualReportForm = ({
                     orderId: "",
                     transactionId: "",
                     seatLayoutType: "",
-                    entityId: null,
-                    departmentId: null,
+                    busType: "",
+                    bookingStatus: "",
                     departureLocation: "",
                     arrivalLocation: "",
                     ticketId: "",
