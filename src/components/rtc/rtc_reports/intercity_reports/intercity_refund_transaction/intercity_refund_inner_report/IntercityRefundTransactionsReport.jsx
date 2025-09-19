@@ -319,7 +319,12 @@ const IntercityRefundTransactionsReport = () => {
               handlePageClick={handlePageClick}
               currentPage={currentPage}
               showTotalCount={true}
-              totalCount={refundTransactionsPagination.totalCount}
+              totalCount={
+                Array.isArray(refundIntercityTransactionsInnerReport) &&
+                refundIntercityTransactionsInnerReport.length > 0
+                  ? refundIntercityTransactionsInnerReport[0]?.totalCount
+                  : 0
+              }
               SetcurrentPage={setCurrentPage}
             />
           </div>
