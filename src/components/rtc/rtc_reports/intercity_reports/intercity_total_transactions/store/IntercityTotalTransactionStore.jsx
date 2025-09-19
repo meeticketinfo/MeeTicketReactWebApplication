@@ -37,7 +37,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       };
 
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&status=${sanitizedPayload.status}&subCategory=${sanitizedPayload.subCategory}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&status=${sanitizedPayload.status}&subCategory=${sanitizedPayload.subCategory}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${encodeURIComponent(sanitizedPayload.busType)}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
       );
       set({
         totalTransactionsReport: response.data,
@@ -69,7 +69,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       };
 
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_TOTAL_TRANSACTIONS}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${encodeURIComponent(sanitizedPayload.busType)}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
       );
       set({
         intercityTotalTransactions: response.data,
@@ -101,7 +101,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
       };
 
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED}?startDate=${sanitizedPayload.startDate}&endDate=${sanitizedPayload.endDate}&phoneNumber=${sanitizedPayload.phoneNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${encodeURIComponent(sanitizedPayload.busType)}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
       );
       console.log("response", response);
       set({
@@ -135,7 +135,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
     };
 
     const response = await apiService.get(
-      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_GATEWAY}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
+      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_GATEWAY}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${encodeURIComponent(sanitizedPayload.busType)}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
     );
     set({
       paymentFailedGateway: response.data,
@@ -171,7 +171,7 @@ export const useIntercityTotalTransactionStore = create((set) => ({
     };
 
     const response = await apiService.get(
-      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${sanitizedPayload.busType}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
+      `${API_ENDPOINTS.REPORTS.RTC_REPORTS.INTERCITY_REPORTS.GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS}?startDate=${sanitizedPayload.fromDate}&endDate=${sanitizedPayload.toDate}&phoneNumber=${sanitizedPayload.mobileNumber}&departureLocation=${sanitizedPayload.departureLocation}&arrivalLocation=${sanitizedPayload.arrivalLocation}&busType=${encodeURIComponent(sanitizedPayload.busType)}&pageNumber=${sanitizedPayload.pageNumber}&pageSize=${sanitizedPayload.pageSize}`
     );
     set({
       paymentFailedOtherReasons: response.data,

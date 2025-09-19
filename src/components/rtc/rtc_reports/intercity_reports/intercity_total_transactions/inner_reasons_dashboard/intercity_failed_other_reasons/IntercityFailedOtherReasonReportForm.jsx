@@ -27,12 +27,12 @@ const IntercityFailedOtherReasonReportForm = ({
     useIntercityTotalCommonStore();
   const { fetchTotalTransactionsReport } = useIntercityTotalTransactionStore();
 
-  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
+    useIntercityMastersStore();
   const [selectedBusType, setSelectedBusType] = useState(null);
 
-  const busTypeOptions = IntercityBusTypesData
-    ?.filter((item) => item.isActive)
-    ?.map((item) => ({
+  const busTypeOptions =
+    IntercityBusTypesData?.filter((item) => item.isActive)?.map((item) => ({
       value: item.busTypesName,
       label: item.busTypesName,
     })) || [];
@@ -95,7 +95,7 @@ const IntercityFailedOtherReasonReportForm = ({
     fetchTotalTransactionsReport({
       ...values,
       status: status ?? innerFilters.status,
-     
+
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -175,100 +175,79 @@ const IntercityFailedOtherReasonReportForm = ({
             {/*Payment Mode */}
 
             <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Bus Type
-                    </label>
-                    <Select
-                value={selectedBusType}
-                onChange={(selectedOption) => setSelectedBusType(selectedOption)}
-                options={[
-                  { value: "", label: "All" },
-                  ...busTypeOptions
-                ]}
-                isSearchable={true}
-                isClearable={true}
-                placeholder="Search bus type..."
+              <label className="block text-xs font-medium text-gray-700">
+                Bus Type
+              </label>
+              <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+              <SearchableDropdown
+                key={`departure-${values.departureLocation || "empty"}`}
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(value) => setFieldValue("departureLocation", value)}
+                onSearch={fetchDepartureCities}
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
                 className="mt-1"
-                classNamePrefix="react-select"
-                filterOption={(option, inputValue) => {
-                  if (!inputValue) return true;
-                  return option.label.toLowerCase().startsWith(inputValue.toLowerCase());
-                }}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    minHeight: '33px',
-                    fontSize: '14px',
-                    borderRadius: '6px',
-                    borderColor: '#d1d5db',
-                   
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: '0px',
-                  }),
-                }}
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
               />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700">
-                      Departure Location
-                    </label>
-                    <SearchableDropdown
-                      key={`departure-${values.departureLocation || 'empty'}`}
-                      name="departureLocation"
-                      value={values.departureLocation}
-                      onChange={(value) =>
-                        setFieldValue("departureLocation", value)
-                      }
-                      onSearch={fetchDepartureCities}
-                      options={departureCities}
-                      displayKey="cityName"
-                      valueKey="cityId"
-                      placeholder="Search"
-                      minSearchLength={2}
-                      debounceMs={300}
-                      className="mt-1"
-                      inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                      dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                      optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                      // loading={isIntercityTotalTransactionsLoading}
-                      noResultsText="No cities found"
-                      loadingText="Searching cities..."
-                      initialDisplayText={values.departureLocation}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="arrivalLocation"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      Arrival Location
-                    </label>
-                    <SearchableDropdown
-                      key={`arrival-${values.arrivalLocation || 'empty'}`}
-                      name="arrivalLocation"
-                      value={values.arrivalLocation}
-                      onChange={(value) =>
-                        setFieldValue("arrivalLocation", value)
-                      }
-                      onSearch={fetchArrivalCities}
-                      options={arrivalCities}
-                      displayKey="cityName"
-                      valueKey="cityId"
-                      placeholder="Search"
-                      minSearchLength={2}
-                      debounceMs={300}
-                      className="mt-1"
-                      inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                      dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                      optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                      // loading={isIntercityTotalTransactionsLoading}
-                      noResultsText="No cities found"
-                      loadingText="Searching cities..."
-                      initialDisplayText={values.arrivalLocation}
-                    />
-                  </div>
+            </div>
+            <div>
+              <label
+                htmlFor="arrivalLocation"
+                className="block text-xs font-medium text-gray-700"
+              >
+                Arrival Location
+              </label>
+              <SearchableDropdown
+                key={`arrival-${values.arrivalLocation || "empty"}`}
+                name="arrivalLocation"
+                value={values.arrivalLocation}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
+                onSearch={fetchArrivalCities}
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search"
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isIntercityTotalTransactionsLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
+              />
+            </div>
             <div className="flex items-end">
               <button
                 type="submit"

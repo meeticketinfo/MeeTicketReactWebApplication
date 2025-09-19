@@ -112,7 +112,7 @@ const IntercityOuterReportForm = () => {
       departureLocation: values.departureLocation || "",
       arrivalLocation: values.arrivalLocation || "",
       mobileNumber: values.mobileNumber || "",
-      busType: selectedBusType?.value || "",
+      busType: values.busType || "",
     };
     setOuterFilters(sanitizedValues);
     setInnerFilters(sanitizedValues);
@@ -185,37 +185,20 @@ const IntercityOuterReportForm = () => {
               <label className="block text-xs font-medium text-gray-700">
                 Bus Type
               </label>
-              <Select
-                value={selectedBusType}
-                onChange={(selectedOption) =>
-                  setSelectedBusType(selectedOption)
-                }
-                options={[{ value: "", label: "All" }, ...busTypeOptions]}
-                isSearchable={true}
-                isClearable={true}
-                placeholder="Search bus type..."
-                className="mt-1"
-                classNamePrefix="react-select"
-                filterOption={(option, inputValue) => {
-                  if (!inputValue) return true;
-                  return option.label
-                    .toLowerCase()
-                    .startsWith(inputValue.toLowerCase());
-                }}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    minHeight: "33px",
-                    fontSize: "14px",
-                    borderRadius: "6px",
-                    borderColor: "#d1d5db",
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: "0px",
-                  }),
-                }}
-              />
+              <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-700">
