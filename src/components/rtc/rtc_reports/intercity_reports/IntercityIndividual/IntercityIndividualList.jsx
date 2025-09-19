@@ -61,10 +61,9 @@ function IntercityIndividualList() {
       returnTicketId: savedFilters?.returnTicketId
         ? savedFilters.returnTicketId
         : "",
-        pageNumber:currentPage+1,
-        PageSize:PAGE_LIMIT  
+      pageNumber: currentPage + 1,
+      PageSize: PAGE_LIMIT,
     });
-  
   }, [currentPage, PAGE_LIMIT]);
 
   const columnDefs = [
@@ -187,14 +186,32 @@ function IntercityIndividualList() {
       headerName: "Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        
+        });
+      },
     },
     {
       field: "returnDate",
       headerName: "Return Journey Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        
+        });
+      },
     },
     {
       field: "ticketQuantity",
@@ -227,7 +244,7 @@ function IntercityIndividualList() {
       headerName: "Basic Fare",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       headerName: "Total Levies Fee Charges break down Summary",
@@ -237,10 +254,10 @@ function IntercityIndividualList() {
           field: "passengerFee",
           headerName: "Passenger fee",
           // flex: 1,
-          
+
           headerClass: "text-blue-v2",
-          
-          valueFormatter: (params) => params.value || "N/A",
+
+          valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         },
         {
           field: "waterBottle",
@@ -269,7 +286,7 @@ function IntercityIndividualList() {
           headerName: "Total Toll fare",
           // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => params.value || "N/A",
+          valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         },
       ],
     },
@@ -278,14 +295,14 @@ function IntercityIndividualList() {
       headerName: "Total Levies Fee",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "serviceFee",
       headerName: "Service fee",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "serviceTax_GST",
@@ -293,7 +310,7 @@ function IntercityIndividualList() {
       // flex: 1,
       maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "flexiFare",
@@ -301,7 +318,7 @@ function IntercityIndividualList() {
       maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "eachTicketAmount",
@@ -309,7 +326,7 @@ function IntercityIndividualList() {
       // flex: 1,
       maxWidth: 170,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "totalAmount",
@@ -317,7 +334,7 @@ function IntercityIndividualList() {
       maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "paymentGatewayTransactionId",
@@ -337,7 +354,7 @@ function IntercityIndividualList() {
 
     {
       headerName: "Ticket",
-      field: "Ticket",
+      field: "action",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.pnrNumber ? (
@@ -366,7 +383,7 @@ function IntercityIndividualList() {
     },
     {
       headerName: "Ticket",
-      field: "Ticket",
+      field: "action",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.returnPNRNumber ? (

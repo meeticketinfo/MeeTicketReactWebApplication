@@ -55,7 +55,7 @@ function IntercityConsolidatedList() {
       arrivalLocation: savedFilters?.arrivalLocation
         ? savedFilters.arrivalLocation
         : "",
-      pageNumber: currentPage+1,
+      pageNumber: currentPage + 1,
       PageSize: PAGE_LIMIT,
     });
   }, [currentPage, PAGE_LIMIT]);
@@ -152,17 +152,35 @@ function IntercityConsolidatedList() {
     {
       field: "purchaseDate",
       headerName: "Travel Date",
-      maxWidth: 170,
+      maxWidth: 180,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        
+        });
+      },
     },
     {
       field: "returnJourneyTravelDate",
       headerName: "Return Journey Travel Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        
+        });
+      },
     },
     {
       field: "ticketQuantity",
@@ -195,11 +213,11 @@ function IntercityConsolidatedList() {
       // flex: 1,
       maxWidth: 100,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
     },
     {
       headerName: "Ticket",
-      field: "Ticket",
+      field: "action",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.pnrNumber ? (
@@ -228,7 +246,7 @@ function IntercityConsolidatedList() {
     },
     {
       headerName: "Ticket",
-      field: "Ticket",
+      field: "action",
       cellRenderer: (params) => (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.returnPNRNumber ? (
