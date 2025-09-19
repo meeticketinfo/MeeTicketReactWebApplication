@@ -22,8 +22,8 @@ export const useIntercityIndividualStore = create((set) => ({
         payload.bookingStatus
       }&pNRNumber=${payload.pnrNumber}&returnPNRNumber=${
         payload.returnPnrNumber
-      }&departureLocationName=${payload.departureLocation}&arrivalLocationName=${
-        payload.arrivalLocation
+      }&departureLocationName=${payload.departureLocation?payload.departureLocation:""}&arrivalLocationName=${
+        payload.arrivalLocation?payload.arrivalLocation:""
       }&ticketId=${payload.ticketId}&returnTicketId=${
         payload.returnTicketId
       }&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
