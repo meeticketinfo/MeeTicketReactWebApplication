@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
+import { toast } from "react-toastify";
 
 export const useIntercityRefundReportStore = create((set) => ({
     allBusPassUserReports: [],
@@ -38,6 +39,7 @@ export const useIntercityRefundReportStore = create((set) => ({
             });
             return { response: response.data };
         } catch (error) {
+            toast.error(error.message);
             set({
                 error: error.message,
             });
@@ -62,6 +64,7 @@ export const useIntercityRefundReportStore = create((set) => ({
             });
             return { response: response.data };
         } catch (error) {
+            toast.error(error.message);
             set({
                 error: error.message,
             });
@@ -85,6 +88,7 @@ export const useIntercityRefundReportStore = create((set) => ({
             });
             return { response: response.data };
         } catch (error) {
+            toast.error(error.message);
             set({
                 error: error.message,
             });

@@ -69,6 +69,8 @@ const IntercityUserDetailedReport = () => {
             orderId: params.data.orderId,
             date: params.data.dateandTimeOfTransaction,
             MobileNumber: params.data.mobileNumber,
+            pnrNumber:params.data.pnrNumber,
+            returnPNRNumber:params.data.returnPNRNumber,
             departureLocation: params.data.departureLocation,
             arrivalLocation: params.data.arrivalLocation,
             status: params.data.transactionStatus,

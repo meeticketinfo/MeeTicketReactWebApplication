@@ -33,7 +33,7 @@ const SimpleModal = ({ open, onClose, children }) => {
 
 const IntercityUserTrackOrder = () => {
   const location = useLocation();
-  const { orderId, MobileNumber, departureLocation, arrivalLocation, date, amount, bookingId, backTitle } = location.state || {};
+  const { orderId, MobileNumber, departureLocation, arrivalLocation, date,pnrNumber,returnPNRNumber, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userIntercityReportSearchParams = localStorage.getItem("userIntercityReportSearchParams");
   const userDetailedIntercityReportSearchParams = localStorage.getItem("userDetailedIntercityReportSearchParams");
@@ -89,7 +89,7 @@ const IntercityUserTrackOrder = () => {
       },
     },
     {
-      field: "bpTransactionStatus",
+      field: "transactionStatus",
       flex: 1,
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
@@ -166,8 +166,10 @@ const IntercityUserTrackOrder = () => {
                 {formatDateTime(date) || 'N/A'}
               </p>
             </div>
+
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
+
               <p className="text-sm font-semibold text-gray-900">
                 {orderId || 'N/A'}
                 {/* {orderId && orderId != "Not Generated" && (
@@ -183,6 +185,44 @@ const IntercityUserTrackOrder = () => {
                 )} */}
               </p>
             </div>
+            {pnrNumber && (
+              <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-xs font-medium text-gray-500 mb-1">
+                  Onwards Journey
+                </h3>
+                <p className="text-sm font-semibold text-gray-900">
+                  {pnrNumber}
+                  <NavLink
+                    end
+                    to={`/intercity-ticket-view-details/${pnrNumber}`}
+                    className="ml-2 text-blue-600 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>View Ticket</span>
+                  </NavLink>
+                </p>
+              </div>
+            )}
+            {returnPNRNumber && (
+              <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-xs font-medium text-gray-500 mb-1">
+                  Return Journey
+                </h3>
+                <p className="text-sm font-semibold text-gray-900">
+                  {returnPNRNumber}
+                  <NavLink
+                    end
+                    to={`/intercity-ticket-view-details/${returnPNRNumber}`}
+                    className="ml-2 text-blue-600 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>View Ticket</span>
+                  </NavLink>
+                </p>
+              </div>
+            )}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
               <p className="text-sm font-semibold text-gray-900">{bookingId || 'N/A'}</p>

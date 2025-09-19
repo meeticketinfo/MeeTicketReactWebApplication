@@ -5,6 +5,7 @@ import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
+import { ToastContainer } from "react-toastify";
 
 const IntercityUserReport = () => {
   const [searchParams] = useSearchParams();
@@ -119,6 +120,7 @@ const IntercityUserReport = () => {
         </div>
         <IntercityUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
         <div>
+          <ToastContainer/>
           <AgGridTable
             ExportName="IntercityUserReport"
             rowData={allIntercityUserReports}
