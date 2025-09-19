@@ -558,6 +558,12 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/amarabad-total-transaction",
       },
+        {
+        title: "Pos Transaction Report",
+        icon: RiDashboard3Fill,
+        path: "/amrabad-pos-transaction-report",
+      },
+
     ],
   },
 ];

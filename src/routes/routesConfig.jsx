@@ -191,6 +191,7 @@ import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
+import AmrabadPosTransactionReport from "../pages/amrabad/amrabad_reports/amrabad_pos_transactions/AmrabadPosTransactionReport";
 
 export const routes = [
   {
@@ -764,6 +765,10 @@ export const routes = [
   {
     path: "/amrabad-refund-transaction-inner-report",
     element: <ProtectedRoute element={<AmrabadRefundTransactionsReport />} />,
+  },
+  {
+    path: "/amrabad-pos-transaction-report",
+    element: <ProtectedRoute element={<AmrabadPosTransactionReport />} />,
   },
   // metro transaction reports
 
