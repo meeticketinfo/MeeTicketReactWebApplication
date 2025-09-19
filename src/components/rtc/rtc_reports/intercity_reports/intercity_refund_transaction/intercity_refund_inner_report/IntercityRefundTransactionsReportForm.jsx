@@ -87,7 +87,7 @@ const IntercityRefundTransactionsReportForm = ({
       destinationLocation: values.destinationLocation,
       arrivalLocation: values.arrivalLocation,
       paymentMode:values.paymentMode,
-      status: values.refundStatus,
+      refundStatus: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,
     });

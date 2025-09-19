@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import apiService from "../../services/apiService";
+import { toast } from "react-toastify";
 
 export const useIntercityPaymentTransactionStore = create((set) => ({
   isFetchIntercityPaymentTransactionsLoading: false,
@@ -24,6 +25,7 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       });
       return { response: response.data };
     } catch (error) {
+      toast.error(error.message);
       set({
         error: error.message,
         intercityPaymentTransactions: [],
@@ -49,6 +51,7 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       });
       return { response: response };
     } catch (error) {
+      toast.error(error.message);
       set({ isFetchIntercityVerifyStatusLoading: false });
       return { success: false };
     }
@@ -67,6 +70,7 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       set({ isFetchIntercityRegenerateTicketLoading: false });
       return { response: response };
     } catch (error) {
+      toast.error(error.message);
       set({ isFetchIntercityRegenerateTicketLoading: false });
       return { success: false };
     } finally {
@@ -86,6 +90,7 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       });
       return { response: response };
     } catch (error) {   
+      toast.error(error.message);
       set({ isFetchIntercityPaymentTransactionRefundLoading: false });
       return { success: false };
     } finally {
