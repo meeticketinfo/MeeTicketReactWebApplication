@@ -255,7 +255,7 @@ const IntercityRefundTransactionsReportForm = ({
               >
                 <option value="">Select Status</option>
                 <option value="Refund">Refunded</option>
-                <option value="Not Refund">Not Refunded</option>
+                <option value="NotRefund">Not Refunded</option>
               </Field>
             </div>
             <div className="flex items-end">
