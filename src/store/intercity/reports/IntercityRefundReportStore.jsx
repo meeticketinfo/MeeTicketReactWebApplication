@@ -82,11 +82,6 @@ export const useIntercityRefundReportStore = create((set) => ({
             );
             set({
                 refundIntercityTransactionsInnerReport: response.data || [],
-                refundTransactionsPagination: {
-                    totalCount: response.data.totalCount || 0,
-                    pageNumber: response.data.pageNumber || 1,
-                    pageSize: response.data.pageSize || 10
-                }
             });
             return { response: response.data };
         } catch (error) {

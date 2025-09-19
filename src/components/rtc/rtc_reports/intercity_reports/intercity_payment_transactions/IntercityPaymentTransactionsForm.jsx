@@ -3,6 +3,8 @@ import { Formik, Form, Field } from "formik";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
+import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 const IntercityPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
@@ -11,6 +13,7 @@ const IntercityPaymentTransactionsForm = ({
   const {
     fetchIntercityPaymentTransactions,
   } = useIntercityPaymentTransactionStore();
+  const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
@@ -27,9 +30,14 @@ const IntercityPaymentTransactionsForm = ({
   };
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
+  const [DepartureLoading, setDepartureLoading] = useState(false);
+  const [ArrivalLoading, setArrivalLoading] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(0);
 
+  
   const fetchDepartureCities = async (q) => {
     try {
+      setDepartureLoading(true);
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
@@ -38,11 +46,13 @@ const IntercityPaymentTransactionsForm = ({
       console.error("Error fetching departure cities:", error);
       setDepartureCities([]);
     } finally {
+       setDepartureLoading(false);
     }
   };
 
   const fetchArrivalCities = async (q) => {
     try {
+      setArrivalLoading(true);
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setArrivalCities(response.response.result);
@@ -51,6 +61,7 @@ const IntercityPaymentTransactionsForm = ({
       console.error("Error fetching arrival cities:", error);
       setArrivalCities([]);
     } finally {
+      setArrivalLoading(false);
     }
   };
   const onSubmit = (values, { resetForm }) => {
@@ -153,40 +164,61 @@ const IntercityPaymentTransactionsForm = ({
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               />
             </div>
-            {/* departure location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Departure Location
-              </label>
-              <DebounceSearchableDropdown
-                name="destinationLocation"
-                value={values.destinationLocation}
-                onChange={(v) => setFieldValue("destinationLocation", v)}
-                options={departureCities}
-                onSearch={fetchDepartureCities}
-                Label="cityName"
-                Value="cityId"
-                placeholder="Search departure city..."
-                uniqueId="departure-location-dropdown"
-              />
-            </div>
-            {/* arrival location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Arrival Location
-              </label>
-              <DebounceSearchableDropdown
-                name="arrivalLocation"
-                value={values.arrivalLocation}
-                onChange={(v) => setFieldValue("arrivalLocation", v)}
-                options={arrivalCities}
-                onSearch={fetchArrivalCities}
-                Label="cityName"
-                Value="cityId"
-                placeholder="Search arrival city..."
-                uniqueId="arrival-location-dropdown"
-              />
-            </div>
+          {/* departure location */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Departure Location
+                </label>
+                <SearchableDropdown
+                  key={`departure-${resetTrigger}`}
+                  name="destinationLocation"
+                  value={values.destinationLocation}
+                  onChange={(value) => setFieldValue("destinationLocation", value)}
+                  onSearch={fetchDepartureCities}
+                  options={departureCities}
+                  displayKey="cityName"
+                  valueKey="cityId"
+                  placeholder="Search departure city..."
+                  minSearchLength={2}
+                  debounceMs={300}
+                  className="mt-1"
+                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  loading={DepartureLoading}
+                  noResultsText="No cities found"
+                  loadingText="Searching cities..."
+                  initialDisplayText={values.destinationLocation}
+                />
+              </div>
+              {/* arrival location */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700">
+                  Arrival Location
+                </label>
+                <SearchableDropdown
+                  key={`arrival-${resetTrigger}`}
+                  name="arrivalLocation"
+                  value={values.arrivalLocation}
+                  onChange={(value) => setFieldValue("arrivalLocation", value)}
+                  onSearch={fetchArrivalCities}
+                  options={arrivalCities}
+                  displayKey="cityName"
+                  valueKey="cityId"
+                  placeholder="Search arrival city..."
+                  minSearchLength={2}
+                  debounceMs={300}
+                  className="mt-1"
+                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  loading={ArrivalLoading}
+                  noResultsText="No cities found"
+                  loadingText="Searching cities..."
+                  initialDisplayText={values.arrivalLocation}
+                  uniqueId="arrival-location-dropdown"
+                />
+              </div>
             <div className="flex items-end gap-2">
               <button
                 type="submit"
@@ -231,6 +263,9 @@ const IntercityPaymentTransactionsForm = ({
                     PageIndex,
                     pageSize,
                   });
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger(prev => prev + 1);
                 }}
               >
                 Reset
