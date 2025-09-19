@@ -64,7 +64,7 @@ function IntercityIndividualList() {
         pageNumber:currentPage+1,
         PageSize:PAGE_LIMIT  
     });
-    console.log("savedFilters", savedFilters);
+  
   }, [currentPage, PAGE_LIMIT]);
 
   const columnDefs = [
