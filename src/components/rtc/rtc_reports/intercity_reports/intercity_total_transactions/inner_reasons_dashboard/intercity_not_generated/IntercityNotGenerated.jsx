@@ -58,10 +58,12 @@ const IntercityNotGenerated = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -80,7 +82,7 @@ const IntercityNotGenerated = () => {
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchDepartureCities();
-    fetchArrivalCities();
+    // fetchArrivalCities();
   }, []);
 
   useEffect(() => {

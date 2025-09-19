@@ -6,7 +6,6 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
-import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedOtherReasonsChart from "../../charts/IntercityFailedOtherReasonsChart";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
@@ -28,7 +27,6 @@ const IntercityFailedOtherReason = () => {
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
-  const { getPackages } = usePackagesStore();
   const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
     useIntercityMastersStore();
   const {
@@ -57,11 +55,12 @@ const IntercityFailedOtherReason = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
-        // setArrivalCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -82,7 +81,7 @@ const IntercityFailedOtherReason = () => {
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchDepartureCities();
-    fetchArrivalCities();
+    // fetchArrivalCities();
   }, []);
 
   const filtersToUse = {
@@ -113,7 +112,6 @@ const IntercityFailedOtherReason = () => {
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-    getPackages();
   }, [
     arrivalLocation,
     departureLocation,

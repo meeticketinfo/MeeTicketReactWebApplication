@@ -42,11 +42,12 @@ const IntercityOuterReportForm = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
-        // setArrivalCities(response.response.result);
+        setArrivalCities(response.response.result);  
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -77,6 +78,8 @@ const IntercityOuterReportForm = () => {
     setInnerFilters(sanitizedFilters);
     fetchIntercityTotalTransactions(sanitizedFilters);
     fetchIntercityBusTypesData();
+    fetchDepartureCities();
+    // fetchArrivalCities();
   }, []);
 
   // Initialize selected bus type when data is available

@@ -46,10 +46,12 @@ const IntercityFailedGatewayReportForm = ({
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -69,7 +71,7 @@ const IntercityFailedGatewayReportForm = ({
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchDepartureCities();
-    fetchArrivalCities();
+    // fetchArrivalCities();
   }, []);
 
   const initialValues = {
