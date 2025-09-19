@@ -1,7 +1,7 @@
 import { Formik, Form, Field } from "formik";
 
-import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/busPassTotalCommonStore";
-import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/amarabad_Total_transaction_reports_store/BusPassTotalTransactionStore";
+import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
+import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
@@ -63,12 +63,17 @@ const BusPassTotalTransactionForm = ({
 
     setDeepInnerFilters(values);
     console.log("values", values);
+    
+    // Ensure pageNumber and pageSize have default values if undefined
+    const currentPageNumber = pageNumber || 1;
+    const currentPageSize = pageSize || 20;
+    
     fetchRtcTotalTransactions({
       ...values,
       status: outerFilters.status,
       subCategory: "",
-      pageNumber: pageNumber,
-      pageSize: pageSize,
+      pageNumber: currentPageNumber,
+      pageSize: currentPageSize,
     });
     SetcurrentPage(0);
   };

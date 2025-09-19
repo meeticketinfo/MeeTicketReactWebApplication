@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import AgGridTable from "../../../../tables/AgGridTable";
-import AdminLayout from "../../../../../layouts/AdminLayout";
-import { formatToCurrency } from "../../../../../utils/TypographyHelper";
-import { useBookingsStore } from "../../../../../store/masters/bookingsStore";
-import { formatDateTime } from "../../../../../utils/Helper";
-import Breadcrumb from "../../../../Breadcrumb";
-import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import AgGridTable from "../../../tables/AgGridTable";
+import AdminLayout from "../../../../layouts/AdminLayout";
+import { formatToCurrency } from "../../../../utils/TypographyHelper";
+import { useBookingsStore } from "../../../../store/masters/bookingsStore";
+import { formatDateTime } from "../../../../utils/Helper";
+import Breadcrumb from "../../../Breadcrumb";
+import { useIntercityUserStore } from "../../../../store/intercity/reports/IntercityUserReportStore";
+import IntercityTotalCommonStore from "../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 
 const SimpleModal = ({ open, onClose, children }) => {
   if (!open) return null;
@@ -22,22 +23,33 @@ const SimpleModal = ({ open, onClose, children }) => {
         <button
           onClick={onClose}
           className="absolute top-2 right-2 bg-transparent border-none text-xl cursor-pointer"
-        >×</button>
+        >
+          ×
+        </button>
         {children}
       </div>
     </div>
   );
 };
 
-const BusPassUserTransactionsOrderTracker = () => {
+const IntercityTotalTransactionTrackOrder = () => {
   const location = useLocation();
-  const { orderId, mobileNo, typeOfBusPass, houseNames, date, amount, bookingId, backTitle } = location.state || {};
+  const navigate = useNavigate();
+  const {
+    orderId,
+    mobileNumber,
+    date,
+    amount,
+    bookingId,
+    arrivalLocation,
+    departureLocation,
+    busType,
+  } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
-  const userBusPassReportSearchParams = localStorage.getItem("userBusPassReportSearchParams");
-  const userDetailedBusPassReportSearchParams = localStorage.getItem("userDetailedBusPassReportSearchParams");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bookingDetails, setBookingDetails] = useState([]);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
+  const { outerFilters } = IntercityTotalCommonStore();
 
   const fetchQRsForBooking = async (bookingId) => {
     try {
@@ -54,10 +66,10 @@ const BusPassUserTransactionsOrderTracker = () => {
     }
   };
   const {
-    fetchRtcTransactionTrackingStatusByOrderId,
-    RtcTransactionTrackingStatusByOrderIdData,
-    isFetchRtcTransactionTrackingStatusByOrderId,
-  } = useBusPassTotalTransactionStore();
+    fetchIntercityTransactionTrackingStatusByOrderId,
+    IntercityTransactionTrackingStatusByOrderIdData,
+    isFetchIntercityTransactionTrackingStatusByOrderId,
+  } = useIntercityUserStore();
   const [columnDefs] = useState([
     {
       field: "sno",
@@ -87,18 +99,27 @@ const BusPassUserTransactionsOrderTracker = () => {
       },
     },
     {
-      field: "bpTransactionStatus",
+      field: "transactionStatus",
       flex: 1,
       headerName: "Transaction Status",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
-        : params.value == "INPROCESS" ? "Deep Link Status"
-          : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check",
+      valueFormatter: (params) =>
+        params.value == "INITIATE"
+          ? "Request Sent"
+          : params.value == "INPROCESS"
+          ? "Deep Link Status"
+          : params.value == "FINAL_STATUS"
+          ? params.data.resultStatus
+          : "Payment Status Check",
       cellRenderer: (params) => (
         <span title={params.value}>
-          {params.value == "INITIATE" ? "Request Sent"
-            : params.value == "INPROCESS" ? "Deep Link Status"
-              : params.value == "FINAL_STATUS" ? params.data.resultStatus : "Payment Status Check"}
+          {params.value == "INITIATE"
+            ? "Request Sent"
+            : params.value == "INPROCESS"
+            ? "Deep Link Status"
+            : params.value == "FINAL_STATUS"
+            ? params.data.resultStatus
+            : "Payment Status Check"}
         </span>
       ),
     },
@@ -109,31 +130,37 @@ const BusPassUserTransactionsOrderTracker = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>
-          {params.value}
-        </span>
+        <span title={params.value}>{params.value}</span>
       ),
     },
   ]);
 
   useEffect(() => {
-    fetchRtcTransactionTrackingStatusByOrderId(orderId);
+    fetchIntercityTransactionTrackingStatusByOrderId(orderId);
   }, [orderId]);
 
   const breadcrumbItems = [
+    // {
+    //   label: "User Report",
+    //   path: `/user-report?${userReportSearchParams}`,
+    // },
+    // {
+    //   label: "User Detailed Report",
+    //   path: `/user-detailed-report?${userDetailedReportSearchParams}`,
+    // },
     {
-      label: 'User Report',
-      path: `/bus-pass-user-report?${userBusPassReportSearchParams}`
-    },
-    {
-      label: 'User Detailed Report',
-      path: `/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`
-    },
-    {
-      label: 'User Transaction Order Tracking Report',
-      isLast: true
+      label: "Transaction Order Tracking Report",
+      isLast: true,
     },
   ];
+
+  const TrackRouteConfig = {
+    FailedDueToOtherReasons: "/intercity-failed-other-reasons-report",
+    FailedFromGateway: "/intercity-failed-gateway-report",
+    PaymentSuccessButTicketNotGenerated: "/intercity-not-generated-report",
+    Success: "/intercity-total-report",
+    Uncategorized: "/intercity-total-report",
+  };
 
   return (
     <>
@@ -147,12 +174,12 @@ const BusPassUserTransactionsOrderTracker = () => {
               </h1>
             </div>
             <div className="">
-              <Link
-                to={`/bus-pass-user-detailed-report?${userDetailedBusPassReportSearchParams}`}
+            <button
+                onClick={() => navigate(-1)}
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -161,14 +188,16 @@ const BusPassUserTransactionsOrderTracker = () => {
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Date</h3>
               <p className="text-sm font-semibold text-gray-900">
-                {formatDateTime(date) || 'N/A'}
+                {formatDateTime(date) || "N/A"}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Order ID
+              </h3>
               <p className="text-sm font-semibold text-gray-900">
-                {orderId || 'N/A'}
-                {/* {orderId && orderId != "Not Generated" && (
+                {orderId || "N/A"}
+                {orderId && orderId != "Not Generated" && (
                   <NavLink
                     end
                     to={`/amrabad-admin/ticket-view-details/${orderId}`}
@@ -178,36 +207,66 @@ const BusPassUserTransactionsOrderTracker = () => {
                   >
                     <span>View Ticket Details</span>
                   </NavLink>
-                )} */}
+                )}
               </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
-              <p className="text-sm font-semibold text-gray-900">{bookingId || 'N/A'}</p>
-
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Booking ID
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {bookingId || "N/A"}
+              </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
-              <p className="text-sm font-semibold text-gray-900">{mobileNo || 'N/A'}</p>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Mobile Number
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {mobileNumber || "N/A"}
+              </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
-              <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {amount ? formatToCurrency(amount) : "N/A"}
+              </p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Type of Bus pass</h3>
-              <p className="text-sm font-semibold text-gray-900">{typeOfBusPass || 'N/A'}</p>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Arrival Location
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {arrivalLocation || "N/A"}
+              </p>
             </div>
-
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Departure Location
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {departureLocation || "N/A"}
+              </p>
+            </div>
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">
+                Bus Type
+              </h3>
+              <p className="text-sm font-semibold text-gray-900">
+                {busType || "N/A"}
+              </p>
+            </div>
           </div>
 
           <div>
             <AgGridTable
               showSearch={false}
               ExportName="UserStatusTransactionReport"
-              rowData={RtcTransactionTrackingStatusByOrderIdData}
+              rowData={IntercityTransactionTrackingStatusByOrderIdData}
               columnDefs={columnDefs}
-              isFetchLoading={isFetchRtcTransactionTrackingStatusByOrderId}
+              isFetchLoading={
+                isFetchIntercityTransactionTrackingStatusByOrderId
+              }
             />
           </div>
         </div>
@@ -221,16 +280,20 @@ const BusPassUserTransactionsOrderTracker = () => {
               className="w-[250px] mx-auto"
             />
             <div className="mt-2 text-left">
-              <b>Booking Date</b>: {bookingDetailsResponse.bookingDate}<br />
+              <b>Booking Date</b>: {bookingDetailsResponse.bookingDate}
+              <br />
               <b>Booking ID</b>: {bookingDetailsResponse.id}
             </div>
             <div className="mt-2 text-left">
               {bookingDetails.map((item, idx) => (
                 <>
                   <div key={idx} className="mb-2.5">
-                    <b>Facility</b>: {item.facilityName}<br />
-                    <b>Ticket Type</b>: {item.serviceVariantName}<br />
-                    <b>Qty</b>: {item.quantity}<br />
+                    <b>Facility</b>: {item.facilityName}
+                    <br />
+                    <b>Ticket Type</b>: {item.serviceVariantName}
+                    <br />
+                    <b>Qty</b>: {item.quantity}
+                    <br />
                     <b>Total</b>: ₹{item.totalAmount.toFixed(2)}
                   </div>
                   {idx !== bookingDetails.length - 1 && <hr className="my-2" />}
@@ -247,4 +310,5 @@ const BusPassUserTransactionsOrderTracker = () => {
   );
 };
 
-export default BusPassUserTransactionsOrderTracker;
+export default IntercityTotalTransactionTrackOrder;
+    

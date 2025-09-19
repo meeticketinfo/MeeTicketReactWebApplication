@@ -1,7 +1,6 @@
 import React from "react";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
 import { ToastContainer } from "react-toastify";
-import IntercityRefundOuterReportForm from "./IntercityRefundOuterReportForm";
 import IntercityRefundTransactions from "./IntercityRefundTransactions";
 
 const MainIntercityRefundTransactionReport = () => {

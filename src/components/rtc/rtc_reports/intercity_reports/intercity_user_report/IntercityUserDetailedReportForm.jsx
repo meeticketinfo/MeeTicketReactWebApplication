@@ -1,9 +1,10 @@
 import { Formik, Form, Field } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { usePackagesStore } from "../../../../../store/amrabad/masters/packagesStore";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
+import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 
 const IntercityUserDetailedReportForm = ({
   pageNumber,
@@ -16,21 +17,7 @@ const IntercityUserDetailedReportForm = ({
     allIntercityUserDetailedReports,
     fetchIntercityUserDetailedReports,
   } = useIntercityUserStore();
-  const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
-
-  // Load packages on component mount
-  useEffect(() => {
-    getPackages();
-  }, [getPackages]);
-
-  // Load houses if packageId is present in search params
-  useEffect(() => {
-    const packageId = searchParams.get("packageId");
-    if (packageId) {
-      getHouses(packageId);
-    }
-  }, [searchParams, getHouses]);
-
+  const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
   useEffect(() => {
     if (searchParams.toString()) {
       const newSearchParams = new URLSearchParams();
@@ -49,32 +36,46 @@ const IntercityUserDetailedReportForm = ({
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  
-  // Helper function to get current datetime in the format required for datetime-local max attribute
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
-  // Helper function to get current date with 23:59 time for To Date field
-  const getCurrentDateWithEndTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}T23:59`;
-  };
 
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    paymentMode: searchParams.get("paymentMode") || "",
     MobileNumber: searchParams.get("MobileNumber") || "",
+    destinationLocation:searchParams.get("destinationLocation") || "",
+    arrivalLocation:searchParams.get("arrivalLocation")||"",
+  };
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+  const [DepartureLoading,setDepartureLoading] = useState(false);
+  const [ArrivalLoading,setArrivalLoading] = useState(false);
+  const fetchDepartureCities = async (q) => {
+    try {
+      setDepartureLoading(true);
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+      setDepartureLoading(false);
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      setArrivalLoading(true);
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response.response.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+      setArrivalLoading(false);
+    }
   };
 
   const onSubmit = (values) => {
@@ -97,7 +98,8 @@ const IntercityUserDetailedReportForm = ({
       fromDate: values.fromDate,
       toDate: values.toDate,
       MobileNumber: values.MobileNumber,
-      paymentMode: values.paymentMode || "",
+      departureLocation:values.destinationLocation,
+      arrivalLocation:values.arrivalLocation,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -160,14 +162,14 @@ const IntercityUserDetailedReportForm = ({
                 htmlFor="MobileNumber"
                 className="block text-xs font-medium text-gray-700"
               >
-                Phone Number
+                Mobile Number
               </label>
               <Field
                 type="text"
                 maxLength="10"
                 name="MobileNumber"
                 className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm`}
-                placeholder="Enter phone number"
+                placeholder="Enter Mobile number"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) {
                     e.preventDefault(); // Prevent non-numeric characters
@@ -178,29 +180,59 @@ const IntercityUserDetailedReportForm = ({
                 }}
               />
             </div>
-           <div>
-              <label
-                htmlFor="paymentMode"
-                className="block text-xs font-medium text-gray-700"
-              >
-                Payment Mode
+            {/* departure location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
               </label>
-              <Field
-                as="select"
-                name="paymentMode"
-                className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                onChange={(e) => {
-                  setFieldValue("paymentMode", e.target.value);
-                }}
-              >
-                <option value="">Select Mode</option>
-                <option value="upi">UPI</option>
-                <option value="creditCard">Credit Card</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="netBanking">Net Banking</option>
-              </Field>
+              <SearchableDropdown
+                name="destinationLocation"
+                value={values.destinationLocation}
+                onChange={(value) => setFieldValue("destinationLocation", value)}
+                onSearch={fetchDepartureCities}
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search departure city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                loading={DepartureLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.destinationLocation}
+              />
             </div>
-         
+            {/* arrival location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Arrival Location
+              </label>
+              <SearchableDropdown
+                name="arrivalLocation"
+                value={values.arrivalLocation}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
+                onSearch={fetchArrivalCities}
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                loading={ArrivalLoading}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
+                uniqueId="arrival-location-dropdown"
+              />
+            </div>
             <div className="flex items-end">
               <button
                 type="submit"

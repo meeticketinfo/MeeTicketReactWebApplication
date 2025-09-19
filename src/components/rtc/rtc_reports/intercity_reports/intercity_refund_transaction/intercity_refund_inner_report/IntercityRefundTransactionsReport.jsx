@@ -31,6 +31,7 @@ const IntercityRefundTransactionsReport = () => {
     fetchIntercityInitiateRefundOrderId,
     isInitiateRefund,
   } = useIntercityRefundReportStore();
+
   const columnDefs = [
     {
       headerName: "S.No",
@@ -40,7 +41,7 @@ const IntercityRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "dateofTransaction",
+      field: "transactionDateandTime",
       headerName: "Date and Time of Transaction",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -120,7 +121,7 @@ const IntercityRefundTransactionsReport = () => {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
      {
-      field: "ticketQuantity",
+      field: "noOfTickets",
       headerName: "Ticket Quantity",
       maxWidth: "130",
       headerClass: "text-blue-v2",
@@ -128,7 +129,7 @@ const IntercityRefundTransactionsReport = () => {
         params.value || params.value === " " ? params.value : "N/A",
     },
     {
-      field: "paymentMode",
+      field: "modeofPayment",
       headerName: "Payment Mode",
       maxWidth: "150",
       headerClass: "text-blue-v2",

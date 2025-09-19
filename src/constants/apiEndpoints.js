@@ -283,6 +283,12 @@ export const API_ENDPOINTS = {
         GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionInnerReport`,
         GET_INTERCITY_PAYMENT_FAILED_GATEWAY:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureFromGatewaySubCategoryReport`,
         GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS:`${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureDueToOtherReasons`,
+        GET_INTERCITY_TICKET_VIEW:`${RTC_INTERCITY_API_BASE_URL}Bookings/TicketPreview`,
+        GET_INTERCITY_INDIVIDUAL_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetIndividualReport`,
+        GET_INTERCITY_CONSOLIDATED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetConsolidatedReport`,
+        GET_INTERCITY_BUS_TYPES:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllBusTypes`,
+        GET_INTERCITY_SEAT_LAYOUTS:`${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllSeatLayoutTypes`,
+        
       }
     },
     GRIVEANCE_REPORTS: {
@@ -352,6 +358,7 @@ export const API_ENDPOINTS = {
     GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
     GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
     GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/GetBusPassDashboard`,
+    GET_INTERCITY_DASHBOARD: `${RTC_INTERCITY_API_BASE_URL}Reports/IntercityDashboard`,
   },
   TOURSIM_DASHBOARD: {
     GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,
@@ -475,9 +482,12 @@ export const API_ENDPOINTS = {
   REPORTS:{
    GET_REFUND_TRANSACTION_DASHBOARD:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
    GET_REFUND_TRANSACTION_INNER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
+   //user report
    GET_USER_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetUserOuterReport`,
-   GET_USER_DETAILED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
-   GET_USER_REPORT_TRACK_ORDER:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionTrackingStatus`
+   GET_USER_DETAILED_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetUserInnerReport`,
+   GET_USER_REPORT_TRACK_ORDER:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionTrackingStatus`,
+  // payment transactions
+  GET_PAYMENT_TRANSACTION_REPORT:`${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionsReport`
   },
   },
 };

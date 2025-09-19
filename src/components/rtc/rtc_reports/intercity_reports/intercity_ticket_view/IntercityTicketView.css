@@ -8,6 +8,77 @@
   line-height: 1.4;
 }
 
+/* Beautiful Loader Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.loader-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.loader-pulse {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.loader-spin {
+  animation: spin-slow 3s linear infinite;
+}
+
+.loader-bounce {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+/* Enhanced No Data State */
+.no-data-container {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.no-data-container:hover {
+  border-color: #a0aec0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 /* New Bus Ticket Styles */
 .font-arial-nova {
   font-family: 'Arial Nova', Arial, sans-serif;
@@ -150,8 +221,72 @@
   margin-top: 32px;
 }
 
-/* Responsive design */
+/* Responsive Design - Maintains Original Desktop UI */
+@media (max-width: 1024px) {
+  .ticket-container {
+    padding: 12px;
+  }
+  
+  .details-grid,
+  .fare-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .ticket-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .state-logo-circle,
+  .meeticket-logo-circle {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .inner-circle {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Table Responsiveness - Maintains Original Design */
 @media (max-width: 768px) {
+  table {
+    font-size: 12px;
+  }
+  
+  table td, table th {
+    padding: 6px 4px;
+    white-space: nowrap;
+  }
+  
+  .ticket-container {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  table {
+    font-size: 11px;
+  }
+  
+  table td, table th {
+    padding: 4px 2px;
+  }
+  
+  .ticket-container {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ticket-container {
+    padding: 8px;
+    margin: 0;
+  }
+  
   .ticket-details-row {
     flex-direction: column;
     align-items: flex-start;
@@ -160,6 +295,7 @@
   
   .detail-label {
     margin-right: 0;
+    min-width: auto;
   }
   
   .passenger-table {
@@ -168,13 +304,145 @@
   
   .passenger-table th,
   .passenger-table td {
-    padding: 8px 12px;
+    padding: 6px 8px;
   }
   
   .total-fare-container {
     flex-direction: column;
     gap: 8px;
     text-align: center;
+  }
+  
+  .ticket-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .state-logo-circle,
+  .meeticket-logo-circle {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .inner-circle {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .monument-icon {
+    font-size: 14px;
+  }
+  
+  .meeticket-text {
+    font-size: 10px;
+  }
+  
+  .telugu-text {
+    font-size: 6px;
+  }
+  
+  .telugu-text-below {
+    font-size: 10px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .voucher-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .detail-item .label {
+    min-width: 100px;
+    font-size: 12px;
+  }
+  
+  .detail-item .value {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ticket-container {
+    padding: 4px;
+  }
+  
+  .state-logo-circle,
+  .meeticket-logo-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .inner-circle {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .monument-icon {
+    font-size: 12px;
+  }
+  
+  .meeticket-text {
+    font-size: 9px;
+  }
+  
+  .telugu-text {
+    font-size: 5px;
+  }
+  
+  .telugu-text-below {
+    font-size: 9px;
+  }
+  
+  .section-title {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .voucher-title {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .detail-item .label {
+    min-width: 80px;
+    font-size: 11px;
+  }
+  
+  .detail-item .value {
+    font-size: 11px;
+  }
+  
+  .passenger-table th,
+  .passenger-table td {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  
+  .fare-item {
+    padding: 6px 0;
+  }
+  
+  .fare-label,
+  .fare-value {
+    font-size: 12px;
+  }
+  
+  .total-fare-label,
+  .total-fare-value {
+    font-size: 14px;
+  }
+  
+  .id-proof-title {
+    font-size: 14px;
+  }
+  
+  .id-proof-text {
+    font-size: 12px;
   }
 }
 
@@ -187,7 +455,7 @@
   
   .bus-ticket-container * {
     -webkit-print-color-adjust: exact;
-    color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 
@@ -563,10 +831,10 @@ html, body {
   overflow-y: auto;
 }
 
-/* Mobile responsiveness - screen only */
+/* Enhanced Mobile responsiveness - screen only */
 @media screen and (max-width: 768px) {
   .ticket-container {
-    padding: 10px;
+    padding: 8px;
     max-height: none;
     margin: 0;
   }
@@ -574,13 +842,13 @@ html, body {
   .details-grid,
   .fare-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 12px;
   }
   
   .ticket-header {
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
   }
   
   .state-logo-circle,
@@ -603,6 +871,856 @@ html, body {
   }
   
   .detail-item .label {
-    min-width: 120px;
+    min-width: 100px;
+  }
+  
+  /* Mobile-specific improvements */
+  .mobile-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .mobile-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .mobile-card-value {
+    font-size: 13px;
+    color: #212529;
+    word-break: break-word;
+  }
+  
+  /* Better spacing for mobile */
+  .mobile-spacing {
+    margin-bottom: 16px;
+  }
+  
+  .mobile-spacing-sm {
+    margin-bottom: 12px;
+  }
+  
+  /* Mobile table improvements */
+  .mobile-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-table {
+    min-width: 100%;
+    font-size: 12px;
+  }
+  
+  .mobile-table th,
+  .mobile-table td {
+    padding: 8px 6px;
+    white-space: nowrap;
+  }
+  
+  /* Mobile fare section */
+  .mobile-fare-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .mobile-fare-item:last-child {
+    border-bottom: none;
+  }
+  
+  .mobile-fare-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .mobile-fare-value {
+    font-size: 12px;
+    color: #212529;
+    font-weight: 500;
+  }
+  
+  /* Mobile total fare */
+  .mobile-total-fare {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #2196f3;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+  }
+  
+  .mobile-total-fare-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1976d2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .mobile-total-fare-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1976d2;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  .ticket-container {
+    padding: 4px;
+  }
+  
+  .mobile-card {
+    padding: 8px;
+  }
+  
+  .mobile-card-label {
+    font-size: 10px;
+  }
+  
+  .mobile-card-value {
+    font-size: 12px;
+  }
+  
+  .mobile-fare-label,
+  .mobile-fare-value {
+    font-size: 11px;
+  }
+  
+  .mobile-total-fare-label {
+    font-size: 12px;
+  }
+  
+  .mobile-total-fare-value {
+    font-size: 16px;
+  }
+  
+  .state-logo-circle,
+  .meeticket-logo-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .inner-circle {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* Beautiful Loader Styles */
+.beautiful-loader-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.beautiful-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Arial Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.beautiful-loader-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Main Spinner */
+.beautiful-spinner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-top: 3px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.spinner-ring-inner {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite reverse;
+  opacity: 0.7;
+}
+
+.spinner-dots {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner-dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+.spinner-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.spinner-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.spinner-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Pulsing Circle */
+.pulsing-circle {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Loading Message */
+.loading-message {
+  margin-top: 1rem;
+  z-index: 10;
+}
+
+.loading-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.loading-dot {
+  font-size: 1.5rem;
+  color: #6B7280;
+  animation: dotBounce 1.4s ease-in-out infinite both;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.loading-dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+/* Background Elements */
+.loader-bg-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.1));
+  animation: float 6s ease-in-out infinite;
+}
+
+.bg-circle-1 {
+  width: 80px;
+  height: 80px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bg-circle-2 {
+  width: 60px;
+  height: 60px;
+  top: 60%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.bg-circle-3 {
+  width: 100px;
+  height: 100px;
+  bottom: 20%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+/* Ticket Loader Styles */
+.ticket-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ticket-loader-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  width: 100%;
+  animation: ticketSlideIn 0.6s ease-out;
+}
+
+.ticket-loader-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.ticket-loader-logo {
+  width: 60px;
+  height: 40px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.5s infinite;
+}
+
+.ticket-loader-title {
+  flex: 1;
+  margin: 0 1rem;
+  text-align: center;
+}
+
+.ticket-loader-line {
+  height: 16px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  margin: 8px 0;
+  animation: shimmer 1.5s infinite;
+}
+
+.ticket-loader-line.short {
+  width: 60%;
+  margin: 8px auto;
+}
+
+.ticket-loader-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.ticket-loader-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ticket-loader-footer {
+  padding-top: 1rem;
+  border-top: 2px solid #f3f4f6;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(10px) rotate(240deg);
+  }
+}
+
+@keyframes ticketSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .beautiful-spinner {
+    margin-bottom: 1.5rem;
+  }
+  
+  .loading-title {
+    font-size: 1.125rem;
+  }
+  
+  .pulsing-circle {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .bg-circle-1 {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .bg-circle-2 {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .bg-circle-3 {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .ticket-loader-card {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+  
+  .ticket-loader-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .ticket-loader-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .ticket-loader-logo {
+    width: 50px;
+    height: 35px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .beautiful-loader-overlay {
+    background: rgba(17, 24, 39, 0.95);
+  }
+  
+  .loading-title {
+    color: #F9FAFB;
+  }
+  
+  .loading-dot {
+    color: #9CA3AF;
+  }
+  
+  .bg-circle {
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.2));
+  }
+  
+  .ticket-loader-card {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+  
+  .ticket-loader-header,
+  .ticket-loader-footer {
+    border-color: #374151;
+  }
+}
+
+/* Print styles for loader */
+@media print {
+  .beautiful-loader-overlay {
+    display: none !important;
+  }
+}
+
+/* No Seats Inline Animation */
+.no-seats-inline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 200px;
+  border-radius: 12px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.no-seats-icon-inline {
+  position: relative;
+  margin-bottom: 1.5rem;
+  animation: seatIconBounce 2s ease-in-out infinite;
+}
+
+.seat-icon-inline {
+  position: relative;
+  width: 60px;
+  height: 40px;
+  background: #e2e8f0;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  animation: seatPulse 1.5s ease-in-out infinite;
+}
+
+.seat-icon-body-inline {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+}
+
+.seat-icon-line-inline {
+  height: 2px;
+  background: #cbd5e1;
+  border-radius: 1px;
+  animation: shimmer 1.5s infinite;
+}
+
+.seat-icon-line-inline.short {
+  width: 60%;
+}
+
+.seat-icon-armrest-inline {
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  width: 8px;
+  height: 32px;
+  background: #cbd5e1;
+  border-radius: 0 4px 4px 0;
+  animation: armrestSway 2s ease-in-out infinite;
+}
+
+.no-seats-cross-inline {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  animation: crossRotate 3s linear infinite;
+}
+
+.cross-line-inline {
+  position: absolute;
+  background: #ef4444;
+  border-radius: 2px;
+}
+
+.cross-line-1-inline {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  transform: translateY(-50%) rotate(45deg);
+  animation: crossPulse 1.5s ease-in-out infinite;
+}
+
+.cross-line-2-inline {
+  top: 10%;
+  bottom: 10%;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%) rotate(45deg);
+  animation: crossPulse 1.5s ease-in-out infinite 0.75s;
+}
+
+.no-seats-message-inline {
+  text-align: center;
+  margin-bottom: 1rem;
+  animation: messageSlideUp 0.8s ease-out;
+}
+
+.no-seats-title-inline {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 0.5rem 0;
+  font-family: 'Arial Nova', sans-serif;
+}
+
+.no-seats-subtitle-inline {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+  font-family: 'Arial Nova', sans-serif;
+}
+
+.no-seats-floating-elements-inline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-dot-inline {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #3b82f6;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: floatDot 4s ease-in-out infinite;
+}
+
+.floating-dot-1-inline {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.floating-dot-2-inline {
+  top: 30%;
+  right: 20%;
+  animation-delay: 1s;
+}
+
+.floating-dot-3-inline {
+  bottom: 25%;
+  left: 25%;
+  animation-delay: 2s;
+}
+
+/* Animations for inline no-seats */
+@keyframes seatIconBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes seatPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes armrestSway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes crossRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes crossPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes messageSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatDot {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Responsive design for inline no-seats */
+@media (max-width: 640px) {
+  .no-seats-inline {
+    padding: 1.5rem;
+    min-height: 150px;
+  }
+  
+  .seat-icon-inline {
+    width: 50px;
+    height: 35px;
+  }
+  
+  .no-seats-title-inline {
+    font-size: 1rem;
+  }
+  
+  .no-seats-subtitle-inline {
+    font-size: 0.8rem;
+  }
+}
+
+/* Dark mode for inline no-seats */
+@media (prefers-color-scheme: dark) {
+  .no-seats-inline {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  }
+  
+  .seat-icon-inline {
+    background: #475569;
+    border-color: #64748b;
+  }
+  
+  .seat-icon-body-inline {
+    background: #334155;
+  }
+  
+  .seat-icon-line-inline {
+    background: #64748b;
+  }
+  
+  .seat-icon-armrest-inline {
+    background: #64748b;
+  }
+  
+  .no-seats-title-inline {
+    color: #e2e8f0;
+  }
+  
+  .no-seats-subtitle-inline {
+    color: #94a3b8;
   }
 }

@@ -26,8 +26,6 @@ const BusPassRefundTransactionsReport = () => {
         fetchBusPassInitiateRefundOrderId,
         isInitiateRefund,
     } = useRtcRefundStore();
-
-    console.log("refundBusPassTransactionsInnerReport", refundBusPassTransactionsInnerReport);
     const columnDefs = [
         {
             field: "sno",
@@ -181,10 +179,8 @@ const BusPassRefundTransactionsReport = () => {
     };
 
     const handleInitiateRefund = async () => {
-        console.log("RefundOrderId", RefundOrderId);
         try {
             const res = await fetchBusPassInitiateRefundOrderId(RefundOrderId);
-            console.log("API Response:", res);
             setInitiatRefundModal(false);
             if (res.response?.status === 200) {
                 const resultMsg = res.response?.data?.message;
@@ -292,7 +288,7 @@ const BusPassRefundTransactionsReport = () => {
                             handlePageClick={handlePageClick}
                             currentPage={currentPage}
                             showTotalCount={true}
-                            totalCount={refundTransactionsPagination.totalCount}
+                            totalCount={refundBusPassTransactionsInnerReport[0].totalCount}
                             SetcurrentPage={setCurrentPage}
                         />
                     </div>

@@ -33,7 +33,7 @@ const SimpleModal = ({ open, onClose, children }) => {
 
 const IntercityUserTrackOrder = () => {
   const location = useLocation();
-  const { orderId, mobileNo, typeOfBusPass, houseNames, date, amount, bookingId, backTitle } = location.state || {};
+  const { orderId, MobileNumber, departureLocation, arrivalLocation, date, amount, bookingId, backTitle } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const userIntercityReportSearchParams = localStorage.getItem("userIntercityReportSearchParams");
   const userDetailedIntercityReportSearchParams = localStorage.getItem("userDetailedIntercityReportSearchParams");
@@ -190,17 +190,20 @@ const IntercityUserTrackOrder = () => {
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
-              <p className="text-sm font-semibold text-gray-900">{mobileNo || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{MobileNumber || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Type of Bus pass</h3>
-              <p className="text-sm font-semibold text-gray-900">{typeOfBusPass || 'N/A'}</p>
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Departure Location</h3>
+              <p className="text-sm font-semibold text-gray-900">{departureLocation || 'N/A'}</p>
             </div>
-
+            <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+              <h3 className="text-xs font-medium text-gray-500 mb-1">Arrival Location</h3>
+              <p className="text-sm font-semibold text-gray-900">{arrivalLocation || 'N/A'}</p>
+            </div>
           </div>
 
           <div>

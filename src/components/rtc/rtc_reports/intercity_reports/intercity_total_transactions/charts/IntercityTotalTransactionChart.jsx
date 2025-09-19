@@ -49,7 +49,7 @@ const IntercityTotalTransactionChart = ({
                 100
               ).toFixed(2);
               const text = datum[calloutLabelKey] || "";
-              const wrapLength = window.innerWidth < 768 ? 15 : 25; // Shorter wrap on mobile
+              const wrapLength = window.innerWidth < 768 ? 15 : 55; // Shorter wrap on mobile
               const wrappedText = text.replace(
                 new RegExp(`(.{1,${wrapLength}})(\\s|$)`, "g"),
                 "$1\n"
@@ -127,7 +127,7 @@ const IntercityTotalTransactionChart = ({
         <div className="w-full lg:flex-1 lg:w-[60%] xl:w-[70%]">
           <div
             ref={chartRef}
-            className="h-[300px] sm:h-[350px] md:h-[400px] w-full max-w-full"
+            className="h-[00px] sm:h-[350px] md:h-[400px] w-full max-w-full"
           />
         </div>
 
