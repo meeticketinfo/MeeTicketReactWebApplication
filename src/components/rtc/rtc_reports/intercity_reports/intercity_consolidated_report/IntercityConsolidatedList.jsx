@@ -55,7 +55,7 @@ function IntercityConsolidatedList() {
       arrivalLocation: savedFilters?.arrivalLocation
         ? savedFilters.arrivalLocation
         : "",
-      pageNumber: currentPage,
+      pageNumber: currentPage+1,
       PageSize: PAGE_LIMIT,
     });
   }, [currentPage, PAGE_LIMIT]);
