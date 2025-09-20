@@ -5,6 +5,7 @@ import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/In
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 const IntercityPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
@@ -17,10 +18,11 @@ const IntercityPaymentTransactionsForm = ({
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-
+    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : startOfDay,
+    toDate: savedFilters?.fromDate ? savedFilters.fromDate : endOfDay,
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
       : null,
@@ -96,7 +98,7 @@ const IntercityPaymentTransactionsForm = ({
                 From Date
               </label>
               <Field
-                type="date"
+                type="datetime-local"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -119,7 +121,7 @@ const IntercityPaymentTransactionsForm = ({
                 To Date
               </label>
               <Field
-                type="date"
+                type="datetime-local"
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -233,33 +235,25 @@ const IntercityPaymentTransactionsForm = ({
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem(
-                    "intercity-consolidated-report-filters"
+                    "intercity-payment-report-filters"
                   );
                   resetForm({
                     values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
-                      purchaseOrBooking: "",
-                      modeOfBooking: "",
-                      package: "",
-                      house: "",
+                      fromDate: startOfDay,
+                      toDate: endOfDay,
                       paymentStatus: "",
-                      paymentMode: "",
                       phoneNumber: "",
-                      transactionId: "",
+                      arrivalLocation: "",
+                      destinationLocation: "",
                     },
                   });
                   fetchIntercityPaymentTransactions({
-                    startDate: getCurrentDate(),
-                    endDate: getCurrentDate(),
-                    purchaseOrBooking: "",
-                    modeOfBooking: "",
-                    package: "",
-                    house: "",
+                    startDate: startOfDay,
+                    endDate: endOfDay,
                     paymentStatus: "",
-                    paymentMode: "",
                     phoneNumber: "",
-                    transactionId: "",
+                    arrivalLocation: "",
+                    destinationLocation: "",
                     PageIndex,
                     pageSize,
                   });
