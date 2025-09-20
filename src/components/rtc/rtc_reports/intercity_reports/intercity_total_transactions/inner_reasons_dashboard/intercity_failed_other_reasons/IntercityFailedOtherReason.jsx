@@ -6,7 +6,6 @@ import {
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../../../utils/Helper";
-import { usePackagesStore } from "../../../../../../../store/amrabad/masters/packagesStore";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedOtherReasonsChart from "../../charts/IntercityFailedOtherReasonsChart";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
@@ -28,7 +27,6 @@ const IntercityFailedOtherReason = () => {
   const endOfDay = getEndOfCurrentDay();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
-  const { getPackages } = usePackagesStore();
   const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
     useIntercityMastersStore();
   const {
@@ -45,9 +43,8 @@ const IntercityFailedOtherReason = () => {
   const [arrivalCities, setArrivalCities] = useState([]);
   const [selectedBusType, setSelectedBusType] = useState(null);
 
-  const busTypeOptions = IntercityBusTypesData
-    ?.filter((item) => item.isActive)
-    ?.map((item) => ({
+  const busTypeOptions =
+    IntercityBusTypesData?.filter((item) => item.isActive)?.map((item) => ({
       value: item.busTypesName,
       label: item.busTypesName,
     })) || [];
@@ -57,11 +54,12 @@ const IntercityFailedOtherReason = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
-        // setArrivalCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -82,7 +80,7 @@ const IntercityFailedOtherReason = () => {
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchDepartureCities();
-    fetchArrivalCities();
+    // fetchArrivalCities();
   }, []);
 
   const filtersToUse = {
@@ -113,7 +111,6 @@ const IntercityFailedOtherReason = () => {
       pageNumber: currentPage + 1,
       pageSize: PAGE_LIMIT,
     });
-    getPackages();
   }, [
     arrivalLocation,
     departureLocation,
@@ -272,44 +269,27 @@ const IntercityFailedOtherReason = () => {
                     <label className="block text-xs font-medium text-gray-700">
                       Bus Type
                     </label>
-                    <Select
-                      value={selectedBusType}
-                      onChange={(selectedOption) =>
-                        setSelectedBusType(selectedOption)
-                      }
-                      options={[{ value: "", label: "All" }, ...busTypeOptions]}
-                      isSearchable={true}
-                      isClearable={true}
-                      placeholder="Search bus type..."
-                      className="mt-1"
-                      classNamePrefix="react-select"
-                      filterOption={(option, inputValue) => {
-                        if (!inputValue) return true;
-                        return option.label
-                          .toLowerCase()
-                          .startsWith(inputValue.toLowerCase());
-                      }}
-                      styles={{
-                        control: (base) => ({
-                          ...base,
-                          minHeight: "33px",
-                          fontSize: "14px",
-                          borderRadius: "6px",
-                          borderColor: "#d1d5db",
-                        }),
-                        input: (base) => ({
-                          ...base,
-                          margin: "0px",
-                        }),
-                      }}
-                    />
+                    <Field
+                      as="select"
+                      name="busType"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    >
+                      <option value="">All</option>
+                      {IntercityBusTypesData?.filter(
+                        (item) => item.isActive
+                      ).map((item) => (
+                        <option value={item.busTypesName}>
+                          {item.busTypesName}
+                        </option>
+                      ))}
+                    </Field>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-700">
                       Departure Location
                     </label>
                     <SearchableDropdown
-                      key={`departure-${values.departureLocation || 'empty'}`}
+                      key={`departure-${values.departureLocation || "empty"}`}
                       name="departureLocation"
                       value={values.departureLocation}
                       onChange={(value) =>
@@ -340,7 +320,7 @@ const IntercityFailedOtherReason = () => {
                       Arrival Location
                     </label>
                     <SearchableDropdown
-                      key={`arrival-${values.arrivalLocation || 'empty'}`}
+                      key={`arrival-${values.arrivalLocation || "empty"}`}
                       name="arrivalLocation"
                       value={values.arrivalLocation}
                       onChange={(value) =>
