@@ -15,7 +15,7 @@ export const useIntercityIndividualStore = create((set) => ({
       const params = `?fromDate=${payload.fromDate}&toDate=${
         payload.fromDate
       }&phoneNumber=${payload.mobileNumber}&busType=${
-        payload.busType
+        encodeURIComponent(payload.busType)
       }&seatLayoutType=${payload.seatLayoutType}&paymentMode=${
         payload.paymentMode
       }&transactionId=${payload.transactionId}&orderId=${payload.orderId}&bookingStatus=${
