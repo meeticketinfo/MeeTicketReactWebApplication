@@ -67,6 +67,13 @@ const sidebarItems = [
         icon: GrUserPolice,
         path: "/nodal-officer",
       },
+        {
+          title: "Department Admin",
+          icon: FaUsers,
+          path: "/department-admin",
+        
+        },
+
       {
         title: "Locations",
         icon: MdLocationCity,
