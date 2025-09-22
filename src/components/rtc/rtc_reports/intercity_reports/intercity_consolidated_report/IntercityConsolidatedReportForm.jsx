@@ -214,7 +214,22 @@ const IntercityConsolidatedReportForm = ({
                 )}
               </Field>
             </div>
-
+            {/* payment mode */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Payment Mode
+              </label>
+              <Field
+                as="select"
+                name="paymentMode"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+              </Field>
+            </div>
             {/* order id */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -296,22 +311,6 @@ const IntercityConsolidatedReportForm = ({
               />
             </div>
 
-            {/* payment mode */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Payment Mode
-              </label>
-              <Field
-                as="select"
-                name="paymentMode"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                <option value="Credit Card">Credit Card</option>
-                <option value="UPI">UPI</option>
-                <option value="Cash">Cash</option>
-              </Field>
-            </div>
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
             {/* submit */}
             <div className="flex items-end gap-2">

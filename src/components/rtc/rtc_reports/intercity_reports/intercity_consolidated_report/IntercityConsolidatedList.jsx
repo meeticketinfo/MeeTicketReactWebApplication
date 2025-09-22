@@ -216,6 +216,54 @@ function IntercityConsolidatedList() {
     valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
     },
     {
+      field: "totalLeviesFee",
+      headerName: "Total Levies Fee",
+      // flex: 1,
+      maxWidth: 150,
+      headerClass: "text-blue-v2",
+    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+    },
+    {
+      field: "serviceTaxGST",
+      headerName: "Service Tax(GST)",
+      // flex: 1,
+      maxWidth: 150,
+      headerClass: "text-blue-v2",
+    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+    },
+    {
+      field: "flexiFare",
+      headerName: "Flexi Fare",
+      // flex: 1,
+      maxWidth: 100,
+      headerClass: "text-blue-v2",
+    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+    },
+   
+    {
+      field: "totalAmount",
+      headerName: "Total Amount",
+      // flex: 1,
+      maxWidth: 150,
+      headerClass: "text-blue-v2",
+    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+    },
+    {
+      field: "paymentTransactionId",
+      headerName: "Payment Transaction ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "bookingStatus",
+      headerName: "Booking  Status",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+
+    {
       headerName: "Ticket",
       field: "action",
       cellRenderer: (params) => (
@@ -272,6 +320,42 @@ function IntercityConsolidatedList() {
       ),
       flex: 1,
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "refundDate",
+      headerName: "Refund Date",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "refundId",
+      headerName: "Refund ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "refundStatus",
+      headerName: "Refund status",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      
+    },
+    {
+      field: "paytmSettledUTR",
+      headerName: "Paytm Settled UTR",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "utrProcessedTime",
+      headerName: "UTR Processed Time",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
   ];
   return (
