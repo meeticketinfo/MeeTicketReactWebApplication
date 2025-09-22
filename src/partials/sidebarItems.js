@@ -34,6 +34,7 @@ import { FaCalendarCheck } from "react-icons/fa";
 import { BsPassport } from "react-icons/bs";
 import { VscCompassActive } from "react-icons/vsc";
 import { MdEventAvailable } from "react-icons/md";
+import { GrAtm } from "react-icons/gr";
 
 const sidebarItems = [
   {
@@ -109,6 +110,11 @@ const sidebarItems = [
         title: "Gate Keeper ",
         icon: RiBodyScanLine,
         path: "/gate-keepers",
+      },
+      {
+        title: "POS",
+        icon: GrAtm ,
+        path: "/pos",
       },
       {
         title: "Payments",
