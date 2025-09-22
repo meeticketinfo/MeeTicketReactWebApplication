@@ -35,7 +35,6 @@ function IntercityPaymentTransactionsList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
-console.log("intercityPaymentTransactions",intercityPaymentTransactions);
   useEffect(() => {
     fetchIntercityPaymentTransactions({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
@@ -333,23 +332,17 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
         fetchIntercityPaymentTransactions({
           startDate: savedFilters?.fromDate ?? getCurrentDate(),
           endDate: savedFilters?.toDate ?? getCurrentDate(),
-          purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
-          package: savedFilters?.package ?? "",
-          house: savedFilters?.house ?? "",
           paymentStatus: savedFilters?.paymentStatus
             ? savedFilters.paymentStatus
-            : "",
-          // paymentMode: savedFilters?.paymentMode
-          //   ? savedFilters.paymentMode
-          //   : "",
-          modeOfBooking: savedFilters?.modeOfBooking
-            ? savedFilters.modeOfBooking
             : "",
           phoneNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",
-          transactionId: savedFilters?.transactionId
-            ? savedFilters.transactionId
+          arrivalLocation: savedFilters?.arrivalLocation
+            ? savedFilters.arrivalLocation
+            : "",
+          destinationLocation: savedFilters?.destinationLocation
+            ? savedFilters.destinationLocation
             : "",
           PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
           pageSize: PAGE_LIMIT,

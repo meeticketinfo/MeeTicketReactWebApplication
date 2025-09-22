@@ -1,7 +1,5 @@
 import { Formik, Form, Field } from "formik";
-import { useSearchParams } from "react-router-dom";
 import {
-  cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
@@ -12,54 +10,49 @@ const IntercityUserReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  updateCurrentFilters,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const {
-    isIntercityUserReportsLoading,
-    allIntercityUserReports,
-    fetchIntercityUserReports,
-  } = useIntercityUserStore();
+  const { isIntercityUserReportsLoading, fetchIntercityUserReports } =
+    useIntercityUserStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
-  // Get current date and time in the format required for datetime-local input
-  const getCurrentDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
+  const initialValues = (() => {
+    // Try to get saved filters from localStorage first
+    const savedFilters = localStorage.getItem(
+      "userIntercityReportSearchParams"
+    );
+    if (savedFilters) {
+      try {
+        const parsedFilters = JSON.parse(savedFilters);
+        return {
+          fromDate: parsedFilters.fromDate || startOfDay,
+          toDate: parsedFilters.toDate || endOfDay,
+          MobileNumber: parsedFilters.MobileNumber || "",
+        };
+      } catch (error) {
+        console.error("Error parsing saved filters:", error);
+      }
+    }
 
-  const getCurrentDateWithEndTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}T23:59`;
-  };
-  
-
-  const maxDateTime = getCurrentDateTime();
-  console.log(searchParams.get("MobileNumber"));
-  const initialValues = {
-    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    MobileNumber: searchParams.get("MobileNumber") || "",
-  };
+    // If no saved filters, use default values
+    return {
+      fromDate: startOfDay,
+      toDate: endOfDay,
+      MobileNumber: "",
+    };
+  })();
 
   const onSubmit = (values) => {
-    console.log(values);
-    const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach((key) => {
-      if (values[key]) {
-        newSearchParams.set(key, cleanString(values[key], ":", "_"));
-      }
+    localStorage.setItem(
+      "userIntercityReportSearchParams",
+      JSON.stringify(values)
+    );
+    updateCurrentFilters({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      MobileNumber: values.MobileNumber || "",
     });
-    setSearchParams(newSearchParams);
-    localStorage.setItem("userIntercityReportSearchParams", newSearchParams);
 
     fetchIntercityUserReports({
       fromDate: values.fromDate,
@@ -78,16 +71,18 @@ const IntercityUserReportForm = ({
       MobileNumber: "",
     };
 
-    // Clear URL search params
-    setSearchParams(new URLSearchParams());
+    // Clear saved filters from localStorage
     localStorage.setItem("userIntercityReportSearchParams", "");
+
+    // Update current filters in parent component
+    updateCurrentFilters(payload);
+
     setValues(payload);
     fetchIntercityUserReports({
       ...payload,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
-    localStorage.setItem("userIntercityReportSearchParams", "");
   };
 
   return (
@@ -140,6 +135,7 @@ const IntercityUserReportForm = ({
                   }
                   setFieldValue("toDate", toDateValue);
                 }}
+                min={values.fromDate} 
               />
             </div>
             {/* mobile number */}

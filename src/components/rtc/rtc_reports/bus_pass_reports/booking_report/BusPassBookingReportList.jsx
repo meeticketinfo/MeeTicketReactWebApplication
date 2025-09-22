@@ -480,7 +480,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 140,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.paytmPaymentStatus === "TXN_SUCCESS";
+          const isDisabled = params.data.verifyStatus !== true;
           // || params.data.isTicketGenerated;
 
           return (
@@ -511,7 +511,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isPassGenerated;
+          const isDisabled = params.data.isRegenerateEligible !== true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
@@ -545,17 +545,17 @@ const BusPassBookingReportList = () => {
         //   hide: email === "esdadmin@gmail.com",
         cellRenderer: (params) => {
           // console.log("params",params)
-          // const isDisabled = params.data.canInitiateRefund;
+          const isDisabled = params.data.isRefundEligible !== true;  
 
-          const isDisabled = true;
+          // const isDisabled = true;
           return (
             <div className="flex justify-center mt-1">
               <>
                 <button
-                  className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                   className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
                     isDisabled
-                      ? "bg-blue-v2 text-white hover:bg-blue-v1"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-v2 text-white hover:bg-blue-v1"
                   }`}
                   // disabled={params.data.refundStatus != "Not Refunded"}
                   onClick={() => {

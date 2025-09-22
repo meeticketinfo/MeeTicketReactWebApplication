@@ -19,7 +19,7 @@ const IntercityPaymentTransactionsForm = ({
   );
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
+    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
 
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
@@ -233,33 +233,25 @@ const IntercityPaymentTransactionsForm = ({
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem(
-                    "intercity-consolidated-report-filters"
+                    "intercity-payment-report-filters"
                   );
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
-                      purchaseOrBooking: "",
-                      modeOfBooking: "",
-                      package: "",
-                      house: "",
                       paymentStatus: "",
-                      paymentMode: "",
                       phoneNumber: "",
-                      transactionId: "",
+                      arrivalLocation: "",
+                      destinationLocation: "",
                     },
                   });
                   fetchIntercityPaymentTransactions({
                     startDate: getCurrentDate(),
                     endDate: getCurrentDate(),
-                    purchaseOrBooking: "",
-                    modeOfBooking: "",
-                    package: "",
-                    house: "",
                     paymentStatus: "",
-                    paymentMode: "",
                     phoneNumber: "",
-                    transactionId: "",
+                    arrivalLocation: "",
+                    destinationLocation: "",
                     PageIndex,
                     pageSize,
                   });
