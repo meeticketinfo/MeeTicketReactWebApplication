@@ -14,6 +14,7 @@ import {
 } from "../../../../../../utils/Helper";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
 import { ToastContainer } from "react-toastify";
+import { useIntercityPaymentTransactionStore } from "../../../../../../store/rtc/IntercityPaymentTransactionStore";
 const IntercityRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -33,6 +34,17 @@ const IntercityRefundTransactionsReport = () => {
     isInitiateRefund,
   } = useIntercityRefundReportStore();
 
+  const {
+    isFetchIntercityPaymentTransactionsLoading,
+    intercityPaymentTransactions,
+    fetchIntercityPaymentTransactions,
+    fetchIntercityVerifyStatus,
+    isFetchIntercityVerifyStatusLoading,
+    fetchIntercityPaymentTransactionRefund,
+    isFetchIntercityPaymentTransactionRefundLoading,
+    fetchIntercityRegenerateTicket,
+    isFetchIntercityRegenerateTicketLoading,
+  } = useIntercityPaymentTransactionStore();
   const columnDefs = [
     {
       headerName: "S.No",
@@ -198,7 +210,7 @@ const IntercityRefundTransactionsReport = () => {
   const handleInitiateRefund = async () => {
     console.log("RefundOrderId", RefundOrderId);
     try {
-      const res = await fetchIntercityInitiateRefundOrderId(RefundOrderId);
+      const res = await fetchIntercityPaymentTransactionRefund(RefundOrderId);
       console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {

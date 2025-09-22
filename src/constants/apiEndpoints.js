@@ -269,6 +269,7 @@ export const API_ENDPOINTS = {
         GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}RTCDashboard/GetBookingDetailsOuterReport`,
+
       },
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}RTCDashboard/PaymentTransactionsReport`,

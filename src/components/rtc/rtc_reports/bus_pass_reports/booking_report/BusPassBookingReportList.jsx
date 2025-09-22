@@ -25,7 +25,6 @@ const BusPassBookingReportList = () => {
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const [RegeneratePassPayload, setRegeneratePassPayload] = useState(null);
-  console.log("RegeneratePassPayload", RegeneratePassPayload);
   const [ViewTicketDetails, setViewTicketDetails] = useState({});
 
   const [openRegenerateTicketModal, setOpenRegenerateTicketModal] =
@@ -173,7 +172,6 @@ const BusPassBookingReportList = () => {
   const handleInitiateRefund = async () => {
     try {
       const res = await fetchRtcBusPassInitiateData(RefundOrderId);
-      console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.data?.resultMsg;
@@ -247,7 +245,7 @@ const BusPassBookingReportList = () => {
   };
 
   const handleRegenerateTicket = async () => {
-    //  console.log("RegeneratePassPayload",RegeneratePassPayload)
+     console.log("RegeneratePassPayload",RegeneratePassPayload)
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
       console.log("API Response:", res);
@@ -944,7 +942,7 @@ const BusPassBookingReportList = () => {
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {false ? (
+              {isFetchRtcGeneratePassData ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"
