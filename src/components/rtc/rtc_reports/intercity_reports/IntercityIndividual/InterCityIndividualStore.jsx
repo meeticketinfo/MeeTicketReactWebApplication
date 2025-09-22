@@ -13,7 +13,7 @@ export const useIntercityIndividualStore = create((set) => ({
     set({ isFetchIntercityIndividualData: true });
     try {
       const params = `?fromDate=${payload.fromDate}&toDate=${
-        payload.fromDate
+        payload.toDate
       }&phoneNumber=${payload.mobileNumber}&busType=${
         encodeURIComponent(payload.busType)
       }&seatLayoutType=${payload.seatLayoutType}&paymentMode=${
@@ -47,5 +47,4 @@ export const useIntercityIndividualStore = create((set) => ({
       });
     }
   },
-
 }));
