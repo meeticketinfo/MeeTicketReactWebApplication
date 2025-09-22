@@ -16,7 +16,7 @@ import { useIntercityMastersStore } from "../../../../../../../store/intercity/m
 import Select from "react-select";
 const IntercityFailedGateway = () => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);  
+  const searchParams = new URLSearchParams(location.search);
   const arrivalLocation = searchParams.get("arrivalLocation");
   const departureLocation = searchParams.get("departureLocation");
   const mobileNumber = searchParams.get("mobileNumber");
@@ -33,15 +33,15 @@ const IntercityFailedGateway = () => {
     paymentFailedGateway,
     isPaymentFailedGatewayLoading,
   } = useIntercityTotalTransactionStore();
-  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } = useIntercityMastersStore();
+  const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
+    useIntercityMastersStore();
 
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
   const [selectedBusType, setSelectedBusType] = useState(null);
 
-  const busTypeOptions = IntercityBusTypesData
-    ?.filter((item) => item.isActive)
-    ?.map((item) => ({
+  const busTypeOptions =
+    IntercityBusTypesData?.filter((item) => item.isActive)?.map((item) => ({
       value: item.busTypesName,
       label: item.busTypesName,
     })) || [];
@@ -51,10 +51,12 @@ const IntercityFailedGateway = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -86,7 +88,8 @@ const IntercityFailedGateway = () => {
         outerFilters.mobileNumber ??
         "",
       arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
-      departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
+      departureLocation:
+        departureLocation ?? innerFilters.departureLocation ?? "",
       busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
     });
   }, [mobileNumber, fromDate, toDate, arrivalLocation, departureLocation]);
@@ -96,7 +99,8 @@ const IntercityFailedGateway = () => {
       fromDate ?? innerFilters.fromDate ?? outerFilters.fromDate ?? startOfDay,
     toDate: toDate ?? innerFilters.toDate ?? outerFilters.toDate ?? endOfDay,
     arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
-    departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
+    departureLocation:
+      departureLocation ?? innerFilters.departureLocation ?? "",
     mobileNumber:
       mobileNumber ??
       innerFilters.mobileNumber ??
@@ -108,7 +112,8 @@ const IntercityFailedGateway = () => {
     setInnerFilters({
       ...values,
       arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? "",
-      departureLocation: departureLocation ?? innerFilters.departureLocation ?? "",
+      departureLocation:
+        departureLocation ?? innerFilters.departureLocation ?? "",
       busType: busType ?? innerFilters.busType ?? outerFilters.busType ?? "",
     });
     fetchPaymentFailedGateway(values);
@@ -119,7 +124,9 @@ const IntercityFailedGateway = () => {
       label: "Total Transactions Report",
       path: `/intercity-total-transaction?status=${status ?? ""}&mobileNumber=${
         mobileNumber || ""
-      }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&busType=${busType || ""}`,
+      }&fromDate=${fromDate || ""}&toDate=${toDate || ""}&arrivalLocation=${
+        arrivalLocation || ""
+      }&departureLocation=${departureLocation || ""}&busType=${busType || ""}`,
       onclick: () => resetInnerFilters(),
     },
     {
@@ -144,7 +151,11 @@ const IntercityFailedGateway = () => {
                 status ?? ""
               }&mobileNumber=${mobileNumber || ""}&fromDate=${
                 fromDate || ""
-              }&toDate=${toDate || ""}&arrivalLocation=${arrivalLocation || ""}&departureLocation=${departureLocation || ""}&busType=${busType || ""}`}
+              }&toDate=${toDate || ""}&arrivalLocation=${
+                arrivalLocation || ""
+              }&departureLocation=${departureLocation || ""}&busType=${
+                busType || ""
+              }`}
               className="bg-black text-white font-semibold px-4 py-1.5 rounded"
               onClick={() => {
                 resetInnerFilters();
@@ -215,52 +226,35 @@ const IntercityFailedGateway = () => {
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                     />
                   </div>
-                      <div>
-                      <label
-                        htmlFor="busType"
-                        className="block text-xs font-medium text-gray-700"
-                      >
-                        Bus Type
-                      </label>
-                      <Select
-                value={selectedBusType}
-                onChange={(selectedOption) => setSelectedBusType(selectedOption)}
-                options={[
-                  { value: "", label: "All" },
-                  ...busTypeOptions
-                ]}
-                isSearchable={true}
-                isClearable={true}
-                placeholder="Search bus type..."
-                className="mt-1"
-                classNamePrefix="react-select"
-                filterOption={(option, inputValue) => {
-                  if (!inputValue) return true;
-                  return option.label.toLowerCase().startsWith(inputValue.toLowerCase());
-                }}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    minHeight: '33px',
-                    fontSize: '14px',
-                    borderRadius: '6px',
-                    borderColor: '#d1d5db',
-                   
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: '0px',
-                  }),
-                }}
-              />
-                    </div>
+                  <div>
+                    <label
+                      htmlFor="busType"
+                      className="block text-xs font-medium text-gray-700"
+                    >
+                      Bus Type
+                    </label>
+                    <Field
+                      as="select"
+                      name="busType"
+                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                    >
+                      <option value="">All</option>
+                      {IntercityBusTypesData?.filter(
+                        (item) => item.isActive
+                      ).map((item) => (
+                        <option value={item.busTypesName}>
+                          {item.busTypesName}
+                        </option>
+                      ))}
+                    </Field>
+                  </div>
 
                   <div>
                     <label className="block text-xs font-medium text-gray-700">
                       Departure Location
                     </label>
                     <SearchableDropdown
-                      key={`departure-${values.departureLocation || 'empty'}`}
+                      key={`departure-${values.departureLocation || "empty"}`}
                       name="departureLocation"
                       value={values.departureLocation}
                       onChange={(value) =>
@@ -291,7 +285,7 @@ const IntercityFailedGateway = () => {
                       Arrival Location
                     </label>
                     <SearchableDropdown
-                      key={`arrival-${values.arrivalLocation || 'empty'}`}
+                      key={`arrival-${values.arrivalLocation || "empty"}`}
                       name="arrivalLocation"
                       value={values.arrivalLocation}
                       onChange={(value) =>

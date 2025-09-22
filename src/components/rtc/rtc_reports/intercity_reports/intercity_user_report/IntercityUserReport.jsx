@@ -5,6 +5,7 @@ import AdminLayout from "../../../../../layouts/AdminLayout";
 import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
+import { ToastContainer } from "react-toastify";
 
 const IntercityUserReport = () => {
   const [searchParams] = useSearchParams();
@@ -76,9 +77,9 @@ const IntercityUserReport = () => {
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
           to={`/intercity-user-detailed-report?MobileNumber=${searchParams.get("MobileNumber") || params.data.login_MobileNumber
             }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
-            }`}
+            }&destinationLocation=${searchParams.get("destinationLocation") || ""}&arrivalLocation=${searchParams.get("arrivalLocation") || ""}`}
           onClick={() => {
-            localStorage.setItem("userIntercityReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}`);
+            localStorage.setItem("userIntercityReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}&destinationLocation=${searchParams.get("destinationLocation") || ""}&arrivalLocation=${searchParams.get("arrivalLocation") || ""}`);
 
           }}
         >
@@ -119,6 +120,7 @@ const IntercityUserReport = () => {
         </div>
         <IntercityUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
         <div>
+          <ToastContainer/>
           <AgGridTable
             ExportName="IntercityUserReport"
             rowData={allIntercityUserReports}

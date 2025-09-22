@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom";
-
-import AmarabadTotalCommonStore from "../../../../../../../store/amarabad_Total_transaction_reports_store/AmarabadTotalCommonStore";
 import AgGridTable from "../../../../../../../components/tables/AgGridTable";
 import IntercityFailedOtherReasonReportForm from "./IntercityFailedOtherReasonReportForm";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
@@ -14,6 +12,7 @@ import {
 import { formatToCurrency } from "../../../../../../../utils/TypographyHelper";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import { useIntercityTotalTransactionStore } from "../../store/IntercityTotalTransactionStore";
+import IntercityTotalCommonStore from "../../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
 const IntercityFailedOtherReasonReport = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -33,7 +32,7 @@ const IntercityFailedOtherReasonReport = () => {
     outerFilters,
     deepInnerFilters,
     resetDeepInnerFilters,
-  } = AmarabadTotalCommonStore();
+  } = IntercityTotalCommonStore();
   const {
     fetchTotalTransactionsReport,
     totalTransactionsReport,
@@ -124,6 +123,8 @@ const IntercityFailedOtherReasonReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            pnrNumber: params.data.pnrNumber,
+            returnPNRNumber: params.data.returnPNRNumber,
           }}
         >
           View Track Order

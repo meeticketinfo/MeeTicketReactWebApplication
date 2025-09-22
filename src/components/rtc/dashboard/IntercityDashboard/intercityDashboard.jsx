@@ -7,6 +7,7 @@ import CountUp from "react-countup";
 import { Field, Form, Formik } from "formik";
 import BuswiseDetails from "./buswiseDetails";
 import { useIntercityDashboardStore } from "./store/intercityDashboardStore";
+import { ToastContainer } from "react-toastify";
 function IntercitypassDasboard() {
   superballs.register();
   const {
@@ -33,6 +34,7 @@ function IntercitypassDasboard() {
   };
   return (
     <>
+      <ToastContainer />
       <div className="grid grid-cols-12 gap-6">
         <>
           <div className="col-span-full ">

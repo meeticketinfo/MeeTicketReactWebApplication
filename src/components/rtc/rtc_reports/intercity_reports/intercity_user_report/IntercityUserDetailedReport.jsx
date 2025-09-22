@@ -69,6 +69,8 @@ const IntercityUserDetailedReport = () => {
             orderId: params.data.orderId,
             date: params.data.dateandTimeOfTransaction,
             MobileNumber: params.data.mobileNumber,
+            pnrNumber:params.data.pnrNumber,
+            returnPNRNumber:params.data.returnPNRNumber,
             departureLocation: params.data.departureLocation,
             arrivalLocation: params.data.arrivalLocation,
             status: params.data.transactionStatus,
@@ -163,6 +165,8 @@ const IntercityUserDetailedReport = () => {
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
       MobileNumber: searchParams.get("MobileNumber") || "",
       paymentMode: searchParams.get("paymentMode") || "",
+      departureLocation: searchParams.get("destinationLocation") || "",
+      arrivalLocation: searchParams.get("arrivalLocation") || "",
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -170,7 +174,7 @@ const IntercityUserDetailedReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage, PAGE_LIMIT]);
+  }, [currentPage, PAGE_LIMIT, searchParams]);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);

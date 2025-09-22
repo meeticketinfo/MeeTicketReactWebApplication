@@ -2,6 +2,7 @@ import { create } from "zustand";
 import apiService from "../../../../../services/apiService";
 import { API_ENDPOINTS } from "../../../../../constants/apiEndpoints";
 import { handleApiError } from "../../../../../utils/apiErrorHandler";
+import { toast } from "react-toastify";
 
 
 export const useIntercityDashboardStore = create((set) => ({
@@ -17,8 +18,12 @@ export const useIntercityDashboardStore = create((set) => ({
     set({ intercityDashboard: response.data });
     set({ isFetchIntercityDashboardLoading: false });
   } catch (error) {
-    handleApiError(error);
-    set({ error: error.message, isFetchIntercityDashboardLoading: false });
+    set({
+      error: error.message,
+      intercityDashboard: [],
+      isFetchIntercityDashboardLoading: false,
+    });
+    toast.error(error.message);
   }
   },
 }));    

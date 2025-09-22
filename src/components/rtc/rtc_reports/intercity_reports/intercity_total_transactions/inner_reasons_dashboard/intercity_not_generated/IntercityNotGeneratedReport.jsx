@@ -106,6 +106,8 @@ const IntercityNotGeneratedReport = () => {
             status: params.data.transactionStatus,
             amount: params.data.amount,
             bookingId: params.data.bookingId,
+            pnrNumber: params.data.pnrNumber,
+            returnPNRNumber: params.data.returnPNRNumber,
           }}
         >
           View Track Order

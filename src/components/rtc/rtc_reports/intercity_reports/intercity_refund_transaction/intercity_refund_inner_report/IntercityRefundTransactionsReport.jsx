@@ -13,6 +13,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
+import { ToastContainer } from "react-toastify";
 const IntercityRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -175,7 +176,7 @@ const IntercityRefundTransactionsReport = () => {
         mobileNumber: searchParams.get("mobileNumber") || "",
         destinationLocation:searchParams.get("destinationLocation") || "",
         arrivalLocation:searchParams.get("arrivalLocation") || "",
-        status:
+        refundStatus:
           searchParams.get("RefundStatus") === "null"
             ? ""
             : searchParams.get("RefundStatus") || "",
@@ -291,6 +292,7 @@ const IntercityRefundTransactionsReport = () => {
             </div>
           </div>
           <div>
+            <ToastContainer/>
             <IntercityRefundTransactionsReportForm
               pageNumber={currentPage + 1}
               pageSize={PAGE_LIMIT}

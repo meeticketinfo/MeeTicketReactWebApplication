@@ -118,6 +118,8 @@ const InetercityTotalReport = () => {
             arrivalLocation: params.data.arrivalLocation,
             departureLocation: params.data.departureLocation,
             busType: params.data.busType,
+            pnrNumber: params.data.pnrNumber,
+            returnPNRNumber: params.data.returnPNRNumber,
           }}
         >
           View Track Order

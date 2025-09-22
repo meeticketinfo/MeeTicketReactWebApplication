@@ -87,7 +87,7 @@ const IntercityRefundTransactionsReportForm = ({
       destinationLocation: values.destinationLocation,
       arrivalLocation: values.arrivalLocation,
       paymentMode:values.paymentMode,
-      status: values.refundStatus,
+      refundStatus: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,
     });
@@ -255,7 +255,7 @@ const IntercityRefundTransactionsReportForm = ({
               >
                 <option value="">Select Status</option>
                 <option value="Refund">Refunded</option>
-                <option value="Not Refund">Not Refunded</option>
+                <option value="NotRefund">Not Refunded</option>
               </Field>
             </div>
             <div className="flex items-end">
