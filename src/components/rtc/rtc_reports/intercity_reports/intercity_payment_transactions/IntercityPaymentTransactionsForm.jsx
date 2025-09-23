@@ -165,6 +165,23 @@ const IntercityPaymentTransactionsForm = ({
                 placeholder="Enter mobile number"
                 className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Only allow digits and ensure it starts with 6-9
+                  const numericValue = value.replace(/[^0-9]/g, '');
+                  
+                  // Limit to 10 digits maximum
+                  if (numericValue.length > 10) {
+                    return; // Don't update if more than 10 digits
+                  }
+                  
+                  // If the value is not empty, check if it starts with 6-9
+                  if (numericValue.length > 0 && !/^[6-9]/.test(numericValue)) {
+                    return; // Don't update if it doesn't start with 6-9
+                  }
+                  
+                  setFieldValue("phoneNumber", numericValue);
+                }}
               />
             </div>
           {/* departure location */}

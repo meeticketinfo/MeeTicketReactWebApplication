@@ -67,9 +67,9 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       set({ isFetchIntercityRegenerateTicketLoading: false });
       return { response: response };
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.response.data.result.message);
       set({ isFetchIntercityRegenerateTicketLoading: false });
-      return { success: false };
+     throw error;
     } finally {
       set({ isFetchIntercityRegenerateTicketLoading: false });
     }

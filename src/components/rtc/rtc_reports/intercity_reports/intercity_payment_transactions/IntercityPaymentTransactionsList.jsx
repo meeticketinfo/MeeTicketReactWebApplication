@@ -439,7 +439,6 @@ function IntercityPaymentTransactionsList() {
   };
 
   const handleRegenerateTicket = async () => {
-    console.log("RegenerateTicketData", RegenerateTicketData);
     try {
       const res = await fetchIntercityRegenerateTicket(
         {
@@ -451,6 +450,7 @@ function IntercityPaymentTransactionsList() {
           "tentativeBookingId": RegenerateTicketData.tentativebookingId
         }
       );
+      console.log("Regenerate Ticket Response", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.data?.message;
@@ -492,7 +492,7 @@ function IntercityPaymentTransactionsList() {
       setOpenRegenerateTicketModal(false);
       Swal.fire({
         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-        ${err.response?.data?.message}
+        ${err.response?.data?.result?.message}
       </div>`,
         title: "Failed!",
         text: `Regenerate ticket failed. Please try again.`,

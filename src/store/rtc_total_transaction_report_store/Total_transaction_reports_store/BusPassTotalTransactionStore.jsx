@@ -258,6 +258,25 @@ export const useBusPassTotalTransactionStore = create((set) => ({
       } catch (err) {
         console.error("Invalid JSON string:", payloadString);
       }
+
+      // Step 1.5: Get bpOrderId from RtcBusPassBookingRecordsData if not provided
+      if (!parsedPayload.bpOrderId || parsedPayload.bpOrderId === "") {
+        const currentState = useBusPassTotalTransactionStore.getState();
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          // Get the first record's orderId, or you can modify this logic based on your requirements
+          const firstRecord = currentState.RtcBusPassBookingRecordsData[0];
+          if (firstRecord && firstRecord.orderId) {
+            parsedPayload.bpOrderId = firstRecord.orderId;
+            console.log("Using bpOrderId from RtcBusPassBookingRecordsData:", firstRecord.orderId);
+          }
+        }
+      }
+
+      // Step 1.6: Set routeId to null if not provided
+      if (!parsedPayload.routeId || parsedPayload.routeId === "") {
+        parsedPayload.routeId = 1;
+        console.log("Setting routeId to null");
+      }
       // Step 2: Prepare data for uploadFile
       let fileToUpload = null;
       const additionalData = {};
@@ -304,22 +323,115 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           } else {
             console.log("profileImgUrl is not a valid string, skipping");
           }
+        } else if (key === "employeeGender") {
+          // Convert gender from full text to single letter
+          if (value === "Male") {
+            additionalData[key] = "M";
+          } else if (value === "Female") {
+            additionalData[key] = "F";
+          } else {
+            additionalData[key] = value == null ? "" : value;
+          }
+        } else if (key === "employeeDob") {
+          // Ensure employeeDob is not blank - convert to MM/DD/YYYY format
+          if (value && typeof value === "string" && value.trim() !== "") {
+            try {
+              // Parse the date string and convert to MM/DD/YYYY format
+              const date = new Date(value);
+              if (!isNaN(date.getTime())) {
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const year = date.getFullYear();
+                const formattedDate = `${month}/${day}/${year}`;
+                additionalData[key] = formattedDate;
+                console.log("Converted employeeDob to MM/DD/YYYY format:", formattedDate);
+              } else {
+                // If date parsing fails, use the original value
+                additionalData[key] = value;
+              }
+            } catch (error) {
+              console.error("Error converting employeeDob:", error);
+              additionalData[key] = value;
+            }
+          } else {
+            // If employeeDob is blank, provide a default date to avoid validation error
+            const defaultDate = new Date('1990-01-01');
+            const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
+            const day = String(defaultDate.getDate()).padStart(2, '0');
+            const year = defaultDate.getFullYear();
+            const formattedDefaultDate = `${month}/${day}/${year}`;
+            additionalData[key] = formattedDefaultDate;
+            console.warn("employeeDob is blank, using default date:", formattedDefaultDate);
+          }
+        } else if (key === "passtypeId") {
+          // Convert passtypeId to passTypeId
+          additionalData["passTypeId"] = value == null ? "" : value;
+        } else if (key === "orderId") {
+          // Convert orderId to bpOrderId
+          additionalData["bpOrderId"] = value == null ? "" : value;
         } else {
           additionalData[key] = value == null ? "" : value;
         }
       });
 
-      // Step 3: Send using uploadFile (multipart/form-data)
-      const response = await apiService.uploadFile(
-        endpoint,
-        fileToUpload,
-        additionalData
+      // Add missing fields from the image
+      if (!additionalData.hasOwnProperty("isPassRegenerated")) {
+        additionalData["isPassRegenerated"] = "";
+      }
+      if (!additionalData.hasOwnProperty("isRenewal")) {
+        additionalData["isRenewal"] = "true";
+      }
+      if (!additionalData.hasOwnProperty("transactionType")) {
+        additionalData["transactionType"] = "";
+      }
+      if (!additionalData.hasOwnProperty("employeePhotoDocName")) {
+        additionalData["employeePhotoDocName"] = "";
+      }
+
+      // Step 3: Send using custom upload with "employeePhotoDoc" key (multipart/form-data)
+      const formData = new FormData();
+      if (fileToUpload) {
+        formData.append("employeePhotoDoc", fileToUpload, "employeePhotoDoc.jpg");
+      }
+      
+      Object.keys(additionalData).forEach((key) =>
+        formData.append(key, additionalData[key])
       );
+
+      const response = await apiService.post(endpoint, formData, {
+        "Content-Type": "multipart/form-data",
+      });
 
       set({
         RtcGeneratePassData: response.data,
       });
-      return { response: response.data };
+
+      // Step 4: Call payment response API to get applicationNo
+      try {
+        const paymentResponse = await apiService.get(
+          `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}/${response.data.orderId || response.data.bpOrderId}`
+        );
+        
+        console.log("Payment Response:", paymentResponse.data);
+        console.log("Application No:", paymentResponse.data.applicationNo);
+        
+        // Add applicationNo to the response data
+        const finalResponse = {
+          ...response.data,
+          applicationNo: paymentResponse.data.applicationNo,
+          paymentResponse: paymentResponse.data
+        };
+        
+        set({
+          RtcGeneratePassData: finalResponse,
+        });
+        
+        return { response: finalResponse };
+      } catch (paymentError) {
+        console.error("Error calling payment response API:", paymentError);
+        // Return original response even if payment response fails
+        return { response: response.data };
+      }
     } catch (error) {
       set({
         error: error.message,

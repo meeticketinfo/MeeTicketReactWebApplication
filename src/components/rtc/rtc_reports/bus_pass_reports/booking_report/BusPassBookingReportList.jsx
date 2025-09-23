@@ -244,14 +244,15 @@ const BusPassBookingReportList = () => {
     }
   };
 
+  
+
   const handleRegenerateTicket = async () => {
-     console.log("RegeneratePassPayload",RegeneratePassPayload)
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
       console.log("API Response:", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
+        const resultMsg = res.response?.messageType;
         Swal.fire({
           title: "Success!",
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
@@ -509,7 +510,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible !== true;
+          const isDisabled = params.data.isRegenerateEligible === true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
