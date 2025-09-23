@@ -160,4 +160,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
+  "amrabad-pos-reports",
 ];

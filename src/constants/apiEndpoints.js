@@ -404,6 +404,8 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
       GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
       GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
+      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
     },
     DASHBOARD: {
       GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

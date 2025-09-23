@@ -191,6 +191,7 @@ import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
+import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/AmrabadPosReport";
 
 export const routes = [
   {
@@ -726,6 +727,10 @@ export const routes = [
   {
     path: "/amrabad-booking-reports",
     element: <ProtectedRoute element={<AmrabadConsolidatedReports />} />,
+  },
+  {
+    path: "/amrabad-pos-reports",
+    element: <ProtectedRoute element={<AmrabadPosReport />} />,
   },
   {
     path: "/amrabad-house-wise-reports",
