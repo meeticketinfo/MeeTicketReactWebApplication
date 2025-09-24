@@ -118,6 +118,7 @@ export const useRtcRefundStore = create((set) => ({
             set({
                 error: error.message,
             });
+            throw error;
         } finally {
             set({
                 isInitiateRefund: false,

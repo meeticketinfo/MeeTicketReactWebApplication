@@ -342,7 +342,7 @@ const IntercityConsolidatedReportForm = ({
                     arrivalLocation: "",
                   });
                   fetchIntercityConsolidateData({
-                    purchaseOrBooking: "",
+                    purchaseOrBooking: "Purchase",
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
                     mobileNumber: "",
