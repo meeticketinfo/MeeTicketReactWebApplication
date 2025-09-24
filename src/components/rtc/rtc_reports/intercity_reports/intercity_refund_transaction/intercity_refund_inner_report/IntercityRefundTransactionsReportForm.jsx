@@ -84,9 +84,9 @@ const IntercityRefundTransactionsReportForm = ({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
-      destinationLocation: values.destinationLocation,
-      arrivalLocation: values.arrivalLocation,
-      paymentMode:values.paymentMode,
+      destinationLocation: values.destinationLocation?values.destinationLocation:"",
+      arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
+      paymentMode:values.paymentMode?values.paymentMode:"",
       refundStatus: values.refundStatus,
       pageNumber: 1, // Reset to first page on new search
       pageSize: pageSize,

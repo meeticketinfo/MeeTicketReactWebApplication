@@ -18,21 +18,21 @@ const IntercityUserDetailedReportForm = ({
     fetchIntercityUserDetailedReports,
   } = useIntercityUserStore();
   const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
-  useEffect(() => {
-    if (searchParams.toString()) {
-      const newSearchParams = new URLSearchParams();
+  // useEffect(() => {
+  //   if (searchParams.toString()) {
+  //     const newSearchParams = new URLSearchParams();
 
-      for (const [key, value] of searchParams.entries()) {
-        if (value) {
-          newSearchParams.set(key, cleanString(value, ":", "_"));
-        }
-      }
-      localStorage.setItem(
-        "userDetailedIntercityReportSearchParams",
-        newSearchParams.toString()
-      );
-    }
-  }, [searchParams]);
+  //     for (const [key, value] of searchParams.entries()) {
+  //       if (value) {
+  //         newSearchParams.set(key, cleanString(value, ":", "_"));
+  //       }
+  //     }
+  //     localStorage.setItem(
+  //       "userDetailedIntercityReportSearchParams",
+  //       newSearchParams.toString()
+  //     );
+  //   }
+  // }, [searchParams]);
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
