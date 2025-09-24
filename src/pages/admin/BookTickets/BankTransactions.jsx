@@ -108,8 +108,8 @@ export default function BankTransactions() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "bookingDate",
-      headerName: "Booking Date",
+      field: "purchaseDate",
+      headerName: "Purchase Date",
        maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>

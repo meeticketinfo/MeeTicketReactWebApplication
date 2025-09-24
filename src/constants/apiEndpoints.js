@@ -6,11 +6,11 @@ import useAuthStore from "../store/authStore";
 
 //  PARK UAT
 export const API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+  "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 export const PAYNOW_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkapi/";
+  "https://meeticket.telangana.gov.in/parkapi/";
 
 // metro dev
 // export const METRO_API_BASE_URL =
@@ -18,10 +18,10 @@ export const PAYNOW_API_BASE_URL =
 
 // METRO UAT
 export const METRO_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+  "https://meeticket.telangana.gov.in/metrohsmapi/";
 // metroapi UAT
 export const METRO_API_Plain_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metroapi/";
+  "https://meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
 // export const GRIEVANCE_API_BASE_URL =
@@ -29,7 +29,7 @@ export const METRO_API_Plain_BASE_URL =
 
 //  Grievance UAT
 export const GRIEVANCE_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
+  "https://meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL =
