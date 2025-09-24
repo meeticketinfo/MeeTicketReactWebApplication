@@ -14,8 +14,26 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   useEffect(() => {
     fetchAmrabadPosVehicleTypesData();
   }, []);
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const getCurrentDateAtMidnight = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}T00:00`;
+  };
+
   const initialValues = {
-    fromDate: savedFilters?.fromDate || getCurrentDate(),
+    fromDate: savedFilters?.fromDate || getCurrentDateAtMidnight(),
     toDate: savedFilters?.toDate || getCurrentDate(),
     adminMobileNumber: savedFilters?.adminMobileNumber
       ? savedFilters.mobileNumber
@@ -52,14 +70,14 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               htmlFor="fromDate"
               className="block text-xs font-medium text-gray-700"
             >
-              From Date
+              From Date & Time
             </label>
             <Field
-              type="date"
+              type="datetime-local"
               name="fromDate"
               className={`mt-1 block w-full px-2 py-1 border
               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              // min={getCurrentDate()}
+              // min={getCurrentDateTime()}
               onChange={(e) => {
                 const fromDateValue = e.target.value;
                 setFieldValue("fromDate", fromDateValue);
@@ -76,14 +94,14 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               htmlFor="toDate"
               className="block text-xs font-medium text-gray-700"
             >
-              To Date
+              To Date & Time
             </label>
             <Field
-              type="date"
+              type="datetime-local"
               name="toDate"
               className={`mt-1 block w-full px-2 py-1 border
                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-              min={values.fromDate || getCurrentDate()}
+              min={values.fromDate || getCurrentDateAtMidnight()}
               onChange={(e) => {
                 const toDateValue = e.target.value;
                 setFieldValue("toDate", toDateValue);
@@ -203,7 +221,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               onClick={() => {
                 localStorage.removeItem("amrabad-pos-report-filters");
                 setValues({
-                  fromDate: getCurrentDate(),
+                  fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDate(),
                   adminMobileNumber: "",
                   userMobileNumber: "",
@@ -213,7 +231,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                   ticketType: "",
                 });
                 fetchAmrabadPosReportData({
-                  fromDate: getCurrentDate(),
+                  fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDate(),
                   adminMobileNumber: "",
                   userMobileNumber: "",

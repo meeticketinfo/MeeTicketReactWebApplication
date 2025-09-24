@@ -2,7 +2,25 @@ import React, { useEffect, useState } from "react";
 import AmrabadPosReportForm from "./AmrabadPosReportForm";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { useAmrabadPosStore } from "./AmrabadPosStore";
-import { getCurrentDate } from "../../../../utils/TypographyHelper";
+// import { getCurrentDate } from "../../../../utils/TypographyHelper";
+
+const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const getCurrentDateAtMidnight = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}T00:00`;
+};
 
 const AmrabadPosReportList = () => {
   const savedFilters = JSON.parse(
@@ -21,7 +39,7 @@ const AmrabadPosReportList = () => {
   console.log("AmrabadPosReportData", AmrabadPosReportData);
   useEffect(() => {
     fetchAmrabadPosReportData({
-      fromDate: savedFilters?.fromDate ?? getCurrentDate(),
+      fromDate: savedFilters?.fromDate ?? getCurrentDateAtMidnight(),
       toDate: savedFilters?.toDate ?? getCurrentDate(),
       adminMobileNumber: savedFilters?.adminMobileNumber
         ? savedFilters.mobileNumber
