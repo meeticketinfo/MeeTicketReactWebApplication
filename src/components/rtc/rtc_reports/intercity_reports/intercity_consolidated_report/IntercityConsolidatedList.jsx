@@ -25,7 +25,7 @@ function IntercityConsolidatedList() {
     fetchIntercityConsolidateData({
       purchaseOrBooking: savedFilters?.purchaseOrBooking
         ? savedFilters.purchaseOrBooking
-        : "",
+        : "Purchase",
       fromDate: savedFilters?.fromDate
         ? savedFilters.fromDate
         : getCurrentDate(),

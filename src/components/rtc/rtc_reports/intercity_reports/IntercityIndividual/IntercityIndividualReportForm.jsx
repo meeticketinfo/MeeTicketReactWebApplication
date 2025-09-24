@@ -98,9 +98,9 @@ const IntercityIndividualReportForm = ({
   const onSubmit = (values) => {
     console.log("values", values);
     fetchIntercityIndividualData({
-      ...values,  
-      pageNumber:pageNumber,
-      PageSize:pageSize
+      ...values,
+      pageNumber: pageNumber,
+      PageSize: pageSize,
     });
     localStorage.setItem(
       "intercity-individual-filters",
@@ -157,6 +157,7 @@ const IntercityIndividualReportForm = ({
                 }}
               />
             </div>
+
             {/* mobile no */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -173,29 +174,45 @@ const IntercityIndividualReportForm = ({
                 }}
               />
             </div>
-            {/* pnr no */}
+            {/* type of bus */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
-                PNR No
+                Type of Bus
               </label>
               <Field
-                type="text"
-                name="pnrNumber"
+                as="select"
+                name="busType"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                placeholder="Enter PNR"
-              />
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
             </div>
-            {/*  return pnr */}
+            {/* seat layout type */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
-                Return PNR No
+                Seat Layout type
               </label>
               <Field
-                type="text"
-                name="returnPnrNumber"
+                as="select"
+                name="seatLayoutType"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                placeholder="Enter Return PNR"
-              />
+              >
+                <option value="">All</option>
+                {IntercitySeatLayoutsData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.seatLayoutTypesName}>
+                      {item.seatLayoutTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
             </div>
             {/* payment mode */}
             <div>
@@ -237,70 +254,6 @@ const IntercityIndividualReportForm = ({
                 placeholder="Enter Transaction ID"
               />
             </div>
-            {/* Ticket id */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Ticket Id
-              </label>
-              <Field
-                type="text"
-                name="ticketId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                placeholder="Enter Ticket Id"
-              />
-            </div>
-            {/* Return Ticket Id id */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Return Ticket Id
-              </label>
-              <Field
-                type="text"
-                name="returnTicketId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                placeholder="Enter Return Ticket Id"
-              />
-            </div>
-            {/* seat layout type */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Seat Layout type
-              </label>
-              <Field
-                as="select"
-                name="seatLayoutType"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                {IntercitySeatLayoutsData?.filter((item) => item.isActive).map(
-                  (item) => (
-                    <option value={item.seatLayoutTypesName}>
-                      {item.seatLayoutTypesName}
-                    </option>
-                  )
-                )}
-              </Field>
-            </div>
-            {/* type of bus */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Type of Bus
-              </label>
-              <Field
-                as="select"
-                name="busType"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                {IntercityBusTypesData?.filter((item) => item.isActive).map(
-                  (item) => (
-                    <option value={item.busTypesName}>
-                      {item.busTypesName}
-                    </option>
-                  )
-                )}
-              </Field>
-            </div>
             {/* booking status */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -317,6 +270,56 @@ const IntercityIndividualReportForm = ({
                 <option value="Cancelled">Cancelled</option>
               </Field>
             </div>
+            {/* pnr no */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                PNR No
+              </label>
+              <Field
+                type="text"
+                name="pnrNumber"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter PNR"
+              />
+            </div>
+            {/* Ticket id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="ticketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Ticket Id"
+              />
+            </div>
+            {/*  return pnr */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return PNR No
+              </label>
+              <Field
+                type="text"
+                name="returnPnrNumber"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return PNR"
+              />
+            </div>
+
+            {/* Return Ticket Id id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Return Ticket Id
+              </label>
+              <Field
+                type="text"
+                name="returnTicketId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Return Ticket Id"
+              />
+            </div>
+
             {/* departure location */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -423,8 +426,8 @@ const IntercityIndividualReportForm = ({
                     arrivalLocation: "",
                     ticketId: "",
                     returnTicketId: "",
-                    pageNumber:pageNumber,
-                    PageSize:pageSize
+                    pageNumber: pageNumber,
+                    PageSize: pageSize,
                   });
                   setDepartureCities([]);
                   setArrivalCities([]);
