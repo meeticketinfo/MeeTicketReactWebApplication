@@ -17,7 +17,7 @@ const PosList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-   
+
     {
       field: "EmailId",
       headerName: "Email Id",
@@ -25,7 +25,7 @@ const PosList = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-   
+
     {
       field: "phoneNumber",
       headerName: "Phone Number",
@@ -34,12 +34,12 @@ const PosList = () => {
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-        field: "status",
-        headerName: "Status",
-        flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
-      },
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },
     {
       headerName: "Actions",
       field: "actions",

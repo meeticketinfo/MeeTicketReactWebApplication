@@ -3,58 +3,59 @@ import { toast, ToastContainer } from "react-toastify";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-import { useFacilityStore } from "../../../store/masters/facilitiesStore";
+
 import useAuthStore from "../../../store/authStore";
+import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
 const CreatePosUser = ({ setIsPosCreateVisible }) => {
-  const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
-
+  const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
+    useUnifiedFacilityStore();
   useEffect(() => {
-    if (role) {
-      fetchAllDropdownFacilities(role);
-    }
-  }, [role, fetchAllDropdownFacilities]);
-
+    fetchAllUnifiedFacilities(role);
+  }, []);
   const facilityOptions =
-    adminFacilities?.map((facility) => ({
-      value: facility.facilityMasterId,
-      label: facility.facilityName,
+    allUnifiedFacilities?.map((facility) => ({
+      value: facility.id,
+      label: facility.name,
     })) || [];
 
   const initialValues = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    emailId: "",
-    phoneNumber: "",
-    password: "",
-    assignedFacilities: [],
+    FirstName: "",
+    LastName: "",
+    EmailId: "",
+    PhoneNumber: "",
+    pin: "",
+    status: "",
+    AssignFaciltiy: [],
   };
 
   const validationSchema = Yup.object({
-    firstName: Yup.string()
+    FirstName: Yup.string()
       .required("First Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    lastName: Yup.string()
+    LastName: Yup.string()
       .required("Last Name is required")
       .max(30, "First Name cannot be more than 30 characters"),
-    emailId: Yup.string().required("Email Id is required"),
+    EmailId: Yup.string().required("Email Id is required"),
 
-    phoneNumber: Yup.string()
+    PhoneNumber: Yup.string()
       .required("Phone Number is required")
       .matches(/^\d{10}$/, "Phone Number must contain exactly 10 digits"),
-    password: Yup.string()
+    pin: Yup.string()
       .required("Pin is required")
       .matches(/^\d{4}$/, "Passcode must be exactly 4 digits"),
-    assignedFacilities: Yup.array()
+    status: Yup.boolean().required("Status is required"),
+
+    AssignFaciltiy: Yup.array()
       .min(1, "At least one facility must be assigned")
       .required("Facility assignment is required"),
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values, { resetForm }) => {
     console.log("values", values);
-    toast.success(values);
+    toast.success("Pos User Created Successfully");
+    resetForm();
   };
   return (
     <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
@@ -64,7 +65,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ errors, touched, isSubmitting }) => (
+        {({ setFieldValue }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
               {/* User Select */}
@@ -73,13 +74,13 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                   First Name <span className="text-red-500">*</span>
                 </label>
                 <Field
-                  name="firstName"
+                  name="FirstName"
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter first name"
                 />
                 <ErrorMessage
-                  name="firstName"
+                  name="FirstName"
                   component="div"
                   className="text-red-500 text-xs"
                 />
@@ -91,13 +92,13 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                   Last Name <span className="text-red-500">*</span>
                 </label>
                 <Field
-                  name="lastName"
+                  name="LastName"
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter last name"
                 />
                 <ErrorMessage
-                  name="lastName"
+                  name="LastName"
                   component="div"
                   className="text-red-500 text-xs"
                 />
@@ -106,19 +107,19 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
               {/* Email Id */}
               <div>
                 <label
-                  htmlFor="emailId"
+                  htmlFor="EmailId"
                   className="block text-xs font-medium text-gray-700"
                 >
                   Email Id <span className="text-red-500">*</span>
                 </label>
                 <Field
                   type="email"
-                  name="emailId"
+                  name="EmailId"
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none  text-sm`}
                   placeholder="Enter email Id"
                 />
                 <ErrorMessage
-                  name="emailId"
+                  name="EmailId"
                   component="div"
                   className="text-red-500 text-xs mt-1"
                 />
@@ -126,7 +127,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
               {/* Phone Number */}
               <div>
                 <label
-                  htmlFor="phoneNumber"
+                  htmlFor="PhoneNumber"
                   className="block text-xs font-medium text-gray-700"
                 >
                   Phone Number <span className="text-red-500">*</span>
@@ -134,7 +135,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                 <Field
                   type="text"
                   maxLength="10"
-                  name="phoneNumber"
+                  name="PhoneNumber"
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none  text-sm`}
                   placeholder="Enter phone number"
                   onKeyPress={(e) => {
@@ -144,7 +145,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                   }}
                 />
                 <ErrorMessage
-                  name="phoneNumber"
+                  name="PhoneNumber"
                   component="div"
                   className="text-red-500 text-xs mt-1"
                 />
@@ -153,7 +154,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
               {/* Password */}
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="pin"
                   className="block text-xs font-medium text-gray-700"
                 >
                   4-digit Pin
@@ -161,7 +162,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                 </label>
                 <Field
                   type="text"
-                  name="password"
+                  name="pin"
                   maxLength={4}
                   onKeyPress={(e) => {
                     if (!/^\d$/.test(e.key)) {
@@ -172,21 +173,44 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                   placeholder="Four-digit-pin"
                 />
                 <ErrorMessage
-                  name="password"
+                  name="pin"
                   component="div"
                   className="text-red-500 text-xs mt-1"
+                />
+              </div>
+              {/* Status */}
+              <div>
+                <label className="block text-sm font-medium">Status</label>
+                <Field
+                  autoComplete="off"
+                  as="select"
+                  name="status"
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setFieldValue("status", value === "true");
+                  }}
+                  className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                >
+                  <option value="">Select Status</option>
+                  <option value={true}>Active</option>
+                  <option value={false}>Inactive</option>
+                </Field>
+                <ErrorMessage
+                  name="status"
+                  component="div"
+                  className="text-red-500 text-xs"
                 />
               </div>
 
               {/* Assigned Facilities */}
               <div>
                 <label
-                  htmlFor="assignedFacilities"
+                  htmlFor="AssignFaciltiy"
                   className="block text-xs font-medium text-gray-700"
                 >
                   Assign Facility <span className="text-red-500">*</span>
                 </label>
-                <Field name="assignedFacilities">
+                <Field name="AssignFaciltiy">
                   {({ field, form, meta }) => (
                     <div>
                       <Select
