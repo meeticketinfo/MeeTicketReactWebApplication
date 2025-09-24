@@ -297,6 +297,31 @@ const BusPassBookingReportList = () => {
       });
     } finally {
       setOpenRegenerateTicketModal(false);
+      setTimeout(() => {
+        fetchRtcBusPassBookingData({
+          fromDate: savedFilters?.fromDate
+            ? savedFilters.fromDate
+            : getCurrentDate(),
+          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+          mobileNumber: savedFilters?.phoneNumber
+            ? savedFilters.phoneNumber
+            : "",
+          transactionId: savedFilters?.transactionId
+            ? savedFilters.transactionId
+            : "",
+          BusPassType: savedFilters?.BusPassType
+            ? savedFilters.BusPassType
+            : "",
+          typeOfPayment: savedFilters?.typeOfPayment
+            ? savedFilters.typeOfPayment
+            : "",
+          bookingStatus: savedFilters?.bookingStatus
+            ? savedFilters.bookingStatus
+            : "",
+          pageNumber: currentPage + 1,
+          pageSize: PAGE_LIMIT,
+        });
+      }, 2100);
     }
   };
 
@@ -510,7 +535,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible === true;
+          const isDisabled = params.data.isRegenerateEligible !== true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">

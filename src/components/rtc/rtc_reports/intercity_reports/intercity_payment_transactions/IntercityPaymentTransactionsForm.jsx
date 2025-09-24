@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { getCurrentDate } from "../../../../../utils/TypographyHelper";
+import { getCurrentDate, getCurrentDateStartTime, getCurrentDateEndTime } from "../../../../../utils/TypographyHelper";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
@@ -21,8 +21,8 @@ const IntercityPaymentTransactionsForm = ({
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDateStartTime(),
+    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDateEndTime(),
 
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
@@ -126,7 +126,7 @@ const IntercityPaymentTransactionsForm = ({
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
+                min={values.fromDate || getCurrentDateStartTime()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
@@ -257,8 +257,8 @@ const IntercityPaymentTransactionsForm = ({
                   );
                   resetForm({
                     values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
+                      fromDate: getCurrentDateStartTime(),
+                      toDate: getCurrentDateEndTime(),
                       paymentStatus: "",
                       phoneNumber: "",
                       arrivalLocation: "",
@@ -266,8 +266,8 @@ const IntercityPaymentTransactionsForm = ({
                     },
                   });
                   fetchIntercityPaymentTransactions({
-                    startDate: getCurrentDate(),
-                    endDate: getCurrentDate(),
+                    startDate: getCurrentDateStartTime(),
+                    endDate: getCurrentDateEndTime(),
                     paymentStatus: "",
                     phoneNumber: "",
                     arrivalLocation: "",

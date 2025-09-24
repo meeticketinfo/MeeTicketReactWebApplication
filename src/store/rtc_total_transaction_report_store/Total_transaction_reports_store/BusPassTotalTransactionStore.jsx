@@ -36,7 +36,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
   RtcTotalTransactionsData: [],
   isRtcTotalTransactionsLoading: false,
   fetchRtcTotalTransactions: async (payload) => {
-    console.log("payload", payload);
     set({ isRtcTotalTransactionsLoading: true });
     const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&status=${payload.status}&passTypeId=${payload.BusPassType}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
     try {
@@ -258,7 +257,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
       } catch (err) {
         console.error("Invalid JSON string:", payloadString);
       }
-
       // Step 1.5: Get bpOrderId from RtcBusPassBookingRecordsData if not provided
       if (!parsedPayload.bpOrderId || parsedPayload.bpOrderId === "") {
         const currentState = useBusPassTotalTransactionStore.getState();
@@ -267,7 +265,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           const firstRecord = currentState.RtcBusPassBookingRecordsData[0];
           if (firstRecord && firstRecord.orderId) {
             parsedPayload.bpOrderId = firstRecord.orderId;
-            console.log("Using bpOrderId from RtcBusPassBookingRecordsData:", firstRecord.orderId);
           }
         }
       }
@@ -275,21 +272,19 @@ export const useBusPassTotalTransactionStore = create((set) => ({
       // Step 1.6: Set routeId to null if not provided
       if (!parsedPayload.routeId || parsedPayload.routeId === "") {
         parsedPayload.routeId = 1;
-        console.log("Setting routeId to null");
       }
       // Step 2: Prepare data for uploadFile
       let fileToUpload = null;
       const additionalData = {};
       Object.entries(parsedPayload).forEach(([key, value]) => {
         if (key === "profileImgUrl") {
-          console.log("profileImgUrl value:", value, "type:", typeof value);
 
           // Skip if it's an empty object or null/undefined
           if (
             !value ||
             (typeof value === "object" && Object.keys(value).length === 0)
           ) {
-            console.log("Skipping empty profileImgUrl");
+          
             return; // Skip this field
           }
 
@@ -312,11 +307,9 @@ export const useBusPassTotalTransactionStore = create((set) => ({
               }
               const blob = new Blob([bytes], { type: "image/jpeg" }); // Adjust type as needed
               fileToUpload = blob; // Set as the file to upload
-              console.log(
-                "Successfully converted profileImgUrl to binary blob"
-              );
+       
             } catch (base64Error) {
-              console.error("Error converting base64 to binary:", base64Error);
+             
               // If conversion fails, add as regular data
               additionalData[key] = value;
             }
@@ -344,13 +337,11 @@ export const useBusPassTotalTransactionStore = create((set) => ({
                 const year = date.getFullYear();
                 const formattedDate = `${month}/${day}/${year}`;
                 additionalData[key] = formattedDate;
-                console.log("Converted employeeDob to MM/DD/YYYY format:", formattedDate);
               } else {
                 // If date parsing fails, use the original value
                 additionalData[key] = value;
               }
             } catch (error) {
-              console.error("Error converting employeeDob:", error);
               additionalData[key] = value;
             }
           } else {
@@ -361,7 +352,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             const year = defaultDate.getFullYear();
             const formattedDefaultDate = `${month}/${day}/${year}`;
             additionalData[key] = formattedDefaultDate;
-            console.warn("employeeDob is blank, using default date:", formattedDefaultDate);
           }
         } else if (key === "passtypeId") {
           // Convert passtypeId to passTypeId
@@ -408,17 +398,146 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
       // Step 4: Call payment response API to get applicationNo
       try {
-        const paymentResponse = await apiService.get(
-          `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}/${response.data.orderId || response.data.bpOrderId}`
+        // Get paymentRequestJson from RtcBusPassBookingRecordsData
+        const currentState = useBusPassTotalTransactionStore.getState();
+        let paymentRequestJson = null;
+        
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          // Find the record that matches the current orderId
+          const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+          );
+          if (matchingRecord && matchingRecord.paymentRequestJson) {
+            paymentRequestJson = matchingRecord.paymentRequestJson;
+            
+          }
+        }
+        
+        // Fallback to creating from parsed payload if not found in booking records
+        if (!paymentRequestJson) {
+          paymentRequestJson = JSON.stringify(parsedPayload);
+        }
+
+        console.log("Payment Request Json:", paymentRequestJson);
+        
+        // Convert paymentRequestJson to JSON format if it's a string
+        let jsonPaymentRequest = paymentRequestJson;
+        if (typeof paymentRequestJson === 'string') {
+          try {
+            jsonPaymentRequest = JSON.parse(paymentRequestJson);
+          } catch (err) {
+            jsonPaymentRequest = paymentRequestJson; // Use as string if parsing fails
+          }
+        }
+        console.log("Json Payment Request:", jsonPaymentRequest.Data.ReferenceNo);
+        
+        // Extract ReferenceNo from paymentRequestJson if it contains the response data
+        let referenceNo = "";
+        // if (jsonPaymentRequest && jsonPaymentRequest.Data && jsonPaymentRequest.Data.ReferenceNo) {
+        //   referenceNo = jsonPaymentRequest.Data.ReferenceNo;
+        //   console.log("Found ReferenceNo in paymentRequestJson:", referenceNo);
+        //   // Add the referenceNo to the jsonPaymentRequest
+        //   jsonPaymentRequest.referenceNo = referenceNo;
+        // }
+        
+        // Also add ReferenceNo from response.data if available
+        if (response && response.data && response.data.referenceNo) {
+          jsonPaymentRequest.ReferenceNo = response.data.referenceNo;
+          console.log("Added ReferenceNo from response.data:", response.data.referenceNo);
+        }
+        
+        if (jsonPaymentRequest && jsonPaymentRequest.ReferenceNo && jsonPaymentRequest.ReferenceNo !== "") {
+          if (jsonPaymentRequest.Data) {
+            jsonPaymentRequest.Data.ReferenceNo = jsonPaymentRequest.ReferenceNo;
+            console.log("Moved ReferenceNo from top level to Data object:", jsonPaymentRequest.ReferenceNo);
+          }
+        }
+        
+        // Also set OrderId in Data object if it exists
+        if (jsonPaymentRequest && jsonPaymentRequest.Data && response && response.data && response.data.applicationNo) {
+          jsonPaymentRequest.Data.OrderId = response.data.applicationNo;
+          console.log("Set Data.OrderId with applicationNo:", response.data.applicationNo);
+        }
+        
+        // Set txnAmount based on passTypeId from parsedPayload
+        // if (jsonPaymentRequest && jsonPaymentRequest.Data) {
+          const passTypeId = parsedPayload.passtypeId;
+          let amount = 5310; // default amount
+          
+          if (passTypeId ===  
+            "179-52") {
+            amount = 1200;
+          } else if (passTypeId === "179-18") {
+            amount = 1500;
+          } else if (passTypeId === "179-15") {
+            amount = 1650;
+          } else if (passTypeId === "179-91") {
+            amount = 1950;
+          }
+          
+          jsonPaymentRequest.Data.TxnAmount = amount;
+          console.log(`Set Data.TxnAmount to ${amount} for passTypeId: ${passTypeId}`);
+        // }
+        
+        // Delete referenceNo and txnAmount outside of Data object
+        if (jsonPaymentRequest) {
+          // Delete referenceNo and txnAmount from top level
+          if (jsonPaymentRequest.referenceNo) {
+            delete jsonPaymentRequest.referenceNo;
+            console.log("Deleted referenceNo from top level");
+          }
+          if (jsonPaymentRequest.txnAmount) {
+            delete jsonPaymentRequest.txnAmount;
+            console.log("Deleted txnAmount from top level");
+          }
+          if (jsonPaymentRequest.ReferenceNo) {
+            delete jsonPaymentRequest.ReferenceNo;
+            console.log("Deleted ReferenceNo from top level");
+          }
+          if (jsonPaymentRequest.TxnAmount) {
+            delete jsonPaymentRequest.TxnAmount;
+            console.log("Deleted TxnAmount from top level");
+          }
+        }
+        
+        // Convert all keys to lowercase and send only one structure
+        if (jsonPaymentRequest) {
+          const convertedRequest = {};
+          Object.keys(jsonPaymentRequest).forEach(key => {
+            const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+            convertedRequest[lowerKey] = jsonPaymentRequest[key];
+          });
+          
+          // Handle nested Data object
+          if (convertedRequest.data && typeof convertedRequest.data === 'object') {
+            const convertedData = {};
+            Object.keys(convertedRequest.data).forEach(key => {
+              const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+              convertedData[lowerKey] = convertedRequest.data[key];
+            });
+            convertedRequest.data = convertedData;
+          }
+          
+          // Replace the original request with converted one (send only lowercase structure)
+          Object.keys(jsonPaymentRequest).forEach(key => delete jsonPaymentRequest[key]);
+          Object.assign(jsonPaymentRequest, convertedRequest);
+          console.log("Converted all keys to lowercase - sending only one structure");
+        }
+
+        const paymentResponse = await apiService.post(
+          `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}`,
+          jsonPaymentRequest
         );
         
-        console.log("Payment Response:", paymentResponse.data);
-        console.log("Application No:", paymentResponse.data.applicationNo);
         
-        // Add applicationNo to the response data
+        // Get existing RtcGeneratePassData to use for applicationNo and referenceNo
+        // const currentState = useBusPassTotalTransactionStore.getState();
+        const existingRtcGeneratePassData = response.data;
+        // Add applicationNo to the response data using RtcGeneratePassData
         const finalResponse = {
           ...response.data,
-          applicationNo: paymentResponse.data.applicationNo,
+          applicationNo: existingRtcGeneratePassData?.applicationNo || paymentResponse.data.applicationNo,
+          referenceNo: existingRtcGeneratePassData?.referenceNo || paymentResponse.data.referenceNo,
           paymentResponse: paymentResponse.data
         };
         
@@ -428,7 +547,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         
         return { response: finalResponse };
       } catch (paymentError) {
-        console.error("Error calling payment response API:", paymentError);
         // Return original response even if payment response fails
         return { response: response.data };
       }
@@ -473,7 +591,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
   RtcViewBusPassData: [],
   isFetchRtcViewBusPassData: false,
   fetchRtcRtcViewBusPassData: async (payload) => {
-    console.log("payload", payload);
     set({ isFetchRtcViewBusPassData: true });
     try {
       const response = await apiService.get(
