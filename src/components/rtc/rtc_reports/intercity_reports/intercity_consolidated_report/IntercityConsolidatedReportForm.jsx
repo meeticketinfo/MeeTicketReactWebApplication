@@ -68,7 +68,7 @@ const IntercityConsolidatedReportForm = ({
   const initialValues = {
     purchaseOrBooking: savedFilters?.purchaseOrBooking
       ? savedFilters.purchaseOrBooking
-      : "",
+      : "Purchase",
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
     toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
     mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
@@ -114,7 +114,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
               <Field
                 as="select"
-                name="typeOfBooking"
+                name="purchaseOrBooking"
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
@@ -328,7 +328,7 @@ const IntercityConsolidatedReportForm = ({
                 onClick={() => {
                   localStorage.removeItem("intercity-consolidated-filters");
                   setValues({
-                    purchaseOrBooking: "",
+                    purchaseOrBooking: "Purchase",
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
                     mobileNumber: "",
