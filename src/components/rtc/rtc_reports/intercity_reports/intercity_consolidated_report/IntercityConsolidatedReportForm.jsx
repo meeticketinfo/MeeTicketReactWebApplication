@@ -14,7 +14,7 @@ const IntercityConsolidatedReportForm = ({
 }) => {
   const savedFilters = useMemo(() => {
     try {
-      return JSON.parse(localStorage.getItem("intercity-individual-filters"));
+      return JSON.parse(localStorage.getItem("intercity-consolidated-filters"));
     } catch {
       return null;
     }
@@ -289,6 +289,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
 
               <SearchableDropdown
+               key={`arrival-${resetTrigger}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
                 onChange={(value) => setFieldValue("arrivalLocation", value)}
