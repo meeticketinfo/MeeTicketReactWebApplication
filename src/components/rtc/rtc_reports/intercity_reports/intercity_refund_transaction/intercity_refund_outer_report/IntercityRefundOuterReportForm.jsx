@@ -105,8 +105,8 @@ const IntercityRefundOuterReportForm = () => {
     const payload = {
       fromDate: values.fromDate,
       toDate: values.toDate,
-      destinationLocation: values.destinationLocation,
-      arrivalLocation: values.arrivalLocation,
+      destinationLocation: values.destinationLocation?values.destinationLocation:"",
+      arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
       mobileNumber: values.mobileNumber,
     };
 

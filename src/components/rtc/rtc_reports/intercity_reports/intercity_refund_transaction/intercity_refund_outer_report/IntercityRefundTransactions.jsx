@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { superballs } from "ldrs";
 import { useSearchParams } from "react-router-dom";
 import IntercityRefundTransactionsChart from "../../../bus_pass_reports/buspass_refund/charts/IntercityRefundTransactionsChart.jsx";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../../utils/Helper";
 import IntercityRefundOuterReportForm from "./IntercityRefundOuterReportForm.jsx";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore.jsx";
 
@@ -10,19 +14,22 @@ function IntercityRefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
   const {
-  isFetchIntercityRefundTransactionsReport,
-  refundIntercityTransactionsReport,
-  fetchIntercityRefundTransactionsReport
+    isFetchIntercityRefundTransactionsReport,
+    refundIntercityTransactionsReport,
+    fetchIntercityRefundTransactionsReport,
   } = useIntercityRefundReportStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  
+
   useEffect(() => {
-    const preservedParams = localStorage.getItem("intercityRefundInnerTransactionSearchParams");
+    const preservedParams = localStorage.getItem(
+      "intercityRefundInnerTransactionSearchParams"
+    );
     if (preservedParams && !searchParams.toString()) {
       const urlParams = new URLSearchParams(preservedParams);
       const payload = {
-        fromDate: cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
+        fromDate:
+          cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(urlParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: urlParams.get("mobileNumber") || "",
         destinationLocation: urlParams.get("destinationLocation") || "",
@@ -31,7 +38,8 @@ function IntercityRefundTransactions() {
       fetchIntercityRefundTransactionsReport(payload);
     } else {
       const payload = {
-        fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
+        fromDate:
+          cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: searchParams.get("mobileNumber") || "",
         destinationLocation: searchParams.get("destinationLocation") || "",
@@ -47,13 +55,11 @@ function IntercityRefundTransactions() {
       0
     ) || 0;
 
-    
-
   return (
     <>
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-full ">
-          <IntercityRefundOuterReportForm/>
+          <IntercityRefundOuterReportForm />
         </div>
 
         {/* Transactions by reason chart */}
