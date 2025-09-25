@@ -344,6 +344,7 @@ const IntercityConsolidatedReportForm = ({
                     pageNumber: pageNumber,
                     PageSize: pageSize,
                   });
+                  SetcurrentPage(0);
                   setDepartureCities([]);
                   setArrivalCities([]);
                   setResetTrigger((prev) => prev + 1);
