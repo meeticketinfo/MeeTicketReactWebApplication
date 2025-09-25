@@ -178,7 +178,7 @@ const IntercityRefundTransactionsReport = () => {
           cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
         mobileNumber: searchParams.get("mobileNumber") || "",
-        destinationLocation: searchParams.get("destinationLocation") || "",
+        departureLocation: searchParams.get("departureLocation") || "",
         arrivalLocation: searchParams.get("arrivalLocation") || "",
         refundStatus:
           searchParams.get("RefundStatus") === "null"

@@ -28,10 +28,13 @@ const IntercityRefundTransactionsReportForm = ({
   const {fetchCitiesData, loadingCities}=useIntercityMastersStore();
 
 // Separate state for each dropdown to prevent interference
+ const [resetTrigger, setResetTrigger] = useState(0);
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
-
+  const [DepartureLoading, setDepartureLoading] = useState(false);
+  const [ArrivalLoading, setArrivalLoading] = useState(false);
   const fetchDepartureCities = async (q) => {
+    setDepartureLoading(true);
     try {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
@@ -41,10 +44,12 @@ const IntercityRefundTransactionsReportForm = ({
       console.error("Error fetching departure cities:", error);
       setDepartureCities([]);
     } finally {
+       setDepartureLoading(false);
     }
   };
 
   const fetchArrivalCities = async (q) => {
+     setArrivalLoading(true);
     try {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
@@ -54,6 +59,7 @@ const IntercityRefundTransactionsReportForm = ({
       console.error("Error fetching arrival cities:", error);
       setArrivalCities([]);
     } finally {
+       setArrivalLoading(false);
     }
   };
 
@@ -61,7 +67,7 @@ const IntercityRefundTransactionsReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNumber: searchParams.get("mobileNumber") || "",
-    destinationLocation: searchParams.get("destinationLocation") || "",
+    departureLocation: searchParams.get("departureLocation") || "",
     arrivalLocation: searchParams.get("arrivalLocation") || "",
     paymentMode:searchParams.get("paymentMode") || "",
     refundStatus:
@@ -78,13 +84,13 @@ const IntercityRefundTransactionsReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-
+    
     // Call the Intercity refund inner report API with proper parameters
     fetchIntercityRefundTransactionsInnerReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
-      destinationLocation: values.destinationLocation?values.destinationLocation:"",
+      departureLocation: values.departureLocation?values.departureLocation:"",
       arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
       paymentMode:values.paymentMode?values.paymentMode:"",
       refundStatus: values.refundStatus,
@@ -174,9 +180,10 @@ const IntercityRefundTransactionsReportForm = ({
                 Departure Location
               </label>
               <SearchableDropdown
-                name="destinationLocation"
-                value={values.destinationLocation}
-                onChange={(value) => setFieldValue("destinationLocation", value)}
+                key={`departure-${resetTrigger}-${values.departureLocation || 'empty'}`}
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(value) => setFieldValue("departureLocation", value)}
                 onSearch={fetchDepartureCities}
                 options={departureCities}
                 displayKey="cityName"
@@ -188,10 +195,10 @@ const IntercityRefundTransactionsReportForm = ({
                 inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                loading={loadingCities}
+                loading={DepartureLoading}
                 noResultsText="No cities found"
                 loadingText="Searching cities..."
-                initialDisplayText={values.destinationLocation}
+                initialDisplayText={values.departureLocation}
               />
             </div>
             {/* arrival location */}
@@ -214,7 +221,7 @@ const IntercityRefundTransactionsReportForm = ({
                 inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                loading={isFetchIntercityRefundTransactionsInnerReport}
+                loading={ArrivalLoading}
                 noResultsText="No cities found"
                 loadingText="Searching cities..."
                 initialDisplayText={values.arrivalLocation}
