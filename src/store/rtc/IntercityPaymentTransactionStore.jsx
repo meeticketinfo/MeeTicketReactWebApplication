@@ -14,7 +14,7 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
     set({ isFetchIntercityPaymentTransactionsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.INTERCITY.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&paymentStatus=${payload.paymentStatus}&phoneNumber=${payload.phoneNumber}&arrivalLocation=${payload.arrivalLocation}&destinationLocation=${payload.destinationLocation}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`
+        `${API_ENDPOINTS.INTERCITY.REPORTS.GET_PAYMENT_TRANSACTION_REPORT}?fromDate=${payload.startDate}&toDate=${payload.endDate}&paymentStatusId=${payload.paymentStatus}&MobileNumber=${payload.phoneNumber}&arrivalLocation=${payload.arrivalLocation}&departureLocation=${payload.destinationLocation}&pageNumber=${payload.PageIndex}&pageSize=${payload.pageSize}`
       );
       set({
         intercityPaymentTransactions: response.data,
@@ -67,9 +67,9 @@ export const useIntercityPaymentTransactionStore = create((set) => ({
       set({ isFetchIntercityRegenerateTicketLoading: false });
       return { response: response };
     } catch (error) {
-      toast.error(error.message);
+      // toast.error(error.response.data.result.message);
       set({ isFetchIntercityRegenerateTicketLoading: false });
-      return { success: false };
+     throw error;
     } finally {
       set({ isFetchIntercityRegenerateTicketLoading: false });
     }

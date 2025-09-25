@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IntercityUserDetailedReportForm from "./IntercityUserDetailedReportForm";
 import AgGridTable from "../../../../tables/AgGridTable";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import {
-  cleanString,
   getEndOfCurrentDay,
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
@@ -12,14 +11,39 @@ import Breadcrumb from "../../../../Breadcrumb";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserDetailedReport = () => {
-  const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
-  const userIntercityReportSearchParams = localStorage.getItem(
-    "userIntercityReportSearchParams"
-  );
+  
+  // Get filters from localStorage
+  const [currentFilters, setCurrentFilters] = useState(() => {
+    const savedFilters = localStorage.getItem("userIntercityDetailedReportSearchParams");
+    if (savedFilters) {
+      try {
+        const parsedFilters = JSON.parse(savedFilters);
+        return {
+          fromDate: parsedFilters.fromDate || fromDate,
+          toDate: parsedFilters.toDate || toDate,
+          MobileNumber: parsedFilters.MobileNumber || "",
+          destinationLocation: parsedFilters.destinationLocation || "",
+          arrivalLocation: parsedFilters.arrivalLocation || "",
+        };
+      } catch (error) {
+        console.error("Error parsing saved detailed report filters:", error);
+      }
+    }
+    
+    // If no saved filters, use default values
+    return {
+      fromDate: fromDate,
+      toDate: toDate,
+      MobileNumber: "",
+      destinationLocation: "",
+      arrivalLocation: "",
+    };
+  });
+  
   const {
     isIntercityUserDetailedReportsLoading,
     allIntercityUserDetailedReports,
@@ -161,12 +185,12 @@ const IntercityUserDetailedReport = () => {
   ];
   const loadUserReport = (page = 0) => {
     fetchIntercityUserDetailedReports({
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      MobileNumber: searchParams.get("MobileNumber") || "",
-      paymentMode: searchParams.get("paymentMode") || "",
-      departureLocation: searchParams.get("destinationLocation") || "",
-      arrivalLocation: searchParams.get("arrivalLocation") || "",
+      fromDate: currentFilters.fromDate,
+      toDate: currentFilters.toDate,
+      MobileNumber: currentFilters.MobileNumber,
+      paymentMode: "",
+      departureLocation: currentFilters.destinationLocation,
+      arrivalLocation: currentFilters.arrivalLocation,
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -183,7 +207,7 @@ const IntercityUserDetailedReport = () => {
   const breadcrumbItems = [
     {
       label: "User Report",
-      path: `/intercity-user-report?${userIntercityReportSearchParams}`,
+      path: "/intercity-user-report",
     },
     {
       label: "User Detailed Report",
@@ -203,7 +227,7 @@ const IntercityUserDetailedReport = () => {
             </div>
             <div className="">
               <Link
-                to={`/intercity-user-report?${userIntercityReportSearchParams}`}
+                to="/intercity-user-report"
                 className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
@@ -215,6 +239,7 @@ const IntercityUserDetailedReport = () => {
               pageNumber={1}
               pageSize={PAGE_LIMIT}
               setcurrentPage={setCurrentPage}
+              updateCurrentFilters={setCurrentFilters}
             />
             <AgGridTable
               ExportName="IntercityUserDetailedReport"

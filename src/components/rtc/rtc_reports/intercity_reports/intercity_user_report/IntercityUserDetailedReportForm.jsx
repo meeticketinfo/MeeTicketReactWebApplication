@@ -1,7 +1,6 @@
 import { Formik, Form, Field } from "formik";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { useState } from "react";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
@@ -10,40 +9,46 @@ const IntercityUserDetailedReportForm = ({
   pageNumber,
   pageSize,
   setcurrentPage,
+  updateCurrentFilters,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const {
     isIntercityUserDetailedReportsLoading,
     allIntercityUserDetailedReports,
     fetchIntercityUserDetailedReports,
   } = useIntercityUserStore();
   const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
-  // useEffect(() => {
-  //   if (searchParams.toString()) {
-  //     const newSearchParams = new URLSearchParams();
-
-  //     for (const [key, value] of searchParams.entries()) {
-  //       if (value) {
-  //         newSearchParams.set(key, cleanString(value, ":", "_"));
-  //       }
-  //     }
-  //     localStorage.setItem(
-  //       "userDetailedIntercityReportSearchParams",
-  //       newSearchParams.toString()
-  //     );
-  //   }
-  // }, [searchParams]);
+  
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
-  const initialValues = {
-    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    MobileNumber: searchParams.get("MobileNumber") || "",
-    destinationLocation:searchParams.get("destinationLocation") || "",
-    arrivalLocation:searchParams.get("arrivalLocation")||"",
-  };
+  const initialValues = (() => {
+    // Try to get saved filters from localStorage first
+    const savedFilters = localStorage.getItem("userIntercityDetailedReportSearchParams");
+    if (savedFilters) {
+      try {
+        const parsedFilters = JSON.parse(savedFilters);
+        return {
+          fromDate: parsedFilters.fromDate || startOfDay,
+          toDate: parsedFilters.toDate || endOfDay,
+          MobileNumber: parsedFilters.MobileNumber || "",
+          destinationLocation: parsedFilters.destinationLocation || "",
+          arrivalLocation: parsedFilters.arrivalLocation || "",
+        };
+      } catch (error) {
+        console.error("Error parsing saved detailed report filters:", error);
+      }
+    }
+    
+    // If no saved filters, use default values
+    return {
+      fromDate: startOfDay,
+      toDate: endOfDay,
+      MobileNumber: "",
+      destinationLocation: "",
+      arrivalLocation: "",
+    };
+  })();
   const [departureCities, setDepartureCities] = useState([]);
   const [arrivalCities, setArrivalCities] = useState([]);
   const [DepartureLoading,setDepartureLoading] = useState(false);
@@ -85,21 +90,24 @@ const IntercityUserDetailedReportForm = ({
       return;
     }
 
-    const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach((key) => {
-      if (values[key] && values[key] !== "") {
-        newSearchParams.set(key, cleanString(values[key], ":", "_"));
-      }
+    // Save filters to localStorage
+    localStorage.setItem("userIntercityDetailedReportSearchParams", JSON.stringify(values));
+
+    // Update current filters in parent component
+    updateCurrentFilters({
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      MobileNumber: values.MobileNumber || "",
+      destinationLocation: values.destinationLocation || "",
+      arrivalLocation: values.arrivalLocation || "",
     });
-    setSearchParams(newSearchParams);
-    localStorage.setItem("userDetailedIntercityReportSearchParams", newSearchParams.toString());
 
     fetchIntercityUserDetailedReports({
       fromDate: values.fromDate,
       toDate: values.toDate,
       MobileNumber: values.MobileNumber,
-      departureLocation:values.destinationLocation,
-      arrivalLocation:values.arrivalLocation,
+      departureLocation: values.destinationLocation,
+      arrivalLocation: values.arrivalLocation,
       pageNumber: pageNumber,
       pageSize: pageSize,
     });

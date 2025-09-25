@@ -61,9 +61,9 @@ const IntercityRefundTransactionsReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNumber: searchParams.get("mobileNumber") || "",
-    destinationLocation: searchParams.get("destinationLocation"),
-    arrivalLocation: searchParams.get("arrivalLocation"),
-    paymentMode:searchParams.get("paymentMode"),
+    destinationLocation: searchParams.get("destinationLocation") || "",
+    arrivalLocation: searchParams.get("arrivalLocation") || "",
+    paymentMode:searchParams.get("paymentMode") || "",
     refundStatus:
       (searchParams.get("RefundStatus") !== "null" &&
         searchParams.get("RefundStatus")) ||

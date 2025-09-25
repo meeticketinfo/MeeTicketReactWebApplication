@@ -33,7 +33,6 @@ function IntercityPaymentTransactionsList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
-  
   useEffect(() => {
     fetchIntercityPaymentTransactions({
       startDate: savedFilters?.fromDate ?? startOfDay,
@@ -347,14 +346,20 @@ function IntercityPaymentTransactionsList() {
       // Delay API call to ensure SweetAlert has closed
       setTimeout(() => {
         fetchIntercityPaymentTransactions({
-          startDate: savedFilters?.fromDate ?? startOfDay,
-          endDate: savedFilters?.toDate ?? endOfDay,
+          startDate: savedFilters?.fromDate ?? getCurrentDate(),
+          endDate: savedFilters?.toDate ?? getCurrentDate(),
           paymentStatus: savedFilters?.paymentStatus
             ? savedFilters.paymentStatus
             : "",
-          phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
-          arrivalLocation:savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
-          destinationLocation:savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
+          phoneNumber: savedFilters?.phoneNumber
+            ? savedFilters.phoneNumber
+            : "",
+          arrivalLocation: savedFilters?.arrivalLocation
+            ? savedFilters.arrivalLocation
+            : "",
+          destinationLocation: savedFilters?.destinationLocation
+            ? savedFilters.destinationLocation
+            : "",
           PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
           pageSize: PAGE_LIMIT,
         });
@@ -434,7 +439,6 @@ function IntercityPaymentTransactionsList() {
   };
 
   const handleRegenerateTicket = async () => {
-    console.log("RegenerateTicketData", RegenerateTicketData);
     try {
       const res = await fetchIntercityRegenerateTicket(
         {
@@ -446,6 +450,7 @@ function IntercityPaymentTransactionsList() {
           "tentativeBookingId": RegenerateTicketData.tentativebookingId
         }
       );
+      console.log("Regenerate Ticket Response", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.data?.message;
@@ -487,7 +492,7 @@ function IntercityPaymentTransactionsList() {
       setOpenRegenerateTicketModal(false);
       Swal.fire({
         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-        ${err.response?.data?.message}
+        ${err.response?.data?.result?.message}
       </div>`,
         title: "Failed!",
         text: `Regenerate ticket failed. Please try again.`,

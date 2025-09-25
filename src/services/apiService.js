@@ -66,7 +66,7 @@ const apiService = {
 
   uploadFile: (url, file, additionalData = {}, headers = {}) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("employeePhotoDoc", file);
     Object.keys(additionalData).forEach((key) =>
       formData.append(key, additionalData[key])
     ); 

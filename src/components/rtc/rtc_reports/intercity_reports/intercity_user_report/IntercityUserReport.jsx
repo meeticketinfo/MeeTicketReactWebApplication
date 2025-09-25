@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IntercityUserReportForm from "./IntercityUserReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 import { ToastContainer } from "react-toastify";
 
 const IntercityUserReport = () => {
-  const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const {
@@ -17,8 +16,32 @@ const IntercityUserReport = () => {
     fetchIntercityUserReports,
   } = useIntercityUserStore();
   const [currentPage, setCurrentPage] = useState(0);
-
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  
+  // Store current filter values to use during pagination
+  const [currentFilters, setCurrentFilters] = useState(() => {
+    // Try to get filters from localStorage first
+    const savedFilters = localStorage.getItem("userIntercityReportSearchParams");
+    if (savedFilters) {
+      try {
+        const parsedFilters = JSON.parse(savedFilters);
+        return {
+          fromDate: parsedFilters.fromDate || fromDate,
+          toDate: parsedFilters.toDate || toDate,
+          MobileNumber: parsedFilters.MobileNumber || "",
+        };
+      } catch (error) {
+        console.error("Error parsing saved filters:", error);
+      }
+    }
+    
+    // If no saved filters, use default values
+    return {
+      fromDate: fromDate,
+      toDate: toDate,
+      MobileNumber: "",
+    };
+  });
   const columnDefs = [
     {
       field: "sno",
@@ -72,15 +95,19 @@ const IntercityUserReport = () => {
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
-        console.log("params",params.data.login_MobileNumber),
         <Link
           className="bg-blue-v2 hover:bg-blue-v2-hover text-white px-3 py-2 rounded-md"
-          to={`/intercity-user-detailed-report?MobileNumber=${searchParams.get("MobileNumber") || params.data.login_MobileNumber
-            }&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate
-            }&destinationLocation=${searchParams.get("destinationLocation") || ""}&arrivalLocation=${searchParams.get("arrivalLocation") || ""}`}
+          to="/intercity-user-detailed-report"
           onClick={() => {
-            localStorage.setItem("userIntercityReportSearchParams", `MobileNumber=${searchParams.get("MobileNumber") ? params.data.login_MobileNumber : ""}&fromDate=${searchParams.get("fromDate") || fromDate}&toDate=${searchParams.get("toDate") || toDate}&destinationLocation=${searchParams.get("destinationLocation") || ""}&arrivalLocation=${searchParams.get("arrivalLocation") || ""}`);
-
+            // Store the detailed report parameters in localStorage
+            const detailedReportParams = {
+              MobileNumber: currentFilters.MobileNumber || params.data.login_MobileNumber,
+              fromDate: currentFilters.fromDate,
+              toDate: currentFilters.toDate,
+              destinationLocation: "",
+              arrivalLocation: ""
+            };
+            localStorage.setItem("userIntercityDetailedReportSearchParams", JSON.stringify(detailedReportParams));
           }}
         >
           View Transaction
@@ -92,9 +119,9 @@ const IntercityUserReport = () => {
 
   const loadUserReport = (page = 0) => {
     fetchIntercityUserReports({
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      MobileNumber: searchParams.get("MobileNumber") || "",
+      fromDate: currentFilters.fromDate,
+      toDate: currentFilters.toDate,
+      MobileNumber: currentFilters.MobileNumber,
       pageNumber: page + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
@@ -102,10 +129,15 @@ const IntercityUserReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage, PAGE_LIMIT, searchParams]);
+  }, [currentPage, PAGE_LIMIT]);
 
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
+  };
+
+  // Function to update current filters when form is submitted
+  const updateCurrentFilters = (filters) => {
+    setCurrentFilters(filters);
   };
 
   return (
@@ -118,7 +150,12 @@ const IntercityUserReport = () => {
             </h1>
           </div>
         </div>
-        <IntercityUserReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
+        <IntercityUserReportForm 
+          pageNumber={1} 
+          pageSize={PAGE_LIMIT} 
+          SetcurrentPage={setCurrentPage} 
+          updateCurrentFilters={updateCurrentFilters}
+        />
         <div>
           <ToastContainer/>
           <AgGridTable
