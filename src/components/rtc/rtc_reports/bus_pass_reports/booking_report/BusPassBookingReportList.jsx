@@ -172,19 +172,20 @@ const BusPassBookingReportList = () => {
   const handleInitiateRefund = async () => {
     try {
       const res = await fetchRtcBusPassInitiateData(RefundOrderId);
+      console.log("API Response:", res);
       setInitiatRefundModal(false);
-      if (res.response?.status === 200) {
+      if (res.response) {
         const resultMsg = res.response?.data?.resultMsg;
         const resultStatus = res.response?.data?.resultStatus;
         Swal.fire({
-          title: resultStatus,
+          title: "Success!",
 
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-               ${resultMsg}
-              </div>`,
+    ${res.response}
+  </div>`,
 
           confirmButtonText: "OK",
-          icon: resultStatus === "TXN_SUCCESS" ? "success" : "info",
+          icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
@@ -198,9 +199,9 @@ const BusPassBookingReportList = () => {
         setInitiatRefundModal(false);
         Swal.fire({
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-                ${res.response?.data?.message}
+                ${res.response}
               </div>`,
-          icon: "info",
+          icon: "success",
           width: "360px",
 
           customClass: {
@@ -243,8 +244,6 @@ const BusPassBookingReportList = () => {
       });
     }
   };
-
-  
 
   const handleRegenerateTicket = async () => {
     try {
@@ -535,7 +534,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible !== true;
+          const isDisabled = params.data.isRegenerateEligible !== true && params.data.isRenewal !== 1;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
@@ -569,14 +568,14 @@ const BusPassBookingReportList = () => {
         //   hide: email === "esdadmin@gmail.com",
         cellRenderer: (params) => {
           // console.log("params",params)
-          const isDisabled = params.data.isRefundEligible !== true;  
+          const isDisabled = params.data.isRefundEligible !== true;
 
           // const isDisabled = true;
           return (
             <div className="flex justify-center mt-1">
               <>
                 <button
-                   className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                  className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
                     isDisabled
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                       : "bg-blue-v2 text-white hover:bg-blue-v1"
@@ -586,6 +585,7 @@ const BusPassBookingReportList = () => {
                     setRefundOrderId(params.data.orderId);
                     setInitiatRefundModal(true);
                   }}
+                  disabled={isDisabled}
                 >
                   Initiate
                 </button>
