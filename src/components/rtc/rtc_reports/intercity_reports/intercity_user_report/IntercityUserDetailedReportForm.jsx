@@ -17,6 +17,7 @@ const IntercityUserDetailedReportForm = ({
     fetchIntercityUserDetailedReports,
   } = useIntercityUserStore();
   const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
+  
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();

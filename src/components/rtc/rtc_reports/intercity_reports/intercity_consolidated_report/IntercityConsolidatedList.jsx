@@ -23,38 +23,18 @@ function IntercityConsolidatedList() {
   } = useIntercityConsolidateStore();
   useEffect(() => {
     fetchIntercityConsolidateData({
-      purchaseOrBooking: savedFilters?.purchaseOrBooking
-        ? savedFilters.purchaseOrBooking
-        : "Purchase",
-      fromDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-      mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
-      bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-      PNRNumber: savedFilters?.PNRNumber ? savedFilters.PNRNumber : "",
-      typeOfBooking: savedFilters?.typeOfBooking
-        ? savedFilters.typeOfBooking
-        : "",
-      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
-      orderId: savedFilters?.orderId ? savedFilters.orderId : "",
-      transactionId: savedFilters?.transactionId
-        ? savedFilters.transactionId
-        : "",
-
-      typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
-      seatLayoutType: savedFilters?.seatLayoutType
-        ? savedFilters.seatLayoutType
-        : "",
-      bookingStatus: savedFilters?.bookingStatus
-        ? savedFilters.bookingStatus
-        : "",
-      departureLocation: savedFilters?.departureLocation
-        ? savedFilters.departureLocation
-        : "",
-      arrivalLocation: savedFilters?.arrivalLocation
-        ? savedFilters.arrivalLocation
-        : "",
+      purchaseOrBooking:savedFilters?.purchaseOrBooking ?? "Purchase",
+      fromDate: savedFilters?.fromDate ?? getCurrentDate(),
+      toDate: savedFilters?.toDate ?? getCurrentDate(),
+      mobileNumber: savedFilters?.mobileNumber ?? "",
+      bookingDate: savedFilters?.bookingDate ?? "",
+      PNRNumber: savedFilters?.PNRNumber ?? "",
+      paymentMode: savedFilters?.paymentMode ?? "",
+      orderId: savedFilters?.orderId ?? "",
+      transactionId: savedFilters?.transactionId ?? "",
+      typeOfBus: savedFilters?.typeOfBus ?? "",
+      departureLocation: savedFilters?.departureLocation ?? "",
+      arrivalLocation: savedFilters?.arrivalLocation ?? "",
       pageNumber: currentPage + 1,
       PageSize: PAGE_LIMIT,
     });
@@ -162,7 +142,6 @@ function IntercityConsolidatedList() {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
-        
         });
       },
     },
@@ -178,7 +157,6 @@ function IntercityConsolidatedList() {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
-        
         });
       },
     },
@@ -213,7 +191,7 @@ function IntercityConsolidatedList() {
       // flex: 1,
       maxWidth: 100,
       headerClass: "text-blue-v2",
-    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "totalLeviesFee",
@@ -221,7 +199,7 @@ function IntercityConsolidatedList() {
       // flex: 1,
       maxWidth: 150,
       headerClass: "text-blue-v2",
-    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "serviceTaxGST",
@@ -229,7 +207,7 @@ function IntercityConsolidatedList() {
       // flex: 1,
       maxWidth: 150,
       headerClass: "text-blue-v2",
-    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "flexiFare",
@@ -237,16 +215,16 @@ function IntercityConsolidatedList() {
       // flex: 1,
       maxWidth: 100,
       headerClass: "text-blue-v2",
-    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
-   
+
     {
       field: "totalAmount",
       headerName: "Total Amount",
       // flex: 1,
       maxWidth: 150,
       headerClass: "text-blue-v2",
-    valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`
+      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "paymentTransactionId",
@@ -341,7 +319,6 @@ function IntercityConsolidatedList() {
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      
     },
     {
       field: "paytmSettledUTR",

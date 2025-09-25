@@ -34,7 +34,7 @@ export const useIntercityUserStore = create((set) => ({
   fetchIntercityUserDetailedReports: async (payload) => {
     set({ isIntercityUserDetailedReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&MobileNumber=${payload.MobileNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&MobileNumber=${payload.MobileNumber}&departureLocation=${payload.departureLocation?payload.departureLocation:""}&arrivalLocation=${payload.arrivalLocation?payload.arrivalLocation:""}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({

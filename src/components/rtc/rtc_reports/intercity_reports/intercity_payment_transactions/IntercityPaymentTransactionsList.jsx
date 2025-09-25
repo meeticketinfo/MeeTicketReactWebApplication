@@ -238,7 +238,7 @@ function IntercityPaymentTransactionsList() {
       cellRenderer: (params) => {
         return (
           <div className="flex justify-center mt-1">
-            {(params?.data?.pnrNumber && params?.data?.tentativebookingId && params?.data?.amount > 0) ? (
+            {(params?.data?.pnrNumber && params?.data?.tentativebookingId && !params?.data?.generateTicket && params?.data?.amount > 0) ? (
               <NavLink
                 end
                 to={`/intercity-ticket-view-details/${params?.data?.pnrNumber}`}
@@ -264,7 +264,7 @@ function IntercityPaymentTransactionsList() {
       cellRenderer: (params) => {
         return (
           <div className="flex justify-center mt-1">
-            {params?.data?.returnPNRNumber && params?.data?.tentativebookingId && params?.data?.amount > 0 ? (
+            {params?.data?.returnPNRNumber && params?.data?.tentativebookingId && !params?.data?.generateTicket && params?.data?.amount > 0 ? (
               <NavLink
                 end
                 to={`/intercity-ticket-view-details/${params?.data?.returnPNRNumber}`}
@@ -373,17 +373,29 @@ function IntercityPaymentTransactionsList() {
       console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
-
+        const resultMsg = res.response?.data?.refundStatus;
+        console.log(resultMsg, "resultMsg");
         Swal.fire({
-          title: "Success!",
+          title: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "Success!"
+              : resultMsg === "TXN_FAILURE"
+              ? "Failed!"
+              : "Info!"
+          }`,
 
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
               ${resultMsg}
             </div>`,
 
           confirmButtonText: "OK",
-          icon: "success",
+          icon: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "success"
+              : resultMsg === "TXN_FAILURE"
+              ? "error"
+              : "info"
+          }`,
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
@@ -394,7 +406,7 @@ function IntercityPaymentTransactionsList() {
           showConfirmButton: false,
         });
       } else {
-        setInitiatRefundModal(false);
+        setOpenVerifyModal(false);
         Swal.fire({
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
               ${res.response?.data?.message}
@@ -453,7 +465,7 @@ function IntercityPaymentTransactionsList() {
       console.log("Regenerate Ticket Response", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
+        const resultMsg = res.response?.data?.result?.message;
         Swal.fire({
           title: "Success!",
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">

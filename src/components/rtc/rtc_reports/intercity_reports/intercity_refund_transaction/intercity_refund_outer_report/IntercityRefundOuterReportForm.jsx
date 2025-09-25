@@ -82,7 +82,7 @@ const IntercityRefundOuterReportForm = () => {
       fromDate: cleanString(paramsToUse.get("fromDate"), "_", ":") || startOfDay,
       toDate: cleanString(paramsToUse.get("toDate"), "_", ":") || endOfDay,
       mobileNumber: paramsToUse.get("mobileNumber") || "",
-      destinationLocation: paramsToUse.get("destinationLocation") || "",
+      departureLocation: paramsToUse.get("departureLocation") || "",
       arrivalLocation: paramsToUse.get("arrivalLocation") || "",
     };
   };
@@ -105,8 +105,8 @@ const IntercityRefundOuterReportForm = () => {
     const payload = {
       fromDate: values.fromDate,
       toDate: values.toDate,
-      destinationLocation: values.destinationLocation,
-      arrivalLocation: values.arrivalLocation,
+      departureLocation: values.departureLocation?values.departureLocation:"",
+      arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
       mobileNumber: values.mobileNumber,
     };
 
@@ -117,7 +117,7 @@ const IntercityRefundOuterReportForm = () => {
     const payload = {
       fromDate: startOfDay,
       toDate: endOfDay,
-      destinationLocation: "",
+      departureLocation: "",
       arrivalLocation: "",
       mobileNumber: "",
     };
@@ -214,10 +214,10 @@ const IntercityRefundOuterReportForm = () => {
                   Departure Location
                 </label>
                 <SearchableDropdown
-                  key={`departure-${resetTrigger}-${values.destinationLocation || 'empty'}`}
-                  name="destinationLocation"
-                  value={values.destinationLocation}
-                  onChange={(value) => setFieldValue("destinationLocation", value)}
+                  key={`departure-${resetTrigger}-${values.departureLocation || 'empty'}`}
+                  name="departureLocation"
+                  value={values.departureLocation}
+                  onChange={(value) => setFieldValue("departureLocation", value)}
                   onSearch={fetchDepartureCities}
                   options={departureCities}
                   displayKey="cityName"
@@ -232,7 +232,7 @@ const IntercityRefundOuterReportForm = () => {
                   loading={DepartureLoading}
                   noResultsText="No cities found"
                   loadingText="Searching cities..."
-                  initialDisplayText={values.destinationLocation}
+                  initialDisplayText={values.departureLocation}
                 />
               </div>
               {/* arrival location */}

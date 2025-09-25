@@ -12,13 +12,7 @@ const IntercityConsolidatedReportForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
-  const savedFilters = useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem("intercity-individual-filters"));
-    } catch {
-      return null;
-    }
-  }, []);
+ 
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const { fetchIntercityConsolidateData } = useIntercityConsolidateStore();
@@ -66,27 +60,18 @@ const IntercityConsolidatedReportForm = ({
   };
 
   const initialValues = {
-    purchaseOrBooking: savedFilters?.purchaseOrBooking
-      ? savedFilters.purchaseOrBooking
-      : "Purchase",
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
-    bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-    PNRNumber: savedFilters?.PNRNumber ? savedFilters.PNRNumber : "",
-    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
-    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
-    transactionId: savedFilters?.transactionId
-      ? savedFilters.transactionId
-      : "",
-    typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
-
-    departureLocation: savedFilters?.departureLocation
-      ? savedFilters.departureLocation
-      : "",
-    arrivalLocation: savedFilters?.arrivalLocation
-      ? savedFilters.arrivalLocation
-      : "",
+    purchaseOrBooking: "Purchase",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    mobileNumber: "",
+    bookingDate: "",
+    PNRNumber: "",
+    paymentMode: "",
+    orderId: "",
+    transactionId: "",
+    typeOfBus: "",
+    departureLocation: "",
+    arrivalLocation: "",
   };
 
   const onSubmit = (values) => {
@@ -100,6 +85,7 @@ const IntercityConsolidatedReportForm = ({
       "intercity-consolidated-filters",
       JSON.stringify(values)
     );
+    SetcurrentPage(0);
   };
 
   return (
@@ -289,6 +275,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
 
               <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
                 onChange={(value) => setFieldValue("arrivalLocation", value)}
@@ -357,9 +344,11 @@ const IntercityConsolidatedReportForm = ({
                     pageNumber: pageNumber,
                     PageSize: pageSize,
                   });
+                  SetcurrentPage(0);
                   setDepartureCities([]);
                   setArrivalCities([]);
                   setResetTrigger((prev) => prev + 1);
+                  
                 }}
               >
                 Reset
