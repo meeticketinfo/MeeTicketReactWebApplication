@@ -83,7 +83,9 @@ const IntercityPaymentTransactionsForm = ({
       destinationLocation:values.destinationLocation || "",
       PageIndex,
       pageSize,
+      
     });
+    SetcurrentPage(0);
   };
 
   return (
