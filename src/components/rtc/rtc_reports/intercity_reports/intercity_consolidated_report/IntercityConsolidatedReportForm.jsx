@@ -81,6 +81,10 @@ const IntercityConsolidatedReportForm = ({
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
+    localStorage.setItem(
+      "intercity-consolidated-filters",
+      JSON.stringify(values)
+    );
     SetcurrentPage(0);
   };
 
@@ -343,6 +347,7 @@ const IntercityConsolidatedReportForm = ({
                   setDepartureCities([]);
                   setArrivalCities([]);
                   setResetTrigger((prev) => prev + 1);
+                  
                 }}
               >
                 Reset
