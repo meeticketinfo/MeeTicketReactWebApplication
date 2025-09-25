@@ -192,6 +192,9 @@ import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_r
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
 import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/AmrabadPosReport";
+import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
+import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
+import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 
 export const routes = [
   {
@@ -635,6 +638,22 @@ export const routes = [
     element: <ProtectedRoute element={<UserStatusTransactionReport />} />,
   },
   //amarabad-user
+  {
+    path: "/amrabad-resort/terms-conditions",
+    element: <AmrabadTermsConditions />,
+  },
+  {
+    path: "/amrabad-resort/privacy-policy",
+    element: <AmrabadPrivacyPolicy />,
+  },
+  {
+    path: "/amrabad-resort/help-faqs",
+    element: <HelpFaqs />,
+  },
+  {
+    path: "/amrabad-resort/login",
+    element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
+  },
   {
     path: "/amrabad-resort/login",
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
