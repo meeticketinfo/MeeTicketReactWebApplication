@@ -81,7 +81,7 @@ const IntercityConsolidatedReportForm = ({
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
-   
+    SetcurrentPage(0);
   };
 
   return (

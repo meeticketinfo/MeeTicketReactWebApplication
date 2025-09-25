@@ -1,7 +1,6 @@
 import { Formik, Form, Field } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
-import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useIntercityIndividualStore } from "./InterCityIndividualStore";
 import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
@@ -106,6 +105,7 @@ const IntercityIndividualReportForm = ({
       "intercity-individual-filters",
       JSON.stringify(values)
     );
+    SetcurrentPage(0);
   };
 
   return (
