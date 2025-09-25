@@ -252,40 +252,93 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         console.error("Invalid JSON string:", payloadString);
       }
 
-      // Step 1.1: Get isRenewal flag from RtcBusPassBookingRecordsData only
+      // Step 1.1: Determine endpoint based on RtcBusPassBookingRecordsData conditions
       let isRenewal = false; // Default to false
-      
-      // Get bpOrderId and isRenewal from RtcBusPassBookingRecordsData
+      let isNewPass = false; // Default to false
+
+      // Get bpOrderId and determine endpoint from RtcBusPassBookingRecordsData
       if (!parsedPayload.bpOrderId || parsedPayload.bpOrderId === "") {
         const currentState = useBusPassTotalTransactionStore.getState();
-        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+        if (
+          currentState.RtcBusPassBookingRecordsData &&
+          currentState.RtcBusPassBookingRecordsData.length > 0
+        ) {
           // Get the first record's orderId, or you can modify this logic based on your requirements
           const firstRecord = currentState.RtcBusPassBookingRecordsData[0];
           if (firstRecord && firstRecord.orderId) {
             parsedPayload.bpOrderId = firstRecord.orderId;
-            // Get isRenewal from the record
-            isRenewal = firstRecord.isRenewal === 1 || firstRecord.isRenewal === "1" || firstRecord.isRenewal === true;
+            
+            // Check conditions for endpoint selection
+            const isRegenerateEligible = firstRecord.isRegenerateEligible === true;
+            const isGeneral = firstRecord.isGeneral === 1 || firstRecord.isGeneral === "1";
+            const isRenewalFlag = firstRecord.isRenewal === 1 || firstRecord.isRenewal === "1" || firstRecord.isRenewal === true;
+            
+            // New Pass: isRegenerateEligible === true AND isGeneral === 1
+            isNewPass = isRegenerateEligible && isGeneral;
+            
+            // Renewal: isRegenerateEligible === true AND isRenewal === 1
+            isRenewal = isRegenerateEligible && isRenewalFlag;
+            
+            console.log("firstRecord conditions:", {
+              isRegenerateEligible,
+              isGeneral,
+              isRenewal: isRenewalFlag,
+              isNewPass,
+              isRenewal
+            });
           }
         }
       } else {
-        // If bpOrderId is provided, find the matching record to get isRenewal
+        // If bpOrderId is provided, find the matching record to get conditions
         const currentState = useBusPassTotalTransactionStore.getState();
-        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+        if (
+          currentState.RtcBusPassBookingRecordsData &&
+          currentState.RtcBusPassBookingRecordsData.length > 0
+        ) {
           const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
-            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+            (record) =>
+              record.orderId === parsedPayload.bpOrderId ||
+              record.orderId === parsedPayload.orderId
           );
           if (matchingRecord) {
-            isRenewal = matchingRecord.isRenewal === 1 || matchingRecord.isRenewal === "1" || matchingRecord.isRenewal === true;
+            // Check conditions for endpoint selection
+            const isRegenerateEligible = matchingRecord.isRegenerateEligible === true;
+            const isGeneral = matchingRecord.isGeneral === 1 || matchingRecord.isGeneral === "1";
+            const isRenewalFlag = matchingRecord.isRenewal === 1 || matchingRecord.isRenewal === "1" || matchingRecord.isRenewal === true;
+            
+            // New Pass: isRegenerateEligible === true AND isGeneral === 1
+            isNewPass = isRegenerateEligible && isGeneral;
+            
+            // Renewal: isRegenerateEligible === true AND isRenewal === 1
+            isRenewal = isRegenerateEligible && isRenewalFlag;
+            
+            console.log("matchingRecord conditions:", {
+              isRegenerateEligible,
+              isGeneral,
+              isRenewal: isRenewalFlag,
+              isNewPass,
+              isRenewal
+            });
           }
         }
       }
-      
 
-      const endpoint = isRenewal
-        ? API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
-            .GET_BUS_PASS_GENERATE_TICKET_RENEWAL
-        : API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
-            .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
+      // Determine endpoint based on conditions
+      let endpoint;
+      if (isRenewal) {
+        endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+          .GET_BUS_PASS_GENERATE_TICKET_RENEWAL;
+      } else if (isNewPass) {
+        endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+          .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
+      }
+      //  else {
+      //   // Default to new pass if no conditions are met
+      //   endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+      //     .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
+      // }
+      
+      console.log("Selected endpoint:", endpoint);
 
       // Step 1.6: Set routeId to null if not provided
       if (!parsedPayload.routeId || parsedPayload.routeId === "") {
@@ -296,13 +349,11 @@ export const useBusPassTotalTransactionStore = create((set) => ({
       const additionalData = {};
       Object.entries(parsedPayload).forEach(([key, value]) => {
         if (key === "profileImgUrl") {
-
           // Skip if it's an empty object or null/undefined
           if (
             !value ||
             (typeof value === "object" && Object.keys(value).length === 0)
           ) {
-          
             return; // Skip this field
           }
 
@@ -325,9 +376,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
               }
               const blob = new Blob([bytes], { type: "image/jpeg" }); // Adjust type as needed
               fileToUpload = blob; // Set as the file to upload
-       
             } catch (base64Error) {
-             
               // If conversion fails, add as regular data
               additionalData[key] = value;
             }
@@ -350,8 +399,8 @@ export const useBusPassTotalTransactionStore = create((set) => ({
               // Parse the date string and convert to MM/DD/YYYY format
               const date = new Date(value);
               if (!isNaN(date.getTime())) {
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
                 const year = date.getFullYear();
                 const formattedDate = `${month}/${day}/${year}`;
                 additionalData[key] = formattedDate;
@@ -364,9 +413,9 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             }
           } else {
             // If employeeDob is blank, provide a default date to avoid validation error
-            const defaultDate = new Date('1990-01-01');
-            const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
-            const day = String(defaultDate.getDate()).padStart(2, '0');
+            const defaultDate = new Date("1990-01-01");
+            const month = String(defaultDate.getMonth() + 1).padStart(2, "0");
+            const day = String(defaultDate.getDate()).padStart(2, "0");
             const year = defaultDate.getFullYear();
             const formattedDefaultDate = `${month}/${day}/${year}`;
             additionalData[key] = formattedDefaultDate;
@@ -398,47 +447,201 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
       // Step 3: Send request based on renewal status
       let response;
-      
+
       if (isRenewal) {
         // For renewal: get renewalRequestJson from matching record
         const currentState = useBusPassTotalTransactionStore.getState();
         let renewalRequestJson = null;
-        
-        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+
+        if (
+          currentState.RtcBusPassBookingRecordsData &&
+          currentState.RtcBusPassBookingRecordsData.length > 0
+        ) {
           // Find the record that matches the current orderId
           const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
-            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+            (record) =>
+              record.orderId === parsedPayload.bpOrderId ||
+              record.orderId === parsedPayload.orderId
           );
           if (matchingRecord && matchingRecord.renewalRequestJson) {
             renewalRequestJson = matchingRecord.renewalRequestJson;
           }
         }
-        
+
         // Fallback to creating from additionalData if not found in booking records
         if (!renewalRequestJson) {
           renewalRequestJson = JSON.stringify(additionalData);
         }
-        
+
         // Parse renewalRequestJson if it's a string, otherwise use as is
         let renewalRequestData;
         try {
-          renewalRequestData = typeof renewalRequestJson === 'string' 
-            ? JSON.parse(renewalRequestJson) 
-            : renewalRequestJson;
+          renewalRequestData =
+            typeof renewalRequestJson === "string"
+              ? JSON.parse(renewalRequestJson)
+              : renewalRequestJson;
         } catch (error) {
           renewalRequestData = additionalData; // Fallback to additionalData
         }
-        
+
         response = await apiService.post(endpoint, renewalRequestData, {
           "Content-Type": "application/json",
         });
+
+        // Step 3.1: If renewal initiate is successful, call renewal payment response API
+        if (response && response.data && response.data.status === 200) {
+          try {
+            // Prepare renewal payment response payload using same logic as regular payment response
+            const currentState = useBusPassTotalTransactionStore.getState();
+            let renewalPaymentRequestJson = null;
+
+            if (
+              currentState.RtcBusPassBookingRecordsData &&
+              currentState.RtcBusPassBookingRecordsData.length > 0
+            ) {
+              // Find the record that matches the current orderId
+              const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+                (record) =>
+                  record.orderId === parsedPayload.bpOrderId ||
+                  record.orderId === parsedPayload.orderId
+              );
+              if (matchingRecord && matchingRecord.paymentRequestJson) {
+                renewalPaymentRequestJson = matchingRecord.paymentRequestJson;
+              }
+            }
+
+            // Fallback to creating from parsed payload if not found in booking records
+            if (!renewalPaymentRequestJson) {
+              renewalPaymentRequestJson = JSON.stringify(parsedPayload);
+            }
+
+            // Convert renewalPaymentRequestJson to JSON format if it's a string
+            let jsonRenewalPaymentRequest = renewalPaymentRequestJson;
+            if (typeof renewalPaymentRequestJson === "string") {
+              try {
+                jsonRenewalPaymentRequest = JSON.parse(renewalPaymentRequestJson);
+              } catch (err) {
+                jsonRenewalPaymentRequest = renewalPaymentRequestJson; // Use as string if parsing fails
+              }
+            }
+
+            // Also add ReferenceNo from response.data if available
+            if (response && response.data && response.data.referenceNo) {
+              jsonRenewalPaymentRequest.ReferenceNo = response.data.referenceNo;
+            }
+
+            if (
+              jsonRenewalPaymentRequest &&
+              jsonRenewalPaymentRequest.ReferenceNo &&
+              jsonRenewalPaymentRequest.ReferenceNo !== ""
+            ) {
+              if (jsonRenewalPaymentRequest.Data) {
+                jsonRenewalPaymentRequest.Data.ReferenceNo =
+                  jsonRenewalPaymentRequest.ReferenceNo;
+              }
+            }
+
+            // Also set OrderId in Data object if it exists
+            if (
+              jsonRenewalPaymentRequest &&
+              jsonRenewalPaymentRequest.Data &&
+              response &&
+              response.data &&
+              response.data.applicationNo
+            ) {
+              jsonRenewalPaymentRequest.Data.OrderId = response.data.applicationNo;
+            }
+
+            // Set txnAmount based on passTypeId from parsedPayload
+            const passTypeId = parsedPayload.passtypeId;
+            let amount = 5310; // default amount
+
+            if (passTypeId === "179-52") {
+              amount = 1200;
+            } else if (passTypeId === "179-18") {
+              amount = 1500;
+            } else if (passTypeId === "179-15") {
+              amount = 1650;
+            } else if (passTypeId === "179-91") {
+              amount = 1950;
+            }
+
+            jsonRenewalPaymentRequest.Data.TxnAmount = amount;
+
+            // Delete referenceNo and txnAmount outside of Data object
+            if (jsonRenewalPaymentRequest) {
+              if (jsonRenewalPaymentRequest.referenceNo) {
+                delete jsonRenewalPaymentRequest.referenceNo;
+              }
+              if (jsonRenewalPaymentRequest.txnAmount) {
+                delete jsonRenewalPaymentRequest.txnAmount;
+              }
+              if (jsonRenewalPaymentRequest.ReferenceNo) {
+                delete jsonRenewalPaymentRequest.ReferenceNo;
+              }
+              if (jsonRenewalPaymentRequest.TxnAmount) {
+                delete jsonRenewalPaymentRequest.TxnAmount;
+              }
+            }
+
+            // Convert all keys to lowercase and send only one structure
+            if (jsonRenewalPaymentRequest) {
+              const convertedRequest = {};
+              Object.keys(jsonRenewalPaymentRequest).forEach((key) => {
+                const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+                convertedRequest[lowerKey] = jsonRenewalPaymentRequest[key];
+              });
+
+              // Handle nested Data object
+              if (
+                convertedRequest.data &&
+                typeof convertedRequest.data === "object"
+              ) {
+                const convertedData = {};
+                Object.keys(convertedRequest.data).forEach((key) => {
+                  const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+                  convertedData[lowerKey] = convertedRequest.data[key];
+                });
+                convertedRequest.data = convertedData;
+              }
+
+              // Replace the original request with converted one (send only lowercase structure)
+              Object.keys(jsonRenewalPaymentRequest).forEach(
+                (key) => delete jsonRenewalPaymentRequest[key]
+              );
+              Object.assign(jsonRenewalPaymentRequest, convertedRequest);
+            }
+
+            const renewalPaymentResponse = await apiService.post(
+              API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+                .GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE,
+              jsonRenewalPaymentRequest
+            );
+            
+            // Merge the renewal payment response with the original response
+            response = {
+              ...response,
+              data: {
+                ...response.data,
+                renewalPaymentResponse: renewalPaymentResponse.data
+              }
+            };
+          } catch (renewalPaymentError) {
+            console.error("Renewal payment response error:", renewalPaymentError);
+            // Continue with original response even if renewal payment fails
+          }
+        }
       } else {
         // For new pass: send using FormData with file upload
         const formData = new FormData();
         if (fileToUpload) {
-          formData.append("employeePhotoDoc", fileToUpload, "employeePhotoDoc.jpg");
+          formData.append(
+            "employeePhotoDoc",
+            fileToUpload,
+            "employeePhotoDoc.jpg"
+          );
         }
-        
+
         Object.keys(additionalData).forEach((key) =>
           formData.append(key, additionalData[key])
         );
@@ -457,71 +660,82 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         // Get paymentRequestJson from RtcBusPassBookingRecordsData
         const currentState = useBusPassTotalTransactionStore.getState();
         let paymentRequestJson = null;
-        
-        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+
+        if (
+          currentState.RtcBusPassBookingRecordsData &&
+          currentState.RtcBusPassBookingRecordsData.length > 0
+        ) {
           // Find the record that matches the current orderId
           const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
-            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+            (record) =>
+              record.orderId === parsedPayload.bpOrderId ||
+              record.orderId === parsedPayload.orderId
           );
           if (matchingRecord && matchingRecord.paymentRequestJson) {
             paymentRequestJson = matchingRecord.paymentRequestJson;
-            
           }
         }
-        
+
         // Fallback to creating from parsed payload if not found in booking records
         if (!paymentRequestJson) {
           paymentRequestJson = JSON.stringify(parsedPayload);
         }
 
-        
         // Convert paymentRequestJson to JSON format if it's a string
         let jsonPaymentRequest = paymentRequestJson;
-        if (typeof paymentRequestJson === 'string') {
+        if (typeof paymentRequestJson === "string") {
           try {
             jsonPaymentRequest = JSON.parse(paymentRequestJson);
           } catch (err) {
             jsonPaymentRequest = paymentRequestJson; // Use as string if parsing fails
           }
         }
-        
- 
-        
+
         // Also add ReferenceNo from response.data if available
         if (response && response.data && response.data.referenceNo) {
           jsonPaymentRequest.ReferenceNo = response.data.referenceNo;
         }
-        
-        if (jsonPaymentRequest && jsonPaymentRequest.ReferenceNo && jsonPaymentRequest.ReferenceNo !== "") {
+
+        if (
+          jsonPaymentRequest &&
+          jsonPaymentRequest.ReferenceNo &&
+          jsonPaymentRequest.ReferenceNo !== ""
+        ) {
           if (jsonPaymentRequest.Data) {
-            jsonPaymentRequest.Data.ReferenceNo = jsonPaymentRequest.ReferenceNo;
+            jsonPaymentRequest.Data.ReferenceNo =
+              jsonPaymentRequest.ReferenceNo;
           }
         }
-        
+
         // Also set OrderId in Data object if it exists
-        if (jsonPaymentRequest && jsonPaymentRequest.Data && response && response.data && response.data.applicationNo) {
+        if (
+          jsonPaymentRequest &&
+          jsonPaymentRequest.Data &&
+          response &&
+          response.data &&
+          response.data.applicationNo
+        ) {
           jsonPaymentRequest.Data.OrderId = response.data.applicationNo;
         }
-        
+
         // Set txnAmount based on passTypeId from parsedPayload
         // if (jsonPaymentRequest && jsonPaymentRequest.Data) {
-          const passTypeId = parsedPayload.passtypeId;
-          let amount = 5310; // default amount
-          
-          if (passTypeId ===  
-            "179-52") {
-            amount = 1200;
-          } else if (passTypeId === "179-18") {
-            amount = 1500;
-          } else if (passTypeId === "179-15") {
-            amount = 1650;
-          } else if (passTypeId === "179-91") {
-            amount = 1950;
-          }
-          
-          jsonPaymentRequest.Data.TxnAmount = amount;
+        const passTypeId = parsedPayload.passtypeId;
+        let amount = 5310; // default amount
+
+        if (passTypeId === "179-52") {
+          amount = 1200;
+        } else if (passTypeId === "179-18") {
+          amount = 1500;
+        } else if (passTypeId === "179-15") {
+          amount = 1650;
+        } else if (passTypeId === "179-91") {
+          amount = 1950;
+        }
+
+        jsonPaymentRequest.Data.TxnAmount = amount;
         // }
-        
+
         // Delete referenceNo and txnAmount outside of Data object
         if (jsonPaymentRequest) {
           // Delete referenceNo and txnAmount from top level
@@ -538,27 +752,32 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             delete jsonPaymentRequest.TxnAmount;
           }
         }
-        
+
         // Convert all keys to lowercase and send only one structure
         if (jsonPaymentRequest) {
           const convertedRequest = {};
-          Object.keys(jsonPaymentRequest).forEach(key => {
+          Object.keys(jsonPaymentRequest).forEach((key) => {
             const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
             convertedRequest[lowerKey] = jsonPaymentRequest[key];
           });
-          
+
           // Handle nested Data object
-          if (convertedRequest.data && typeof convertedRequest.data === 'object') {
+          if (
+            convertedRequest.data &&
+            typeof convertedRequest.data === "object"
+          ) {
             const convertedData = {};
-            Object.keys(convertedRequest.data).forEach(key => {
+            Object.keys(convertedRequest.data).forEach((key) => {
               const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
               convertedData[lowerKey] = convertedRequest.data[key];
             });
             convertedRequest.data = convertedData;
           }
-          
+
           // Replace the original request with converted one (send only lowercase structure)
-          Object.keys(jsonPaymentRequest).forEach(key => delete jsonPaymentRequest[key]);
+          Object.keys(jsonPaymentRequest).forEach(
+            (key) => delete jsonPaymentRequest[key]
+          );
           Object.assign(jsonPaymentRequest, convertedRequest);
         }
 
@@ -566,23 +785,26 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}`,
           jsonPaymentRequest
         );
-        
-        
+
         // Get existing RtcGeneratePassData to use for applicationNo and referenceNo
         // const currentState = useBusPassTotalTransactionStore.getState();
         const existingRtcGeneratePassData = response.data;
         // Add applicationNo to the response data using RtcGeneratePassData
         const finalResponse = {
           ...response.data,
-          applicationNo: existingRtcGeneratePassData?.applicationNo || paymentResponse.data.applicationNo,
-          referenceNo: existingRtcGeneratePassData?.referenceNo || paymentResponse.data.referenceNo,
-          paymentResponse: paymentResponse.data
+          applicationNo:
+            existingRtcGeneratePassData?.applicationNo ||
+            paymentResponse.data.applicationNo,
+          referenceNo:
+            existingRtcGeneratePassData?.referenceNo ||
+            paymentResponse.data.referenceNo,
+          paymentResponse: paymentResponse.data,
         };
-        
+
         set({
           RtcGeneratePassData: finalResponse,
         });
-        
+
         return { response: finalResponse };
       } catch (paymentError) {
         // Return original response even if payment response fails

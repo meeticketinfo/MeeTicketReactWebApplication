@@ -270,7 +270,9 @@ export const API_ENDPOINTS = {
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}RTCDashboard/GetBookingDetailsOuterReport`,
         GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
-      },
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalPaymentResponse`,
+      }
+      ,
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}RTCDashboard/PaymentTransactionsReport`,
         GET_INTERCITY_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
