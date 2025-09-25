@@ -13,15 +13,15 @@ const footerLinks = [
   {
     title: 'Support',
     links: [
-      { label: 'Help & FAQs', href: '/amrabad-resort/coming-soon' },
+      { label: 'Help & FAQs', href: '/amrabad-resort/help-faqs' },
       { label: 'Contact Support', href: '/amrabad-resort/coming-soon' },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Privacy Policy', href: '/amrabad-resort/coming-soon' },
-      { label: 'Terms & Conditions', href: '/amrabad-resort/coming-soon' },
+      { label: 'Privacy Policy', href: '/amrabad-resort/privacy-policy' },
+      { label: 'Terms & Conditions', href: '/amrabad-resort/terms-conditions' },
       { label: 'Refund & Cancellation', href: '/amrabad-resort/coming-soon' },
     ],
   },
