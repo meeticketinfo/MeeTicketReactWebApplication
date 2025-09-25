@@ -53,6 +53,7 @@ export default function AdminBookings() {
 
   const columnDefs = useMemo(() => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         // Calculate serial number based on current page and row position
@@ -66,6 +67,12 @@ export default function AdminBookings() {
     {
       field: "transactionID",
       headerName: "Transaction Id",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "bookingStatus",
+      headerName: "Booking Status",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
@@ -163,7 +170,7 @@ export default function AdminBookings() {
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
-      field: "totalAmount",
+      field: "housePaidAmount",
       headerName: "Amount Paid (House Wise)",
       // flex: 1,
       headerClass: "text-blue-v2",

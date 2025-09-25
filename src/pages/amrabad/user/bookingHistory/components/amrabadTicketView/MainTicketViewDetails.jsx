@@ -247,12 +247,20 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">#{GetTicketViewDetails?.bookingItems?.[0]?.bookingId}</span>
                   </div>
+                  <div className="flex flex-col sm:flex-row gap-1">
+                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                      PAYMENT TYPE:
+                    </span>
+                    <span className="font-medium text-black text-sm sm:text-base">
+                      {GetTicketViewDetails?.bookingItems?.[0]?.paymentMode || 'Not Available'}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Package Details */}
-            <div className="py-4 sm:py-6 flex flex-col lg:flex-row justify-between gap-4">
+            {/* <div className="py-4 sm:py-6 flex flex-col lg:flex-row justify-between gap-4">
               <div>
                 <h3 className="font-medium text-gray-500 text-sm mb-1">
                   Package Details:
@@ -273,10 +281,10 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Booking Details Table */}
-            <div className="py-3">
+            <div className="py-3 mt-4">
               <h3 className="font-bold text-base sm:text-lg mb-4 text-blue-v2">
                 Booking Details:
               </h3>
@@ -286,6 +294,9 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     <tr className="bg-[#E1E1E1] text-blue-v1">
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         S.No
+                      </th>
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                        Package Name
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         House Name
@@ -314,6 +325,9 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     {GetTicketViewDetails?.bookingItems?.map((house, index) => (
                       <tr key={index} className="">
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{index + 1}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm font-medium">
+                          {house.packageName ? house.packageName : "N/A"}
+                        </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm font-medium">
                           {house.roomName ? house.roomName : "N/A"}
                         </td>

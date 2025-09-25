@@ -24,6 +24,7 @@ const AmrabadUserReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -61,7 +62,7 @@ const AmrabadUserReport = () => {
       },
     },
     {
-      field: "viewTransaction",
+      field: "actions",
       headerName: "Action",
       flex: 1,
       headerClass: "text-blue-v2",

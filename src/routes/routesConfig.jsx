@@ -2,12 +2,12 @@ import Dashboard from "../pages/Dashboard";
 import AdminUsers from "../pages/admin/users/AdminUsers";
 import AdminParks from "../pages/admin/parks/AdminParks";
 import AdminFacilities from "../pages/admin/facilities/AdminFacilities";
-import AdminUsersTable from "../pages/admin/users/AdminUserTable";
+
 import WorkingDays from "../pages/admin/working_days/WorkingDays";
 import Holidays from "../pages/admin/holidays/Holidays";
 import Login from "../auth/login/Login";
 import ServiceVariant from "../pages/admin/service_varient/serviceVarient";
-import EntryScanUsers from "../pages/admin/entry_Scan_users/EntryScanUsers";
+
 import Payments from "../pages/admin/payments/Payments";
 import Services from "../pages/admin/services/services";
 import AdminBookings from "../pages/admin/bookings/Bookings";
@@ -16,16 +16,16 @@ import BookTickets from "../pages/admin/BookTickets/BookTickets";
 import GateKeepers from "../pages/park_admin/users/GateKeepers";
 import MyProfile from "../pages/MyProfile/MyProfile";
 import BookingDetails from "../pages/admin/BookTickets/BookingDetails";
-import DepartmentList from "../components/department_management/DepartmentList";
+
 import Departments from "../pages/admin/departments/Departments";
-import EntityTypeList from "../components/entity_type_management/EntityTypeList";
+
 import EntityTypes from "../pages/admin/entity_types/EntityTypes";
 import NodalOfficer from "../pages/admin/nodal_officer/NodalOfficer";
 import RTCBookings from "../pages/admin/rtc_bookings/RtcBooking";
 import MetroBookings from "../pages/admin/metro_bookings/Metrobookings";
 import NotFound from "../pages/Error/NotFound";
 import EntitiesDetails from "../pages/admin/parks/EntitiesDetails";
-import ServiceUnifiedCreator from "../components/facilities_management/ServiceUnifiedCreator";
+
 import UnifiedCreate from "../pages/admin/facilities/UnifiedCreate";
 import SuperAdminFacilities from "../pages/admin/admin_facilities/SuperAdminFacilities";
 import Unauthorized from "../pages/Error/Unauthorized";
@@ -46,7 +46,7 @@ import FacilityBookings from "../pages/admin/BookTickets/FacilityBookings";
 import BankTransactions from "../pages/admin/BookTickets/BankTransactions";
 import MetroCumulativeBookings from "../components/metro_reports/cumulativeBookings/MetroCumulativeBookings";
 import CustomBookTickets from "../pages/admin/BookTickets/CustomBookTickets";
-import GrievanceConsolidateReportList from "../components/grievance/grievance_consolidate/GrievanceConsolidateReportList";
+
 import GrievanceConsolidateReport from "../components/grievance/grievance_consolidate/GrievanceConsolidateReport";
 import GrievanceIncident from "../components/grievance/grievance_incident/GrievanceIncident";
 import GrievanceIndividualReport from "../components/grievance/grievance_individual/GrievanceIndividualReport";
@@ -68,7 +68,7 @@ import UserTransactionReport from "../components/payments_management/UserTransac
 import UserStatusTransactionReport from "../components/payments_management/UserStatusTransactionReport";
 import { PrivacyPolicyMeeticketApp } from "../components/terms_and_conditions_privacy_policy/PrivacyPolicyMeeticketApp";
 import MainPackages from "../pages/amrabad/masters/packages/MainPackages";
-import HouseCreate from "../pages/amrabad/masters/packages/HouseCreate";
+
 import AmrabadConsolidatedReports from "../pages/amrabad/amrabad_reports/amrabad_consolidated/AmrabadConsolidatedReports";
 import AmrabadIndividualReports from "../pages/amrabad/amrabad_reports/amrabad_individual/AmrabadIndividualReports";
 import AmrabadPaymentTransactionsReport from "../pages/amrabad/amrabad_reports/amrabad_payment_transactions/AmrabadPaymentTransactionsReport";
@@ -107,7 +107,6 @@ import TotalFailedPaymentTransactionReport from "../pages/admin/users/total_fail
 import TotalFailedPaymentTransactionOrderTracker from "../pages/admin/users/total_failed_payment_transaction_report/TotalFailedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionOrderTracker from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionOrderTracker";
 import TotalTicketNotGeneratedPaymentTransactionReport from "../pages/admin/users/total_ticket_not_generated_payment_transaction_report/TotalTicketNotGeneratedPaymentTransactionReport";
-import OuterTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/outer_report/OuterTotalTransactionReport";
 import MainTotalTransactionReport from "../pages/metro_transaction_reports/metro_total_transactions/MainTotalTransactionReport";
 import MetroTotalReport from "../pages/metro_transaction_reports/metro_total_transactions/MetroTotalReport";
 import FailedOtherReason from "../pages/metro_transaction_reports/metro_total_transactions/innerReasonsDashboard/failed_other_reason/FailedOtherReason";
@@ -146,7 +145,6 @@ import AmrabadNotGenerated from "../pages/amrabad/amrabad_reports/amrabad_total_
 import AmrabadAvailabilityInner from "../pages/amrabad/amrabad_reports/availabilityReports/AmrabadAvailabilityInner";
 import RoomDetails from "../pages/amrabad/amrabad_reports/availabilityReports/RoomDetails";
 import AmrabadTotalReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/AmrabadTotalReport";
-import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
 // import FailedOtherReasonReportForm from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/FailedOtherReasonReportForm";
 import AmrabadFailedOtherReasonReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_failed_other_reasons/AmrabadFailedOtherReasonReport";
 import AmarabadNotGeneratedReport from "../pages/amrabad/amrabad_reports/amrabad_total_transactions/inner_Reasons_dashboard/amrabad_not_generated/AmarabadNotGeneratedReport";
@@ -157,6 +155,46 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
+import BusPassUserReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_reports/BusPassUserReport";
+import BusPassUserDetailedReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserDetailedReport";
+import BusPassUserTransactionsOrderTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserTransactionsOrderTracker";
+import BusPassMainTotalTransactionReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/BusPassMainTotalTransactionReport";
+import MainIntercityTotalTransaction from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/mainIntercityTotalTransactionReport";
+// import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
+import IntercityNotGenerated from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGenerated";
+import RtcFailedOtherReason from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_other_reason/RtcFailedOtherReason";
+import RtcFailedGateway from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_gateway/RtcFailedGateway";
+import RtcNotGenerated from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_not_generated/RtcNotGenerated";
+import BusPassTotalReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/busPassTotalReport";
+import RtcFailedGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_gateway/RtcFailedGatewayReport";
+import RtcFailedOtherReasonReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_failed_other_reason/RtcFailedOtherReasonReport";
+import RtcNotGeneratedReport from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/innerReasonsDashboard/rtc_not_generated/RtcNotGeneratedReport";
+import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/rtc_track_order/RtcTotalTracker";
+import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGeneratedReport";
+import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
+import ViewBusPass from "../components/rtc/components/ViewBusPass";
+import BusPassRefundTransactionsReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassRefundTransactionsReport";
+import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/MainBusPassRefundTransactions";
+import IntercityFailedOtherReason from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReason";
+import IntercityFailedOtherReasonReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_other_reasons/IntercityFailedOtherReasonReport";
+import IntercityFailedGateway from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGateway";
+import MainIntercityRefundTransactionReport from "../components/rtc/rtc_reports/intercity_reports/intercity_refund_transaction/intercity_refund_outer_report/MainIntercityRefundTransactionReport";
+import IntercityRefundTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_refund_transaction/intercity_refund_inner_report/IntercityRefundTransactionsReport";
+import IntercityUserReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserReport";
+import IntercityUserDetailedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserDetailedReport";
+import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserTrackOrder";
+import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
+// import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
+import IntercityTicketView from "../components/rtc/rtc_reports/intercity_reports/intercity_ticket_view/IntercityTicketView";
+import IntercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/IntercityTotalReport";
+import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
+import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
+import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
+import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
+import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/AmrabadPosReport";
+import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
+import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
+import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 
 export const routes = [
   {
@@ -305,15 +343,21 @@ export const routes = [
   },
   {
     path: "/failed-gateway-transactions-dashboard",
-    element: <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />,
+    element: (
+      <ProtectedRoute element={<MainTotalFailedGatewayTransactions />} />
+    ),
   },
   {
     path: "/failed-gateway-transactions-report",
-    element: <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />,
+    element: (
+      <ProtectedRoute element={<TotalFailedGatewayTransactionReport />} />
+    ),
   },
   {
     path: "/failed-gateway-transaction-order-tracker",
-    element: <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />,
+    element: (
+      <ProtectedRoute element={<TotalFailedGatewayTransactionOrderTracker />} />
+    ),
   },
   {
     path: "/ticket-not-generated-transactions-dashboard",
@@ -361,7 +405,7 @@ export const routes = [
     path: "/metro-user-detailed-report",
     element: <ProtectedRoute element={<MetroUserDetailedReport />} />,
   },
-   {
+  {
     path: "/metro-user-transactions-order-tracker",
     element: <ProtectedRoute element={<MetroUserTransactionsOrderTracker />} />,
   },
@@ -396,7 +440,10 @@ export const routes = [
     element: <ProtectedRoute element={<AmrabadUserReport />} />,
   },
   { path: "/entity-bookings/view-details/:id", element: <BookingDetails /> },
-  { path: "/amrabad-entity-bookings/view-details/:id", element: <AmrabadConsolidatedBookingDetails /> },
+  {
+    path: "/amrabad-entity-bookings/view-details/:id",
+    element: <AmrabadConsolidatedBookingDetails />,
+  },
   // -----
   { path: "/completed-bookings", element: <CompleteBookings /> },
   // ------
@@ -470,6 +517,50 @@ export const routes = [
   },
 
   // rtc Routs
+  {
+    path: "/bus-pass-total-transaction",
+    element: <ProtectedRoute element={<BusPassMainTotalTransactionReport />} />,
+  },
+  {
+    path: "/bus-pass-total-report",
+    element: <ProtectedRoute element={<BusPassTotalReport />} />,
+  },
+  {
+    path: "/bus-pass-failed-other-reason",
+    element: <ProtectedRoute element={<RtcFailedOtherReason />} />,
+  },
+
+  {
+    path: "/bus-pass-failed-gateway",
+    element: <ProtectedRoute element={<RtcFailedGateway />} />,
+  },
+  {
+    path: "/bus-pass-not-generated",
+    element: <ProtectedRoute element={<RtcNotGenerated />} />,
+  },
+
+  {
+    path: "/bus-pass-failed-other-reason-report",
+    element: <ProtectedRoute element={<RtcFailedOtherReasonReport />} />,
+  },
+
+  {
+    path: "/bus-pass-failed-gateway-report",
+    element: <ProtectedRoute element={<RtcFailedGatewayReport />} />,
+  },
+  {
+    path: "/bus-pass-not-generated-report",
+    element: <ProtectedRoute element={<RtcNotGeneratedReport />} />,
+  },
+  {
+    path: "/bus-pass-total-traker",
+    element: <ProtectedRoute element={<RtcTotalTracker />} />,
+  },
+
+  {
+    path: "/bus-pass-booking-report",
+    element: <ProtectedRoute element={<BusPassBookingReport />} />,
+  },
 
   {
     path: "/day-pass",
@@ -495,7 +586,32 @@ export const routes = [
     path: "/pending-pass",
     element: <ProtectedRoute element={<PendingPassesReport />} />,
   },
-
+  {
+    path: "/bus-pass-user-report",
+    element: <ProtectedRoute element={<BusPassUserReport />} />,
+  },
+  {
+    path: "/bus-pass-user-detailed-report",
+    element: <ProtectedRoute element={<BusPassUserDetailedReport />} />,
+  },
+  {
+    path: "/bus-pass-user-transactions-order-tracker",
+    element: (
+      <ProtectedRoute element={<BusPassUserTransactionsOrderTracker />} />
+    ),
+  },
+  {
+    path: "/bus-pass-refund-report",
+    element: <ProtectedRoute element={<MainBusPassRefundTransactions />} />,
+  },
+  {
+    path: "/bus-pass-refund-inner-report",
+    element: <ProtectedRoute element={<BusPassRefundTransactionsReport />} />,
+  },
+  {
+    path: "/bus-pass-view-pass",
+    element: <ProtectedRoute element={<ViewBusPass />} />,
+  },
   // Tourism
   {
     path: "/tourism-individual",
@@ -523,6 +639,22 @@ export const routes = [
   },
   //amarabad-user
   {
+    path: "/amrabad-resort/terms-conditions",
+    element: <AmrabadTermsConditions />,
+  },
+  {
+    path: "/amrabad-resort/privacy-policy",
+    element: <AmrabadPrivacyPolicy />,
+  },
+  {
+    path: "/amrabad-resort/help-faqs",
+    element: <HelpFaqs />,
+  },
+  {
+    path: "/amrabad-resort/login",
+    element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
+  },
+  {
     path: "/amrabad-resort/login",
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
@@ -532,7 +664,7 @@ export const routes = [
   },
   {
     path: "/amrabad-resort/register",
-    element: <AmrabadAuthRoute  element={<AmarabadRegister />} />,
+    element: <AmrabadAuthRoute element={<AmarabadRegister />} />,
   },
   {
     path: "/amrabad-resort/register-otp",
@@ -567,8 +699,8 @@ export const routes = [
     element: <Houses />,
   },
   {
-  path: "/amrabad-resort/book-now/:packageId/:houseId",
-  element: <AmrabadProtectRoute element={<BookNow />} />,
+    path: "/amrabad-resort/book-now/:packageId/:houseId",
+    element: <AmrabadProtectRoute element={<BookNow />} />,
   },
   {
     path: "/amrabad-resort/checkout-details",
@@ -603,23 +735,27 @@ export const routes = [
     path: "/packages",
     element: <ProtectedRoute element={<MainPackages />} />,
   },
-   { 
+  {
     path: "/amrabad-packages",
-    element: <ProtectedRoute element={<MainPackages/>} />,
+    element: <ProtectedRoute element={<MainPackages />} />,
   },
-  { 
+  {
     path: "/amrabad-view-transaction-track-order",
-    element: <ProtectedRoute element={<AmrabadViewTransactionTrackOrder/>} />,
+    element: <ProtectedRoute element={<AmrabadViewTransactionTrackOrder />} />,
   },
-  { 
+  {
     path: "/amrabad-booking-reports",
-    element: <ProtectedRoute element={<AmrabadConsolidatedReports/>} />,
+    element: <ProtectedRoute element={<AmrabadConsolidatedReports />} />,
   },
-    { 
+  {
+    path: "/amrabad-pos-reports",
+    element: <ProtectedRoute element={<AmrabadPosReport />} />,
+  },
+  {
     path: "/amrabad-house-wise-reports",
-    element: <ProtectedRoute element={<AmrabadIndividualReports/>} />,
+    element: <ProtectedRoute element={<AmrabadIndividualReports />} />,
   },
-   { 
+  {
     path: "/amrabad-payment-transactions",
     element: <ProtectedRoute element={<AmrabadPaymentTransactionsReport />} />,
   },
@@ -635,13 +771,15 @@ export const routes = [
     path: "/amrabad/room-details",
     element: <ProtectedRoute element={<RoomDetails />} />,
   },
-   {
+  {
     path: "/amrabad-user-detailed-report",
     element: <ProtectedRoute element={<AmarabadUserDetailedReport />} />,
   },
-   {
+  {
     path: "/amrabad-user-transactions-order-tracker",
-    element: <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />,
+    element: (
+      <ProtectedRoute element={<AmrabadUserTransactionsOrderTracker />} />
+    ),
   },
   {
     path: "/amrabad-refund-transaction-report",
@@ -675,8 +813,7 @@ export const routes = [
     element: <ProtectedRoute element={<MetroNotGenerated />} />,
   },
 
-
-   {
+  {
     path: "/metro-failed-other-reason-report",
     element: <ProtectedRoute element={<FailedOtherReasonReport />} />,
   },
@@ -709,56 +846,151 @@ export const routes = [
   },
   {
     path: "/amrabad-failed-other-reason",
-    element: <ProtectedRoute element={<AmrabadFailedOtherReason/>} />,
+    element: <ProtectedRoute element={<AmrabadFailedOtherReason />} />,
   },
   {
     path: "/amrabad-failed-gateway",
-    element: <ProtectedRoute element={<AmrabadFailedGateway/>} />,
+    element: <ProtectedRoute element={<AmrabadFailedGateway />} />,
   },
   {
     path: "/amrabad-failed-gateway-report",
-    element: <ProtectedRoute element={<AmrabadFailedGatewayReport/>} />,
+    element: <ProtectedRoute element={<AmrabadFailedGatewayReport />} />,
   },
   {
     path: "/amrabad-not-generated",
-    element: <ProtectedRoute element={<AmrabadNotGenerated/>} />,
+    element: <ProtectedRoute element={<AmrabadNotGenerated />} />,
   },
   {
     path: "/amrabad-total-report",
-    element: <ProtectedRoute element={<AmrabadTotalReport/>} />,
+    element: <ProtectedRoute element={<AmrabadTotalReport />} />,
   },
   {
     path: "/amrabad-failed-other-reasons-report",
-    element: <ProtectedRoute element={<AmrabadFailedOtherReasonReport/>} />,
+    element: <ProtectedRoute element={<AmrabadFailedOtherReasonReport />} />,
   },
 
   {
     path: "/amrabad-not-generated-report",
-    element: <ProtectedRoute element={<AmarabadNotGeneratedReport/>} />,
+    element: <ProtectedRoute element={<AmarabadNotGeneratedReport />} />,
   },
 
   {
     path: "/amrabad-view-track-order",
-    element: <ProtectedRoute element={<AmarabadViewTrackOrder/>} />,
+    element: <ProtectedRoute element={<AmarabadViewTrackOrder />} />,
   },
 
   {
     path: "/amrabad-not-generated-view-track-order",
-    element: <ProtectedRoute element={<AmarabadNotGeneratedViewTrackOrder/>} />,
+    element: (
+      <ProtectedRoute element={<AmarabadNotGeneratedViewTrackOrder />} />
+    ),
   },
 
   {
     path: "/amrabad-gateway-view-track-order",
-    element: <ProtectedRoute element={<AmarabadGatewayViewTrackOrder/>} />,
+    element: <ProtectedRoute element={<AmarabadGatewayViewTrackOrder />} />,
   },
 
   {
     path: "/amrabad-successful-view-track-order",
-    element: <ProtectedRoute element={<AmarabadSuccessViewTrackOrder/>} />,
+    element: <ProtectedRoute element={<AmarabadSuccessViewTrackOrder />} />,
   },
 
   {
     path: "/amrabad-uncategorized-view-track-order",
-    element: <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder/>} />,
+    element: (
+      <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder />} />
+    ),
+  },
+
+  //intercity
+  {
+    path: "/intercity-consolidated-report",
+    element: <ProtectedRoute element={<IntercityConsolidatedReport />} />,
+  },
+  {
+    path: "/intercity-individual-report",
+    element: <ProtectedRoute element={<IntercityIndividualReport />} />,
+  },
+  {
+    path: "/intercity-total-transaction",
+    element: <ProtectedRoute element={<MainIntercityTotalTransaction />} />,
+  },
+
+  {
+    path: "/intercity-failed-other-reason",
+    element: <ProtectedRoute element={<IntercityFailedOtherReason/>} />,
+  },
+  {
+    path: "/intercity-failed-other-reasons-report",
+    element: <ProtectedRoute element={<IntercityFailedOtherReasonReport/>} />,
+  },
+  {
+    path: "/intercity-failed-gateway",
+    element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
+  },
+
+  {
+    path: "/intercity-failed-gateway-report",
+    element: <ProtectedRoute element={<IntercityFailedGatewayReport/>} />,
+  },
+  {
+    path: "/intercity-not-generated",
+    element: <ProtectedRoute element={<IntercityNotGenerated />} />,
+  },
+
+  {
+    path: "/intercity-not-generated-report",
+    element: <ProtectedRoute element={<IntercityNotGeneratedReport />} />,
+  },
+  {
+    path: "/intercity-total-report",
+    element: <ProtectedRoute element={<IntercityTotalReport/>} />,
+  },
+  {
+    path: "/intercity-refund-report",
+    element: <ProtectedRoute element={<MainIntercityRefundTransactionReport />} />,
+  },
+  {
+    path: "/intercity-refund-inner-report",
+    element: <ProtectedRoute element={<IntercityRefundTransactionsReport />} />,
+  },
+
+  {
+    path: "/intercity-user-report",
+    element: <ProtectedRoute element={<IntercityUserReport />} />,
+  },
+  {
+    path: "/intercity-user-detailed-report",
+    element: <ProtectedRoute element={<IntercityUserDetailedReport />} />,
+  },
+  {
+    path: "/intercity-user-transactions-order-tracker",
+    element: <ProtectedRoute element={<IntercityUserTrackOrder />} />,
+  },
+
+  //intercity admin routes
+  {
+    path: "/intercity-ticket-view-details",
+    element: <ProtectedRoute element={<IntercityTicketView />} />,
+  },
+  {
+    path: "/intercity-payment-transactions",
+    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
+  },
+    {
+    path: "/intercity-total-transactions-order-tracker",
+    element: <ProtectedRoute element={<IntercityTotalTransactionTrackOrder />} />,
+  },
+
+  {
+    path: "/intercity-payment-transactions",
+    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
+  },
+
+  //intercity admin routes
+  {
+    path: "/intercity-ticket-view-details/:id",
+    element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
 ];

@@ -4,13 +4,14 @@ import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStor
 import { useEffect } from "react";
 import { useAmarabadAvailabilityReportsStore } from "./store/AmarabadAvailabilityReportsStore";
 import { useAmrabadBookingStore } from "../amrabad_consolidated/store/amarabadBookingstore";
+import { useAmrabadHouseWiseReportStore } from "../amrabad_individual/store/amarabadHouseWiseReportStore";
 
 const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fromDate, toDate, packageId, roomId, bookingDate }) => {
   const { AllPackages, getPackages, getHouses, AllHouses } = usePackagesStore();
 
 
   const { fetchAllAmrabadBookings, isFetchAllAmrabadBookingsLoading } = useAmrabadBookingStore();
-  
+  const { fetchAllAmrabadHouseWiseReports, isFetchAllAmrabadHouseWiseReportsLoading } = useAmrabadHouseWiseReportStore();
   // Clear saved filters when component mounts to ensure fresh state
   useEffect(() => {
     // Clear any previously saved filters when component mounts
@@ -28,11 +29,10 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
   const getNextDayDate = (dateString) => {
     if (!dateString) return dateString;
     const date = new Date(dateString);
-    date.setDate(date.getDate() + 2);
+    // Ensure next day date is not the same as the input date
+    date.setDate(date.getDate() + 1);
     return date.toISOString().split('T')[0];
   };
-
-  console.log("bookingDate", getNextDayDate(bookingDate));
 
   const initialValues = {
     fromDate: removeTimeFromDate(bookingDate) || getCurrentDate(),
@@ -57,7 +57,8 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
     const savedFilters = JSON.parse(
       localStorage.getItem("amrabad-availability-inner-report-filters")
     );
-    fetchAllAmrabadBookings({
+    console.log(values)
+    fetchAllAmrabadHouseWiseReports({
       startDate: values.fromDate,
       endDate: values.toDate,
       bookingSource: "Booking",
@@ -105,8 +106,20 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
                   setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    // Automatically update toDate if it's earlier than fromDate
+                  
+                  // Check if selected fromDate is today
+                  const today = new Date();
+                  const selectedDate = new Date(fromDateValue);
+                  const isToday = today.toDateString() === selectedDate.toDateString();
+                  
+                  if (isToday) {
+                    // If fromDate is today, set toDate to tomorrow
+                    const tomorrow = new Date(selectedDate);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const tomorrowString = tomorrow.toISOString().split('T')[0];
+                    setFieldValue("toDate", tomorrowString);
+                  } else if (new Date(fromDateValue) >= new Date(values.toDate)) {
+                    // For availability reports, allow same day selection
                     setFieldValue("toDate", fromDateValue);
                   }
                 }}
@@ -124,9 +137,18 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
+                min={(() => {
+                  if (!values.fromDate) return getCurrentDate();
+                  const fromDate = new Date(values.fromDate);
+                  // For availability reports, allow same day selection
+                  return fromDate.toISOString().split('T')[0];
+                })()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
+                  const fromDate = new Date(values.fromDate);
+                  const toDate = new Date(toDateValue);
+                  
+                  // For availability reports, allow same day selection
                   setFieldValue("toDate", toDateValue);
                 }}
               />
@@ -233,9 +255,9 @@ const AmarabadAvailabilityInnerForm = ({ PageIndex, pageSize, SetcurrentPage, fr
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isFetchAllAmrabadBookingsLoading}
+                disabled={isFetchAllAmrabadHouseWiseReportsLoading}
               >
-                {isFetchAllAmrabadBookingsLoading ? 'Searching...' : 'Search'}
+                {isFetchAllAmrabadHouseWiseReportsLoading ? 'Searching...' : 'Search'}
               </button>
               {/* <button
                 type="button"

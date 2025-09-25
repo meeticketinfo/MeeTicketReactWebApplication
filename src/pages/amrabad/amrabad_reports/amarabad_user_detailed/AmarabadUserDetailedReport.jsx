@@ -25,6 +25,7 @@ const AmarabadUserDetailedReport = () => {
   } = useAmrabadUserStore();
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
@@ -81,6 +82,12 @@ const AmarabadUserDetailedReport = () => {
     {
       field: "orderId",
       headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "name",
+      headerName: "User Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
