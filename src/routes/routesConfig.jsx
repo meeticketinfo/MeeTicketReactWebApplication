@@ -184,12 +184,17 @@ import IntercityUserReport from "../components/rtc/rtc_reports/intercity_reports
 import IntercityUserDetailedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserDetailedReport";
 import IntercityUserTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercity_user_report/IntercityUserTrackOrder";
 import IntercityFailedGatewayReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_failed_gateway/IntercityFailedGatewayReport";
+// import InetercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/InetercityTotalReport";
+import IntercityTicketView from "../components/rtc/rtc_reports/intercity_reports/intercity_ticket_view/IntercityTicketView";
 import IntercityTotalReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/IntercityTotalReport";
 import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
 import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
-import IntercityTicketView from "../components/rtc/rtc_reports/intercity_reports/intercity_ticket_view/IntercityTicketView";
+import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/AmrabadPosReport";
+import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
+import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
+import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 
 export const routes = [
   {
@@ -634,6 +639,22 @@ export const routes = [
   },
   //amarabad-user
   {
+    path: "/amrabad-resort/terms-conditions",
+    element: <AmrabadTermsConditions />,
+  },
+  {
+    path: "/amrabad-resort/privacy-policy",
+    element: <AmrabadPrivacyPolicy />,
+  },
+  {
+    path: "/amrabad-resort/help-faqs",
+    element: <HelpFaqs />,
+  },
+  {
+    path: "/amrabad-resort/login",
+    element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
+  },
+  {
     path: "/amrabad-resort/login",
     element: <AmrabadAuthRoute element={<AmarabadLogin />} />,
   },
@@ -725,6 +746,10 @@ export const routes = [
   {
     path: "/amrabad-booking-reports",
     element: <ProtectedRoute element={<AmrabadConsolidatedReports />} />,
+  },
+  {
+    path: "/amrabad-pos-reports",
+    element: <ProtectedRoute element={<AmrabadPosReport />} />,
   },
   {
     path: "/amrabad-house-wise-reports",
@@ -943,7 +968,17 @@ export const routes = [
     path: "/intercity-user-transactions-order-tracker",
     element: <ProtectedRoute element={<IntercityUserTrackOrder />} />,
   },
+
+  //intercity admin routes
   {
+    path: "/intercity-ticket-view-details",
+    element: <ProtectedRoute element={<IntercityTicketView />} />,
+  },
+  {
+    path: "/intercity-payment-transactions",
+    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
+  },
+    {
     path: "/intercity-total-transactions-order-tracker",
     element: <ProtectedRoute element={<IntercityTotalTransactionTrackOrder />} />,
   },

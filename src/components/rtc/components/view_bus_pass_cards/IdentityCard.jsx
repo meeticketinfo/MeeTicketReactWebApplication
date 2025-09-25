@@ -41,20 +41,20 @@ export default function IdentityCard({ data }) {
               </div>
               <div className="flex flex-col items-start  text-xs mb-1.5">
                 <h1 className="font-medium text-[11px] text-black">
-                  {data.id_no ? data.id_no : "N/A"}
+                  {data?.id_no ? data?.id_no : "N/A"}
                 </h1>
                 <p className="text-gray-500 text-[11px]">ID No</p>
               </div>
               <div className="flex flex-col items-start  text-xs mb-1.5">
                 <h1 className="font-medium text-[11px] text-black">
-                  {data.employee_name ? data.employee_name : "N/A"}
+                  {data?.employee_name ? data?.employee_name : "N/A"}
                 </h1>
                 <p className="text-gray-500 text-[11px]">Name</p>
               </div>
               <div className="flex flex-col items-start  text-xs">
                 <h1 className="font-medium text-[11px] text-black">
-                  {data.Age ? data.Age : "N/A"},
-                  {data.employee_gender ? data.employee_gender : "N/A"}
+                  {data?.Age ? data?.Age : "N/A"},
+                  {data?.employee_gender ? data?.employee_gender : "N/A"}
                 </h1>
                 <p className="text-gray-500 text-[11px]">Age & Sex</p>
               </div>
@@ -64,7 +64,7 @@ export default function IdentityCard({ data }) {
               <div className="relative border-2 border-white mb-3 overflow-hidden w-24 h-20">
                 {/* Main Image */}
                 <img
-                  src={`data:image/jpeg;base64,${data.employee_photo}`}
+                  src={`data:image/jpeg;base64,${data?.employee_photo}`}
                   alt="photo"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -92,19 +92,19 @@ export default function IdentityCard({ data }) {
               <div className="flex  text-end gap-1 mb-1 text-xs">
                 <h1 className="font-medium text-[11px] text-black">Amount:</h1>
                 <p className="text-gray-500 text-[11px] text-end">
-                  ₹ {data.amount ? data.amount : "N/A"}
+                  ₹ {data?.amount ? data?.amount : "N/A"}
                 </p>
               </div>
               <div className="flex  items-start gap-1 mb-1 text-xs">
                 <h1 className="font-medium text-[11px] text-black">Ph:</h1>
                 <p className="text-gray-500 text-[11px]">
-                  {data.employee_cellno ? data.employee_cellno : "N/A"}
+                  {data?.employee_cellno ? data?.employee_cellno : "N/A"}
                 </p>
               </div>
               <div className="flex  items-start gap-1 mb-1 text-xs">
                 <h1 className="font-medium text-[11px] text-black">DOB:</h1>
                 <p className="text-gray-500 text-[11px]">
-                  {data.employee_dob ? data.employee_dob : "N/A"}
+                  {data?.employee_dob ? data?.employee_dob : "N/A"}
                 </p>
               </div>
             </div>
@@ -115,8 +115,8 @@ export default function IdentityCard({ data }) {
         <div className="absolute bottom-0 left-0 right-0">
           <div className="px-3 py-1 text-center text-[11px] font-bold tracking-wide">
             <span className="text-black">
-              VALIDITY: {data.id_valid_from ? data.id_valid_from : "N/A"} TO{" "}
-              {data.id_valid_to ? data.id_valid_to : "N/A"}
+              VALIDITY: {data?.id_valid_from ? data?.id_valid_from : "N/A"} TO{" "}
+              {data?.id_valid_to ? data?.id_valid_to : "N/A"}
             </span>
           </div>
         </div>

@@ -118,6 +118,8 @@ const InetercityTotalReport = () => {
             arrivalLocation: params.data.arrivalLocation,
             departureLocation: params.data.departureLocation,
             busType: params.data.busType,
+            pnrNumber: params.data.pnrNumber,
+            returnPNRNumber: params.data.returnPNRNumber,
           }}
         >
           View Track Order
@@ -141,7 +143,7 @@ const InetercityTotalReport = () => {
 
     {
       field: "busType",
-      headerName: "Type of Bus Pass",
+      headerName: "Type of Bus",
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,

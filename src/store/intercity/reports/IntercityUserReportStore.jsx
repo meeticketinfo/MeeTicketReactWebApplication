@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
+import { toast } from "react-toastify";
 
 export const useIntercityUserStore = create((set) => ({
   allIntercityUserReports: [],
@@ -23,6 +24,7 @@ export const useIntercityUserStore = create((set) => ({
         isIntercityUserReportsLoading: false,
       });
     } catch (error) {
+      toast.error(error.message);
       set({
         error: error.message,
         isIntercityUserReportsLoading: false,
@@ -32,7 +34,7 @@ export const useIntercityUserStore = create((set) => ({
   fetchIntercityUserDetailedReports: async (payload) => {
     set({ isIntercityUserDetailedReportsLoading: true });
     try {
-      const url = `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&MobileNumber=${payload.MobileNumber}&departureLocation=${payload.departureLocation}&arrivalLocation=${payload.arrivalLocation}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+      const url = `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_DETAILED_REPORT}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&MobileNumber=${payload.MobileNumber}&departureLocation=${payload.departureLocation?payload.departureLocation:""}&arrivalLocation=${payload.arrivalLocation?payload.arrivalLocation:""}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
       const method = "get";
       const response = await apiService[method](url);
       set({
@@ -40,6 +42,7 @@ export const useIntercityUserStore = create((set) => ({
         isIntercityUserDetailedReportsLoading: false,
       });
     } catch (error) {
+      toast.error(error.message);
       set({
         error: error.message,
         isIntercityUserDetailedReportsLoading: false,
@@ -58,6 +61,7 @@ export const useIntercityUserStore = create((set) => ({
       });
       return { response: response.data };
     } catch (error) {
+      toast.error(error.message);
       set({
         error: error.message,
         IntercityTransactionTrackingStatusByOrderIdData: response.data,

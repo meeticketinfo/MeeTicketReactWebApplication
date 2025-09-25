@@ -269,12 +269,13 @@ export const API_ENDPOINTS = {
         GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}RTCDashboard/GetBookingDetailsOuterReport`,
+        GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
       },
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}RTCDashboard/PaymentTransactionsReport`,
-        GET_INTERCITY_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/VerifyStatus`,
-        GET_INTERCITY_REGENERATE_TICKET: `${RTC_API_BASE_URL}RTCDashboard/GenerateTicket`,
-        GET_INTERCITY_PAYMENT_TRANSACTION_REFUND: `${RTC_API_BASE_URL}RTCDashboard/InitiateRefund`,
+        GET_INTERCITY_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
+        GET_INTERCITY_REGENERATE_TICKET: `${RTC_INTERCITY_API_BASE_URL}Bookings/ConfirmBooking`,
+        GET_INTERCITY_PAYMENT_TRANSACTION_REFUND: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/IntiateRefund`,
 
         GET_INTERCITY_TOTAL_TRANSACTIONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionOuterReport`,
         GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentSuccessButNotGeneratedSubCategoryReport`,
@@ -404,6 +405,8 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
       GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
       GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
+      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
     },
     DASHBOARD: {
       GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

@@ -222,9 +222,10 @@ const BusPassRefundTransactionsReport = () => {
                 });
             }
         } catch (err) {
+            setInitiatRefundModal(false);
             Swal.fire({
                 title: "Failed!",
-                text: `Refund failed. Please try again.`,
+                text: err.response.data || "Refund failed. Please try again.",
                 icon: "error",
                 confirmButtonText: "OK",
             });
@@ -288,7 +289,7 @@ const BusPassRefundTransactionsReport = () => {
                             handlePageClick={handlePageClick}
                             currentPage={currentPage}
                             showTotalCount={true}
-                            totalCount={refundBusPassTransactionsInnerReport[0].totalCount}
+                            totalCount={refundBusPassTransactionsInnerReport[0]?.totalCount}
                             SetcurrentPage={setCurrentPage}
                         />
                     </div>

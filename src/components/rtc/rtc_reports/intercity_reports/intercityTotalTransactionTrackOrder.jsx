@@ -44,6 +44,8 @@ const IntercityTotalTransactionTrackOrder = () => {
     arrivalLocation,
     departureLocation,
     busType,
+    pnrNumber,
+    returnPNRNumber,
   } = location.state || {};
   const { fetchCurrentBookingDetailsByBookingId } = useBookingsStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,19 +199,47 @@ const IntercityTotalTransactionTrackOrder = () => {
               </h3>
               <p className="text-sm font-semibold text-gray-900">
                 {orderId || "N/A"}
-                {orderId && orderId != "Not Generated" && (
+               
+              </p>
+            </div>
+            {pnrNumber && (
+              <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-xs font-medium text-gray-500 mb-1">
+                  Onwards Journey 
+                </h3>
+                <p className="text-sm font-semibold text-gray-900">
+                  {pnrNumber}
                   <NavLink
                     end
-                    to={`/amrabad-admin/ticket-view-details/${orderId}`}
+                    to={`/intercity-ticket-view-details/${pnrNumber}`}
                     className="ml-2 text-blue-600 underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span>View Ticket Details</span>
+                    <span>View Ticket</span>
                   </NavLink>
-                )}
-              </p>
-            </div>
+                </p>
+              </div>
+            )}
+            {returnPNRNumber && (
+              <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-xs font-medium text-gray-500 mb-1">
+                  Return Journey 
+                </h3>
+                <p className="text-sm font-semibold text-gray-900">
+                  {returnPNRNumber}
+                  <NavLink
+                    end
+                    to={`/intercity-ticket-view-details/${returnPNRNumber}`}
+                    className="ml-2 text-blue-600 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span>View Ticket</span>
+                  </NavLink>
+                </p>
+              </div>
+            )}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-xs font-medium text-gray-500 mb-1">
                 Booking ID
@@ -256,7 +286,8 @@ const IntercityTotalTransactionTrackOrder = () => {
                 {busType || "N/A"}
               </p>
             </div>
-          </div>
+           
+            </div>
 
           <div>
             <AgGridTable

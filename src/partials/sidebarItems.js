@@ -516,6 +516,7 @@ const sidebarItems = [
       },
     ],
   },
+  // amrabad
   {
     title: "Reports",
     icon: HiOutlineDocumentReport,
@@ -527,6 +528,11 @@ const sidebarItems = [
         title: "Booking Reports",
         icon: TbReportSearch,
         path: "/amrabad-booking-reports",
+      },
+      {
+        title: "POS Reports",
+        icon: TbReportAnalytics,
+        path: "/amrabad-pos-reports",
       },
       {
         title: "House Wise Reports",
@@ -558,6 +564,7 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/amarabad-total-transaction",
       },
+     
     ],
   },
 ];

@@ -12,13 +12,7 @@ const IntercityConsolidatedReportForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
-  const savedFilters = useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem("intercity-individual-filters"));
-    } catch {
-      return null;
-    }
-  }, []);
+ 
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const { fetchIntercityConsolidateData } = useIntercityConsolidateStore();
@@ -66,27 +60,18 @@ const IntercityConsolidatedReportForm = ({
   };
 
   const initialValues = {
-    purchaseOrBooking: savedFilters?.purchaseOrBooking
-      ? savedFilters.purchaseOrBooking
-      : "",
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-    mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
-    bookingDate: savedFilters?.bookingDate ? savedFilters.bookingDate : "",
-    PNRNumber: savedFilters?.PNRNumber ? savedFilters.PNRNumber : "",
-    paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
-    orderId: savedFilters?.orderId ? savedFilters.orderId : "",
-    transactionId: savedFilters?.transactionId
-      ? savedFilters.transactionId
-      : "",
-    typeOfBus: savedFilters?.typeOfBus ? savedFilters.typeOfBus : "",
-
-    departureLocation: savedFilters?.departureLocation
-      ? savedFilters.departureLocation
-      : "",
-    arrivalLocation: savedFilters?.arrivalLocation
-      ? savedFilters.arrivalLocation
-      : "",
+    purchaseOrBooking: "Purchase",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    mobileNumber: "",
+    bookingDate: "",
+    PNRNumber: "",
+    paymentMode: "",
+    orderId: "",
+    transactionId: "",
+    typeOfBus: "",
+    departureLocation: "",
+    arrivalLocation: "",
   };
 
   const onSubmit = (values) => {
@@ -100,6 +85,7 @@ const IntercityConsolidatedReportForm = ({
       "intercity-consolidated-filters",
       JSON.stringify(values)
     );
+    SetcurrentPage(0);
   };
 
   return (
@@ -114,7 +100,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
               <Field
                 as="select"
-                name="typeOfBooking"
+                name="purchaseOrBooking"
                 className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
@@ -214,7 +200,22 @@ const IntercityConsolidatedReportForm = ({
                 )}
               </Field>
             </div>
-
+            {/* payment mode */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Payment Mode
+              </label>
+              <Field
+                as="select"
+                name="paymentMode"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+              </Field>
+            </div>
             {/* order id */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -274,6 +275,7 @@ const IntercityConsolidatedReportForm = ({
               </label>
 
               <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
                 name="arrivalLocation"
                 value={values.arrivalLocation}
                 onChange={(value) => setFieldValue("arrivalLocation", value)}
@@ -296,22 +298,6 @@ const IntercityConsolidatedReportForm = ({
               />
             </div>
 
-            {/* payment mode */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Payment Mode
-              </label>
-              <Field
-                as="select"
-                name="paymentMode"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">All</option>
-                <option value="Credit Card">Credit Card</option>
-                <option value="UPI">UPI</option>
-                <option value="Cash">Cash</option>
-              </Field>
-            </div>
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
             {/* submit */}
             <div className="flex items-end gap-2">
@@ -329,7 +315,7 @@ const IntercityConsolidatedReportForm = ({
                 onClick={() => {
                   localStorage.removeItem("intercity-consolidated-filters");
                   setValues({
-                    purchaseOrBooking: "",
+                    purchaseOrBooking: "Purchase",
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
                     mobileNumber: "",
@@ -343,7 +329,7 @@ const IntercityConsolidatedReportForm = ({
                     arrivalLocation: "",
                   });
                   fetchIntercityConsolidateData({
-                    purchaseOrBooking: "",
+                    purchaseOrBooking: "Purchase",
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),
                     mobileNumber: "",
@@ -358,9 +344,11 @@ const IntercityConsolidatedReportForm = ({
                     pageNumber: pageNumber,
                     PageSize: pageSize,
                   });
+                  SetcurrentPage(0);
                   setDepartureCities([]);
                   setArrivalCities([]);
                   setResetTrigger((prev) => prev + 1);
+                  
                 }}
               >
                 Reset

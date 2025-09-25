@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { getCurrentDate } from "../../../../../utils/TypographyHelper";
+import { getCurrentDate, getCurrentDateStartTime, getCurrentDateEndTime } from "../../../../../utils/TypographyHelper";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
 import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
 import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 const IntercityPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
@@ -17,9 +18,11 @@ const IntercityPaymentTransactionsForm = ({
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const initialValues = {
-    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
-    toDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
+    fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDateStartTime(),
+    toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDateEndTime(),
 
     paymentStatus: savedFilters?.paymentStatus
       ? savedFilters.paymentStatus
@@ -80,7 +83,9 @@ const IntercityPaymentTransactionsForm = ({
       destinationLocation:values.destinationLocation || "",
       PageIndex,
       pageSize,
+      
     });
+    SetcurrentPage(0);
   };
 
   return (
@@ -96,7 +101,7 @@ const IntercityPaymentTransactionsForm = ({
                 From Date
               </label>
               <Field
-                type="date"
+                type="datetime-local"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -119,11 +124,11 @@ const IntercityPaymentTransactionsForm = ({
                 To Date
               </label>
               <Field
-                type="date"
+                type="datetime-local"
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                min={values.fromDate || getCurrentDate()}
+                min={values.fromDate || getCurrentDateStartTime()}
                 onChange={(e) => {
                   const toDateValue = e.target.value;
                   setFieldValue("toDate", toDateValue);
@@ -162,6 +167,23 @@ const IntercityPaymentTransactionsForm = ({
                 placeholder="Enter mobile number"
                 className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Only allow digits and ensure it starts with 6-9
+                  const numericValue = value.replace(/[^0-9]/g, '');
+                  
+                  // Limit to 10 digits maximum
+                  if (numericValue.length > 10) {
+                    return; // Don't update if more than 10 digits
+                  }
+                  
+                  // If the value is not empty, check if it starts with 6-9
+                  if (numericValue.length > 0 && !/^[6-9]/.test(numericValue)) {
+                    return; // Don't update if it doesn't start with 6-9
+                  }
+                  
+                  setFieldValue("phoneNumber", numericValue);
+                }}
               />
             </div>
           {/* departure location */}
@@ -233,33 +255,25 @@ const IntercityPaymentTransactionsForm = ({
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem(
-                    "intercity-consolidated-report-filters"
+                    "intercity-payment-report-filters"
                   );
                   resetForm({
                     values: {
-                      fromDate: getCurrentDate(),
-                      toDate: getCurrentDate(),
-                      purchaseOrBooking: "",
-                      modeOfBooking: "",
-                      package: "",
-                      house: "",
+                      fromDate: getCurrentDateStartTime(),
+                      toDate: getCurrentDateEndTime(),
                       paymentStatus: "",
-                      paymentMode: "",
                       phoneNumber: "",
-                      transactionId: "",
+                      arrivalLocation: "",
+                      destinationLocation: "",
                     },
                   });
                   fetchIntercityPaymentTransactions({
-                    startDate: getCurrentDate(),
-                    endDate: getCurrentDate(),
-                    purchaseOrBooking: "",
-                    modeOfBooking: "",
-                    package: "",
-                    house: "",
+                    startDate: getCurrentDateStartTime(),
+                    endDate: getCurrentDateEndTime(),
                     paymentStatus: "",
-                    paymentMode: "",
                     phoneNumber: "",
-                    transactionId: "",
+                    arrivalLocation: "",
+                    destinationLocation: "",
                     PageIndex,
                     pageSize,
                   });

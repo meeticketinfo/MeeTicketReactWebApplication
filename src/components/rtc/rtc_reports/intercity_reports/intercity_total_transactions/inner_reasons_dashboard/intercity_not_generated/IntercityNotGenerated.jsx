@@ -58,10 +58,12 @@ const IntercityNotGenerated = () => {
       const response = await fetchCitiesData(q);
       if (response?.response?.result) {
         setDepartureCities(response.response.result);
+        setArrivalCities(response.response.result);
       }
     } catch (error) {
       console.error("Error fetching departure locations:", error);
       setDepartureCities([]);
+      setArrivalCities([]);
     } finally {
     }
   };
@@ -80,7 +82,7 @@ const IntercityNotGenerated = () => {
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchDepartureCities();
-    fetchArrivalCities();
+    // fetchArrivalCities();
   }, []);
 
   useEffect(() => {
@@ -234,37 +236,20 @@ const IntercityNotGenerated = () => {
                     <label className="block text-xs font-medium text-gray-700">
                       Bus Type
                     </label>
-                    <Select
-                value={selectedBusType}
-                onChange={(selectedOption) => setSelectedBusType(selectedOption)}
-                options={[
-                  { value: "", label: "All" },
-                  ...busTypeOptions
-                ]}
-                isSearchable={true}
-                isClearable={true}
-                placeholder="Search bus type..."
-                className="mt-1"
-                classNamePrefix="react-select"
-                filterOption={(option, inputValue) => {
-                  if (!inputValue) return true;
-                  return option.label.toLowerCase().startsWith(inputValue.toLowerCase());
-                }}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    minHeight: '33px',
-                    fontSize: '14px',
-                    borderRadius: '6px',
-                    borderColor: '#d1d5db',
-                   
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: '0px',
-                  }),
-                }}
-              />
+                    <Field
+                as="select"
+                name="busType"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-700">

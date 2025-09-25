@@ -1,45 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
-import {
-  getCurrentDate,
-} from "../../../../../utils/TypographyHelper";
 import IntercityPaymentTransactionsForm from "./IntercityPaymentTransactionsForm";
 import PopupModal from "../../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
-import { AiOutlineEye } from "react-icons/ai";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
-import { useAmrabadConsolidatedStore } from "../../../../../store/amrabad/reports/ConsolidatedStore";
+import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+
 function IntercityPaymentTransactionsList() {
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [verifyData, setVerifyData] = useState("");
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const [RegenerateTicketOrderId, setRegenerateTicketOrderId] = useState("");
+  const [RegenerateTicketData, setRegenerateTicketData] = useState("");
   const [openRegenerateTicketModal, setOpenRegenerateTicketModal] =
     useState(false);
   const {
     isFetchIntercityPaymentTransactionsLoading,
     intercityPaymentTransactions,
     fetchIntercityPaymentTransactions,
+    fetchIntercityVerifyStatus,
+    isFetchIntercityVerifyStatusLoading,
+    fetchIntercityPaymentTransactionRefund,
+    isFetchIntercityPaymentTransactionRefundLoading,
+    fetchIntercityRegenerateTicket,
+    isFetchIntercityRegenerateTicketLoading,
   } = useIntercityPaymentTransactionStore();
-  const {
-    fetchAmrabadVerifyStatus,
-    isFetchAmrabadVerifyStatusLoading,
-    fetchAmrabadPaymentTransactionRefund,
-    fetchAmrabadRegenerateTicket,
-    isFetchAmrabadRegenerateTicketLoading,
-  } = useAmrabadConsolidatedStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("intercity-payment-report-filters")
   );
-console.log("intercityPaymentTransactions",intercityPaymentTransactions);
   useEffect(() => {
     fetchIntercityPaymentTransactions({
-      startDate: savedFilters?.fromDate ?? getCurrentDate(),
-      endDate: savedFilters?.toDate ?? getCurrentDate(),
+      startDate: savedFilters?.fromDate ?? startOfDay,
+      endDate: savedFilters?.toDate ?? endOfDay,
       paymentStatus: savedFilters?.paymentStatus
         ? savedFilters.paymentStatus
         : "",
@@ -108,7 +105,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "acutalPaymentStatus",
+      field: "actualPaymentStatus",
       headerName: "Actual Payment Status",
       maxWidth: 200,
       headerClass: "text-blue-v2",
@@ -145,7 +142,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       maxWidth: 140,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
+        const isDisabled = !params.data.verifyStatus;
         // || params.data.isTicketGe nerated;
 
         return (
@@ -158,7 +155,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
               }`}
               onClick={() => {
                 if (!isDisabled) {
-                  setVerifyData(params.data.transaactionID);
+                  setVerifyData(params.data.orderID);
                   setOpenVerifyModal(true);
                 }
               }}
@@ -176,7 +173,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const isDisabled = params.data.isTicketGenerated;
+        const isDisabled = !params.data.generateTicket;
         // || params.data.isTicketGenerated;
 
         return (
@@ -189,7 +186,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
               }`}
               onClick={() => {
                 if (!isDisabled) {
-                  setRegenerateTicketOrderId(params.data.orderID);
+                  setRegenerateTicketData(params.data);
                   setOpenRegenerateTicketModal(true);
                 }
               }}
@@ -208,19 +205,19 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       //   hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
         // console.log("params",params)
-        const isDisabled = params.data.canInitiateRefund;
+        const isDisabled = !params.data.canBeRefundInitiate;
         return (
           <div className="flex justify-center mt-1">
             <>
               <button
                 className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
                   isDisabled
-                    ? "bg-blue-v2 text-white hover:bg-blue-v1"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-v2 text-white hover:bg-blue-v1"
                 }`}
-                // disabled={params.data.refundStatus != "Not Refunded"}
+                disabled={isDisabled}
                 onClick={() => {
-                  setRefundOrderId(params.data.transaactionID);
+                  setRefundOrderId(params.data.orderID);
                   setInitiatRefundModal(true);
                 }}
               >
@@ -235,30 +232,48 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
     },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: "Ticket",
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const PaytmStatus = params?.data?.acutalPaymentStatus;
-        const canView =
-          PaytmStatus &&
-          PaytmStatus === "TXN_SUCCESS" &&
-          params?.data?.amount > 0;
         return (
           <div className="flex justify-center mt-1">
-            {canView ? (
+            {(params?.data?.pnrNumber && params?.data?.tentativebookingId && !params?.data?.generateTicket && params?.data?.amount > 0) ? (
               <NavLink
                 end
-                to={`/intercity-admin/ticket-view-details/${params?.data?.orderID}`}
+                to={`/intercity-ticket-view-details/${params?.data?.pnrNumber}`}
                 className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View ticket"
               >
-                <span className="text-white text-base">
-                  <AiOutlineEye />
-                </span>
-                <span className="text-white">View ticket</span>
+                <span className="text-white">Onwards Journey</span>
+              </NavLink>
+            ) : (
+              <span className="text-gray-400">Not available</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: "Ticket",
+      maxWidth: 160,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => {
+        return (
+          <div className="flex justify-center mt-1">
+            {params?.data?.returnPNRNumber && params?.data?.tentativebookingId && !params?.data?.generateTicket && params?.data?.amount > 0 ? (
+              <NavLink
+                end
+                to={`/intercity-ticket-view-details/${params?.data?.returnPNRNumber}`}
+                className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View ticket"
+              >
+                <span className="text-white">Return Journey</span>
               </NavLink>
             ) : (
               <span className="text-gray-400">Not available</span>
@@ -333,23 +348,17 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
         fetchIntercityPaymentTransactions({
           startDate: savedFilters?.fromDate ?? getCurrentDate(),
           endDate: savedFilters?.toDate ?? getCurrentDate(),
-          purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
-          package: savedFilters?.package ?? "",
-          house: savedFilters?.house ?? "",
           paymentStatus: savedFilters?.paymentStatus
             ? savedFilters.paymentStatus
-            : "",
-          // paymentMode: savedFilters?.paymentMode
-          //   ? savedFilters.paymentMode
-          //   : "",
-          modeOfBooking: savedFilters?.modeOfBooking
-            ? savedFilters.modeOfBooking
             : "",
           phoneNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",
-          transactionId: savedFilters?.transactionId
-            ? savedFilters.transactionId
+          arrivalLocation: savedFilters?.arrivalLocation
+            ? savedFilters.arrivalLocation
+            : "",
+          destinationLocation: savedFilters?.destinationLocation
+            ? savedFilters.destinationLocation
             : "",
           PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
           pageSize: PAGE_LIMIT,
@@ -360,23 +369,33 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
   //   initiate refund
   const handleInitiateRefund = async () => {
     try {
-      const res = await fetchAmrabadPaymentTransactionRefund({
-        orderId: RefundOrderId,
-      });
+      const res = await fetchIntercityPaymentTransactionRefund(RefundOrderId);
       console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
-
+        const resultMsg = res.response?.data?.refundStatus;
+        console.log(resultMsg, "resultMsg");
         Swal.fire({
-          title: "Success!",
+          title: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "Success!"
+              : resultMsg === "TXN_FAILURE"
+              ? "Failed!"
+              : "Info!"
+          }`,
 
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
               ${resultMsg}
             </div>`,
 
           confirmButtonText: "OK",
-          icon: "success",
+          icon: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "success"
+              : resultMsg === "TXN_FAILURE"
+              ? "error"
+              : "info"
+          }`,
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
@@ -387,7 +406,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
           showConfirmButton: false,
         });
       } else {
-        setInitiatRefundModal(false);
+        setOpenVerifyModal(false);
         Swal.fire({
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
               ${res.response?.data?.message}
@@ -414,19 +433,39 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       });
     } finally {
       // Delay API call to ensure SweetAlert has closed
-      // loadRefundTransactionsReport(currentPage);
+      setTimeout(() => {
+        fetchIntercityPaymentTransactions({
+          startDate: savedFilters?.fromDate ?? startOfDay,
+          endDate: savedFilters?.toDate ?? endOfDay,
+          paymentStatus: savedFilters?.paymentStatus
+            ? savedFilters.paymentStatus
+            : "",
+          phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+          arrivalLocation:savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
+          destinationLocation:savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
+          PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
+          pageSize: PAGE_LIMIT,
+        });
+      }, 2100);
     }
   };
 
   const handleRegenerateTicket = async () => {
     try {
-      const res = await fetchAmrabadRegenerateTicket({
-        orderId: RegenerateTicketOrderId,
-      });
-      console.log("API Response:", res);
+      const res = await fetchIntercityRegenerateTicket(
+        {
+          "pnrNumber": RegenerateTicketData.returnPNRNumber ? RegenerateTicketData.returnPNRNumber : RegenerateTicketData.pnrNumber,
+          "paymentTransactionId": RegenerateTicketData.orderID,
+          "isReturnBooking": RegenerateTicketData.returnPNRNumber ? true : false,
+          "isTicketReGenerate": true,
+          "bookingDetailsId": RegenerateTicketData.bookingDetailsId,
+          "tentativeBookingId": RegenerateTicketData.tentativebookingId
+        }
+      );
+      console.log("Regenerate Ticket Response", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
+        const resultMsg = res.response?.data?.result?.message;
         Swal.fire({
           title: "Success!",
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
@@ -465,7 +504,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       setOpenRegenerateTicketModal(false);
       Swal.fire({
         html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-        ${err.response?.data?.message}
+        ${err.response?.data?.result?.message}
       </div>`,
         title: "Failed!",
         text: `Regenerate ticket failed. Please try again.`,
@@ -474,6 +513,21 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
       });
     } finally {
       setOpenRegenerateTicketModal(false);
+      // Delay API call to ensure SweetAlert has closed
+      setTimeout(() => {
+        fetchIntercityPaymentTransactions({
+          startDate: savedFilters?.fromDate ?? startOfDay,
+          endDate: savedFilters?.toDate ?? endOfDay,
+          paymentStatus: savedFilters?.paymentStatus
+            ? savedFilters.paymentStatus
+            : "",
+          phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
+          arrivalLocation:savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
+          destinationLocation:savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
+          PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
+          pageSize: PAGE_LIMIT,
+        });
+      }, 2100);
     }
   };
 
@@ -492,7 +546,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
           isFetchLoading={isFetchIntercityPaymentTransactionsLoading}
           isPagination={false}
           tableHeight={
-            intercityPaymentTransactions?.data?.length > 10 ? 560 : 330
+            intercityPaymentTransactions?.length > 10 ? 560 : 330
           }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
@@ -527,7 +581,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {isFetchAmrabadVerifyStatusLoading ? (
+              {isFetchIntercityVerifyStatusLoading ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"
@@ -619,7 +673,7 @@ console.log("intercityPaymentTransactions",intercityPaymentTransactions);
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {isFetchAmrabadRegenerateTicketLoading ? (
+              {isFetchIntercityRegenerateTicketLoading ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"

@@ -13,6 +13,8 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useIntercityRefundReportStore } from "../../../../../../store/intercity/reports/IntercityRefundReportStore";
+import { ToastContainer } from "react-toastify";
+import { useIntercityPaymentTransactionStore } from "../../../../../../store/rtc/IntercityPaymentTransactionStore";
 const IntercityRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -32,6 +34,8 @@ const IntercityRefundTransactionsReport = () => {
     isInitiateRefund,
   } = useIntercityRefundReportStore();
 
+  const { fetchIntercityPaymentTransactionRefund } =
+    useIntercityPaymentTransactionStore();
   const columnDefs = [
     {
       headerName: "S.No",
@@ -85,8 +89,16 @@ const IntercityRefundTransactionsReport = () => {
           </div>
         );
       },
+
       flex: 1,
       headerClass: "text-blue-v2",
+    },
+    {
+      field: "refundStatus",
+      headerName: "Refund Status",
+      // maxWidth: "120",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "mobileNumber",
@@ -99,20 +111,20 @@ const IntercityRefundTransactionsReport = () => {
     {
       field: "departureLocation",
       headerName: "Departure Location",
-      flex:1,
+      flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
     },
-     {
+    {
       field: "arrivalLocation",
       headerName: "Arrival Location",
-      flex:1,
+      flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value || params.value === " " ? params.value : "N/A",
     },
-     {
+    {
       field: "amount",
       headerName: "Amount",
       maxWidth: "100",
@@ -120,7 +132,7 @@ const IntercityRefundTransactionsReport = () => {
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-     {
+    {
       field: "noOfTickets",
       headerName: "Ticket Quantity",
       maxWidth: "130",
@@ -149,20 +161,13 @@ const IntercityRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-   
+
     {
       field: "bookingID",
       headerName: "Booking ID",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "refundStatus",
-      headerName: "Refund Status",
-      // maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
     },
   ];
 
@@ -173,9 +178,9 @@ const IntercityRefundTransactionsReport = () => {
           cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
         mobileNumber: searchParams.get("mobileNumber") || "",
-        destinationLocation:searchParams.get("destinationLocation") || "",
-        arrivalLocation:searchParams.get("arrivalLocation") || "",
-        status:
+        departureLocation: searchParams.get("departureLocation") || "",
+        arrivalLocation: searchParams.get("arrivalLocation") || "",
+        refundStatus:
           searchParams.get("RefundStatus") === "null"
             ? ""
             : searchParams.get("RefundStatus") || "",
@@ -197,21 +202,33 @@ const IntercityRefundTransactionsReport = () => {
   const handleInitiateRefund = async () => {
     console.log("RefundOrderId", RefundOrderId);
     try {
-      const res = await fetchIntercityInitiateRefundOrderId(RefundOrderId);
+      const res = await fetchIntercityPaymentTransactionRefund(RefundOrderId);
       console.log("API Response:", res);
       setInitiatRefundModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
-
+        const resultMsg = res.response?.data?.refundStatus;
+        console.log(resultMsg, "resultMsg");
         Swal.fire({
-          title: "Success!",
+          title: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "Success!"
+              : resultMsg === "TXN_FAILURE"
+              ? "Failed!"
+              : "Info!"
+          }`,
 
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
               ${resultMsg}
             </div>`,
 
           confirmButtonText: "OK",
-          icon: "success",
+          icon: `${
+            resultMsg === "TXN_SUCCESS"
+              ? "success"
+              : resultMsg === "TXN_FAILURE"
+              ? "error"
+              : "info"
+          }`,
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
@@ -291,6 +308,7 @@ const IntercityRefundTransactionsReport = () => {
             </div>
           </div>
           <div>
+            <ToastContainer />
             <IntercityRefundTransactionsReportForm
               pageNumber={currentPage + 1}
               pageSize={PAGE_LIMIT}

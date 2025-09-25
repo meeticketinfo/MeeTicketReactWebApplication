@@ -286,26 +286,43 @@ function AmrabadPaymentTransactionsList() {
 
       if (res.response?.data?.status === 200) {
         setOpenVerifyModal(false);
-        const resultMsg = res.response?.data?.data?.resultStatus;
-       
-        Swal.fire({
-          title: "Success!",
-
-          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-           ${resultMsg}
-         </div>`,
-
-          confirmButtonText: "OK",
-          icon: "success",
-          customClass: {
-            confirmButton: "swal-custom-btn",
-            popup: "elegant-swal-popup",
-            icon: "small-swal-icon",
-          },
-          timer: 2000,
-          width: "360px",
-          showConfirmButton: false,
-        });
+        const resultStatus = res.response?.data?.data?.resultStatus;
+        
+        if (resultStatus === "TXN_FAILURE") {
+          Swal.fire({
+            title: "Transaction Failed!",
+            html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+             ${resultStatus}
+           </div>`,
+            confirmButtonText: "OK",
+            icon: "error",
+            customClass: {
+              confirmButton: "swal-custom-btn",
+              popup: "elegant-swal-popup",
+              icon: "small-swal-icon",
+            },
+            timer: 2000,
+            width: "360px",
+            showConfirmButton: false,
+          });
+        } else {
+          Swal.fire({
+            title: "Success!",
+            html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+             ${resultStatus}
+           </div>`,
+            confirmButtonText: "OK",
+            icon: "success",
+            customClass: {
+              confirmButton: "swal-custom-btn",
+              popup: "elegant-swal-popup",
+              icon: "small-swal-icon",
+            },
+            timer: 2000,
+            width: "360px",
+            showConfirmButton: false,
+          });
+        }
       } else {
         setOpenVerifyModal(false);
         Swal.fire({

@@ -25,7 +25,6 @@ const BusPassBookingReportList = () => {
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const [RegeneratePassPayload, setRegeneratePassPayload] = useState(null);
-  console.log("RegeneratePassPayload", RegeneratePassPayload);
   const [ViewTicketDetails, setViewTicketDetails] = useState({});
 
   const [openRegenerateTicketModal, setOpenRegenerateTicketModal] =
@@ -175,18 +174,18 @@ const BusPassBookingReportList = () => {
       const res = await fetchRtcBusPassInitiateData(RefundOrderId);
       console.log("API Response:", res);
       setInitiatRefundModal(false);
-      if (res.response?.status === 200) {
+      if (res.response) {
         const resultMsg = res.response?.data?.resultMsg;
         const resultStatus = res.response?.data?.resultStatus;
         Swal.fire({
-          title: resultStatus,
+          title: "Success!",
 
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-               ${resultMsg}
-              </div>`,
+    ${res.response}
+  </div>`,
 
           confirmButtonText: "OK",
-          icon: resultStatus === "TXN_SUCCESS" ? "success" : "info",
+          icon: "success",
           customClass: {
             confirmButton: "swal-custom-btn",
             popup: "elegant-swal-popup",
@@ -200,9 +199,9 @@ const BusPassBookingReportList = () => {
         setInitiatRefundModal(false);
         Swal.fire({
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-                ${res.response?.data?.message}
+                ${res.response}
               </div>`,
-          icon: "info",
+          icon: "success",
           width: "360px",
 
           customClass: {
@@ -247,13 +246,12 @@ const BusPassBookingReportList = () => {
   };
 
   const handleRegenerateTicket = async () => {
-    //  console.log("RegeneratePassPayload",RegeneratePassPayload)
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
       console.log("API Response:", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
-        const resultMsg = res.response?.data?.message;
+        const resultMsg = res.response?.messageType;
         Swal.fire({
           title: "Success!",
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
@@ -298,6 +296,31 @@ const BusPassBookingReportList = () => {
       });
     } finally {
       setOpenRegenerateTicketModal(false);
+      setTimeout(() => {
+        fetchRtcBusPassBookingData({
+          fromDate: savedFilters?.fromDate
+            ? savedFilters.fromDate
+            : getCurrentDate(),
+          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+          mobileNumber: savedFilters?.phoneNumber
+            ? savedFilters.phoneNumber
+            : "",
+          transactionId: savedFilters?.transactionId
+            ? savedFilters.transactionId
+            : "",
+          BusPassType: savedFilters?.BusPassType
+            ? savedFilters.BusPassType
+            : "",
+          typeOfPayment: savedFilters?.typeOfPayment
+            ? savedFilters.typeOfPayment
+            : "",
+          bookingStatus: savedFilters?.bookingStatus
+            ? savedFilters.bookingStatus
+            : "",
+          pageNumber: currentPage + 1,
+          pageSize: PAGE_LIMIT,
+        });
+      }, 2100);
     }
   };
 
@@ -480,7 +503,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 140,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.paytmPaymentStatus === "TXN_SUCCESS";
+          const isDisabled = params.data.verifyStatus !== true;
           // || params.data.isTicketGenerated;
 
           return (
@@ -511,7 +534,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isPassGenerated;
+          const isDisabled = params.data.isRegenerateEligible !== true && params.data.isRenewal !== 1;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
@@ -545,23 +568,24 @@ const BusPassBookingReportList = () => {
         //   hide: email === "esdadmin@gmail.com",
         cellRenderer: (params) => {
           // console.log("params",params)
-          // const isDisabled = params.data.canInitiateRefund;
+          const isDisabled = params.data.isRefundEligible !== true;
 
-          const isDisabled = true;
+          // const isDisabled = true;
           return (
             <div className="flex justify-center mt-1">
               <>
                 <button
                   className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
                     isDisabled
-                      ? "bg-blue-v2 text-white hover:bg-blue-v1"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-v2 text-white hover:bg-blue-v1"
                   }`}
                   // disabled={params.data.refundStatus != "Not Refunded"}
                   onClick={() => {
                     setRefundOrderId(params.data.orderId);
                     setInitiatRefundModal(true);
                   }}
+                  disabled={isDisabled}
                 >
                   Initiate
                 </button>
@@ -944,7 +968,7 @@ const BusPassBookingReportList = () => {
               }}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
             >
-              {false ? (
+              {isFetchRtcGeneratePassData ? (
                 <span className="px-8">
                   <l-tailspin
                     size="15"
