@@ -36,7 +36,6 @@ const AmrabadPosReportList = () => {
     AmrabadPosReportData,
     isFetchAmrabadPosReportData,
   } = useAmrabadPosStore();
-  console.log("AmrabadPosReportData", AmrabadPosReportData);
   useEffect(() => {
     fetchAmrabadPosReportData({
       fromDate: savedFilters?.fromDate ?? getCurrentDateAtMidnight(),
