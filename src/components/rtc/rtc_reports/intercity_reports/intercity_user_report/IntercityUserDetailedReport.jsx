@@ -198,7 +198,7 @@ const IntercityUserDetailedReport = () => {
 
   useEffect(() => {
     loadUserReport(currentPage);
-  }, [currentPage, PAGE_LIMIT, currentFilters]);
+  }, [currentPage, PAGE_LIMIT]);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
