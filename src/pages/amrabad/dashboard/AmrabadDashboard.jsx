@@ -106,7 +106,7 @@ function AmrabadDashboard() {
             </div>
           </div>
           <div className="text-xs sm:text-sm text-gray-500 font-medium">
-            Total Bookings
+            Total Bookings Count
           </div>
         </div>
 
@@ -149,7 +149,25 @@ function AmrabadDashboard() {
             Total Current Amount
           </div>
         </div>
-
+          {/* Total Refunded Process Amount Card */}
+        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+              <CountUp
+                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalRefundedProcessAmount || 0}
+                duration={2}
+                prefix="₹"
+                separator=","
+              />
+            </div>
+            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+              <FaIndianRupeeSign className="text-blue-600 text-lg" />
+            </div>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Total Refund Processed Amount
+          </div>
+        </div>
         {/* Total Refunded Amount Card */}
         <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
           <div className="flex items-center justify-between mb-2">
@@ -170,25 +188,7 @@ function AmrabadDashboard() {
           </div>
         </div>
 
-        {/* Total Refunded Process Amount Card */}
-        <div className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-          <div className="flex items-center justify-between mb-2">
-            <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
-              <CountUp
-                end={amrabadDashboardBookingsFullSummaryData?.overall?.totalRefundedProcessAmount || 0}
-                duration={2}
-                prefix="₹"
-                separator=","
-              />
-            </div>
-            <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
-              <FaIndianRupeeSign className="text-blue-600 text-lg" />
-            </div>
-          </div>
-          <div className="text-xs sm:text-sm text-gray-500 font-medium">
-            Total Refunded Process Amount
-          </div>
-        </div>
+      
       </div>
       {/* Munnanur Tiger Reserve Package Dashboard */}
       <div className="mt-4">
