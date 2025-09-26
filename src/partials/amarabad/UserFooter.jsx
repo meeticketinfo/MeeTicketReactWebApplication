@@ -14,7 +14,7 @@ const footerLinks = [
     title: 'Support',
     links: [
       { label: 'Help & FAQs', href: '/amrabad-resort/help-faqs' },
-      { label: 'Contact Support', href: '/amrabad-resort/coming-soon' },
+      { label: 'Contact Support', href: '/amrabad-resort/contact-us' },
     ],
   },
   {

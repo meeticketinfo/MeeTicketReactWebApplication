@@ -45,7 +45,7 @@ export const UserHeader = ({ isScrolled = false }) => {
     },
     {
       label: 'Support',
-      to: '/amrabad-resort/coming-soon'
+      to: '/amrabad-resort/contact-us'
     },
   ]
   return (
