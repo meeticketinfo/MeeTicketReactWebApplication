@@ -78,7 +78,7 @@ function AmrabadDashboard() {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  // disabled={isFetchAllMetroSummaryReportsLoading}
+                // disabled={isFetchAllMetroSummaryReportsLoading}
                 >
                   Search
                 </button>
@@ -198,6 +198,81 @@ function AmrabadDashboard() {
       {/* Graphical Representation Dashboard */}
       <div className="min-h-0 max-h-full overflow-hidden">
         <GraphicalRepresentationDashboard />
+      </div>
+      {/* View Points Counts */}
+      <div className="mt-4">
+        <h3 className="text-xl text-gray-800 mt-6 mb-4">POS View Points Summary Count</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-0 mb-6">
+          {amrabadDashboardBookingsFullSummaryData?.viewPoints?.map((item, index) => (
+            <div key={index} className="bg-[#EFF6FF] rounded-xl p-3 shadow-sm relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-md sm:text-lg text-gray-700 font-medium">
+                  {item.username}
+                </div>
+                <div className="w-8 h-8 bg-[#D9DEF7] rounded-lg flex items-center justify-center">
+                  <IoTicketSharp className="text-blue-600 text-lg" />
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-xs sm:text-sm text-gray-500 font-medium">
+                    Total Count
+                  </div>
+                  <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+                    <CountUp
+                      end={item.confirmedTransactions || 0}
+                      duration={2}
+                      prefix=""
+                      separator=","
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="text-xs sm:text-sm text-gray-500 font-medium">
+                    Total Amount
+                  </div>
+                  <div className="text-md sm:text-xl font-bold text-gray-700 leading-tight">
+                    <CountUp
+                      end={item.totalAmountCollected || 0}
+                      duration={2}
+                      prefix=""
+                      separator=","
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-xs text-gray-500 font-medium">
+                    Total Cash
+                  </div>
+                  <div className="text-md font-bold text-gray-700 leading-tight">
+                    <CountUp
+                      end={item.cashAmount || 0}
+                      duration={2}
+                      prefix=""
+                      separator=","
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-xs text-gray-500 font-medium">
+                    Total UPI
+                  </div>
+                  <div className="text-md font-bold text-gray-700 leading-tight">
+                    <CountUp
+                      end={item.upiAmount || 0}
+                      duration={2}
+                      prefix=""
+                      separator=","
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
