@@ -80,7 +80,7 @@ const AmarabadPckagesNames = () => {
                   </div>
                 </div>
                 <div className="text-xs sm:text-sm text-gray-500 font-medium">
-                  Overall House Bookings
+                 Total Bookings Count
                 </div>
               </div>
 
