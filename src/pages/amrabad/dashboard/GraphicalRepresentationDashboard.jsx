@@ -656,7 +656,7 @@ const HouseBarChart = ({ data, title, valueKey, labelKey, yAxisLabel }) => {
       padding: {
         top: 20,
         right: 20,
-        bottom: 60,
+        bottom: 80,
         left: 60,
       },
       series: [
@@ -669,11 +669,27 @@ const HouseBarChart = ({ data, title, valueKey, labelKey, yAxisLabel }) => {
           stroke: "#1E40AF",
           strokeWidth: 1,
           cornerRadius: 4,
+          minBarHeight: 2, // Ensure minimum height for small values
           shadow: {
             enabled: true,
             color: "rgba(0, 0, 0, 0.1)",
             offset: [2, 2],
             blur: 4,
+          },
+          highlightStyle: {
+            fill: "#60A5FA",
+            stroke: "#3B82F6",
+            strokeWidth: 2,
+          },
+          tooltip: {
+            enabled: true,
+            renderer: ({ datum, xKey, yKey }) => {
+              const value = datum[yKey] || 0;
+              return {
+                title: datum[xKey] || "Room",
+                content: `${yKey}: ${value.toLocaleString("en-US")}`,
+              };
+            },
           },
         },
       ],
@@ -686,14 +702,14 @@ const HouseBarChart = ({ data, title, valueKey, labelKey, yAxisLabel }) => {
             fontSize: 12,
           },
           label: {
-            rotation: 0,
+            rotation: -45,
             fontSize: 10,
             maxWidth: 120,
             formatter: ({ value }) => {
-              // Truncate long room names and add ellipsis if needed
-              if (value && value.length > 15) {
-                return value.substring(0, 15) + "...";
-              }
+                // Truncate long room names and add ellipsis if needed
+                if (value && value.length > 15) {
+                  return value.substring(0, 15) + "...";
+                }
               return value;
             },
           },
@@ -721,10 +737,20 @@ const HouseBarChart = ({ data, title, valueKey, labelKey, yAxisLabel }) => {
       },
       tooltip: {
         enabled: true,
+        class: "ag-chart-tooltip",
+        tracking: true,
+        delay: 0,
+        hideDelay: 200,
+        position: {
+          type: "pointer",
+          xOffset: 10,
+          yOffset: 10,
+        },
         formatter: ({ datum, xKey, yKey }) => {
+          const value = datum[yKey] || 0;
           return {
             title: datum[xKey] || "Room",
-            content: `${yKey}: ${datum[yKey]?.toLocaleString("en-US") || 0}`,
+            content: `${yKey}: ${value.toLocaleString("en-US")}`,
           };
         },
       },
@@ -911,11 +937,23 @@ const DetailedRoomBarChart = ({
           stroke: "#007aff",
           strokeWidth: 1,
           cornerRadius: 4,
+          minBarHeight: 2, // Ensure minimum height for small values
+          highlightStyle: {
+            fill: "#4A90E2",
+            stroke: "#007aff",
+            strokeWidth: 2,
+          },
           tooltip: {
+            enabled: true,
+            class: "ag-chart-tooltip",
+            tracking: true,
+            delay: 0,
+            hideDelay: 200,
             renderer: ({ datum, xKey, yKey }) => {
+              const value = datum[yKey] || 0;
               return {
-                title: datum[xKey], // Package name
-                content: `${yAxisLabel}: ${Math.round(datum[yKey] || 0)}`, // Value
+                title: datum[xKey] || "Package", // Package name
+                content: `${yAxisLabel}: ${value.toLocaleString("en-US")}`, // Value with proper formatting
               };
             },
           },
@@ -931,9 +969,17 @@ const DetailedRoomBarChart = ({
             color: "#374151",
           },
           label: {
-            rotation: 0, // No rotation needed
+            rotation: -45, // Diagonal labels for better visibility
             fontSize: 10,
             color: "#6B7280",
+            maxWidth: 120,
+            formatter: ({ value }) => {
+              // Truncate long names and add ellipsis if needed
+              if (value && value.length > 15) {
+                return value.substring(0, 15) + "...";
+              }
+              return value;
+            },
           },
         },
         {
@@ -954,7 +1000,18 @@ const DetailedRoomBarChart = ({
       ],
       legend: {
         enabled: false,
-        
+      },
+      tooltip: {
+        enabled: true,
+        class: "ag-chart-tooltip",
+        tracking: true,
+        delay: 0,
+        hideDelay: 200,
+        position: {
+          type: "pointer",
+          xOffset: 10,
+          yOffset: 10,
+        },
       },
       background: {
         fill: "transparent",
@@ -962,7 +1019,7 @@ const DetailedRoomBarChart = ({
       padding: {
         top: 10,
         right: 10,
-        bottom: 60,
+        bottom: 80, // Increased bottom padding for diagonal labels
         left: 10, // Normal left padding since we're using vertical bars
       },
     };
