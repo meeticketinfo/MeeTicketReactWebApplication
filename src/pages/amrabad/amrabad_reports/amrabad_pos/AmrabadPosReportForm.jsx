@@ -65,6 +65,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
+    SetcurrentPage(0)
     localStorage.setItem("amrabad-pos-report-filters", JSON.stringify(values));
   };
   return (
@@ -269,6 +270,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                   pageNumber: pageNumber,
                   PageSize: pageSize,
                 });
+                SetcurrentPage(0)
               }}
             >
               Reset
