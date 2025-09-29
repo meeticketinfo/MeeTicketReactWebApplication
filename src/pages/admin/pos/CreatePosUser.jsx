@@ -6,17 +6,20 @@ import Select from "react-select";
 
 import useAuthStore from "../../../store/authStore";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
+import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
 const CreatePosUser = ({ setIsPosCreateVisible }) => {
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
     useUnifiedFacilityStore();
+  const { savePosUser, isSavePosUserDetailsLoading } =
+    PosUserCreationStore  ();
   useEffect(() => {
     fetchAllUnifiedFacilities(role);
   }, []);
   const facilityOptions =
     allUnifiedFacilities?.map((facility) => ({
-      value: facility.id,
+      value: facility.facilityMasterId,
       label: facility.name,
     })) || [];
 
@@ -53,9 +56,11 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
-    console.log("values", values);
-    toast.success("Pos User Created Successfully");
-    resetForm();
+   
+    const res=savePosUser(values);
+    console.log("res", res);
+    // toast.success("Pos User Created Successfully");
+    // resetForm();
   };
   return (
     <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
@@ -315,7 +320,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                 className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                 // disabled={isSaveGateKeeperDetailsLoading}
               >
-                {false
+                {isSavePosUserDetailsLoading
                   ? "Saving..."
                   : false
                   ? "Edit Pos User"

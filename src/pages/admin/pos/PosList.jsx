@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
+import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
+import { LuClipboardEdit } from "react-icons/lu";
 
 const PosList = () => {
+  const { allPosUsers, isFetchAllPosUsersLoading, fetchAllPosUsers } =
+    PosUserCreationStore();
+  useEffect(() => {
+    fetchAllPosUsers();
+  }, []);
+  console.log("allPosUsers", allPosUsers);
   const columnDefs = [
     {
       headerName: "S.No",
@@ -11,15 +19,15 @@ const PosList = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "Department",
-      headerName: "Department",
+      field: "posAdminName",
+      headerName: "POS Admin Name",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
 
     {
-      field: "EmailId",
+      field: "emailId",
       headerName: "Email Id",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -27,7 +35,7 @@ const PosList = () => {
     },
 
     {
-      field: "phoneNumber",
+      field: "mobileNumber",
       headerName: "Phone Number",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -36,9 +44,31 @@ const PosList = () => {
     {
       field: "status",
       headerName: "Status",
+      maxWidth: 100,
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      cellRenderer: (params) => (
+        <>
+          <div className={`flex items-center gap-2 py-2 ${params.value? "text-green-500  text-shadow-md" : "text-red-400  text-shadow-md"}`}>
+            {params.value? "Active" : "In Active"}
+          </div>
+        </>
+      ),
+    },
+    {
+      field: "facilitiesAssigned",
+      headerName: "facilities Assigned",
+      flex: 1,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <>
+          <div className={"flex items-center gap-1 py-2"}>
+            {params.value.map((item,i) => (
+              <span key={item}>{item.value} {i<params.value.length-1?" ,":""}</span>
+            ))}
+          </div>
+        </>
+      ),
     },
     {
       headerName: "Actions",
@@ -67,9 +97,9 @@ const PosList = () => {
     <div>
       <AgGridTable
         ExportName="Pos"
-        // rowData={MetroTotalTransactionsData}
+        rowData={allPosUsers}
         columnDefs={columnDefs}
-        // isFetchLoading={isMetroTotalTransactionsLoading}
+        isFetchLoading={isFetchAllPosUsersLoading}
         // isPagination={false}
         // IsReactPaginate={true}
         // setPageLimit={setPAGE_LIMIT}
