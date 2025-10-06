@@ -7,13 +7,18 @@ import Select from "react-select";
 import useAuthStore from "../../../store/authStore";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
 import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
-const CreatePosUser = ({ setIsPosCreateVisible }) => {
+const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
     useUnifiedFacilityStore();
-  const { savePosUser, isSavePosUserDetailsLoading } =
-    PosUserCreationStore  ();
+  const {
+    savePosUser,
+    isSavePosUserDetailsLoading,
+    posUserEditDetails,
+    setCurrentPosUserEditDetails,
+  } = PosUserCreationStore();
+
   useEffect(() => {
     fetchAllUnifiedFacilities(role);
   }, []);
@@ -22,24 +27,28 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
       value: facility.facilityMasterId,
       label: facility.name,
     })) || [];
+  const AssignedFaciltiy = posUserEditDetails.facilitiesAssigned?.map(
+    (item) => item.id
+  );
 
   const initialValues = {
-    FirstName: "",
-    LastName: "",
-    EmailId: "",
-    PhoneNumber: "",
-    pin: "",
-    status: "",
-    AssignFaciltiy: [],
+    userId: isEdit ? posUserEditDetails.userId : "",
+    FirstName: isEdit ? posUserEditDetails.firstName : "",
+    LastName: isEdit ? posUserEditDetails.lastName : "",
+    EmailId: isEdit ? posUserEditDetails.emailId : "",
+    PhoneNumber: isEdit ? posUserEditDetails.mobileNumber : "",
+    pin: isEdit ? posUserEditDetails.pin : "",
+    status: isEdit ? posUserEditDetails.status : "",
+    AssignFaciltiy: isEdit ? AssignedFaciltiy : [],
   };
 
   const validationSchema = Yup.object({
     FirstName: Yup.string()
       .required("First Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "First Name cannot be more than 50 characters"),
     LastName: Yup.string()
       .required("Last Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "First Name cannot be more than 50 characters"),
     EmailId: Yup.string().required("Email Id is required"),
 
     PhoneNumber: Yup.string()
@@ -56,11 +65,28 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
-   
-    const res=savePosUser(values);
-    console.log("res", res);
-    // toast.success("Pos User Created Successfully");
-    // resetForm();
+    try {
+      const res = await savePosUser(values, isEdit);
+      console.log("res", res);
+      if (res.data.status === 200) {
+        toast.success(
+          isEdit
+            ? "Pos User Updated Successfully"
+            : "Pos User Created Successfully"
+        );
+        setTimeout(() => {
+          setIsPosCreateVisible(false);
+          setIsEdit(false);
+          setCurrentPosUserEditDetails({});
+          resetForm();
+        }, 1000);
+      } else {
+        toast.error("something went wrong");
+      }
+    } catch (err) {
+      console.log("err", err);
+      toast.error(err.response.data);
+    }
   };
   return (
     <div className="bg-zinc-50 p-2 shadow-lg rounded-lg">
@@ -73,13 +99,14 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
         {({ setFieldValue }) => (
           <Form>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
-              {/* User Select */}
+              {/* First Name */}
               <div>
                 <label htmlFor="User" className="block text-xs font-medium">
                   First Name <span className="text-red-500">*</span>
                 </label>
                 <Field
                   name="FirstName"
+                  maxLength={50}
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter first name"
@@ -98,6 +125,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
                 </label>
                 <Field
                   name="LastName"
+                  maxLength={50}
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter last name"
@@ -185,7 +213,7 @@ const CreatePosUser = ({ setIsPosCreateVisible }) => {
               </div>
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium">Status</label>
+                <label className="block text-sm font-medium">Status<span className="text-red-500">*</span></label>
                 <Field
                   autoComplete="off"
                   as="select"

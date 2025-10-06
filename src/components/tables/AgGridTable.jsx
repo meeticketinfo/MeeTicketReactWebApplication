@@ -28,7 +28,7 @@ const AgGridTable = ({
   handlePageClick,
   currentPage,
   showTotalCount = false,
-  totalCount,
+  totalCount=0,
   SetcurrentPage,
   showSearch = true,
 }) => {
@@ -187,6 +187,8 @@ const AgGridTable = ({
             sortable: true,
           }))}
           quickFilterText={quickFilterText}
+          rowSelection="single"
+          suppressRowClickSelection={false}
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance
             params.api.paginationGoToPage(activePage); // Navigate to the saved active page
@@ -198,6 +200,10 @@ const AgGridTable = ({
                 setActivePage(currentPage);
               }
             }
+          }}
+          onRowSelected={(event) => {
+            // Optional: Handle row selection events
+            console.log('Row selected:', event.data);
           }}
         />
 

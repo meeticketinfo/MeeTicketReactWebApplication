@@ -131,8 +131,8 @@ export const API_ENDPOINTS = {
       GET_GATE_KEEPERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e76`,
     },
     POS_USER: {
-      ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddNewGatekeeper`,
-      UPDATE_POS_USER: `${API_BASE_URL}Master/UpdateGatekeeper`,
+      ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
+      UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
       GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
     },
     SCANNED_USER: {

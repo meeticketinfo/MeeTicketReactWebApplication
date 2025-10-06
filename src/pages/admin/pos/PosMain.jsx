@@ -4,21 +4,23 @@ import BackButton from "../../../components/BackButton";
 import PosList from "./PosList";
 import CreatePosUser from "./CreatePosUser";
 
+
 const PosMain = () => {
   const [isPosCreateVisible, setIsPosCreateVisible] = useState(false);
-
+  const [isEdit, setIsEdit] = useState(false);
   const togglePosCreate = () => {
     setIsPosCreateVisible((prev) => !prev);
   };
   return (
     <AdminLayout>
+     
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         {/* Dashboard actions */}
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           {/* Left: Title */}
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Pos
+              POS
             </h1>
           </div>
           {/* Right: Actions */}
@@ -42,9 +44,17 @@ const PosMain = () => {
         {/* Cards */}
 
         {isPosCreateVisible ? (
-          <CreatePosUser setIsPosCreateVisible={setIsPosCreateVisible} />
+          <CreatePosUser
+            setIsPosCreateVisible={setIsPosCreateVisible}
+            setIsEdit={setIsEdit}
+            isEdit={isEdit}
+          />
         ) : (
-          <PosList />
+          <PosList
+            setIsEdit={setIsEdit}
+            isEdit={isEdit}
+            setIsPosCreateVisible={setIsPosCreateVisible}
+          />
         )}
       </div>
     </AdminLayout>

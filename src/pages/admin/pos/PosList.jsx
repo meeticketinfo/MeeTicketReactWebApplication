@@ -1,11 +1,54 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
 import { LuClipboardEdit } from "react-icons/lu";
+import PosListForm from "./PosListForm";
+import { ToastContainer } from "react-toastify";
 
-const PosList = () => {
-  const { allPosUsers, isFetchAllPosUsersLoading, fetchAllPosUsers } =
-    PosUserCreationStore();
+const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const getCurrentDateAtMidnight = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}T00:00`;
+};
+
+const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
+  const {
+    allPosUsers,
+    isFetchAllPosUsersLoading,
+    fetchAllPosUsers,
+    setCurrentPosUserEditDetails,
+  } = PosUserCreationStore();
+  const savedFilters = JSON.parse(
+    localStorage.getItem("pos-user-report-filters")
+  );
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+  useEffect(() => {
+    fetchAllPosUsers({
+      fromDate: savedFilters?.fromDate ?? "",
+      toDate: savedFilters?.toDate ?? "",
+      mobileNumber: savedFilters?.mobileNumber ? savedFilters.mobileNumber : "",
+      pageNumber: currentPage + 1,
+      PageSize: PAGE_LIMIT,
+    });
+  }, [currentPage, PAGE_LIMIT]);
+
   useEffect(() => {
     fetchAllPosUsers();
   }, []);
@@ -29,6 +72,7 @@ const PosList = () => {
     {
       field: "emailId",
       headerName: "Email Id",
+
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -38,6 +82,7 @@ const PosList = () => {
       field: "mobileNumber",
       headerName: "Phone Number",
       flex: 1,
+      maxWidth: 130,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
@@ -49,8 +94,14 @@ const PosList = () => {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
-          <div className={`flex items-center gap-2 py-2 ${params.value? "text-green-500  text-shadow-md" : "text-red-400  text-shadow-md"}`}>
-            {params.value? "Active" : "In Active"}
+          <div
+            className={`flex items-center justify-center font-semibold gap-2  ${
+              params.value
+                ? "text-green-500   text-shadow-md"
+                : "text-red-400   text-shadow-md"
+            }`}
+          >
+            <span className="">{params.value ? "Active" : "In Active"}</span>
           </div>
         </>
       ),
@@ -63,8 +114,10 @@ const PosList = () => {
       cellRenderer: (params) => (
         <>
           <div className={"flex items-center gap-1 py-2"}>
-            {params.value.map((item,i) => (
-              <span key={item}>{item.value} {i<params.value.length-1?" ,":""}</span>
+            {params.value.map((item, i) => (
+              <span key={item}>
+                {item.value} {i < params.value.length - 1 ? " ," : ""}
+              </span>
             ))}
           </div>
         </>
@@ -73,6 +126,7 @@ const PosList = () => {
     {
       headerName: "Actions",
       field: "actions",
+      maxWidth: 100,
       cellRenderer: (params) => (
         <>
           <div
@@ -81,7 +135,14 @@ const PosList = () => {
                     `}
           >
             {/* edit */}
-            <button className="" onClick={() => {}}>
+            <button
+              className=""
+              onClick={() => {
+                setIsEdit(true);
+                setIsPosCreateVisible(true);
+                setCurrentPosUserEditDetails(params.data);
+              }}
+            >
               <span className="">
                 <LuClipboardEdit className="text-[24px] text-blue-600 " />
               </span>
@@ -95,21 +156,28 @@ const PosList = () => {
   ];
   return (
     <div>
+      <ToastContainer />
+      <PosListForm
+        pageNumber={currentPage + 1}
+        pageSize={PAGE_LIMIT}
+        SetcurrentPage={setCurrentPage}
+      />
       <AgGridTable
-        ExportName="Pos"
+        ExportName="Pos Users"
         rowData={allPosUsers}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllPosUsersLoading}
-        // isPagination={false}
-        // IsReactPaginate={true}
-        // setPageLimit={setPAGE_LIMIT}
-        // pageLimit={PAGE_LIMIT}
-        // handlePageClick={handlePageClick}
-        // currentPage={currentPage}
-        // showTotalCount={true}
-        // totalCount={MetroTotalTransactionsData[0]?.totalCount}
-        // tableHeight={MetroTotalTransactionsData.length > 10 ? 550 : 300}
-        // SetcurrentPage={setCurrentPage}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        showTotalCount={true}
+        totalCount={allPosUsers&&allPosUsers[0]?.totalCount}
+        tableHeight={allPosUsers?.length > 10 ? 550 : 300}
+        SetcurrentPage={setCurrentPage}
+        showSearch={false}
       />
     </div>
   );
