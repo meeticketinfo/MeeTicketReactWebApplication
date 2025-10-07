@@ -94,7 +94,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
-          <div className={"flex items-center justify-center gap-1 "}>
+          <div className={"flex items-center  gap-1 "}>
             {params.value.map((item, i) => (
               <span key={i}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
