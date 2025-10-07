@@ -71,7 +71,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
 
     {
       field: "emailId",
-      headerName: "Email Id",
+      headerName: "Email ID",
 
       flex: 1,
       headerClass: "text-blue-v2",
@@ -89,7 +89,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     {
       field: "status",
       headerName: "Status",
-      maxWidth: 100,
+      maxWidth: 140,
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
@@ -97,8 +97,8 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
           <div
             className={`flex items-center justify-center font-semibold gap-2  ${
               params.value
-                ? "text-green-500   text-shadow-md"
-                : "text-red-400   text-shadow-md"
+                ? "text-green-500  text-shadow-md"
+                : "text-red-400 text-shadow-md"
             }`}
           >
             <span className="">{params.value ? "Active" : "In Active"}</span>
@@ -108,12 +108,12 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     },
     {
       field: "facilitiesAssigned",
-      headerName: "facilities Assigned",
+      headerName: "Facilities Assigned",
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
-          <div className={"flex items-center gap-1 py-2"}>
+          <div className={"flex items-center justify-center gap-1 "}>
             {params.value.map((item, i) => (
               <span key={item}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
@@ -130,9 +130,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
       cellRenderer: (params) => (
         <>
           <div
-            className={`
-                      "flex items-center justify-around py-2"
-                    `}
+            className={` flex items-center justify-around py-2`}
           >
             {/* edit */}
             <button
@@ -163,7 +161,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         SetcurrentPage={setCurrentPage}
       />
       <AgGridTable
-        ExportName="Pos Users"
+        ExportName="POS Users"
         rowData={allPosUsers}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllPosUsersLoading}
@@ -174,7 +172,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        totalCount={allPosUsers&&allPosUsers[0]?.totalCount}
+        totalCount={allPosUsers && allPosUsers[0]?.totalCount}
         tableHeight={allPosUsers?.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
