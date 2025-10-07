@@ -910,7 +910,7 @@ export const routes = [
   },
   // create pos user
   {
-    path: "/Pos",
+    path: "/pos-admin",
     element: <ProtectedRoute element={<PosMain />} />,
   },
   //intercity

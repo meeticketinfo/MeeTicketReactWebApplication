@@ -81,8 +81,8 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
       if (res.data.status === 200) {
         toast.success(
           isEdit
-            ? "Pos User Updated Successfully"
-            : "Pos User Created Successfully"
+            ? "POS Admin Updated Successfully"
+            : "POS Admin Created Successfully"
         );
         setTimeout(() => {
           setIsPosCreateVisible(false);
@@ -365,8 +365,8 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                 {isSavePosUserDetailsLoading
                   ? "Saving..."
                   : isEdit
-                  ? "Edit POS User"
-                  : "Create POS User"}
+                  ? "Edit POS Admin"
+                  : "Create POS Admin"}
               </button>
             </div>
           </Form>

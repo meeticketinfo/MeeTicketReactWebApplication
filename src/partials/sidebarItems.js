@@ -112,9 +112,9 @@ const sidebarItems = [
         path: "/gate-keepers",
       },
       {
-        title: "POS",
+        title: "POS Admin",
         icon: GrAtm ,
-        path: "/pos",
+        path: "/pos-admin",
       },
       {
         title: "Payments",
@@ -516,7 +516,7 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        title: "Packages",
+        titlFe: "Packages",
         icon: TbReportSearch,
         path: "/amrabad-packages",
       },

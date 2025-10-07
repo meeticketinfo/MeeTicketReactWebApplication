@@ -64,7 +64,7 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
-  "pos"
+  "pos-admin"
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
