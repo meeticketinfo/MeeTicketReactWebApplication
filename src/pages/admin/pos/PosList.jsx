@@ -5,23 +5,7 @@ import { LuClipboardEdit } from "react-icons/lu";
 import PosListForm from "./PosListForm";
 import { ToastContainer } from "react-toastify";
 
-const getCurrentDate = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
 
-const getCurrentDateAtMidnight = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}T00:00`;
-};
 
 const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   const {
@@ -52,7 +36,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   useEffect(() => {
     fetchAllPosUsers();
   }, []);
-  console.log("allPosUsers", allPosUsers);
+  
   const columnDefs = [
     {
       headerName: "S.No",
@@ -72,7 +56,6 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     {
       field: "emailId",
       headerName: "Email ID",
-
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -82,20 +65,20 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
       field: "mobileNumber",
       headerName: "Phone Number",
       flex: 1,
-      maxWidth: 130,
+
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "status",
       headerName: "Status",
-      maxWidth: 140,
+
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
           <div
-            className={`flex items-center justify-center font-semibold gap-2  ${
+            className={`flex   font-semibold gap-2  ${
               params.value
                 ? "text-green-500  text-shadow-md"
                 : "text-red-400 text-shadow-md"
@@ -115,7 +98,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         <>
           <div className={"flex items-center justify-center gap-1 "}>
             {params.value.map((item, i) => (
-              <span key={item}>
+              <span key={i}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
               </span>
             ))}
@@ -126,12 +109,10 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     {
       headerName: "Actions",
       field: "actions",
-      maxWidth: 100,
+
       cellRenderer: (params) => (
         <>
-          <div
-            className={` flex items-center justify-around py-2`}
-          >
+          <div className={` flex items-center justify-around py-2`}>
             {/* edit */}
             <button
               className=""
@@ -153,6 +134,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     },
   ];
   return (
+    <>
     <div>
       <ToastContainer />
       <PosListForm
@@ -178,6 +160,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         showSearch={false}
       />
     </div>
+    </>
   );
 };
 

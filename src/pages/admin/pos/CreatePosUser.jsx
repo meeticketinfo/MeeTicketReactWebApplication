@@ -77,7 +77,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
     };
     try {
       const res = await savePosUser(payload, isEdit);
-      console.log("res", res);
+    
       if (res.data.status === 200) {
         toast.success(
           isEdit
