@@ -10,8 +10,12 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     fetchAmrabadPosReportData,
     fetchAmrabadPosVehicleTypesData,
     AmrabadPosVehicleTypesData,
+    AmrabadPosUsersData,
+    isFetchAmrabadPosUsersData,
+    fetchAmrabadPosUsersData,
   } = useAmrabadPosStore();
   useEffect(() => {
+    fetchAmrabadPosUsersData();
     fetchAmrabadPosVehicleTypesData();
   }, []);
   const getCurrentDate = () => {
@@ -36,10 +40,13 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     fromDate: savedFilters?.fromDate || getCurrentDateAtMidnight(),
     toDate: savedFilters?.toDate || getCurrentDate(),
     adminMobileNumber: savedFilters?.adminMobileNumber
-      ? savedFilters.mobileNumber
+      ? savedFilters.adminMobileNumber
+      : "",
+    userName: savedFilters?.userName
+      ? savedFilters.userName
       : "",
     userMobileNumber: savedFilters?.userMobileNumber
-      ? savedFilters.mobileNumber
+      ? savedFilters.userMobileNumber
       : "",
     paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
     vehicleNumber: savedFilters?.vehicleNumber
@@ -52,12 +59,13 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   };
 
   const onSubmit = (values) => {
-    console.log("values", values);
+    // console.log("values", values);
     fetchAmrabadPosReportData({
       ...values,
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
+    SetcurrentPage(0)
     localStorage.setItem("amrabad-pos-report-filters", JSON.stringify(values));
   };
   return (
@@ -108,6 +116,24 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               }}
             />
           </div>
+          {/* Transaction Status */}
+          <div>
+            <label className="block text-xs font-medium text-gray-700">
+              View Point Name
+            </label>
+            <Field
+              as="select"
+              name="userName"
+              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+            >
+              <option value=""> {isFetchAmrabadPosUsersData ? "Loading..." : "All"}</option>
+              {AmrabadPosUsersData?.map((item) => (
+                <option value={item.userName}>
+                  {item.username}
+                </option>
+              ))}
+            </Field>
+          </div>
           {/* mobile no */}
           <div>
             <label className="block text-xs font-medium text-gray-700">
@@ -118,7 +144,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               name="adminMobileNumber"
               maxLength="10"
               className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              placeholder="Enter Adimn mobile Num..."
+              placeholder="Enter Admin mobile Num..."
               onKeyPress={(e) => {
                 if (!/^\d$/.test(e.key)) e.preventDefault();
               }}
@@ -137,7 +163,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
             >
               <option value="">All</option>
               {AmrabadPosVehicleTypesData?.map((item) => (
-                <option value={item.vehicleTypeId}>
+                <option value={item.vehicleTypeName}>
                   {item.vehicleTypeName}
                 </option>
               ))}
@@ -223,6 +249,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 setValues({
                   fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDate(),
+                  userName: "",
                   adminMobileNumber: "",
                   userMobileNumber: "",
                   paymentMode: "",
@@ -233,6 +260,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 fetchAmrabadPosReportData({
                   fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDate(),
+                  userName: "",
                   adminMobileNumber: "",
                   userMobileNumber: "",
                   paymentMode: "",
@@ -242,6 +270,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                   pageNumber: pageNumber,
                   PageSize: pageSize,
                 });
+                SetcurrentPage(0)
               }}
             >
               Reset

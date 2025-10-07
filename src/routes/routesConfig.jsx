@@ -195,6 +195,7 @@ import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/Amrab
 import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
 import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
+import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 
 export const routes = [
   {
@@ -649,6 +650,10 @@ export const routes = [
   {
     path: "/amrabad-resort/help-faqs",
     element: <HelpFaqs />,
+  },
+  {
+    path: "/amrabad-resort/contact-us",
+    element: <AmrabadContactUs />,
   },
   {
     path: "/amrabad-resort/login",

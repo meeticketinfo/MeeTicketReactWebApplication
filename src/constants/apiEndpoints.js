@@ -380,6 +380,7 @@ export const API_ENDPOINTS = {
       GET_HOUSES: `${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
       GET_COUNTRIES: `${AMRABAD_API_BASE_URL}Master/GetAllCountries`,
       GET_STATES: `${AMRABAD_API_BASE_URL}Master/GetAllStates`,
+      GET_POS_USERS: `${AMRABAD_API_BASE_URL}Parking/GetPOSUsers`,
     },
     REPORTS: {
       GET_CONSOLIDATED_BOOKING_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
