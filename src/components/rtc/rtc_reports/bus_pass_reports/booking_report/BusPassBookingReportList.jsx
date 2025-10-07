@@ -591,7 +591,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible !== true && params.data.isRenewal !== 1;
+          const isDisabled = params.data.isRegenerateEligible !== true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">

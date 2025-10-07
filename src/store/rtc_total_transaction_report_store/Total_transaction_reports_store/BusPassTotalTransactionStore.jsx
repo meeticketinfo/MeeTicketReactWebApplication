@@ -278,14 +278,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             
             // Renewal: isRegenerateEligible === true AND isRenewal === 1
             isRenewal = isRegenerateEligible && isRenewalFlag;
-            
-            console.log("firstRecord conditions:", {
-              isRegenerateEligible,
-              isGeneral,
-              isRenewal: isRenewalFlag,
-              isNewPass,
-              isRenewal
-            });
+
           }
         }
       } else {
@@ -311,14 +304,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             
             // Renewal: isRegenerateEligible === true AND isRenewal === 1
             isRenewal = isRegenerateEligible && isRenewalFlag;
-            
-            console.log("matchingRecord conditions:", {
-              isRegenerateEligible,
-              isGeneral,
-              isRenewal: isRenewalFlag,
-              isNewPass,
-              isRenewal
-            });
           }
         }
       }
@@ -332,13 +317,12 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
           .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
       }
-      //  else {
-      //   // Default to new pass if no conditions are met
-      //   endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
-      //     .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
-      // }
+       else {
+        // Default to new pass if no conditions are met
+        endpoint = API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+          .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
+      }
       
-      console.log("Selected endpoint:", endpoint);
 
       // Step 1.6: Set routeId to null if not provided
       if (!parsedPayload.routeId || parsedPayload.routeId === "") {
@@ -805,7 +789,64 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           RtcGeneratePassData: finalResponse,
         });
 
-        return { response: finalResponse };
+        // Call GetTicketAndPassDetailsById API after payment response
+        try {
+          // Extract applicationNo from the final response
+          const applicationNo = finalResponse.applicationNo;
+          
+          // Extract userId from bookingRequestJson in current state
+          let userId = null;
+          const currentState = useBusPassTotalTransactionStore.getState();
+          
+          if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+            // Find the matching record
+            const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+              (record) =>
+                record.orderId === parsedPayload.bpOrderId ||
+                record.orderId === parsedPayload.orderId
+            );
+            
+            if (matchingRecord && matchingRecord.bookingRequestJson) {
+              try {
+                const bookingRequestData = typeof matchingRecord.bookingRequestJson === 'string' 
+                  ? JSON.parse(matchingRecord.bookingRequestJson) 
+                  : matchingRecord.bookingRequestJson;
+                
+                if (bookingRequestData && bookingRequestData.createdBy) {
+                  userId = bookingRequestData.createdBy;
+                }
+              } catch (parseError) {
+                console.error('Error parsing bookingRequestJson:', parseError);
+              }
+            }
+          }
+
+          // Call the API if we have both applicationNo and userId
+          if (applicationNo && userId) {
+            const ticketDetailsResponse = await apiService.get(
+              `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID}?id=${applicationNo}&userId=${userId}`
+            );
+            
+            // Add ticket details to the final response
+            const enhancedFinalResponse = {
+              ...finalResponse,
+              ticketDetails: ticketDetailsResponse.data,
+            };
+
+            set({
+              RtcGeneratePassData: enhancedFinalResponse,
+            });
+
+            return { response: enhancedFinalResponse };
+          } else {
+            console.warn('Missing applicationNo or userId for GetTicketAndPassDetailsById API call');
+            return { response: finalResponse };
+          }
+        } catch (ticketDetailsError) {
+          console.error('GetTicketAndPassDetailsById API error:', ticketDetailsError);
+          // Return original response even if ticket details API fails
+          return { response: finalResponse };
+        }
       } catch (paymentError) {
         // Return original response even if payment response fails
         return { response: response.data };
