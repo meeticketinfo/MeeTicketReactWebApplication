@@ -33,9 +33,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     });
   }, [currentPage, PAGE_LIMIT]);
 
-  useEffect(() => {
-    fetchAllPosUsers();
-  }, []);
+ 
   
   const columnDefs = [
     {
