@@ -1,0 +1,364 @@
+import { Formik, Form, Field } from "formik";
+import { useEffect, useMemo, useState } from "react";
+import { getCurrentDate } from "../../../../../utils/TypographyHelper";
+import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
+
+import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
+import { useIntercityConsolidateStore } from "./IntercityConsolidateStore";
+import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
+
+const IntercityConsolidatedReportForm = ({
+  pageNumber,
+  pageSize,
+  SetcurrentPage,
+}) => {
+ 
+  const [resetTrigger, setResetTrigger] = useState(0);
+
+  const { fetchIntercityConsolidateData } = useIntercityConsolidateStore();
+  const {
+    fetchCitiesData,
+    fetchIntercityBusTypesData,
+    fetchIntercitySeatLayoutsData,
+    IntercityBusTypesData,
+    IntercitySeatLayoutsData,
+  } = useIntercityMastersStore();
+
+  // Separate state for each dropdown to prevent interference
+  const [departureCities, setDepartureCities] = useState([]);
+  const [arrivalCities, setArrivalCities] = useState([]);
+
+  useEffect(() => {
+    fetchIntercityBusTypesData();
+    fetchIntercitySeatLayoutsData();
+  }, [fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData]);
+
+  const fetchDepartureCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setDepartureCities(response?.response?.result);
+      }
+    } catch (error) {
+      console.error("Error fetching departure cities:", error);
+      setDepartureCities([]);
+    } finally {
+    }
+  };
+
+  const fetchArrivalCities = async (q) => {
+    try {
+      const response = await fetchCitiesData(q);
+      if (response?.response?.result) {
+        setArrivalCities(response?.response?.result);
+      }
+    } catch (error) {
+      console.error("Error fetching arrival cities:", error);
+      setArrivalCities([]);
+    } finally {
+    }
+  };
+
+  const initialValues = {
+    purchaseOrBooking: "Purchase",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    mobileNumber: "",
+    bookingDate: "",
+    PNRNumber: "",
+    paymentMode: "",
+    orderId: "",
+    transactionId: "",
+    typeOfBus: "",
+    departureLocation: "",
+    arrivalLocation: "",
+  };
+
+  const onSubmit = (values) => {
+    console.log("values", values);
+    fetchIntercityConsolidateData({
+      ...values,
+      pageNumber: pageNumber,
+      PageSize: pageSize,
+    });
+    localStorage.setItem(
+      "intercity-consolidated-filters",
+      JSON.stringify(values)
+    );
+    SetcurrentPage(0);
+  };
+
+  return (
+    <>
+      <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        {({ values, setFieldValue, setValues }) => (
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
+            {/* purchase date */}
+            <div>
+              <label className="block text-sm font-medium">
+                Purchase Date/ Booking Date
+              </label>
+              <Field
+                as="select"
+                name="purchaseOrBooking"
+                className={` block w-full px-2 py-1 border border-gray-300
+             rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+              >
+                <option value="Purchase">Purchase Date</option>
+                <option value="Booking">Booking Date</option>
+              </Field>
+            </div>
+            {/* from date */}
+            <div>
+              <label
+                htmlFor="fromDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                From Date
+              </label>
+              <Field
+                type="date"
+                name="fromDate"
+                className={`mt-1 block w-full px-2 py-1 border
+                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                // min={getCurrentDate()}
+                onChange={(e) => {
+                  const fromDateValue = e.target.value;
+                  setFieldValue("fromDate", fromDateValue);
+                  if (new Date(fromDateValue) > new Date(values.toDate)) {
+                    // Automatically update toDate if it's earlier than fromDate
+                    setFieldValue("toDate", fromDateValue);
+                  }
+                }}
+              />
+            </div>
+            {/* to date */}
+            <div>
+              <label
+                htmlFor="toDate"
+                className="block text-xs font-medium text-gray-700"
+              >
+                To Date
+              </label>
+              <Field
+                type="date"
+                name="toDate"
+                className={`mt-1 block w-full px-2 py-1 border
+                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                min={values.fromDate || getCurrentDate()}
+                onChange={(e) => {
+                  const toDateValue = e.target.value;
+                  setFieldValue("toDate", toDateValue);
+                }}
+              />
+            </div>
+            {/* mobile no */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Mobile No
+              </label>
+              <Field
+                type="text"
+                name="mobileNumber"
+                maxLength="10"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter mobile number"
+                onKeyPress={(e) => {
+                  if (!/^\d$/.test(e.key)) e.preventDefault();
+                }}
+              />
+            </div>
+            {/* pnr no / return pnr */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                PNR No / Return PNR No
+              </label>
+              <Field
+                type="text"
+                name="PNRNumber"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter PNR"
+              />
+            </div>
+            {/* type of bus */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Type of Bus
+              </label>
+              <Field
+                as="select"
+                name="typeOfBus"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                {IntercityBusTypesData?.filter((item) => item.isActive).map(
+                  (item) => (
+                    <option value={item.busTypesName}>
+                      {item.busTypesName}
+                    </option>
+                  )
+                )}
+              </Field>
+            </div>
+            {/* payment mode */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Payment Mode
+              </label>
+              <Field
+                as="select"
+                name="paymentMode"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">All</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+              </Field>
+            </div>
+            {/* order id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Order ID
+              </label>
+              <Field
+                type="text"
+                name="orderId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Order ID"
+              />
+            </div>
+            {/* transaction id */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Transaction ID
+              </label>
+              <Field
+                type="text"
+                name="transactionId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                placeholder="Enter Transaction ID"
+              />
+            </div>
+            {/* departure location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+
+              <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
+                name="departureLocation"
+                value={values.departureLocation}
+                onChange={(value) => setFieldValue("departureLocation", value)}
+                onSearch={fetchDepartureCities}
+                options={departureCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search departure city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={loadingCities}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.departureLocation}
+              />
+            </div>
+            {/* arrival location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Arrival Location
+              </label>
+
+              <SearchableDropdown
+                key={`arrival-${resetTrigger}`}
+                name="arrivalLocation"
+                value={values.arrivalLocation}
+                onChange={(value) => setFieldValue("arrivalLocation", value)}
+                onSearch={fetchArrivalCities}
+                options={arrivalCities}
+                displayKey="cityName"
+                valueKey="cityId"
+                placeholder="Search arrival city..."
+                minSearchLength={2}
+                debounceMs={300}
+                className="mt-1"
+                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                // loading={isFetchIntercityRefundTransactionsReport}
+                noResultsText="No cities found"
+                loadingText="Searching cities..."
+                initialDisplayText={values.arrivalLocation}
+                uniqueId="arrival-location-dropdown"
+              />
+            </div>
+
+            {/* Optional fields like Department/Location removed to avoid undefined data sources */}
+            {/* submit */}
+            <div className="flex items-end gap-2">
+              <button
+                type="submit"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                // disabled={isFetchAllMetroSummaryReportsLoading}
+              >
+                Search
+              </button>
+              <button
+                type="button"
+                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                // disabled={isFetchAllMetroSummaryReportsLoading}
+                onClick={() => {
+                  localStorage.removeItem("intercity-consolidated-filters");
+                  setValues({
+                    purchaseOrBooking: "Purchase",
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    bookingDate: "",
+                    PNRNumber: "",
+                    paymentMode: "",
+                    orderId: "",
+                    transactionId: "",
+                    typeOfBus: "",
+                    departureLocation: "",
+                    arrivalLocation: "",
+                  });
+                  fetchIntercityConsolidateData({
+                    purchaseOrBooking: "Purchase",
+                    fromDate: getCurrentDate(),
+                    toDate: getCurrentDate(),
+                    mobileNumber: "",
+                    bookingDate: "",
+                    PNRNumber: "",
+                    paymentMode: "",
+                    orderId: "",
+                    transactionId: "",
+                    typeOfBus: "",
+                    departureLocation: "",
+                    arrivalLocation: "",
+                    pageNumber: pageNumber,
+                    PageSize: pageSize,
+                  });
+                  SetcurrentPage(0);
+                  setDepartureCities([]);
+                  setArrivalCities([]);
+                  setResetTrigger((prev) => prev + 1);
+                  
+                }}
+              >
+                Reset
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+export default IntercityConsolidatedReportForm;

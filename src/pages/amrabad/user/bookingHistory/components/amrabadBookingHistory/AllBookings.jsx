@@ -11,7 +11,13 @@ const AllBookings = ({ data, searchQuery }) => {
   //     </div>
   //   );
   // }
-  const filteredData = data.filter((booking) => {
+  
+  // Remove duplicate bookings based on bookingId
+  const uniqueBookings = data.filter((booking, index, self) => 
+    index === self.findIndex(b => b.bookingId === booking.bookingId)
+  );
+
+  const filteredData = uniqueBookings.filter((booking) => {
     const packageName = booking?.packageName?.toLowerCase().trim();
     const houseName = booking?.houseName?.toLowerCase().trim();
     const bookingId = booking?.bookingId?.toString();

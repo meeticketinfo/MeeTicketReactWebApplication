@@ -23,7 +23,7 @@ export const amrabadAuthStore = create(
       setIsLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
       setIsRegisterIn: (isRegisterIn) => set({ isRegisterIn }),
       AmrabadLogin: async (loginData) => {
-        localStorage.clear();
+        localStorage.removeItem("auth-store");
         set({ AmrabadLoginLoading: true });
         try {
           const response = await apiService.post(

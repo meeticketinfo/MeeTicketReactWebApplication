@@ -13,7 +13,7 @@ export const useTransactionHandler = (usePaymentStore, useCartStore, userDetails
         parkId: "101",
         departmentId: 38,
         bookingDate: toLocalISOString(),
-        bookingType: "Web",
+        bookingType: "Website",
         mobileNumber: userDetails?.PhoneNumber,
         bookingRequestjson: {
             firstName: formValues.firstName,
@@ -74,16 +74,16 @@ export const useTransactionHandler = (usePaymentStore, useCartStore, userDetails
     const handlePaymentSuccess = async (formValues, orderId) => {
         try {
             // Step 1: Call orderStatusCall first
-            console.log("Calling orderStatusCall for orderId:", orderId);
+            // console.log("Calling orderStatusCall for orderId:", orderId);
             const orderStatusResponse = await orderStatusCall(orderId);
-            console.log("orderStatusCall response:", orderStatusResponse);
+            // console.log("orderStatusCall response:", orderStatusResponse);
 
             if (orderStatusResponse.statusCode === 200 || orderStatusResponse.status === 200) {
                 // Step 2: If orderStatusCall is successful, call addNewBookingDetails
-                console.log("Order status confirmed, calling addNewBookingDetails");
+                // console.log("Order status confirmed, calling addNewBookingDetails");
                 const bookingDetailsData = createBookingDetailsData(formValues, orderId);
                 const bookingResponse = await addNewBookingDetails(bookingDetailsData);
-                console.log("addNewBookingDetails response:", bookingResponse);
+                // console.log("addNewBookingDetails response:", bookingResponse);
 
                 return bookingResponse;
             } else {

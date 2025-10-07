@@ -130,11 +130,16 @@ export const SupportAdmin = [
 
 export const RtcAdmin = [
   "dashboard",
-  // "day-pass",
-  "ordinary-pass",
-  "mst-pass",
-  "express-pass",
-  "student-pass",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
   // "pending-pass",
 ];
 
@@ -156,4 +161,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
+  "amrabad-pos-reports",
 ];
