@@ -195,6 +195,7 @@ import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/Amrab
 import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
 import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
+import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 
 export const routes = [
   {
@@ -468,6 +469,10 @@ export const routes = [
   {
     path: "/nodal-officer",
     element: <ProtectedRoute element={<NodalOfficer />} />,
+  },
+  {
+    path: "/department-admin",
+    element: <ProtectedRoute element={<DepartmentAdmin />} />,
   },
   {
     path: "/mobile-bookings",
