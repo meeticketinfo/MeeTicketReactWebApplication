@@ -28,7 +28,7 @@ const AgGridTable = ({
   handlePageClick,
   currentPage,
   showTotalCount = false,
-  totalCount,
+  totalCount=0,
   SetcurrentPage,
   showSearch = true,
 }) => {
@@ -105,6 +105,11 @@ console.log(params);
           ) {
             return ""; // empty string
           }
+          
+          if (columnId === "facilitiesAssigned" && Array.isArray(value)) {
+            return value.map((item, i) => `${item.value}${i < value.length - 1 ? "," : ""}`).join(" ");
+          }
+
           // Ensure "Refund ID" and empty values show "N/A"
           if (value === null || value === undefined || value === "") {
             return "N/A";
@@ -232,6 +237,8 @@ console.log(params);
             sortable: true,
           }))}
           quickFilterText={quickFilterText}
+          rowSelection="single"
+          suppressRowClickSelection={false}
           onGridReady={(params) => {
             setGridApi(params.api); // Store the API instance
             params.api.paginationGoToPage(activePage); // Navigate to the saved active page
@@ -243,6 +250,10 @@ console.log(params);
                 setActivePage(currentPage);
               }
             }
+          }}
+          onRowSelected={(event) => {
+            // Optional: Handle row selection events
+            console.log('Row selected:', event.data);
           }}
         />
 

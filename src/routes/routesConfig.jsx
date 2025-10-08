@@ -155,6 +155,7 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
+import PosMain from "../pages/admin/pos/PosMain";
 import BusPassUserReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_reports/BusPassUserReport";
 import BusPassUserDetailedReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserDetailedReport";
 import BusPassUserTransactionsOrderTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserTransactionsOrderTracker";
@@ -912,7 +913,11 @@ export const routes = [
       <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder />} />
     ),
   },
-
+  // create pos user
+  {
+    path: "/pos-admin",
+    element: <ProtectedRoute element={<PosMain />} />,
+  },
   //intercity
   {
     path: "/intercity-consolidated-report",
