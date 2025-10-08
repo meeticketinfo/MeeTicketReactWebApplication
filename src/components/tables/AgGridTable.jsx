@@ -103,6 +103,14 @@ const AgGridTable = ({
             return "";
           }
 
+          // Handle facilitiesAssigned field for Excel export
+          if (params.column.getColId() === "facilitiesAssigned") {
+            if (!value || !Array.isArray(value)) return "N/A";
+            return value.map((item, i) => 
+              `${item.value}${i < value.length - 1 ? " ," : ""}`
+            ).join("");
+          }
+
           // Ensure "Refund ID" and empty values show "N/A"
           if (value === null || value === undefined || value === "") {
             return "N/A";

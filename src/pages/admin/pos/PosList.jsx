@@ -52,7 +52,6 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   useEffect(() => {
     fetchAllPosUsers();
   }, []);
-  console.log("allPosUsers", allPosUsers);
   const columnDefs = [
     {
       headerName: "S.No",
@@ -117,6 +116,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
             {params.value.map((item, i) => (
               <span key={item}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
+                
               </span>
             ))}
           </div>
