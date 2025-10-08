@@ -5,7 +5,6 @@ import NodalOfficerList from "../../../components/user_management/NodalOfficerLi
 import AgGridTable from "../../../components/tables/AgGridTable";
 import BackButton from "../../../components/BackButton";
 import { useNodalOfficerStore } from "../../../store/masters/nodalOfficerStore";
-import AgGridTableV2 from "../../../components/tables/AgGridTableV2";
 import DepartmentAdminList from "../../../components/user_management/DepartmentAdminList";
 import DepartmentAdminCreate from "../../../components/user_management/DepartmentAdminCreate";
 
@@ -37,91 +36,6 @@ export default function DepartmentAdmin() {
     setIsNodalOfficerCreateVisible((prev) => !prev);
     setIsNodalOfficerEditVisible(false);
   };
-  const nodalOfficerColumnDefs = [
-    {
-      headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      minWidth: 80, // Set minimum width to enforce a narrow column
-      maxWidth: 80,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "name",
-      headerName: "Location Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "entityTypeName",
-      headerName: "Location Category",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "departmentName",
-      headerName: "Department",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "name",
-      headerName: "Address",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueGetter: (params) => {
-        const { street1, street2 } = params.data;
-        return street1 || street2
-          ? `${street1 || ""}, ${street2 || ""}`
-          : "N/A";
-      },
-    },
-
-    {
-      field: "state",
-      headerName: "State",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "zipCode",
-      headerName: "Pincode",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "isActive",
-      headerName: "Status",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <span
-            className={`${
-              params.value
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
-            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-          >
-            {" "}
-            {params.value ? "Active" : "Inactive"}
-          </span>
-        </div>
-      ),
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
-  ];
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -162,15 +76,6 @@ export default function DepartmentAdmin() {
               isNodalOfficerEditVisible={isNodalOfficerEditVisible}
               setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
             />
-            <div className="mt-2">
-              {isNodalOfficerEditVisible && (
-                <AgGridTableV2
-                  rowData={allNodalOfficerParks || []}
-                  columnDefs={nodalOfficerColumnDefs}
-                  isFetchLoading={isFetchAllNodalOfficerParksLoading}
-                />
-              )}
-            </div>
           </>
         ) : (
           <DepartmentAdminList

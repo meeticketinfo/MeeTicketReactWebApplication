@@ -94,6 +94,11 @@ export const API_ENDPOINTS = {
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },
+    DEPARTMENT_ADMIN: {
+      GET_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/GetDepartmentAdmin`,
+      ADD_NEW_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/AddDepartmentAdmin`,
+      UPDATE_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/UpdateDepartmentAdmin`,
+    },
     FACILITY: {
       GET_FACILITIES: `v2/Master/GetAllFacilities`,
       GET_FACILITIES_NODAL_OFFICER: `NodalOfficer/GetAllFacilities?parkId=`,

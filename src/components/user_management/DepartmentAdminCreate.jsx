@@ -1,130 +1,115 @@
 // import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useParkStore } from "../../store/masters/parksStore";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
-import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
-import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
+import { DepartmentAdminStore } from "../../store/masters/departmentAdminStore";
+import Select from "react-select";
 
-const    DepartmentAdminCreate = ({
+const DepartmentAdminCreate = ({
   setIsNodalOfficerCreateVisible,
   isNodalOfficerEditVisible,
   setIsNodalOfficerEditVisible,
 }) => {
   const {
-    saveNodalOfficerDetails,
-    isSaveNodalOfficerDetailsLoading,
-    NodalOfficersEditDetails,
-  } = useNodalOfficerStore();
-  const { allParks, fetchAllParks } = useParkStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
+    savePosUser,
+    isSaveDepartmentAdminDetailsLoading,
+    departmentAdminEditDetails,
+  } = DepartmentAdminStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes,isFetchAllDepartmentTypesLoading } =
     useDepartmentTypesStore();
-  const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+    const departmentOptions =
+    allDepartmentTypes?.map((department) => ({
+      value: department.departmentId,
+      label: department.departmentName,
+    })) || [];
+  
 
   useEffect(() => {
-    fetchAllParks();
     fetchAllDepartmentTypes();
-    fetchAllEntityTypes();
   }, []);
 
   // console.log(allDepartmentTypes , 'departmenrts')
   const initialValues = {
-    id: isNodalOfficerEditVisible ? NodalOfficersEditDetails.id : "",
-    departmentId: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.departmentId
-      : "",
+    userId: isNodalOfficerEditVisible ? departmentAdminEditDetails?.userId || departmentAdminEditDetails?.id || "" : "",
+    departmentIds: isNodalOfficerEditVisible
+      ? (Array.isArray(departmentAdminEditDetails?.departmentAssigned)
+          ? departmentAdminEditDetails.departmentAssigned.map((d) => d.id)
+          : (departmentAdminEditDetails?.departmentIds || []))
+      : [],
     firstName: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.firstName
+      ? departmentAdminEditDetails?.firstName || ""
       : "",
     middleName: "",
     lastName: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.lastName
+      ? departmentAdminEditDetails?.lastName || ""
       : "",
-    emailId: isNodalOfficerEditVisible ? NodalOfficersEditDetails.emailId : "",
+    emailId: isNodalOfficerEditVisible ? departmentAdminEditDetails?.emailId || "" : "",
     phoneNumber: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.phoneNumber
+      ? (departmentAdminEditDetails?.phoneNumber || departmentAdminEditDetails?.mobileNumber || "")
       : "",
     password: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.password
+      ? (departmentAdminEditDetails?.password || "")
       : "",
-    // roleId: isNodalOfficerEditVisible ? NodalOfficersEditDetails.roleId : "",
     IsActive: isNodalOfficerEditVisible
-      ? NodalOfficersEditDetails.isActive
+      ? (departmentAdminEditDetails?.status ?? true)
       : true,
   };
   const createValidationSchema = Yup.object({
-    departmentId: Yup.string().required("Department is required"),
+    departmentIds: Yup.array().of(Yup.string().required()).min(1, "Select at least one department").required("Department is required"),
     firstName: Yup.string()
       .required("First Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "First Name cannot be more than 50 characters")
+      .matches(/^[a-zA-Z0-9]*$/, "First Name must contain only alphanumeric characters (no spaces or special characters)"),
     lastName: Yup.string()
       .required("Last Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "Last Name cannot be more than 50 characters")
+      .matches(/^[a-zA-Z0-9]*$/, "Last Name must contain only alphanumeric characters (no spaces or special characters)"),
     emailId: Yup.string().required("Email Id is required"),
-    phoneNumber: Yup.number().required("Phone Number is required"),
+    phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit mobile number"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
-      .required("Password is required")
-      .min(10, "Password cannot be less than 10 characters")
-      .max(16, "Password cannot be more than 16 characters")
-      .matches(
-        /[A-Z]/,
-        "Password must include at least one uppercase letter (A-Z)"
-      )
-      .matches(
-        /[a-z]/,
-        "Password must include at least one lowercase letter (a-z)"
-      )
-      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
-      .matches(
-        /[@$!%*?&]/,
-        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
-      ),
+      .required()
+      .min(10)
+      .max(10),
   });
   const updateValidationSchema = Yup.object({
-    departmentId: Yup.string().required("Department is required"),
+    departmentIds: Yup.array().of(Yup.string().required()).min(1, "Select at least one department").required("Department is required"),
     firstName: Yup.string()
       .required("First Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "First Name cannot be more than 50 characters")
+      .matches(/^[a-zA-Z0-9]*$/, "First Name must contain only alphanumeric characters (no spaces or special characters)"),
     lastName: Yup.string()
       .required("Last Name is required")
-      .max(30, "First Name cannot be more than 30 characters"),
+      .max(50, "Last Name cannot be more than 50 characters")
+      .matches(/^[a-zA-Z0-9]*$/, "Last Name must contain only alphanumeric characters (no spaces or special characters)"),
     emailId: Yup.string().required("EmailId is required"),
-    phoneNumber: Yup.number().required("Phone Number is required"),
-    // .max(10, "Phone Number Must contain 10 digits"),
+    phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit Phone Number"),
     password: Yup.string()
-      // .required("Password is required")
-      .min(10, "Password cannot be less than 10 characters")
-      .max(16, "Password cannot be more than 16 characters")
-      .matches(
-        /[A-Z]/,
-        "Password must include at least one uppercase letter (A-Z)"
-      )
-      .matches(
-        /[a-z]/,
-        "Password must include at least one lowercase letter (a-z)"
-      )
-      .matches(/\d/, "Password must include at least one numeric digit (0-9)")
-      .matches(
-        /[@$!%*?&]/,
-        "Password must include at least one special character (e.g., !, @, #, $, %, &, *)"
-      ),
+      .trim()
+      .required()
+      .matches(/^\d{10}$/, "Enter 10 digit Password"),
   });
 
   const onSubmit = async (
     values,
     { setSubmitting, resetForm },
-    saveNodalOfficerDetails
+    saveDepartmentAdmin
   ) => {
     try {
       const formattedValues = {
-        ...values,
-        IsActive: values.IsActive === "true" || values.IsActive === true,
+        userId: values.userId || undefined,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        emailId: values.emailId,
+        phoneNumber: values.phoneNumber,
+        password: values.password || undefined,
+        departmentIds: Array.isArray(values.departmentIds) ? values.departmentIds : [],
+        status: values.IsActive === "true" || values.IsActive === true,
       };
-      const result = await saveNodalOfficerDetails(
+      const result = await saveDepartmentAdmin(
         formattedValues,
         isNodalOfficerEditVisible ? true : false
       );
@@ -172,51 +157,132 @@ const    DepartmentAdminCreate = ({
         <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
+          enableReinitialize
           validationSchema={
             isNodalOfficerEditVisible
               ? updateValidationSchema
               : createValidationSchema
           }
           onSubmit={(values, actions) =>
-            onSubmit(values, actions, saveNodalOfficerDetails)
+            onSubmit(values, actions, savePosUser)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting, values, setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 {/* Department Filter */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Department <span className="text-red-500">*</span>
-                  </label>
-                  <Field
-                    autoComplete="off"
-                    as="select"
-                    name="departmentId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.departmentId && touched.departmentId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                  >
-                    <option value="">Select Department</option>
-                    {allDepartmentTypes
-                      ?.filter((departmentType) => departmentType.isActive)
-                      .map((departmentType) => (
-                        <option
-                          key={departmentType.departmentId}
-                          value={departmentType.departmentId}
-                        >
-                          {departmentType.departmentName}
-                        </option>
-                      ))}
+               <div>
+                <label
+                  htmlFor="AssignFaciltiy"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  Department Name <span className="text-red-500">*</span>
+                </label>
+                <div className="">
+                  <Field name="departmentIds">
+                    {({ field, form, meta }) => (
+                      <div className="relative">
+                        <Select
+                          {...field}
+                          isMulti
+                          options={departmentOptions}
+                          value={departmentOptions.filter((option) =>
+                            field?.value?.includes(option.value)
+                          )}
+                          onChange={(selectedOptions) => {
+                            const facilityIds = selectedOptions
+                              ? selectedOptions.map((option) => option.value)
+                              : [];
+                            form.setFieldValue(field.name, facilityIds);
+                          }}
+                          onBlur={() => form.setFieldTouched(field.name, true)}
+                          placeholder={isFetchAllDepartmentTypesLoading ? "Loading Departments..." : "Select Departments..."}
+                          className={`mt-1 ${meta.touched && meta.error ? 'border-red-500' : 'border-gray-300'}`}
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (provided, state) => ({
+                              ...provided,
+                              minHeight: "32px",
+                              fontSize: "14px",
+                              border: meta.touched && meta.error 
+                                ? "1px solid #EF4444" 
+                                : "1px solid #D1D5DB",
+                              borderRadius: "6px",
+                              boxShadow: "none",
+                              "&:hover": {
+                                border: meta.touched && meta.error 
+                                  ? "1px solid #EF4444" 
+                                  : "1px solid #D1D5DB",
+                              },
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              padding: "2px 8px",
+                            }),
+                            input: (provided) => ({
+                              ...provided,
+                              margin: "0px",
+                            }),
+                            indicatorSeparator: () => ({
+                              display: "none",
+                            }),
+                            indicatorsContainer: (provided) => ({
+                              ...provided,
+                              height: "30px",
+                            }),
+                            menu: (provided) => ({
+                              ...provided,
+                              fontSize: "8px",
+                              border: "1px solid #6B7280",
+                              borderRadius: "6px",
+                              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              padding: "4px",
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              fontSize: "14px",
+                              padding: "2px 4px",
+                              backgroundColor: state.isSelected ? "#3b82f6" : "white",
+                              color: state.isSelected ? "white" : "#374151",
+                              ":hover": {
+                                backgroundColor: state.isSelected
+                                  ? "#3b82f6"
+                                  : "#f3f4f6",
+                              },
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#e5e7eb",
+                              borderRadius: "4px",
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
+                              color: "#374151",
+                              fontSize: "12px",
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: "#6b7280",
+                              "&:hover": {
+                                backgroundColor: "#d1d5db",
+                                color: "#374151",
+                              },
+                            }),
+                          }}
+                        />
+                        {meta.touched && meta.error && (
+                          <div className="text-red-500 text-xs mt-1">
+                            {meta.error}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </Field>
-                  <ErrorMessage
-                    name="departmentId"
-                    component="div"
-                    className="text-red-500 text-xs"
-                  />
                 </div>
+              </div>
                 {/* User Select */}
                 <div>
                   <label htmlFor="User" className="block text-xs font-medium">
@@ -226,12 +292,19 @@ const    DepartmentAdminCreate = ({
                     autoComplete="off"
                     name="firstName"
                     type="text"
+                    maxLength="50"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.firstName && touched.firstName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter first name"
+                    onKeyPress={(e) => {
+                      // Only allow alphanumeric characters
+                      if (!/^[a-zA-Z0-9]*$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="firstName"
@@ -249,12 +322,19 @@ const    DepartmentAdminCreate = ({
                     autoComplete="off"
                     name="lastName"
                     type="text"
+                    maxLength="50"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.lastName && touched.lastName
                         ? "border-red-500"
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter last name"
+                    onKeyPress={(e) => {
+                      // Only allow alphanumeric characters
+                      if (!/^[a-zA-Z0-9]*$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="lastName"
@@ -288,7 +368,7 @@ const    DepartmentAdminCreate = ({
                     className="text-red-500 text-xs mt-1"
                   />
                 </div>
-                {/* Phone Number */}
+                {/* Mobile Number */}
                 <div>
                   <label
                     htmlFor="phoneNumber"
@@ -330,8 +410,10 @@ const    DepartmentAdminCreate = ({
                   </label>
                   <Field
                     autoComplete="off"
-                    type="password"
+                    type="text"
                     name="password"
+                    minLength="10"
+                    maxLength="16"
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.password && touched.password
                         ? "border-red-500"
@@ -347,7 +429,7 @@ const    DepartmentAdminCreate = ({
                 </div>
                 {/* Status */}
                 <div>
-                  <label className="block text-sm font-medium">Status</label>
+                  <label className="block text-sm font-medium">Status<span className="text-red-500">*</span></label>
                   <Field
                     autoComplete="off"
                     as="select"
@@ -375,9 +457,9 @@ const    DepartmentAdminCreate = ({
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                  disabled={isSaveNodalOfficerDetailsLoading}
+                  disabled={isSaveDepartmentAdminDetailsLoading}
                 >
-                  {isSaveNodalOfficerDetailsLoading
+                  {isSaveDepartmentAdminDetailsLoading
                     ? "Saving..."
                     : isNodalOfficerEditVisible
                     ? "Update Department Admin"
