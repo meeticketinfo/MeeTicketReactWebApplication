@@ -35,6 +35,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
 
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       minWidth: 80,
