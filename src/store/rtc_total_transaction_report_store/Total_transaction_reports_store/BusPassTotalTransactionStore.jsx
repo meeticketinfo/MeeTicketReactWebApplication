@@ -1,0 +1,652 @@
+import { create } from "zustand";
+
+import { toast } from "react-toastify";
+import apiService from "../../../services/apiService";
+import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+
+export const useBusPassTotalTransactionStore = create((set) => ({
+  //  -----------------API CALLS------------------------------------------------------
+  // Failed Transactions By reason
+  RtcTransactionByReasonData: [],
+  isRtcTransactionByReasonLoading: false,
+  fetchRtcTransactionByReason: async (payload) => {
+    set({ isRtcTransactionByReasonLoading: true });
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TRANSACTIONS_BY_REASON}${param}`
+      );
+
+      set({
+        RtcTransactionByReasonData: response.data,
+        isRtcTransactionByReasonLoading: false,
+      });
+    } catch (error) {
+      console.log("error", error);
+      set({
+        error: error.message,
+        RtcTransactionByReasonData: [],
+        isRtcTransactionByReasonLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+
+  //TOTAL TRANSACTIONS
+  RtcTotalTransactionsData: [],
+  isRtcTotalTransactionsLoading: false,
+  fetchRtcTotalTransactions: async (payload) => {
+    set({ isRtcTotalTransactionsLoading: true });
+    const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&status=${payload.status}&passTypeId=${payload.BusPassType}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TOTAL_TRANSACTIONS}${param}`
+      );
+
+      set({
+        RtcTotalTransactionsData: response.data,
+        isRtcTotalTransactionsLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcTotalTransactionsData: [],
+        isRtcTotalTransactionsLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+
+  // GET gate way PIE CHART
+  RtcGateWayPieChartData: [],
+  RtcisGateWayPieChartLoading: false,
+
+  fetchRtcGateWayPieChart: async (payload) => {
+    set({ RtcisGateWayPieChartLoading: true });
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_GATEWAY_PIE_CHART}${param}`
+      );
+
+      set({
+        RtcGateWayPieChartData: response.data,
+        RtcisGateWayPieChartLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcGateWayPieChartData: [],
+        RtcisGateWayPieChartLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+
+  // GET Ticket not generated PIE CHART
+  RtcTicketNotGeneratedPieChartData: [],
+  RtcisTicketNotGeneratedPieChartLoading: false,
+
+  fetchRtcTicketNotGeneratedPieChart: async (payload) => {
+    set({ RtcisTicketNotGeneratedPieChartLoading: true });
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TICKET_NOT_GENERATED_PIE_CHART}${param}`
+      );
+
+      set({
+        RtcTicketNotGeneratedPieChartData: response.data,
+        RtcisTicketNotGeneratedPieChartLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcTicketNotGeneratedPieChartData: [],
+        RtcisTicketNotGeneratedPieChartLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+
+  // GET OTHER REASONS PIE CHART
+  RtcOtherReasonsPieChartData: [],
+  RtcisOtherReasonsPieChartLoading: false,
+
+  fetchRtcOtherReasonsPieChart: async (payload) => {
+    set({ RtcisOtherReasonsPieChartLoading: true });
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_OTHER_REASON_PIE_CHART}${param}`
+      );
+
+      set({
+        RtcOtherReasonsPieChartData: response.data,
+        RtcisOtherReasonsPieChartLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcOtherReasonsPieChartData: [],
+        RtcisOtherReasonsPieChartLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+  // GET ALL BUS PASSES
+  AllBusPassesData: [],
+  AllBusPassesLoading: false,
+  fetchAllBusPasses: async (payload) => {
+    set({ AllBusPassesLoading: true });
+
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.MASTERS.BUS_PASS.GET_ALL_BUS_PASSES}`
+      );
+
+      set({
+        AllBusPassesData: response.data,
+        AllBusPassesLoading: false,
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        AllBusPassesData: [],
+        AllBusPassesLoading: false,
+      });
+      toast.error(error.message);
+    }
+  },
+  // GET RTC TRACK ORDER
+  RtcTransactionTrackingStatusByOrderIdData: [],
+  isFetchRtcTransactionTrackingStatusByOrderId: false,
+  fetchRtcTransactionTrackingStatusByOrderId: async (orderID = "") => {
+    set({ isFetchRtcTransactionTrackingStatusByOrderId: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TRACK_ORDER}?orderId=${orderID}`
+      );
+      set({
+        RtcTransactionTrackingStatusByOrderIdData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcTransactionTrackingStatusByOrderIdData: response.data,
+      });
+    } finally {
+      set({
+        isFetchRtcTransactionTrackingStatusByOrderId: false,
+      });
+    }
+  },
+
+  // booking records
+
+  RtcBusPassBookingRecordsData: [],
+  isFetchRtcBusPassBookingData: false,
+  fetchRtcBusPassBookingData: async (payload = {}) => {
+    set({ isFetchRtcBusPassBookingData: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_BOOKING_RECORDS}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&busPassTypeId=${payload.BusPassType}&typeOfPayment=${payload.typeOfPayment}&query=${payload.transactionId}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`
+      );
+      set({
+        RtcBusPassBookingRecordsData: response.data,
+        isFetchRtcBusPassBookingData: false,
+      });
+      return { response: response.data };
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcBusPassBookingRecordsData: [],
+      });
+      toast.error(error.message);
+    } finally {
+      set({
+        isFetchRtcBusPassBookingData: false,
+      });
+    }
+  },
+
+  // Bus pass verify status
+  RtcBusPassVerifyStatusData: [],
+  isFetchRtcBusPassVerifyStatusData: false,
+  fetchRtcBusPassVerifyStatusData: async (orderId) => {
+    set({ isFetchRtcBusPassVerifyStatusData: true });
+    try {
+      const method = "post";
+      const response = await apiService[method](
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_VERIFY_STATUS}/${orderId}`
+      );
+      set({
+        RtcBusPassVerifyStatusData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcBusPassVerifyStatusData: [],
+      });
+    } finally {
+      set({
+        isFetchRtcBusPassVerifyStatusData: false,
+      });
+    }
+  },
+
+  // bus pass generate pass
+  RtcGeneratePassData: [],
+  isFetchRtcGeneratePassData: false,
+  fetchRtcGeneratePassData: async (payloadString = "{}") => {
+    set({ isFetchRtcGeneratePassData: true });
+
+    try {
+      // Step 1: Parse JSON string → object
+      let parsedPayload = {};
+      try {
+        parsedPayload = JSON.parse(payloadString);
+      } catch (err) {
+        console.error("Invalid JSON string:", payloadString);
+      }
+
+      // Step 1.1: Get isRenewal flag from RtcBusPassBookingRecordsData only
+      let isRenewal = false; // Default to false
+      
+      // Get bpOrderId and isRenewal from RtcBusPassBookingRecordsData
+      if (!parsedPayload.bpOrderId || parsedPayload.bpOrderId === "") {
+        const currentState = useBusPassTotalTransactionStore.getState();
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          // Get the first record's orderId, or you can modify this logic based on your requirements
+          const firstRecord = currentState.RtcBusPassBookingRecordsData[0];
+          if (firstRecord && firstRecord.orderId) {
+            parsedPayload.bpOrderId = firstRecord.orderId;
+            // Get isRenewal from the record
+            isRenewal = firstRecord.isRenewal === 1 || firstRecord.isRenewal === "1" || firstRecord.isRenewal === true;
+          }
+        }
+      } else {
+        // If bpOrderId is provided, find the matching record to get isRenewal
+        const currentState = useBusPassTotalTransactionStore.getState();
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+          );
+          if (matchingRecord) {
+            isRenewal = matchingRecord.isRenewal === 1 || matchingRecord.isRenewal === "1" || matchingRecord.isRenewal === true;
+          }
+        }
+      }
+      
+
+      const endpoint = isRenewal
+        ? API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+            .GET_BUS_PASS_GENERATE_TICKET_RENEWAL
+        : API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT
+            .GET_BUS_PASS_GENERATE_TICKET_NEW_PASS;
+
+      // Step 1.6: Set routeId to null if not provided
+      if (!parsedPayload.routeId || parsedPayload.routeId === "") {
+        parsedPayload.routeId = 1;
+      }
+      // Step 2: Prepare data for uploadFile
+      let fileToUpload = null;
+      const additionalData = {};
+      Object.entries(parsedPayload).forEach(([key, value]) => {
+        if (key === "profileImgUrl") {
+
+          // Skip if it's an empty object or null/undefined
+          if (
+            !value ||
+            (typeof value === "object" && Object.keys(value).length === 0)
+          ) {
+          
+            return; // Skip this field
+          }
+
+          // Only process if it's a string
+          if (typeof value === "string" && value.trim() !== "") {
+            // Convert base64 to binary Blob
+            try {
+              let base64Data = value;
+
+              // Check if it's a data URL format (data:image/...;base64,)
+              if (value.startsWith("data:")) {
+                base64Data = value.split(",")[1]; // Remove data:image/...;base64, prefix
+              }
+              // If it's just raw base64 string, use it directly
+
+              const binaryString = atob(base64Data);
+              const bytes = new Uint8Array(binaryString.length);
+              for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+              }
+              const blob = new Blob([bytes], { type: "image/jpeg" }); // Adjust type as needed
+              fileToUpload = blob; // Set as the file to upload
+       
+            } catch (base64Error) {
+             
+              // If conversion fails, add as regular data
+              additionalData[key] = value;
+            }
+          } else {
+            console.log("profileImgUrl is not a valid string, skipping");
+          }
+        } else if (key === "employeeGender") {
+          // Convert gender from full text to single letter
+          if (value === "Male") {
+            additionalData[key] = "M";
+          } else if (value === "Female") {
+            additionalData[key] = "F";
+          } else {
+            additionalData[key] = value == null ? "" : value;
+          }
+        } else if (key === "employeeDob") {
+          // Ensure employeeDob is not blank - convert to MM/DD/YYYY format
+          if (value && typeof value === "string" && value.trim() !== "") {
+            try {
+              // Parse the date string and convert to MM/DD/YYYY format
+              const date = new Date(value);
+              if (!isNaN(date.getTime())) {
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const year = date.getFullYear();
+                const formattedDate = `${month}/${day}/${year}`;
+                additionalData[key] = formattedDate;
+              } else {
+                // If date parsing fails, use the original value
+                additionalData[key] = value;
+              }
+            } catch (error) {
+              additionalData[key] = value;
+            }
+          } else {
+            // If employeeDob is blank, provide a default date to avoid validation error
+            const defaultDate = new Date('1990-01-01');
+            const month = String(defaultDate.getMonth() + 1).padStart(2, '0');
+            const day = String(defaultDate.getDate()).padStart(2, '0');
+            const year = defaultDate.getFullYear();
+            const formattedDefaultDate = `${month}/${day}/${year}`;
+            additionalData[key] = formattedDefaultDate;
+          }
+        } else if (key === "passtypeId") {
+          // Convert passtypeId to passTypeId
+          additionalData["passTypeId"] = value == null ? "" : value;
+        } else if (key === "orderId") {
+          // Convert orderId to bpOrderId
+          additionalData["bpOrderId"] = value == null ? "" : value;
+        } else {
+          additionalData[key] = value == null ? "" : value;
+        }
+      });
+
+      // Add missing fields from the image
+      if (!additionalData.hasOwnProperty("isPassRegenerated")) {
+        additionalData["isPassRegenerated"] = "";
+      }
+      if (!additionalData.hasOwnProperty("isRenewal")) {
+        additionalData["isRenewal"] = "true";
+      }
+      if (!additionalData.hasOwnProperty("transactionType")) {
+        additionalData["transactionType"] = "";
+      }
+      if (!additionalData.hasOwnProperty("employeePhotoDocName")) {
+        additionalData["employeePhotoDocName"] = "";
+      }
+
+      // Step 3: Send request based on renewal status
+      let response;
+      
+      if (isRenewal) {
+        // For renewal: get renewalRequestJson from matching record
+        const currentState = useBusPassTotalTransactionStore.getState();
+        let renewalRequestJson = null;
+        
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          // Find the record that matches the current orderId
+          const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+          );
+          if (matchingRecord && matchingRecord.renewalRequestJson) {
+            renewalRequestJson = matchingRecord.renewalRequestJson;
+          }
+        }
+        
+        // Fallback to creating from additionalData if not found in booking records
+        if (!renewalRequestJson) {
+          renewalRequestJson = JSON.stringify(additionalData);
+        }
+        
+        // Parse renewalRequestJson if it's a string, otherwise use as is
+        let renewalRequestData;
+        try {
+          renewalRequestData = typeof renewalRequestJson === 'string' 
+            ? JSON.parse(renewalRequestJson) 
+            : renewalRequestJson;
+        } catch (error) {
+          renewalRequestData = additionalData; // Fallback to additionalData
+        }
+        
+        response = await apiService.post(endpoint, renewalRequestData, {
+          "Content-Type": "application/json",
+        });
+      } else {
+        // For new pass: send using FormData with file upload
+        const formData = new FormData();
+        if (fileToUpload) {
+          formData.append("employeePhotoDoc", fileToUpload, "employeePhotoDoc.jpg");
+        }
+        
+        Object.keys(additionalData).forEach((key) =>
+          formData.append(key, additionalData[key])
+        );
+
+        response = await apiService.post(endpoint, formData, {
+          "Content-Type": "multipart/form-data",
+        });
+      }
+
+      set({
+        RtcGeneratePassData: response.data,
+      });
+
+      // Step 4: Call payment response API to get applicationNo
+      try {
+        // Get paymentRequestJson from RtcBusPassBookingRecordsData
+        const currentState = useBusPassTotalTransactionStore.getState();
+        let paymentRequestJson = null;
+        
+        if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+          // Find the record that matches the current orderId
+          const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.orderId === parsedPayload.bpOrderId || record.orderId === parsedPayload.orderId
+          );
+          if (matchingRecord && matchingRecord.paymentRequestJson) {
+            paymentRequestJson = matchingRecord.paymentRequestJson;
+            
+          }
+        }
+        
+        // Fallback to creating from parsed payload if not found in booking records
+        if (!paymentRequestJson) {
+          paymentRequestJson = JSON.stringify(parsedPayload);
+        }
+
+        
+        // Convert paymentRequestJson to JSON format if it's a string
+        let jsonPaymentRequest = paymentRequestJson;
+        if (typeof paymentRequestJson === 'string') {
+          try {
+            jsonPaymentRequest = JSON.parse(paymentRequestJson);
+          } catch (err) {
+            jsonPaymentRequest = paymentRequestJson; // Use as string if parsing fails
+          }
+        }
+        
+ 
+        
+        // Also add ReferenceNo from response.data if available
+        if (response && response.data && response.data.referenceNo) {
+          jsonPaymentRequest.ReferenceNo = response.data.referenceNo;
+        }
+        
+        if (jsonPaymentRequest && jsonPaymentRequest.ReferenceNo && jsonPaymentRequest.ReferenceNo !== "") {
+          if (jsonPaymentRequest.Data) {
+            jsonPaymentRequest.Data.ReferenceNo = jsonPaymentRequest.ReferenceNo;
+          }
+        }
+        
+        // Also set OrderId in Data object if it exists
+        if (jsonPaymentRequest && jsonPaymentRequest.Data && response && response.data && response.data.applicationNo) {
+          jsonPaymentRequest.Data.OrderId = response.data.applicationNo;
+        }
+        
+        // Set txnAmount based on passTypeId from parsedPayload
+        // if (jsonPaymentRequest && jsonPaymentRequest.Data) {
+          const passTypeId = parsedPayload.passtypeId;
+          let amount = 5310; // default amount
+          
+          if (passTypeId ===  
+            "179-52") {
+            amount = 1200;
+          } else if (passTypeId === "179-18") {
+            amount = 1500;
+          } else if (passTypeId === "179-15") {
+            amount = 1650;
+          } else if (passTypeId === "179-91") {
+            amount = 1950;
+          }
+          
+          jsonPaymentRequest.Data.TxnAmount = amount;
+        // }
+        
+        // Delete referenceNo and txnAmount outside of Data object
+        if (jsonPaymentRequest) {
+          // Delete referenceNo and txnAmount from top level
+          if (jsonPaymentRequest.referenceNo) {
+            delete jsonPaymentRequest.referenceNo;
+          }
+          if (jsonPaymentRequest.txnAmount) {
+            delete jsonPaymentRequest.txnAmount;
+          }
+          if (jsonPaymentRequest.ReferenceNo) {
+            delete jsonPaymentRequest.ReferenceNo;
+          }
+          if (jsonPaymentRequest.TxnAmount) {
+            delete jsonPaymentRequest.TxnAmount;
+          }
+        }
+        
+        // Convert all keys to lowercase and send only one structure
+        if (jsonPaymentRequest) {
+          const convertedRequest = {};
+          Object.keys(jsonPaymentRequest).forEach(key => {
+            const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+            convertedRequest[lowerKey] = jsonPaymentRequest[key];
+          });
+          
+          // Handle nested Data object
+          if (convertedRequest.data && typeof convertedRequest.data === 'object') {
+            const convertedData = {};
+            Object.keys(convertedRequest.data).forEach(key => {
+              const lowerKey = key.charAt(0).toLowerCase() + key.slice(1);
+              convertedData[lowerKey] = convertedRequest.data[key];
+            });
+            convertedRequest.data = convertedData;
+          }
+          
+          // Replace the original request with converted one (send only lowercase structure)
+          Object.keys(jsonPaymentRequest).forEach(key => delete jsonPaymentRequest[key]);
+          Object.assign(jsonPaymentRequest, convertedRequest);
+        }
+
+        const paymentResponse = await apiService.post(
+          `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}`,
+          jsonPaymentRequest
+        );
+        
+        
+        // Get existing RtcGeneratePassData to use for applicationNo and referenceNo
+        // const currentState = useBusPassTotalTransactionStore.getState();
+        const existingRtcGeneratePassData = response.data;
+        // Add applicationNo to the response data using RtcGeneratePassData
+        const finalResponse = {
+          ...response.data,
+          applicationNo: existingRtcGeneratePassData?.applicationNo || paymentResponse.data.applicationNo,
+          referenceNo: existingRtcGeneratePassData?.referenceNo || paymentResponse.data.referenceNo,
+          paymentResponse: paymentResponse.data
+        };
+        
+        set({
+          RtcGeneratePassData: finalResponse,
+        });
+        
+        return { response: finalResponse };
+      } catch (paymentError) {
+        // Return original response even if payment response fails
+        return { response: response.data };
+      }
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcGeneratePassData: [],
+      });
+    } finally {
+      set({ isFetchRtcGeneratePassData: false });
+    }
+  },
+
+  // bus pass initiate refund
+  RtcBusInitiateData: [],
+  isFetchRtcBusPassInitiateData: false,
+  fetchRtcBusPassInitiateData: async (orderId) => {
+    set({ isFetchRtcBusPassInitiateData: true });
+    try {
+      const method = "post";
+      const response = await apiService[method](
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_INITIATE_REFUND}/${orderId}`
+      );
+      set({
+        RtcBusInitiateData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcBusInitiateData: [],
+      });
+      throw error;
+    } finally {
+      set({
+        isFetchRtcBusPassInitiateData: false,
+      });
+    }
+  },
+
+  // view bus pass
+  RtcViewBusPassData: [],
+  isFetchRtcViewBusPassData: false,
+  fetchRtcRtcViewBusPassData: async (payload) => {
+    set({ isFetchRtcViewBusPassData: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_VIEW_BUS_PASS}?passId=${payload.passId}`
+      );
+      set({
+        RtcViewBusPassData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      set({
+        error: error.message,
+        RtcViewBusPassData: [],
+      });
+    } finally {
+      set({
+        isFetchRtcViewBusPassData: false,
+      });
+    }
+  },
+}));

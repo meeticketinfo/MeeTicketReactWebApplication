@@ -51,14 +51,14 @@ function AmrabadPaymentTransactionsList() {
       PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
       pageSize: PAGE_LIMIT,
     });
-  }, [fetchAmrabadPaymentTransactions]);
+  }, [fetchAmrabadPaymentTransactions,currentPage, PAGE_LIMIT]);
 
   const [columnDefs] = useState([
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
-      minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
@@ -157,7 +157,7 @@ function AmrabadPaymentTransactionsList() {
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
-        // || params.data.isTicketGenerated;
+        // || params.data.isTicketGe nerated;
 
         return (
           <div className="flex justify-center mt-1">
@@ -190,6 +190,7 @@ function AmrabadPaymentTransactionsList() {
         const isDisabled = params.data.isTicketGenerated;
         // || params.data.isTicketGenerated;
 
+      
         return (
           <div className="flex justify-center mt-1">
             <button
@@ -285,26 +286,43 @@ function AmrabadPaymentTransactionsList() {
 
       if (res.response?.data?.status === 200) {
         setOpenVerifyModal(false);
-        const resultMsg = res.response?.data?.data?.resultStatus;
-       
-        Swal.fire({
-          title: "Success!",
-
-          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-           ${resultMsg}
-         </div>`,
-
-          confirmButtonText: "OK",
-          icon: "success",
-          customClass: {
-            confirmButton: "swal-custom-btn",
-            popup: "elegant-swal-popup",
-            icon: "small-swal-icon",
-          },
-          timer: 2000,
-          width: "360px",
-          showConfirmButton: false,
-        });
+        const resultStatus = res.response?.data?.data?.resultStatus;
+        
+        if (resultStatus === "TXN_FAILURE") {
+          Swal.fire({
+            title: "Transaction Failed!",
+            html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+             ${resultStatus}
+           </div>`,
+            confirmButtonText: "OK",
+            icon: "error",
+            customClass: {
+              confirmButton: "swal-custom-btn",
+              popup: "elegant-swal-popup",
+              icon: "small-swal-icon",
+            },
+            timer: 2000,
+            width: "360px",
+            showConfirmButton: false,
+          });
+        } else {
+          Swal.fire({
+            title: "Success!",
+            html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+             ${resultStatus}
+           </div>`,
+            confirmButtonText: "OK",
+            icon: "success",
+            customClass: {
+              confirmButton: "swal-custom-btn",
+              popup: "elegant-swal-popup",
+              icon: "small-swal-icon",
+            },
+            timer: 2000,
+            width: "360px",
+            showConfirmButton: false,
+          });
+        }
       } else {
         setOpenVerifyModal(false);
         Swal.fire({
@@ -469,6 +487,9 @@ function AmrabadPaymentTransactionsList() {
       console.error("Error during regenerate ticket:", err);
       setOpenRegenerateTicketModal(false);
       Swal.fire({
+        html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+        ${err.response?.data?.message}
+      </div>`,
         title: "Failed!",
         text: `Regenerate ticket failed. Please try again.`,
         icon: "error",

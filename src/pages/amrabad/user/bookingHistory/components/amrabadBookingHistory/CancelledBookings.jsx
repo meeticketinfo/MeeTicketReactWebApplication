@@ -12,6 +12,7 @@ const CancelledBookings = ({ data, searchQuery }) => {
   //     </div>
   //   );
   // }
+  
  const filteredData = data.filter((booking) => {
     const packageName = booking?.packageName?.toLowerCase().trim();
     const houseName = booking?.houseName?.toLowerCase().trim();

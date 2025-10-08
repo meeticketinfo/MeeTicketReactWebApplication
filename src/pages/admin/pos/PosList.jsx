@@ -5,23 +5,7 @@ import { LuClipboardEdit } from "react-icons/lu";
 import PosListForm from "./PosListForm";
 import { ToastContainer } from "react-toastify";
 
-const getCurrentDate = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
 
-const getCurrentDateAtMidnight = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}T00:00`;
-};
 
 const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   const {
@@ -49,9 +33,6 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     });
   }, [currentPage, PAGE_LIMIT]);
 
-  useEffect(() => {
-    fetchAllPosUsers();
-  }, []);
   const columnDefs = [
     {
       headerName: "S.No",
@@ -70,8 +51,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
 
     {
       field: "emailId",
-      headerName: "Email Id",
-
+      headerName: "Email ID",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
@@ -81,23 +61,23 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
       field: "mobileNumber",
       headerName: "Phone Number",
       flex: 1,
-      maxWidth: 130,
+
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "status",
       headerName: "Status",
-      maxWidth: 100,
+
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
           <div
-            className={`flex items-center justify-center font-semibold gap-2  ${
+            className={`flex   font-semibold gap-2  ${
               params.value
-                ? "text-green-500   text-shadow-md"
-                : "text-red-400   text-shadow-md"
+                ? "text-green-500  text-shadow-md"
+                : "text-red-400 text-shadow-md"
             }`}
           >
             <span className="">{params.value ? "Active" : "In Active"}</span>
@@ -107,14 +87,14 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     },
     {
       field: "facilitiesAssigned",
-      headerName: "facilities Assigned",
+      headerName: "Facilities Assigned",
       flex: 1,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <>
-          <div className={"flex items-center gap-1 py-2"}>
+          <div className={"flex items-center  gap-1 "}>
             {params.value.map((item, i) => (
-              <span key={item}>
+              <span key={i}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
                 
               </span>
@@ -126,14 +106,10 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     {
       headerName: "Actions",
       field: "actions",
-      maxWidth: 100,
+
       cellRenderer: (params) => (
         <>
-          <div
-            className={`
-                      "flex items-center justify-around py-2"
-                    `}
-          >
+          <div className={` flex items-center justify-around py-2`}>
             {/* edit */}
             <button
               className=""
@@ -155,6 +131,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     },
   ];
   return (
+    <>
     <div>
       <ToastContainer />
       <PosListForm
@@ -163,7 +140,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         SetcurrentPage={setCurrentPage}
       />
       <AgGridTable
-        ExportName="Pos Users"
+        ExportName="POS Users"
         rowData={allPosUsers}
         columnDefs={columnDefs}
         isFetchLoading={isFetchAllPosUsersLoading}
@@ -174,12 +151,13 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        totalCount={allPosUsers&&allPosUsers[0]?.totalCount}
+        totalCount={allPosUsers && allPosUsers[0]?.totalCount}
         tableHeight={allPosUsers?.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
       />
     </div>
+    </>
   );
 };
 

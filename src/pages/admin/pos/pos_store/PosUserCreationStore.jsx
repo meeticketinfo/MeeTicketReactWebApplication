@@ -11,7 +11,7 @@ export const PosUserCreationStore = create((set) => ({
     });
   },
   GetPosUsers: [],
-  isSavePosUserDetailsLoading: false,
+  isFetchAllPosUsersLoading: false,
   // Fetch all Bookings
   fetchAllPosUsers: async (payload) => {
     set({ isFetchAllPosUsersLoading: true });
@@ -24,9 +24,9 @@ export const PosUserCreationStore = create((set) => ({
         isFetchAllPosUsersLoading: false,
       });
     } catch (error) {
-        console.log('error',error.response.data)
-      set({ isFetchAllPosUsersLoading: false,allPosUsers:[] });
-      toast.error(error.response.data);
+      console.log("error", error.response?.data);
+      set({ isFetchAllPosUsersLoading: false, allPosUsers: [] });
+      toast.error(error.response?.data);
     }
   },
 
@@ -49,7 +49,7 @@ export const PosUserCreationStore = create((set) => ({
 
       return { success: true, data: response };
     } catch (error) {
-        toast.error(error.response.data);
+      toast.error(error.response.data);
       set({ isSavePosUserDetailsLoading: false });
       throw error;
     }

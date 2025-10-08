@@ -34,7 +34,7 @@ const PosListForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   };
 
   const onSubmit = (values) => {
-    console.log("values", values);
+    
     fetchAllPosUsers({
       ...values,
       pageNumber: pageNumber,

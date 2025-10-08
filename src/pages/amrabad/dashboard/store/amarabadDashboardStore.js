@@ -40,5 +40,16 @@ export const useAmrabadDashboardStore = create(
       }
     },
 
+    fetchPackagesDataById: async (packageId) => {
+      set({ isFetchPackagesDataByIdLoading: true });
+      try {
+        const response = await apiService.get(`${API_ENDPOINTS.AMRABAD.DASHBOARD.GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID}?packageId=${packageId}`);
+        set({ packagesDataById: response.data, isFetchPackagesDataByIdLoading: false });
+      } catch (error) {
+        handleApiError(error);
+        set({ isFetchPackagesDataByIdLoading: false });
+      }
+    },
+
   }))
 );          

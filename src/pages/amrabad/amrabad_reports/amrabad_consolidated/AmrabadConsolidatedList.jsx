@@ -63,6 +63,7 @@ function AmrabadConsolidatedList() {
 
   const columnDefs = useMemo(() => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -101,26 +102,26 @@ function AmrabadConsolidatedList() {
       // valueFormatter: (params) => (params.value ? params.value : "N/A"),
       valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
-    {
-      field: "fromDate",
-      headerName: "From Date",
-      maxWidth: 170,
-      headerClass: "text-blue-v2",
-      // valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
-    },
-    {
-      field: "toDate",
-      headerName: "To Date",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      // valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
-    },
+    // {
+    //   field: "fromDate",
+    //   headerName: "From Date",
+    //   maxWidth: 170,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+    // },
+    // {
+    //   field: "toDate",
+    //   headerName: "To Date",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+    // },
     // -------------------
 
     {
-      field: "packageName",
+      field: "packageNames",
       headerName: "Package Name",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -128,14 +129,14 @@ function AmrabadConsolidatedList() {
         !params.value || params.value.trim() === "" ? "N/A" : params.value,
     },
     {
-      field: "houseName",
+      field: "houseNames",
       headerName: "House Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
     {
-      field: "noofHousesBooked",
+      field: "roomCount",
       headerName: "No.of Houses Booked",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -170,7 +171,7 @@ function AmrabadConsolidatedList() {
     //     formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     // },
     {
-      field: "amount",
+      field: "amountPaid",
       headerName: "Total Amount",
       minWidth: 130,
       maxWidth: 130,
@@ -202,7 +203,7 @@ function AmrabadConsolidatedList() {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "paymentTransactionID",
+      field: "paymentTransactionId",
       headerName: "Payment Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -232,7 +233,7 @@ function AmrabadConsolidatedList() {
           <NavLink
             end
             // to={`/amrabad-entity-bookings/view-details/${params.data.orderID}`}
-            to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionID}`}
+            to={`/amrabad-admin/ticket-view-details/${params.data.paymentTransactionId}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => {

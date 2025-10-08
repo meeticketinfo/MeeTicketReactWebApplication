@@ -10,7 +10,7 @@ import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
 const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
-  const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
+  const { allUnifiedFacilities, fetchAllUnifiedFacilities,isFetchAllUnifiedFacilitiesLoading } =
     useUnifiedFacilityStore();
   const {
     savePosUser,
@@ -37,7 +37,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
     LastName: isEdit ? posUserEditDetails.lastName : "",
     EmailId: isEdit ? posUserEditDetails.emailId : "",
     PhoneNumber: isEdit ? posUserEditDetails.mobileNumber : "",
-    pin: isEdit ? posUserEditDetails.pin : "",
+    pin: isEdit ? posUserEditDetails.password : "",
     status: isEdit ? posUserEditDetails.status : "",
     AssignFaciltiy: isEdit ? AssignedFaciltiy : [],
   };
@@ -49,7 +49,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
     LastName: Yup.string()
       .required("Last Name is required")
       .max(50, "First Name cannot be more than 50 characters"),
-    EmailId: Yup.string().required("Email Id is required"),
+    EmailId: Yup.string().required("Email ID is required"),
 
     PhoneNumber: Yup.string()
       .required("Phone Number is required")
@@ -65,14 +65,24 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
   });
 
   const onSubmit = async (values, { resetForm }) => {
+    const payload = {
+      userId: values.userId || "",
+      firstName: values.FirstName,
+      lastName: values.LastName,
+      emailId: values.EmailId,
+      phoneNumber: values.PhoneNumber,
+      pin: values.pin,
+      status: values.status,
+      assignFacility: values.AssignFaciltiy,
+    };
     try {
-      const res = await savePosUser(values, isEdit);
-      console.log("res", res);
+      const res = await savePosUser(payload, isEdit);
+    
       if (res.data.status === 200) {
         toast.success(
           isEdit
-            ? "Pos User Updated Successfully"
-            : "Pos User Created Successfully"
+            ? "POS Admin Updated Successfully"
+            : "POS Admin Created Successfully"
         );
         setTimeout(() => {
           setIsPosCreateVisible(false);
@@ -143,13 +153,13 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                   htmlFor="EmailId"
                   className="block text-xs font-medium text-gray-700"
                 >
-                  Email Id <span className="text-red-500">*</span>
+                  Email ID <span className="text-red-500">*</span>
                 </label>
                 <Field
                   type="email"
                   name="EmailId"
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none  text-sm`}
-                  placeholder="Enter email Id"
+                  placeholder="Enter email ID"
                 />
                 <ErrorMessage
                   name="EmailId"
@@ -203,7 +213,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                     }
                   }}
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none  text-sm`}
-                  placeholder="Four-digit-pin"
+                  placeholder="Enter 4-digit Pin"
                 />
                 <ErrorMessage
                   name="pin"
@@ -213,7 +223,9 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
               </div>
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium">Status<span className="text-red-500">*</span></label>
+                <label className="block text-xs font-medium text-gray-700">
+                  Status<span className="text-red-500">*</span>
+                </label>
                 <Field
                   autoComplete="off"
                   as="select"
@@ -243,101 +255,103 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                 >
                   Assign Facility <span className="text-red-500">*</span>
                 </label>
-                <Field name="AssignFaciltiy">
-                  {({ field, form, meta }) => (
-                    <div>
-                      <Select
-                        {...field}
-                        isMulti
-                        options={facilityOptions}
-                        value={facilityOptions.filter((option) =>
-                          field.value.includes(option.value)
-                        )}
-                        onChange={(selectedOptions) => {
-                          const facilityIds = selectedOptions
-                            ? selectedOptions.map((option) => option.value)
-                            : [];
-                          form.setFieldValue(field.name, facilityIds);
-                        }}
-                        onBlur={() => form.setFieldTouched(field.name, true)}
-                        placeholder="Select facilities..."
-                        className="mt-1"
-                        classNamePrefix="react-select"
-                        styles={{
-                          control: (provided) => ({
-                            ...provided,
-                            minHeight: "32px",
-                            fontSize: "14px",
-                            border: "1px solid #6B7280",
-                            borderRadius: "6px",
-                            boxShadow: "none",
-                          }),
-                          valueContainer: (provided) => ({
-                            ...provided,
-                            padding: "2px 8px",
-                          }),
-                          input: (provided) => ({
-                            ...provided,
-                            margin: "0px",
-                          }),
-                          indicatorSeparator: () => ({
-                            display: "none",
-                          }),
-                          indicatorsContainer: (provided) => ({
-                            ...provided,
-                            height: "30px",
-                          }),
-                          menu: (provided) => ({
-                            ...provided,
-                            fontSize: "8px",
-                            border: "1px solid #6B7280",
-                            borderRadius: "6px",
-                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                          }),
-                          menuList: (provided) => ({
-                            ...provided,
-                            padding: "4px",
-                          }),
-                          option: (provided, state) => ({
-                            ...provided,
-                            fontSize: "14px",
-                            padding: "2px 4px",
-                            backgroundColor: "white",
-                            color: state.isSelected ? "white" : "#374151",
-                            "&:hover": {
-                              backgroundColor: state.isSelected
-                                ? "#3b82f6"
-                                : "#f3f4f6",
-                            },
-                          }),
-                          multiValue: (provided) => ({
-                            ...provided,
-                            backgroundColor: "#e5e7eb",
-                            borderRadius: "4px",
-                          }),
-                          multiValueLabel: (provided) => ({
-                            ...provided,
-                            color: "#374151",
-                            fontSize: "12px",
-                          }),
-                          multiValueRemove: (provided) => ({
-                            ...provided,
-                            color: "#6b7280",
-                            "&:hover": {
-                              backgroundColor: "#d1d5db",
+                <div className="">
+                  <Field name="AssignFaciltiy">
+                    {({ field, form, meta }) => (
+                      <div className="relative">
+                        <Select
+                          {...field}
+                          isMulti
+                          options={facilityOptions}
+                          value={facilityOptions.filter((option) =>
+                            field.value.includes(option.value)
+                          )}
+                          onChange={(selectedOptions) => {
+                            const facilityIds = selectedOptions
+                              ? selectedOptions.map((option) => option.value)
+                              : [];
+                            form.setFieldValue(field.name, facilityIds);
+                          }}
+                          onBlur={() => form.setFieldTouched(field.name, true)}
+                          placeholder={isFetchAllUnifiedFacilitiesLoading ? "Loading facilities..." : "Select facilities..."}
+                          className="mt-1"
+                          classNamePrefix="react-select"
+                          styles={{
+                            control: (provided) => ({
+                              ...provided,
+                              minHeight: "32px",
+                              fontSize: "14px",
+                              border: "1px solid #6B7280",
+                              borderRadius: "6px",
+                              boxShadow: "none",
+                            }),
+                            valueContainer: (provided) => ({
+                              ...provided,
+                              padding: "2px 8px",
+                            }),
+                            input: (provided) => ({
+                              ...provided,
+                              margin: "0px",
+                            }),
+                            indicatorSeparator: () => ({
+                              display: "none",
+                            }),
+                            indicatorsContainer: (provided) => ({
+                              ...provided,
+                              height: "30px",
+                            }),
+                            menu: (provided) => ({
+                              ...provided,
+                              fontSize: "8px",
+                              border: "1px solid #6B7280",
+                              borderRadius: "6px",
+                              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              padding: "4px",
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              fontSize: "14px",
+                              padding: "2px 4px",
+                              backgroundColor: "white",
+                              color: state.isSelected ? "white" : "#374151",
+                              "&:hover": {
+                                backgroundColor: state.isSelected
+                                  ? "#3b82f6"
+                                  : "#f3f4f6",
+                              },
+                            }),
+                            multiValue: (provided) => ({
+                              ...provided,
+                              backgroundColor: "#e5e7eb",
+                              borderRadius: "4px",
+                            }),
+                            multiValueLabel: (provided) => ({
+                              ...provided,
                               color: "#374151",
-                            },
-                          }),
-                        }}
-                      />
-                      {meta.touched && meta.error && (
-                        <div className="text-red-500 text-xs mt-1">
-                          {meta.error}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </Field>
+                              fontSize: "12px",
+                            }),
+                            multiValueRemove: (provided) => ({
+                              ...provided,
+                              color: "#6b7280",
+                              "&:hover": {
+                                backgroundColor: "#d1d5db",
+                                color: "#374151",
+                              },
+                            }),
+                          }}
+                        />
+                        {meta.touched && meta.error && (
+                          <div className="text-red-500 text-xs mt-1">
+                            {meta.error}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+                </div>
               </div>
             </div>
 
@@ -346,13 +360,13 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
               <button
                 type="submit"
                 className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                // disabled={isSaveGateKeeperDetailsLoading}
+                disabled={isSavePosUserDetailsLoading}
               >
                 {isSavePosUserDetailsLoading
                   ? "Saving..."
-                  : false
-                  ? "Edit Pos User"
-                  : "Create Pos User"}
+                  : isEdit
+                  ? "Edit POS Admin"
+                  : "Create POS Admin"}
               </button>
             </div>
           </Form>
