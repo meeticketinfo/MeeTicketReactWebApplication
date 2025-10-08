@@ -6,6 +6,7 @@ export const superAdminPermissions = [
   // "entity-admins",
   // "facility/unified-create",
   "nodal-officer",
+  "department-admin",
   "entity-bookings",
   "super-admin-facilites",
   "transaction-report",
@@ -64,6 +65,7 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
+  "pos-admin"
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",

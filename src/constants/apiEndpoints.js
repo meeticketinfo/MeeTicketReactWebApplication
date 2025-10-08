@@ -94,6 +94,11 @@ export const API_ENDPOINTS = {
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },
+    DEPARTMENT_ADMIN: {
+      GET_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/GetDepartmentAdmin`,
+      ADD_NEW_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/AddDepartmentAdmin`,
+      UPDATE_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/UpdateDepartmentAdmin`,
+    },
     FACILITY: {
       GET_FACILITIES: `v2/Master/GetAllFacilities`,
       GET_FACILITIES_NODAL_OFFICER: `NodalOfficer/GetAllFacilities?parkId=`,
@@ -137,6 +142,11 @@ export const API_ENDPOINTS = {
       ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`,
       UPDATE_GATE_KEEPER: `${API_BASE_URL}Master/UpdateGatekeeper`,
       GET_GATE_KEEPERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e76`,
+    },
+    POS_USER: {
+      ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
+      UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
+      GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,

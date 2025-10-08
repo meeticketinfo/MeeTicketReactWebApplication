@@ -155,6 +155,7 @@ import AmarabadGatewayViewTrackOrder from "../pages/amrabad/amrabad_reports/amra
 import AmarabadSuccessViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadSuccessfulViewTrackOrder";
 import AmarabadUncategorizedViewTrackOrder from "../pages/amrabad/amrabad_reports/amrabad_track_order/AmarabadUncategorizedViewTrackOrder";
 import MainReport from "../pages/admin_monthly_reports/MainReport";
+import PosMain from "../pages/admin/pos/PosMain";
 import BusPassUserReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_reports/BusPassUserReport";
 import BusPassUserDetailedReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserDetailedReport";
 import BusPassUserTransactionsOrderTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_user_detailed_report/BusPassUserTransactionsOrderTracker";
@@ -195,6 +196,7 @@ import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/Amrab
 import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
 import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
+import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 
 export const routes = [
@@ -469,6 +471,10 @@ export const routes = [
   {
     path: "/nodal-officer",
     element: <ProtectedRoute element={<NodalOfficer />} />,
+  },
+  {
+    path: "/department-admin",
+    element: <ProtectedRoute element={<DepartmentAdmin />} />,
   },
   {
     path: "/mobile-bookings",
@@ -907,7 +913,11 @@ export const routes = [
       <ProtectedRoute element={<AmarabadUncategorizedViewTrackOrder />} />
     ),
   },
-
+  // create pos user
+  {
+    path: "/pos-admin",
+    element: <ProtectedRoute element={<PosMain />} />,
+  },
   //intercity
   {
     path: "/intercity-consolidated-report",
