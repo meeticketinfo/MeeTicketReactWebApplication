@@ -30,28 +30,14 @@ export const useNodalOfficerStore = create((set) => ({
       .join("&"),
 
   // Fetch all Nodal Officers
-  fetchAllNodalOfficers: async (filters = {}) => {
+  fetchAllNodalOfficers: async (pageIndex = 1, pageSize = 10, filters = {}) => {
     set({ isFetchAllNodalOfficersLoading: true });
     try {
-      // Build query parameters
-      const queryParams = new URLSearchParams();
-      
-      if (filters.fromDate) {
-        queryParams.append('fromDate', filters.fromDate);
-      }
-      if (filters.toDate) {
-        queryParams.append('toDate', filters.toDate);
-      }
-      if (filters.mobileNumber) {
-        queryParams.append('mobileNumber', filters.mobileNumber);
-      }
-      
-      const queryString = queryParams.toString();
-      const url = queryString 
-        ? `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_NODAL_OFFICERS}?${queryString}`
-        : API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_NODAL_OFFICERS;
-        
-      const response = await apiService.get(url);
+      //   const filterString = useServicestore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
+        `${API_ENDPOINTS.MASTERS.NODAL_OFFICERS.GET_NODAL_OFFICERS}`
+      );
       console.log(response);
 
       set({
