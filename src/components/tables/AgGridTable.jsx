@@ -106,6 +106,11 @@ console.log(params);
             return ""; // empty string
           }
 
+          // Handle facilitiesAssigned field with comma-separated formatting
+          if (columnId === "facilitiesAssigned" && Array.isArray(value)) {
+            return value.map((item, i) => `${item.value}${i < value.length - 1 ? "," : ""}`).join(" ");
+          }
+
           // Ensure "Refund ID" and empty values show "N/A"
           if (value === null || value === undefined || value === "") {
             return "N/A";
