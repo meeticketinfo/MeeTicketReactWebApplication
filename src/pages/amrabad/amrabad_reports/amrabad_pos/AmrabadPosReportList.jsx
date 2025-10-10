@@ -34,17 +34,21 @@ const AmrabadPosReportList = () => {
   const {
     fetchAmrabadPosReportData,
     AmrabadPosReportData,
-    isFetchAmrabadPosReportData,
+    isFetchAmrabadPosReportData
   } = useAmrabadPosStore();
+  // console.log("AmrabadPosReportData", AmrabadPosReportData);
   useEffect(() => {
     fetchAmrabadPosReportData({
       fromDate: savedFilters?.fromDate ?? getCurrentDateAtMidnight(),
       toDate: savedFilters?.toDate ?? getCurrentDate(),
       adminMobileNumber: savedFilters?.adminMobileNumber
-        ? savedFilters.mobileNumber
+        ? savedFilters.adminMobileNumber
+        : "",
+      userName: savedFilters?.userName
+        ? savedFilters.userName
         : "",
       userMobileNumber: savedFilters?.userMobileNumber
-        ? savedFilters.mobileNumber
+        ? savedFilters.userMobileNumber
         : "",
       paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
       vehicleNumber: savedFilters?.vehicleNumber
@@ -105,8 +109,17 @@ const AmrabadPosReportList = () => {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
+      field: "viewPointNames",
+      headerName: "View Point Name",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    
+    {
       field: "location",
       headerName: "Location",
+      maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
