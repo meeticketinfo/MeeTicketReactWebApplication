@@ -89,6 +89,7 @@ const DepartmentAdminCreate = ({
     emailId: Yup.string().required("EmailId is required"),
     phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit Phone Number"),
     password: Yup.string()
+      .required("Password is required")
       .min(10)
       .max(16),
   });
@@ -406,7 +407,7 @@ const DepartmentAdminCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password {!isNodalOfficerEditVisible &&<span className="text-red-500">*</span>}
+                    Password <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"
