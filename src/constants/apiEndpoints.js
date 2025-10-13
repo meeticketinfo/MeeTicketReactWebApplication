@@ -280,7 +280,10 @@ export const API_ENDPOINTS = {
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}BusPassDashboard/GetBookingDetailsOuterReport`,
         GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
-      },
+        GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketAndPassDetailsById`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalPaymentResponse`,
+      }
+      ,
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/PaymentTransactionsReport`,
         GET_INTERCITY_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
@@ -387,6 +390,7 @@ export const API_ENDPOINTS = {
       GET_HOUSES: `${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
       GET_COUNTRIES: `${AMRABAD_API_BASE_URL}Master/GetAllCountries`,
       GET_STATES: `${AMRABAD_API_BASE_URL}Master/GetAllStates`,
+      GET_POS_USERS: `${AMRABAD_API_BASE_URL}Parking/GetPOSUsers`,
     },
     REPORTS: {
       GET_CONSOLIDATED_BOOKING_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,

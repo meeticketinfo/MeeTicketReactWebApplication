@@ -349,13 +349,13 @@ const BusPassBookingReportList = () => {
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
       // ------------------
-      {
-        field: "loginMobileNo",
-        headerName: "Login Mobile No",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      },
+      // {
+      //   field: "loginMobileNo",
+      //   headerName: "Login Mobile No",
+      //   // flex: 1,
+      //   headerClass: "text-blue-v2",
+      //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // },
       {
         field: "userName",
         headerName: "User Name",
@@ -389,23 +389,65 @@ const BusPassBookingReportList = () => {
         headerName: "Booking Date",
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+          valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
         field: "busPassValidityStartTime",
-        headerName: "Bus Pass Validity Start Time",
+        headerName: "Bus Pass Validity Start Date&Time",
         // maxWidth: 170,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+          valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
         field: "busPassValidityEndTime",
-        headerName: "Bus Pass Validity End Time",
+        headerName: "Bus Pass Validity End Date&Time",
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+          valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       // -------------------
@@ -494,7 +536,22 @@ const BusPassBookingReportList = () => {
         field: "refundDate",
         headerName: "Refund Initiated Date",
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
+        
       },
 
       {
@@ -534,7 +591,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible !== true && params.data.isRenewal !== 1;
+          const isDisabled = params.data.isRegenerateEligible !== true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
@@ -762,8 +819,8 @@ const BusPassBookingReportList = () => {
               >
                 <option value="">Select</option>
 
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
+                {/* <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option> */}
                 <option value="Card">Card</option>
                 <option value="UPI">UPI</option>
                 <option value="Other">Other</option>
@@ -786,7 +843,7 @@ const BusPassBookingReportList = () => {
                 <option value="Failed">Failed</option>
                 <option value="Initiated">Initiated</option>
                 <option value="In Process">In Process</option>
-                <option value="Cancelled">Cancelled</option>
+                {/* <option value="Cancelled">Cancelled</option> */}
               </Field>
             </div>
             <div className="flex items-end gap-2">
