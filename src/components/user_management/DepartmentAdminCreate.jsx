@@ -21,10 +21,11 @@ const DepartmentAdminCreate = ({
   const { allDepartmentTypes, fetchAllDepartmentTypes,isFetchAllDepartmentTypesLoading } =
     useDepartmentTypesStore();
     const departmentOptions =
-    allDepartmentTypes?.map((department) => ({
-      value: department.departmentId,
-      label: department.departmentName,
-    })) || [];
+    allDepartmentTypes?.filter((department) => department.isActive !== false)
+      .map((department) => ({
+        value: department.departmentId,
+        label: department.departmentName,
+      })) || [];
   
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const DepartmentAdminCreate = ({
     password: Yup.string()
       .required()
       .min(10)
-      .max(10),
+      .max(16),
   });
   const updateValidationSchema = Yup.object({
     departmentIds: Yup.array().of(Yup.string().required()).min(1, "Select at least one department").required("Department is required"),
@@ -88,9 +89,8 @@ const DepartmentAdminCreate = ({
     emailId: Yup.string().required("EmailId is required"),
     phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit Phone Number"),
     password: Yup.string()
-      .trim()
-      .required()
-      .matches(/^\d{10}$/, "Enter 10 digit Password"),
+      .min(10)
+      .max(16),
   });
 
   const onSubmit = async (

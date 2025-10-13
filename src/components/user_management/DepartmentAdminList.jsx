@@ -186,8 +186,16 @@ const DepartmentAdminList = ({
                   <Field
                     type="datetime-local"
                     name="fromDate"
-                    className={`mt-1 block w-full px    -2 py-1 border
+                    className={`mt-1 block w-full px-2 py-1 border
                                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onChange={(e) => {
+                      const fromDateValue = e.target.value;
+                      setFieldValue("fromDate", fromDateValue);
+                      // If To Date is set and is before the new From Date, clear it
+                      if (values.toDate && fromDateValue && new Date(values.toDate) < new Date(fromDateValue)) {
+                        setFieldValue("toDate", "");
+                      }
+                    }}
                   />
                 </div>
                 <div>
@@ -200,12 +208,13 @@ const DepartmentAdminList = ({
                   <Field
                     type="datetime-local"
                     name="toDate"
+                    min={values.fromDate || ""}
                     className={`mt-1 block w-full px-2 py-1 border
                                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                    //   onChange={(e) => {
-                    //     const toDateValue = e.target.value;
-                    //     setFieldValue("toDate", toDateValue);
-                    //   }}
+                    onChange={(e) => {
+                      const toDateValue = e.target.value;
+                      setFieldValue("toDate", toDateValue);
+                    }}
                   />
                 </div>
                 <div>
