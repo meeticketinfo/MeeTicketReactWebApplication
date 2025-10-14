@@ -273,7 +273,7 @@ export const API_ENDPOINTS = {
         GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/FailureFromGatewayReport`,
         GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/PaymentSuccessButNotGeneratedReport`,
         GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}BusPassDashboard/TransactionOrderTrackingReport`,
-        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}BusPassDashboard/OrderStatusCall`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
         GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
         GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
         GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}BusPassDashboard/RefundInitiate`,

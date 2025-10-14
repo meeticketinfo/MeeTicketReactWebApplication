@@ -327,6 +327,7 @@ const BusPassBookingReportList = () => {
   const columnDefs = useMemo(
     () => [
       {
+        field:"S.No",
         headerName: "S.No",
         valueGetter: (params) =>
           currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -654,7 +655,7 @@ const BusPassBookingReportList = () => {
         headerClass: "text-blue-v2",
       },
       {
-        field: "Action",
+        field: "action",
         headerName: "Action",
         maxWidth: 160,
         headerClass: "text-blue-v2",
@@ -838,12 +839,9 @@ const BusPassBookingReportList = () => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Pending">Pending</option>
+                {/* <option value="Confirmed">Confirmed</option> */}
+                <option value="Success">Success</option>
                 <option value="Failed">Failed</option>
-                <option value="Initiated">Initiated</option>
-                <option value="In Process">In Process</option>
-                {/* <option value="Cancelled">Cancelled</option> */}
               </Field>
             </div>
             <div className="flex items-end gap-2">

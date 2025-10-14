@@ -191,7 +191,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
     set({ isFetchRtcBusPassBookingData: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_BOOKING_RECORDS}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&busPassTypeId=${payload.BusPassType}&typeOfPayment=${payload.typeOfPayment}&query=${payload.transactionId}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`
+        `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_BOOKING_RECORDS}?fromDate=${payload.fromDate}&toDate=${payload.toDate}&mobileNumber=${payload.mobileNumber}&busPassTypeId=${payload.BusPassType}&typeOfPayment=${payload.typeOfPayment}&query=${payload.transactionId}&bookingStatus=${payload.bookingStatus}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`
       );
       set({
         RtcBusPassBookingRecordsData: response.data,

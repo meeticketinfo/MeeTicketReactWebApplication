@@ -71,7 +71,7 @@ const AgGridTable = ({
             : "Report.xlsx",
         columnKeys: gridApi
           .getColumnDefs()
-          .filter((col) => col.field !== "actions" && col.field !== "action")
+          .filter((col) => col.field !== "actions" && col.field !== "action" && col.field !== "VerifyTicket" && col.field !== "GenerateTicket" && col.field !== "InitiateRefund")
           .map((col) => col.field),
         columnWidth: (params) => {
           const colId = params.column.getColId();
