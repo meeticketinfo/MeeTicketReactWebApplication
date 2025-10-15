@@ -121,6 +121,11 @@ const sidebarItems = [
         icon: MdPayments,
         path: "/payments",
       },
+      {
+        title: "Banner",
+        icon: RiDashboard3Fill,
+        path: "/banner",
+      },
     ],
   },
   {

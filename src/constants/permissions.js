@@ -32,6 +32,7 @@ export const superAdminPermissions = [
   "metro-user-detailed-report",
   "metro-refund-transactions",
   "monthly-reports",
+  "banner",
 ];
 
 // department

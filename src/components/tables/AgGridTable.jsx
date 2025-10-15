@@ -228,7 +228,7 @@ console.log(params);
           pinnedBottomRowData={pinnedBottomRowData}
           columnDefs={columnDefs?.map((col) => ({
             ...col,
-            minWidth: 180,
+            minWidth:col.minWidth || 180,
             sortable: true,
           }))}
           quickFilterText={quickFilterText}

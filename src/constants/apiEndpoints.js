@@ -143,6 +143,12 @@ export const API_ENDPOINTS = {
       UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
       GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
     },
+    BANNER: {
+      GET_BANNERS: `${API_BASE_URL}Advertisement/GetAllBanners`,
+      ADD_NEW_BANNER: `${API_BASE_URL}Advertisement/AddBanner`,
+      UPDATE_BANNER: `${API_BASE_URL}Advertisement/UpdateBanner`,
+      DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
+    },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,

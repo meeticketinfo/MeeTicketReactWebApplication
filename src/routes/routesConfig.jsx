@@ -197,6 +197,7 @@ import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTer
 import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
+import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
 
 export const routes = [
   {
@@ -912,6 +913,11 @@ export const routes = [
   {
     path: "/pos-admin",
     element: <ProtectedRoute element={<PosMain />} />,
+  },
+  // create banner
+  {
+    path: "/banner",
+    element: <ProtectedRoute element={<MainBannerCreation />} />,
   },
   //intercity
   {

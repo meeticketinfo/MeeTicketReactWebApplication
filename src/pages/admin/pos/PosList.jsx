@@ -5,8 +5,6 @@ import { LuClipboardEdit } from "react-icons/lu";
 import PosListForm from "./PosListForm";
 import { ToastContainer } from "react-toastify";
 
-
-
 const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   const {
     allPosUsers,
@@ -33,8 +31,6 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
     });
   }, [currentPage, PAGE_LIMIT]);
 
- 
-  
   const columnDefs = [
     {
       headerName: "S.No",
@@ -133,31 +129,31 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
   ];
   return (
     <>
-    <div>
-      <ToastContainer />
-      <PosListForm
-        pageNumber={currentPage + 1}
-        pageSize={PAGE_LIMIT}
-        SetcurrentPage={setCurrentPage}
-      />
-      <AgGridTable
-        ExportName="POS Users"
-        rowData={allPosUsers}
-        columnDefs={columnDefs}
-        isFetchLoading={isFetchAllPosUsersLoading}
-        isPagination={false}
-        IsReactPaginate={true}
-        setPageLimit={setPAGE_LIMIT}
-        pageLimit={PAGE_LIMIT}
-        handlePageClick={handlePageClick}
-        currentPage={currentPage}
-        showTotalCount={true}
-        totalCount={allPosUsers && allPosUsers[0]?.totalCount}
-        tableHeight={allPosUsers?.length > 10 ? 550 : 300}
-        SetcurrentPage={setCurrentPage}
-        showSearch={false}
-      />
-    </div>
+      <div>
+        <ToastContainer />
+        <PosListForm
+          pageNumber={currentPage + 1}
+          pageSize={PAGE_LIMIT}
+          SetcurrentPage={setCurrentPage}
+        />
+        <AgGridTable
+          ExportName="POS Users"
+          rowData={allPosUsers}
+          columnDefs={columnDefs}
+          isFetchLoading={isFetchAllPosUsersLoading}
+          isPagination={false}
+          IsReactPaginate={true}
+          setPageLimit={setPAGE_LIMIT}
+          pageLimit={PAGE_LIMIT}
+          handlePageClick={handlePageClick}
+          currentPage={currentPage}
+          showTotalCount={true}
+          totalCount={allPosUsers && allPosUsers[0]?.totalCount}
+          tableHeight={allPosUsers?.length > 10 ? 550 : 300}
+          SetcurrentPage={setCurrentPage}
+          showSearch={false}
+        />
+      </div>
     </>
   );
 };
