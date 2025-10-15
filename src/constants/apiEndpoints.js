@@ -40,8 +40,13 @@ export const TOURISM_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 // RTC dev
+// export const RTC_API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+
+// RTC UAT
 export const RTC_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+  "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
 
 //RTC Intercity
 export const RTC_INTERCITY_API_BASE_URL =
@@ -49,8 +54,13 @@ export const RTC_INTERCITY_API_BASE_URL =
 
 // RTC BUS PASS DEV
 
+// export const RTC_BUS_PASS_API_BASE_URL =
+//   "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
+
+// RTC BUS PASS UAT
 export const RTC_BUS_PASS_API_BASE_URL =
-  "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
+  "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
 
 // METRO PROD
 // export const METRO_API_BASE_URL =
@@ -264,7 +274,7 @@ export const API_ENDPOINTS = {
       REFUND_TRANSACTIONS_REPORT: {
         GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
         GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
-        GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}BusPassDashboard/RefundInitiate`,
+        GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
       },
       RTC_TOTAL_TRANSACTIONS_REPORT: {
         GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionOuterReport`,
@@ -276,7 +286,7 @@ export const API_ENDPOINTS = {
         GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
         GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
         GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
-        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}BusPassDashboard/RefundInitiate`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}BusPassDashboard/GetBookingDetailsOuterReport`,
         GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,

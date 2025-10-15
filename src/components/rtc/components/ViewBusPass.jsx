@@ -58,7 +58,6 @@ const ViewBusPass = ({ isOpen, onClose, AipData }) => {
   useEffect(() => {
     fetchRtcRtcViewBusPassData(AipData);
   }, [AipData]);
-  console.log("RtcViewBusPassData", RtcViewBusPassData);
   return (
     <PopupModal
       popupModalId="view-bus-pass-modal"

@@ -263,21 +263,37 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           currentState.RtcBusPassBookingRecordsData &&
           currentState.RtcBusPassBookingRecordsData.length > 0
         ) {
-          // Get the first record's orderId, or you can modify this logic based on your requirements
-          const firstRecord = currentState.RtcBusPassBookingRecordsData[0];
-          if (firstRecord && firstRecord.orderId) {
-            parsedPayload.bpOrderId = firstRecord.orderId;
+          // Find the record with isRenewal set to true, or use the first record as fallback
+          const renewalRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.isRenewal === 1 || record.isRenewal === "1" || record.isRenewal === true
+          );
+          console.log("renewalRecord", renewalRecord);
+          
+          // Find the record with isGeneral set to true
+          const generalRecord = currentState.RtcBusPassBookingRecordsData.find(
+            record => record.isGeneral === 1 || record.isGeneral === "1" || record.isGeneral === true
+          );
+          console.log("generalRecord", generalRecord);
+          
+          const selectedRecord = renewalRecord || generalRecord || currentState.RtcBusPassBookingRecordsData;
+          // console.log("selectedRecord", selectedRecord);
+          if (selectedRecord && selectedRecord.orderId) {
+            parsedPayload.bpOrderId = selectedRecord.orderId;
             
             // Check conditions for endpoint selection
-            const isRegenerateEligible = firstRecord.isRegenerateEligible === true;
-            const isGeneral = firstRecord.isGeneral === 1 || firstRecord.isGeneral === "1";
-            const isRenewalFlag = firstRecord.isRenewal === 1 || firstRecord.isRenewal === "1" || firstRecord.isRenewal === true;
-            
-            // New Pass: isRegenerateEligible === true AND isGeneral === 1
-            isNewPass = isRegenerateEligible && isGeneral;
-            
-            // Renewal: isRegenerateEligible === true AND isRenewal === 1
-            isRenewal = isRegenerateEligible && isRenewalFlag;
+            const isRegenerateEligible = selectedRecord.isRegenerateEligible === true;
+            const isGeneral = selectedRecord.isGeneral === true;
+            const isRenewalFlag = selectedRecord.isRenewal === 1 || selectedRecord.isRenewal === "1" || selectedRecord.isRenewal === true;
+           
+
+            // If isGeneral is true, call isNewPass, otherwise call isRenewal
+            if (isGeneral) {
+              isNewPass =  isGeneral;
+              isRenewal = false;
+            } else {
+              isNewPass = false;
+              isRenewal = isRenewalFlag;
+            }
 
           }
         }
@@ -296,7 +312,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           if (matchingRecord) {
             // Check conditions for endpoint selection
             const isRegenerateEligible = matchingRecord.isRegenerateEligible === true;
-            const isGeneral = matchingRecord.isGeneral === 1 || matchingRecord.isGeneral === "1";
+            const isGeneral = matchingRecord.isGeneral === 1 || matchingRecord.isGeneral === "1" || matchingRecord.isGeneral === true ;
             const isRenewalFlag = matchingRecord.isRenewal === 1 || matchingRecord.isRenewal === "1" || matchingRecord.isRenewal === true;
             
             // New Pass: isRegenerateEligible === true AND isGeneral === 1
@@ -452,6 +468,8 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           }
         }
 
+        console.log("renewalRequestJson", renewalRequestJson);
+
         // Fallback to creating from additionalData if not found in booking records
         if (!renewalRequestJson) {
           renewalRequestJson = JSON.stringify(additionalData);
@@ -468,9 +486,22 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           renewalRequestData = additionalData; // Fallback to additionalData
         }
 
-        response = await apiService.post(endpoint, renewalRequestData, {
+        // Convert first letter of all field names to lowercase
+        let convertedRenewalData = {};
+        if (renewalRequestData) {
+          Object.keys(renewalRequestData).forEach(key => {
+            // Convert first letter to lowercase
+            const convertedKey = key.charAt(0).toLowerCase() + key.slice(1);
+            convertedRenewalData[convertedKey] = renewalRequestData[key];
+          });
+        }
+
+        console.log("convertedRenewalData", convertedRenewalData);
+
+        response = await apiService.post(endpoint, convertedRenewalData, {
           "Content-Type": "application/json",
         });
+          console.log("response", response);
 
         // Step 3.1: If renewal initiate is successful, call renewal payment response API
         if (response && response.data && response.data.status === 200) {
@@ -513,14 +544,15 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             if (response && response.data && response.data.referenceNo) {
               jsonRenewalPaymentRequest.ReferenceNo = response.data.referenceNo;
             }
+            console.log("jsonRenewalPaymentRequest", jsonRenewalPaymentRequest.ReferenceNo);
 
             if (
               jsonRenewalPaymentRequest &&
               jsonRenewalPaymentRequest.ReferenceNo &&
               jsonRenewalPaymentRequest.ReferenceNo !== ""
             ) {
-              if (jsonRenewalPaymentRequest.Data) {
-                jsonRenewalPaymentRequest.Data.ReferenceNo =
+              if (jsonRenewalPaymentRequest.data) {
+                jsonRenewalPaymentRequest.data.ReferenceNo =
                   jsonRenewalPaymentRequest.ReferenceNo;
               }
             }
@@ -528,12 +560,12 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             // Also set OrderId in Data object if it exists
             if (
               jsonRenewalPaymentRequest &&
-              jsonRenewalPaymentRequest.Data &&
+              jsonRenewalPaymentRequest.data &&
               response &&
               response.data &&
               response.data.applicationNo
             ) {
-              jsonRenewalPaymentRequest.Data.OrderId = response.data.applicationNo;
+              jsonRenewalPaymentRequest.data.OrderId = response.data.applicationNo;
             }
 
             // Set txnAmount based on passTypeId from parsedPayload
@@ -550,7 +582,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
               amount = 1950;
             }
 
-            jsonRenewalPaymentRequest.Data.TxnAmount = amount;
+            // jsonRenewalPaymentRequest.Data.TxnAmount = amount;
 
             // Delete referenceNo and txnAmount outside of Data object
             if (jsonRenewalPaymentRequest) {
@@ -639,8 +671,13 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         RtcGeneratePassData: response.data,
       });
 
+      console.log("response", response.data.applicationNo);
       // Step 4: Call payment response API to get applicationNo
-      try {
+      // Skip regular payment response if renewal payment response was already called
+      const isRenewalPayment = response.data && response.data.renewalPaymentResponse;
+      
+      if (!isRenewalPayment) {
+        try {
         // Get paymentRequestJson from RtcBusPassBookingRecordsData
         const currentState = useBusPassTotalTransactionStore.getState();
         let paymentRequestJson = null;
@@ -677,7 +714,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
         // Also add ReferenceNo from response.data if available
         if (response && response.data && response.data.referenceNo) {
-          jsonPaymentRequest.ReferenceNo = response.data.referenceNo;
+          jsonPaymentRequest.data.ReferenceNo = response.data.referenceNo;
         }
 
         if (
@@ -694,12 +731,12 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         // Also set OrderId in Data object if it exists
         if (
           jsonPaymentRequest &&
-          jsonPaymentRequest.Data &&
+          jsonPaymentRequest.data &&
           response &&
           response.data &&
           response.data.applicationNo
         ) {
-          jsonPaymentRequest.Data.OrderId = response.data.applicationNo;
+          jsonPaymentRequest.data.OrderId = response.data.applicationNo;
         }
 
         // Set txnAmount based on passTypeId from parsedPayload
@@ -717,7 +754,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           amount = 1950;
         }
 
-        jsonPaymentRequest.Data.TxnAmount = amount;
+        // jsonPaymentRequest.data.TxnAmount = amount;
         // }
 
         // Delete referenceNo and txnAmount outside of Data object
@@ -851,6 +888,10 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         // Return original response even if payment response fails
         return { response: response.data };
       }
+      } else {
+        // For renewal payments, return the response directly without calling regular payment response
+        return { response: response.data };
+      }
     } catch (error) {
       set({
         error: error.message,
@@ -860,6 +901,22 @@ export const useBusPassTotalTransactionStore = create((set) => ({
       set({ isFetchRtcGeneratePassData: false });
     }
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // bus pass initiate refund
   RtcBusInitiateData: [],

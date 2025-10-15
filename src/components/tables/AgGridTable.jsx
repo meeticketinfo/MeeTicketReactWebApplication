@@ -253,7 +253,7 @@ console.log(params);
           }}
           onRowSelected={(event) => {
             // Optional: Handle row selection events
-            console.log('Row selected:', event.data);
+            // console.log('Row selected:', event.data);
           }}
         />
 

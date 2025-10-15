@@ -248,7 +248,6 @@ const BusPassBookingReportList = () => {
   const handleRegenerateTicket = async () => {
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
-      console.log("API Response:", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.messageType;
@@ -327,7 +326,7 @@ const BusPassBookingReportList = () => {
   const columnDefs = useMemo(
     () => [
       {
-        field:"S.No",
+        field: "S.No",
         headerName: "S.No",
         valueGetter: (params) =>
           currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -390,21 +389,21 @@ const BusPassBookingReportList = () => {
         headerName: "Booking Date",
         // flex: 1,
         headerClass: "text-blue-v2",
-          valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
@@ -412,21 +411,21 @@ const BusPassBookingReportList = () => {
         headerName: "Bus Pass Validity Start Date&Time",
         // maxWidth: 170,
         headerClass: "text-blue-v2",
-          valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
@@ -434,21 +433,21 @@ const BusPassBookingReportList = () => {
         headerName: "Bus Pass Validity End Date&Time",
         // flex: 1,
         headerClass: "text-blue-v2",
-          valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       // -------------------
@@ -552,7 +551,6 @@ const BusPassBookingReportList = () => {
           });
           return `${formattedDate} ${formattedTime}`;
         },
-        
       },
 
       {
@@ -613,7 +611,9 @@ const BusPassBookingReportList = () => {
                 }}
                 disabled={isDisabled}
               >
-                Generate Ticket
+                {params.data.isRenewal === true
+                  ? "Generate Bus Pass (R)"
+                  : "Generate Bus Pass"}
               </button>
             </div>
           );
