@@ -33,6 +33,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
 
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: "node.rowIndex + 1",
       minWidth: 80,
@@ -94,6 +95,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
             {params.value.map((item, i) => (
               <span key={i}>
                 {item.value} {i < params.value.length - 1 ? " ," : ""}
+                
               </span>
             ))}
           </div>
