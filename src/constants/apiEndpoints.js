@@ -40,12 +40,12 @@ export const TOURISM_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 // RTC dev
-// export const RTC_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+export const RTC_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // RTC UAT
-export const RTC_API_BASE_URL =
-  "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_API_BASE_URL =
+//   "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 //RTC Intercity
@@ -54,12 +54,12 @@ export const RTC_INTERCITY_API_BASE_URL =
 
 // RTC BUS PASS DEV
 
-// export const RTC_BUS_PASS_API_BASE_URL =
-//   "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
+export const RTC_BUS_PASS_API_BASE_URL =
+  "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
 
 // RTC BUS PASS UAT
-export const RTC_BUS_PASS_API_BASE_URL =
-  "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_BUS_PASS_API_BASE_URL =
+//   "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 // METRO PROD
@@ -290,7 +290,7 @@ export const API_ENDPOINTS = {
         GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}BusPassDashboard/GetBookingDetailsOuterReport`,
         GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
-        GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketAndPassDetailsById`,
+        GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_API_BASE_URL}API/GetTicketAndPassDetailsById`,
         GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalPaymentResponse`,
       }
       ,
@@ -378,7 +378,7 @@ export const API_ENDPOINTS = {
     GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardAllPassesInfo`,
     GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/GetPassTransactionDetails`,
     GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}BusPassDashboard/GetAllBusPasses`,
-    GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/GetBusPassDashboard`,
+    GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/BusPassDashboard`,
     GET_INTERCITY_DASHBOARD: `${RTC_INTERCITY_API_BASE_URL}Reports/IntercityDashboard`,
   },
   TOURSIM_DASHBOARD: {

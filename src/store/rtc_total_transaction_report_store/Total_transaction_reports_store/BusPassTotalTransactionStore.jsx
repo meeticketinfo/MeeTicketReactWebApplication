@@ -496,6 +496,19 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           });
         }
 
+        // Add orderId from matching record to convertedRenewalData
+        const currentStateForOrderId = useBusPassTotalTransactionStore.getState();
+        if (currentStateForOrderId.RtcBusPassBookingRecordsData && currentStateForOrderId.RtcBusPassBookingRecordsData.length > 0) {
+          const matchingRecord = currentStateForOrderId.RtcBusPassBookingRecordsData.find(
+            (record) =>
+              record.orderId === parsedPayload.bpOrderId ||
+              record.orderId === parsedPayload.orderId
+          );
+          if (matchingRecord && matchingRecord.orderId) {
+            convertedRenewalData.orderId = matchingRecord.orderId;
+          }
+        }
+
         console.log("convertedRenewalData", convertedRenewalData);
 
         response = await apiService.post(endpoint, convertedRenewalData, {
@@ -634,14 +647,75 @@ export const useBusPassTotalTransactionStore = create((set) => ({
               jsonRenewalPaymentRequest
             );
             
-            // Merge the renewal payment response with the original response
-            response = {
-              ...response,
-              data: {
-                ...response.data,
-                renewalPaymentResponse: renewalPaymentResponse.data
+            // Call GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID after renewal payment response
+            try {
+              // Extract applicationNo from the renewal response - use modifiedApplicationNo if available, otherwise use applicationNo
+              const applicationNo = response.data.modifiedApplicationNo || response.data.applicationNo;
+              
+              // Extract userId from bookingRequestJson in current state
+              let userId = null;
+              const currentState = useBusPassTotalTransactionStore.getState();
+              
+              if (currentState.RtcBusPassBookingRecordsData && currentState.RtcBusPassBookingRecordsData.length > 0) {
+                // Find the matching record
+                const matchingRecord = currentState.RtcBusPassBookingRecordsData.find(
+                  (record) =>
+                    record.orderId === parsedPayload.bpOrderId ||
+                    record.orderId === parsedPayload.orderId
+                );
+                
+                if (matchingRecord && matchingRecord.bookingRequestJson) {
+                  try {
+                    const bookingRequestData = typeof matchingRecord.bookingRequestJson === 'string' 
+                      ? JSON.parse(matchingRecord.bookingRequestJson) 
+                      : matchingRecord.bookingRequestJson;
+                    
+                    if (bookingRequestData && bookingRequestData.createdBy) {
+                      userId = bookingRequestData.createdBy;
+                    }
+                  } catch (parseError) {
+                    console.error('Error parsing bookingRequestJson:', parseError);
+                  }
+                }
               }
-            };
+
+              // Call the API if we have both applicationNo and userId
+              if (applicationNo && userId) {
+                const ticketDetailsResponse = await apiService.get(
+                  `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID}?id=${applicationNo}&userId=${userId}`
+                );
+                
+                // Merge the renewal payment response with the original response and add ticket details
+                response = {
+                  ...response,
+                  data: {
+                    ...response.data,
+                    renewalPaymentResponse: renewalPaymentResponse.data,
+                    ticketDetails: ticketDetailsResponse.data
+                  }
+                };
+              } else {
+                console.warn('Missing applicationNo or userId for GetTicketAndPassDetailsById API call in renewal');
+                // Merge the renewal payment response with the original response
+                response = {
+                  ...response,
+                  data: {
+                    ...response.data,
+                    renewalPaymentResponse: renewalPaymentResponse.data
+                  }
+                };
+              }
+            } catch (ticketDetailsError) {
+              console.error('GetTicketAndPassDetailsById API error in renewal:', ticketDetailsError);
+              // Merge the renewal payment response with the original response
+              response = {
+                ...response,
+                data: {
+                  ...response.data,
+                  renewalPaymentResponse: renewalPaymentResponse.data
+                }
+              };
+            }
           } catch (renewalPaymentError) {
             console.error("Renewal payment response error:", renewalPaymentError);
             // Continue with original response even if renewal payment fails
