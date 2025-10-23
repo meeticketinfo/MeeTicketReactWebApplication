@@ -7,6 +7,7 @@ import { useServiceStore } from "../../../store/masters/servicesStore";
 import { useServiceVariantStore } from "../../../store/masters/serviceVariantsStore";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
+import { WalkersPassStore } from "../../../store/masters/WalkersPassStore";
 
 const NestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
@@ -156,6 +157,7 @@ const AccordionSubRow = ({
   const [isExpanded, setIsExpanded] = useState(
     hasMultipleSubFacilities ? true : false
   );
+  const {  setCurrentWalkersPassEditDetails,setIsWalkersPassEdit } = WalkersPassStore();
   const { setOpenModalId } = useModalStore();
   const { setCurrentServiceEditDetails } = useServiceStore();
   const { setCurrentServiceVariantEditDetails } = useServiceVariantStore();
@@ -259,7 +261,12 @@ const AccordionSubRow = ({
                               ...detail,
                               serviceId: subRow.id,
                             });
-                            setOpenModalId("type-of-ticket-modal");
+                            // setOpenModalId("type-of-ticket-modal");
+                            setIsWalkersPassEdit(true)
+                            setCurrentWalkersPassEditDetails({
+                              ...detail,
+                              serviceId: subRow.id,
+                            })
                           }}
                         >
                           <LuClipboardEdit className="text-[24px] text-blue-600 " />

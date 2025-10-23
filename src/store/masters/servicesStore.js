@@ -39,7 +39,7 @@ export const useServiceStore = create((set) => ({
       const url =
         role === "ROLE_NODALOFFICER"
           ? `${API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES_NODAL_OFFICER}${LocationId}`
-          : API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES;
+          : `${API_ENDPOINTS.MASTERS.SERVICE.GET_SERVICES}`
       //   const filterString = useServicestore.getState().serializeFilters(filters);
       const response = await apiService.get(
         // `${API_ENDPOINTS.MASTERS.Service.GET_Services}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`

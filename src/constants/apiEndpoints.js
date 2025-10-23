@@ -1,12 +1,12 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+// export const API_BASE_URL =
+//   "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL =
+  "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 export const PAYNOW_API_BASE_URL =
@@ -142,6 +142,11 @@ export const API_ENDPOINTS = {
       ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
       UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
       GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
+    },
+    WALKERS_PASS: {
+      ADD_NEW_WALKERS_PASS: `${API_BASE_URL}Master/AddWalkerPassType`,
+      UPDATE_WALKERS_PASS: `${API_BASE_URL}Master/UpdateWalkerPassType`,
+      
     },
     BANNER: {
       GET_BANNERS: `${API_BASE_URL}Advertisement/GetAllBanners`,
