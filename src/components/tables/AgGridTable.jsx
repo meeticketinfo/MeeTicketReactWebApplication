@@ -63,16 +63,25 @@ const AgGridTable = ({
 
   const handleExportExcel = () => {
     if (gridApi) {
+      // Get all visible columns including dynamic ones
+      const allColumns = gridApi.getColumns();
+      const columnKeys = allColumns
+        .filter((col) => {
+          const colDef = col.getColDef();
+          return colDef.field && 
+                 colDef.field !== "actions" && 
+                 colDef.field !== "action" &&
+                 !colDef.hide; // Only include visible columns
+        })
+        .map((col) => col.getColDef().field);
+
       gridApi.exportDataAsExcel({
         sheetName: typeof ExportName === "string" ? ExportName : "Report",
         fileName:
           ExportName && typeof ExportName === "string"
             ? `${ExportName}.xlsx`
             : "Report.xlsx",
-        columnKeys: gridApi
-          .getColumnDefs()
-          .filter((col) => col.field !== "actions" && col.field !== "action" && col.field !== "VerifyTicket" && col.field !== "GenerateTicket" && col.field !== "InitiateRefund")
-          .map((col) => col.field),
+        columnKeys: columnKeys,
         columnWidth: (params) => {
           const colId = params.column.getColId();
           const rowData = [];
@@ -253,7 +262,7 @@ console.log(params);
           }}
           onRowSelected={(event) => {
             // Optional: Handle row selection events
-            // console.log('Row selected:', event.data);
+            console.log('Row selected:', event.data);
           }}
         />
 
