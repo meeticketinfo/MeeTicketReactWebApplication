@@ -337,6 +337,10 @@ export const API_ENDPOINTS = {
     FAILED_TRANSACTIONS: {
       GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
     },
+     // Walkers pass report endpoints
+    WALKERS_PASS_REPORT: {
+      GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,

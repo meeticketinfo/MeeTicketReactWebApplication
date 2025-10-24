@@ -198,6 +198,7 @@ import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPriva
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
+import WalkersPassReport from "../pages/admin/walkers_pass_report/WalkersPassReport";
 
 export const routes = [
   {
@@ -1008,4 +1009,8 @@ export const routes = [
     path: "/intercity-ticket-view-details/:id",
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
+  {
+    path:"/walkers-pass-report",
+    element:<ProtectedRoute element={<WalkersPassReport />} />,
+  }
 ];

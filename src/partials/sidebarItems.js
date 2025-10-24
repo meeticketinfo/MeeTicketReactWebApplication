@@ -176,6 +176,11 @@ const sidebarItems = [
         path: "/pos-payment-transactions-reports",
       },
       {
+        title: "Walkers Pass Report",
+        icon: TbReportAnalytics,
+        path: "/walkers-pass-report",
+      },
+      {
         title: "Bank Payments",
         icon: RiBankFill,
         path: "/bank-transactions",
