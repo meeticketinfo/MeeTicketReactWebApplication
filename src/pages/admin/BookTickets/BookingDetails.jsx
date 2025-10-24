@@ -30,6 +30,7 @@ export default function BookingDetails() {
     setPosPaymentTransactionNAvigate,
     PaymentTransactionNAvigate,
     PosIndividualNAvigate,
+    setPaymentStatus,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
@@ -187,8 +188,6 @@ export default function BookingDetails() {
               <PaymentQR />
               <NavLink
                 end
-             
- 
                 to={
                   PosIndividualNAvigate
                     ? "/pos-individual-booking-reports"

@@ -13,6 +13,7 @@ import {
   RtcAdmin,
   Amrabad,
   Department,
+  BotanicalGardenParkAdminPermissions,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -53,6 +54,8 @@ const ProtectedRoute = ({ element }) => {
       return Amrabad;
     } else if (role === "Role_DeptAdmin") {
       return Department;
+    }else if (role === "ROLE_COUNTERLOGIN") {
+      return BotanicalGardenParkAdminPermissions;
     }
     return [];
   }, [role, email]);

@@ -67,6 +67,14 @@ export const parkAdminPermissions = [
   // "Grievance-individual",
   // "pos-admin"
 ];
+export const BotanicalGardenParkAdminPermissions = [
+  "dashboard",
+  "bookings",
+  "facility-services",
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
+];
 export const CustomParkAdminPermissions = [
   "dashboard",
   "gate-keepers",

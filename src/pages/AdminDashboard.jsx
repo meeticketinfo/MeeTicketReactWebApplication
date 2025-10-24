@@ -754,7 +754,7 @@ function AdminDashboard() {
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-        roleDetails?.name === "ROLE_ADMIN" ? (
+        roleDetails?.name === "ROLE_ADMIN"||roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">

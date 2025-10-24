@@ -22,6 +22,7 @@ import {
   RtcAdmin,
   Amrabad,
   Department,
+  BotanicalGardenParkAdminPermissions,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -121,6 +122,8 @@ function Sidebar({ variant = "default" }) {
       return Amrabad;
     } else if (role === "Role_DeptAdmin") {
       return Department;
+    }else if (role === "ROLE_COUNTERLOGIN") {
+      return BotanicalGardenParkAdminPermissions;
     }
     return [];
   }, [role, email]);

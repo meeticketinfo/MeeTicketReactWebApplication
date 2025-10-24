@@ -52,9 +52,10 @@ export const FacilityServices = () => {
     return `${year}-${month}-${day}T${hours}:00:00.000`;
   }
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
-  const { roleDetails } = useAuthStore();
+  const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
-
+  const parkId = decodedTokenData?.data?.ParkId;
+ 
   const {
     saveBookingDetails,
     saveCashBookingDetails,
@@ -71,7 +72,7 @@ export const FacilityServices = () => {
 
   const [upi, SetUpi] = useState(false);
   const [pos, SetPos] = useState(false);
-  const { decodedTokenData } = useAuthStore();
+
   const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
   // disableing button for recurriing holidays
 
@@ -120,10 +121,11 @@ export const FacilityServices = () => {
   ];
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method"), // Add validation for payment method
-
-    mobileNumber: Yup.string()
-      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
-      .required("Please enter mobile number"),
+    mobileNumber:
+      parkId != "a8f9123b-0e6f-41e3-9328-6e72eca950e0" &&
+      Yup.string()
+        .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+        .required("Please enter mobile number"),
   });
 
   const handleSubmit = async (
@@ -147,8 +149,6 @@ export const FacilityServices = () => {
       bookingDate: formatBookingDate(currentDate),
       parkId: decodedTokenData?.data?.ParkId,
     };
-
-  
 
     if (values.paymentMethod === "pos") {
       try {
@@ -892,7 +892,7 @@ export const FacilityServices = () => {
                                 className="block text-xs font-medium text-gray-700"
                               >
                                 Mobile number{" "}
-                                <span className="text-red-500">*</span>
+                                {parkId!="a8f9123b-0e6f-41e3-9328-6e72eca950e0" && <span className="text-red-500">*</span>}
                               </label>
                               <Field
                                 type="text"
