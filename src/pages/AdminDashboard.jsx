@@ -16,8 +16,6 @@ import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
 import {
   formatToCurrency,
-  formatToStandardDate,
-  formatToStandardTime,
   getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
@@ -37,17 +35,15 @@ import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
 import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
-import BuspassOverallDetails from "../components/rtc/dashboard/BuspassDashboard/WalkerpassOverallDetails";
-import BuspassHyderabadPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassHyderabadPasses";
-import BuspassExpiredPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassExpiredPasses";
-import BuspassRenewalPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassRenewalPasses";
 import { useBuspassDashboardStore } from "../components/rtc/dashboard/BuspassDashboard/store/buspassDashboardStore";
-import WalkerpassOverallDetails from "../components/rtc/dashboard/BuspassDashboard/WalkerpassOverallDetails";
-import WalkerpassHyderabadPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassHyderabadPasses";
-import WalkerpassExpiredPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassExpiredPasses";
-import WalkerpassRenewalPasses from "../components/rtc/dashboard/BuspassDashboard/WalkerpassRenewalPasses";
-import WalkerpassMostPopularPassType from "../components/rtc/dashboard/BuspassDashboard/WalkerpassMostPopularPassType";
-import WalkerpassPassTypeDistribution from "../components/rtc/dashboard/BuspassDashboard/WalkerpassPassTypeDistribution";
+import WalkerpassOverallDetails from "../components/walkerPass/WalkerpassOverallDetails";
+
+import WalkerpassMostPopularPassType from "../components/walkerPass/WalkerpassMostPopularPassType";
+import WalkerpassPassTypeDistribution from "../components/walkerPass/WalkerpassPassTypeDistribution";
+import WalkerpassExpiredPasses from "../components/walkerPass/WalkerpassExpiredPasses";
+import WalkerpassFilter from "../components/walkerPass/WalkerpassFilter";
+import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";  
+import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
 
 function AdminDashboard() {
   superballs.register();
@@ -58,6 +54,7 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } = useWalkerpassStore();
   const {
     allParks,
     fetchAllParks,
@@ -111,6 +108,8 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchAllDepartmentTypes();
+    const currentDate = getCurrentDate();
+    fetchWalkerpassDashboard({ fromDate: '', toDate: '' });
     fetchAllEntityTypes();
     fetchAllDepartmentEntities({
       fromDate: "",
@@ -958,78 +957,15 @@ function AdminDashboard() {
           </DashboardCard07>
         )}
         
-        {/* Bus Pass Dashboard Section */}
-        {(roleDetails?.name === "ROLE_ADMIN" || roleDetails?.name === "ROLE_SUPERADMIN") && (
-          <>
-            <div className="col-span-full">
-              <div className="mb-4">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Walkers Pass</h1>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-0">
-                  <div>
-                    <label
-                      htmlFor="buspassFromDate"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      From Date
-                    </label>
-                    <input
-                      type="date"
-                      name="buspassFromDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      onChange={(e) => {
-                        fetchBuspassDashboard({
-                          fromDate: e.target.value,
-                          toDate: ""
-                        });
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="buspassToDate"
-                      className="block text-xs font-medium text-gray-700"
-                    >
-                      To Date
-                    </label>
-                    <input
-                      type="date"
-                      name="buspassToDate"
-                      className={`mt-1 block w-full px-2 py-1 border
-      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                      onChange={(e) => {
-                        fetchBuspassDashboard({
-                          fromDate: "",
-                          toDate: e.target.value
-                        });
-                      }}
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <button
-                      onClick={() => {
-                        fetchBuspassDashboard({
-                          fromDate: "",
-                          toDate: ""
-                        });
-                      }}
-                      className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
-                    >
-                      Load Bus Pass Data
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
+
+            <WalkerpassFilter />
             <WalkerpassOverallDetails />
-            <WalkerpassHyderabadPasses />
+            <WalkerpassCategory />
             <WalkerpassExpiredPasses />
-            <WalkerpassRenewalPasses />
-            <WalkerpassMostPopularPassType />
+            {/* <WalkerpassRenewalPasses /> */}
+            {/* <WalkerpassMostPopularPassType /> */}
             <WalkerpassPassTypeDistribution />
-          </>
-        )}
+      
       </div>
     </>
   );

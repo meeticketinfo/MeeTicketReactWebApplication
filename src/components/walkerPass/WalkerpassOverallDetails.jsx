@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoTicketSharp } from "react-icons/io5";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import CountUp from "react-countup";
-import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
+import { useWalkerpassStore } from "./store/walkerpassStore";
+import { getCurrentDate } from "../../utils/TypographyHelper";
 
 const WalkerpassOverallDetails = () => {
-  const { buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } =
+    useWalkerpassStore();
+
+    // Calculate totals from walkerPassDashboard data
+    const totalCount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.totalCount || 0), 0) || 0;
+    const totalAmount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.totalAmount || 0), 0) || 0;
+    const totalNewCount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.newCount || 0), 0) || 0;
+    const totalNewAmount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.newAmount || 0), 0) || 0;
+    const totalRenewalCount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.renewalCount || 0), 0) || 0;
+    const totalRenewalAmount = walkerPassDashboard?.dashboard?.reduce((sum, item) => sum + (item.renewalAmount || 0), 0) || 0;
+
 
   // Loading skeleton for overall details cards
   const OverallLoadingSkeleton = () => (
@@ -27,7 +38,10 @@ const WalkerpassOverallDetails = () => {
 
         <div className="space-y-3">
           {[1, 2, 3].map((index) => (
-            <div key={index} className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg"
+            >
               <div className="h-4 bg-gray-300 rounded w-20"></div>
               <div className="h-4 bg-gray-300 rounded w-12"></div>
             </div>
@@ -52,7 +66,10 @@ const WalkerpassOverallDetails = () => {
 
         <div className="space-y-3">
           {[1, 2, 3].map((index) => (
-            <div key={index} className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg"
+            >
               <div className="h-4 bg-gray-300 rounded w-20"></div>
               <div className="h-4 bg-gray-300 rounded w-16"></div>
             </div>
@@ -65,9 +82,9 @@ const WalkerpassOverallDetails = () => {
   return (
     <div className="col-span-full">
       <h2 className="text-xl font-semibold text-gray-800 mb-2">
-       Overall Details
+        Overall Details
       </h2>
-      {isFetchBuspassDashboardLoading ? (
+      {isFetchWalkerpassDashboardLoading ? (
         <OverallLoadingSkeleton />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -82,16 +99,14 @@ const WalkerpassOverallDetails = () => {
                   <h3 className="text-lg font-semibold text-gray-800">
                     Total Count
                   </h3>
-                  <p className="text-sm text-gray-500">
-                    All Passes Count
-                  </p>
+                  <p className="text-sm text-gray-500">All Passes Count</p>
                 </div>
               </div>
               <div className="text-xl font-bold text-gray-800 mb-6">
-                <CountUp 
-                  end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0)} 
-                  duration={2} 
-                  separator="," 
+                <CountUp
+                  end={totalCount}
+                  duration={2}
+                  separator=","
                 />
               </div>
             </div>
@@ -99,25 +114,13 @@ const WalkerpassOverallDetails = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                 <span className="text-sm font-medium text-gray-600">
-                  ID Cards
-                </span>
-                <span className="text-sm font-semibold text-gray-800">
-                  <CountUp 
-                    end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsCount || 0)} 
-                    duration={2} 
-                    separator="," 
-                  />
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
-                <span className="text-sm font-medium text-gray-600">
                   New Passes
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
-                  <CountUp 
-                    end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0)} 
-                    duration={2} 
-                    separator="," 
+                  <CountUp
+                    end={totalNewCount}
+                    duration={2}
+                    separator=","
                   />
                 </span>
               </div>
@@ -126,10 +129,10 @@ const WalkerpassOverallDetails = () => {
                   Renewal Passes
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
-                  <CountUp 
-                    end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0} 
-                    duration={2} 
-                    separator="," 
+                  <CountUp
+                    end={totalRenewalCount}
+                    duration={2}
+                    separator=","
                   />
                 </span>
               </div>
@@ -147,16 +150,15 @@ const WalkerpassOverallDetails = () => {
                   <h3 className="text-lg font-semibold text-gray-800">
                     Total Amount
                   </h3>
-                  <p className="text-sm text-gray-500">
-                    All Passes Amount
-                  </p>
+                  <p className="text-sm text-gray-500">All Passes Amount</p>
                 </div>
               </div>
               <div className="text-xl font-bold text-gray-800 mb-6">
-                ₹<CountUp 
-                  end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0)} 
-                  duration={2} 
-                  separator="," 
+                ₹
+                <CountUp
+                  end={totalAmount}
+                  duration={2}
+                  separator=","
                 />
               </div>
             </div>
@@ -164,37 +166,27 @@ const WalkerpassOverallDetails = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                 <span className="text-sm font-medium text-gray-600">
-                  ID Cards 
+                  New Passes
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
-                  ₹<CountUp 
-                    end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsAmount || 0)} 
-                    duration={2} 
-                    separator="," 
+                  ₹
+                  <CountUp
+                    end={totalNewAmount}
+                    duration={2}
+                    separator=","
                   />
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
                 <span className="text-sm font-medium text-gray-600">
-                  New Passes 
+                  Renewal Passes
                 </span>
                 <span className="text-sm font-semibold text-gray-800">
-                  ₹<CountUp 
-                    end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0)} 
-                    duration={2} 
-                    separator="," 
-                  />
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
-                <span className="text-sm font-medium text-gray-600">
-                  Renewal Passes 
-                </span>
-                <span className="text-sm font-semibold text-gray-800">
-                  ₹<CountUp 
-                    end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0} 
-                    duration={2} 
-                    separator="," 
+                  ₹
+                  <CountUp
+                    end={totalRenewalAmount}
+                    duration={2}
+                    separator=","
                   />
                 </span>
               </div>
@@ -202,6 +194,7 @@ const WalkerpassOverallDetails = () => {
           </div>
         </div>
       )}
+ 
     </div>
   );
 };

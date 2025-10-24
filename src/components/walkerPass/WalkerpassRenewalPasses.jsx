@@ -2,13 +2,13 @@ import React from "react";
 import { FaBus } from "react-icons/fa";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import CountUp from "react-countup";
-import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
+import { useWalkerpassStore } from "./store/walkerpassStore";
 
 const WalkerpassRenewalPasses = () => {
-  const { buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading } = useWalkerpassStore();
   
   // Get renewalSummary data from the store
-  const renewalPasses = buspassDashboard?.data?.renewalSummary || [];
+  const renewalPasses = walkerPassDashboard?.data?.renewalSummary || [];
 
   const RenewalPassCard = ({ title, icon, count, amount, iconColor = "text-blue-600" }) => (
     <div className="bg-white rounded-2xl shadow-lg p-4 w-full border border-gray-200">
@@ -55,7 +55,7 @@ const WalkerpassRenewalPasses = () => {
         <h2 className="text-xl sm:text-xl font-bold text-gray-800">Renewal Passes</h2>
       </div>
       
-      {isFetchBuspassDashboardLoading ? (
+          {isFetchWalkerpassDashboardLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {[1, 2, 3].map((index) => (
             <div key={index} className="bg-white rounded-2xl shadow-lg p-4 border border-gray-200 animate-pulse">
