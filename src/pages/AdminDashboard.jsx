@@ -244,7 +244,7 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-    roleDetails?.name === "ROLE_ZOOPARKADMIN"
+    roleDetails?.name === "ROLE_ZOOPARKADMIN"|roleDetails?.name === "ROLE_COUNTERLOGIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
 
