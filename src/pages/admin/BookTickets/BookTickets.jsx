@@ -18,6 +18,8 @@ import TransactionQr from "../../../components/bookings_management/TransactionQr
 import Select from "react-select";
 import { useEntityTypesStore } from "../../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
+import { useFacilityStore } from "../../../store/masters/facilitiesStore";
+import { useServiceStore } from "../../../store/masters/servicesStore";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
 export default function AdminBookings() {
@@ -53,6 +55,8 @@ export default function AdminBookings() {
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const { allFacilities, fetchAllFacilities } = useFacilityStore();
+  const { allServices, fetchAllServices } = useServiceStore();
   // const [isBookingFormVisible, setIsBookingFormVisible] = useState(false);
   const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
@@ -67,6 +71,8 @@ export default function AdminBookings() {
       fetchAllDepartmentTypes();
     }
     fetchAllEntityTypes();
+    fetchAllFacilities();
+    fetchAllServices(role);
     // fetchAllParks();
     if (role === "ROLE_NODALOFFICER") {
       fetchAllNodalOfficerParks(null, null, {}, userId);
@@ -94,6 +100,8 @@ export default function AdminBookings() {
     toDate: getCurrentDate(),
     entityTypeId: "",
     departmentId: "",
+    facilityId: "",
+    serviceId: "",
     entityId:
       role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
         ? decodedTokenData?.data?.ParkId
@@ -235,6 +243,8 @@ export default function AdminBookings() {
         bookingDateTo: isBookingDate ? values.toDate : "",
         departmentId: values.departmentId,
         entityTypeId: values.entityTypeId,
+        facilityId: values.facilityId,
+        serviceId: values.serviceId,
       };
       setSubmitting(true);
       const filters = formattedValues;
@@ -341,7 +351,7 @@ export default function AdminBookings() {
                 initialValues={initialValues}
                 onSubmit={(values, actions) => onSubmit(values, actions)}
               >
-                {({ values, setFieldValue }) => (
+                {({ values, setFieldValue, errors, touched }) => (
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" &&
@@ -532,6 +542,7 @@ export default function AdminBookings() {
                           />
                         </div>
                       )}
+                     
                       {/* location category */}
                       <div>
                         <label className="block text-xs font-medium text-gray-700">
@@ -638,7 +649,45 @@ export default function AdminBookings() {
                           }}
                         />
                       </div>
-
+                                             {/* facility */}
+                       <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Facility
+                        </label>
+                        <Field
+                          as="select"
+                          name="facilityId"
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        >
+                          <option value="">Select Facility</option>
+                          {allFacilities
+                            ?.map((facility) => (
+                              <option key={facility.id} value={facility.id}>
+                                {facility.name}
+                              </option>
+                            ))}
+                        </Field>
+                      </div>
+                      {/* sub facility */}
+                      <div>
+                        <label className="block text-xs font-medium text-gray-700">
+                          Sub Facility
+                        </label>
+                        <Field
+                          as="select"
+                          name="serviceId"
+                          className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                        >
+                          <option value="">Select sub facility</option>
+                          {allServices
+                            ?.map((service) => (
+                              <option key={service.id} value={service.id}>
+                                {service.name}
+                              </option>
+                            ))}
+                        </Field>
+                     
+                      </div>
                       <div className="flex items-end">
                         <button
                           type="submit"

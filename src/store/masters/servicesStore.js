@@ -55,7 +55,17 @@ export const useServiceStore = create((set) => ({
       set({ isFetchAllServicesLoading: false });
     }
   },
-
+  fetchAllPassTypes: async () => {
+    set({ isFetchAllPassTypesLoading: true });
+    try {
+      const response = await apiService.get(API_ENDPOINTS.MASTERS.SERVICE.GET_PASS_TYPES);
+      set({ allPassTypes: response.data });
+      return response.data;
+    } catch (error) {
+      set({ isFetchAllPassTypesLoading: false });
+      throw error;
+    }
+  },
   // Fetch Service details
   fetchServiceDetails: async (pageIndex = 1, pageSize = 10, filters = {}) => {
     set({ isFetchServiceDetailsLoading: true });

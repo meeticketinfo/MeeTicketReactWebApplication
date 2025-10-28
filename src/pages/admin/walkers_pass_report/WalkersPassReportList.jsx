@@ -35,15 +35,27 @@ function WalkersPassReportList() {
     isFetchWalkersPassReportData,
   } = useWalkersPassReportStore();
   useEffect(() => {
-    fetchWalkersPassReportData({
-      fromDate: savedFilters?.fromDate ?? getCurrentDate(),
-      toDate: savedFilters?.toDate ?? getCurrentDate(),
-      passTypeId: savedFilters?.passTypeId ?? "",
-      subFacilityId: savedFilters?.subFacilityId ?? "",
-      locationId: savedFilters?.locationId ?? "",
-      pageNumber: currentPage + 1,
-      PageSize: PAGE_LIMIT,
-    });
+    // Only fetch data for pagination changes (not initial load)
+    // Initial load is handled by the form component
+    if (currentPage > 0) {
+      const savedBookingDate = savedFilters?.purchaseOrBooking || 'Purchase';
+      const isBookingDateValue = savedBookingDate === 'Booking';
+      
+      const formattedValues = {
+        fromDate: !isBookingDateValue ? savedFilters?.fromDate ?? getCurrentDate() : "",
+        toDate: !isBookingDateValue ? savedFilters?.toDate ?? getCurrentDate() : "",
+        bookingDateFrom: isBookingDateValue ? savedFilters?.fromDate ?? getCurrentDate() : null,
+        bookingDateTo: isBookingDateValue ? savedFilters?.toDate ?? getCurrentDate() : null,
+        passTypeId: savedFilters?.passTypeId ?? "",
+        subFacilityId: savedFilters?.subFacilityId ?? "",
+        locationId: savedFilters?.locationId ?? "",
+        status: savedFilters?.status ?? "CONFIRMED",
+        pageNumber: currentPage + 1,
+        PageSize: PAGE_LIMIT,
+      };
+      
+      fetchWalkersPassReportData(formattedValues);
+    }
   }, [currentPage, PAGE_LIMIT, fetchWalkersPassReportData]);
 
   const columnDefs = [
