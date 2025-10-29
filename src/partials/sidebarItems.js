@@ -409,9 +409,9 @@ const sidebarItems = [
       },
 
       {
-        title: "Payment Gateway Report",
+        title: "Settlement Summary Report",
         icon: RiDashboard3Fill,
-        path: "/bus-pass-payment-gateway-report",
+        path: "/bus-pass-settlement-summary-report",
       },
 
     ],

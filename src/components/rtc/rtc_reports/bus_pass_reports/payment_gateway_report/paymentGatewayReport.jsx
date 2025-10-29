@@ -2,21 +2,26 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PaymentGatewayReportForm from "./paymentGatewayReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
-import { cleanString, getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import {
+  cleanString,
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../../../utils/Helper";
+import { formatToCurrency, formatToStandardDate } from "../../../../../utils/TypographyHelper";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
-
+import PaymentGatewayInnerReportForm from "./paymentGatewayInnerReportForm";
+import Breadcrumb from "../../../../Breadcrumb";
+import { useBuspassPaymentTransactionStore } from "../../../../../store/rtc/buspassPaymentTransactionStore";      
 const PaymentGatewayReport = () => {
   const [searchParams] = useSearchParams();
-  const fromDate = getStartOfCurrentDay();
-  const toDate = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDay();
   const {
-    isBusPassUserReportsLoading,
-    allBusPassUserReports,
-    fetchBusPassUserReports,
-  } = useBuspassUserStore();
+    isBusPassPaymentTransactionsLoading,
+    allBusPassPaymentTransactions,
+    fetchBusPassPaymentTransactions
+  } = useBuspassPaymentTransactionStore();
   const [currentPage, setCurrentPage] = useState(0);
-
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const columnDefs = [
     {
@@ -27,24 +32,74 @@ const PaymentGatewayReport = () => {
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
-  
     {
-      field: "depotName",
-      headerName: "Depot Name",
+      field: "UTR",
+      headerName: "UTR",
+      maxWidth: 160,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "serviceNumber",
-      headerName: "Service Number",
-      maxWidth: 140,
+      field: "UTRProcessTime",
+      headerName: "UTR Process Date Time",
+      // maxWidth: 200,
+      headerClass: "text-blue-v2",
+            valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
+    {
+      field: "PaymentDate",
+      headerName: "Payment Date Time",
+      // maxWidth: 130,
+      headerClass: "text-blue-v2",
+            valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
+      },
+    },
+
+    {
+      field: "OrderID",
+      headerName: "Order ID",
+      // maxWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "paymentDate",
-      headerName: "Payment Date",
-      maxWidth: 130,
+      field: "PaymentID",
+      headerName: "Payment ID",
+      // maxWidth: 120,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "SettledDate",
+      headerName: "PG Settled Date Time",
+      // maxWidth: 130,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -52,88 +107,119 @@ const PaymentGatewayReport = () => {
         const day = String(date.getDate()).padStart(2, "0");
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
+        const formattedDate = `${day}-${month}-${year}`;
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        return `${formattedDate} ${formattedTime}`;
       },
     },
     {
-      field: "pnrNumber",
-      headerName: "PNR Number",
-      maxWidth: 120,
+      field: "SettledAmount",
+      headerName: "Settled Amount",
+      // maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
     },
-    {
-      field: "orderId",
-      headerName: "Order ID",
-      maxWidth: 120,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "paymentId",
-      headerName: "Payment ID",
-      maxWidth: 120,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "pgName",
-      headerName: "PG Name",
-      maxWidth: 120,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "pgSettle",
-      headerName: "PG Settled At",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-  ]
+  ];
 
-  const loadUserReport = (page = 0) => {
-    fetchBusPassUserReports({
-      fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
-      toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
-      mobileNo: searchParams.get("mobileNo") || "",
-      pageNumber: page + 1, // convert zero-indexed to 1-indexed
-      pageSize: PAGE_LIMIT,
-    });
-  };
+useEffect(() => {
 
-  useEffect(() => {
-    loadUserReport(currentPage);
-  }, [currentPage, PAGE_LIMIT, searchParams]);
+}, [searchParams]);
 
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
   };
 
+
+  // Create search params for back navigation - use original filters from when we came to inner report
+  const getBackSearchParams = () => {
+    const backParams = new URLSearchParams();
+    
+    // Get original filters that were stored when navigating to inner report
+    const originalFilters = localStorage.getItem("busPassPaymentGatewayInnerTransactionSearchParams");
+    
+    if (originalFilters && originalFilters !== "") {
+      // Use the original filters that were there when we came to inner report
+      const params = new URLSearchParams(originalFilters);
+      
+      // Copy all original parameters
+      for (const [key, value] of params.entries()) {
+        if (key !== "status") { // Don't include status as it's specific to inner report
+          backParams.set(key, value);
+        }
+      }
+      
+    } else {
+      // Fallback: Include current parameters (but remove inner form specific ones)
+      if (searchParams.get("date")) backParams.set("date", searchParams.get("date"));
+      if (searchParams.get("type")) backParams.set("type", searchParams.get("type"));
+      if (searchParams.get("transactionDate")) backParams.set("transactionDate", searchParams.get("transactionDate"));
+      if (searchParams.get("settlementDate")) backParams.set("settlementDate", searchParams.get("settlementDate"));
+      
+    }
+    
+    return backParams.toString();
+  };
+
+  const breadcrumbItems = [
+    {
+      label: "Settlement Summary",
+      path: `/bus-pass-settlement-summary-report?${getBackSearchParams()}`,
+    },
+    {
+      label: `${searchParams.get("status")} Summary`,
+      isLast: true,
+    },
+  ];
+
   return (
     <AdminLayout>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+        <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-              Payment Gateway Report
+            {searchParams.get("status")} Summary Report{" "}
             </h1>
           </div>
+          <div className="">
+            <Link
+              to={`/bus-pass-settlement-summary-report?${getBackSearchParams()}`}
+              className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
+            >
+              Back
+            </Link>
+          </div>
         </div>
-        <PaymentGatewayReportForm pageNumber={1} pageSize={PAGE_LIMIT} SetcurrentPage={setCurrentPage} />
+        <div>
+          <PaymentGatewayInnerReportForm
+            pageNumber={currentPage + 1}
+            pageSize={PAGE_LIMIT}
+            SetcurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            PAGE_LIMIT={PAGE_LIMIT}
+            isLoading={isBusPassPaymentTransactionsLoading}
+            searchParameter={searchParams.get("status")}
+          />
+        </div>
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={allBusPassUserReports}
+            rowData={allBusPassPaymentTransactions?.Details || []}
             columnDefs={columnDefs}
-            isFetchLoading={isBusPassUserReportsLoading}
+            isFetchLoading={isBusPassPaymentTransactionsLoading}
             isPagination={false}
-            tableHeight={allBusPassUserReports?.length > 10 ? 560 : 330}
+            tableHeight={allBusPassPaymentTransactions?.Details?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={allBusPassUserReports?.[0]?.totalCount}
+            totalCount={allBusPassPaymentTransactions?.Pagination?.TotalRecords || 0}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
             showSearch={false}
