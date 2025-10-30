@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import {
   cleanString,
 } from "../../../../../utils/Helper";
-import { useBuspassPaymentTransactionStore } from "../../../../../store/rtc/buspassPaymentTransactionStore";
+import { useIntercitySettlementStore } from "../../../../../store/rtc/intercitySettlementStore";
 
-const PaymentGatewayInnerReportForm = ({
+const IntercitySettlementInnerReportForm = ({
   searchParameter,
   currentPage,
   pageNumber,
@@ -16,26 +16,17 @@ const PaymentGatewayInnerReportForm = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isBusPassPaymentTransactionsLoading,
-    allBusPassPaymentTransactions,
-    fetchBusPassPaymentTransactions,
-  } = useBuspassPaymentTransactionStore();
+    isIntercitySettlementTransactionsLoading,
+    allIntercitySettlementTransactions,
+    fetchIntercitySettlementTransactions,
+  } = useIntercitySettlementStore();
 
   // Helper function to transform status for API calls
   const transformStatusForAPI = (status) => {
     if (status === "Not Settled") {
-      return "notSettled";
+      return "NotSettled";
     }
     return status || "";
-  };
-
-  // Get current date in YYYY-MM-DD format for date input
-  const getCurrentDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
   };
 
   // Get next day date for settlement date
@@ -48,33 +39,31 @@ const PaymentGatewayInnerReportForm = ({
     return `${year}-${month}-${day}`;
   };
 
-  // Get saved filters from localStorage or use URL params or defaults
+  // Get saved filters from localStorage or use URL params (do not inject defaults when absent)
   const getInitialValues = () => {
-    const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
+    const savedParams = localStorage.getItem("intercitySettlementInnerTransactionSearchParams");
     
     if (savedParams && savedParams !== "") {
       // Use saved filters from localStorage
       const params = new URLSearchParams(savedParams);
-      const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
+      const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || "";
       return {
         transactionDate: transactionDate,
-        settlementDate: cleanString(params.get("settlementDate"), "_", ":") || '',
+        settlementDate: cleanString(params.get("settlementDate"), "_", ":") || "",
         status: searchParameter || "",
       };
     } else if (searchParams.toString()) {
       // Use URL params if no localStorage
-      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || "";
       return {
         transactionDate: transactionDate,
-        settlementDate: cleanString(searchParams.get("settlementDate"), "_", ":") || '',
+        settlementDate: cleanString(searchParams.get("settlementDate"), "_", ":") || "",
         status: searchParameter || "",
       };
     } else {
-      // Use defaults - today's date
-      const currentDate = getCurrentDate();
       return {
-        transactionDate: '',
-        settlementDate: '',
+        transactionDate: "",
+        settlementDate: "",
         status: searchParameter || "",
       };
     }
@@ -82,41 +71,39 @@ const PaymentGatewayInnerReportForm = ({
 
   const initialValues = getInitialValues();
 
-  // Fetch data on component mount with saved/current filters
+  // Fetch data on component mount with saved/current filters; if empty, call API without date filters
   useEffect(() => {
-    const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
+    const savedParams = localStorage.getItem("intercitySettlementInnerTransactionSearchParams");
     
     if (savedParams && savedParams !== "") {
       // Use saved filters
       const params = new URLSearchParams(savedParams);
-      const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
-      const settlementDate = cleanString(params.get("settlementDate"), "_", ":") || '';
+      const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || "";
+      const settlementDate = cleanString(params.get("settlementDate"), "_", ":") || "";
       const status = searchParameter || cleanString(params.get("status"), "_", ":") || "";
-      fetchBusPassPaymentTransactions({
-        transactionDate: transactionDate,
-        settlementDate: settlementDate,
+      fetchIntercitySettlementTransactions({
+        transactionDate: transactionDate || "",
+        settlementDate: settlementDate || "",
         status: transformStatusForAPI(status),
         pageNumber: pageNumber,
         pageSize: pageSize,
       });
     } else if (searchParams.toString()) {
       // Use URL params
-      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") ||'';
-      const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || ''
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || "";
+      const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || "";
       const status = searchParameter || cleanString(searchParams.get("status"), "_", ":") || "";
-      fetchBusPassPaymentTransactions({
-        transactionDate: transactionDate,
-        settlementDate: settlementDate,
+      fetchIntercitySettlementTransactions({
+        transactionDate: transactionDate || "",
+        settlementDate: settlementDate || "",
         status: transformStatusForAPI(status),
         pageNumber: pageNumber,
         pageSize: pageSize,
       });
     } else {
-      // Use defaults - today's date
-      const currentDate = getCurrentDate();
-      fetchBusPassPaymentTransactions({
+      fetchIntercitySettlementTransactions({
         transactionDate: "",
-        settlementDate: '',
+        settlementDate: "",
         status: transformStatusForAPI(searchParameter),
         pageNumber: pageNumber,
         pageSize: pageSize,
@@ -141,9 +128,9 @@ const PaymentGatewayInnerReportForm = ({
     setSearchParams(newSearchParams);
     
     // Save filters to localStorage when Search is clicked
-    localStorage.setItem("busPassPaymentInnerTransactionSearchParams", newSearchParams.toString());
+    localStorage.setItem("intercitySettlementInnerTransactionSearchParams", newSearchParams.toString());
 
-    fetchBusPassPaymentTransactions({
+    fetchIntercitySettlementTransactions({
       transactionDate: values.transactionDate,
       settlementDate: values.settlementDate,
       status: transformStatusForAPI(status),
@@ -165,22 +152,22 @@ const PaymentGatewayInnerReportForm = ({
 
     const currentDate = getCurrentDate();
     const payload = {
-      transactionDate: '',
-      settlementDate: '',
+      transactionDate: currentDate,
+      settlementDate: getNextDay(currentDate),
     };
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
     
     // Clear localStorage ONLY when Reset is clicked
-  localStorage.removeItem("busPassPaymentInnerTransactionSearchParams");
+    localStorage.removeItem("intercitySettlementInnerTransactionSearchParams");
     
     // Reset form values
     setValues(payload);
     
     // Reset page and fetch data
 
-    fetchBusPassPaymentTransactions({
+    fetchIntercitySettlementTransactions({
       transactionDate: payload.transactionDate,
       settlementDate: payload.settlementDate,
       status: transformStatusForAPI(searchParameter),
@@ -247,7 +234,7 @@ const PaymentGatewayInnerReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                disabled={isBusPassPaymentTransactionsLoading}
+                disabled={isIntercitySettlementTransactionsLoading}
               >
               Search
               </button>
@@ -267,4 +254,4 @@ const PaymentGatewayInnerReportForm = ({
   );
 };
 
-export default PaymentGatewayInnerReportForm;
+export default IntercitySettlementInnerReportForm;   

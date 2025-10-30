@@ -454,6 +454,11 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/intercity-payment-transactions",
       },
+      {
+        title: "Settlement Summary Report",
+        icon: RiDashboard3Fill,
+        path: "/intercity-settlement-summary-report",
+      },
     ],
 
   },

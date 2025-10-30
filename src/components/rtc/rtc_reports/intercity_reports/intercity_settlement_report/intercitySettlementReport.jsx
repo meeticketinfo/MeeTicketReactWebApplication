@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import PaymentGatewayReportForm from "./paymentGatewayReportForm";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import {
   cleanString,
@@ -9,18 +8,17 @@ import {
 } from "../../../../../utils/Helper";
 import { formatToCurrency, formatToStandardDate } from "../../../../../utils/TypographyHelper";
 import AgGridTable from "../../../../tables/AgGridTable";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
-import PaymentGatewayInnerReportForm from "./paymentGatewayInnerReportForm";
 import Breadcrumb from "../../../../Breadcrumb";
-import { useBuspassPaymentTransactionStore } from "../../../../../store/rtc/buspassPaymentTransactionStore";      
-const PaymentGatewayReport = () => {
+import { useIntercitySettlementStore } from "../../../../../store/rtc/intercitySettlementStore";      
+import IntercitySettlementInnerReportForm from "./intercitySettlementInnerReportForm";
+const IntercitySettlementReport = () => {
   const [searchParams] = useSearchParams();
   const startOfDay = getStartOfCurrentDay();
   const {
-    isBusPassPaymentTransactionsLoading,
-    allBusPassPaymentTransactions,
-    fetchBusPassPaymentTransactions
-  } = useBuspassPaymentTransactionStore();
+    isIntercitySettlementTransactionsLoading,
+    allIntercitySettlementTransactions,
+    fetchIntercitySettlementTransactions
+  } = useIntercitySettlementStore();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const columnDefs = [
@@ -33,7 +31,7 @@ const PaymentGatewayReport = () => {
       headerClass: "text-blue-v2",
     },
     {
-      field: "UTR",
+      field: "utrNumber",
       headerName: "UTR",
       maxWidth: 160,
       headerClass: "text-blue-v2",
@@ -60,44 +58,68 @@ const PaymentGatewayReport = () => {
         return `${formattedDate} ${formattedTime}`;
       },
     },
-    {
-      field: "PaymentDate",
-      headerName: "Payment Date Time",
-      // maxWidth: 130,
-      headerClass: "text-blue-v2",
-            valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        const formattedDate = `${day}-${month}-${year}`;
-        const formattedTime = date.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
-        return `${formattedDate} ${formattedTime}`;
-      },
-    },
+    
+    // {
+    //   field: "PaymentDate",
+    //   headerName: "Payment Date Time",
+    //   // maxWidth: 130,
+    //   headerClass: "text-blue-v2",
+    //         valueFormatter: (params) => {
+    //     if (!params.value) return "N/A";
+    //     const date = new Date(params.value);
+    //     const day = String(date.getDate()).padStart(2, "0");
+    //     const month = String(date.getMonth() + 1).padStart(2, "0");
+    //     const year = date.getFullYear();
+    //     const formattedDate = `${day}-${month}-${year}`;
+    //     const formattedTime = date.toLocaleTimeString("en-US", {
+    //       hour: "2-digit",
+    //       minute: "2-digit",
+    //       second: "2-digit",
+    //       hour12: true,
+    //     });
+    //     return `${formattedDate} ${formattedTime}`;
+    //   },
+    // },
 
     {
-      field: "OrderID",
+        field: "busType",
+        headerName: "Bus Type",
+        // maxWidth: 120,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "transactionId",
+        headerName: "Transaction ID",
+        // maxWidth: 120,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+
+
+    {
+      field: "orderId",
       headerName: "Order ID",
       // maxWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "PaymentID",
-      headerName: "Payment ID",
+      field: "pnrNumber",
+      headerName: "PNR Number",
       // maxWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
-      field: "SettledDate",
+      field: "ticketStatus",
+      headerName: "Ticket Status",
+      // maxWidth: 120,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "settlementDate",
       headerName: "PG Settled Date Time",
       // maxWidth: 130,
       headerClass: "text-blue-v2",
@@ -118,7 +140,7 @@ const PaymentGatewayReport = () => {
       },
     },
     {
-      field: "SettledAmount",
+      field: "settlementAmount",
       headerName: "Settled Amount",
       // maxWidth: 150,
       headerClass: "text-blue-v2",
@@ -140,7 +162,7 @@ useEffect(() => {
     const backParams = new URLSearchParams();
     
     // Get original filters that were stored when navigating to inner report
-    const originalFilters = localStorage.getItem("busPassPaymentInnerTransactionSearchParams");
+    const originalFilters = localStorage.getItem("intercitySettlementInnerTransactionSearchParams");
     
     if (originalFilters && originalFilters !== "") {
       // Use the original filters that were there when we came to inner report
@@ -168,7 +190,7 @@ useEffect(() => {
   const breadcrumbItems = [
     {
       label: "Settlement Summary",
-      path: `/bus-pass-settlement-summary-report?${getBackSearchParams()}`,
+      path: `/intercity-settlement-summary-report?${getBackSearchParams()}`,
     },
     {
       label: `${searchParams.get("status")} Summary`,
@@ -188,7 +210,7 @@ useEffect(() => {
           </div>
           <div className="">
             <Link
-              to={`/bus-pass-settlement-summary-report`}
+              to={`/intercity-settlement-summary-report`}
               className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
             >
               Back
@@ -196,30 +218,30 @@ useEffect(() => {
           </div>
         </div>
         <div>
-          <PaymentGatewayInnerReportForm
+          <IntercitySettlementInnerReportForm
             pageNumber={currentPage + 1}
             pageSize={PAGE_LIMIT}
             SetcurrentPage={setCurrentPage}
             currentPage={currentPage}
             PAGE_LIMIT={PAGE_LIMIT}
-            isLoading={isBusPassPaymentTransactionsLoading}
+            isLoading={isIntercitySettlementTransactionsLoading}
             searchParameter={searchParams.get("status")}
           />
         </div>
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={allBusPassPaymentTransactions?.Details || []}
+            rowData={allIntercitySettlementTransactions?.data?.storedProcedureResults || []}
             columnDefs={columnDefs}
-            isFetchLoading={isBusPassPaymentTransactionsLoading}
+            isFetchLoading={isIntercitySettlementTransactionsLoading}
             isPagination={false}
-            tableHeight={allBusPassPaymentTransactions?.Details?.length > 10 ? 560 : 330}
+            tableHeight={allIntercitySettlementTransactions?.data?.storedProcedureResults?.length > 10 ? 560 : 330}
             IsReactPaginate={true}
             setPageLimit={setPAGE_LIMIT}
             pageLimit={PAGE_LIMIT}
             handlePageClick={handlePageClick}
             currentPage={currentPage}
-            totalCount={allBusPassPaymentTransactions?.Pagination?.TotalRecords || 0}
+            totalCount={allIntercitySettlementTransactions?.data?.notSettledCount || 0}
             showTotalCount={true}
             SetcurrentPage={setCurrentPage}
             showSearch={false}
@@ -230,4 +252,4 @@ useEffect(() => {
   );
 };
 
-export default PaymentGatewayReport;
+export default IntercitySettlementReport;

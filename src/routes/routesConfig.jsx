@@ -200,6 +200,8 @@ import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
+import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
+import IntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/intercitySettlementReport";
 
 export const routes = [
   {
@@ -979,6 +981,14 @@ export const routes = [
   {
     path: "/intercity-refund-inner-report",
     element: <ProtectedRoute element={<IntercityRefundTransactionsReport />} />,
+  },
+  {
+    path: "/intercity-settlement-summary-report",
+    element: <ProtectedRoute element={<MainIntercitySettlementReport/>} />,
+  },
+  {
+    path: "/intercity-settlement-summary-inner-report",
+    element: <ProtectedRoute element={<IntercitySettlementReport />} />,
   },
 
   {

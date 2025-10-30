@@ -276,9 +276,12 @@ export const API_ENDPOINTS = {
         GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
         GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
       },
-      BUS_PASS_PAYMENT_TRANSACTION: {
+       BUS_PASS_PAYMENT_TRANSACTION: {
         GET_BUS_PASS_PAYMENT_TRANSACTION: `${RTC_API_BASE_URL}RTCDashboard/GetSettlementReports`,
     
+      },
+      INTERCITY_SETTLEMENT_TRANSACTIONS: {
+        GET_INTERCITY_SETTLEMENT_TRANSACTIONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTransactionSettlementSummary`,
       },
       RTC_TOTAL_TRANSACTIONS_REPORT: {
         GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionOuterReport`,

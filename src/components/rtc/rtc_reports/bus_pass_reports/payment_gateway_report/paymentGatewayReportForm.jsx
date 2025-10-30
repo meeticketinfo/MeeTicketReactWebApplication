@@ -42,28 +42,28 @@ const PaymentGatewayReportForm = ({
   const getInitialValues = () => {
     if (searchParams.toString()) {
       // Use URL params first (highest priority)
-      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || getCurrentDate();
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
       return {
         transactionDate: transactionDate,
-        settlementDate: cleanString(searchParams.get("settlementDate"), "_", ":") || getNextDay(transactionDate),
+        settlementDate: cleanString(searchParams.get("settlementDate"), "_", ":") || '',
       };
     } else {
-      const savedParams = localStorage.getItem("busPassPaymentInnerTransactionSearchParams");
+      const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
       
       if (savedParams && savedParams !== "") {
         // Use saved filters from localStorage if no URL params
         const params = new URLSearchParams(savedParams);
-        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || getCurrentDate();
+        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
         return {
           transactionDate: transactionDate,
-          settlementDate: cleanString(params.get("settlementDate"), "_", ":") || getNextDay(transactionDate),
+          settlementDate: cleanString(params.get("settlementDate"), "_", ":") || '',
         };
       } else {
         // Use defaults - today's date
         const currentDate = getCurrentDate();
         return {
-          transactionDate: currentDate,
-          settlementDate: getNextDay(currentDate),
+          transactionDate: '',
+          settlementDate: '',
         };
       }
     }
@@ -75,8 +75,8 @@ const PaymentGatewayReportForm = ({
   useEffect(() => {
     if (searchParams.toString()) {
       // Use URL params first (highest priority)
-      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || getCurrentDate();
-      const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || getNextDay(transactionDate);
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
+      const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || '';
    
       fetchBusPassPaymentTransactions({
         transactionDate: transactionDate,
@@ -85,13 +85,13 @@ const PaymentGatewayReportForm = ({
         pageSize: pageSize,
       });
     } else {
-      const savedParams = localStorage.getItem("busPassPaymentInnerTransactionSearchParams");
+      const savedParams = localStorage.getItem("busp");
 
       if (savedParams && savedParams !== "") {
         // Use saved filters if no URL params
         const params = new URLSearchParams(savedParams);
-        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || getCurrentDate();
-        const settlementDate = cleanString(params.get("settlementDate"), "_", ":") || getNextDay(transactionDate);
+        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
+        const settlementDate = cleanString(params.get("settlementDate"), "_", ":") || '';
       
         fetchBusPassPaymentTransactions({
           transactionDate: transactionDate,
@@ -103,8 +103,8 @@ const PaymentGatewayReportForm = ({
         // Use defaults - today's date
         const currentDate = getCurrentDate();
         fetchBusPassPaymentTransactions({
-          transactionDate: currentDate,
-          settlementDate: getNextDay(currentDate),
+          transactionDate: '',
+          settlementDate: '',
           pageNumber: pageNumber,
           pageSize: pageSize,
         });
@@ -122,7 +122,7 @@ const PaymentGatewayReportForm = ({
     setSearchParams(newSearchParams);
     
     // Save filters to localStorage when Search is clicked
-    localStorage.setItem("busPassPaymentInnerTransactionSearchParams", newSearchParams.toString());
+    localStorage.setItem("busPassPaymentOuterTransactionSearchParams", newSearchParams.toString());
 
     fetchBusPassPaymentTransactions({
       transactionDate: values.transactionDate,
@@ -146,15 +146,15 @@ const PaymentGatewayReportForm = ({
 
     const currentDate = getCurrentDate();
     const payload = {
-      transactionDate: currentDate,
-      settlementDate: getNextDay(currentDate),
+      transactionDate: '',
+      settlementDate: '',
     };
 
     // Clear URL search params
     setSearchParams(new URLSearchParams());
     
     // Clear localStorage ONLY when Reset is clicked
-    localStorage.removeItem("busPassPaymentInnerTransactionSearchParams");
+    localStorage.removeItem("busp");
     
     // Reset form values
     setValues(payload);
