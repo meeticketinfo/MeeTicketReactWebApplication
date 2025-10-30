@@ -63,10 +63,8 @@ const BusPassBookingReportList = () => {
   useEffect(() => {
     fetchAllBusPasses();
     fetchRtcBusPassBookingData({
-      fromDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      fromDate: savedFilters?.fromDate || "",
+      toDate: savedFilters?.toDate || "",
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       transactionId: savedFilters?.transactionId
         ? savedFilters.transactionId
@@ -141,10 +139,8 @@ const BusPassBookingReportList = () => {
     } finally {
       setTimeout(() => {
         fetchRtcBusPassBookingData({
-          fromDate: savedFilters?.fromDate
-            ? savedFilters.fromDate
-            : getCurrentDate(),
-          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+          fromDate: savedFilters?.fromDate || "",
+          toDate: savedFilters?.toDate || "",
           mobileNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",
@@ -224,10 +220,8 @@ const BusPassBookingReportList = () => {
       });
     } finally {
       fetchRtcBusPassBookingData({
-        fromDate: savedFilters?.fromDate
-          ? savedFilters.fromDate
-          : getCurrentDate(),
-        toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+        fromDate: savedFilters?.fromDate || "",
+        toDate: savedFilters?.toDate || "",
         mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
         transactionId: savedFilters?.transactionId
           ? savedFilters.transactionId
@@ -297,10 +291,8 @@ const BusPassBookingReportList = () => {
       setOpenRegenerateTicketModal(false);
       setTimeout(() => {
         fetchRtcBusPassBookingData({
-          fromDate: savedFilters?.fromDate
-            ? savedFilters.fromDate
-            : getCurrentDate(),
-          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+          fromDate: savedFilters?.fromDate || "",
+          toDate: savedFilters?.toDate || "",
           mobileNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",

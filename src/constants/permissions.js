@@ -6,7 +6,7 @@ export const superAdminPermissions = [
   // "entity-admins",
   // "facility/unified-create",
   "nodal-officer",
-  "department-admin",
+  // "department-admin",
   "entity-bookings",
   "super-admin-facilites",
   "transaction-report",
@@ -65,7 +65,15 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
-  "pos-admin"
+  // "pos-admin"
+];
+export const BotanicalGardenParkAdminPermissions = [
+  "dashboard",
+  "bookings",
+  "facility-services",
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -136,13 +144,19 @@ export const RtcAdmin = [
   "bus-pass-booking-report",
   "bus-pass-refund-report",
   "bus-pass-settlement-summary-report",
-  "intercity-consolidated-report",
-  "intercity-individual-report",
-  "intercity-total-transaction",
-  "intercity-user-report",
-  "intercity-refund-report",
-  "intercity-payment-transactions",
-  "intercity-settlement-summary-report",
+  // "intercity-consolidated-report",
+  // "intercity-individual-report",
+  // "intercity-total-transaction",
+  // "intercity-user-report",
+  // "intercity-refund-report",
+  // "intercity-payment-transactions",
+  // "intercity-settlement-summary-report",
+  // "intercity-consolidated-report",
+  // "intercity-individual-report",
+  // "intercity-total-transaction",
+  // "intercity-user-report",
+  // "intercity-refund-report",
+  // "intercity-payment-transactions",
   // "pending-pass",
 ];
 

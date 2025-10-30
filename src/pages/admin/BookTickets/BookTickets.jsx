@@ -59,6 +59,7 @@ export default function AdminBookings() {
   const userId = decodedTokenData?.data?.UserId;
 
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
+  console.log("isCounterEnabled", isCounterEnabled);
   const parkId = decodedTokenData?.data?.ParkId;
   useEffect(() => {
     fetchAllBookings();
@@ -304,7 +305,7 @@ export default function AdminBookings() {
                     </label>
                   </div>
                 )}
-                {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") &&
+                {(role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"||role === "ROLE_COUNTERLOGIN") &&
                   isCounterEnabled?.toLowerCase() === "true" && (
                     <button
                       className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
