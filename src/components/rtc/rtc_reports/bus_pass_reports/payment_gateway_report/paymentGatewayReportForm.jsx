@@ -77,7 +77,7 @@ const PaymentGatewayReportForm = ({
       // Use URL params first (highest priority)
       const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
       const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || '';
-   
+   console.log(transactionDate, settlementDate);
       fetchBusPassPaymentTransactions({
         transactionDate: transactionDate,
         settlementDate: settlementDate,
@@ -85,7 +85,7 @@ const PaymentGatewayReportForm = ({
         pageSize: pageSize,
       });
     } else {
-      const savedParams = localStorage.getItem("busp");
+      const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
 
       if (savedParams && savedParams !== "") {
         // Use saved filters if no URL params
@@ -154,7 +154,7 @@ const PaymentGatewayReportForm = ({
     setSearchParams(new URLSearchParams());
     
     // Clear localStorage ONLY when Reset is clicked
-    localStorage.removeItem("busp");
+    localStorage.removeItem("busPassPaymentOuterTransactionSearchParams");
     
     // Reset form values
     setValues(payload);

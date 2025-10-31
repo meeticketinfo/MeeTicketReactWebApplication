@@ -324,32 +324,7 @@ const sidebarItems = [
       },
     ],
   },
-  // griveance
-  {
-    title: "Grievance",
-    icon: SiReacthookform,
-    path: "",
-    gradientClass:
-      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-    subItems: [
-      {
-        title: "Consolidated Incident Details",
-        icon: TbReportSearch,
-        path: "/Grievance-consolidate",
-      },
-      {
-        title: "Overall Incident Details",
-        icon: TbReportSearch,
-        path: "/Grievance-Incident",
-      },
-      {
-        title: "Individual Incident Details",
-        icon: TbReportSearch,
-        path: "/Grievance-individual",
-      },
-    ],
-  },
-  // rtc
+
   {
     title: "Bus Pass Reports",
     icon: FaBus,
@@ -357,36 +332,7 @@ const sidebarItems = [
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
-      {
-        title: "Day Pass",
-        icon: IoTodayOutline,
-        path: "/day-pass",
-      },
-      {
-        title: "Ordinary pass",
-        icon: RiPassPendingLine,
-        path: "/ordinary-pass",
-      },
-      {
-        title: "MST Pass",
-        icon: BsPassport,
-        path: "/mst-pass",
-      },
-      {
-        title: "Express Pass",
-        icon: VscCompassActive,
-        path: "/express-pass",
-      },
-      {
-        title: "Student Pass",
-        icon: RiPassValidFill,
-        path: "/student-pass",
-      },
-      {
-        title: "Pending Pass",
-        icon: RiPassPendingLine,
-        path: "/pending-pass",
-      },
+     
       {
         title: "Booking Report",
         icon: MdEventAvailable,
@@ -416,6 +362,98 @@ const sidebarItems = [
 
     ],
   },
+  // griveance
+  {
+    title: "Grievance",
+    icon: SiReacthookform,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Consolidated Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-consolidate",
+      },
+      {
+        title: "Overall Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-Incident",
+      },
+      {
+        title: "Individual Incident Details",
+        icon: TbReportSearch,
+        path: "/Grievance-individual",
+      },
+    ],
+  },
+  // rtc
+  // {
+  //   title: "Bus Pass Reports",
+  //   icon: FaBus,
+  //   path: "",
+  //   gradientClass:
+  //     "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+  //   subItems: [
+  //     {
+  //       title: "Day Pass",
+  //       icon: IoTodayOutline,
+  //       path: "/day-pass",
+  //     },
+  //     {
+  //       title: "Ordinary pass",
+  //       icon: RiPassPendingLine,
+  //       path: "/ordinary-pass",
+  //     },
+  //     {
+  //       title: "MST Pass",
+  //       icon: BsPassport,
+  //       path: "/mst-pass",
+  //     },
+  //     {
+  //       title: "Express Pass",
+  //       icon: VscCompassActive,
+  //       path: "/express-pass",
+  //     },
+  //     {
+  //       title: "Student Pass",
+  //       icon: RiPassValidFill,
+  //       path: "/student-pass",
+  //     },
+  //     {
+  //       title: "Pending Pass",
+  //       icon: RiPassPendingLine,
+  //       path: "/pending-pass",
+  //     },
+  //     {
+  //       title: "Booking Report",
+  //       icon: MdEventAvailable,
+  //       path: "/bus-pass-booking-report",
+  //     },
+  //     {
+  //       title: "Total Transactions",
+  //       icon: RiDashboard3Fill,
+  //       path: "/bus-pass-total-transaction",
+  //     },
+  //     {
+  //       title: "User Report",
+  //       icon: MdEventAvailable,
+  //       path: "/bus-pass-user-report",
+  //     },
+  //     {
+  //       title: "Refund Transactions",
+  //       icon: RiDashboard3Fill,
+  //       path: "/bus-pass-refund-report",
+  //     },
+
+  //     {
+  //       title: "Settlement Summary Report",
+  //       icon: RiDashboard3Fill,
+  //       path: "/bus-pass-settlement-summary-report",
+  //     },
+
+  //   ],
+  // },
   //intercity
   {
     title: "Intercity Reports",

@@ -85,7 +85,7 @@ const PaymentGatewayInnerReportForm = ({
   // Fetch data on component mount with saved/current filters
   useEffect(() => {
     const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
-    
+    console.log(savedParams);
     if (savedParams && savedParams !== "") {
       // Use saved filters
       const params = new URLSearchParams(savedParams);

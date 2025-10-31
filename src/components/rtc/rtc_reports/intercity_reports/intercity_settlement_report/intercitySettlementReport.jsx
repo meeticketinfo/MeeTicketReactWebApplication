@@ -211,6 +211,10 @@ useEffect(() => {
           <div className="">
             <Link
               to={`/intercity-settlement-summary-report`}
+              onClick={() => {
+                // Clear inner report filters on back
+                localStorage.removeItem("intercitySettlementInnerTransactionSearchParams");
+              }}
               className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
             >
               Back

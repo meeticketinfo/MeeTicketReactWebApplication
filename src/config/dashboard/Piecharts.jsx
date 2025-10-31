@@ -7,6 +7,10 @@ const PieChart = ({ data, title, angleKey, isLoading = false }) => {
     const numFormatter = new Intl.NumberFormat("en-US");
 
     useEffect(() => {
+        const total = Array.isArray(data)
+            ? data.reduce((sum, item) => sum + (Number(item?.[angleKey]) || 0), 0)
+            : 0;
+
         const options = {
             container: chartRef.current,
             title: {
@@ -29,15 +33,21 @@ const PieChart = ({ data, title, angleKey, isLoading = false }) => {
                         offset: 10,
                     },
                     sectorLabel: {
-                        formatter: ({ datum, sectorLabelKey = "weight" }) => {
-                            return `${numFormatter.format(datum[sectorLabelKey])}`;
+                        formatter: ({ datum }) => {
+                            const value = Number(datum?.[angleKey]) || 0;
+                            const percent = total > 0 ? (value / total) * 100 : 0;
+                            return `${numFormatter.format(value)} (${percent.toFixed(1)}%)`;
                         },
                     },
                     tooltip: {
-                        renderer: ({ datum }) => ({
-                            title: `${datum.entity}`,
-                            content: `${datum[angleKey]}`,
-                        }),
+                        renderer: ({ datum }) => {
+                            const value = Number(datum?.[angleKey]) || 0;
+                            const percent = total > 0 ? (value / total) * 100 : 0;
+                            return {
+                                title: `${datum.entity}`,
+                                content: `${numFormatter.format(value)} (${percent.toFixed(1)}%)`,
+                            };
+                        },
                     },
                 },
             ],

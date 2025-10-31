@@ -140,7 +140,7 @@ useEffect(() => {
     const backParams = new URLSearchParams();
     
     // Get original filters that were stored when navigating to inner report
-    const originalFilters = localStorage.getItem("busPassPaymentInnerTransactionSearchParams");
+    const originalFilters = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
     
     if (originalFilters && originalFilters !== "") {
       // Use the original filters that were there when we came to inner report
@@ -189,6 +189,10 @@ useEffect(() => {
           <div className="">
             <Link
               to={`/bus-pass-settlement-summary-report`}
+              onClick={() => {
+                // Clear inner report filters on back
+                localStorage.removeItem("busPassPaymentInnerTransactionSearchParams");
+              }}
               className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
             >
               Back

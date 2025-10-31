@@ -32,7 +32,13 @@ export const superAdminPermissions = [
   "metro-user-report",
   "metro-user-detailed-report",
   "metro-refund-transactions",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "bus-pass-settlement-summary-report",
   "monthly-reports",
+  
 ];
 
 // department
