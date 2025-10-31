@@ -29,7 +29,13 @@ export default function UnifiedCreate() {
 
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
-  const {  setIsWalkersPassAdd,isWalkersPassAdd } = WalkersPassStore();
+  const {
+    setIsWalkersPassAdd,
+    isWalkersPassAdd,
+    isWalkersPassEdit,
+    setIsWalkersPassEdit,
+    setCurrentWalkersPassEditDetails
+  } = WalkersPassStore();
 
   const addServiceCreate = () => {
     setIsCreateServiceEnabled(true);
@@ -81,7 +87,12 @@ export default function UnifiedCreate() {
                   <span className="max-xs:sr-only">Add Ticket Type</span>
                 </button>
                 <button
-                  onClick={() => setIsWalkersPassAdd(true)}
+                  onClick={() => {
+                    setIsWalkersPassAdd(true);
+                    setCurrentWalkersPassEditDetails({});
+                    setIsWalkersPassEdit(false)
+                   
+                  }}
                   className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                 >
                   <span className="max-xs:sr-only">Add Walker Pass Type</span>
@@ -144,8 +155,15 @@ export default function UnifiedCreate() {
           <PopupModal
             popupModalId="walkers-park-pass-create-modal"
             isOpen={isWalkersPassAdd}
-            onClose={() => setIsWalkersPassAdd(false)}
-            title={"Add Walkers Park Pass"}
+            onClose={() => {
+              setIsWalkersPassAdd(false);
+              setIsWalkersPassEdit(false);
+            }}
+            title={
+              isWalkersPassEdit
+                ? "Update Walkers Park Pass"
+                : "Add Walkers Park Pass"
+            }
             size="medium"
             overlayClassName="bg-gray-800 bg-opacity-60"
             contentClassName="bg-white"

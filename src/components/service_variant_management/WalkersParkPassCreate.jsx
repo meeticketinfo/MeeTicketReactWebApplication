@@ -8,6 +8,7 @@ import { useServiceStore } from "../../store/masters/servicesStore";
 import { useModalStore } from "../../store/modalStore";
 import useAuthStore from "../../store/authStore";
 import { WalkersPassStore } from "../../store/masters/WalkersPassStore";
+import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 
 // Validation schema using Yup
 
@@ -22,24 +23,29 @@ const WalkersParkPassCreate = () => {
     walkersPassEditDetails,
     isWalkersPassEdit,
     setIsWalkersPassAdd,
+    setIsWalkersPassEdit,
   } = WalkersPassStore();
+  
+  console.log("walkersPassEditDetails", walkersPassEditDetails);
+
+
+const {  fetchAllUnifiedFacilities } =
+  useUnifiedFacilityStore();
   useEffect(() => {
     fetchAllServices(role);
   }, []);
   const initialValues = {
-    id: "",
-    name: "",
-    serviceId: "",
-    displayName: "",
-    amount: "",
-    serviceVarientSequenceNumber: "",
-    description: "",
-    isPriceFixed: false,
-    isActive: true,
-    validityValue: "",
-    validityUnit: "",
-    MaximumAge: "",
-    MinimumAge: "",
+    id: walkersPassEditDetails.passId || "",
+    name: walkersPassEditDetails.passActualName || "",
+    serviceId: walkersPassEditDetails.serviceId || "",
+    amount: walkersPassEditDetails.passAmount || "",
+    serviceVarientSequenceNumber: walkersPassEditDetails.passSequenceNumber || "",
+    description: walkersPassEditDetails.passDescription || "",
+    isPriceFixed: walkersPassEditDetails.isPersonbased || false,
+    isActive: walkersPassEditDetails.passIsActive || true,
+    validityUnit: walkersPassEditDetails.passType || "",
+    MaximumAge: walkersPassEditDetails.maximumAge || "",
+    MinimumAge: walkersPassEditDetails.minimumAge || "",
   };
   const validationSchema = Yup.object({
     name: Yup.string().required("Please enter the Actual name."),
@@ -56,22 +62,30 @@ const WalkersParkPassCreate = () => {
     validityUnit: Yup.string().required("Please select the validity unit."),
     MaximumAge: Yup.number()
       .required("Please enter the maximum age.")
-      .test('is-greater-than-min', 'Maximum age must be greater than minimum age', function(value) {
-        const { MinimumAge } = this.parent;
-        if (MinimumAge && value && value <= MinimumAge) {
-          return false;
+      .test(
+        "is-greater-than-min",
+        "Maximum age must be greater than minimum age",
+        function (value) {
+          const { MinimumAge } = this.parent;
+          if (MinimumAge && value && value <= MinimumAge) {
+            return false;
+          }
+          return true;
         }
-        return true;
-      }),
+      ),
     MinimumAge: Yup.number()
       .required("Please enter the minimum age.")
-      .test('is-less-than-max', 'Minimum age must be less than maximum age', function(value) {
-        const { MaximumAge } = this.parent;
-        if (MaximumAge && value && value >= MaximumAge) {
-          return false;
+      .test(
+        "is-less-than-max",
+        "Minimum age must be less than maximum age",
+        function (value) {
+          const { MaximumAge } = this.parent;
+          if (MaximumAge && value && value >= MaximumAge) {
+            return false;
+          }
+          return true;
         }
-        return true;
-      }),
+      ),
   });
 
   const onSubmit = async (values, { resetForm }) => {
@@ -81,7 +95,7 @@ const WalkersParkPassCreate = () => {
       subfacility: values.serviceId,
       actualName: values.name,
       amount: values.amount,
-      isPeresonBased: values.isPriceFixed,
+      isPersonBased: values.isPriceFixed,
       passType: values.validityUnit,
       minimumAge: values.MinimumAge,
       maximumAge: values.MaximumAge,
@@ -101,8 +115,9 @@ const WalkersParkPassCreate = () => {
         setTimeout(() => {
           setIsWalkersPassAdd(false);
           setCurrentWalkersPassEditDetails({});
-         
+          setIsWalkersPassEdit(false);
           resetForm();
+          fetchAllUnifiedFacilities(role);
         }, 1000);
       } else {
         toast.error("something went wrong");
@@ -368,13 +383,13 @@ const WalkersParkPassCreate = () => {
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
-                    disabled={isSaveWalkersPassDetailsLoading}
+                  disabled={isSaveWalkersPassDetailsLoading}
                 >
                   {isSaveWalkersPassDetailsLoading
                     ? "Saving..."
-                    : true
-                    ? "Add Ticket Type"
-                    : "Update Ticket Type"}
+                    : isWalkersPassEdit
+                    ? "Update Walkers Park Pass"
+                    : "Add Walkers Park Pass"}
                 </button>
               </div>
             </Form>
