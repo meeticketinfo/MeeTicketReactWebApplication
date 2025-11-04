@@ -248,7 +248,6 @@ const BusPassBookingReportList = () => {
   const handleRegenerateTicket = async () => {
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
-      console.log("API Response:", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.messageType;
@@ -327,6 +326,7 @@ const BusPassBookingReportList = () => {
   const columnDefs = useMemo(
     () => [
       {
+        field: "S.No",
         headerName: "S.No",
         valueGetter: (params) =>
           currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
@@ -349,13 +349,13 @@ const BusPassBookingReportList = () => {
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
       // ------------------
-      {
-        field: "loginMobileNo",
-        headerName: "Login Mobile No",
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      },
+      // {
+      //   field: "loginMobileNo",
+      //   headerName: "Login Mobile No",
+      //   // flex: 1,
+      //   headerClass: "text-blue-v2",
+      //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      // },
       {
         field: "userName",
         headerName: "User Name",
@@ -389,23 +389,166 @@ const BusPassBookingReportList = () => {
         headerName: "Booking Date",
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
-        field: "busPassValidityStartTime",
-        headerName: "Bus Pass Validity Start Time",
-        // maxWidth: 170,
+        field: "totalAmount",
+        headerName: "Total Amount",
+        minWidth: 130, 
+        maxWidth: 130,
+        // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+        valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+      },
+      {
+        field: "settled_Date",
+        headerName: "Settled Date",
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       {
-        field: "busPassValidityEndTime",
-        headerName: "Bus Pass Validity End Time",
+        field: "settledamount",
+        headerName: "Settled Amount",
+        maxWidth: 150,
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+      },
+
+      // {
+      //   field: "payout_Date",
+      //   headerName: "Payout Date",
+      //   // maxWidth: 170,
+      //   headerClass: "text-blue-v2",
+      //   valueFormatter: (params) => {
+      //     if (!params.value) return "N/A";
+      //     const date = new Date(params.value);
+      //     const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+      //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+      //     const year = date.getFullYear(); // Get year
+      //     const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+      //     const formattedTime = date.toLocaleTimeString("en-US", {
+      //       hour: "2-digit",
+      //       minute: "2-digit",
+      //       second: "2-digit",
+      //       hour12: true,
+      //     });
+      //     return `${formattedDate} ${formattedTime}`;
+      //   },
+      //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      // },
+
+      {
+        field: "utr",
+        headerName: "UTR",
+        // minWidth: 130,
+        maxWidth: 140,
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
+        // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      },
+
+
+      {
+        field: "utrprocessedtime",
+        headerName: "Utr Processed Date",
+        // maxWidth: 170,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
+        // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      },
+
+   
+
+      {
+        field: "busPassValidityStartTime",
+        headerName: "Bus Pass Validity Start Date&Time",
+        // maxWidth: 170,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
+        // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      },
+    
+      {
+        field: "busPassValidityEndTime",
+        headerName: "Bus Pass Validity End Date&Time",
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
         // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       },
       // -------------------
@@ -416,8 +559,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 140,
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+        valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
       },
       {
         field: "busPassAmount",
@@ -425,19 +567,9 @@ const BusPassBookingReportList = () => {
         maxWidth: 150,
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+        valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
       },
-      {
-        field: "totalAmount",
-        headerName: "Total Amount",
-        minWidth: 130,
-        maxWidth: 130,
-        // flex: 1,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
-        // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-      },
+    
       {
         field: "bookingStatus",
         headerName: "Booking  Status",
@@ -494,7 +626,21 @@ const BusPassBookingReportList = () => {
         field: "refundDate",
         headerName: "Refund Initiated Date",
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value || "N/A",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
       },
 
       {
@@ -534,7 +680,7 @@ const BusPassBookingReportList = () => {
         maxWidth: 160,
         headerClass: "text-blue-v2",
         cellRenderer: (params) => {
-          const isDisabled = params.data.isRegenerateEligible !== true && params.data.isRenewal !== 1;
+          const isDisabled = params.data.isRegenerateEligible !== true;
           // || params.data.isTicketGenerated;
           return (
             <div className="flex justify-center mt-1">
@@ -555,7 +701,9 @@ const BusPassBookingReportList = () => {
                 }}
                 disabled={isDisabled}
               >
-                Generate Ticket
+                {params.data.isRenewal === true
+                  ? "Generate Bus Pass (R)"
+                  : "Generate Bus Pass"}
               </button>
             </div>
           );
@@ -597,7 +745,7 @@ const BusPassBookingReportList = () => {
         headerClass: "text-blue-v2",
       },
       {
-        field: "Action",
+        field: "action",
         headerName: "Action",
         maxWidth: 160,
         headerClass: "text-blue-v2",
@@ -762,8 +910,8 @@ const BusPassBookingReportList = () => {
               >
                 <option value="">Select</option>
 
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
+                {/* <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option> */}
                 <option value="Card">Card</option>
                 <option value="UPI">UPI</option>
                 <option value="Other">Other</option>
@@ -781,12 +929,9 @@ const BusPassBookingReportList = () => {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="">Select</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Pending">Pending</option>
+                {/* <option value="Confirmed">Confirmed</option> */}
+                <option value="Success">Success</option>
                 <option value="Failed">Failed</option>
-                <option value="Initiated">Initiated</option>
-                <option value="In Process">In Process</option>
-                <option value="Cancelled">Cancelled</option>
               </Field>
             </div>
             <div className="flex items-end gap-2">

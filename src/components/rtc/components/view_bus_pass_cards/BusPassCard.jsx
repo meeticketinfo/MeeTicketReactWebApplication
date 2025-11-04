@@ -2,7 +2,7 @@ import React from "react";
 import idCardBg from "../../../../images/user/idCardBg.png";
 import tsrtclogo from "../../../../images/user/tsrtclogo.png";
 import ExpiryLogo from "../../../../images/user/ExpiryLogo.png";
-const BusPassCard = ({ data }) => {
+const BusPassCard = ({ data,data1 }) => {
   return (
     <div className="w-full flex justify-center ">
       <div
@@ -69,7 +69,7 @@ const BusPassCard = ({ data }) => {
                   </div>
                   <div className="flex flex-col items-start  text-xs mb-1.5">
                     <h1 className="font-medium text-[11px] text-black">
-                      {data.name ? data.name : "N/A"}
+                       {data1?.employee_name ? data1?.employee_name : "N/A"}
                     </h1>
                     <p className="text-gray-500 text-[11px]">Name</p>
                   </div>

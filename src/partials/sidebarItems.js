@@ -68,6 +68,13 @@ const sidebarItems = [
         icon: GrUserPolice,
         path: "/nodal-officer",
       },
+        {
+          title: "Department Admin",
+          icon: FaUsers,
+          path: "/department-admin",
+        
+        },
+
       {
         title: "Locations",
         icon: MdLocationCity,
@@ -404,6 +411,12 @@ const sidebarItems = [
         title: "Refund Transactions",
         icon: RiDashboard3Fill,
         path: "/bus-pass-refund-report",
+      },
+
+      {
+        title: "Payment Gateway Report",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-payment-gateway-report",
       },
 
     ],

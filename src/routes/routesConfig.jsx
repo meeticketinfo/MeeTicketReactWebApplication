@@ -196,8 +196,10 @@ import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/Amrab
 import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
 import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPrivacyPolicy";
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
+import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
+import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 
 export const routes = [
   {
@@ -473,6 +475,10 @@ export const routes = [
     element: <ProtectedRoute element={<NodalOfficer />} />,
   },
   {
+    path: "/department-admin",
+    element: <ProtectedRoute element={<DepartmentAdmin />} />,
+  },
+  {
     path: "/mobile-bookings",
     element: <MobileBookingDetails />,
   },
@@ -610,6 +616,10 @@ export const routes = [
   {
     path: "/bus-pass-refund-inner-report",
     element: <ProtectedRoute element={<BusPassRefundTransactionsReport />} />,
+  },
+  {
+    path: "/bus-pass-payment-gateway-report",
+    element: <ProtectedRoute element={<PaymentGatewayReport />} />,
   },
   {
     path: "/bus-pass-view-pass",

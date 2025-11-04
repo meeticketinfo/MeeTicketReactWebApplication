@@ -7,8 +7,8 @@ import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
 const ExpiredBuspassDashboard = () => {
   const { buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
   
-  // Get expiredBusPasses data from the store
-  const expiredBusPasses = buspassDashboard?.expiredBusPasses || [];
+  // Get expiredPassSummary data from the store
+  const expiredBusPasses = buspassDashboard?.data?.expiredPassSummary || [];
 
   const SimplePassCard = ({ title, icon, count, iconColor = "text-blue-600" }) => (
     <div className="bg-white rounded-2xl shadow-lg p-3 w-full border border-gray-200">
