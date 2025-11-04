@@ -16,8 +16,6 @@ import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
 import {
   formatToCurrency,
-  formatToStandardDate,
-  formatToStandardTime,
   getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
@@ -37,6 +35,15 @@ import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
 import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
+import { useBuspassDashboardStore } from "../components/rtc/dashboard/BuspassDashboard/store/buspassDashboardStore";
+import WalkerpassOverallDetails from "../components/walkerPass/WalkerpassOverallDetails";
+
+import WalkerpassMostPopularPassType from "../components/walkerPass/WalkerpassMostPopularPassType";
+import WalkerpassPassTypeDistribution from "../components/walkerPass/WalkerpassPassTypeDistribution";
+import WalkerpassExpiredPasses from "../components/walkerPass/WalkerpassExpiredPasses";
+import WalkerpassFilter from "../components/walkerPass/WalkerpassFilter";
+import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";  
+import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
 
 function AdminDashboard() {
   superballs.register();
@@ -47,6 +54,7 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } = useWalkerpassStore();
   const {
     allParks,
     fetchAllParks,
@@ -94,6 +102,7 @@ function AdminDashboard() {
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
+  const { fetchBuspassDashboard } = useBuspassDashboardStore();
   // console.log(AllDepartmentEntities, "alldepartmentEntities");
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -105,6 +114,8 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchAllDepartmentTypes();
+    const currentDate = getCurrentDate();
+    fetchWalkerpassDashboard({ fromDate: '', toDate: '' });
     fetchAllEntityTypes();
     fetchAllDepartmentEntities({
       fromDate: "",
@@ -1283,6 +1294,16 @@ function AdminDashboard() {
             />
           </DashboardCard07>
         )}
+        
+
+            <WalkerpassFilter />
+            <WalkerpassOverallDetails />
+            <WalkerpassCategory />
+            <WalkerpassExpiredPasses />
+            {/* <WalkerpassRenewalPasses /> */}
+            {/* <WalkerpassMostPopularPassType /> */}
+            <WalkerpassPassTypeDistribution />
+      
       </div>
     </>
   );

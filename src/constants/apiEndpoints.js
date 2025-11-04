@@ -390,6 +390,7 @@ export const API_ENDPOINTS = {
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
     GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
+  GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,
   },
   RTC_DASHBOARD: {
     GET_OVER_ALL: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardReports`,
