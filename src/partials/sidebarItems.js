@@ -413,6 +413,12 @@ const sidebarItems = [
         path: "/bus-pass-refund-report",
       },
 
+      {
+        title: "Payment Gateway Report",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-payment-gateway-report",
+      },
+
     ],
   },
   //intercity

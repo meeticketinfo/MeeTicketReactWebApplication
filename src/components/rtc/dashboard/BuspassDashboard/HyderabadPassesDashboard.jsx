@@ -7,8 +7,16 @@ import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
 const HyderabadPassesDashboard = () => {
   const { buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
   
-  // Get hyderabadPasses data from the store
-  const hyderabadPasses = buspassDashboard?.hyderabadPasses || [];
+  // Get hyderabadPassSummary data from the store
+  const hyderabadPasses = buspassDashboard?.data?.hyderabadPassSummary || [];
+  
+  // Get renewalSummary data for renewal calculations
+  const renewalPasses = buspassDashboard?.data?.renewalSummary || [];
+  
+  // Helper function to get renewal data for a specific pass
+  const getRenewalData = (passName) => {
+    return renewalPasses.find(r => r.passName === passName) || {};
+  };
 
   // Loading skeleton component
   const LoadingSkeleton = () => (
@@ -208,12 +216,12 @@ const HyderabadPassesDashboard = () => {
               title={pass.passName}
               icon={<FaBus />}
               data={{
-                totalCount: pass.totalCount,
-                totalAmount: pass.totalAmount,
-                newCount: pass.newCount,
-                newAmount: pass.newAmount,
-                renewalCount: pass.renewalCount,
-                renewalAmount: pass.renewalAmount,
+                totalCount: parseInt(pass.newCount || 0) + parseInt(getRenewalData(pass.passName).renewalCount || 0),
+                totalAmount: parseFloat(pass.newAmount || 0) + parseFloat(getRenewalData(pass.passName).renewalAmount || 0),
+                newCount: parseInt(pass.newCount || 0),
+                newAmount: parseFloat(pass.newAmount || 0),
+                renewalCount: parseInt(getRenewalData(pass.passName).renewalCount || 0),
+                renewalAmount: parseFloat(getRenewalData(pass.passName).renewalAmount || 0),
               }}
               iconStyle={getIconStyle(index)}
             />

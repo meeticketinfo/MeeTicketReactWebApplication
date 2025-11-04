@@ -28,6 +28,7 @@ import HyderabadPassesDashboard from "./HyderabadPassesDashboard";
 import { useBuspassDashboardStore } from "./store/buspassDashboardStore";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import ExpiredBuspassDashboard from "./ExpiredBuspassDashboard";
+import RenewalBuspassDashboard from "./RenewalBuspassDashboard";
 
 function BuspassDasboard() {
   superballs.register();
@@ -36,7 +37,7 @@ function BuspassDasboard() {
     fromDate: "",
     toDate: "",
   };
-;
+console.log("buspassDashboard", buspassDashboard);
   useEffect(() => {
     fetchBuspassDashboard({
       fromDate: "",
@@ -109,6 +110,7 @@ function BuspassDasboard() {
       </div>
     </div>
   );
+  
   return (
     <>
       
@@ -205,7 +207,7 @@ function BuspassDasboard() {
                       </div>
                       <div className="text-xl font-bold text-gray-800 mb-6">
                         <CountUp 
-                          end={buspassDashboard?.overallDetails?.totalCount || 0} 
+                          end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0)} 
                           duration={2} 
                           separator="," 
                         />
@@ -219,7 +221,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           <CountUp 
-                            end={buspassDashboard?.overallDetails?.idCardsCount || 0} 
+                            end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsCount || 0)} 
                             duration={2} 
                             separator="," 
                           />
@@ -231,7 +233,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           <CountUp 
-                            end={buspassDashboard?.overallDetails?.newPassCount || 0} 
+                            end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0)} 
                             duration={2} 
                             separator="," 
                           />
@@ -243,7 +245,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           <CountUp 
-                            end={buspassDashboard?.overallDetails?.renewalPassCount || 0} 
+                            end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0} 
                             duration={2} 
                             separator="," 
                           />
@@ -270,7 +272,7 @@ function BuspassDasboard() {
                       </div>
                       <div className="text-xl font-bold text-gray-800 mb-6">
                         ₹<CountUp 
-                          end={buspassDashboard?.overallDetails?.totalAmount || 0} 
+                          end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0)} 
                           duration={2} 
                           separator="," 
                         />
@@ -284,7 +286,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           ₹<CountUp 
-                            end={buspassDashboard?.overallDetails?.idCardsAmount || 0} 
+                            end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsAmount || 0)} 
                             duration={2} 
                             separator="," 
                           />
@@ -296,7 +298,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           ₹<CountUp 
-                            end={buspassDashboard?.overallDetails?.newPassAmount || 0} 
+                            end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0)} 
                             duration={2} 
                             separator="," 
                           />
@@ -308,7 +310,7 @@ function BuspassDasboard() {
                         </span>
                         <span className="text-sm font-semibold text-gray-800">
                           ₹<CountUp 
-                            end={buspassDashboard?.overallDetails?.renewalPassAmount || 0} 
+                            end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0} 
                             duration={2} 
                             separator="," 
                           />
@@ -322,6 +324,7 @@ function BuspassDasboard() {
             <div className="col-span-full">
               <HyderabadPassesDashboard />
               <ExpiredBuspassDashboard />
+              {/* <RenewalBuspassDashboard /> */}
             </div>
       </div>
     </>

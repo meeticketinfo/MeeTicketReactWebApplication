@@ -13,7 +13,7 @@ export const useAmrabadPosStore = create((set) => ({
   fetchAmrabadPosReportData: async (payload) => {
     set({ isFetchAmrabadPosReportData: true });
     try {
-      const params = `fromDate=${payload.fromDate}&toDate=${payload.toDate}&adminMobile=${payload.adminMobileNumber}&vehicleTypeId=${payload.ticketType}&paymentType=${payload.paymentMode}&transactionStatus=${payload.transactionStatus}&vehicleNumber=${payload.vehicleNumber}&userMobile=${payload.userMobileNumber}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
+      const params = `fromDate=${payload.fromDate}&toDate=${payload.toDate}&adminMobile=${payload.adminMobileNumber}&vehicleTypeName=${payload.ticketType}&paymentType=${payload.paymentMode}&transactionStatus=${payload.transactionStatus}&vehicleNumber=${payload.vehicleNumber}&userMobile=${payload.userMobileNumber}&userName=${payload.userName}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
       const method = "get";
       const response = await apiService[method](
         `${API_ENDPOINTS.AMRABAD.REPORTS.GET_POS_REPORT}?${params}`
@@ -57,6 +57,33 @@ export const useAmrabadPosStore = create((set) => ({
     } finally {
       set({
         isFetchAmrabadPosVehicleTypesData: false,
+      });
+    }
+  },
+
+  //   POS USERS
+  AmrabadPosUsersData: [],
+  isFetchAmrabadPosUsersData: false,
+  fetchAmrabadPosUsersData: async (payload) => {
+    set({ isFetchAmrabadPosUsersData: true });
+    try {
+      const method = "get";
+      const response = await apiService[method](
+        `${API_ENDPOINTS.AMRABAD.MASTERS.GET_POS_USERS}`
+      );
+      set({
+        AmrabadPosUsersData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      toast.error(error.message);
+      set({
+        error: error.message,
+        AmrabadPosUsersData: [],
+      });
+    } finally {
+      set({
+        isFetchAmrabadPosUsersData: false,
       });
     }
   },

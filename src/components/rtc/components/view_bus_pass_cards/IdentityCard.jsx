@@ -1,6 +1,7 @@
 import React from "react";
 import idCardBg from "../../../../images/user/idCardBg.png";
 import tsrtclogo from "../../../../images/user/tsrtclogo.png";
+import { formatToStandardDate } from "../../../../utils/TypographyHelper";
 /**
  * Exact Identity Card UI (JSX + Tailwind CSS)
  * Matches the provided image exactly
@@ -96,7 +97,7 @@ export default function IdentityCard({ data }) {
                 </p>
               </div>
               <div className="flex  items-start gap-1 mb-1 text-xs">
-                <h1 className="font-medium text-[11px] text-black">Ph:</h1>
+                <h1 className="font-medium text-[11px] text-black">Mobile No:</h1>
                 <p className="text-gray-500 text-[11px]">
                   {data?.employee_cellno ? data?.employee_cellno : "N/A"}
                 </p>
@@ -104,7 +105,13 @@ export default function IdentityCard({ data }) {
               <div className="flex  items-start gap-1 mb-1 text-xs">
                 <h1 className="font-medium text-[11px] text-black">DOB:</h1>
                 <p className="text-gray-500 text-[11px]">
-                  {data?.employee_dob ? data?.employee_dob : "N/A"}
+                  {data?.employee_dob ? formatToStandardDate(data?.employee_dob) : "N/A"}
+                </p>
+              </div>
+              <div className="flex  items-start gap-1 mb-1 text-xs">
+                <h1 className="font-medium text-[11px] text-black">Address:</h1>
+                <p className="text-gray-500 text-[11px]">
+                  {data?.applicantaddress ? data?.applicantaddress : "N/A"}
                 </p>
               </div>
             </div>
