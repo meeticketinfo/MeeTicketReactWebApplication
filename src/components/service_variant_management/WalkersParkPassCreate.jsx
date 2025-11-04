@@ -208,7 +208,7 @@ const {  fetchAllUnifiedFacilities } =
                         e.preventDefault(); // Block other keys
                       }
                     }}
-                    maxLength={12}
+                    maxLength={9}
                   />
                   <ErrorMessage
                     name="amount"
