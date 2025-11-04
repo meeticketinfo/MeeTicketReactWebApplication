@@ -199,6 +199,7 @@ import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
+import WalkersPassReport from "../pages/admin/walkers_pass_report/WalkersPassReport";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
 import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
@@ -1042,4 +1043,8 @@ export const routes = [
     path: "/intercity-ticket-view-details/:id",
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
+  {
+    path:"/walkers-pass-report",
+    element:<ProtectedRoute element={<WalkersPassReport />} />,
+  }
 ];

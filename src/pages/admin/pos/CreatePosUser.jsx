@@ -23,10 +23,12 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
     fetchAllUnifiedFacilities(role);
   }, []);
   const facilityOptions =
-    allUnifiedFacilities?.map((facility) => ({
-      value: facility.facilityMasterId,
-      label: facility.name,
-    })) || [];
+    allUnifiedFacilities
+      ?.filter((facility) => facility.isActive === true)
+      .map((facility) => ({
+        value: facility.facilityMasterId,
+        label: facility.name,
+      })) || [];
   const AssignedFaciltiy = posUserEditDetails.facilitiesAssigned?.map(
     (item) => item.id
   );
@@ -49,7 +51,9 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
     LastName: Yup.string()
       .required("Last Name is required")
       .max(50, "First Name cannot be more than 50 characters"),
-    EmailId: Yup.string().required("Email ID is required"),
+    EmailId: Yup.string()
+      .required("Email ID is required")
+      .email("Please enter a valid email address"),
 
     PhoneNumber: Yup.string()
       .required("Phone Number is required")
@@ -95,7 +99,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
       }
     } catch (err) {
       console.log("err", err);
-      toast.error(err.response.data);
+      // toast.error(err.response.data);
     }
   };
   return (
@@ -120,6 +124,11 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter first name"
+                  onKeyPress={(e) => {
+                    if (!/^[a-zA-Z\s'-]$/.test(e.key)) {
+                      e.preventDefault(); // Prevent special characters
+                    }
+                  }}
                 />
                 <ErrorMessage
                   name="FirstName"
@@ -139,6 +148,11 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter last name"
+                  onKeyPress={(e) => {
+                    if (!/^[a-zA-Z\s'-]$/.test(e.key)) {
+                      e.preventDefault(); // Prevent special characters
+                    }
+                  }}
                 />
                 <ErrorMessage
                   name="LastName"
@@ -158,6 +172,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                 <Field
                   type="email"
                   name="EmailId"
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none  text-sm`}
                   placeholder="Enter email ID"
                 />

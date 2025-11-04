@@ -178,6 +178,7 @@ export const API_ENDPOINTS = {
     },
     SERVICE: {
       GET_SERVICES: `Master/GetAllServicesById?facilityId=`,
+      GET_PASS_TYPES: `${API_BASE_URL}WalkersPass/GetPasses`,
       GET_SERVICES_NODAL_OFFICER: `NodalOfficer/GetAllServices?parkId=`,
       UPDATE_SERVICE_DETAILS: `${API_BASE_URL}Master/UpdateServices`,
       UPDATE_SERVICE_DETAILS_NODAL_OFFICER: `${API_BASE_URL}NodalOfficer/UpdateServices`,
@@ -367,6 +368,10 @@ export const API_ENDPOINTS = {
     },
     FAILED_TRANSACTIONS: {
       GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
+    },
+     // Walkers pass report endpoints
+    WALKERS_PASS_REPORT: {
+      GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
     },
   },
   ENTITIES: {
