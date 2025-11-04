@@ -3,15 +3,14 @@ import useAuthStore from "../store/authStore";
 import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // dev
 
-// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
-const API_BASE_URL =
-//  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
- "https://meeticket.telangana.gov.in/parkuatapi/api/"
+// const API_BASE_URL =
+//  "https://meeticket.telangana.gov.in/parkuatapi/api/";
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

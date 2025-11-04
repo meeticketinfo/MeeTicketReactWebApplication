@@ -38,7 +38,7 @@ export const superAdminPermissions = [
   "bus-pass-refund-report",
   "bus-pass-settlement-summary-report",
   "monthly-reports",
-  
+  "banner",
 ];
 
 // department

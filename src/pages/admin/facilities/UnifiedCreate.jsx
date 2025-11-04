@@ -10,18 +10,16 @@ import ServiceCreate from "../../../components/service_management/serviceCreate"
 import ServiceVarientCreate from "../../../components/service_variant_management/serviceVarientCreate";
 import { useModalStore } from "../../../store/modalStore";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
+import WalkersParkPassCreate from "../../../components/service_variant_management/WalkersParkPassCreate";
+import { WalkersPassStore } from "../../../store/masters/WalkersPassStore";
 
 export default function UnifiedCreate() {
   // State to toggle the FacilityCreate component
   const [isFacilityCreateVisible, setIsFacilityCreateVisible] = useState(false);
   const [isFacilityEditVisible, setIsFacilityEditVisible] = useState(false);
 
-  const {
-    isCreateServiceEnabled,
-    isCreateServiceVariantEnabled,
-    setIsCreateServiceEnabled,
-    setIsCreateServiceVariantEnabled,
-  } = useUnifiedFacilityStore();
+  const { setIsCreateServiceEnabled, setIsCreateServiceVariantEnabled } =
+    useUnifiedFacilityStore();
 
   // Function to toggle the visibility of FacilityCreate
   const toggleFacilityCreate = () => {
@@ -30,6 +28,14 @@ export default function UnifiedCreate() {
   };
 
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
+
+  const {
+    setIsWalkersPassAdd,
+    isWalkersPassAdd,
+    isWalkersPassEdit,
+    setIsWalkersPassEdit,
+    setCurrentWalkersPassEditDetails
+  } = WalkersPassStore();
 
   const addServiceCreate = () => {
     setIsCreateServiceEnabled(true);
@@ -79,6 +85,17 @@ export default function UnifiedCreate() {
                   className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                 >
                   <span className="max-xs:sr-only">Add Ticket Type</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsWalkersPassAdd(true);
+                    setCurrentWalkersPassEditDetails({});
+                    setIsWalkersPassEdit(false)
+                   
+                  }}
+                  className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
+                >
+                  <span className="max-xs:sr-only">Add Walker Pass Type</span>
                 </button>
               </>
             ) : (
@@ -132,6 +149,28 @@ export default function UnifiedCreate() {
           >
             <div>
               <ServiceVarientCreate onDataAdded={handleDataAdded} />
+            </div>
+          </PopupModal>
+          {/* walkers park pass create */}
+          <PopupModal
+            popupModalId="walkers-park-pass-create-modal"
+            isOpen={isWalkersPassAdd}
+            onClose={() => {
+              setIsWalkersPassAdd(false);
+              setIsWalkersPassEdit(false);
+            }}
+            title={
+              isWalkersPassEdit
+                ? "Update Walkers Park Pass"
+                : "Add Walkers Park Pass"
+            }
+            size="medium"
+            overlayClassName="bg-gray-800 bg-opacity-60"
+            contentClassName="bg-white"
+            defaultBodyPadding={true}
+          >
+            <div>
+              <WalkersParkPassCreate />
             </div>
           </PopupModal>
         </>

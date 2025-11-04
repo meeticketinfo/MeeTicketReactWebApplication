@@ -198,6 +198,7 @@ import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPriva
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
+import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
 import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
@@ -930,6 +931,11 @@ export const routes = [
     path: "/pos-admin",
     element: <ProtectedRoute element={<PosMain />} />,
   },
+  // create banner
+  {
+    path: "/banner",
+    element: <ProtectedRoute element={<MainBannerCreation />} />,
+  },
   //intercity
   {
     path: "/intercity-consolidated-report",
@@ -946,20 +952,20 @@ export const routes = [
 
   {
     path: "/intercity-failed-other-reason",
-    element: <ProtectedRoute element={<IntercityFailedOtherReason/>} />,
+    element: <ProtectedRoute element={<IntercityFailedOtherReason />} />,
   },
   {
     path: "/intercity-failed-other-reasons-report",
-    element: <ProtectedRoute element={<IntercityFailedOtherReasonReport/>} />,
+    element: <ProtectedRoute element={<IntercityFailedOtherReasonReport />} />,
   },
   {
     path: "/intercity-failed-gateway",
-    element: <ProtectedRoute element={<IntercityFailedGateway/>} />,
+    element: <ProtectedRoute element={<IntercityFailedGateway />} />,
   },
 
   {
     path: "/intercity-failed-gateway-report",
-    element: <ProtectedRoute element={<IntercityFailedGatewayReport/>} />,
+    element: <ProtectedRoute element={<IntercityFailedGatewayReport />} />,
   },
   {
     path: "/intercity-not-generated",
@@ -972,11 +978,13 @@ export const routes = [
   },
   {
     path: "/intercity-total-report",
-    element: <ProtectedRoute element={<IntercityTotalReport/>} />,
+    element: <ProtectedRoute element={<IntercityTotalReport />} />,
   },
   {
     path: "/intercity-refund-report",
-    element: <ProtectedRoute element={<MainIntercityRefundTransactionReport />} />,
+    element: (
+      <ProtectedRoute element={<MainIntercityRefundTransactionReport />} />
+    ),
   },
   {
     path: "/intercity-refund-inner-report",
@@ -1011,16 +1019,22 @@ export const routes = [
   },
   {
     path: "/intercity-payment-transactions",
-    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
+    element: (
+      <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />
+    ),
   },
-    {
+  {
     path: "/intercity-total-transactions-order-tracker",
-    element: <ProtectedRoute element={<IntercityTotalTransactionTrackOrder />} />,
+    element: (
+      <ProtectedRoute element={<IntercityTotalTransactionTrackOrder />} />
+    ),
   },
 
   {
     path: "/intercity-payment-transactions",
-    element: <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />,
+    element: (
+      <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />
+    ),
   },
 
   //intercity admin routes
