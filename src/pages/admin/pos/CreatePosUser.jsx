@@ -128,7 +128,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter first name"
                   onKeyPress={(e) => {
-                    if (!/^[a-zA-Z\s'-]$/.test(e.key)) {
+                    if (!/^[a-zA-Z0-9\s'-]$/.test(e.key)) {
                       e.preventDefault(); // Prevent special characters
                     }
                   }}
@@ -152,7 +152,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter last name"
                   onKeyPress={(e) => {
-                    if (!/^[a-zA-Z\s'-]$/.test(e.key)) {
+                    if (!/^[a-zA-Z0-9\s'-]$/.test(e.key)) {
                       e.preventDefault(); // Prevent special characters
                     }
                   }}
