@@ -49,21 +49,19 @@ const role = roleDetails?.name;
     // Add a small delay to ensure component is fully mounted
     const timer = setTimeout(() => {
       const savedBookingDate = savedFilters.purchaseOrBooking || 'Purchase';
-      const isBookingDateValue = savedBookingDate === 'Booking';
       
       // Use saved values or defaults
       const fromDate = savedFilters.fromDate || getCurrentDate();
       const toDate = savedFilters.toDate || getCurrentDate();
       
        const formattedValues = {
-         fromDate: !isBookingDateValue ? fromDate : "",
-         toDate: !isBookingDateValue ? toDate : "",
-         bookingDateFrom: isBookingDateValue ? fromDate : null,
-         bookingDateTo: isBookingDateValue ? toDate : null,
+         fromDate: fromDate,
+         toDate: toDate,
          passTypeId: savedFilters.passTypeId || "",
          subFacilityId: savedFilters.subFacilityId || "",
          locationId: savedFilters.locationId || "",
          status: savedFilters.status || "CONFIRMED",
+         purchaseOrBooking: savedBookingDate,
          pageNumber: 1,
          PageSize: savedFilters.PageSize || 10
        };
@@ -85,14 +83,13 @@ const role = roleDetails?.name;
       // Format values based on booking date selection
       const formattedValues = {
         ...values,
-        fromDate: !isBookingDate ? values.fromDate ? `${values.fromDate}` : "" : "",
-        toDate: !isBookingDate ? values.toDate ? `${values.toDate}` : "" : "",
-        bookingDateFrom: isBookingDate ? values.fromDate : null,
-        bookingDateTo: isBookingDate ? values.toDate : null,
+        fromDate: values.fromDate ? `${values.fromDate}` : "",
+        toDate: values.toDate ? `${values.toDate}` : "",
         passTypeId: values.passTypeId,
         subFacilityId: values.subFacilityId,
         locationId: values.locationId,
         status: values.status,
+        purchaseOrBooking: values.purchaseOrBooking,
         pageNumber: 1,
         PageSize: values.PageSize
       };
@@ -146,12 +143,11 @@ const role = roleDetails?.name;
       const formattedValues = {
         fromDate: getCurrentDate(),
         toDate: getCurrentDate(),
-        bookingDateFrom: null,
-        bookingDateTo: null,
         passTypeId: "",
         subFacilityId: "",
         locationId: "",
         status: "CONFIRMED",
+        purchaseOrBooking: 'Purchase',
         pageNumber: 1,
         PageSize: 10
       };

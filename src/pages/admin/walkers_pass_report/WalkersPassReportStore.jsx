@@ -11,7 +11,7 @@ export const useWalkersPassReportStore = create((set) => ({
   fetchWalkersPassReportData: async (payload) => {
     set({ isFetchWalkersPassReportData: true });
     try {
-      const params = `fromDate=${payload.fromDate}&toDate=${payload.toDate}&passTypeId=${payload.passTypeId}&subFacilityId=${payload.subFacilityId}&status=${payload.status}
+      const params = `purchaseOrBooking=${payload.purchaseOrBooking}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&passTypeId=${payload.passTypeId}&subFacilityId=${payload.subFacilityId}&status=${payload.status}
 &pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
       const method = "get";
       const response = await apiService[method](
