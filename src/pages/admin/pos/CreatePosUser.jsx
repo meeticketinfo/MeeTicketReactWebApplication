@@ -53,7 +53,7 @@ const CreatePosUser = ({ setIsPosCreateVisible, setIsEdit, isEdit }) => {
       .max(50, "First Name cannot be more than 50 characters"),
     EmailId: Yup.string()
       .required("Email ID is required")
-      .test("has-dot", "Email ID must contain a period (.)", (value) => {
+      .test("has-dot", "Please enter a valid email address", (value) => {
         if (!value) return true; // Let required validation handle empty values
         return value.includes(".");
       })
