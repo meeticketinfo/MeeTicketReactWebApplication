@@ -9,6 +9,7 @@ import AmrabadDashboard from "./amrabad/dashboard/AmrabadDashboard";
 import SalarjangMuseumDashboard from "./park_admin/SalarjangMuseumDashboard";
 import BuspassDasboard from "../components/rtc/dashboard/BuspassDashboard/BuspassDasboard";
 import MainDashboard from "../components/rtc/dashboard/MainDashboard/mainDashboard";
+import { ToastContainer } from "react-toastify";
 
 function Dashboard() {
   const { roleDetails, decodedTokenData } = useAuthStore();
@@ -47,6 +48,7 @@ function Dashboard() {
   }, [roleDetails, email]);
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4  sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">

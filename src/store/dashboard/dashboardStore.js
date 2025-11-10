@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+import { toast } from "react-toastify";
 
 export const useDashboardStore = create((set) => ({
   allBookings: [],
@@ -226,7 +227,8 @@ export const useDashboardStore = create((set) => ({
         isFetchZooDashboardLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchZooDashboardLoading: false });
+      set({ error: error.message, isFetchZooDashboardLoading: false, allZooDashboard: [] });
+      toast.error(error.message);
     }
   },
   fetchAllZooDashBoardCountsTicketWise: async ({
