@@ -12,6 +12,8 @@ import { useModalStore } from "../../../store/modalStore";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
 import WalkersParkPassCreate from "../../../components/service_variant_management/WalkersParkPassCreate";
 import { WalkersPassStore } from "../../../store/masters/WalkersPassStore";
+import { useSlotBookingStore } from "../../../store/masters/slotBookingStore";
+import SlotCreate from "../../../components/service_variant_management/SlotCreate";
 
 export default function UnifiedCreate() {
   // State to toggle the FacilityCreate component
@@ -34,8 +36,18 @@ export default function UnifiedCreate() {
     isWalkersPassAdd,
     isWalkersPassEdit,
     setIsWalkersPassEdit,
-    setCurrentWalkersPassEditDetails
+    setCurrentWalkersPassEditDetails,
   } = WalkersPassStore();
+
+  // store import for slot
+
+  const {
+    setSlotEditDetails,
+    isSlotEdit,
+    setIsSlotEdit,
+    isSlotAdd,
+    setIsSlotAdd,
+  } = useSlotBookingStore();
 
   const addServiceCreate = () => {
     setIsCreateServiceEnabled(true);
@@ -88,10 +100,19 @@ export default function UnifiedCreate() {
                 </button>
                 <button
                   onClick={() => {
+                    setIsSlotAdd(true);
+                    setSlotEditDetails({});
+                    setIsSlotEdit(false);
+                  }}
+                  className="btn px-8 bg-gray-900 text-gray-100 hover:bg-gray-800 "
+                >
+                  <span className="max-xs:sr-only">Add Slot</span>
+                </button>
+                <button
+                  onClick={() => {
                     setIsWalkersPassAdd(true);
                     setCurrentWalkersPassEditDetails({});
-                    setIsWalkersPassEdit(false)
-                   
+                    setIsWalkersPassEdit(false);
                   }}
                   className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                 >
@@ -171,6 +192,30 @@ export default function UnifiedCreate() {
           >
             <div>
               <WalkersParkPassCreate />
+            </div>
+          </PopupModal>
+
+          {/* slot create */}
+
+          <PopupModal
+            popupModalId="slot-create-modal"
+            isOpen={isSlotAdd}
+            onClose={() => {
+              setIsSlotAdd(false);
+              setIsSlotEdit(false);
+            }}
+            title={
+              isSlotEdit
+                ? "Update Slot"
+                : "Add Slot"
+            }
+            size="medium"
+            overlayClassName="bg-gray-800 bg-opacity-60"
+            contentClassName="bg-white"
+            defaultBodyPadding={true}
+          >
+            <div>
+              <SlotCreate />
             </div>
           </PopupModal>
         </>

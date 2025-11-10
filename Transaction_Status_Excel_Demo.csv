@@ -1,8 +1,0 @@
-Status,Result Status,Formatted Status,Formula Used
-INITIATE,,Request Sent,=IF(A2="INITIATE","Request Sent",IF(A2="INPROCESS","Deep Link Status",IF(A2="FINAL_STATUS",B2,"Payment Status Check")))
-INPROCESS,,Deep Link Status,=IF(A3="INITIATE","Request Sent",IF(A3="INPROCESS","Deep Link Status",IF(A3="FINAL_STATUS",B3,"Payment Status Check")))
-FINAL_STATUS,SUCCESS,SUCCESS,=IF(A4="INITIATE","Request Sent",IF(A4="INPROCESS","Deep Link Status",IF(A4="FINAL_STATUS",B4,"Payment Status Check")))
-FINAL_STATUS,FAILED,FAILED,=IF(A5="INITIATE","Request Sent",IF(A5="INPROCESS","Deep Link Status",IF(A5="FINAL_STATUS",B5,"Payment Status Check")))
-FINAL_STATUS,PENDING,PENDING,=IF(A6="INITIATE","Request Sent",IF(A6="INPROCESS","Deep Link Status",IF(A6="FINAL_STATUS",B6,"Payment Status Check")))
-OTHER,,Payment Status Check,=IF(A7="INITIATE","Request Sent",IF(A7="INPROCESS","Deep Link Status",IF(A7="FINAL_STATUS",B7,"Payment Status Check")))
-UNKNOWN,,Payment Status Check,=IF(A8="INITIATE","Request Sent",IF(A8="INPROCESS","Deep Link Status",IF(A8="FINAL_STATUS",B8,"Payment Status Check")))

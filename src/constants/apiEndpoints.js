@@ -195,6 +195,11 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
     },
+    SLOT: {
+      ADD_NEW_SLOT: `${API_BASE_URL}Master/AddSlot`,
+      UPDATE_SLOT_DETAILS: `${API_BASE_URL}Master/UpdateSlot`,
+     
+    },
     PAYMENTS: {
       GET_PAYMENTS: `Master/GetAllPayments`,
       UPDATE_PAYMENTS_DETAILS: `${API_BASE_URL}Master/UpdatePark`,
