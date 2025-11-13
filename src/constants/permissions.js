@@ -32,7 +32,13 @@ export const superAdminPermissions = [
   "metro-user-report",
   "metro-user-detailed-report",
   "metro-refund-transactions",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "bus-pass-settlement-summary-report",
   "monthly-reports",
+  "banner",
 ];
 
 // department
@@ -61,11 +67,12 @@ export const parkAdminPermissions = [
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",
+  "walkers-pass-report",
   "payment-transaction-report",
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
-  // "pos-admin"
+  "pos-admin"
 ];
 export const BotanicalGardenParkAdminPermissions = [
   "dashboard",
@@ -143,13 +150,21 @@ export const RtcAdmin = [
   "bus-pass-total-transaction",
   "bus-pass-booking-report",
   "bus-pass-refund-report",
-  // "intercity-consolidated-report",
-  // "intercity-individual-report",
-  // "intercity-total-transaction",
-  // "intercity-user-report",
-  // "intercity-refund-report",
-  // "intercity-payment-transactions",
-  // "pending-pass",
+  "bus-pass-settlement-summary-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
+  "intercity-settlement-summary-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
+  "pending-pass",
 ];
 
 export const Toursim = [

@@ -16,8 +16,6 @@ import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
 import {
   formatToCurrency,
-  formatToStandardDate,
-  formatToStandardTime,
   getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
@@ -37,6 +35,15 @@ import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
 import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
+import { useBuspassDashboardStore } from "../components/rtc/dashboard/BuspassDashboard/store/buspassDashboardStore";
+import WalkerpassOverallDetails from "../components/walkerPass/WalkerpassOverallDetails";
+
+import WalkerpassMostPopularPassType from "../components/walkerPass/WalkerpassMostPopularPassType";
+import WalkerpassPassTypeDistribution from "../components/walkerPass/WalkerpassPassTypeDistribution";
+import WalkerpassExpiredPasses from "../components/walkerPass/WalkerpassExpiredPasses";
+import WalkerpassFilter from "../components/walkerPass/WalkerpassFilter";
+import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";  
+import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
 
 function AdminDashboard() {
   superballs.register();
@@ -47,6 +54,7 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } = useWalkerpassStore();
   const {
     allParks,
     fetchAllParks,
@@ -67,6 +75,10 @@ function AdminDashboard() {
   const [isFacilitiesBookingDate, setIsFacilitiesBookingDate] = useState(false);
   const [activeBookingsTab, setActiveBookingsTab] = useState("graph");
   const [activeAmountTab, setActiveAmountTab] = useState("graph");
+  const [bookingSortOrder, setBookingSortOrder] = useState("none");
+  const [bookingLocationFilter, setBookingLocationFilter] = useState("");
+  const [amountSortOrder, setAmountSortOrder] = useState("none");
+  const [locationNameFilter, setLocationNameFilter] = useState("");
   const {
     allCounts,
     fetchAllDashboardCounts,
@@ -90,6 +102,7 @@ function AdminDashboard() {
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
+  const { fetchBuspassDashboard } = useBuspassDashboardStore();
   // console.log(AllDepartmentEntities, "alldepartmentEntities");
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -101,6 +114,8 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchAllDepartmentTypes();
+    const currentDate = getCurrentDate();
+    fetchWalkerpassDashboard({ fromDate: '', toDate: '' });
     fetchAllEntityTypes();
     fetchAllDepartmentEntities({
       fromDate: "",
@@ -956,6 +971,31 @@ function AdminDashboard() {
 
                 {activeBookingsTab === "list" && (
                   <div className="relative">
+                    {/* Controls: Location filter and Bookings sort */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700"></label>
+                        <input
+                          type="text"
+                          value={bookingLocationFilter}
+                          onChange={(e) => setBookingLocationFilter(e.target.value)}
+                          placeholder="location name..."
+                          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <select
+                          className="border w-28 border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          value={bookingSortOrder}
+                          onChange={(e) => setBookingSortOrder(e.target.value)}
+                        >
+                          <option value="none">None</option>
+                          <option value="asc">Low to High</option>
+                          <option value="desc">High to Low</option>
+                        </select>
+                      </div>
+                    </div>
                     <div className="overflow-x-auto max-h-96 overflow-y-auto">
                       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                         <thead className="bg-gray-50 sticky top-0 z-10">
@@ -967,7 +1007,7 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Bookings (This Month)
+                              Bookings 
                             </th>
                           </tr>
                         </thead>
@@ -981,7 +1021,30 @@ function AdminDashboard() {
                               </td>
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
-                            allPieCharts.map((item, index) => (
+                            (() => {
+                              const filtered = (allPieCharts || []).filter((item) => {
+                                const name = (item?.entity || "").toString().toLowerCase();
+                                return bookingLocationFilter
+                                  ? name.includes(bookingLocationFilter.toLowerCase())
+                                  : true;
+                              });
+                              if (filtered.length === 0) {
+                                return (
+                                  <tr>
+                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                      No data available
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                              const sorted = bookingSortOrder === "none"
+                                ? filtered
+                                : [...filtered].sort((a, b) => {
+                                    const av = Number(a?.entityWiseTotalBookings || 0);
+                                    const bv = Number(b?.entityWiseTotalBookings || 0);
+                                    return bookingSortOrder === "asc" ? av - bv : bv - av;
+                                  });
+                              return sorted.map((item, index) => (
                               <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
@@ -995,7 +1058,8 @@ function AdminDashboard() {
                                   }
                                 </td>
                               </tr>
-                            ))
+                              ));
+                            })()
                           ) : (
                             <tr>
                               <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
@@ -1004,30 +1068,40 @@ function AdminDashboard() {
                             </tr>
                           )}
                         </tbody>
-                      </table>
-                    </div>
-                    {/* Sticky Total Row */}
-                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
-                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                        <table className="min-w-full">
-                          <tbody>
+                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
+                          const filtered = (allPieCharts || []).filter((item) => {
+                            const name = (item?.entity || "").toString().toLowerCase();
+                            return bookingLocationFilter
+                              ? name.includes(bookingLocationFilter.toLowerCase())
+                              : true;
+                          });
+                          return filtered.length > 0;
+                        })() && (
+                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
                             <tr>
-                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 {/* Empty S.No column */}
                               </td>
-                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 Total
                               </td>
-                              <td className="py-3 pr-2 md:pr-[74px] text-xs md:text-sm font-semibold text-gray-900">
-                                {new Intl.NumberFormat('en-IN').format(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0)
-                                )}
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                {(() => {
+                                  const filtered = (allPieCharts || []).filter((item) => {
+                                    const name = (item?.entity || "").toString().toLowerCase();
+                                    return bookingLocationFilter
+                                      ? name.includes(bookingLocationFilter.toLowerCase())
+                                      : true;
+                                  });
+                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0);
+                                  return new Intl.NumberFormat('en-IN').format(total);
+                                })()}
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                          </tfoot>
+                        )}
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1072,6 +1146,31 @@ function AdminDashboard() {
 
                 {activeAmountTab === "list" && (
                   <div className="relative">
+                    {/* Controls: Location filter and Amount sort */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700"></label>
+                        <input
+                          type="text"
+                          value={locationNameFilter}
+                          onChange={(e) => setLocationNameFilter(e.target.value)}
+                          placeholder="location name..."
+                          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <select
+                          className="border border-gray-300 w-28 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          value={amountSortOrder}
+                          onChange={(e) => setAmountSortOrder(e.target.value)}
+                        >
+                          <option value="none">None</option>
+                          <option value="asc">Low to High</option>
+                          <option value="desc">High to Low</option>
+                        </select>
+                      </div>
+                    </div>
                     <div className="overflow-x-auto max-h-96 overflow-y-auto">
                       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                         <thead className="bg-gray-50 sticky top-0 z-10">
@@ -1083,7 +1182,7 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Amount (This Month)
+                              Amount 
                             </th>
                           </tr>
                         </thead>
@@ -1097,7 +1196,31 @@ function AdminDashboard() {
                               </td>
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
-                            allPieCharts.map((item, index) => (
+                            // Compute filtered and sorted data for display
+                            (() => {
+                              const filtered = (allPieCharts || []).filter((item) => {
+                                const name = (item?.entity || "").toString().toLowerCase();
+                                return locationNameFilter
+                                  ? name.includes(locationNameFilter.toLowerCase())
+                                  : true;
+                              });
+                              if (filtered.length === 0) {
+                                return (
+                                  <tr>
+                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                      No data available
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                              const sorted = amountSortOrder === "none"
+                                ? filtered
+                                : [...filtered].sort((a, b) => {
+                                    const av = Number(a?.entityWiseTotalAmount || 0);
+                                    const bv = Number(b?.entityWiseTotalAmount || 0);
+                                    return amountSortOrder === "asc" ? av - bv : bv - av;
+                                  });
+                              return sorted.map((item, index) => (
                               <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
@@ -1111,7 +1234,8 @@ function AdminDashboard() {
                                   }
                                 </td>
                               </tr>
-                            ))
+                              ));
+                            })()
                           ) : (
                             <tr>
                               <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
@@ -1120,32 +1244,40 @@ function AdminDashboard() {
                             </tr>
                           )}
                         </tbody>
-                      </table>
-                    </div>
-                    {/* Sticky Total Row */}
-                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
-                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                        <table className="min-w-full">
-                          <tbody>
+                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
+                          const filtered = (allPieCharts || []).filter((item) => {
+                            const name = (item?.entity || "").toString().toLowerCase();
+                            return locationNameFilter
+                              ? name.includes(locationNameFilter.toLowerCase())
+                              : true;
+                          });
+                          return filtered.length > 0;
+                        })() && (
+                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
                             <tr>
-                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 {/* Empty S.No column */}
                               </td>
-                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 Total
                               </td>
-                              <td className="py-3 pr-2 md:pr-[17px] text-xs md:text-sm font-semibold text-gray-900">
-                                {formatToCurrency(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0),
-                                  "INR", 
-                                  "en-IN"
-                                )}
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                {(() => {
+                                  const filtered = (allPieCharts || []).filter((item) => {
+                                    const name = (item?.entity || "").toString().toLowerCase();
+                                    return locationNameFilter
+                                      ? name.includes(locationNameFilter.toLowerCase())
+                                      : true;
+                                  });
+                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0);
+                                  return formatToCurrency(total, "INR", "en-IN");
+                                })()}
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                          </tfoot>
+                        )}
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1162,6 +1294,16 @@ function AdminDashboard() {
             />
           </DashboardCard07>
         )}
+        
+
+            <WalkerpassFilter />
+            <WalkerpassOverallDetails />
+            <WalkerpassCategory />
+            <WalkerpassExpiredPasses />
+            {/* <WalkerpassRenewalPasses /> */}
+            {/* <WalkerpassMostPopularPassType /> */}
+            <WalkerpassPassTypeDistribution />
+      
       </div>
     </>
   );
