@@ -199,11 +199,11 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
           totalCapacity: slots.totalCapacity || "",
           availableCapacity: slots.availableCapacity || "",
           cutoffTimeforBooking: slots.cutOffTime || "",
-          status: (slots.status === "active"?true:false) || null,
-          isRecurring: slots.isRecurring || null,
-          recurrenceStatus: (slots.recurringStatus === "active"?true:false) || null,
-          recurringStartDate: slots.recurringStartDate || "",
-          recurrenceEndDate: slots.recurringEndDate || "",
+          status: (slots.status === "active"?true:false) || false,
+          isRecurring: slots.isRecurring || false,
+          recurrenceStatus: (slots.recurringStatus === "active"?true:false) || false,
+          recurrenceStartDate: slots.recurringStartDate || null,
+          recurrenceEndDate: slots.recurringEndDate || null,
           recurringDays:slots.selectedDays || [],
         })),
       })),
@@ -502,30 +502,38 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               )}
                             </FieldArray>
                             <FieldArray name={`subFacilities[${index}].slots`}>
-                              {({ push: pushSlot }) => (
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    pushSlot({
-                                      startTime: "",
-                                      endTime: "",
-                                      totalCapacity: null,
-                                      availableCapacity: null,
-                                      cutOffTime: null,
-                                      status: "",
-                                      description: "",
-                                      isRecurring: false,
-                                      recurringStatus: "",
-                                      recurringStartDate: "",
-                                      recurringEndDate: "",
-                                      selectedDays: [],
-                                    })
-                                  }
-                                  className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-8 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1"
-                                >
-                                  Add Slot
-                                </button>
-                              )}
+                              {({ push: pushSlot }) => {
+                                const hasTicketTypes = subFacility.ticketTypes && subFacility.ticketTypes.length > 0;
+                                return (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      pushSlot({
+                                        startTime: "",
+                                        endTime: "",
+                                        totalCapacity: null,
+                                        availableCapacity: null,
+                                        cutOffTime: null,
+                                        status: "",
+                                        description: "",
+                                        isRecurring: false,
+                                        recurringStatus: "",
+                                        recurringStartDate: "",
+                                        recurringEndDate: "",
+                                        selectedDays: [],
+                                      })
+                                    }
+                                    disabled={!hasTicketTypes}
+                                    className={`text-base rounded-lg px-8 py-1 ${
+                                      hasTicketTypes
+                                        ? "bg-blue-v1 text-white hover:py-[3px] hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1"
+                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    }`}
+                                  >
+                                    Add Slot
+                                  </button>
+                                );
+                              }}
                             </FieldArray>
                           </div>
 

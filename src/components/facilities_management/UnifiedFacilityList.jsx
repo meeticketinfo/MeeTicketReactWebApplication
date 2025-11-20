@@ -10,10 +10,9 @@ import { ToastContainer } from "react-toastify";
 import useAuthStore from "../../store/authStore";
 
 const UnifiedFacilityList = ({ setIsServiceEditVisible }) => {
-  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
+  const { sidebarMenuItems, roleDetails, logout, decodedokenData } =
     useAuthStore();
-  const role = roleDetails?.name;
-  
+  const role = roleDetails?.name;  
   const { allUnifiedFacilities, fetchAllUnifiedFacilities } =
     useUnifiedFacilityStore();
 

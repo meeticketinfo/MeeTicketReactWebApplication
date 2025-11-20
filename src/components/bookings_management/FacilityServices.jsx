@@ -39,6 +39,29 @@ const formatTime = (timeString) => {
   });
 };
 
+const slots = [
+  {
+    slotId: "77B4B0E5-4FE3-46D6-8D1C-4384F1E93129",
+    startTime: "09:00 AM",
+    endTime: "10:00 AM",
+    totalCapacity: 50,
+    availableCapacity: 2,
+    isExpired: true,
+    isSuspended: true,
+    bookingDate: "2025-11-14T00:00:00",
+  },
+  {
+    slotId: "7988a62a-4c26-42b7-9dc4-c76cdcc2b11e",
+    startTime: "08:00 PM",
+    endTime: "09:00 PM",
+    totalCapacity: 2147483647,
+    availableCapacity: 2147483647,
+    isExpired: false,
+    isSuspended: false,
+    bookingDate: "2025-11-14T00:00:00",
+  },
+];
+
 export const FacilityServices = () => {
   const navigate = useNavigate();
   function formatBookingDate(date) {
@@ -79,10 +102,6 @@ export const FacilityServices = () => {
     .toLocaleString("en-US", { weekday: "long" })
     .toLowerCase();
 
-  const isHoliday = allRecurringHolidays
-    .map((day) => day.toLowerCase())
-    .includes(currentDay);
-
   const {
     allFacilities,
     fetchAllFacilities,
@@ -113,11 +132,6 @@ export const FacilityServices = () => {
   };
   const { toggleItem } = useAccordionStore();
 
-  const accordionItems = [
-    { id: 1, title: "Item 1", content: "This is the content for item 1" },
-    { id: 2, title: "Item 2", content: "This is the content for item 2" },
-    { id: 3, title: "Item 3", content: "This is the content for item 3" },
-  ];
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method"), // Add validation for payment method
 
@@ -147,8 +161,6 @@ export const FacilityServices = () => {
       bookingDate: formatBookingDate(currentDate),
       parkId: decodedTokenData?.data?.ParkId,
     };
-
-  
 
     if (values.paymentMethod === "pos") {
       try {
@@ -201,6 +213,7 @@ export const FacilityServices = () => {
     if (values.paymentMethod === "cash") {
       const totalAmount = calculateTotalAmount(values.selectedItems);
       const currentDate = new Date();
+
       const bookingDetailsPayload = {
         mobileNumber: values.mobileNumber,
         totalAmount: totalAmount,
@@ -371,88 +384,17 @@ export const FacilityServices = () => {
                                         .map((variant) => (
                                           <div
                                             key={variant.id}
-                                            className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex flex-col gap-0"
+                                            className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex flex-col gap-0 min-w-0"
                                           >
-                                            <div className="w-full flex justify-between items-center">
-                                              <h6 className="text-sm font-medium text-[#0c3771] p-2">
+                                            <div className="flex items-center gap-3 p-2">
+                                              <h6 className="text-sm font-medium text-[#0c3771] whitespace-nowrap">
                                                 {toTitleCase(variant.name) ||
                                                   toTitleCase(
                                                     variant.displayName
                                                   )}
                                               </h6>
-                                              <p className="text-gray-800 font-semibold p-2 pl-0 ms-auto">
-                                                {formatToCurrency(
-                                                  variant.amount
-                                                )}
-                                              </p>
-                                            </div>
-                                            {variant.isPriceFixed ? (
-                                              <>
-                                                {/* <p className="text-gray-800 font-semibold p-2">
-                                          {formatToCurrency(variant.amount)}
-                                        </p> */}
-                                                <div className="quantity-controls flex items-center gap-2 p-1 border border-gray-200 rounded justify-end">
-                                                  {/* <Field
-                                                    type="checkbox"
-                                                    name="selectedItems"
-                                                    checked={
-                                                      values.selectedItems.some(
-                                                        (item) =>
-                                                          item.serviceVarientId ===
-                                                          variant.id
-                                                      ) || false
-                                                    }
-                                                    onChange={(e) => {
-                                                      e.stopPropagation();
-                                                      const exists =
-                                                        values.selectedItems.find(
-                                                          (item) =>
-                                                            item.serviceVarientId ===
-                                                            variant.id
-                                                        );
-
-                                                      if (exists) {
-                                                        // If the item exists, remove it and reset the quantity
-                                                        updateQuantity(
-                                                          variant.id,
-                                                          -currentQuantity
-                                                        );
-                                                        setFieldValue(
-                                                          "selectedItems",
-                                                          values.selectedItems.filter(
-                                                            (item) =>
-                                                              item.serviceVarientId !==
-                                                              variant.id
-                                                          ) // Remove the item from selectedItems
-                                                        );
-                                                      } else {
-                                                        // If the item does not exist, add it with initial values
-                                                        updateQuantity(
-                                                          variant.id,
-                                                          0
-                                                        );
-                                                        setFieldValue(
-                                                          "selectedItems",
-                                                          [
-                                                            ...values.selectedItems,
-                                                            {
-                                                              quantity: 1,
-                                                              unitAmount:
-                                                                variant.amount ||
-                                                                0,
-                                                              facilityId:
-                                                                facility.id,
-                                                              serviceId:
-                                                                service.id,
-                                                              serviceVarientId:
-                                                                variant.id,
-                                                            },
-                                                          ]
-                                                        );
-                                                      }
-                                                    }}
-                                                    className="bg-gray-300 text-gray-800 w-5 h-5 rounded hover:bg-gray-400"
-                                                  /> */}
+                                              {variant.isPriceFixed ? (
+                                                <div className="flex items-center gap-2 flex-shrink-0">
                                                   <Field
                                                     type="checkbox"
                                                     name="selectedItems"
@@ -512,18 +454,17 @@ export const FacilityServices = () => {
                                                                 service.id,
                                                               serviceVarientId:
                                                                 variant.id,
+                                                              selectedSlots: [],
                                                             },
                                                           ]
                                                         );
                                                       }
                                                     }}
-                                                    className="bg-gray-100 outline-none text-blue-v2 w-4 h-4  rounded hover:bg-gray-200"
+                                                    className="bg-gray-100 outline-none text-blue-v2 w-4 h-4 rounded hover:bg-gray-200"
                                                   />
                                                 </div>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <div className="quantity-controls flex items-center gap-2 p-2 border border-gray-200 rounded justify-center">
+                                              ) : (
+                                                <div className="quantity-controls flex items-center gap-2 flex-shrink-0">
                                                   <button
                                                     type="button"
                                                     onClick={() => {
@@ -531,27 +472,7 @@ export const FacilityServices = () => {
                                                         quantities[
                                                           variant.id
                                                         ] || 0;
-                                                      // if (currentQuantity > 0) {
-                                                      //   updateQuantity(
-                                                      //     variant.id,
-                                                      //     -1
-                                                      //   );
-                                                      //   setFieldValue(
-                                                      //     "selectedItems",
-                                                      //     values.selectedItems.map(
-                                                      //       (item) =>
-                                                      //         item.serviceVarientId ===
-                                                      //         variant.id
-                                                      //           ? {
-                                                      //               ...item,
-                                                      //               quantity:
-                                                      //                 item.quantity -
-                                                      //                 1,
-                                                      //             }
-                                                      //           : item
-                                                      //     )
-                                                      //   );
-                                                      // }
+
                                                       if (currentQuantity > 0) {
                                                         const updatedQuantity =
                                                           currentQuantity - 1;
@@ -563,6 +484,13 @@ export const FacilityServices = () => {
                                                         );
 
                                                         // Remove from selectedItems if quantity is 0
+                                                        const existingItem =
+                                                          values.selectedItems.find(
+                                                            (item) =>
+                                                              item.serviceVarientId ===
+                                                              variant.id
+                                                          );
+
                                                         setFieldValue(
                                                           "selectedItems",
                                                           updatedQuantity === 0
@@ -579,6 +507,9 @@ export const FacilityServices = () => {
                                                                         ...item,
                                                                         quantity:
                                                                           updatedQuantity,
+                                                                        selectedSlots:
+                                                                          existingItem?.selectedSlots ||
+                                                                          [],
                                                                       }
                                                                     : item
                                                               )
@@ -589,11 +520,6 @@ export const FacilityServices = () => {
                                                   >
                                                     -
                                                   </button>
-
-                                                  {/* <span className="text-gray-800 text-center font-medium w-[14px]">
-                                                    {quantities[variant.id] ||
-                                                      0}
-                                                  </span> */}
 
                                                   <input
                                                     type="text"
@@ -639,6 +565,14 @@ export const FacilityServices = () => {
                                                       );
 
                                                       if (newValue > 0) {
+                                                        // Get existing item to preserve selectedSlots
+                                                        const existingItem =
+                                                          values.selectedItems.find(
+                                                            (item) =>
+                                                              item.serviceVarientId ===
+                                                              variant.id
+                                                          );
+
                                                         // Add or update the item in selectedItems
                                                         const newItem = {
                                                           quantity: newValue,
@@ -649,6 +583,9 @@ export const FacilityServices = () => {
                                                           serviceId: service.id,
                                                           serviceVarientId:
                                                             variant.id,
+                                                          selectedSlots:
+                                                            existingItem?.selectedSlots ||
+                                                            [],
                                                         };
 
                                                         const updatedItems =
@@ -688,6 +625,14 @@ export const FacilityServices = () => {
                                                         0) >= service.limit // Check against limit only if it's not "No Limit"
                                                     }
                                                     onClick={() => {
+                                                      // Get existing item to preserve selectedSlots
+                                                      const existingItem =
+                                                        values.selectedItems.find(
+                                                          (item) =>
+                                                            item.serviceVarientId ===
+                                                            variant.id
+                                                        );
+
                                                       const newItem = {
                                                         quantity:
                                                           (quantities[
@@ -699,6 +644,9 @@ export const FacilityServices = () => {
                                                         serviceId: service.id,
                                                         serviceVarientId:
                                                           variant.id,
+                                                        selectedSlots:
+                                                          existingItem?.selectedSlots ||
+                                                          [],
                                                       };
 
                                                       updateQuantity(
@@ -732,7 +680,116 @@ export const FacilityServices = () => {
                                                     +
                                                   </button>
                                                 </div>
-                                              </>
+                                              )}
+                                              <p className="text-gray-800 font-semibold flex-shrink-0">
+                                                {formatToCurrency(
+                                                  variant.amount
+                                                )}
+                                              </p>
+                                            </div>
+                                            {!variant.isPriceFixed && (
+                                              <div className="text-black">
+                                                <h1 className="text-sm font-semibold px-2 mb-2 text-gray-800">
+                                                  Slots
+                                                </h1>
+                                                <div className="flex flex-wrap gap-2 p-2">
+                                                  {variant.slots.map((slot) => {
+                                                    const currentItem =
+                                                      values.selectedItems.find(
+                                                        (item) =>
+                                                          item.serviceVarientId ===
+                                                          variant.id
+                                                      );
+                                                    const itemSlots =
+                                                      currentItem?.selectedSlots ||
+                                                      [];
+                                                    const isSelected =
+                                                      itemSlots.includes(
+                                                        slot.slotId
+                                                      );
+                                                    const isDisabled =
+                                                      slot.isExpired ||
+                                                      slot.isSuspended ||
+                                                      slot.availableCapacity ===
+                                                        0 ||
+                                                      !currentItem;
+
+                                                    return (
+                                                      <label
+                                                        key={slot.slotId}
+                                                        className={`px-2 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
+                                                          isSelected
+                                                            ? "bg-gradient-to-r from-blue-v1 to-blue-600 text-white shadow-md"
+                                                            : isDisabled
+                                                            ? "bg-gray-100 text-gray-400 shadow-sm"
+                                                            : "bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-300 shadow-sm border border-gray-200"
+                                                        } ${
+                                                          isDisabled
+                                                            ? "opacity-100 cursor-not-allowed"
+                                                            : "cursor-pointer hover:shadow-md"
+                                                        }`}
+                                                      >
+                                                        <input
+                                                          type="radio"
+                                                          name={`slot-${variant.id}`}
+                                                          checked={isSelected}
+                                                          onChange={() => {
+                                                            if (currentItem) {
+                                                              // Set only this slot (radio button behavior - single selection)
+                                                              setFieldValue(
+                                                                "selectedItems",
+                                                                values.selectedItems.map(
+                                                                  (item) =>
+                                                                    item.serviceVarientId ===
+                                                                    variant.id
+                                                                      ? {
+                                                                          ...item,
+                                                                          selectedSlots:
+                                                                            [
+                                                                              slot.slotId,
+                                                                            ],
+                                                                        }
+                                                                      : item
+                                                                )
+                                                              );
+                                                            }
+                                                          }}
+                                                          disabled={isDisabled}
+                                                          className="hidden"
+                                                        />
+                                                        <div className="flex gap-[2px]">
+                                                          <span
+                                                            className={`text-[11px] font-bold ${
+                                                              isSelected
+                                                                ? "text-white"
+                                                                : isDisabled
+                                                                ? "text-gray-400"
+                                                                : "text-blue-v1"
+                                                            }`}
+                                                          >
+                                                            {slot.startTime}
+                                                          </span>
+                                                          <span
+                                                            className={`text-[9px] font-extrabold ${
+                                                              isSelected
+                                                                ? "text-white/90"
+                                                                : isDisabled
+                                                                ? "text-gray-400"
+                                                                : "text-gray-600"
+                                                            }`}
+                                                          >
+                                                            (
+                                                            {
+                                                              slot.availableCapacity
+                                                            }
+                                                            )
+                                                          </span>
+                                                        </div>
+                                                      </label>
+                                                    );
+                                                  })}
+                                                </div>
+                                              </div>
                                             )}
                                           </div>
                                         ))}
@@ -825,7 +882,7 @@ export const FacilityServices = () => {
                               </label>
                             </div>
                             {/* POS Device */}
-                            {role === "ROLE_ZOOPARKADMIN"&& (
+                            {
                               <div className="flex items-center">
                                 <Field
                                   id="pos-radio"
@@ -854,7 +911,7 @@ export const FacilityServices = () => {
                                   Pos Device
                                 </label>
                               </div>
-                            )}
+                            }
                             {/* CASH */}
                             <div className="flex items-center">
                               <Field

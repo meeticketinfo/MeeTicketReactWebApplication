@@ -25,14 +25,14 @@ export const useUnifiedFacilityStore = create((set) => ({
     const LocationId = localStorage.getItem("locationid");
     set({ isFetchAllUnifiedFacilitiesLoading: true });
     try {
-      console.log(API_ENDPOINTS.MASTERS);
+     
 
       const url =
         role === "ROLE_NODALOFFICER"
           ? `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL_BY_ID}?parkId=${LocationId}`
           : `${API_ENDPOINTS.MASTERS.UNIFIED_FACILITY.GET_ALL}`;
       const response = await apiService.get(url);
-      console.log(response);
+     
       set({
         allUnifiedFacilities: response.data,
         isFetchAllUnifiedFacilitiesLoading: false,

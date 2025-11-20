@@ -7,6 +7,7 @@ import { useServiceStore } from "../../store/masters/servicesStore";
 import useAuthStore from "../../store/authStore";
 import { useUnifiedFacilityStore } from "../../store/masters/unifiedFacilityStore";
 import { MdDeleteForever } from "react-icons/md";
+import { useSlotBookingStore } from "../../store/masters/slotBookingStore";
 
 const statusOptions = [
   { value: "active", label: "Active" },
@@ -25,7 +26,7 @@ const daysOfWeek = [
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
-  serviceId: Yup.string().required("Sub Facility is required"),
+  subFacilityId: Yup.string().required("Sub Facility is required"),
   startTime: Yup.string().required("Start Time is required"),
   endTime: Yup.string().required("End Time is required"),
   totalCapacity: Yup.number()
@@ -69,65 +70,84 @@ const SlotCreate = () => {
   const { roleDetails } = useAuthStore();
   const role = roleDetails?.name;
   const { allServices, fetchAllServices } = useServiceStore();
+  const { fetchAllUnifiedFacilities } = useUnifiedFacilityStore();
+  const {
+    saveSlotDetails,
+    isSaveSlotDetailsLoading,
+    isSlotEdit,
+    setIsSlotEdit,
+    setSlotEditDetails,
+    setIsSlotAdd,
+    slotEditDetails,
+  } = useSlotBookingStore();
 
   useEffect(() => {
     fetchAllServices(role);
   }, []);
   const initialValues = {
-    serviceId: "",
-    startTime: "",
-    endTime: "",
-    totalCapacity: null,
-    availableCapacity: null,
-    cutOffTime: null,
-    status: "",
-    description: "",
-    isRecurring: false,
-    recurringStatus: "",
-    recurringStartDate: "",
-    recurringEndDate: "",
-    selectedDays: [],
+    slotId: slotEditDetails.slotId || "",
+    subFacilityId: slotEditDetails.serviceId || "",
+    startTime: slotEditDetails.startTime || null,
+    endTime: slotEditDetails.endTime || null,
+    totalCapacity: slotEditDetails.totalCapacity || null,
+    availableCapacity: slotEditDetails.availableCapacity || null,
+    cutOffTime: slotEditDetails.cutOffTimeMinutes || null,
+    status: (slotEditDetails.status === true ? "active" : "inactive") || "",
+    isRecurring: slotEditDetails.isRecurring || false,
+    recurringStatus:
+      Array.isArray(slotEditDetails?.slotRecurrence) &&
+      slotEditDetails.slotRecurrence[0]?.status
+        ? "active"
+        : "inactive",
+    recurringStartDate: Array.isArray(slotEditDetails?.slotRecurrence)
+      ? slotEditDetails.slotRecurrence[0]?.recurrenceStartDate ?? null
+      : null,
+    recurringEndDate: Array.isArray(slotEditDetails?.slotRecurrence)
+      ? slotEditDetails.slotRecurrence[0]?.recurrenceEndDate ?? null
+      : null,
+    recurringDays: Array.isArray(slotEditDetails?.slotRecurrence)
+      ? slotEditDetails.slotRecurrence[0]?.days ?? []
+      : [],
   };
 
   const onSubmit = async (values, { resetForm }) => {
-    console.log(values);
+    const payload = {
+      slotId: values.slotId,
+      startTime: values.startTime,
+      endTime: values.endTime,
+      totalCapacity: values.totalCapacity,
+      availableCapacity: values.availableCapacity,
+      cutoffTimeforBooking: values.cutOffTime,
+      isRecurring: values.isRecurring,
+      recurrenceStartDate: values.recurringStartDate,
+      recurrenceEndDate: values.recurringEndDate,
+      recurringDays: values.recurringDays,
+      subFacilityId: values.subFacilityId,
+      recurrenceStatus: values.recurringStatus === "active" ? true : false,
+      status: values.status === "active" ? true : false,
+    };
 
-    // const payload = {
-    //   passId: isWalkersPassEdit ? walkersPassEditDetails.passId : "",
-    //   subfacility: values.serviceId,
-    //   actualName: values.name,
-    //   amount: values.amount,
-    //   isPersonBased: values.isPriceFixed,
-    //   passType: values.validityUnit,
-    //   minimumAge: values.MinimumAge,
-    //   maximumAge: values.MaximumAge,
-    //   status: values.isActive,
-    //   sequence: values.serviceVarientSequenceNumber,
-    //   description: values.description,
-    // };
-    // try {
-    //   const res = await saveWalkersPass(payload, isWalkersPassEdit);
+    try {
+      const res = await saveSlotDetails(payload, isSlotEdit);
 
-    //   if (res.data.status === 200) {
-    //     toast.success(
-    //       isWalkersPassEdit
-    //         ? "Walkers Park Pass Updated Successfully"
-    //         : "Walkers Park Pass Created Successfully"
-    //     );
-    //     setTimeout(() => {
-    //       setIsWalkersPassAdd(false);
-    //       setCurrentWalkersPassEditDetails({});
-    //       setIsWalkersPassEdit(false);
-    //       resetForm();
-    //       fetchAllUnifiedFacilities(role);
-    //     }, 1000);
-    //   } else {
-    //     toast.error("something went wrong");
-    //   }
-    // } catch (err) {
-    //   console.log("err", err);
-    //   toast.error(err.response.data);
-    // }
+      if (res.data.status === 200) {
+        toast.success(
+          isSlotEdit ? "Slot Updated Successfully" : "Slot Created Successfully"
+        );
+        setTimeout(() => {
+          setIsSlotAdd(false);
+          setSlotEditDetails({});
+          setIsSlotEdit(false);
+          resetForm();
+          fetchAllUnifiedFacilities(role);
+        }, 1000);
+      } else {
+        toast.error("something went wrong");
+      }
+    } catch (err) {
+      console.log("err", err);
+      toast.error(err.response.data);
+    }
   };
 
   return (
@@ -152,12 +172,8 @@ const SlotCreate = () => {
                         </label>
                         <Field
                           as="select"
-                          name="serviceId"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.serviceId && touched.serviceId
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          name="subFacilityId"
+                          className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         >
                           <option value="">Select sub facility</option>
                           {allServices
@@ -169,7 +185,7 @@ const SlotCreate = () => {
                             ))}
                         </Field>
                         <ErrorMessage
-                          name="serviceId"
+                          name="subFacilityId"
                           component="div"
                           className="text-red-500 text-xs"
                         />
@@ -183,11 +199,7 @@ const SlotCreate = () => {
                           name="startTime"
                           type="time"
                           placeholder="-- : --"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.startTime && touched.startTime
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           onChange={(e) => {
                             const startTime = e.target.value;
                             setFieldValue("startTime", startTime);
@@ -229,11 +241,7 @@ const SlotCreate = () => {
                           name="endTime"
                           type="time"
                           placeholder="-- : --"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.endTime && touched.endTime
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         />
                         <ErrorMessage
                           name="endTime"
@@ -250,11 +258,7 @@ const SlotCreate = () => {
                           name="totalCapacity"
                           placeholder="No. of people allowed"
                           type="text"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.totalCapacity && touched.totalCapacity
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           onKeyDown={(e) => {
                             if (
                               !/[0-9]/.test(e.key) &&
@@ -290,12 +294,7 @@ const SlotCreate = () => {
                           name="availableCapacity"
                           placeholder="Enter available capacity"
                           type="text"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.availableCapacity &&
-                            touched.availableCapacity
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           onKeyDown={(e) => {
                             if (
                               !/[0-9]/.test(e.key) &&
@@ -331,11 +330,7 @@ const SlotCreate = () => {
                           name="cutOffTime"
                           placeholder="Enter cut-off time (max 60 Minutes)"
                           type="text"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.cutOffTime && touched.cutOffTime
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           onKeyDown={(e) => {
                             // Allow only numbers and navigation keys
                             if (
@@ -373,11 +368,7 @@ const SlotCreate = () => {
                         <Field
                           as="select"
                           name="status"
-                          className={`mt-1 block w-full px-2 py-1 border ${
-                            errors.status && touched.status
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                          className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                         >
                           <option value="">Select Status</option>
                           {statusOptions.map((option) => (
@@ -417,12 +408,7 @@ const SlotCreate = () => {
                             <Field
                               as="select"
                               name="recurringStatus"
-                              className={`mt-1 block w-full px-2 py-1 border ${
-                                errors.recurringStatus &&
-                                touched.recurringStatus
-                                  ? "border-red-500"
-                                  : "border-gray-300"
-                              } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                             >
                               <option value="">Select Status</option>
                               {statusOptions.map((option) => (
@@ -446,12 +432,7 @@ const SlotCreate = () => {
                               name="recurringStartDate"
                               type="date"
                               placeholder="mm/dd/yyyy"
-                              className={`mt-1 block w-full px-2 py-1 border ${
-                                errors.recurringStartDate &&
-                                touched.recurringStartDate
-                                  ? "border-red-500"
-                                  : "border-gray-300"
-                              } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                             />
                             <ErrorMessage
                               name="recurringStartDate"
@@ -468,12 +449,7 @@ const SlotCreate = () => {
                               name="recurringEndDate"
                               type="date"
                               placeholder="mm/dd/yyyy"
-                              className={`mt-1 block w-full px-2 py-1 border ${
-                                errors.recurringEndDate &&
-                                touched.recurringEndDate
-                                  ? "border-red-500"
-                                  : "border-gray-300"
-                              } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                              className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                             />
                             <ErrorMessage
                               name="recurringEndDate"
@@ -488,9 +464,10 @@ const SlotCreate = () => {
                             </label>
                             <div className="flex gap-4 flex-wrap">
                               {daysOfWeek?.map((day) => {
-                                const fieldName = "selectedDays";
-                                const selectedDays = values.selectedDays || [];
-                                const isChecked = selectedDays.includes(
+                                const fieldName = "recurringDays";
+                                const recurringDays =
+                                  values.recurringDays || [];
+                                const isChecked = recurringDays.includes(
                                   day.value
                                 );
 
@@ -503,7 +480,7 @@ const SlotCreate = () => {
                                       type="checkbox"
                                       checked={isChecked}
                                       onChange={(e) => {
-                                        const currentDays = selectedDays || [];
+                                        const currentDays = recurringDays || [];
                                         let newDays;
                                         if (e.target.checked) {
                                           newDays = [...currentDays, day.value];
@@ -530,14 +507,18 @@ const SlotCreate = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-center p-4">
                 <button
                   type="submit"
                   className="bg-blue-v1 text-base text-white rounded-lg hover:py-[3px] px-3 py-1 hover:bg-gray-100 hover:text-blue-v1 hover:border hover:border-blue-v1 "
                   //   disabled={isSaveWalkrsPassDetailsLoading}
                 >
-                  {false ? "Saving..." : false ? "Update Slot" : "Add Slot"}
+                  {isSaveSlotDetailsLoading
+                    ? "Saving..."
+                    : isSlotEdit
+                    ? "Update Slot"
+                    : "Add Slot"}
                 </button>
               </div>
             </Form>

@@ -426,7 +426,7 @@ export const useBookingsStore = create(
             isGenerate_deep_linkLoading: false,
           });
         }
-      },
+      }, 
       // CHECK POS TSX STATUS
       CheckPosTsxStatus: async (OrderId) => {
         set({ isCheckPosTsxStatusLoading: true });

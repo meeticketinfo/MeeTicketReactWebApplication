@@ -204,11 +204,7 @@ export default function UnifiedCreate() {
               setIsSlotAdd(false);
               setIsSlotEdit(false);
             }}
-            title={
-              isSlotEdit
-                ? "Update Slot"
-                : "Add Slot"
-            }
+            title={isSlotEdit ? "Update Slot" : "Add Slot"}
             size="medium"
             overlayClassName="bg-gray-800 bg-opacity-60"
             contentClassName="bg-white"
