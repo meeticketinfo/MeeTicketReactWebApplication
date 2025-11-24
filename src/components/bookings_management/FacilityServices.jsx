@@ -825,7 +825,7 @@ export const FacilityServices = () => {
                               </label>
                             </div>
                             {/* POS Device */}
-                            {role === "ROLE_ZOOPARKADMIN"&& (
+                            {(role === "ROLE_ZOOPARKADMIN"|| role === "ROLE_COUNTERLOGIN") && (
                               <div className="flex items-center">
                                 <Field
                                   id="pos-radio"

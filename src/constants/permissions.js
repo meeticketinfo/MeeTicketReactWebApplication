@@ -74,6 +74,7 @@ export const BotanicalGardenParkAdminPermissions = [
   "entity-bookings",
   "completed-bookings",
   "payment-transaction-report",
+  "book-tickets",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
