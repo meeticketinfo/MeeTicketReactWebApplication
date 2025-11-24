@@ -272,10 +272,12 @@ const SlotCreate = () => {
                           }}
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, "");
-                            setFieldValue(
-                              "totalCapacity",
-                              value === "" ? null : Number(value)
-                            );
+                            const numValue = value === "" ? null : Number(value);
+                            setFieldValue("totalCapacity", numValue);
+                            // If availableCapacity exceeds new totalCapacity, adjust it
+                            if (numValue !== null && values.availableCapacity && values.availableCapacity > numValue) {
+                              setFieldValue("availableCapacity", numValue);
+                            }
                           }}
                         />
                         <ErrorMessage
@@ -294,6 +296,7 @@ const SlotCreate = () => {
                           name="availableCapacity"
                           placeholder="Enter available capacity"
                           type="text"
+                          
                           className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                           onKeyDown={(e) => {
                             if (
@@ -308,10 +311,12 @@ const SlotCreate = () => {
                           }}
                           onChange={(e) => {
                             const value = e.target.value.replace(/[^0-9]/g, "");
-                            setFieldValue(
-                              "availableCapacity",
-                              value === "" ? null : Number(value)
-                            );
+                            const numValue = value === "" ? null : Number(value);
+                            // Prevent setting availableCapacity greater than totalCapacity
+                            if (numValue !== null && values.totalCapacity && numValue > values.totalCapacity) {
+                              return;
+                            }
+                            setFieldValue("availableCapacity", numValue);
                           }}
                         />
                         <ErrorMessage

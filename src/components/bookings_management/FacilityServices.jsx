@@ -311,7 +311,7 @@ export const FacilityServices = () => {
               }}
             >
               {({ values, setFieldValue, isSubmitting, errors, touched }) => (
-                <Form className="facility-container space-y-6 px-4 lg:px-0">
+                <Form className="facility-container space-y-3 px-4 lg:px-0">
                   {allFacilities
                     ?.filter((facility) =>
                       allServices.some(
@@ -325,19 +325,19 @@ export const FacilityServices = () => {
                           key={facility.id}
                           className="facility backdrop-blur-sm bg-white/30 border border-blue-v1 p-2 rounded-md shadow-md text-white cursor-pointer"
                         >
-                          <div className="bg-white p-3 rounded-lg">
+                          <div className="bg-white px-1  rounded-lg">
                             <div
                               className="flex justify-between"
                               onClick={() => toggleItem(facility.id)}
                             >
-                              <h4 className="text-1xl font-bold text-blue-v1 cursor-pointer">
+                              <h4 className=" font-bold text-blue-v1 cursor-pointer">
                                 {toTitleCase(facility.displayName) ||
                                   toTitleCase(facility.name)}
                               </h4>
                             </div>
                             {/* <p className="text-sm opacity-80">{facility.description}</p> */}
 
-                            <div className="services-container space-y-4 mt-4">
+                            <div className="services-container space-y-4 mt-1">
                               {allServices
                                 ?.filter((service) => service.isActive)
                                 ?.filter(
@@ -347,7 +347,7 @@ export const FacilityServices = () => {
                                 .map((service) => (
                                   <div
                                     key={service.id}
-                                    className="service bg-gray-200 border- border-blue-v2 p-2 rounded-md text-white"
+                                    className="service bg-gray-200 border- border-blue-v2 px-2 py-1 rounded-md text-white"
                                   >
                                     <div className="flex justify-between">
                                       <h6 className="text-1xl text-blue-v1 font-semibold">
@@ -371,7 +371,7 @@ export const FacilityServices = () => {
                                         </span>
                                       )}
                                     </div>
-                                    <div className="service-variant-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 mt-3">
+                                    <div className="service-variant-container w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
                                       {allServiceVariants
                                         ?.filter(
                                           (serviceVariant) =>
@@ -386,7 +386,7 @@ export const FacilityServices = () => {
                                             key={variant.id}
                                             className="service-variant bg-white rounded-md shadow-md border border-blue-v2 flex flex-col gap-0 min-w-0"
                                           >
-                                            <div className="flex items-center gap-3 p-2">
+                                            <div className="flex items-center gap-3 p-2 overflow-auto">
                                               <h6 className="text-sm font-medium text-[#0c3771] whitespace-nowrap">
                                                 {toTitleCase(variant.name) ||
                                                   toTitleCase(
@@ -454,7 +454,7 @@ export const FacilityServices = () => {
                                                                 service.id,
                                                               serviceVarientId:
                                                                 variant.id,
-                                                              selectedSlots: [],
+                                                              selectedSlots: null,
                                                             },
                                                           ]
                                                         );
@@ -509,7 +509,7 @@ export const FacilityServices = () => {
                                                                           updatedQuantity,
                                                                         selectedSlots:
                                                                           existingItem?.selectedSlots ||
-                                                                          [],
+                                                                          null,
                                                                       }
                                                                     : item
                                                               )
@@ -519,8 +519,7 @@ export const FacilityServices = () => {
                                                     className="bg-gray-300 text-gray-800 px-2 rounded hover:bg-gray-400"
                                                   >
                                                     -
-                                                  </button>
-
+                                                  </button>                                                 
                                                   <input
                                                     type="text"
                                                     className="text-blue-v2 p-1  text-center font-medium w-[80px] border border-blue-v2  rounded-md placeholder:text-blue-v2"
@@ -585,7 +584,7 @@ export const FacilityServices = () => {
                                                             variant.id,
                                                           selectedSlots:
                                                             existingItem?.selectedSlots ||
-                                                            [],
+                                                            null,
                                                         };
 
                                                         const updatedItems =
@@ -646,7 +645,7 @@ export const FacilityServices = () => {
                                                           variant.id,
                                                         selectedSlots:
                                                           existingItem?.selectedSlots ||
-                                                          [],
+                                                          null,
                                                       };
 
                                                       updateQuantity(
@@ -687,9 +686,9 @@ export const FacilityServices = () => {
                                                 )}
                                               </p>
                                             </div>
-                                            {!variant.isPriceFixed && (
+                                            {(!variant.isPriceFixed&&variant.slots.length>0) && (
                                               <div className="text-black">
-                                                <h1 className="text-sm font-semibold px-2 mb-2 text-gray-800">
+                                                <h1 className="text-sm font-semibold px-2  text-gray-800">
                                                   Slots
                                                 </h1>
                                                 <div className="flex flex-wrap gap-2 p-2">
@@ -700,13 +699,10 @@ export const FacilityServices = () => {
                                                           item.serviceVarientId ===
                                                           variant.id
                                                       );
-                                                    const itemSlots =
-                                                      currentItem?.selectedSlots ||
-                                                      [];
+                                                    const selectedSlotId =
+                                                      currentItem?.selectedSlots || null;
                                                     const isSelected =
-                                                      itemSlots.includes(
-                                                        slot.slotId
-                                                      );
+                                                      selectedSlotId === slot.slotId;
                                                     const isDisabled =
                                                       slot.isExpired ||
                                                       slot.isSuspended ||
@@ -717,12 +713,12 @@ export const FacilityServices = () => {
                                                     return (
                                                       <label
                                                         key={slot.slotId}
-                                                        className={`px-2 py-1.5 rounded-md text-xs font-semibold transition-all duration-200 ${
+                                                        className={`px-1 py-1 rounded-md text-xs font-semibold transition-all duration-200 ${
                                                           isSelected
                                                             ? "bg-gradient-to-r from-blue-v1 to-blue-600 text-white shadow-md"
                                                             : isDisabled
                                                             ? "bg-gray-100 text-gray-400 shadow-sm"
-                                                            : "bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-300 shadow-sm border border-gray-200"
+                                                            : "bg-blue-50 text-gray-700 shadow-md  border-[1px] "
                                                         } ${
                                                           isDisabled
                                                             ? "opacity-100 cursor-not-allowed"
@@ -745,9 +741,7 @@ export const FacilityServices = () => {
                                                                       ? {
                                                                           ...item,
                                                                           selectedSlots:
-                                                                            [
-                                                                              slot.slotId,
-                                                                            ],
+                                                                            slot.slotId,
                                                                         }
                                                                       : item
                                                                 )
@@ -759,7 +753,7 @@ export const FacilityServices = () => {
                                                         />
                                                         <div className="flex gap-[2px]">
                                                           <span
-                                                            className={`text-[11px] font-bold ${
+                                                            className={`text-[11px] font-semibold ${
                                                               isSelected
                                                                 ? "text-white"
                                                                 : isDisabled
@@ -770,7 +764,7 @@ export const FacilityServices = () => {
                                                             {slot.startTime}
                                                           </span>
                                                           <span
-                                                            className={`text-[9px] font-extrabold ${
+                                                            className={`text-[9px] font-extrabold text-blue-v1 ${
                                                               isSelected
                                                                 ? "text-white/90"
                                                                 : isDisabled
@@ -820,23 +814,47 @@ export const FacilityServices = () => {
                             (varnt) => varnt.id === item.serviceVarientId
                           );
 
+                          // Get selected slot details
+                          const selectedSlot = item.selectedSlots
+                            ? variant?.slots?.find(
+                                (slot) => slot.slotId === item.selectedSlots
+                              )
+                            : null;
+
                           return (
                             <li
                               key={index}
-                              className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm"
+                              className="flex justify-between items-start bg-white p-3 rounded-lg shadow-sm"
                             >
-                              <div>
+                              <div className="flex-1">
                                 <p className="text-sm font-semibold text-blue-v1">
                                   Facility: {toTitleCase(facility?.name || "")}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                  Service: {toTitleCase(service?.name || "")}
+                                Sub Facility: {toTitleCase(service?.name || "")}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                  Variant: {toTitleCase(variant?.name || "")}
+                                  Ticket Type: {toTitleCase(variant?.name || "")}
                                 </p>
+                                {selectedSlot && (
+                                  <div className="mt-1 flex items-center gap-2">
+                                    <p className="text-sm text-gray-700 ">
+                                      Selected Slot:
+                                    </p>
+                                    <span
+                                      className="px-1 py-[2px] bg-blue-50 text-blue-v1 rounded-md text-xs font-semibold"
+                                    >
+                                      {selectedSlot.startTime} 
+                                      {/* {selectedSlot.availableCapacity !== undefined && (
+                                        <span className="text-gray-600 ml-1">
+                                          ({selectedSlot.availableCapacity} available)
+                                        </span>
+                                      )} */}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                              <div>
+                              <div className="ml-4">
                                 <p className="text-sm text-gray-700">
                                   Quantity: {item.quantity}
                                 </p>
