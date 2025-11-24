@@ -824,7 +824,12 @@ function AdminDashboard() {
                       <img
                         src={services.service[0].serviceImage}
                         // src={img}
-                        className="text-3xl font-bold text-white dark:text-gray-100  w-8"
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        }}
+                        alt={services.service[0]?.serviceName || "Service"}
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
@@ -881,7 +886,12 @@ function AdminDashboard() {
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
                       <img
                         src={service.serviceImage}
-                        className="text-3xl font-bold text-white dark:text-gray-100 w-8"
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        }}
+                        alt={service?.serviceName || "Service"}
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
