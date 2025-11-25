@@ -12,13 +12,14 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     fetchAmrabadPosReportData,
     fetchAmrabadPosVehicleTypesData,
     AmrabadPosVehicleTypesData,
-    AmrabadPosUsersData,
-    isFetchAmrabadPosUsersData,
-    fetchAmrabadPosUsersData,
+    fetchAmrabadPosViewPointsData,
+    AmrabadPosViewPointsData,
+    isFetchAmrabadPosViewPointsData,
   } = useAmrabadPosStore();
   useEffect(() => {
-    fetchAmrabadPosUsersData();
+  
     fetchAmrabadPosVehicleTypesData();
+    fetchAmrabadPosViewPointsData();
   }, []);
 
   const getCurrentDateAtMidnight = () => {
@@ -127,10 +128,10 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
             >
               <option value="">
                 {" "}
-                {isFetchAmrabadPosUsersData ? "Loading..." : "All"}
+                {isFetchAmrabadPosViewPointsData ? "Loading..." : "All"}
               </option>
-              {AmrabadPosUsersData?.map((item) => (
-                <option value={item.userName}>{item.username}</option>
+              {AmrabadPosViewPointsData?.map((item) => (
+                <option value={item.viewPointName}>{item.viewPointName}</option>
               ))}
             </Field>
           </div>

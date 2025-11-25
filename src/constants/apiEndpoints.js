@@ -167,7 +167,7 @@ export const API_ENDPOINTS = {
     POS_USER: {
       ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
       UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
-      GET_POS_USERS: `${API_BASE_URL}v3/Parking/GetViewPoints`,
+      GET_POS_VIEW_POINTS: `${API_BASE_URL}v3/Parking/GetViewPoints`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,

@@ -87,4 +87,32 @@ export const useAmrabadPosStore = create((set) => ({
       });
     }
   },
+
+  //   POS VIEW POINTS
+   // Intercity ticket view
+   AmrabadPosViewPointsData: [],
+   isFetchAmrabadPosViewPointsData: false,
+   fetchAmrabadPosViewPointsData: async () => {
+    set({ isFetchAmrabadPosViewPointsData: true });
+    try {
+      const method = "get";
+      const response = await apiService[method](
+        `${API_ENDPOINTS.MASTERS.POS_USER.GET_POS_VIEW_POINTS}`
+      );
+      set({
+        AmrabadPosViewPointsData: response.data,
+      });
+      return { response: response.data };
+    } catch (error) {
+      toast.error(error.message);
+      set({
+        error: error.message,
+        AmrabadPosViewPointsData: [],
+      });
+    } finally {
+      set({
+        isFetchAmrabadPosViewPointsData: false,
+      });
+    }
+  },
 }));

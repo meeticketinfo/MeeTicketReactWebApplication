@@ -119,7 +119,7 @@ const AmrabadPosReportList = () => {
     {
       field: "location",
       headerName: "Location",
-      
+      maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),

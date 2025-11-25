@@ -228,7 +228,7 @@ export const useDashboardStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchZooDashboardLoading: false, allZooDashboard: [] });
-      toast.error(error.message);
+      // toast.error(error.message);
     }
   },
   fetchAllZooDashBoardCountsTicketWise: async ({
