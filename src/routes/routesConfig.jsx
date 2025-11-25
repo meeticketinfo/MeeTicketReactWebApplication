@@ -198,6 +198,7 @@ import AmrabadPrivacyPolicy from "../pages/amrabad/user/information/AmrabadPriva
 import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
+import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 
 export const routes = [
   {
@@ -614,6 +615,10 @@ export const routes = [
   {
     path: "/bus-pass-refund-inner-report",
     element: <ProtectedRoute element={<BusPassRefundTransactionsReport />} />,
+  },
+  {
+    path: "/bus-pass-payment-gateway-report",
+    element: <ProtectedRoute element={<PaymentGatewayReport />} />,
   },
   {
     path: "/bus-pass-view-pass",
