@@ -33,6 +33,7 @@ export const superAdminPermissions = [
   "metro-user-detailed-report",
   "metro-refund-transactions",
   "monthly-reports",
+  "pos-reports",
 ];
 
 // department
@@ -66,6 +67,7 @@ export const parkAdminPermissions = [
   "Grievance-Incident",
   // "Grievance-individual",
   // "pos-admin"
+  "pos-reports",
 ];
 export const BotanicalGardenParkAdminPermissions = [
   "dashboard",
@@ -92,6 +94,7 @@ export const CustomParkAdminPermissions = [
   "facility-bookings",
   "application-day-wise-bookings",
   "day-wise-bookings",
+  "pos-reports",
 ];
 
 export const nodalOfficerPermissions = [
@@ -171,5 +174,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
-  "amrabad-pos-reports",
+  "pos-reports",
 ];

@@ -29,7 +29,6 @@ function PaymentTransactionReport() {
   // console.log("reGenerateData", reGenerateData);
   const [verifyData, setVerifyData] = useState("");
   const [ReGenerateOrderId, setReGenerateOrderId] = useState("");
-  const [ReGeneratePosOrderId, setReGeneratePosOrderId] = useState("");
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [isBookingDate, setIsBookingDate] = useState(false);
   const {
@@ -312,12 +311,12 @@ function PaymentTransactionReport() {
 
     const WithTransactionId = {
       ...requestData,
-      TransactionId: requestData.TransactionId || ReGenerateOrderId, // Only set if it doesn't exist
+      TransactionId: requestData?.TransactionId || ReGenerateOrderId, // Only set if it doesn't exist
     };
 
     const WithPosId = {
       ...requestData,
-      posOrderId: requestData.posOrderId || ReGenerateOrderId, // Only set if it doesn't exist
+      posOrderId: requestData?.posOrderId || ReGenerateOrderId, // Only set if it doesn't exist
     };
 
     const Finaldata = isUpi ? WithTransactionId : WithPosId;
