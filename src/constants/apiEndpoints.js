@@ -377,6 +377,7 @@ export const API_ENDPOINTS = {
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_ALL_DEPARTMENT_BOOKINGS: `${API_BASE_URL}DashBoard/GetEnitywisedashBoardCount`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
+    GET_VIEW_POINTS_COUNTS: `${API_BASE_URL}v3/Parking/GetDashboardForPos`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
