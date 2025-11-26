@@ -63,8 +63,10 @@ const BusPassBookingReportList = () => {
   useEffect(() => {
     fetchAllBusPasses();
     fetchRtcBusPassBookingData({
-      fromDate: savedFilters?.fromDate || "",
-      toDate: savedFilters?.toDate || "",
+      fromDate: savedFilters?.fromDate
+        ? savedFilters.fromDate
+        : getCurrentDate(),
+      toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       transactionId: savedFilters?.transactionId
         ? savedFilters.transactionId
@@ -139,8 +141,10 @@ const BusPassBookingReportList = () => {
     } finally {
       setTimeout(() => {
         fetchRtcBusPassBookingData({
-          fromDate: savedFilters?.fromDate || "",
-          toDate: savedFilters?.toDate || "",
+          fromDate: savedFilters?.fromDate
+            ? savedFilters.fromDate
+            : getCurrentDate(),
+          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
           mobileNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",
@@ -220,8 +224,10 @@ const BusPassBookingReportList = () => {
       });
     } finally {
       fetchRtcBusPassBookingData({
-        fromDate: savedFilters?.fromDate || "",
-        toDate: savedFilters?.toDate || "",
+        fromDate: savedFilters?.fromDate
+          ? savedFilters.fromDate
+          : getCurrentDate(),
+        toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
         mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
         transactionId: savedFilters?.transactionId
           ? savedFilters.transactionId
@@ -242,6 +248,7 @@ const BusPassBookingReportList = () => {
   const handleRegenerateTicket = async () => {
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
+      console.log("API Response:", res);
       setOpenRegenerateTicketModal(false);
       if (res.response?.status === 200) {
         const resultMsg = res.response?.messageType;
@@ -261,11 +268,32 @@ const BusPassBookingReportList = () => {
           width: "360px",
           showConfirmButton: false,
         });
+      } else if (res.response?.Status === 400 || res.response?.status === 400) {
+        // Handle error response with Status 400
+        const errorMessage = res.response?.Message || res.response?.message || res.response?.data?.message || "An error occurred while regenerating the ticket.";
+        const messageType = res.response?.MessageType || res.response?.messageType;
+        
+        setOpenRegenerateTicketModal(false);
+        Swal.fire({
+          title: messageType === "BUSINESS_RULE_VIOLATION" ? "Business Rule Violation" : "Error",
+          html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+              ${errorMessage}
+            </div>`,
+          icon: messageType === "BUSINESS_RULE_VIOLATION" ? "warning" : "error",
+          width: "400px",
+          customClass: {
+            popup: "custom-swal-popup",
+            confirmButton: "swal-custom-btn",
+            icon: "small-swal-icon",
+          },
+          confirmButtonText: "OK",
+          background: "#ffffff",
+        });
       } else {
         setOpenRegenerateTicketModal(false);
         Swal.fire({
           html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
-              ${res.response?.data?.message}
+              ${res.response?.data?.message || res.response?.Message || res.response?.message || "An error occurred while regenerating the ticket."}
             </div>`,
           icon: "info",
           width: "360px",
@@ -281,18 +309,34 @@ const BusPassBookingReportList = () => {
     } catch (err) {
       console.error("Error during regenerate ticket:", err);
       setOpenRegenerateTicketModal(false);
+      
+      // Check if error response has the structure with Message field
+      const errorMessage = err?.response?.data?.Message || err?.response?.data?.message || err?.message || "Regenerate ticket failed. Please try again.";
+      const messageType = err?.response?.data?.MessageType || err?.response?.data?.messageType;
+      
       Swal.fire({
-        title: "Failed!",
-        text: `Regenerate ticket failed. Please try again.`,
-        icon: "error",
+        title: messageType === "BUSINESS_RULE_VIOLATION" ? "Business Rule Violation" : "Failed!",
+        html: `<div style="font-size: 15px; color: #4B5563; padding-top: 5px;">
+            ${errorMessage}
+          </div>`,
+        icon: messageType === "BUSINESS_RULE_VIOLATION" ? "warning" : "error",
+        width: "400px",
+        customClass: {
+          popup: "custom-swal-popup",
+          confirmButton: "swal-custom-btn",
+          icon: "small-swal-icon",
+        },
         confirmButtonText: "OK",
+        background: "#ffffff",
       });
     } finally {
       setOpenRegenerateTicketModal(false);
       setTimeout(() => {
         fetchRtcBusPassBookingData({
-          fromDate: savedFilters?.fromDate || "",
-          toDate: savedFilters?.toDate || "",
+          fromDate: savedFilters?.fromDate
+            ? savedFilters.fromDate
+            : getCurrentDate(),
+          toDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
           mobileNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",

@@ -516,6 +516,12 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         });
           console.log("response", response);
 
+        // Check for error response (Status: 400 or status: 400)
+        if (response && response.data && (response.data.Status === 400 || response.data.status === 400)) {
+          set({ isFetchRtcGeneratePassData: false });
+          return { response: response.data };
+        }
+
         // Step 3.1: If renewal initiate is successful, call renewal payment response API
         if (response && response.data && response.data.status === 200) {
           try {
@@ -739,6 +745,12 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         response = await apiService.post(endpoint, formData, {
           "Content-Type": "multipart/form-data",
         });
+        
+        // Check for error response (Status: 400 or status: 400)
+        if (response && response.data && (response.data.Status === 400 || response.data.status === 400)) {
+          set({ isFetchRtcGeneratePassData: false });
+          return { response: response.data };
+        }
       }
 
       set({
@@ -967,10 +979,30 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         return { response: response.data };
       }
     } catch (error) {
+      console.error("Error in fetchRtcGeneratePassData:", error);
       set({
         error: error.message,
         RtcGeneratePassData: [],
       });
+      
+      // Return error response if available, otherwise return a formatted error
+      if (error.response && error.response.data) {
+        set({ isFetchRtcGeneratePassData: false });
+        return { response: error.response.data };
+      } else {
+        // Return a formatted error response structure
+        set({ isFetchRtcGeneratePassData: false });
+        return { 
+          response: {
+            Status: 500,
+            status: 500,
+            Message: error.message || "An error occurred while generating the pass.",
+            message: error.message || "An error occurred while generating the pass.",
+            MessageType: "ERROR",
+            messageType: "ERROR"
+          }
+        };
+      }
     } finally {
       set({ isFetchRtcGeneratePassData: false });
     }
