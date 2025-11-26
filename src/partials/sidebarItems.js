@@ -548,11 +548,11 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/amrabad-booking-reports",
       },
-      {
-        title: "POS Reports",
-        icon: TbReportAnalytics,
-        path: "/pos-reports",
-      },
+      // {
+      //   title: "POS Reports",
+      //   icon: TbReportAnalytics,
+      //   path: "/pos-reports",
+      // },
       {
         title: "House Wise Reports",
         icon: RiDashboard3Fill,
