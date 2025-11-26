@@ -44,6 +44,7 @@ const AmrabadTotalReport = () => {
   }, [PAGE_LIMIT, currentPage]);
   const columnDefs = [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
@@ -89,21 +90,23 @@ const AmrabadTotalReport = () => {
       {
       field: "userName",
       headerName: "User name",
-      maxWidth: "120",
+      maxWidth: "150",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "mobileNumber",
       headerName: "Mobile Number",
-      maxWidth: "120",
+      maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "packageName",
       headerName: "Package Name",
-      maxWidth: "140",
+      // maxWidth: "140",
+      // minWidth: "140",
+      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -126,14 +129,14 @@ const AmrabadTotalReport = () => {
     {
       field: "noOfHouses",
       headerName: "No of Houses booked",
-      maxWidth: "120",
+      // maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
       {
       field: "bookingType",
       headerName: "Mode of Booking",
-      maxWidth: "140",
+      // maxWidth: "140",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
@@ -221,7 +224,8 @@ const AmrabadTotalReport = () => {
             currentPage={currentPage}
             showTotalCount={true}
             totalCount={AmrabadTotalTransactionsData[0]?.totalCount}
-            tableHeight={AmrabadTotalTransactionsData.length > 10 ? 550 : 300}
+            tableHeight={(AmrabadTotalTransactionsData.length || 0) > 10 ? 560 : 330
+            }
             SetcurrentPage={setCurrentPage}
           />
         </div>

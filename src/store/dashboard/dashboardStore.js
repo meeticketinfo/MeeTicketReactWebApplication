@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import apiService from "../../services/apiService";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
+import { toast } from "react-toastify";
 
 export const useDashboardStore = create((set) => ({
   allBookings: [],
@@ -80,7 +81,7 @@ export const useDashboardStore = create((set) => ({
       const role = roleDetails?.name;
       // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
       const endpoint =
-        role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"
+        role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"||role === "ROLE_COUNTERLOGIN"
           ? `${API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE}${date}`
           : role === "ROLE_METROADMIN"
           ? `${API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT}${date}`
@@ -226,7 +227,8 @@ export const useDashboardStore = create((set) => ({
         isFetchZooDashboardLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchZooDashboardLoading: false });
+      set({ error: error.message, isFetchZooDashboardLoading: false, allZooDashboard: [] });
+      toast.error(error.message);
     }
   },
   fetchAllZooDashBoardCountsTicketWise: async ({

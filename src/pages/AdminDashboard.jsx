@@ -73,6 +73,8 @@ function AdminDashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [isBookingDate, setIsBookingDate] = useState(false);
   const [isFacilitiesBookingDate, setIsFacilitiesBookingDate] = useState(false);
+  const [activeBookingsTab, setActiveBookingsTab] = useState("graph");
+  const [activeAmountTab, setActiveAmountTab] = useState("graph");
   const {
     allCounts,
     fetchAllDashboardCounts,
@@ -253,7 +255,7 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-    roleDetails?.name === "ROLE_ZOOPARKADMIN"
+    roleDetails?.name === "ROLE_ZOOPARKADMIN"|roleDetails?.name === "ROLE_COUNTERLOGIN"
       ? dashboardCardsCountByRole
       : dashboardCards;
 
@@ -763,7 +765,7 @@ function AdminDashboard() {
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-        roleDetails?.name === "ROLE_ADMIN" ? (
+        roleDetails?.name === "ROLE_ADMIN"||roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">
@@ -833,7 +835,12 @@ function AdminDashboard() {
                       <img
                         src={services.service[0].serviceImage}
                         // src={img}
-                        className="text-3xl font-bold text-white dark:text-gray-100  w-8"
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        }}
+                        alt={services.service[0]?.serviceName || "Service"}
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
@@ -890,7 +897,12 @@ function AdminDashboard() {
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
                       <img
                         src={service.serviceImage}
-                        className="text-3xl font-bold text-white dark:text-gray-100 w-8"
+                        className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                        }}
+                        alt={service?.serviceName || "Service"}
                       />
                     </div>
                     <div className="flex-shrink-0 ml-3">
@@ -925,26 +937,241 @@ function AdminDashboard() {
         {/* PIE CHART */}
         {(roleDetails?.name == "ROLE_SUPERADMIN" ||
           roleDetails?.name == "Role_DeptAdmin") && (
-          <DashboardCard07>
-            <div className="flex flex-col lg:flex-row">
-              <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-                <PieChart
-                  isLoading={isFetchPieChartsLoading}
-                  data={allPieCharts}
-                  title="Total Bookings"
-                  angleKey="entityWiseTotalBookings"
-                />
+          <>
+            {/* Total Bookings Section */}
+            <DashboardCard07>
+              <div className="w-full">
+                <h2 className="text-xl font-bold mb-4">Total Bookings</h2>
+                
+                {/* Tab Navigation */}
+                <div className="flex border-b border-gray-200 mb-4">
+                  <button
+                    onClick={() => setActiveBookingsTab("graph")}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      activeBookingsTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Graph View
+                  </button>
+                  <button
+                    onClick={() => setActiveBookingsTab("list")}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      activeBookingsTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    List View
+                  </button>
+                </div>
+
+                {/* Tab Content */}
+                {activeBookingsTab === "graph" && (
+                  <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
+                    <PieChart
+                      isLoading={isFetchPieChartsLoading}
+                      data={allPieCharts}
+                      title="Total Bookings"
+                      angleKey="entityWiseTotalBookings"
+                    />
+                  </div>
+                )}
+
+                {activeBookingsTab === "list" && (
+                  <div className="relative">
+                    <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <thead className="bg-gray-50 sticky top-0 z-10">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              S.No
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              Location Name
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              Bookings (This Month)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {isFetchPieChartsLoading ? (
+                            <tr>
+                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                <div className="flex justify-center">
+                                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : allPieCharts && allPieCharts.length > 0 ? (
+                            allPieCharts.map((item, index) => (
+                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {index + 1}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {item.entity || 'N/A'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {item.entityWiseTotalBookings ? 
+                                    new Intl.NumberFormat('en-IN').format(item.entityWiseTotalBookings) : '0'
+                                  }
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                No data available
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Sticky Total Row */}
+                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
+                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
+                        <table className="min-w-full">
+                          <tbody>
+                            <tr>
+                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                                {/* Empty S.No column */}
+                              </td>
+                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                                Total
+                              </td>
+                              <td className="py-3 pr-2 md:pr-[74px] text-xs md:text-sm font-semibold text-gray-900">
+                                {new Intl.NumberFormat('en-IN').format(
+                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0)
+                                )}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
-                <PieChart
-                  isLoading={isFetchPieChartsLoading}
-                  data={allPieCharts}
-                  title="Total Amount"
-                  angleKey="entityWiseTotalAmount"
-                />
+            </DashboardCard07>
+
+            {/* Total Amount Section */}
+            <DashboardCard07>
+              <div className="w-full">
+                <h2 className="text-xl font-bold mb-4">Total Amount</h2>
+                
+                {/* Tab Navigation */}
+                <div className="flex border-b border-gray-200 mb-4">
+                  <button
+                    onClick={() => setActiveAmountTab("graph")}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      activeAmountTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Graph View
+                  </button>
+                  <button
+                    onClick={() => setActiveAmountTab("list")}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      activeAmountTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    List View
+                  </button>
+                </div>
+
+                {/* Tab Content */}
+                {activeAmountTab === "graph" && (
+                  <div className="flex-1 m-1 rounded-lg overflow-hidden shadow-md">
+                    <PieChart
+                      isLoading={isFetchPieChartsLoading}
+                      data={allPieCharts}
+                      title="Total Amount"
+                      angleKey="entityWiseTotalAmount"
+                    />
+                  </div>
+                )}
+
+                {activeAmountTab === "list" && (
+                  <div className="relative">
+                    <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                      <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <thead className="bg-gray-50 sticky top-0 z-10">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              S.No
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              Location Name
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
+                              Amount (This Month)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {isFetchPieChartsLoading ? (
+                            <tr>
+                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                <div className="flex justify-center">
+                                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : allPieCharts && allPieCharts.length > 0 ? (
+                            allPieCharts.map((item, index) => (
+                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {index + 1}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {item.entity || 'N/A'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                  {item.entityWiseTotalAmount ? 
+                                    formatToCurrency(item.entityWiseTotalAmount, "INR", "en-IN") : '₹0'
+                                  }
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                No data available
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Sticky Total Row */}
+                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
+                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
+                        <table className="min-w-full">
+                          <tbody>
+                            <tr>
+                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                                {/* Empty S.No column */}
+                              </td>
+                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                                Total
+                              </td>
+                              <td className="py-3 pr-2 md:pr-[17px] text-xs md:text-sm font-semibold text-gray-900">
+                                {formatToCurrency(
+                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0),
+                                  "INR", 
+                                  "en-IN"
+                                )}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-          </DashboardCard07>
+            </DashboardCard07>
+          </>
         )}
         {role === "Role_DeptAdmin" && (
           <DashboardCard07>
@@ -972,3 +1199,4 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+

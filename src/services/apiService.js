@@ -3,18 +3,19 @@ import useAuthStore from "../store/authStore";
 import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // dev
 
-const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+// const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
-// const API_BASE_URL =
-//  "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
+const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    
   },
 });
 
@@ -65,10 +66,10 @@ const apiService = {
 
   uploadFile: (url, file, additionalData = {}, headers = {}) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("employeePhotoDoc", file);
     Object.keys(additionalData).forEach((key) =>
       formData.append(key, additionalData[key])
-    );
+    ); 
 
     return api.post(url, formData, {
       headers: {

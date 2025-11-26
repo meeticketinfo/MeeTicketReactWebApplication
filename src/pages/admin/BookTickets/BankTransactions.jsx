@@ -108,8 +108,8 @@ export default function BankTransactions() {
       headerClass: "text-blue-v2",
     },
     {
-      field: "bookingDate",
-      headerName: "Booking Date",
+      field: "purchaseDate",
+      headerName: "Purchase Date",
        maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
@@ -421,11 +421,11 @@ export default function BankTransactions() {
               <>
                 <button
                   className={`${
-                    params.data.status !== "Not Settled"
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-blue-v2"
+                    params.data.status === "No Settlement" || params.data.status === "Not Settled"
+                      ? "bg-blue-v2"
+                      : "bg-gray-300 cursor-not-allowed"
                   } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                  disabled={params.data.status !== "Not Settled"}
+                  disabled={params.data.status !== "No Settlement" && params.data.status !== "Not Settled"}
                   onClick={() => {
                     setVerifyOpenModal(true);
                     setAmount_Date({

@@ -3,8 +3,9 @@ import AgGridTable from "../tables/AgGridTable";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
 import { formatToStandardDate } from "../../utils/TypographyHelper";
-import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
+import { DepartmentAdminStore } from "../../store/masters/departmentAdminStore";
 import { Field, Form, Formik } from "formik";
+import { ToastContainer } from "react-toastify";
 
 const DepartmentAdminList = ({
   setIsNodalOfficerCreateVisible,
@@ -12,15 +13,38 @@ const DepartmentAdminList = ({
   setIsNodalOfficerEditVisible,
 }) => {
   const {
-    allNodalOfficers,
-    isFetchAllNodalOfficersLoading,
-    fetchAllNodalOfficers,
-    setCurrentNodalOfficerEditDetails,
-    fetchAllNodalOfficerParks,
-  } = useNodalOfficerStore();
+    allDepartmentAdmin,
+    isFetchAllDepartmentAdminLoading,
+    fetchAllDepartmentAdmin,
+    setCurrentDepartmentAdminEditDetails,
+  } = DepartmentAdminStore();
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  // Load filters from localStorage on component mount
+  const getStoredFilters = () => {
+    try {
+      const stored = localStorage.getItem('departmentAdminFilters');
+      return stored ? JSON.parse(stored) : { fromDate: "", toDate: "", mobileNumber: "" };
+    } catch (error) {
+      console.error('Error loading filters from localStorage:', error);
+      return { fromDate: "", toDate: "", mobileNumber: "" };
+    }
+  };
 
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+  
   useEffect(() => {
-    fetchAllNodalOfficers();
+    const storedFilters = getStoredFilters();
+    fetchAllDepartmentAdmin({
+      fromDateTime: storedFilters.fromDate || "",
+      toDateTime: storedFilters.toDate || "",
+      mobileNumber: storedFilters.mobileNumber || "",
+      pageSize: 20,
+      PageNumber: 1,
+    });
   }, []);
 
   const columnDefs = [
@@ -31,8 +55,30 @@ const DepartmentAdminList = ({
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
+     {
+      field: "departmentAssigned",
+      headerName: "Department Name",
+      flex: 2,
+      minWidth:365,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <>
+          <div className={"flex items-center justify-start gap-1 "}>
+            {params?.value && params.value.length > 0 ? (
+              params.value.map((item, i) => (
+                <span key={item}>
+                  {item.value} {i < params.value.length - 1 ? " ," : ""}
+                </span>
+              ))
+            ) : (
+              <span className="text-black">N/A</span>
+            )}
+          </div>
+        </>
+      ),
+    },
     {
-      field: "firstName",
+      field: "departmentAdminName",
       headerName: "Officer Name",
       flex: 1,
       headerClass: "text-blue-v2",
@@ -44,58 +90,51 @@ const DepartmentAdminList = ({
       },
     },
     {
-      field: "lastName",
-      headerName: "Department Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
       field: "emailId",
-      headerName: "Email Id",
+      headerName: "Email ID",
       flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "phoneNumber",
+      field: "mobileNumber",
       headerName: "Mobile Number",
+      maxWidth:150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
-      field: "isActive",
+      field: "status",
       headerName: "Status",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <span
-            className={`${
-              params.value
-                ? "bg-green-400 text-white shadow-md"
-                : "bg-red-400 text-white shadow-md"
-            } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-          >
-            {" "}
-            {params.value ? "Active" : "Inactive"}
-          </span>
-        </div>
-      ),
+      maxWidth:100,
+      flex: 1,
       headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <>
+          <div
+            className={`flex   font-semibold gap-2  ${
+              params.value
+                ? "text-green-500  text-shadow-md"
+                : "text-red-400 text-shadow-md"
+            }`}
+          >
+            <span className="">{params.value ? "Active" : "In Active"}</span>
+          </div>
+        </>
+      ),
     },
     {
       headerName: "Actions",
       field: "actions",
+      maxWidth:100,
       cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+        <div style={{ display: "flex align-center", gap: "0.5rem", position: "relative", top: "9px" }}>
           <button
             className="btn-edit"
             onClick={() => {
-              setCurrentNodalOfficerEditDetails(params.data);
+              setCurrentDepartmentAdminEditDetails(params.data);
               setIsNodalOfficerCreateVisible(true);
               setIsNodalOfficerEditVisible(true);
-              if (params.data.id) {
-                fetchAllNodalOfficerParks(null, null, {}, params.data.id);
-              }
             }}
           >
             <span className="">
@@ -108,18 +147,32 @@ const DepartmentAdminList = ({
       headerClass: "text-blue-v2",
     },
   ];
-  const initialValues = {
-    fromDate: "",
-    toDate: "",
-    mobileNumber: "",
-  };
+  const initialValues = getStoredFilters();
   const onSubmit = (values) => {
-    console.log(values);
+    // Save filters to localStorage
+    try {
+      localStorage.setItem('departmentAdminFilters', JSON.stringify(values));
+    } catch (error) {
+      console.error('Error saving filters to localStorage:', error);
+    }
+    
+    fetchAllDepartmentAdmin({
+      fromDateTime: values.fromDate || "",
+      toDateTime: values.toDate || "",
+      mobileNumber: values.mobileNumber || "",
+      pageSize: 100,
+      PageNumber: 1,
+    });
   };
   return (
     <>
       <div>
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+      <ToastContainer />
+        <Formik 
+          initialValues={initialValues} 
+          onSubmit={onSubmit}
+          enableReinitialize={true}
+        >
           {({ values, setFieldValue, setValues }) => (
             <>
               <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-2">
@@ -177,19 +230,48 @@ const DepartmentAdminList = ({
                   >
                     Search
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Clear localStorage
+                      localStorage.removeItem('departmentAdminFilters');
+                      // Reset form values
+                      setValues({ fromDate: "", toDate: "", mobileNumber: "" });
+                      // Fetch with empty filters
+                      fetchAllDepartmentAdmin({
+                        fromDateTime: "",
+                        toDateTime: "",
+                        mobileNumber: "",
+                        pageSize: 100,
+                        PageNumber: 1,
+                      });
+                    }}
+                    className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
+                  >
+                    Reset
+                  </button>
                 </div>
               </Form>
-
-             
             </>
           )}
         </Formik>
       </div>
       <AgGridTable
-        ExportName="Nodal Officer"
-        isFetchLoading={isFetchAllNodalOfficersLoading}
-        rowData={allNodalOfficers}
+        ExportName="Department Admin"
+        isFetchLoading={isFetchAllDepartmentAdminLoading}
+        rowData={allDepartmentAdmin || []}
         columnDefs={columnDefs}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        showTotalCount={true}
+        totalCount={allDepartmentAdmin && allDepartmentAdmin[0]?.totalCount}
+        tableHeight={allDepartmentAdmin?.length > 10 ? 550 : 300}
+        SetcurrentPage={setCurrentPage}
+        showSearch={false}
       />
     </>
   );

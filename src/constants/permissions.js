@@ -6,7 +6,7 @@ export const superAdminPermissions = [
   // "entity-admins",
   // "facility/unified-create",
   "nodal-officer",
-  "department-admin",
+  // "department-admin",
   "entity-bookings",
   "super-admin-facilites",
   "transaction-report",
@@ -65,6 +65,16 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
+  // "pos-admin"
+];
+export const BotanicalGardenParkAdminPermissions = [
+  "dashboard",
+  "bookings",
+  "facility-services",
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
+  "book-tickets",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -130,11 +140,17 @@ export const SupportAdmin = [
 
 export const RtcAdmin = [
   "dashboard",
-  // "day-pass",
-  "ordinary-pass",
-  "mst-pass",
-  "express-pass",
-  "student-pass",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "bus-pass-payment-gateway-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
   // "pending-pass",
 ];
 
@@ -156,4 +172,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
+  "amrabad-pos-reports",
 ];

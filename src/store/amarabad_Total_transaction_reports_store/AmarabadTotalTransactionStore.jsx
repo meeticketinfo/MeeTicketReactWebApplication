@@ -93,7 +93,7 @@ export const useAmarabadTotalTransactionStore = create((set) => ({
 
   fetchTicketNotGeneratedPieChart: async (payload) => {
     set({ isTicketNotGeneratedPieChartLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}`;
+    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&packageId=${payload.package}&roomId=${payload.house}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.AMRABAD_TRANSACTIONS_REPORT.GET_AMRABAD_TICKET_NOT_GENERATED_PIE_CHART}${param}`

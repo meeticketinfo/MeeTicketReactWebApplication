@@ -80,7 +80,7 @@ const AmarabadPckagesNames = () => {
                   </div>
                 </div>
                 <div className="text-xs sm:text-sm text-gray-500 font-medium">
-                  Total Bookings Count
+                 Total Bookings Count
                 </div>
               </div>
 
@@ -151,7 +151,7 @@ const AmarabadPckagesNames = () => {
                     <div className="bg-[#EFF6FF] rounded-lg p-1.5">
                       <div className="flex justify-between items-center">
                         <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                          Total Bookings
+                          Total Users Booked
                         </span>
                         <span className="text-sm sm:text-base font-bold text-black">
                           <CountUp
@@ -168,7 +168,7 @@ const AmarabadPckagesNames = () => {
                     <div className="bg-[#EFF6FF] rounded-lg p-1.5">
                       <div className="flex justify-between items-center">
                         <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                          Total Booking Items
+                          Total Houses Booked
                         </span>
                         <span className="text-sm sm:text-base font-bold text-gray-800">
                           <CountUp
@@ -236,7 +236,7 @@ const AmarabadPckagesNames = () => {
                     <div className="bg-[#EFF6FF] rounded-lg p-1.5">
                       <div className="flex justify-between items-center">
                         <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                          Refund Process Amount
+                          Refund Processed Amount
                         </span>
                         <span className="text-sm sm:text-base font-bold text-gray-600">
                           <CountUp

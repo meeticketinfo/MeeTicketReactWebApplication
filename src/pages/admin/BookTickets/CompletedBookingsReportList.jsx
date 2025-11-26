@@ -265,8 +265,10 @@ function CompletedBookingsReportList() {
         {({ values, setFieldValue, resetForm }) => (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
             <div>
-              <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-              <select 
+              <label className="block text-xs font-medium text-gray-700">
+                Booking/Purchase Date
+              </label>
+              <select
                 onChange={(e) => {
                   setIsBookingDate(e.target.value === "true");
                 }}
@@ -320,9 +322,7 @@ function CompletedBookingsReportList() {
               />
             </div>
             <div>
-              <label
-                className="block text-xs font-medium text-gray-700"
-              >
+              <label className="block text-xs font-medium text-gray-700">
                 Type of Booking
               </label>
               <Select
@@ -578,6 +578,27 @@ function CompletedBookingsReportList() {
                       entityId: null,
                       departmentId: null,
                     },
+                  });
+                  fetchCompleteBookingsReport({
+                    fromDate: savedFilters?.fromDate
+                      ? savedFilters.fromDate
+                      : getCurrentDate(),
+                    toDate: savedFilters?.toDate
+                      ? savedFilters.toDate
+                      : getCurrentDate(),
+                    entityId: savedFilters?.entityId
+                      ? savedFilters.entityId
+                      : null,
+                    departmentId: savedFilters?.departmentId
+                      ? savedFilters.departmentId
+                      : null,
+                    typeOfBooking: savedFilters?.typeOfBooking
+                      ? savedFilters.typeOfBooking
+                      : "",
+                    phoneNumber: savedFilters?.phoneNumber
+                      ? savedFilters.phoneNumber
+                      : null,
+                    parkId: savedFilters?.parkId ? savedFilters.parkId : null,
                   });
                 }}
               >

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import apiService from "../../../../../services/apiService";
 import { API_ENDPOINTS } from "../../../../../constants/apiEndpoints";
-
 export const useBuspassDashboardStore = create((set) => ({
   buspassDashboard: [],
   isFetchBuspassDashboardLoading: false,
@@ -15,7 +14,9 @@ export const useBuspassDashboardStore = create((set) => ({
     set({ buspassDashboard: response.data });
     set({ isFetchBuspassDashboardLoading: false });
   } catch (error) {
+    handleApiError(error);
     set({ error: error.message, isFetchBuspassDashboardLoading: false });
   }
   },
 }));    
+

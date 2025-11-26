@@ -1,55 +1,85 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+// export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+
+//  PARK Prod
+export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
-export const PAYNOW_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/parkapi/";
+// export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
+
+//  paynow Prod
+export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
 
 // metro dev
-// export const METRO_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/metroapi/"; 
+// export const METRO_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
-export const METRO_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+// export const METRO_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+
+// METRO Prod
+export const METRO_API_BASE_URL = "https://meeticket.telangana.gov.in/metrohsmapi/";
+
 // metroapi UAT
-export const METRO_API_Plain_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/metroapi/";
+// export const METRO_API_Plain_BASE_URL = "https://uat.meeticket.telangana.gov.in/metroapi/";
+
+// metroapi Prod
+export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
 // export const GRIEVANCE_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
-export const GRIEVANCE_API_BASE_URL =
-  "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
+// export const GRIEVANCE_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
+
+//  Grievance Prod
+export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
-export const TOURISM_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
+export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
-// export const TOURISM_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
+// export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
-// RTC dev
-export const RTC_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+//  TOURSIM Prod
+// export const TOURISM_API_BASE_URL = "https://meeticket.telangana.gov.in/webservices/v1/";
 
-// METRO PROD
-// export const METRO_API_BASE_URL =
-// "https://uat.meeticket.telangana.gov.in/metroapiv2/";
+// RTC dev// export const RTC_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+
+// RTC UAT
+// export const RTC_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
+// RTC Prod
+export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
+
+//RTC Intercity
+// export const RTC_INTERCITY_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
+
+// RTC Intercity UAT
+// export const RTC_INTERCITY_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcintercity/v1/";
+
+// RTC Intercity Prod
+export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
+
+
+// RTC BUS PASS DEV
+// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
+
+// RTC BUS PASS UAT
+// export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
+// RTC BUS PASS Prod
+export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+
 
 // Amarabad dev
-export const AMRABAD_API_BASE_URL =
-"https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+export const AMRABAD_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
 //  PARK UAT testing
@@ -61,17 +91,16 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
     REFRESH_TOKEN: `${API_BASE_URL}/auth/refresh-token`,
-    AMRABAD:{
-      AMRABAD_REGISTER:`${AMRABAD_API_BASE_URL}Authorization/RegisterOTP`,
-      AMRABAD_REGISTER_OTP:`${AMRABAD_API_BASE_URL}Authorization/ValidateRegisterOTP`,
-      AMRABAD_RESEND_OTP:`${AMRABAD_API_BASE_URL}Authorization/ResendOTP`,
-      AMRABAD_LOGIN:`${AMRABAD_API_BASE_URL}Authorization/AmrabadLogin`,
-      AMRABAD_DECODE_TOKEN:`${AMRABAD_API_BASE_URL}Authentication/GetDecodedToken`,
-      GET_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ForgotPINOTP`,
-      VERIFY_FORGET_PIN_OTP_FROM_MOBILE:`${AMRABAD_API_BASE_URL}Authorization/ValidateForgotPINOTP`,
-      RESET_PIN:`${AMRABAD_API_BASE_URL}Authorization/ResetPIN`,
-     
-    }
+    AMRABAD: {
+      AMRABAD_REGISTER: `${AMRABAD_API_BASE_URL}Authorization/RegisterOTP`,
+      AMRABAD_REGISTER_OTP: `${AMRABAD_API_BASE_URL}Authorization/ValidateRegisterOTP`,
+      AMRABAD_RESEND_OTP: `${AMRABAD_API_BASE_URL}Authorization/ResendOTP`,
+      AMRABAD_LOGIN: `${AMRABAD_API_BASE_URL}Authorization/AmrabadLogin`,
+      AMRABAD_DECODE_TOKEN: `${AMRABAD_API_BASE_URL}Authentication/GetDecodedToken`,
+      GET_FORGET_PIN_OTP_FROM_MOBILE: `${AMRABAD_API_BASE_URL}Authorization/ForgotPINOTP`,
+      VERIFY_FORGET_PIN_OTP_FROM_MOBILE: `${AMRABAD_API_BASE_URL}Authorization/ValidateForgotPINOTP`,
+      RESET_PIN: `${AMRABAD_API_BASE_URL}Authorization/ResetPIN`,
+    },
   },
   MASTERS: {
     PARK: {
@@ -85,6 +114,11 @@ export const API_ENDPOINTS = {
     },
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
+    },
+    DEPARTMENT_ADMIN: {
+      GET_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/GetDepartmentAdmin`,
+      ADD_NEW_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/AddDepartmentAdmin`,
+      UPDATE_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/UpdateDepartmentAdmin`,
     },
     FACILITY: {
       GET_FACILITIES: `v2/Master/GetAllFacilities`,
@@ -129,6 +163,11 @@ export const API_ENDPOINTS = {
       ADD_NEW_GATE_KEEPER: `${API_BASE_URL}Master/AddNewGatekeeper`,
       UPDATE_GATE_KEEPER: `${API_BASE_URL}Master/UpdateGatekeeper`,
       GET_GATE_KEEPERS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e76`,
+    },
+    POS_USER: {
+      ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
+      UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
+      GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
@@ -191,6 +230,9 @@ export const API_ENDPOINTS = {
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
+    BUS_PASS: {
+      GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}BusPassDashboard/GetAllBusPasses`,
+    },
   },
   REPORTS: {
     BOOKING_REPORTS: {
@@ -200,8 +242,8 @@ export const API_ENDPOINTS = {
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
       GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
       POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
-      GET_COMPLETED_ZOO_COUNTER_BOOKINGS:`${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
-      GET_NEHRU_USER_WISE_PAYMENT_DETAILS:`${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
+      GET_COMPLETED_ZOO_COUNTER_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
+      GET_NEHRU_USER_WISE_PAYMENT_DETAILS: `${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
       // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     RTC_BOOKINGS: {
@@ -229,13 +271,57 @@ export const API_ENDPOINTS = {
       PAYMENT_REFRESH: `${PAYNOW_API_BASE_URL}v1/ParkConsolidation/ParkPaymentInquiry`,
     },
     RTC_REPORTS: {
-      GET_DAY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetOneDayPassApplicationDetails`,
-      GET_ORDINARY_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTOrdinaryApplicationDetails`,
-      GET_MTS_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTMstApplicationDetails`,
-      GET_EXPRESS_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTExpressApplicationDetails`,
-      GET_STUDENT_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentApplicationDetails`,
-      GET_PENDING_PASS: `${RTC_API_BASE_URL}RTCDashboard/GetGBTStudentPendingApplicationDetails`,
-      UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}RTCDashboard/updateStudentApplicationStatus`,
+      GET_DAY_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetOneDayPassApplicationDetails`,
+      GET_ORDINARY_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetGBTOrdinaryApplicationDetails`,
+      GET_MTS_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetGBTMstApplicationDetails`,
+      GET_EXPRESS_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetGBTExpressApplicationDetails`,
+      GET_STUDENT_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetGBTStudentApplicationDetails`,
+      GET_PENDING_PASS: `${RTC_API_BASE_URL}BusPassDashboard/GetGBTStudentPendingApplicationDetails`,
+      UPDATE_PASS_STATUS: `${RTC_API_BASE_URL}BusPassDashboard/updateStudentApplicationStatus`,
+      USER_REPORT: {
+        GET_BUSSPASS_USER_OUTER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/UserOuterReport`,
+        GET_BUSSPASS_USER_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/UserInnerReport`,
+      },
+      REFUND_TRANSACTIONS_REPORT: {
+        GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
+        GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
+        GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+      },
+      RTC_TOTAL_TRANSACTIONS_REPORT: {
+        GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionOuterReport`,
+        GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionInnerReport`,
+        GET_RTC_OTHER_REASON_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/FailureDueToOtherReasonsReport`,
+        GET_RTC_GATEWAY_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/FailureFromGatewayReport`,
+        GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/PaymentSuccessButNotGeneratedReport`,
+        GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}BusPassDashboard/TransactionOrderTrackingReport`,
+        GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
+        GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
+        GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}BusPassDashboard/GetBookingDetailsOuterReport`,
+        GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
+        GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_API_BASE_URL}API/GetTicketAndPassDetailsById`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalPaymentResponse`,
+      }
+      ,
+      INTERCITY_REPORTS: {
+        GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/PaymentTransactionsReport`,
+        GET_INTERCITY_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
+        GET_INTERCITY_REGENERATE_TICKET: `${RTC_INTERCITY_API_BASE_URL}Bookings/ConfirmBooking`,
+        GET_INTERCITY_PAYMENT_TRANSACTION_REFUND: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/IntiateRefund`,
+
+        GET_INTERCITY_TOTAL_TRANSACTIONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionOuterReport`,
+        GET_INTERCITY_PAYMENTS_SUCCESS_BUT_TICKET_NOT_GENERATED: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentSuccessButNotGeneratedSubCategoryReport`,
+        GET_INTERCITY_TOTAL_TRANSACTIONS_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTotalTransactionInnerReport`,
+        GET_INTERCITY_PAYMENT_FAILED_GATEWAY: `${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureFromGatewaySubCategoryReport`,
+        GET_INTERCITY_PAYMENT_FAILED_OTHER_REASONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetFailureDueToOtherReasons`,
+        GET_INTERCITY_TICKET_VIEW: `${RTC_INTERCITY_API_BASE_URL}Bookings/TicketPreview`,
+        GET_INTERCITY_INDIVIDUAL_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetIndividualReport`,
+        GET_INTERCITY_CONSOLIDATED_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetConsolidatedReport`,
+        GET_INTERCITY_BUS_TYPES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllInterCityBusTypes`,
+        GET_INTERCITY_SEAT_LAYOUTS: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllSeatLayoutTypes`,
+      },
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,
@@ -250,7 +336,7 @@ export const API_ENDPOINTS = {
       GET_TOURISM_PAYMENT_TRANSACTION_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetInprogressorFailedPaymentTxnResult`,
       GET_TOURISM_BANK_PAYMENT_REPORT: `${TOURISM_API_BASE_URL}TourismReports/GetBankPaymentsReport`,
     },
-      MONTHLY_REPORTS: {
+    MONTHLY_REPORTS: {
       GET_DEPARTMENT_ABSTRACT_REPORT: `${API_BASE_URL}DashBoard/GetDepartmentParkStats`,
       GET_LOCATION_CATEGORY_ABSTRACTREPORT: `${API_BASE_URL}DashBoard/GetEnityCategoryParkStats`,
       GET_DEPARTMENT_WISE_REPORT: `${API_BASE_URL}DashBoard/GetBookingSummaryByDepartmentStats`,
@@ -300,10 +386,12 @@ export const API_ENDPOINTS = {
   GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,
   },
   RTC_DASHBOARD: {
-    GET_OVER_ALL: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardReports`,
-    GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}RTCDashboard/GetAdminDashboardAllPassesInfo`,
-    GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}RTCDashboard/GetPassTransactionDetails`,
-    GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}RTCDashboard/GetAllBusPasses`,
+    GET_OVER_ALL: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardReports`,
+    GET_ALL_PASS_TYPE: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardAllPassesInfo`,
+    GET_ALL_DASHBOARD_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/GetPassTransactionDetails`,
+    GET_ALL_BUSPASSES: `${RTC_API_BASE_URL}BusPassDashboard/GetAllBusPasses`,
+    GET_BUSPASS_DASHBOARD: `${RTC_API_BASE_URL}BusPassDashboard/BusPassDashboard`,
+    GET_INTERCITY_DASHBOARD: `${RTC_INTERCITY_API_BASE_URL}Reports/IntercityDashboard`,
   },
   TOURSIM_DASHBOARD: {
     GET_PACKAGE_CATEGORY_COUNTS: `${TOURISM_API_BASE_URL}TourismReports/GetAllCategories`,
@@ -312,72 +400,75 @@ export const API_ENDPOINTS = {
     GET_TRANSACTIONS_REPORTS: `${TOURISM_API_BASE_URL}TourismReports/GetTransactionsReport`,
   },
 
-  AMRABAD:{
-    MASTERS:{
-       GET_PACKAGES_WITH_ROOMS: `${AMRABAD_API_BASE_URL}Master/GetPackagesWithRooms`,
-       ADD_HOUSE:`${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
-       UPDATE_HOUSE:`${AMRABAD_API_BASE_URL}Master/UpdateRoom`,
-       GET_ALL_PACKAGES:`${AMRABAD_API_BASE_URL}Master/GetAllPackages`,
-       ADD_PACKAGE_WITH_ROOM:`${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
-       UPDATE_PACKAGE:`${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
-       GET_PACKAGES:`${AMRABAD_API_BASE_URL}Reports/GetAllPackages`,
-       GET_HOUSES:`${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
-       GET_COUNTRIES:`${AMRABAD_API_BASE_URL}Master/GetAllCountries`,
-       GET_STATES:`${AMRABAD_API_BASE_URL}Master/GetAllStates`,
+  AMRABAD: {
+    MASTERS: {
+      GET_PACKAGES_WITH_ROOMS: `${AMRABAD_API_BASE_URL}Master/GetPackagesWithRooms`,
+      ADD_HOUSE: `${AMRABAD_API_BASE_URL}Master/AddNewRoom`,
+      UPDATE_HOUSE: `${AMRABAD_API_BASE_URL}Master/UpdateRoom`,
+      GET_ALL_PACKAGES: `${AMRABAD_API_BASE_URL}Master/GetAllPackages`,
+      ADD_PACKAGE_WITH_ROOM: `${AMRABAD_API_BASE_URL}Master/AddPackageWithRoomsAndImages`,
+      UPDATE_PACKAGE: `${AMRABAD_API_BASE_URL}Master/UpdatePackage`,
+      GET_PACKAGES: `${AMRABAD_API_BASE_URL}Reports/GetAllPackages`,
+      GET_HOUSES: `${AMRABAD_API_BASE_URL}Reports/GetAllRoomsByPackageId`,
+      GET_COUNTRIES: `${AMRABAD_API_BASE_URL}Master/GetAllCountries`,
+      GET_STATES: `${AMRABAD_API_BASE_URL}Master/GetAllStates`,
+      GET_POS_USERS: `${AMRABAD_API_BASE_URL}Parking/GetPOSUsers`,
     },
-    REPORTS:{
-    GET_CONSOLIDATED_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
-    GET_INDIVIDUAL_BOOKING_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
-    GET_PAYMENT_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/PaymentTransactionsReport`,
-    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
-    GET_AMRABAD_VERIFY_STATUS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/CheckOrderTransactionStatus`,
-    GET_QR_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
-    GET_USER_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
-    GET_USER_DETAILED_REPORT:`${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
-    GET_TRANSACTION_TRACK_ORDER:`${AMRABAD_API_BASE_URL}Reports/GetTransactionTrackingStatusByOrderId`,
-    //refund transaction report
-    GET_REFUND_TRANSACTION_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
-    GET_REFUND_TRANSACTION_REPORT:`${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
-    GET_INITIATE_REFUND:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
-    AMRABAD_REGENERATE_TICKET:`${AMRABAD_API_BASE_URL}WebBooking/RegenerateTicket`,
-    AMRABAD_BOOKINGS:`${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
-    AMRABAD_HOUSE_WISE_REPORT:`${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
-    AMRABAD_AVAILABILITY_INNER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
-    AMRABAD_AVAILABILITY_OUTER_REPORTS:`${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
-    
-    // Utility endpoints for filter options
-    GET_AMRABAD_PACKAGE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPackageOptions`,
-    GET_AMRABAD_HOUSE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetHouseOptions`,
-    GET_AMRABAD_PAYMENT_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentModeOptions`,
-    GET_AMRABAD_BOOKING_SOURCE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
-    GET_AMRABAD_PAYMENT_STATUS_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
-    GET_AMRABAD_BOOKING_MODE_OPTIONS:`${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
-    },
-    DASHBOARD:{
-      GET_AMRABAD_DASHBOARD:`${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,
-      GET_AMRABAD_DASHBOARD_count:`${AMRABAD_API_BASE_URL}DashBoard/Dashboard`,
-      GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetBookingsSummary`,
-      GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardRoomBookingSummary`,
-      GET_AMRABAD_DASHBOARD_BOOKINGS_FULL_SUMMARY:`${AMRABAD_API_BASE_URL}DashBoard/GetDashboardFullSummary`,
+    REPORTS: {
+      GET_CONSOLIDATED_BOOKING_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetConsolidatedBookingReportResult`,
+      GET_INDIVIDUAL_BOOKING_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetIndividualBookingDaywiseReportResult`,
+      GET_PAYMENT_TRANSACTION_REPORT: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionsReport`,
+      GET_INITIATE_REFUND: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+      GET_AMRABAD_VERIFY_STATUS: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/CheckOrderTransactionStatus`,
+      GET_QR_BOOKING_DETAILS: `${AMRABAD_API_BASE_URL}BookingDetails/GetBookingWithQRDetails`,
+      GET_USER_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetAllUserBookingReport`,
+      GET_USER_DETAILED_REPORT: `${AMRABAD_API_BASE_URL}Reports/GetAllUserDetailedBookingReport`,
+      GET_TRANSACTION_TRACK_ORDER: `${AMRABAD_API_BASE_URL}Reports/GetTransactionTrackingStatusByOrderId`,
+      //refund transaction report
+      GET_REFUND_TRANSACTION_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
+      GET_REFUND_TRANSACTION_REPORT: `${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
+      GET_INITIATE_REFUND: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+      AMRABAD_REGENERATE_TICKET: `${AMRABAD_API_BASE_URL}WebBooking/RegenerateTicket`,
+      AMRABAD_BOOKINGS: `${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
+      AMRABAD_HOUSE_WISE_REPORT: `${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
+      AMRABAD_AVAILABILITY_INNER_REPORTS: `${AMRABAD_API_BASE_URL}Reports/AvailabilityInnerReport`,
+      AMRABAD_AVAILABILITY_OUTER_REPORTS: `${AMRABAD_API_BASE_URL}Reports/GetAvailabilityOuterReport`,
 
+      // Utility endpoints for filter options
+      GET_AMRABAD_PACKAGE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPackageOptions`,
+      GET_AMRABAD_HOUSE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetHouseOptions`,
+      GET_AMRABAD_PAYMENT_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentModeOptions`,
+      GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
+      GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
+      GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
+      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
     },
-    USER:{
-      GET_USER_PACKAGES:`${AMRABAD_API_BASE_URL}WebBooking/GetAllPackages`,
-      GET_ROOMS_BY_PACKAGE_ID:`${AMRABAD_API_BASE_URL}WebBooking/GetAllPackageRoomsByPackageId`,
-      GET_PACKAGE_DETAIL:`${AMRABAD_API_BASE_URL}MobileApplication/GetPackageDetails`,
-      GET_CART_ITEMS:`${AMRABAD_API_BASE_URL}WebBooking/GetAllCartDetails`,
-      GET_CALENDAR:`${AMRABAD_API_BASE_URL}WebBooking/GetCalendar/30days`,
-      GET_USER_BOOKING_HISTORY:`${AMRABAD_API_BASE_URL}WebBooking/GetBookingHistory`,
-      ADD_TO_CART:`${AMRABAD_API_BASE_URL}WebBooking/AddToCart`,
-      REMOVE_FROM_CART:`${AMRABAD_API_BASE_URL}WebBooking/DeleteCartItem`,
-      CLEAR_CART:`${AMRABAD_API_BASE_URL}WebBooking/DeleteAllCartItems`,
-      GET_TICKET_VIEW_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/ViewTicket`,
-      INITIATE_TRANSACTION:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/IntiateTransactionforCard`,
-      ORDER_STATUS_CALL:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/OrderStatusCall`,
-      ADD_NEW_BOOKING_DETAILS:`${AMRABAD_API_BASE_URL}WebBooking/AddNewBookingDetails`,
-      SAVE_CARD_PAYMENT_TRANSACTIONS:`${AMRABAD_API_BASE_URL}v1/PaymentTransaction/SaveCardPaymentTransactions`,
-      CANCEL_TICKET:`${AMRABAD_API_BASE_URL}MobileApplication/CancellationBooking`,
-    }
+    DASHBOARD: {
+      GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,
+      GET_AMRABAD_DASHBOARD_count: `${AMRABAD_API_BASE_URL}DashBoard/Dashboard`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_SUMMARY: `${AMRABAD_API_BASE_URL}DashBoard/GetBookingsSummary`,
+      GET_AMRABAD_DASHBOARD_PACKAGES_BY_ID: `${AMRABAD_API_BASE_URL}DashBoard/GetDashboardRoomBookingSummary`,
+      GET_AMRABAD_DASHBOARD_BOOKINGS_FULL_SUMMARY: `${AMRABAD_API_BASE_URL}DashBoard/GetDashboardFullSummary`,
+    },
+    USER: {
+      GET_USER_PACKAGES: `${AMRABAD_API_BASE_URL}WebBooking/GetAllPackages`,
+      GET_ROOMS_BY_PACKAGE_ID: `${AMRABAD_API_BASE_URL}WebBooking/GetAllPackageRoomsByPackageId`,
+      GET_PACKAGE_DETAIL: `${AMRABAD_API_BASE_URL}MobileApplication/GetPackageDetails`,
+      GET_CART_ITEMS: `${AMRABAD_API_BASE_URL}WebBooking/GetAllCartDetails`,
+      GET_CALENDAR: `${AMRABAD_API_BASE_URL}WebBooking/GetCalendar/30days`,
+      GET_USER_BOOKING_HISTORY: `${AMRABAD_API_BASE_URL}WebBooking/GetBookingHistory`,
+      ADD_TO_CART: `${AMRABAD_API_BASE_URL}WebBooking/AddToCart`,
+      REMOVE_FROM_CART: `${AMRABAD_API_BASE_URL}WebBooking/DeleteCartItem`,
+      CLEAR_CART: `${AMRABAD_API_BASE_URL}WebBooking/DeleteAllCartItems`,
+      GET_TICKET_VIEW_DETAILS: `${AMRABAD_API_BASE_URL}WebBooking/ViewTicket`,
+      INITIATE_TRANSACTION: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/IntiateTransactionforCard`,
+      ORDER_STATUS_CALL: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/OrderStatusCall`,
+      ADD_NEW_BOOKING_DETAILS: `${AMRABAD_API_BASE_URL}WebBooking/AddNewBookingDetails`,
+      SAVE_CARD_PAYMENT_TRANSACTIONS: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/SaveCardPaymentTransactions`,
+      CANCEL_TICKET: `${AMRABAD_API_BASE_URL}MobileApplication/CancellationBooking`,
+      CANCEL_TICKET_WEB: `${AMRABAD_API_BASE_URL}WebBooking/UpdateBookingCancellation`,
+    },
   },
   FAILED_TRANSACTIONS: {
     GET_ALL_PAYMENT_TRANSACTION_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentTransactionPieChartData`,
@@ -393,7 +484,7 @@ export const API_ENDPOINTS = {
     GET_TICKET_NOT_GENERATED_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
 
     GET_PAYMENT_FAILED_GATEWAY_TRANSACTION_SUMMARY_PIE_CHART: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureFromGateway_SubCategoryReportResult`,
-    
+
     INITIATE_REFUND: `${API_BASE_URL}Transaction/InitiateParkRefund`,
   },
   METRO_TRANSACTIONS_REPORT: {
@@ -402,21 +493,36 @@ export const API_ENDPOINTS = {
     GET_OTHER_REASON_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureDueToOtherReasons_SubCategoryReportResult`,
     GET_GATEWAY_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetFailureFromGateway_SubCategoryReportResult`,
     GET_TICKET_NOT_GENERATED_PIE_CHART: `${METRO_API_BASE_URL}v1/MetroReport/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
-    METRO_USER_TRANSACTIONS_REPORT:{
-    GET_METRO_USER_REPORT:`${METRO_API_BASE_URL}v1/BookingDetails/GetAllUsers`,
-    GET_USER_TRANSACTION_DETAILS:`${METRO_API_BASE_URL}v1/MetroReport/GetUserTransactionDetails`,
-    GET_METRO_TRANSACTION_TRACKING_STATUS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroTransactionTrackingStatusByOrderId`,
-    GET_METRO_REFUND_TRANSACTIONS_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundSummaryOuterReport`,
-    GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
-    }
+    METRO_USER_TRANSACTIONS_REPORT: {
+      GET_METRO_USER_REPORT: `${METRO_API_BASE_URL}v1/BookingDetails/GetAllUsers`,
+      GET_USER_TRANSACTION_DETAILS: `${METRO_API_BASE_URL}v1/MetroReport/GetUserTransactionDetails`,
+      GET_METRO_TRANSACTION_TRACKING_STATUS: `${METRO_API_BASE_URL}v1/MetroReport/GetMetroTransactionTrackingStatusByOrderId`,
+      GET_METRO_REFUND_TRANSACTIONS_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundSummaryOuterReport`,
+      GET_METRO_REFUND_TRANSACTIONS_INNER_REPORT: `${METRO_API_BASE_URL}v1/MetroReport/GetParkRefundInnerReport`,
+    },
   },
-  AMRABAD_TRANSACTIONS_REPORT:{
+  AMRABAD_TRANSACTIONS_REPORT: {
     GET_AMRABAD_TRANSACTIONS_BY_REASON: `${AMRABAD_API_BASE_URL}Reports/PaymentTransactionSummaryByFailureDetail`,
     GET_AMRABAD_GATEWAY_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureFromGateway_SubCategoryReportResult`,
     GET_AMRABAD_TICKET_NOT_GENERATED_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetPaymentSuccessButNotGenerated_SubCategoryReportResult`,
     GET_AMRABAD_OTHER_REASON_PIE_CHART: `${AMRABAD_API_BASE_URL}Reports/GetFailureDueToOtherReasons_SubCategoryReportResult`,
-    
+
     //total transaction report
-    GET_AMRABAD_TOTAL_TRANSACTION_STATUS:`${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
-  }
+    GET_AMRABAD_TOTAL_TRANSACTION_STATUS: `${AMRABAD_API_BASE_URL}Reports/GetPaymentTransactionDetailsByStatus`,
+  },
+  INTERCITY: {
+    MASTERS: {
+      GET_DESTINATION_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllCities`,
+    },
+    REPORTS: {
+      GET_REFUND_TRANSACTION_DASHBOARD: `${RTC_INTERCITY_API_BASE_URL}Reports/RefundDashboard`,
+      GET_REFUND_TRANSACTION_INNER_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/RefundInnerReport`,
+      //user report
+      GET_USER_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetUserOuterReport`,
+      GET_USER_DETAILED_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetUserInnerReport`,
+      GET_USER_REPORT_TRACK_ORDER: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionTrackingStatus`,
+      // payment transactions
+      GET_PAYMENT_TRANSACTION_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionsReport`,
+    },
+  },
 };
