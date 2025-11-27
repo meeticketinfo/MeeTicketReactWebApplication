@@ -167,7 +167,7 @@ export const API_ENDPOINTS = {
     POS_USER: {
       ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
       UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
-      GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
+      GET_POS_VIEW_POINTS: `${API_BASE_URL}v3/Parking/GetViewPoints`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
@@ -377,6 +377,7 @@ export const API_ENDPOINTS = {
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_ALL_DEPARTMENT_BOOKINGS: `${API_BASE_URL}DashBoard/GetEnitywisedashBoardCount`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
+    GET_VIEW_POINTS_COUNTS: `${API_BASE_URL}v3/Parking/GetDashboardForPos`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
@@ -440,8 +441,8 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
       GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
       GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
-      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
-      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
+      GET_POS_REPORT: `${API_BASE_URL}v3/Parking/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${API_BASE_URL}v3/Parking/GetVehicleTypes`,
     },
     DASHBOARD: {
       GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

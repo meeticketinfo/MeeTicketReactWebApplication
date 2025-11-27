@@ -764,7 +764,7 @@ export const routes = [
     element: <ProtectedRoute element={<AmrabadConsolidatedReports />} />,
   },
   {
-    path: "/amrabad-pos-reports",
+    path: "/pos-reports",
     element: <ProtectedRoute element={<AmrabadPosReport />} />,
   },
   {

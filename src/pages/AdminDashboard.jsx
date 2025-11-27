@@ -37,6 +37,7 @@ import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
 import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
+import DashboardViewPoints from "./park_admin/dashboard_components/DashboardViewPoints";
 
 function AdminDashboard() {
   superballs.register();
@@ -56,8 +57,9 @@ function AdminDashboard() {
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
-  // console.log("allEntityTypes", allEntityTypes);
+
   const { roleDetails, decodedTokenData } = useAuthStore();
+
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const parkId = decodedTokenData?.data?.ParkId;
@@ -244,7 +246,8 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-    roleDetails?.name === "ROLE_ZOOPARKADMIN"|roleDetails?.name === "ROLE_COUNTERLOGIN"
+    (roleDetails?.name === "ROLE_ZOOPARKADMIN") |
+      (roleDetails?.name === "ROLE_COUNTERLOGIN")
       ? dashboardCardsCountByRole
       : dashboardCards;
 
@@ -347,10 +350,31 @@ function AdminDashboard() {
     locationId: "",
   };
   const overAllOnSubmit = (values) => {
-    console.log("values", values);
-    fetchAllDashboardCounts(roleDetails, { ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
-    fetchAllEntityWiseCounts({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
-    fetchAllZooDashBoardCountsTicketWise({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
+
+    fetchAllDashboardCounts(roleDetails, {
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
+    fetchAllEntityWiseCounts({
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
+    fetchAllZooDashBoardCountsTicketWise({
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
     fetchAllDepartmentEntities(values);
   };
 
@@ -388,8 +412,10 @@ function AdminDashboard() {
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-                    <select 
+                    <label className="block text-xs font-medium text-gray-700">
+                      Booking/Purchase Date
+                    </label>
+                    <select
                       onChange={(e) => {
                         setIsBookingDate(e.target.value === "true");
                       }}
@@ -648,29 +674,25 @@ function AdminDashboard() {
           </Formik>
         </div>
         {cardsToDisplay &&
-          cardsToDisplay.map(
-            (card, index) => (
-              // console.log("card.isPopup", card.isPopup),
-              (
-                <>
-                  <DashboardCard01
-                    setIsHovered={setIsHovered}
-                    isPopup={card.isPopup}
-                    key={index}
-                    lableName={card.lableName}
-                    count={card.count}
-                    percentageChange={card.percentageChange}
-                    icon={card.icon}
-                    isLoading={isFetchCountsLoading}
-                  />
+          cardsToDisplay.map((card, index) => (
+            // console.log("card.isPopup", card.isPopup),
+            <>
+              <DashboardCard01
+                setIsHovered={setIsHovered}
+                isPopup={card.isPopup}
+                key={index}
+                lableName={card.lableName}
+                count={card.count}
+                percentageChange={card.percentageChange}
+                icon={card.icon}
+                isLoading={isFetchCountsLoading}
+              />
 
-                  <div className="absolute left-60 top-72">
-                    <HoverPopup isHovered={isHovered} data={card} />
-                  </div>
-                </>
-              )
-            )
-          )}
+              <div className="absolute left-60 top-72">
+                <HoverPopup isHovered={isHovered} data={card} />
+              </div>
+            </>
+          ))}
 
         {/* ZOO DASHBOARD */}
         {(roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
@@ -754,7 +776,8 @@ function AdminDashboard() {
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-        roleDetails?.name === "ROLE_ADMIN"||roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
+        roleDetails?.name === "ROLE_ADMIN" ||
+        roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">
@@ -762,18 +785,20 @@ function AdminDashboard() {
               </h1>
               <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-4 ">
                 <div>
-                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-                    <select 
-                      onChange={(e) => {
-                        setIsFacilitiesBookingDate(e.target.value === "true");
-                      }}
-                      name="bookingDate"
-                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                    >
-                      <option value="false">Purchase Date</option>
-                      <option value="true">Booking Date</option>
-                    </select>
-                  </div>
+                  <label className="block text-xs font-medium text-gray-700">
+                    Booking/Purchase Date
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      setIsFacilitiesBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
                 <div>
                   <label
                     htmlFor="fromDate"
@@ -796,7 +821,14 @@ function AdminDashboard() {
                 <div className="flex items-end">
                   <button
                     onClick={() => {
-                      fetchAllZooDashBoardCounts({DashboardDate : !isFacilitiesBookingDate ? DashboardDate : "", bookingDateFrom: isFacilitiesBookingDate ? DashboardDate : ""});
+                      fetchAllZooDashBoardCounts({
+                        DashboardDate: !isFacilitiesBookingDate
+                          ? DashboardDate
+                          : "",
+                        bookingDateFrom: isFacilitiesBookingDate
+                          ? DashboardDate
+                          : "",
+                      });
                     }}
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >
@@ -827,7 +859,8 @@ function AdminDashboard() {
                         className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                          e.target.src =
+                            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         }}
                         alt={services.service[0]?.serviceName || "Service"}
                       />
@@ -889,7 +922,8 @@ function AdminDashboard() {
                         className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                          e.target.src =
+                            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         }}
                         alt={service?.serviceName || "Service"}
                       />
@@ -931,13 +965,15 @@ function AdminDashboard() {
             <DashboardCard07>
               <div className="w-full">
                 <h2 className="text-xl font-bold mb-4">Total Bookings</h2>
-                
+
                 {/* Tab Navigation */}
                 <div className="flex border-b border-gray-200 mb-4">
                   <button
                     onClick={() => setActiveBookingsTab("graph")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeBookingsTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeBookingsTab === "graph"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     Graph View
@@ -945,7 +981,9 @@ function AdminDashboard() {
                   <button
                     onClick={() => setActiveBookingsTab("list")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeBookingsTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeBookingsTab === "list"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     List View
@@ -984,7 +1022,10 @@ function AdminDashboard() {
                         <tbody className="bg-white divide-y divide-gray-200">
                           {isFetchPieChartsLoading ? (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 <div className="flex justify-center">
                                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                                 </div>
@@ -992,23 +1033,33 @@ function AdminDashboard() {
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
                             allPieCharts.map((item, index) => (
-                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <tr
+                                key={index}
+                                className={
+                                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                }
+                              >
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || 'N/A'}
+                                  {item.entity || "N/A"}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalBookings ? 
-                                    new Intl.NumberFormat('en-IN').format(item.entityWiseTotalBookings) : '0'
-                                  }
+                                  {item.entityWiseTotalBookings
+                                    ? new Intl.NumberFormat("en-IN").format(
+                                        item.entityWiseTotalBookings
+                                      )
+                                    : "0"}
                                 </td>
                               </tr>
                             ))
                           ) : (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 No data available
                               </td>
                             </tr>
@@ -1029,8 +1080,12 @@ function AdminDashboard() {
                                 Total
                               </td>
                               <td className="py-3 pr-2 md:pr-[74px] text-xs md:text-sm font-semibold text-gray-900">
-                                {new Intl.NumberFormat('en-IN').format(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0)
+                                {new Intl.NumberFormat("en-IN").format(
+                                  allPieCharts.reduce(
+                                    (sum, item) =>
+                                      sum + (item.entityWiseTotalBookings || 0),
+                                    0
+                                  )
                                 )}
                               </td>
                             </tr>
@@ -1047,13 +1102,15 @@ function AdminDashboard() {
             <DashboardCard07>
               <div className="w-full">
                 <h2 className="text-xl font-bold mb-4">Total Amount</h2>
-                
+
                 {/* Tab Navigation */}
                 <div className="flex border-b border-gray-200 mb-4">
                   <button
                     onClick={() => setActiveAmountTab("graph")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeAmountTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeAmountTab === "graph"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     Graph View
@@ -1061,7 +1118,9 @@ function AdminDashboard() {
                   <button
                     onClick={() => setActiveAmountTab("list")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeAmountTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeAmountTab === "list"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     List View
@@ -1100,7 +1159,10 @@ function AdminDashboard() {
                         <tbody className="bg-white divide-y divide-gray-200">
                           {isFetchPieChartsLoading ? (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 <div className="flex justify-center">
                                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                                 </div>
@@ -1108,23 +1170,35 @@ function AdminDashboard() {
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
                             allPieCharts.map((item, index) => (
-                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <tr
+                                key={index}
+                                className={
+                                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                }
+                              >
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || 'N/A'}
+                                  {item.entity || "N/A"}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalAmount ? 
-                                    formatToCurrency(item.entityWiseTotalAmount, "INR", "en-IN") : '₹0'
-                                  }
+                                  {item.entityWiseTotalAmount
+                                    ? formatToCurrency(
+                                        item.entityWiseTotalAmount,
+                                        "INR",
+                                        "en-IN"
+                                      )
+                                    : "₹0"}
                                 </td>
                               </tr>
                             ))
                           ) : (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 No data available
                               </td>
                             </tr>
@@ -1146,8 +1220,12 @@ function AdminDashboard() {
                               </td>
                               <td className="py-3 pr-2 md:pr-[17px] text-xs md:text-sm font-semibold text-gray-900">
                                 {formatToCurrency(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0),
-                                  "INR", 
+                                  allPieCharts.reduce(
+                                    (sum, item) =>
+                                      sum + (item.entityWiseTotalAmount || 0),
+                                    0
+                                  ),
+                                  "INR",
                                   "en-IN"
                                 )}
                               </td>
@@ -1173,9 +1251,10 @@ function AdminDashboard() {
           </DashboardCard07>
         )}
       </div>
+      {/* View Points Counts */}
+      {(roleDetails?.name === "ROLE_ADMIN"&&decodedTokenData.data?.ParkId === "100") && <DashboardViewPoints />}
     </>
   );
 }
 
 export default AdminDashboard;
-
