@@ -128,6 +128,11 @@ const sidebarItems = [
         icon: MdPayments,
         path: "/payments",
       },
+      {
+        title: "Counter Pass",
+        icon: MdPayments,
+        path: "/counter-pass",
+      },
     ],
   },
   {

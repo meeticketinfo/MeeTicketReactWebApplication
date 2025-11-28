@@ -55,6 +55,8 @@ export const parkAdminPermissions = [
   // "service",
   // "service-varient",
   "gate-keepers",
+  "pos-admin",
+  "counter-pass",
   "bookings",
   "facility-services",
   "holidays",
