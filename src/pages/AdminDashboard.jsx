@@ -1,37 +1,19 @@
 import { useEffect, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import Sidebar from "../partials/Sidebar";
-import Header from "../partials/Header";
-// import FilterButton from "../components/DropdownFilter";
-import Datepicker from "../components/Datepicker";
+import { Formik, Form, Field } from "formik";
 import DashboardCard01 from "../partials/dashboard/DashboardCard01";
 import DashboardCard07 from "../partials/dashboard/DashboardCard07";
-import { IoReloadCircle, IoTicketSharp } from "react-icons/io5";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { FaChildren } from "react-icons/fa6";
-import { HiCurrencyRupee } from "react-icons/hi";
-import AgGridTable from "../components/tables/AgGridTable";
+import { IoTicketSharp } from "react-icons/io5";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
-import {
-  formatToCurrency,
-  formatToStandardDate,
-  formatToStandardTime,
-  getCurrentDate,
-} from "../utils/TypographyHelper";
+import { formatToCurrency, getCurrentDate } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
-import { data } from "autoprefixer";
 import { useParkStore } from "../store/masters/parksStore";
-import AdminLayout from "../layouts/AdminLayout";
-import ServerSideAgGridTable from "../components/tables/ServerSideAgGridTable";
 import useAuthStore from "../store/authStore";
 import { toast } from "react-toastify";
 import CountUp from "react-countup";
 import { superballs } from "ldrs";
 import Select from "react-select";
 import { useEntityTypesStore } from "../store/masters/entityTypesStore";
-import { Link } from "react-router-dom";
 import useDashboardDetailedStore from "../store/dashboard/DashboardDetailedStore";
 import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
@@ -115,7 +97,7 @@ function AdminDashboard() {
       toDate: "",
       active: false,
     });
-    fetchAllZooDashBoardCounts({DashboardDate : "", bookingDateFrom: ""});
+    fetchAllZooDashBoardCounts({ DashboardDate: "", bookingDateFrom: "" });
 
     if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
       fetchAllZooDashBoardCountsTicketWise({
@@ -187,6 +169,7 @@ function AdminDashboard() {
       parkId: "",
     });
   };
+
   const dashboardCards = [
     {
       isPopup: false,
@@ -251,97 +234,6 @@ function AdminDashboard() {
       ? dashboardCardsCountByRole
       : dashboardCards;
 
-  const [dashboardColumnDefs] = useState([
-    {
-      headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      minWidth: 80,
-      maxWidth: 80,
-      headerClass: "text-blue-v2",
-    },
-    // {
-    //   field: "bookingId",
-    //   headerName: "Booking Id",
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) =>
-    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
-    // },
-    {
-      field: "transactionId",
-      headerName: "Transaction ID",
-      flex: 2,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "userPhoneNumber",
-      headerName: "User Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "parkName",
-      headerName: "Location Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    // {
-    //   field: "locationCategoryName",
-    //   headerName: "Location Category",
-
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
-    {
-      field: "facilityName",
-      headerName: "Facility Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "serviceName",
-      headerName: "Service Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-
-    {
-      field: "serviceVariantName",
-      headerName: "Service Variant Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "bookingRegistredDate",
-      headerName: "Booking Date",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "amount",
-      headerName: "Booking Amount",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "modeOfPayment",
-      headerName: "mode Of Payment",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-  ]);
-
   const EsdInitialValues = {
     fromDate: "",
     toDate: "",
@@ -350,7 +242,6 @@ function AdminDashboard() {
     locationId: "",
   };
   const overAllOnSubmit = (values) => {
-
     fetchAllDashboardCounts(roleDetails, {
       ...values,
       active: true,
@@ -957,6 +848,7 @@ function AdminDashboard() {
             )}
           </>
         ) : null}
+
         {/* PIE CHART */}
         {(roleDetails?.name == "ROLE_SUPERADMIN" ||
           roleDetails?.name == "Role_DeptAdmin") && (
@@ -1252,9 +1144,10 @@ function AdminDashboard() {
         )}
       </div>
       {/* View Points Counts */}
-      {(roleDetails?.name === "ROLE_ADMIN"&&decodedTokenData.data?.ParkId === "100") && <DashboardViewPoints />}
+      {roleDetails?.name === "ROLE_ADMIN" &&
+        decodedTokenData.data?.ParkId === "100" && <DashboardViewPoints />}
     </>
-  );
+  );  
 }
 
 export default AdminDashboard;

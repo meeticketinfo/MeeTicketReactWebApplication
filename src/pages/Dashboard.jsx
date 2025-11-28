@@ -10,6 +10,7 @@ import SalarjangMuseumDashboard from "./park_admin/SalarjangMuseumDashboard";
 import BuspassDasboard from "../components/rtc/dashboard/BuspassDashboard/BuspassDasboard";
 import MainDashboard from "../components/rtc/dashboard/MainDashboard/mainDashboard";
 import { ToastContainer } from "react-toastify";
+import LocationsDashboardHome from "./park_admin/locations_dashboard/LocationsDashboardHome";
 
 function Dashboard() {
   const { roleDetails, decodedTokenData } = useAuthStore();
@@ -26,7 +27,9 @@ function Dashboard() {
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
     } else if (roleDetails?.name === "Role_AmrabadAdmin") {
-      return <AmrabadDashboard/>;
+      return <AmrabadDashboard />;
+    } else if (roleDetails?.name === "ROLE_ADMIN") {
+      return <LocationsDashboardHome/>;
     } else if (
       roleDetails?.name === "ROLE_ADMIN" &&
       parkId === "06de1b5e-0494-4b87-ac25-041849b68186"
