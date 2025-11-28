@@ -5,46 +5,46 @@ import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadPosStore } from "./AmrabadPosStore";
 
 const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
-  const savedFilters =  JSON.parse(localStorage.getItem("amrabad-pos-report-filters"));
+  const savedFilters = JSON.parse(
+    localStorage.getItem("amrabad-pos-report-filters")
+  );
   const {
     fetchAmrabadPosReportData,
     fetchAmrabadPosVehicleTypesData,
     AmrabadPosVehicleTypesData,
-    AmrabadPosUsersData,
-    isFetchAmrabadPosUsersData,
-    fetchAmrabadPosUsersData,
+    fetchAmrabadPosViewPointsData,
+    AmrabadPosViewPointsData,
+    isFetchAmrabadPosViewPointsData,
   } = useAmrabadPosStore();
   useEffect(() => {
-    fetchAmrabadPosUsersData();
+  
     fetchAmrabadPosVehicleTypesData();
+    fetchAmrabadPosViewPointsData();
   }, []);
-  const getCurrentDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   const getCurrentDateAtMidnight = () => {
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}T00:00`;
+  };
+
+  const getCurrentDateAtEndOfDay = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}T23:59`;
   };
 
   const initialValues = {
     fromDate: savedFilters?.fromDate || getCurrentDateAtMidnight(),
-    toDate: savedFilters?.toDate || getCurrentDate(),
+    toDate: savedFilters?.toDate || getCurrentDateAtEndOfDay(),
     adminMobileNumber: savedFilters?.adminMobileNumber
       ? savedFilters.adminMobileNumber
       : "",
-    userName: savedFilters?.userName
-      ? savedFilters.userName
-      : "",
+    userName: savedFilters?.userName ? savedFilters.userName : "",
     userMobileNumber: savedFilters?.userMobileNumber
       ? savedFilters.userMobileNumber
       : "",
@@ -65,7 +65,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
-    SetcurrentPage(0)
+    SetcurrentPage(0);
     localStorage.setItem("amrabad-pos-report-filters", JSON.stringify(values));
   };
   return (
@@ -126,11 +126,12 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               name="userName"
               className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
             >
-              <option value=""> {isFetchAmrabadPosUsersData ? "Loading..." : "All"}</option>
-              {AmrabadPosUsersData?.map((item) => (
-                <option value={item.userName}>
-                  {item.username}
-                </option>
+              <option value="">
+                {" "}
+                {isFetchAmrabadPosViewPointsData ? "Loading..." : "All"}
+              </option>
+              {AmrabadPosViewPointsData?.map((item) => (
+                <option value={item.viewPointName}>{item.viewPointName}</option>
               ))}
             </Field>
           </div>
@@ -183,6 +184,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               <option value="credit card">Credit Card</option>
               <option value="upi">UPI</option>
               <option value="cash">Cash</option>
+              <option value="Paytm Wallet">Paytm Wallet</option>
             </Field>
           </div>
           {/* Transaction Status */}
@@ -248,7 +250,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 localStorage.removeItem("amrabad-pos-report-filters");
                 setValues({
                   fromDate: getCurrentDateAtMidnight(),
-                  toDate: getCurrentDate(),
+                  toDate: getCurrentDateAtEndOfDay(),
                   userName: "",
                   adminMobileNumber: "",
                   userMobileNumber: "",
@@ -259,7 +261,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 });
                 fetchAmrabadPosReportData({
                   fromDate: getCurrentDateAtMidnight(),
-                  toDate: getCurrentDate(),
+                  toDate: getCurrentDateAtEndOfDay(),
                   userName: "",
                   adminMobileNumber: "",
                   userMobileNumber: "",
@@ -270,7 +272,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                   pageNumber: pageNumber,
                   PageSize: pageSize,
                 });
-                SetcurrentPage(0)
+                SetcurrentPage(0);
               }}
             >
               Reset

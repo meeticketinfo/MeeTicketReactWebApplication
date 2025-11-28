@@ -39,6 +39,7 @@ export const superAdminPermissions = [
   "bus-pass-settlement-summary-report",
   "monthly-reports",
   "banner",
+  "pos-reports",
 ];
 
 // department
@@ -72,7 +73,9 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
-  "pos-admin"
+  "pos-admin",
+  // "pos-admin"
+  "pos-reports",
 ];
 export const BotanicalGardenParkAdminPermissions = [
   "dashboard",
@@ -81,6 +84,7 @@ export const BotanicalGardenParkAdminPermissions = [
   "entity-bookings",
   "completed-bookings",
   "payment-transaction-report",
+  "book-tickets",
 ];
 export const CustomParkAdminPermissions = [
   "dashboard",
@@ -98,6 +102,7 @@ export const CustomParkAdminPermissions = [
   "facility-bookings",
   "application-day-wise-bookings",
   "day-wise-bookings",
+  "pos-reports",
 ];
 
 export const nodalOfficerPermissions = [
@@ -185,5 +190,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
-  "amrabad-pos-reports",
+  "pos-reports",
 ];

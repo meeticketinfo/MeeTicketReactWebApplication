@@ -176,6 +176,11 @@ const sidebarItems = [
         roles: ["Admin", "Super Admin"],
       },
       {
+        title: "POS Reports",
+        icon: TbReportAnalytics,
+        path: "/pos-reports",
+      },
+      {
         title: "Payment Transactions",
         icon: TbReportAnalytics,
         path: "/pos-payment-transactions-reports",
@@ -190,6 +195,7 @@ const sidebarItems = [
         icon: RiBankFill,
         path: "/bank-transactions",
       },
+
       {
         title: "Metro Bookings",
         icon: FaUsers,
@@ -601,11 +607,11 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/amrabad-booking-reports",
       },
-      {
-        title: "POS Reports",
-        icon: TbReportAnalytics,
-        path: "/amrabad-pos-reports",
-      },
+      // {
+      //   title: "POS Reports",
+      //   icon: TbReportAnalytics,
+      //   path: "/pos-reports",
+      // },
       {
         title: "House Wise Reports",
         icon: RiDashboard3Fill,
