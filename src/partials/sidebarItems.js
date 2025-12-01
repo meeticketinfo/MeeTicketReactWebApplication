@@ -435,6 +435,11 @@ const sidebarItems = [
         path: "/intercity-individual-report",
       },
       {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/intercity-payment-transactions",
+      },
+      {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
@@ -449,11 +454,7 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-refund-report",
       },
-      {
-        title: "Payment Transactions",
-        icon: TbReportAnalytics,
-        path: "/intercity-payment-transactions",
-      },
+      
     ],
 
   },
