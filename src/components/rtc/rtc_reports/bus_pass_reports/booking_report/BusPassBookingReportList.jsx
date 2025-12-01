@@ -907,6 +907,9 @@ const BusPassBookingReportList = () => {
                 <option value="Card">Card</option>
                 <option value="UPI">UPI</option>
                 <option value="Other">Other</option>
+                <option value="dc">DC</option>
+                <option value="cc">CC</option>
+
               </Field>
             </div>
             {/* Booking Status */}
