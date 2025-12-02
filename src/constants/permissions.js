@@ -1,3 +1,6 @@
+
+
+// super admin permissions
 export const superAdminPermissions = [
   "dashboard",
   "departments",
@@ -40,10 +43,16 @@ export const superAdminPermissions = [
   "monthly-reports",
   "banner",
   "pos-reports",
+  "intercity-settlement-summary-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
 ];
 
 // department
-
 export const Department = [
   "dashboard",
   "entity-bookings",
@@ -55,6 +64,7 @@ export const Department = [
   "refund-transactions",
 ];
 
+ // park admin permissions
 export const parkAdminPermissions = [
   "dashboard",
   //
@@ -77,6 +87,8 @@ export const parkAdminPermissions = [
   // "pos-admin"
   "pos-reports",
 ];
+
+// botanical garden park admin permissions
 export const BotanicalGardenParkAdminPermissions = [
   "dashboard",
   "bookings",
@@ -86,6 +98,8 @@ export const BotanicalGardenParkAdminPermissions = [
   "payment-transaction-report",
   "book-tickets",
 ];
+
+// custom park admin permissions
 export const CustomParkAdminPermissions = [
   "dashboard",
   "gate-keepers",
@@ -105,6 +119,7 @@ export const CustomParkAdminPermissions = [
   "pos-reports",
 ];
 
+// nodal officer permissions
 export const nodalOfficerPermissions = [
   "dashboard",
   "entities",
@@ -115,6 +130,7 @@ export const nodalOfficerPermissions = [
   // "Grievance-individual",
 ];
 
+// metro reports
 export const MetroReports = [
   "dashboard",
   "summary-report",
@@ -126,6 +142,7 @@ export const MetroReports = [
   "Grievance-Incident",
 ];
 
+// nehru zoo park
 export const NehruZooPark = [
   "dashboard",
   // "entity-bookings",
@@ -138,6 +155,8 @@ export const NehruZooPark = [
   // "Grievance-consolidate",
   "Grievance-Incident",
 ];
+
+// support admin
 export const SupportAdmin = [
   "entity-bookings",
   "completed-bookings",
@@ -148,7 +167,7 @@ export const SupportAdmin = [
   "Grievance-consolidate",
   "Grievance-Incident",
 ];
-
+// rtc admin
 export const RtcAdmin = [
   "dashboard",
   "bus-pass-user-report",
@@ -166,6 +185,7 @@ export const RtcAdmin = [
  
 ];
 
+// toursim
 export const Toursim = [
   "dashboard",
   "tourism-consolidate",
@@ -174,6 +194,7 @@ export const Toursim = [
   "toursim-bank-payments",
 ];
 
+// amrabad
 export const Amrabad = [
   "dashboard",
   "amrabad-packages",
