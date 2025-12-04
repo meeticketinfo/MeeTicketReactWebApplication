@@ -153,7 +153,7 @@ function MetroPendingTransactionList() {
         headerName: "Refund Status",
   
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value.toUpperCase() || "N/A",
+        valueFormatter: (params) => params?.value?.toUpperCase() || "N/A",
       },
   ]);
   return (

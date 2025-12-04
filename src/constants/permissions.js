@@ -174,6 +174,7 @@ export const RtcAdmin = [
   "bus-pass-total-transaction",
   "bus-pass-booking-report",
   "bus-pass-refund-report",
+  "bus-pass-settlement-summary-report",
   // "pending-pass",
   "intercity-settlement-summary-report",
   "intercity-consolidated-report",
