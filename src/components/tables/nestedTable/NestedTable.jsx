@@ -295,7 +295,7 @@ const AccordionSubRow = ({
                   </tbody>
                 )}
 
-                {subRow.walkerPassDetails.length > 0 && (
+                {subRow.walkerPassDetails?.length > 0 && (
                   <tbody>
                     {subRow.walkerPassDetails.map((detail, detailIndex) => (
                       <tr key={detailIndex} className="bg-white">
