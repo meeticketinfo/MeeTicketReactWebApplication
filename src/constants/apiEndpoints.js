@@ -142,7 +142,7 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
-      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v3/PaymentTransaction/Transaction`,
+      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v2/PaymentTransaction/ParkTransaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
