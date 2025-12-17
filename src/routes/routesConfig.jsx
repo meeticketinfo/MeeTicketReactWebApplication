@@ -200,6 +200,7 @@ import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
+import OfflineRefund from "../pages/finance/OfflineRefund";
 
 export const routes = [
   {
@@ -1026,5 +1027,11 @@ export const routes = [
   {
     path: "/intercity-ticket-view-details/:id",
     element: <ProtectedRoute element={<IntercityTicketView />} />,
+  },
+
+  // finance 
+  {
+    path: "/finance-offline-refund",
+    element: <ProtectedRoute element={<OfflineRefund />} />,
   },
 ];
