@@ -1,3 +1,6 @@
+
+
+// super admin permissions
 export const superAdminPermissions = [
   "dashboard",
   "departments",
@@ -32,11 +35,24 @@ export const superAdminPermissions = [
   "metro-user-report",
   "metro-user-detailed-report",
   "metro-refund-transactions",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "bus-pass-settlement-summary-report",
   "monthly-reports",
+  "banner",
+  "pos-reports",
+  "intercity-settlement-summary-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
 ];
 
 // department
-
 export const Department = [
   "dashboard",
   "entity-bookings",
@@ -48,6 +64,7 @@ export const Department = [
   "refund-transactions",
 ];
 
+ // park admin permissions
 export const parkAdminPermissions = [
   "dashboard",
   //
@@ -61,12 +78,17 @@ export const parkAdminPermissions = [
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",
+  "walkers-pass-report",
   "payment-transaction-report",
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
+  "pos-admin",
   // "pos-admin"
+  "pos-reports",
 ];
+
+// botanical garden park admin permissions
 export const BotanicalGardenParkAdminPermissions = [
   "dashboard",
   "bookings",
@@ -76,6 +98,8 @@ export const BotanicalGardenParkAdminPermissions = [
   "payment-transaction-report",
   "book-tickets",
 ];
+
+// custom park admin permissions
 export const CustomParkAdminPermissions = [
   "dashboard",
   "gate-keepers",
@@ -92,8 +116,10 @@ export const CustomParkAdminPermissions = [
   "facility-bookings",
   "application-day-wise-bookings",
   "day-wise-bookings",
+  "pos-reports",
 ];
 
+// nodal officer permissions
 export const nodalOfficerPermissions = [
   "dashboard",
   "entities",
@@ -104,6 +130,7 @@ export const nodalOfficerPermissions = [
   // "Grievance-individual",
 ];
 
+// metro reports
 export const MetroReports = [
   "dashboard",
   "summary-report",
@@ -115,6 +142,7 @@ export const MetroReports = [
   "Grievance-Incident",
 ];
 
+// nehru zoo park
 export const NehruZooPark = [
   "dashboard",
   // "entity-bookings",
@@ -127,6 +155,8 @@ export const NehruZooPark = [
   // "Grievance-consolidate",
   "Grievance-Incident",
 ];
+
+// support admin
 export const SupportAdmin = [
   "entity-bookings",
   "completed-bookings",
@@ -137,7 +167,7 @@ export const SupportAdmin = [
   "Grievance-consolidate",
   "Grievance-Incident",
 ];
-
+// rtc admin
 export const RtcAdmin = [
   "dashboard",
   "bus-pass-user-report",
@@ -145,6 +175,9 @@ export const RtcAdmin = [
   "bus-pass-booking-report",
   "bus-pass-refund-report",
   "bus-pass-payment-gateway-report",
+  "bus-pass-settlement-summary-report",
+  // "pending-pass",
+  "intercity-settlement-summary-report",
   "intercity-consolidated-report",
   "intercity-individual-report",
   "intercity-total-transaction",
@@ -152,8 +185,10 @@ export const RtcAdmin = [
   "intercity-refund-report",
   "intercity-payment-transactions",
   // "pending-pass",
+ 
 ];
 
+// toursim
 export const Toursim = [
   "dashboard",
   "tourism-consolidate",
@@ -162,6 +197,7 @@ export const Toursim = [
   "toursim-bank-payments",
 ];
 
+// amrabad
 export const Amrabad = [
   "dashboard",
   "amrabad-packages",
@@ -172,5 +208,5 @@ export const Amrabad = [
   "amrabad-user-report",
   "amrabad-refund-transaction-report",
   "amarabad-total-transaction",
-  "amrabad-pos-reports",
+  "pos-reports",
 ];

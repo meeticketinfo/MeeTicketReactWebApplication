@@ -228,7 +228,7 @@ export const useDashboardStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.message, isFetchZooDashboardLoading: false, allZooDashboard: [] });
-      toast.error(error.message);
+      // toast.error(error.message);
     }
   },
   fetchAllZooDashBoardCountsTicketWise: async ({
@@ -346,6 +346,26 @@ export const useDashboardStore = create((set) => ({
       });
     } catch (error) {
       set({ error: error.error.message, isFetchDepartmentEntitiesLoading: true });
+    }
+  },
+
+
+  // view points counts
+  isFetchViewPointsLoading: false,
+  allViewPoints: [],
+  fetchAllViewPointsCounts: async (payload) => {
+    const date =  `?FromDate=${payload.fromDate}&ToDate=${payload.toDate}`
+    set({ isFetchViewPointsLoading: true });
+    try {
+      const response = await apiService.get(
+        `${API_ENDPOINTS.DASHBOARD.GET_VIEW_POINTS_COUNTS}${date}`
+      );
+      set({
+        allViewPoints: response.data,
+        isFetchViewPointsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchViewPointsLoading: false,allViewPoints:[] });
     }
   },
 

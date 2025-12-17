@@ -7,6 +7,7 @@ import { useServiceStore } from "../../../store/masters/servicesStore";
 import { useServiceVariantStore } from "../../../store/masters/serviceVariantsStore";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import { useUnifiedFacilityStore } from "../../../store/masters/unifiedFacilityStore";
+import { WalkersPassStore } from "../../../store/masters/WalkersPassStore";
 
 const NestedTable = ({ data }) => {
   const { fetchAllDropdownFacilities, adminFacilities } = useFacilityStore();
@@ -156,10 +157,14 @@ const AccordionSubRow = ({
   const [isExpanded, setIsExpanded] = useState(
     hasMultipleSubFacilities ? true : false
   );
+
+  const { setCurrentWalkersPassEditDetails, setIsWalkersPassEdit,setIsWalkersPassAdd } =
+    WalkersPassStore();
   const { setOpenModalId } = useModalStore();
   const { setCurrentServiceEditDetails } = useServiceStore();
   const { setCurrentServiceVariantEditDetails } = useServiceVariantStore();
   const { setIsCreateServiceEnabled } = useUnifiedFacilityStore();
+
   return (
     <>
       <tr className={`bg-white ${hasMultipleSubFacilities ? "hidden" : ""}`}>
@@ -176,17 +181,21 @@ const AccordionSubRow = ({
         </td>
         <td className="p-2 text-center">{subRow.name ?? "N/A"}</td>
         <td className="p-2 text-center">{subRow.description ?? "N/A"}</td>
-        <td className="p-2 text-center">{(subRow.limit<0)&&(subRow.limit!=null) ? "No Limit":subRow.limit}</td>
-        <td className="p-2 text-center">{subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}</td>
+        <td className="p-2 text-center">
+          {subRow.limit < 0 && subRow.limit != null ? "No Limit" : subRow.limit}
+        </td>
+        <td className="p-2 text-center">
+          {subRow.sequenceNumber ? subRow.sequenceNumber : "N/A"}
+        </td>
         <td className="p-2 text-center">
           {" "}
           <div style={{ display: "flex align-center", gap: "0.5rem" }}>
             <span
               className={`${
                 subRow.isActive
-                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-              } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
+                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+              } text-xs font-medium me-2 px-2.5 py-0.5 rounded `}
             >
               {" "}
               {subRow.isActive ? "Active" : "Inactive"}
@@ -210,69 +219,142 @@ const AccordionSubRow = ({
           </span>
         </td>
       </tr>
-      {isExpanded && subRow.serviceVariants.length > 0 && (
-        <tr>
-          <td colSpan="5" className="p-4 bg-gray-200">
-            <table className="table-auto w-full ">
-              <thead className="bg-[#f8f8f8] text-blue-v1">
-                <tr>
-                  <th className="p-2 text-center">Ticket Type</th>
-                  <th className="p-2 text-center">Price</th>
-                  <th className="p-3 text-center">Sequence</th>
-                  <th className="p-2 text-center">Is Person Based</th>
-                  <th className="p-2 text-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {subRow.serviceVariants.map((detail, detailIndex) => (
-                  <tr key={detailIndex} className="bg-white">
-                    <td className="p-2 text-center">{detail.name ?? "N/A"}</td>
-                    <td className="p-2 text-center">
-                      {formatToCurrency(detail?.amount) || "N/A"}
-                    </td>
-                    <td className="p-2 text-center">{detail.sequenceNumber ? detail.sequenceNumber : "N/A"}</td>
-                    <td className="p-2 text-center">
-                      <div
-                        style={{
-                          display: "flex align-center",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <span
-                          className={`${
-                            !detail.isPriceFixed
-                              ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                              : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
-                          } text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300`}
-                        >
-                          {" "}
-                          {!detail.isPriceFixed ? "Yes" : "No"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="p-2 text-center">
-                      <span className="flex justify-center">
-                        {/*  */}
-                        <button
-                          onClick={() => {
-                            setCurrentServiceVariantEditDetails({
-                              ...detail,
-                              serviceId: subRow.id,
-                            });
-                            setOpenModalId("type-of-ticket-modal");
-                          }}
-                        >
-                          <LuClipboardEdit className="text-[24px] text-blue-600 " />
-                        </button>
-                      </span>
-                    </td>
+
+      {isExpanded &&
+        (subRow.serviceVariants.length > 0 ||
+          subRow.walkerPassDetails.length > 0) && (
+          <tr>
+            <td colSpan="5" className="p-4 bg-gray-200">
+              <table className="table-auto w-full ">
+                <thead className="bg-[#f8f8f8] text-blue-v1">
+                  <tr>
+                    <th className="p-2 text-center">Ticket Type</th>
+                    <th className="p-2 text-center">Price</th>
+                    <th className="p-3 text-center">Sequence</th>
+                    <th className="p-2 text-center">Is Person Based</th>
+                    <th className="p-2 text-center">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      )}
+                </thead>
+                {subRow.serviceVariants.length > 0 && (
+                  <tbody>
+                    {subRow.serviceVariants.map((detail, detailIndex) => (
+                      <tr key={detailIndex} className="bg-white">
+                        <td className="p-2 text-center">
+                          {detail.name ?? "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          {formatToCurrency(detail?.amount) || "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          {detail.sequenceNumber
+                            ? detail.sequenceNumber
+                            : "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          <div
+                            style={{
+                              display: "flex align-center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            <span
+                              className={`${
+                                !detail.isPriceFixed
+                                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+                                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+                              } text-xs font-medium me-2 px-2.5 py-0.5 rounded `}
+                            >
+                              {" "}
+                              {!detail.isPriceFixed ? "Yes" : "No"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-2 text-center">
+                          <span className="flex justify-center">
+                            {/*  */}
+                            <button
+                              onClick={() => {
+                                setCurrentServiceVariantEditDetails({
+                                  ...detail,
+                                  serviceId: subRow.id,
+                                });
+                                setOpenModalId("type-of-ticket-modal");
+
+                                setCurrentWalkersPassEditDetails({
+                                  ...detail,
+                                  serviceId: subRow.id,
+                                });
+                              }}
+                            >
+                              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                            </button>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
+
+                {subRow.walkerPassDetails?.length > 0 && (
+                  <tbody>
+                    {subRow.walkerPassDetails.map((detail, detailIndex) => (
+                      <tr key={detailIndex} className="bg-white">
+                        <td className="p-2 text-center">
+                          {detail.passActualName ?? "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          {formatToCurrency(detail?.passAmount) || "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          {detail.passSequenceNumber
+                            ? detail.passSequenceNumber
+                            : "N/A"}
+                        </td>
+                        <td className="p-2 text-center">
+                          <div
+                            style={{
+                              display: "flex align-center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            <span
+                              className={`${
+                                !detail.isPersonbased
+                                  ? "bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+                                  : "bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded "
+                              } text-xs font-medium me-2 px-2.5 py-0.5 rounded  `}
+                            >
+                              
+                              {detail.isPersonbased!=null?(!detail.isPersonbased ? "Yes" : "No"):"N/A"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="p-2 text-center">
+                          <span className="flex justify-center">
+                            {/*  */}
+                            <button
+                              onClick={() => {
+                                // setOpenModalId("type-of-ticket-modal");
+                                setIsWalkersPassEdit(true);
+                                setIsWalkersPassAdd(true);
+                                setCurrentWalkersPassEditDetails({
+                                  ...detail,
+                                  serviceId: subRow.id,
+                                });
+                              }}
+                            >
+                              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                            </button>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
+              </table>
+            </td>
+          </tr>
+        )}
     </>
   );
 };

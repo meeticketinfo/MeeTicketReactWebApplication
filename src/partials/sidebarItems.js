@@ -128,6 +128,11 @@ const sidebarItems = [
         icon: MdPayments,
         path: "/payments",
       },
+      {
+        title: "Banner",
+        icon: RiDashboard3Fill,
+        path: "/banner",
+      },
     ],
   },
   {
@@ -171,15 +176,26 @@ const sidebarItems = [
         roles: ["Admin", "Super Admin"],
       },
       {
+        title: "POS Reports",
+        icon: TbReportAnalytics,
+        path: "/pos-reports",
+      },
+      {
         title: "Payment Transactions",
         icon: TbReportAnalytics,
         path: "/pos-payment-transactions-reports",
+      },
+      {
+        title: "Walkers Pass Report",
+        icon: TbReportAnalytics,
+        path: "/walkers-pass-report",
       },
       {
         title: "Bank Payments",
         icon: RiBankFill,
         path: "/bank-transactions",
       },
+
       {
         title: "Metro Bookings",
         icon: FaUsers,
@@ -268,7 +284,7 @@ const sidebarItems = [
       },
     ],
   },
-
+  // metro reports
   {
     title: "Metro Reports",
     icon: TbTrain,
@@ -324,6 +340,7 @@ const sidebarItems = [
       },
     ],
   },
+  
   // griveance
   {
     title: "Grievance",
@@ -349,7 +366,8 @@ const sidebarItems = [
       },
     ],
   },
-  // rtc
+
+  // bus pass reports
   {
     title: "Bus Pass Reports",
     icon: FaBus,
@@ -357,36 +375,7 @@ const sidebarItems = [
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
-      {
-        title: "Day Pass",
-        icon: IoTodayOutline,
-        path: "/day-pass",
-      },
-      {
-        title: "Ordinary pass",
-        icon: RiPassPendingLine,
-        path: "/ordinary-pass",
-      },
-      {
-        title: "MST Pass",
-        icon: BsPassport,
-        path: "/mst-pass",
-      },
-      {
-        title: "Express Pass",
-        icon: VscCompassActive,
-        path: "/express-pass",
-      },
-      {
-        title: "Student Pass",
-        icon: RiPassValidFill,
-        path: "/student-pass",
-      },
-      {
-        title: "Pending Pass",
-        icon: RiPassPendingLine,
-        path: "/pending-pass",
-      },
+     
       {
         title: "Booking Report",
         icon: MdEventAvailable,
@@ -409,13 +398,14 @@ const sidebarItems = [
       },
 
       {
-        title: "Payment Gateway Report",
+        title: "Settlement Summary Report",
         icon: RiDashboard3Fill,
-        path: "/bus-pass-payment-gateway-report",
+        path: "/bus-pass-settlement-summary-report",
       },
 
     ],
   },
+  
   //intercity
   {
     title: "Intercity Reports",
@@ -434,6 +424,7 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-individual-report",
       },
+     
       {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
@@ -449,10 +440,16 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-refund-report",
       },
+      
       {
         title: "Payment Transactions",
         icon: TbReportAnalytics,
         path: "/intercity-payment-transactions",
+      },
+      {
+        title: "Settlement Summary Report",
+        icon: RiDashboard3Fill,
+        path: "/intercity-settlement-summary-report",
       },
     ],
 
@@ -548,11 +545,11 @@ const sidebarItems = [
         icon: TbReportSearch,
         path: "/amrabad-booking-reports",
       },
-      {
-        title: "POS Reports",
-        icon: TbReportAnalytics,
-        path: "/amrabad-pos-reports",
-      },
+      // {
+      //   title: "POS Reports",
+      //   icon: TbReportAnalytics,
+      //   path: "/pos-reports",
+      // },
       {
         title: "House Wise Reports",
         icon: RiDashboard3Fill,

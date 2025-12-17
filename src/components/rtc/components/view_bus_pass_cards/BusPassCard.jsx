@@ -118,7 +118,7 @@ const BusPassCard = ({ data,data1 }) => {
                       Late fee:
                     </h1>
                     <p className="text-gray-500 text-[11px]">
-                      {data.late_fee ? data.late_fee : "N/A"}
+                      {data.late_fee ? data.late_fee : "0"}
                     </p>
                   </div>
                   <div className="flex  items-start gap-1 mb-2 text-xs">
@@ -126,7 +126,7 @@ const BusPassCard = ({ data,data1 }) => {
                       Service charges:
                     </h1>
                     <p className="text-gray-500 text-[11px]">
-                      {data.service_charges ? data.service_charges : "N/A"}
+                      {data.service_charges ? data.service_charges : "0"}
                     </p>
                   </div>
                   <div className="flex  items-start gap-1 mb-1 text-xs">

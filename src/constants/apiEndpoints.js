@@ -142,7 +142,7 @@ export const API_ENDPOINTS = {
     },
     BOOKING: {
       GET_BOOKINGS: `${API_BASE_URL}Transaction/v2/GetAllEntityBookingByFilters`,
-      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v3/PaymentTransaction/Transaction`,
+      FIRST_STEP_TRANSACTION: `${API_BASE_URL}v2/PaymentTransaction/ParkTransaction`,
       GET_PAYMENT_STATUS: `${API_BASE_URL}PaymentTransaction/OrderStatusCall/`,
       ADD_BOOKINGS: `Transaction/AddBookingDetails`,
       CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
@@ -167,7 +167,18 @@ export const API_ENDPOINTS = {
     POS_USER: {
       ADD_NEW_POS_USER: `${API_BASE_URL}Master/AddPOSAdmin`,
       UPDATE_POS_USER: `${API_BASE_URL}Master/UpdatePOSAdmin`,
-      GET_POS_USERS: `${API_BASE_URL}Master/GetPOSAdmin`,
+      GET_POS_VIEW_POINTS: `${API_BASE_URL}v3/Parking/GetViewPoints`,
+    },
+    WALKERS_PASS: {
+      ADD_NEW_WALKERS_PASS: `${API_BASE_URL}Master/AddWalkerPassType`,
+      UPDATE_WALKERS_PASS: `${API_BASE_URL}Master/UpdateWalkerPassType`,
+      
+    },
+    BANNER: {
+      GET_BANNERS: `${API_BASE_URL}Advertisement/GetAllBanners`,
+      ADD_NEW_BANNER: `${API_BASE_URL}Advertisement/AddBanner`,
+      UPDATE_BANNER: `${API_BASE_URL}Advertisement/UpdateBanner`,
+      DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
@@ -178,6 +189,7 @@ export const API_ENDPOINTS = {
     },
     SERVICE: {
       GET_SERVICES: `Master/GetAllServicesById?facilityId=`,
+      GET_PASS_TYPES: `${API_BASE_URL}WalkersPass/GetPasses`,
       GET_SERVICES_NODAL_OFFICER: `NodalOfficer/GetAllServices?parkId=`,
       UPDATE_SERVICE_DETAILS: `${API_BASE_URL}Master/UpdateServices`,
       UPDATE_SERVICE_DETAILS_NODAL_OFFICER: `${API_BASE_URL}NodalOfficer/UpdateServices`,
@@ -287,6 +299,13 @@ export const API_ENDPOINTS = {
         GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
         GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
       },
+       BUS_PASS_PAYMENT_TRANSACTION: {
+        GET_BUS_PASS_PAYMENT_TRANSACTION: `${RTC_API_BASE_URL}RTCDashboard/GetSettlementReports`,
+    
+      },
+      INTERCITY_SETTLEMENT_TRANSACTIONS: {
+        GET_INTERCITY_SETTLEMENT_TRANSACTIONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTransactionSettlementSummary`,
+      },
       RTC_TOTAL_TRANSACTIONS_REPORT: {
         GET_RTC_TRANSACTIONS_BY_REASON: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionOuterReport`,
         GET_RTC_TOTAL_TRANSACTIONS: `${RTC_API_BASE_URL}BusPassDashboard/TotalTransactionInnerReport`,
@@ -361,6 +380,10 @@ export const API_ENDPOINTS = {
     FAILED_TRANSACTIONS: {
       GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
     },
+     // Walkers pass report endpoints
+    WALKERS_PASS_REPORT: {
+      GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
+    },
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,
@@ -377,12 +400,14 @@ export const API_ENDPOINTS = {
     GET_ALL_PARK_BOOKINGS: `${API_BASE_URL}ParkReport/GetDetailedBookingsSummary`,
     GET_ALL_DEPARTMENT_BOOKINGS: `${API_BASE_URL}DashBoard/GetEnitywisedashBoardCount`,
     GET_BOOKINGS_BY_ROLE: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRole`,
+    GET_VIEW_POINTS_COUNTS: `${API_BASE_URL}v3/Parking/GetDashboardForPos`,
     PIE_CHARTS: {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
     GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
+  GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,
   },
   RTC_DASHBOARD: {
     GET_OVER_ALL: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardReports`,
@@ -440,8 +465,8 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
       GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
       GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
-      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
-      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
+      GET_POS_REPORT: `${API_BASE_URL}v3/Parking/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${API_BASE_URL}v3/Parking/GetVehicleTypes`,
     },
     DASHBOARD: {
       GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

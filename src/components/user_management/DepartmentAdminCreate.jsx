@@ -21,10 +21,11 @@ const DepartmentAdminCreate = ({
   const { allDepartmentTypes, fetchAllDepartmentTypes,isFetchAllDepartmentTypesLoading } =
     useDepartmentTypesStore();
     const departmentOptions =
-    allDepartmentTypes?.map((department) => ({
-      value: department.departmentId,
-      label: department.departmentName,
-    })) || [];
+    allDepartmentTypes?.filter((department) => department.isActive !== false)
+      .map((department) => ({
+        value: department.departmentId,
+        label: department.departmentName,
+      })) || [];
   
 
   useEffect(() => {
@@ -54,8 +55,8 @@ const DepartmentAdminCreate = ({
       ? (departmentAdminEditDetails?.password || "")
       : "",
     IsActive: isNodalOfficerEditVisible
-      ? (departmentAdminEditDetails?.status ?? true)
-      : true,
+      ? (departmentAdminEditDetails?.status ?? "")
+      : "",
   };
   const createValidationSchema = Yup.object({
     departmentIds: Yup.array().of(Yup.string().required()).min(1, "Select at least one department").required("Department is required"),
@@ -71,9 +72,10 @@ const DepartmentAdminCreate = ({
     phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit mobile number"),
     // .max(10, "Phone Number Must contain 10 digits"),
     password: Yup.string()
-      .required()
-      .min(10)
-      .max(10),
+      .required("Password is required")
+      .min(10, "Enter min 10 characters password")
+      .max(16),
+    IsActive: Yup.boolean().required("Status is required"),
   });
   const updateValidationSchema = Yup.object({
     departmentIds: Yup.array().of(Yup.string().required()).min(1, "Select at least one department").required("Department is required"),
@@ -88,9 +90,10 @@ const DepartmentAdminCreate = ({
     emailId: Yup.string().required("EmailId is required"),
     phoneNumber: Yup.string().required("Phone Number is required").matches(/^\d{10}$/, "Enter 10 digit Phone Number"),
     password: Yup.string()
-      .trim()
-      .required()
-      .matches(/^\d{10}$/, "Enter 10 digit Password"),
+      .required("Password is required")
+      .min(10, "Enter min 10 characters password")
+      .max(16),
+    IsActive: Yup.boolean().required("Status is required"),
   });
 
   const onSubmit = async (
@@ -406,7 +409,7 @@ const DepartmentAdminCreate = ({
                     htmlFor="password"
                     className="block text-xs font-medium text-gray-700"
                   >
-                    Password {!isNodalOfficerEditVisible &&<span className="text-red-500">*</span>}
+                    Password <span className="text-red-500">*</span>
                   </label>
                   <Field
                     autoComplete="off"

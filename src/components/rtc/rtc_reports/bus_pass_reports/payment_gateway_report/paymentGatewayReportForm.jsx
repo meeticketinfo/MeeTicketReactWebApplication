@@ -1,75 +1,118 @@
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 import {
   cleanString,
-  getEndOfCurrentDay,
-  getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
-import { useBuspassUserStore } from "../../../../../store/rtc/RtcUserReportStore";
-import Select from "react-select";
+import { useBuspassPaymentTransactionStore } from "../../../../../store/rtc/buspassPaymentTransactionStore";
  
 const PaymentGatewayReportForm = ({
   PageIndex,
-  pageNumber,
-  pageSize,
+  pageNumber = 1,
+  pageSize = 10,
   SetcurrentPage,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    isBusPassUserReportsLoading,
-    allBusPassUserReports,
-    fetchBusPassUserReports,
-  } = useBuspassUserStore();
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+    isBusPassPaymentTransactionsLoading,
+    allBusPassPaymentTransactions,
+    fetchBusPassPaymentTransactions,
+  } = useBuspassPaymentTransactionStore();
  
-  // Get current date and time in the format required for datetime-local input
-  const getCurrentDateTime = () => {
+  // Get next day date for settlement date
+  const getNextDay = (dateString) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Get current date in YYYY-MM-DD format for date input
+  const getCurrentDate = () => {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0");
     const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
- 
-  const getCurrentDateWithEndTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}T23:59`;
-  };
- 
- 
-  const maxDateTime = getCurrentDateTime();
-  console.log(searchParams.get("mobileNo"));
-  const initialValues = {
-    fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
-    toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    depotName: searchParams.get("depotName") || "",
-    paymentGateway: searchParams.get("paymentGateway") || "",
-    reportType: searchParams.get("reportType") || "Detailed",
+    return `${year}-${month}-${day}`;
   };
 
-  // Mock data for dropdowns - replace with actual API data
-  const depotOptions = [
-    { value: "", label: "All Depots" },
-    { value: "depot1", label: "Depot 1" },
-    { value: "depot2", label: "Depot 2" },
-    { value: "depot3", label: "Depot 3" },
-  ];
+  // Get saved filters from URL params or localStorage or defaults
+  const getInitialValues = () => {
+    if (searchParams.toString()) {
+      // Use URL params first (highest priority)
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
+      return {
+        transactionDate: transactionDate,
+        settlementDate: cleanString(searchParams.get("settlementDate"), "_", ":") || '',
+      };
+    } else {
+      const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
+      
+      if (savedParams && savedParams !== "") {
+        // Use saved filters from localStorage if no URL params
+        const params = new URLSearchParams(savedParams);
+        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
+        return {
+          transactionDate: transactionDate,
+          settlementDate: cleanString(params.get("settlementDate"), "_", ":") || '',
+        };
+      } else {
+        // Use defaults - today's date
+        const currentDate = getCurrentDate();
+        return {
+          transactionDate: '',
+          settlementDate: '',
+        };
+      }
+    }
+  };
 
-  const paymentGatewayOptions = [
-    { value: "paytm", label: "Paytm" },
-    { value: "razorpay", label: "Razorpay" },
-    { value: "phonepe", label: "PhonePe" },
-    { value: "googlepay", label: "Google Pay" },
-  ];
- 
+  const initialValues = getInitialValues();
+
+  // Fetch data on component mount with URL params or saved/current filters
+  useEffect(() => {
+    if (searchParams.toString()) {
+      // Use URL params first (highest priority)
+      const transactionDate = cleanString(searchParams.get("transactionDate"), "_", ":") || '';
+      const settlementDate = cleanString(searchParams.get("settlementDate"), "_", ":") || '';
+   console.log(transactionDate, settlementDate);
+      fetchBusPassPaymentTransactions({
+        transactionDate: transactionDate,
+        settlementDate: settlementDate,
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+      });
+    } else {
+      const savedParams = localStorage.getItem("busPassPaymentOuterTransactionSearchParams");
+
+      if (savedParams && savedParams !== "") {
+        // Use saved filters if no URL params
+        const params = new URLSearchParams(savedParams);
+        const transactionDate = cleanString(params.get("transactionDate"), "_", ":") || '';
+        const settlementDate = cleanString(params.get("settlementDate"), "_", ":") || '';
+      
+        fetchBusPassPaymentTransactions({
+          transactionDate: transactionDate,
+          settlementDate: settlementDate,
+          pageNumber: pageNumber,
+          pageSize: pageSize,
+        });
+      } else {
+        // Use defaults - today's date
+        const currentDate = getCurrentDate();
+        fetchBusPassPaymentTransactions({
+          transactionDate: '',
+          settlementDate: '',
+          pageNumber: pageNumber,
+          pageSize: pageSize,
+        });
+      }
+    }
+  }, []);
+
   const onSubmit = (values) => {
-    console.log(values);
     const newSearchParams = new URLSearchParams();
     Object.keys(values).forEach((key) => {
       if (values[key]) {
@@ -77,14 +120,14 @@ const PaymentGatewayReportForm = ({
       }
     });
     setSearchParams(newSearchParams);
-    localStorage.setItem("userBusPassReportSearchParams", newSearchParams);
- 
-    fetchBusPassUserReports({
-      fromDate: values.fromDate,
-      toDate: values.toDate,
-      depotName: values.depotName || "",
-      paymentGateway: values.paymentGateway || "",
-      reportType: values.reportType || "Detailed",
+    
+    // Save filters to localStorage when Search is clicked
+    localStorage.setItem("busPassPaymentOuterTransactionSearchParams", newSearchParams.toString());
+
+    fetchBusPassPaymentTransactions({
+      transactionDate: values.transactionDate,
+      settlementDate: values.settlementDate,
+      // status: cleanString(searchParams.get("status"), "_", ":") || "",
       pageNumber: pageNumber,
       pageSize: pageSize,
     });
@@ -92,182 +135,92 @@ const PaymentGatewayReportForm = ({
   };
  
   const resetForm = (setValues) => {
-    const payload = {
-      fromDate: startOfDay,
-      toDate: endOfDay,
-      depotName: "",
-      paymentGateway: "",
-      reportType: "Detailed",
+    // Get current date in YYYY-MM-DD format for date input
+    const getCurrentDate = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     };
- 
+
+    const currentDate = getCurrentDate();
+    const payload = {
+      transactionDate: '',
+      settlementDate: '',
+    };
+
     // Clear URL search params
     setSearchParams(new URLSearchParams());
-    localStorage.setItem("userBusPassReportSearchParams", "");
+    
+    // Clear localStorage ONLY when Reset is clicked
+    localStorage.removeItem("busPassPaymentOuterTransactionSearchParams");
+    
+    // Reset form values
     setValues(payload);
-    fetchBusPassUserReports({
-      ...payload,
-      pageNumber: pageNumber,
+
+    fetchBusPassPaymentTransactions({
+      transactionDate: payload.transactionDate,
+      settlementDate: payload.settlementDate,
+      pageNumber: 1,
       pageSize: pageSize,
     });
-    localStorage.setItem("userBusPassReportSearchParams", "");
   };
  
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-6 gap-4 pb-3">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
             
-            {/* From Date */}
+            {/* Transaction Date */}
             <div>
               <label
-                htmlFor="fromDate"
+                htmlFor="transactionDate"
                 className="block text-xs font-medium text-gray-700"
               >
-                From Date
+                Transaction Date
               </label>
               <Field
                 type="date"
-                name="fromDate"
+                name="transactionDate"
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
-                  const fromDateValue = e.target.value;
-                  setFieldValue("fromDate", fromDateValue);
-                  if (new Date(fromDateValue) > new Date(values.toDate)) {
-                    setFieldValue("toDate", fromDateValue);
+                  setFieldValue("transactionDate", e.target.value);
+                  // Auto-update settlement date to next day if it's before transaction date
+                  if (e.target.value && values.settlementDate) {
+                    const transactionDate = new Date(e.target.value);
+                    const settlementDate = new Date(values.settlementDate);
+                    if (settlementDate <= transactionDate) {
+                      setFieldValue("settlementDate", getNextDay(e.target.value));
+                    }
                   }
                 }}
               />
             </div>
 
-            {/* To Date */}
+            {/* Settlement Date */}
             <div>
               <label
-                htmlFor="toDate"
+                htmlFor="settlementDate"
                 className="block text-xs font-medium text-gray-700"
               >
-                To Date
+                Settlement Date
               </label>
               <Field
                 type="date"
-                name="toDate"
+                name="settlementDate"
+                min={values.transactionDate ? getNextDay(values.transactionDate) : undefined}
                 className={`mt-1 block w-full px-2 py-1 border
-                         border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 onChange={(e) => {
-                  const toDateValue = e.target.value;
-                  if (
-                    values.fromDate &&
-                    new Date(toDateValue) < new Date(values.fromDate)
-                  ) {
-                    setFieldValue("fromDate", toDateValue);
-                  }
-                  setFieldValue("toDate", toDateValue);
-                }}
-              />
-            </div>
-            {/* Depot Name */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Depot Name
-              </label>
-              <Select
-                name="depotName"
-                value={depotOptions.find(option => option.value === values.depotName) || depotOptions[0]}
-                options={depotOptions}
-                onChange={(selectedOption) =>
-                  setFieldValue("depotName", selectedOption?.value || "")
-                }
-                className="mt-1 text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#000",
-                    cursor: "pointer",
-                  }),
+                  setFieldValue("settlementDate", e.target.value);
                 }}
               />
             </div>
 
-            {/* Payment Gateway */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Payment Gateway
-              </label>
-              <Select
-                name="paymentGateway"
-                value={paymentGatewayOptions.find(option => option.value === values.paymentGateway) || paymentGatewayOptions[0]}
-                options={paymentGatewayOptions}
-                onChange={(selectedOption) =>
-                  setFieldValue("paymentGateway", selectedOption?.value || "")
-                }
-                className="mt-1 text-sm"
-                classNamePrefix="react-select"
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    outline: "none",
-                    boxShadow: "none",
-                    borderColor: "#ced4da",
-                    borderRadius: "6px",
-                    height: "30px",
-                    minHeight: "33px",
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                  }),
-                  option: (base, { isFocused }) => ({
-                    ...base,
-                    fontSize: "0.775rem",
-                    backgroundColor: isFocused ? "#F8F8F8" : "white",
-                    color: isFocused ? "#0C3771" : "#000",
-                    cursor: "pointer",
-                  }),
-                }}
-              />
-            </div>
-
-            {/* Type - Radio buttons */}
-            {/* <div>
-              <label className="block text-xs font-medium text-gray-700 mb-2">
-                Type
-              </label>
-              <div className="flex gap-4 mt-1">
-                <label className="flex items-center">
-                  <Field
-                    type="radio"
-                    name="reportType"
-                    value="Summary"
-                    className="mr-1"
-                  />
-                  <span className="text-xs">Summary</span>
-                </label>
-                <label className="flex items-center">
-                  <Field
-                    type="radio"
-                    name="reportType"
-                    value="Detailed"
-                    className="mr-1"
-                  />
-                  <span className="text-xs">Detailed</span>
-                </label>
-              </div>
-            </div> */}
+         
 
 
             {/* Buttons */}
@@ -276,11 +229,18 @@ const PaymentGatewayReportForm = ({
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 
-                disabled={isBusPassUserReportsLoading}
+                disabled={isBusPassPaymentTransactionsLoading}
               >
               Search
               </button>
-            
+              <button
+                type="button"
+                onClick={() => resetForm(setValues)}                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+
+                disabled={isBusPassPaymentTransactionsLoading}
+              >
+                Reset
+              </button>
             </div>
           </Form>
         )}

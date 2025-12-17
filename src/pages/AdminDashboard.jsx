@@ -16,8 +16,6 @@ import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
 import {
   formatToCurrency,
-  formatToStandardDate,
-  formatToStandardTime,
   getCurrentDate,
 } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
@@ -37,6 +35,16 @@ import { useDepartmentTypesStore } from "../store/masters/departmentTypesStore";
 import { departmentToCategoryMapping } from "../utils/Helper";
 import HoverPopup from "../utils/HoverPopup";
 import DepartmentTable from "./park_admin/users/department_logins_table/DepartmentTable";
+import { useBuspassDashboardStore } from "../components/rtc/dashboard/BuspassDashboard/store/buspassDashboardStore";
+import WalkerpassOverallDetails from "../components/walkerPass/WalkerpassOverallDetails";
+
+import WalkerpassMostPopularPassType from "../components/walkerPass/WalkerpassMostPopularPassType";
+import WalkerpassPassTypeDistribution from "../components/walkerPass/WalkerpassPassTypeDistribution";
+import WalkerpassExpiredPasses from "../components/walkerPass/WalkerpassExpiredPasses";
+import WalkerpassFilter from "../components/walkerPass/WalkerpassFilter";
+import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";  
+import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
+import DashboardViewPoints from "./park_admin/dashboard_components/DashboardViewPoints";
 
 function AdminDashboard() {
   superballs.register();
@@ -47,6 +55,7 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
+  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } = useWalkerpassStore();
   const {
     allParks,
     fetchAllParks,
@@ -56,8 +65,9 @@ function AdminDashboard() {
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
-  // console.log("allEntityTypes", allEntityTypes);
+
   const { roleDetails, decodedTokenData } = useAuthStore();
+
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const parkId = decodedTokenData?.data?.ParkId;
@@ -67,6 +77,10 @@ function AdminDashboard() {
   const [isFacilitiesBookingDate, setIsFacilitiesBookingDate] = useState(false);
   const [activeBookingsTab, setActiveBookingsTab] = useState("graph");
   const [activeAmountTab, setActiveAmountTab] = useState("graph");
+  const [bookingSortOrder, setBookingSortOrder] = useState("none");
+  const [bookingLocationFilter, setBookingLocationFilter] = useState("");
+  const [amountSortOrder, setAmountSortOrder] = useState("none");
+  const [locationNameFilter, setLocationNameFilter] = useState("");
   const {
     allCounts,
     fetchAllDashboardCounts,
@@ -90,6 +104,7 @@ function AdminDashboard() {
   } = useDashboardStore();
 
   const { setDetailedReportParams } = useDashboardDetailedStore();
+  const { fetchBuspassDashboard } = useBuspassDashboardStore();
   // console.log(AllDepartmentEntities, "alldepartmentEntities");
   const initialValues = {
     fromDate: getCurrentDate(),
@@ -101,6 +116,8 @@ function AdminDashboard() {
 
   useEffect(() => {
     fetchAllDepartmentTypes();
+    const currentDate = getCurrentDate();
+    fetchWalkerpassDashboard({ fromDate: '', toDate: '' });
     fetchAllEntityTypes();
     fetchAllDepartmentEntities({
       fromDate: "",
@@ -244,7 +261,8 @@ function AdminDashboard() {
 
   const cardsToDisplay =
     roleDetails?.name === "ROLE_ADMIN" ||
-    roleDetails?.name === "ROLE_ZOOPARKADMIN"|roleDetails?.name === "ROLE_COUNTERLOGIN"
+    (roleDetails?.name === "ROLE_ZOOPARKADMIN") |
+      (roleDetails?.name === "ROLE_COUNTERLOGIN")
       ? dashboardCardsCountByRole
       : dashboardCards;
 
@@ -347,10 +365,31 @@ function AdminDashboard() {
     locationId: "",
   };
   const overAllOnSubmit = (values) => {
-    console.log("values", values);
-    fetchAllDashboardCounts(roleDetails, { ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
-    fetchAllEntityWiseCounts({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
-    fetchAllZooDashBoardCountsTicketWise({ ...values, active: true, fromDate: !isBookingDate ? values.fromDate : "", toDate: !isBookingDate ? values.toDate : "", bookingDateFrom: isBookingDate ? values.fromDate : "", bookingDateTo: isBookingDate ? values.toDate : "" });
+
+    fetchAllDashboardCounts(roleDetails, {
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
+    fetchAllEntityWiseCounts({
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
+    fetchAllZooDashBoardCountsTicketWise({
+      ...values,
+      active: true,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
+    });
     fetchAllDepartmentEntities(values);
   };
 
@@ -388,8 +427,10 @@ function AdminDashboard() {
               <Form>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-                    <select 
+                    <label className="block text-xs font-medium text-gray-700">
+                      Booking/Purchase Date
+                    </label>
+                    <select
                       onChange={(e) => {
                         setIsBookingDate(e.target.value === "true");
                       }}
@@ -648,29 +689,25 @@ function AdminDashboard() {
           </Formik>
         </div>
         {cardsToDisplay &&
-          cardsToDisplay.map(
-            (card, index) => (
-              // console.log("card.isPopup", card.isPopup),
-              (
-                <>
-                  <DashboardCard01
-                    setIsHovered={setIsHovered}
-                    isPopup={card.isPopup}
-                    key={index}
-                    lableName={card.lableName}
-                    count={card.count}
-                    percentageChange={card.percentageChange}
-                    icon={card.icon}
-                    isLoading={isFetchCountsLoading}
-                  />
+          cardsToDisplay.map((card, index) => (
+            // console.log("card.isPopup", card.isPopup),
+            <>
+              <DashboardCard01
+                setIsHovered={setIsHovered}
+                isPopup={card.isPopup}
+                key={index}
+                lableName={card.lableName}
+                count={card.count}
+                percentageChange={card.percentageChange}
+                icon={card.icon}
+                isLoading={isFetchCountsLoading}
+              />
 
-                  <div className="absolute left-60 top-72">
-                    <HoverPopup isHovered={isHovered} data={card} />
-                  </div>
-                </>
-              )
-            )
-          )}
+              <div className="absolute left-60 top-72">
+                <HoverPopup isHovered={isHovered} data={card} />
+              </div>
+            </>
+          ))}
 
         {/* ZOO DASHBOARD */}
         {(roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
@@ -754,7 +791,8 @@ function AdminDashboard() {
           ))}
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
-        roleDetails?.name === "ROLE_ADMIN"||roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
+        roleDetails?.name === "ROLE_ADMIN" ||
+        roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
           <>
             <div className="col-span-full ">
               <h1 className=" text-xl font-bold">
@@ -762,18 +800,20 @@ function AdminDashboard() {
               </h1>
               <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-4 ">
                 <div>
-                    <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-                    <select 
-                      onChange={(e) => {
-                        setIsFacilitiesBookingDate(e.target.value === "true");
-                      }}
-                      name="bookingDate"
-                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                    >
-                      <option value="false">Purchase Date</option>
-                      <option value="true">Booking Date</option>
-                    </select>
-                  </div>
+                  <label className="block text-xs font-medium text-gray-700">
+                    Booking/Purchase Date
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      setIsFacilitiesBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
                 <div>
                   <label
                     htmlFor="fromDate"
@@ -796,7 +836,14 @@ function AdminDashboard() {
                 <div className="flex items-end">
                   <button
                     onClick={() => {
-                      fetchAllZooDashBoardCounts({DashboardDate : !isFacilitiesBookingDate ? DashboardDate : "", bookingDateFrom: isFacilitiesBookingDate ? DashboardDate : ""});
+                      fetchAllZooDashBoardCounts({
+                        DashboardDate: !isFacilitiesBookingDate
+                          ? DashboardDate
+                          : "",
+                        bookingDateFrom: isFacilitiesBookingDate
+                          ? DashboardDate
+                          : "",
+                      });
                     }}
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >
@@ -827,7 +874,8 @@ function AdminDashboard() {
                         className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                          e.target.src =
+                            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         }}
                         alt={services.service[0]?.serviceName || "Service"}
                       />
@@ -889,7 +937,8 @@ function AdminDashboard() {
                         className="text-3xl font-bold text-white dark:text-gray-100 w-8 h-8 object-contain"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                          e.target.src =
+                            'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
                         }}
                         alt={service?.serviceName || "Service"}
                       />
@@ -931,13 +980,15 @@ function AdminDashboard() {
             <DashboardCard07>
               <div className="w-full">
                 <h2 className="text-xl font-bold mb-4">Total Bookings</h2>
-                
+
                 {/* Tab Navigation */}
                 <div className="flex border-b border-gray-200 mb-4">
                   <button
                     onClick={() => setActiveBookingsTab("graph")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeBookingsTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeBookingsTab === "graph"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     Graph View
@@ -945,7 +996,9 @@ function AdminDashboard() {
                   <button
                     onClick={() => setActiveBookingsTab("list")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeBookingsTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeBookingsTab === "list"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     List View
@@ -966,6 +1019,31 @@ function AdminDashboard() {
 
                 {activeBookingsTab === "list" && (
                   <div className="relative">
+                    {/* Controls: Location filter and Bookings sort */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700"></label>
+                        <input
+                          type="text"
+                          value={bookingLocationFilter}
+                          onChange={(e) => setBookingLocationFilter(e.target.value)}
+                          placeholder="location name..."
+                          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <select
+                          className="border w-28 border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          value={bookingSortOrder}
+                          onChange={(e) => setBookingSortOrder(e.target.value)}
+                        >
+                          <option value="none">None</option>
+                          <option value="asc">Low to High</option>
+                          <option value="desc">High to Low</option>
+                        </select>
+                      </div>
+                    </div>
                     <div className="overflow-x-auto max-h-96 overflow-y-auto">
                       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                         <thead className="bg-gray-50 sticky top-0 z-10">
@@ -977,67 +1055,109 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Bookings (This Month)
+                              Bookings 
                             </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                           {isFetchPieChartsLoading ? (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 <div className="flex justify-center">
                                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                                 </div>
                               </td>
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
-                            allPieCharts.map((item, index) => (
+                            (() => {
+                              const filtered = (allPieCharts || []).filter((item) => {
+                                const name = (item?.entity || "").toString().toLowerCase();
+                                return bookingLocationFilter
+                                  ? name.includes(bookingLocationFilter.toLowerCase())
+                                  : true;
+                              });
+                              if (filtered.length === 0) {
+                                return (
+                                  <tr>
+                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                      No data available
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                              const sorted = bookingSortOrder === "none"
+                                ? filtered
+                                : [...filtered].sort((a, b) => {
+                                    const av = Number(a?.entityWiseTotalBookings || 0);
+                                    const bv = Number(b?.entityWiseTotalBookings || 0);
+                                    return bookingSortOrder === "asc" ? av - bv : bv - av;
+                                  });
+                              return sorted.map((item, index) => (
                               <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || 'N/A'}
+                                  {item.entity || "N/A"}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalBookings ? 
-                                    new Intl.NumberFormat('en-IN').format(item.entityWiseTotalBookings) : '0'
-                                  }
+                                  {item.entityWiseTotalBookings
+                                    ? new Intl.NumberFormat("en-IN").format(
+                                        item.entityWiseTotalBookings
+                                      )
+                                    : "0"}
                                 </td>
                               </tr>
-                            ))
+                              ));
+                            })()
                           ) : (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 No data available
                               </td>
                             </tr>
                           )}
                         </tbody>
-                      </table>
-                    </div>
-                    {/* Sticky Total Row */}
-                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
-                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                        <table className="min-w-full">
-                          <tbody>
+                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
+                          const filtered = (allPieCharts || []).filter((item) => {
+                            const name = (item?.entity || "").toString().toLowerCase();
+                            return bookingLocationFilter
+                              ? name.includes(bookingLocationFilter.toLowerCase())
+                              : true;
+                          });
+                          return filtered.length > 0;
+                        })() && (
+                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
                             <tr>
-                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 {/* Empty S.No column */}
                               </td>
-                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 Total
                               </td>
-                              <td className="py-3 pr-2 md:pr-[74px] text-xs md:text-sm font-semibold text-gray-900">
-                                {new Intl.NumberFormat('en-IN').format(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0)
-                                )}
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                {(() => {
+                                  const filtered = (allPieCharts || []).filter((item) => {
+                                    const name = (item?.entity || "").toString().toLowerCase();
+                                    return bookingLocationFilter
+                                      ? name.includes(bookingLocationFilter.toLowerCase())
+                                      : true;
+                                  });
+                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0);
+                                  return new Intl.NumberFormat('en-IN').format(total);
+                                })()}
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                          </tfoot>
+                        )}
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1047,13 +1167,15 @@ function AdminDashboard() {
             <DashboardCard07>
               <div className="w-full">
                 <h2 className="text-xl font-bold mb-4">Total Amount</h2>
-                
+
                 {/* Tab Navigation */}
                 <div className="flex border-b border-gray-200 mb-4">
                   <button
                     onClick={() => setActiveAmountTab("graph")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeAmountTab === "graph" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeAmountTab === "graph"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     Graph View
@@ -1061,7 +1183,9 @@ function AdminDashboard() {
                   <button
                     onClick={() => setActiveAmountTab("list")}
                     className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                      activeAmountTab === "list" ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+                      activeAmountTab === "list"
+                        ? "border-blue-500 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
                     }`}
                   >
                     List View
@@ -1082,6 +1206,31 @@ function AdminDashboard() {
 
                 {activeAmountTab === "list" && (
                   <div className="relative">
+                    {/* Controls: Location filter and Amount sort */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700"></label>
+                        <input
+                          type="text"
+                          value={locationNameFilter}
+                          onChange={(e) => setLocationNameFilter(e.target.value)}
+                          placeholder="location name..."
+                          className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <select
+                          className="border border-gray-300 w-28 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          value={amountSortOrder}
+                          onChange={(e) => setAmountSortOrder(e.target.value)}
+                        >
+                          <option value="none">None</option>
+                          <option value="asc">Low to High</option>
+                          <option value="desc">High to Low</option>
+                        </select>
+                      </div>
+                    </div>
                     <div className="overflow-x-auto max-h-96 overflow-y-auto">
                       <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
                         <thead className="bg-gray-50 sticky top-0 z-10">
@@ -1093,69 +1242,112 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Amount (This Month)
+                              Amount 
                             </th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                           {isFetchPieChartsLoading ? (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 <div className="flex justify-center">
                                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
                                 </div>
                               </td>
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
-                            allPieCharts.map((item, index) => (
+                            // Compute filtered and sorted data for display
+                            (() => {
+                              const filtered = (allPieCharts || []).filter((item) => {
+                                const name = (item?.entity || "").toString().toLowerCase();
+                                return locationNameFilter
+                                  ? name.includes(locationNameFilter.toLowerCase())
+                                  : true;
+                              });
+                              if (filtered.length === 0) {
+                                return (
+                                  <tr>
+                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                      No data available
+                                    </td>
+                                  </tr>
+                                );
+                              }
+                              const sorted = amountSortOrder === "none"
+                                ? filtered
+                                : [...filtered].sort((a, b) => {
+                                    const av = Number(a?.entityWiseTotalAmount || 0);
+                                    const bv = Number(b?.entityWiseTotalAmount || 0);
+                                    return amountSortOrder === "asc" ? av - bv : bv - av;
+                                  });
+                              return sorted.map((item, index) => (
                               <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
                                   {index + 1}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || 'N/A'}
+                                  {item.entity || "N/A"}
                                 </td>
                                 <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalAmount ? 
-                                    formatToCurrency(item.entityWiseTotalAmount, "INR", "en-IN") : '₹0'
-                                  }
+                                  {item.entityWiseTotalAmount
+                                    ? formatToCurrency(
+                                        item.entityWiseTotalAmount,
+                                        "INR",
+                                        "en-IN"
+                                      )
+                                    : "₹0"}
                                 </td>
                               </tr>
-                            ))
+                              ));
+                            })()
                           ) : (
                             <tr>
-                              <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                              <td
+                                colSpan="3"
+                                className="px-4 py-8 text-center text-gray-500"
+                              >
                                 No data available
                               </td>
                             </tr>
                           )}
                         </tbody>
-                      </table>
-                    </div>
-                    {/* Sticky Total Row */}
-                    {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (
-                      <div className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                        <table className="min-w-full">
-                          <tbody>
+                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
+                          const filtered = (allPieCharts || []).filter((item) => {
+                            const name = (item?.entity || "").toString().toLowerCase();
+                            return locationNameFilter
+                              ? name.includes(locationNameFilter.toLowerCase())
+                              : true;
+                          });
+                          return filtered.length > 0;
+                        })() && (
+                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
                             <tr>
-                              <td className="px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-gray-900 w-12 md:w-16">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 {/* Empty S.No column */}
                               </td>
-                              <td className="text-xs md:text-sm font-semibold text-gray-900 pl-2 md:pl-[106px]">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
                                 Total
                               </td>
-                              <td className="py-3 pr-2 md:pr-[17px] text-xs md:text-sm font-semibold text-gray-900">
-                                {formatToCurrency(
-                                  allPieCharts.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0),
-                                  "INR", 
-                                  "en-IN"
-                                )}
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                {(() => {
+                                  const filtered = (allPieCharts || []).filter((item) => {
+                                    const name = (item?.entity || "").toString().toLowerCase();
+                                    return locationNameFilter
+                                      ? name.includes(locationNameFilter.toLowerCase())
+                                      : true;
+                                  });
+                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0);
+                                  return formatToCurrency(total, "INR", "en-IN");
+                                })()}
                               </td>
                             </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+                          </tfoot>
+                        )}
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1172,10 +1364,21 @@ function AdminDashboard() {
             />
           </DashboardCard07>
         )}
+        
+
+            <WalkerpassFilter />
+            <WalkerpassOverallDetails />
+            <WalkerpassCategory />
+            <WalkerpassExpiredPasses />
+            {/* <WalkerpassRenewalPasses /> */}
+            {/* <WalkerpassMostPopularPassType /> */}
+            <WalkerpassPassTypeDistribution />
+      
       </div>
+      {/* View Points Counts */}
+      {(roleDetails?.name === "ROLE_ADMIN"&&decodedTokenData.data?.ParkId === "100") && <DashboardViewPoints />}
     </>
   );
 }
 
 export default AdminDashboard;
-

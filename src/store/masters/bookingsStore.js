@@ -270,7 +270,7 @@ export const useBookingsStore = create(
             FirstStepTransactionPayload
           );
 
-          if (response.status != 205) {
+          if (response.status != 205&&response.status != 201) {
             set({
               FirstStepTransactionResponse: response.data.data,
               IsFirstStepTransaction: true,
