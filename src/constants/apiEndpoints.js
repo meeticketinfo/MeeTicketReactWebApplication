@@ -1,13 +1,13 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
 // export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  PARK Prod
-export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 // export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
@@ -179,6 +179,9 @@ export const API_ENDPOINTS = {
       ADD_NEW_BANNER: `${API_BASE_URL}Advertisement/AddBanner`,
       UPDATE_BANNER: `${API_BASE_URL}Advertisement/UpdateBanner`,
       DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
+    },
+    OFFLINE_REFUND: {
+      ADD_NEW_OFFLINE_REFUND: `${API_BASE_URL}v2/PaymentTransaction/OfflineRefundRequest`,
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,

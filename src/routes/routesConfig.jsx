@@ -204,6 +204,7 @@ import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
 import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
 import IntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/intercitySettlementReport";
+import OfflineRefund from "../pages/finance/OfflineRefund";
 
 export const routes = [
   {
@@ -1046,5 +1047,11 @@ export const routes = [
   {
     path:"/walkers-pass-report",
     element:<ProtectedRoute element={<WalkersPassReport />} />,
-  }
+  },
+
+  // finance routes
+  {
+    path: "/finance-offline-refund",
+    element: <ProtectedRoute element={<OfflineRefund />} />,
+  },
 ];

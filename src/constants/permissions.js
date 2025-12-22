@@ -50,6 +50,7 @@ export const superAdminPermissions = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
+  "finance-offline-refund",
 ];
 
 // department

@@ -35,7 +35,7 @@ import { BsPassport } from "react-icons/bs";
 import { VscCompassActive } from "react-icons/vsc";
 import { MdEventAvailable } from "react-icons/md";
 import { GrAtm } from "react-icons/gr";
-
+import { HiReceiptRefund } from "react-icons/hi";
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -583,6 +583,18 @@ const sidebarItems = [
      
     ],
   },
+
+  // finance
+
+  {
+    title: "Offline Refund",
+    icon: HiReceiptRefund,
+    path: "/finance-offline-refund",
+    gradientClass:
+      "from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [],
+  },
+ 
 ];
 
 export default sidebarItems;
