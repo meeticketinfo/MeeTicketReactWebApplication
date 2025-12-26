@@ -65,6 +65,24 @@ const MetroRefundTransactionsReport = () => {
         params.value || params.value === " " ? params.value : "N/A",
     },
     {
+      field: "refundeddatetime",
+      headerName: "Refund Date",
+      maxWidth: "180",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
+    },
+    {
       field: "mobileNumber",
       minWidth: 100,
       headerName: "Mobile Number of user",

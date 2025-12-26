@@ -132,7 +132,7 @@ function IntercityIndividualList() {
     // -------------------
 
     {
-      field: "mobileNumber",
+      field: "isReturnType",
       headerName: "Travel type",
       // flex: 1,
       headerClass: "text-blue-v2",

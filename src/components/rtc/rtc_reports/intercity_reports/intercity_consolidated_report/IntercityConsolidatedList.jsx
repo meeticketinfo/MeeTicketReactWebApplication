@@ -258,11 +258,12 @@ function IntercityConsolidatedList() {
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+       
+        return `${formattedDate} `;
       },
     },
     {
@@ -273,11 +274,12 @@ function IntercityConsolidatedList() {
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        });
+        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+        const year = date.getFullYear(); // Get year
+        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+       
+        return `${formattedDate} `;
       },
     },
     {

@@ -199,6 +199,25 @@ function PaymentTransactionReport() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
+    
+    {
+      field: "refundResponseDateTime",
+      headerName: "Refund Date",
+      maxWidth: "180",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        const date = new Date(params.value);
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+      },
+    },
     {
       field: "isPaymentTransaction",
       headerName: " Status",
@@ -467,7 +486,7 @@ function PaymentTransactionReport() {
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-10xl text-gray-600 dark:text-gray-100 font-bold">
               Payment Transactions
             </h1>
           </div>

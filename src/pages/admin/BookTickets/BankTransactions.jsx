@@ -335,6 +335,10 @@ export default function BankTransactions() {
       field: "actions",
       hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
+
+        if (params.data?.departmentId=== 28||params.data?.parK_ID=== "100") {
+          return <span className="text-center text-red-500 text-xs font-bold ">HMDA / Zoo Park</span>; 
+        }
         const settlementId = params.data.settlementId;
 
         // Use the last clicked time if available, else fall back to API-provided time
