@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import {
   formatToCurrency,
@@ -10,6 +10,7 @@ import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable";
 
 function ApplicationDayWiseBookings() {
+  const [isBookingDate, setIsBookingDate] = useState(false);
   const {
     fetchAllFacilityBookingsByBookingSource,
     AllApplicationFacilityBookings,
@@ -20,6 +21,8 @@ function ApplicationDayWiseBookings() {
     fetchAllFacilityBookingsByBookingSource({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
+      bookingDateFrom: isBookingDate ? getCurrentDate() : "",
+      bookingDateTo: isBookingDate ? getCurrentDate() : "",
       bookingSource: "",
     });
   }, []);
@@ -27,14 +30,18 @@ function ApplicationDayWiseBookings() {
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
+    bookingDateFrom: isBookingDate ? getCurrentDate() : "",
+    bookingDateTo: isBookingDate ? getCurrentDate() : "",
     bookingSource: "",
   };
 
   const onSubmit = (values) => {
     console.log("values", values);
     fetchAllFacilityBookingsByBookingSource({
-      fromDate: values.fromDate,
-      toDate: values.toDate,
+      fromDate: !isBookingDate ? values.fromDate : "",
+      toDate: !isBookingDate ? values.toDate : "",
+      bookingDateFrom: isBookingDate ? values.fromDate : "",
+      bookingDateTo: isBookingDate ? values.toDate : "",
       bookingSource: values.bookingSource,
     });
   };
@@ -245,7 +252,22 @@ function ApplicationDayWiseBookings() {
         <div className="">
           <Formik initialValues={initialValues} onSubmit={onSubmit}>
             {({ values, setFieldValue }) => (
-              <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
+              <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700">
+                    Booking/Purchase Date
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      setIsBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
                 <div>
                   <label
                     htmlFor="fromDate"

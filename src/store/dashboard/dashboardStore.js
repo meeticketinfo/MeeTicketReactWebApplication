@@ -264,7 +264,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchFacilityBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}&bookingsByCounter=${filters.bookingsByCounter}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_Facility_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}&bookingsByCounter=${filters.bookingsByCounter}&bookingDateFrom=${filters.bookingDateFrom}&bookingDateTo=${filters.bookingDateTo}`
       );
       console.log("response", response);
       if (response.status == 200) {
@@ -283,7 +283,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFacilityDayWiseBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DAY_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DAY_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingDateFrom=${filters.bookingDateFrom}&bookingDateTo=${filters.bookingDateTo}`
       );
       console.log("response", response);
       if (response.status == 200) {
@@ -302,7 +302,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFetchFacilityBookingSourceLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_APPLICATION_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_APPLICATION_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingSource=${filters.bookingSource}&bookingDateFrom=${filters.bookingDateFrom}&bookingDateTo=${filters.bookingDateTo}`
       );
       // console.log("responsenow", response);
       if (response.status == 200) {
