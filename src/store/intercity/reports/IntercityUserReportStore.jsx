@@ -54,7 +54,7 @@ export const useIntercityUserStore = create((set) => ({
     set({ isFetchIntercityTransactionTrackingStatusByOrderId: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_REPORT_TRACK_ORDER}?orderId=RTCIntercity_ODR_20250913181756956JzlAvLw6`
+        `${API_ENDPOINTS.INTERCITY.REPORTS.GET_USER_REPORT_TRACK_ORDER}?orderId=${orderID}`
       );
       set({
         IntercityTransactionTrackingStatusByOrderIdData: response.data,
