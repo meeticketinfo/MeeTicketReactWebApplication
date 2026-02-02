@@ -20,6 +20,9 @@ import { bouncy } from "ldrs";
 import OtpLogin from "../OtpLogin";
 import MainOtpLogin from "./MainOtpLogin";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
+import MeeTicketInfo from "../../utils/MeeTicketInfo";
+import telanganaRisingLogo from "../../images/user/TS_rising_logo.png";
+// import telanganaRisingLogo from "../../images/user/TS_rising_logo2.png";
 
 const Login = () => {
   bouncy.register();
@@ -164,6 +167,19 @@ const Login = () => {
               </div>
             </div>
 
+            {/* Mobile Layout - Third Row: telangana rising */}
+            <div className="flex lg:hidden items-center justify-center w-full">
+              {/* IT Minister Section */}
+              <div className="flex items-center space-x-3">
+
+                <img
+                  src={telanganaRisingLogo}
+                  alt="Minister"
+                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
+                />
+              </div>
+            </div>
+
             {/* Desktop Layout - Original Structure */}
             <div className="hidden lg:flex items-center space-x-2">
               <img alt="site-logo" src={headerLogo} width={40} height={40} />
@@ -174,7 +190,16 @@ const Login = () => {
             </div>
 
             {/* Desktop Layout - Second Column */}
-            <div className="hidden lg:flex items-center space-x-8">
+            <div className="hidden lg:flex gap-2  items-center space-x-8 pr-4">
+              {/* telangana Risigning */}
+              <div className="flex items-center space-x-3 mx-20">
+
+                <img
+                  src={telanganaRisingLogo}
+                  alt="telangana"
+                  className="w-16 h-20 rounded-[20px]"
+                />
+              </div>
               {/* Chief Minister Section */}
               <div className="flex items-center space-x-3">
                 <div className="text-right">
@@ -204,25 +229,34 @@ const Login = () => {
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
               </div>
+
+
             </div>
           </div>
         </div>
 
         {/* Main Content Section */}
         <div className="flex-1 flex items-center justify-between py-5">
-          <div className=" w-full flex flex-col lg:flex-row  items-center justify-between">
-            {/* Image Section */}
-            <div className="w-full lg:w-1/2 flex justify-center ">
-              <img
-                src={meetickesTelanganaImg}
-                alt="MeeTicket Telangana"
-                className="w-full max-w-sm rounded-lg "
-              />
+          <div className=" w-full flex flex-col  lg:flex-row  items-center justify-between">
+            <div className="px-8 mb-20">
+              {/* Image Section */}
+              <div className="w-full  flex justify-center ">
+                <img
+                  src={meetickesTelanganaImg}
+                  alt="MeeTicket Telangana"
+                  className="w-40 h-40 max-w-sm rounded-lg "
+                />
+              </div>
+
+              <div className="w-full  mt-3 ">
+                <MeeTicketInfo />
+              </div>
+
             </div>
 
             {/* Form Section */}
-            <div autoComplete="off" className="w-full lg:w-1/2 max-w-md ">
-              <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 mb-3">
+            <div autoComplete="off" className="w-full  lg:w-1/2 max-w-md mb-2 ">
+              <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 ">
                 <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
                   Welcome to MeeTicket
                 </h2>
@@ -231,7 +265,7 @@ const Login = () => {
                   <input
                     id="toggle"
                     type="checkbox"
-                    className="peer hidden" 
+                    className="peer hidden"
                     checked={isPhoneSelected}
                     onChange={handleToggle}
                   />
@@ -251,18 +285,16 @@ const Login = () => {
 
                     {/* Tab 1: Login with Phone */}
                     <span
-                      className={`relative w-1/2 text-center text-sm font-bold py-2 z-10 transition-all duration-500 ease-in-out ${
-                        isPhoneSelected ? "text-gray-600" : "text-white"
-                      }`}
+                      className={`relative w-1/2 text-center text-sm font-bold py-2 z-10 transition-all duration-500 ease-in-out ${isPhoneSelected ? "text-gray-600" : "text-white"
+                        }`}
                     >
                       Officer
                     </span>
 
                     {/* Tab 2: Login with Email */}
                     <span
-                      className={`relative w-1/2 text-center text-sm py-2 font-bold z-10 transition-all duration-500 ease-in-out ${
-                        isPhoneSelected ? "text-white" : "text-gray-600"
-                      }`}
+                      className={`relative w-1/2 text-center text-sm py-2 font-bold z-10 transition-all duration-500 ease-in-out ${isPhoneSelected ? "text-white" : "text-gray-600"
+                        }`}
                     >
                       Admin
                     </span>
@@ -395,11 +427,10 @@ const Login = () => {
                             <button
                               type="submit"
                               disabled={isSubmitting}
-                              className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${
-                                isSubmitting
-                                  ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
-                                  : "bg-blue-v1 hover:bg-blue-v2"
-                              }`}
+                              className={`w-full h-12 flex justify-center items-center text-white rounded-lg transition-all duration-300 ${isSubmitting
+                                ? "bg-gradient-to-r from-blue-500 via-blue-300 to-blue-500 animate-pulse"
+                                : "bg-blue-v1 hover:bg-blue-v2"
+                                }`}
                             >
                               Sign in
                             </button>
@@ -411,7 +442,7 @@ const Login = () => {
                 </div>
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>
