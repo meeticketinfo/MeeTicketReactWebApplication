@@ -180,6 +180,11 @@ export const API_ENDPOINTS = {
       UPDATE_BANNER: `${API_BASE_URL}Advertisement/UpdateBanner`,
       DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
     },
+    ANDROID_IOS: {
+     
+      UPDATE_ANDROID_IOS_COUNT: `${API_BASE_URL}v2/DashBoard/AddNewAppDownloadDetails`,
+      
+    },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
       UPDATE_PARK_DETAILS: `${API_BASE_URL}Master/UpdatePark`,

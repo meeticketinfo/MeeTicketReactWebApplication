@@ -133,6 +133,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/banner",
       },
+      {
+        title: "Android/IOS",
+        icon: RiDashboard3Fill,
+        path: "/android-ios-entries",
+      },
     ],
   },
   {
