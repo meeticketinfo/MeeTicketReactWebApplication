@@ -112,6 +112,9 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
       GET_NODAL_OFFICER_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
     },
+      INTERCITY:{
+         ADD_INTERCITY_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/CreateRTCCity`,
+      },
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },

@@ -184,6 +184,7 @@ export const RtcAdmin = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
+  "add-intercity-cities"
  
 ];
 

@@ -371,6 +371,21 @@ const sidebarItems = [
       },
     ],
   },
+  {
+    title: "Intercity Masters",
+    icon: CgDatabase,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+   
+      {
+        title: "Add cities",
+        icon: RiDashboard3Fill,
+        path: "/add-intercity-cities",
+      },
+    ],
+  },
 
   // bus pass reports
   {
