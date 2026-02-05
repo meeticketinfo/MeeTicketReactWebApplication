@@ -175,6 +175,17 @@ function CreateSuperAdminFacilities({
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   placeholder="Enter Facility name"
+                  onKeyPress={(e) => {
+                    if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    const pastedText = e.clipboardData.getData("text");
+                    if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                      e.preventDefault();
+                    }
+                  }}
                 />
                 <ErrorMessage
                   className="text-red-600 text-sm"

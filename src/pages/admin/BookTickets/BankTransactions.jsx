@@ -55,9 +55,9 @@ export default function BankTransactions() {
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
 
-  const { decodedTokenData } = useAuthStore();
+  const { decodedTokenData,Details } = useAuthStore();
 
-  const email = decodedTokenData?.data?.email;
+  const email = Details?.EmailId;
   const localRefreshMap = new Map();
   useEffect(() => {
     fetchParkBankTransactions({

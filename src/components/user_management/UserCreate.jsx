@@ -225,6 +225,17 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter first name"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="firstName"
@@ -246,6 +257,11 @@ const UserCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter last name"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="lastName"

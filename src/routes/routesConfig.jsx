@@ -204,8 +204,6 @@ import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
 import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
 import IntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/intercitySettlementReport";
-import AndroidIosForm from "../pages/admin/android_ios_entries/AndroidIosForm";
-import AddIntercityCities from "../components/rtc/intercity_masters/IntercityCities";
 
 export const routes = [
   {
@@ -635,11 +633,6 @@ export const routes = [
     path: "/bus-pass-view-pass",
     element: <ProtectedRoute element={<ViewBusPass />} />,
   },
-  {
-    path: "/add-intercity-cities",
-    element: <ProtectedRoute element={<AddIntercityCities />} />,
-  },
-
   // Tourism
   {
     path: "/tourism-individual",
@@ -943,10 +936,6 @@ export const routes = [
   {
     path: "/banner",
     element: <ProtectedRoute element={<MainBannerCreation />} />,
-  },
-  {
-    path: "/android-ios-entries",
-    element: <ProtectedRoute element={<AndroidIosForm />} />,
   },
   //intercity
   {

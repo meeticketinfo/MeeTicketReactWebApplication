@@ -285,39 +285,3 @@ export const convertTo12HourFormat = (time24) => {
     return time24; // Return original if conversion fails
   }
 };
-
-// numbber formater
-export const formatCount = (value) => {
-  if (!value || isNaN(value)) return "0";
-
-  // < 1 Lakh → exact number
-  if (value < 100000) {
-    return value.toLocaleString("en-IN");
-  }
-
-  const formatWithUnit = (num, unitValue, unitLabel) => {
-    const raw = value / unitValue;
-    const remainder = value % unitValue;
-
-    // auto decimals: 1 or 2
-    const formatted =
-      raw < 10
-        ? raw.toFixed(2)
-        : raw.toFixed(1);
-
-    return (
-      formatted.replace(/\.0+$/, "") +
-      " " +
-      unitLabel +
-      (remainder > 0 ? "+" : "")
-    );
-  };
-
-  // Lakhs
-  if (value < 10000000) {
-    return formatWithUnit(value, 100000, "L");
-  }
-
-  // Crores
-  return formatWithUnit(value, 10000000, "Cr");
-};

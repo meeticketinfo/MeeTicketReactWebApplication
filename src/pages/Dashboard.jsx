@@ -12,12 +12,12 @@ import MainDashboard from "../components/rtc/dashboard/MainDashboard/mainDashboa
 import { ToastContainer } from "react-toastify";
 
 function Dashboard() {
-  const { roleDetails, decodedTokenData } = useAuthStore();
+  const { roleDetails, decodedTokenData,Details } = useAuthStore();
 
   const navigate = useNavigate();
   const parkId = decodedTokenData?.data?.ParkId;
   const role = roleDetails?.name;
-  const email = decodedTokenData?.data?.email;
+  const email = Details?.EmailId;
   const RenderContent = () => {
     if (roleDetails?.name === "ROLE_METROADMIN") {
       return <MetroDashboard />;

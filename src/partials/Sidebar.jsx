@@ -53,6 +53,7 @@ function Sidebar({ variant = "default" }) {
     logout,
     terminateSession,
     decodedTokenData,
+    Details,
   } = useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   // close on click outside
@@ -91,7 +92,7 @@ function Sidebar({ variant = "default" }) {
     }
   }, [sidebarExpanded]);
 
-  const email = decodedTokenData?.data?.email;
+  const email = Details?.EmailId;
   const role = roleDetails?.name;
 
   const parkId = decodedTokenData?.data.ParkId;
@@ -122,7 +123,7 @@ function Sidebar({ variant = "default" }) {
       return Amrabad;
     } else if (role === "Role_DeptAdmin") {
       return Department;
-    }else if (role === "ROLE_COUNTERLOGIN") {
+    } else if (role === "ROLE_COUNTERLOGIN") {
       return BotanicalGardenParkAdminPermissions;
     }
     return [];
@@ -147,10 +148,9 @@ function Sidebar({ variant = "default" }) {
   return (
     <div className="min-w-fit">
       {/* Sidebar backdrop (mobile only) */}
-      <div 
-        className={`fixed inset-0 bg-gray-900 bg-opacity-50 z-30 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`} 
+      <div
+        className={`fixed inset-0 bg-gray-900 bg-opacity-50 z-30 lg:hidden ${sidebarOpen ? "block" : "hidden"
+          }`}
         aria-hidden="true"
         onClick={() => setSidebarOpen(false)}
       ></div>
@@ -159,13 +159,11 @@ function Sidebar({ variant = "default" }) {
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar sidebar-expanded shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-500 ease-in-out ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-64"
-        } ${
-          variant === "v2"
+        className={`flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] w-64 overflow-y-scroll lg:overflow-y-auto no-scrollbar sidebar-expanded shrink-0 bg-blue-v1 dark:bg-gray-800 transition-all duration-500 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
+          } ${variant === "v2"
             ? "border-r border-gray-200 dark:border-gray-700/60 "
             : "rounded-r-2xl shadow-sm"
-        }`}
+          }`}
       >
         {/* Sidebar header */}
         <div className="flex justify-center my-3 pr-3 sm:px-2">
@@ -215,13 +213,12 @@ function Sidebar({ variant = "default" }) {
               {filteredSidebarItems.map((item, index) => (
                 <li
                   key={index}
-                  className={` mb-2 last:mb-0 ${
-                    item.subItems.some((subItem) =>
-                      pathname.startsWith(subItem.path)
-                    )
+                  className={` mb-2 last:mb-0 ${item.subItems.some((subItem) =>
+                    pathname.startsWith(subItem.path)
+                  )
                       ? "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]"
                       : ""
-                  }`}
+                    }`}
                 >
                   {item.subItems.length > 0 ? (
                     <SidebarLinkGroup
@@ -250,9 +247,8 @@ function Sidebar({ variant = "default" }) {
                               </div>
                               <div className="flex shrink-0 ml-2 arrow-icon">
                                 <svg
-                                  className={`w-3 h-3 ml-1 fill-current text-gray-400 dark:text-gray-500 ${
-                                    open && "rotate-180"
-                                  }`}
+                                  className={`w-3 h-3 ml-1 fill-current text-gray-400 dark:text-gray-500 ${open && "rotate-180"
+                                    }`}
                                   viewBox="0 0 12 12"
                                 >
                                   <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
@@ -274,10 +270,9 @@ function Sidebar({ variant = "default" }) {
                                     end
                                     to={subItem.path}
                                     className={({ isActive }) =>
-                                      `rounded-xl block menu-link truncate transition duration-150 ease-in-out px-3 py-2 font-medium text-sm ${
-                                        isActive
-                                          ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
-                                          : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
+                                      `rounded-xl block menu-link truncate transition duration-150 ease-in-out px-3 py-2 font-medium text-sm ${isActive
+                                        ? "bg-blue-v1 text-gray-100  border border-blue-v2 shadow-lg" // Active state styling
+                                        : "text-gray-300 hover:bg-blue-v2 hover:text-white hover:border-blue-v1" // Hover styling
                                       }`
                                     }
                                     onClick={() => {
@@ -291,11 +286,10 @@ function Sidebar({ variant = "default" }) {
                                     <div className="flex items-center">
                                       {subItem.icon && (
                                         <subItem.icon
-                                          className={`shrink-0 text-[14px] ${
-                                            pathname.includes(subItem.path)
+                                          className={`shrink-0 text-[14px] ${pathname.includes(subItem.path)
                                               ? "text-violet-500"
                                               : "text-gray-400 dark:text-gray-500"
-                                          }`}
+                                            }`}
                                         />
                                       )}
                                       <span className="menu-text text-sm font-medium ml-1 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
@@ -319,30 +313,26 @@ function Sidebar({ variant = "default" }) {
                       //   item.title === "Book Tickets" &&
                       //     setIsBookingFormVisible(true);
                       // }}
-                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150    ${
-                        pathname.includes(item.path)
+                      className={`px-3 py-2 block dark:text-gray-200 truncate transition duration-150    ${pathname.includes(item.path)
                           ? `text-gray-200 bg-blue-v1   from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04] `
                           : ` text-gray-300 dark:hover:text-white`
-                      }`}
+                        }`}
                     >
                       <div
-                        className={`flex item-flex items-center ${
-                          item.title === "Book Tickets"
-                            ? `${
-                                !sidebarOpen
-                                  ? "bg-white justify-center"
-                                  : "justify-center"
-                              } px-2 py-2  text-blue-v1 rounded-lg`
+                        className={`flex item-flex items-center ${item.title === "Book Tickets"
+                            ? `${!sidebarOpen
+                              ? "bg-white justify-center"
+                              : "justify-center"
+                            } px-2 py-2  text-blue-v1 rounded-lg`
                             : ""
-                        }  `}
+                          }  `}
                       >
                         {
                           <item.icon
-                            className={`shrink-0 text-[22px] ${
-                              pathname.includes(item.path)
+                            className={`shrink-0 text-[22px] ${pathname.includes(item.path)
                                 ? "text-violet-500"
                                 : "text-gray-400 dark:text-gray-500"
-                            }`}
+                              }`}
                           />
                         }
                         <span
@@ -362,12 +352,20 @@ function Sidebar({ variant = "default" }) {
         <div className="pt-3 flex justify-center mt-auto">
           <div className="pl-4 pr-3 py-2 bg-blue-v2 w-full flex justify-center">
             <button
-              onClick={() => {
-                updateCaptchaInput("");
-                // terminateSession();
-                logout();
-                localStorage.clear();
+              onClick={async () => {
+                try {
+                  // Call backend to terminate session
+                  await terminateSession();
+                } catch (error) {
+                  console.error("Terminate session failed:", error);
+                } finally {
+                  // Clear frontend state
+                  updateCaptchaInput("");
+                  logout();
+                  localStorage.clear();
+                }
               }}
+
               className="flex items-center gap-3 text-gray-200 hover:text-white dark:text-gray-500 dark:hover:text-gray-100"
             >
               <TbLogout2 className="shrink-0 text-[22px]" />

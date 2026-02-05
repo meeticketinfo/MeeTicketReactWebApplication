@@ -133,11 +133,6 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/banner",
       },
-      {
-        title: "Android/IOS",
-        icon: RiDashboard3Fill,
-        path: "/android-ios-entries",
-      },
     ],
   },
   {
@@ -368,21 +363,6 @@ const sidebarItems = [
         title: "Individual Incident Details",
         icon: TbReportSearch,
         path: "/Grievance-individual",
-      },
-    ],
-  },
-  {
-    title: "Intercity Masters",
-    icon: CgDatabase,
-    path: "",
-    gradientClass:
-      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
-    subItems: [
-   
-      {
-        title: "Add cities",
-        icon: RiDashboard3Fill,
-        path: "/add-intercity-cities",
       },
     ],
   },

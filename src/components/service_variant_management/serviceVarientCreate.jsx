@@ -161,6 +161,17 @@ const role = roleDetails?.name;
                     type="text"
                     name="name"
                     maxLength={50}
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.name && touched.name
                         ? "border-red-500"
@@ -288,6 +299,11 @@ const role = roleDetails?.name;
                     as="textarea"
                     name="description"
                     maxLength={255}
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.description && touched.description
                         ? "border-red-500"

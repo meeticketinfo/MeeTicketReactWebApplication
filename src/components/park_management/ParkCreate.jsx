@@ -362,6 +362,17 @@ const ParkCreate = ({
                   <Field
                     name="Name"
                     type="text"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.Name && touched.Name
                         ? "border-red-500"
@@ -385,6 +396,17 @@ const ParkCreate = ({
                     name="Street1"
                     id="Street1"
                     type="text"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.Street1 && touched.Street1
                         ? "border-red-500"
@@ -406,6 +428,17 @@ const ParkCreate = ({
                   <Field
                     name="Street2"
                     type="text"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.Street2 && touched.Street2
                         ? "border-red-500"
@@ -428,6 +461,17 @@ const ParkCreate = ({
                   <Field
                     name="City"
                     type="text"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.City && touched.City
                         ? "border-red-500"
@@ -478,6 +522,17 @@ const ParkCreate = ({
                     <Field
                       name="Latitude"
                       type="text"
+                      onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Latitude"
                     />
@@ -499,6 +554,17 @@ const ParkCreate = ({
                     <Field
                       name="Longitude"
                       type="text"
+                      onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter longitude"
                     />
@@ -571,6 +637,17 @@ const ParkCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   <ErrorMessage
                     name="Description"
@@ -729,6 +806,17 @@ const ParkCreate = ({
                   <Field
                     name="TermsConditions"
                     placeholder="Enter terms and conditions"
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                      onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
                     maxLength={255}
                     as="textarea"
                     className="mt-1 p-2 w-full rounded-lg border border-gray-300 "

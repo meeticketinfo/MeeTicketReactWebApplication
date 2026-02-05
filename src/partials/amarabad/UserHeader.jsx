@@ -4,9 +4,10 @@ import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
 import { FaHistory, FaShoppingCart, FaUser } from "react-icons/fa";
-
+import useAuthStore from "../../store/authStore";
 export const UserHeader = ({ isScrolled = false }) => {
   const { isLoggedIn, setIsLoggedIn, clearAmrabadSession, decodedTokenData } = amrabadAuthStore();
+  const {terminateSession } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -25,13 +26,27 @@ export const UserHeader = ({ isScrolled = false }) => {
     };
   }, []);
 
-  const handleLogout = () => {
+const handleLogout = async () => {
+  try {
+    // Call backend to terminate session
+    await terminateSession();
+
+  } catch (error) {
+    console.error("Terminate session failed:", error);
+  } finally {
+    // Clear frontend session
     setIsLoggedIn(false);
-    navigate("/amrabad-resort/login");
+
     localStorage.removeItem("amrabadlogin-store");
     clearAmrabadSession();
+
     setIsDropdownOpen(false);
-  };
+
+    // Redirect to login
+    navigate("/amrabad-resort/login");
+  }
+};
+
 
   const links = [
     {

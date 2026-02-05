@@ -1,50 +1,53 @@
 import useAuthStore from "../store/authStore";
 
-/// dev park
+// /// dev park
 // export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
+// dev park2
+// export const API_BASE_URL = "https://lgc8k395-7237.inc1.devtunnels.ms/api/";
+
 //  PARK UAT
-// export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
+export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  PARK Prod
-export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
-// export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
+export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
 
 //  paynow Prod
-export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
+// export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
 
 // metro dev
 // export const METRO_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
-// export const METRO_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
+export const METRO_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
 
 // METRO Prod
-export const METRO_API_BASE_URL = "https://meeticket.telangana.gov.in/metrohsmapi/";
+// export const METRO_API_BASE_URL = "https://meeticket.telangana.gov.in/metrohsmapi/";
 
 // metroapi UAT
-// export const METRO_API_Plain_BASE_URL = "https://uat.meeticket.telangana.gov.in/metroapi/";
+export const METRO_API_Plain_BASE_URL = "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 // metroapi Prod
-export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metroapi/";
-
+// export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metroapi/";
+// 
 //  Grievance DEV
 // export const GRIEVANCE_API_BASE_URL =
 //   "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
-// export const GRIEVANCE_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
+export const GRIEVANCE_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  Grievance Prod
-export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
+// export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
-export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
+// export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
-// export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
+export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM Prod
 // export const TOURISM_API_BASE_URL = "https://meeticket.telangana.gov.in/webservices/v1/";
@@ -52,30 +55,30 @@ export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.hel
 // RTC dev// export const RTC_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // RTC UAT
-// export const RTC_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+export const RTC_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC Prod
-export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 //RTC Intercity
 // export const RTC_INTERCITY_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
 
 // RTC Intercity UAT
-// export const RTC_INTERCITY_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcintercity/v1/";
+export const RTC_INTERCITY_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcintercity/v1/";
 
 // RTC Intercity Prod
-export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
+// export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
 
 // RTC BUS PASS DEV
 // export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
 
 // RTC BUS PASS UAT
-// export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC BUS PASS Prod
-export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 // Amarabad dev
@@ -112,9 +115,6 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
       GET_NODAL_OFFICER_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
     },
-      INTERCITY:{
-         ADD_INTERCITY_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/CreateRTCCity`,
-      },
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },
@@ -182,11 +182,6 @@ export const API_ENDPOINTS = {
       ADD_NEW_BANNER: `${API_BASE_URL}Advertisement/AddBanner`,
       UPDATE_BANNER: `${API_BASE_URL}Advertisement/UpdateBanner`,
       DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
-    },
-    ANDROID_IOS: {
-     
-      UPDATE_ANDROID_IOS_COUNT: `${API_BASE_URL}v2/DashBoard/AddNewAppDownloadDetails`,
-      
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,

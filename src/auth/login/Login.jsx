@@ -15,20 +15,34 @@ import {
 } from "react-simple-captcha";
 import useCaptchaStore from "../../store/useCaptchaStore";
 import { FaRedo, FaEye, FaEyeSlash } from "react-icons/fa";
+import CryptoJS from "crypto-js";
 import "./Login.css";
 import { bouncy } from "ldrs";
 import OtpLogin from "../OtpLogin";
 import MainOtpLogin from "./MainOtpLogin";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
-import MeeTicketInfo from "../../utils/MeeTicketInfo";
-import telanganaRisingLogo from "../../images/user/TS_rising_logo.png";
-// import telanganaRisingLogo from "../../images/user/TS_rising_logo2.png";
-
+import bcrypt from "bcryptjs";
 const Login = () => {
   bouncy.register();
   const navigate = useNavigate();
   const { isLoading, isAuthenticated, loginError, login, setOtpError } =
     useAuthStore();
+  const AES_KEY = "Q29kZXhTYW1wbGVLZXlGb3JBRVMyNTYhISEhISEhISE=";
+  const key = CryptoJS.enc.Base64.parse(AES_KEY);
+  const iv = CryptoJS.enc.Utf8.parse("1234567890123456");
+  const encryptAES = (text) => {
+    const encrypted = CryptoJS.AES.encrypt(
+      CryptoJS.enc.Utf8.parse(text),
+      key,
+      {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      }
+    );
+    return encrypted.toString();
+  }
+
   const { setTokenType } = amrabadAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [isPhoneSelected, setIsPhoneSelected] = useState(false);
@@ -39,6 +53,8 @@ const Login = () => {
     loadCaptcha,
     updateCaptchaInput,
     validateCaptchaInput,
+    CaptchaData,
+    GetCaptcha,
   } = useCaptchaStore();
 
   const initialValues = {
@@ -47,7 +63,10 @@ const Login = () => {
   };
 
   const validationSchema = Yup.object({
-    EmailId: Yup.string().required("Email Id is required"),
+    EmailId: Yup.string()
+      .email("Enter a valid email address")
+      .required("Email Id is required"),
+
     password: Yup.string().required("Password is required"),
   });
 
@@ -63,24 +82,54 @@ const Login = () => {
     }
   }, []);
 
+  useEffect(() => {
+    GetCaptcha()
+  }, []);
+
+  const encryptPayload = (payload) => {
+  const jsonString = JSON.stringify(payload);
+  return encryptAES(jsonString);
+};
+
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     localStorage.clear();
+
     setTokenType(null);
-    const isCaptchaValid = validateCaptchaInput();
-    if (!isCaptchaValid) {
-      setSubmitting(false);
-      return;
+
+    try {
+
+
+     const normalPayload = {
+      EmailId: values.EmailId,
+      password: values.password,
+      CaptchaToken: CaptchaData?.captchaToken,
+      CaptchaAnswer: captchaInput,
+    };
+
+    // ✅ Encrypt Whole Payload
+    const encryptedData = encryptPayload(normalPayload);
+
+    // ✅ Final Payload (Only Encrypted Data)
+    const payload = {
+      data: encryptedData,
+    };
+
+      const response = await login(payload);
+
+      if (response.success) {
+        resetForm();
+        navigate("/dashboard");
+      } else {
+        GetCaptcha();
+        updateCaptchaInput("");
+      }
+    } catch (err) {
+      console.error(err);
     }
-    const response = await login(values);
-    if (response.success) {
-      resetForm();
-      navigate("/dashboard");
-    } else {
-      loadCaptcha();
-      updateCaptchaInput("");
-    }
+
     setSubmitting(false);
   };
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -167,19 +216,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Mobile Layout - Third Row: telangana rising */}
-            <div className="flex lg:hidden items-center justify-center w-full">
-              {/* IT Minister Section */}
-              <div className="flex items-center space-x-3">
-
-                <img
-                  src={telanganaRisingLogo}
-                  alt="Minister"
-                  className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
-                />
-              </div>
-            </div>
-
             {/* Desktop Layout - Original Structure */}
             <div className="hidden lg:flex items-center space-x-2">
               <img alt="site-logo" src={headerLogo} width={40} height={40} />
@@ -190,16 +226,7 @@ const Login = () => {
             </div>
 
             {/* Desktop Layout - Second Column */}
-            <div className="hidden lg:flex gap-2  items-center space-x-8 pr-4">
-              {/* telangana Risigning */}
-              <div className="flex items-center space-x-3 mx-20">
-
-                <img
-                  src={telanganaRisingLogo}
-                  alt="telangana"
-                  className="w-16 h-20 rounded-[20px]"
-                />
-              </div>
+            <div className="hidden lg:flex items-center space-x-8">
               {/* Chief Minister Section */}
               <div className="flex items-center space-x-3">
                 <div className="text-right">
@@ -229,34 +256,25 @@ const Login = () => {
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
               </div>
-
-
             </div>
           </div>
         </div>
 
         {/* Main Content Section */}
         <div className="flex-1 flex items-center justify-between py-5">
-          <div className=" w-full flex flex-col  lg:flex-row  items-center justify-between">
-            <div className="px-8 mb-20">
-              {/* Image Section */}
-              <div className="w-full  flex justify-center ">
-                <img
-                  src={meetickesTelanganaImg}
-                  alt="MeeTicket Telangana"
-                  className="w-40 h-40 max-w-sm rounded-lg "
-                />
-              </div>
-
-              <div className="w-full  mt-3 ">
-                <MeeTicketInfo />
-              </div>
-
+          <div className=" w-full flex flex-col lg:flex-row  items-center justify-between">
+            {/* Image Section */}
+            <div className="w-full lg:w-1/2 flex justify-center ">
+              <img
+                src={meetickesTelanganaImg}
+                alt="MeeTicket Telangana"
+                className="w-full max-w-sm rounded-lg"
+              />
             </div>
 
             {/* Form Section */}
-            <div autoComplete="off" className="w-full  lg:w-1/2 max-w-md mb-2 ">
-              <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 ">
+            <div autoComplete="off" className="w-full lg:w-1/2 max-w-md ">
+              <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 mb-3">
                 <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
                   Welcome to MeeTicket
                 </h2>
@@ -372,25 +390,18 @@ const Login = () => {
                               {/* Captcha Section */}
                               <div className="flex items-center mb-6backdrop-blur-sm bg-white/30  rounded-lg border border-gray-300">
                                 <div className="relative flex items-center flex-row-reverse ">
-                                  <LoadCanvasTemplate
-                                    key={
-                                      isPhoneSelected
-                                        ? "phone-tab"
-                                        : "email-tab"
-                                    }
-                                    reloadText=""
+                                  <img
+                                    src={CaptchaData?.imageBase64}
+                                    alt="captcha"
+                                    width={160}
+                                    height={50}
                                   />
                                 </div>
                                 <button
                                   type="button"
                                   className="flex items-center justify-center p-3 text-blue-v1"
                                   onClick={() =>
-                                    loadCaptchaEnginge(
-                                      6,
-                                      "#a8b4c4",
-                                      "rgb(107 114 128 / 1)",
-                                      "upper"
-                                    )
+                                    GetCaptcha()
                                   }
                                 >
                                   <FaRedo size={16} />

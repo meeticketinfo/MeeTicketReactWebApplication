@@ -52,9 +52,9 @@ export default function MetroCumulativeBookings() {
     RefreshButton,
     isSaveRefreshButtonLoading,
   } = useMetroBookingStore();
-  const { decodedTokenData } = useAuthStore();
+  const { decodedTokenData,Details } = useAuthStore();
   console.log("isSaveRefreshButtotLoading", isSaveRefreshButtonLoading);
-  const email = decodedTokenData?.data?.email;
+  const email = Details?.EmailId;
   useEffect(() => {
     fetchAllMetroCumulativeBookingDetailsReport({
       fromDate: getCurrentDate(),

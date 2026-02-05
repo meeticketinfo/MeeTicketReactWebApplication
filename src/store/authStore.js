@@ -3,12 +3,17 @@ import { persist } from "zustand/middleware";
 import apiService from "../services/apiService"; // Adjust with your API service setup
 import sidebarItems from "../partials/sidebarItems";
 import { toast } from "react-toastify";
+import { decryptRolesPayload } from "../utils/CryptoJS";
 
-const LOGIN_API_ENDPOINT = "/Authentication/login";
+const LOGIN_API_ENDPOINT = "/encrypted/login";
+
 const OTP_LOGIN_API_ENDPOINT = "/Authentication/ValidateLoginOTP";
 const LOGOUT = "Authentication/logout";
 const DECODED_TOKEN_ENDPOINT = "/Authentication/GetDecodedToken";
-const GET_ALL_ROLES = "/Master/GetAllRoles";
+const GET_ALL_ROLES = "/encrypted/GetAllRoles";
+const GET_ALL_Details = "/encrypted/GetUserDetailsByUserId?UserId=";
+
+
 
 const useAuthStore = create(
   persist(
@@ -24,6 +29,7 @@ const useAuthStore = create(
       roleDetails: null, // To store role id and name
       sidebarMenuItems: [], // To store filtered sidebar items
       redirectError: null,
+      Details: null,
 
       setRedirectError: (redirectError) => {
         set({ redirectError });
@@ -39,6 +45,7 @@ const useAuthStore = create(
           // Fetch decoded token data and roles upon successful login
           await get().fetchDecodedToken();
           await get().fetchUserRoles();
+          await get().fetchUserDetails();
           set({
             loginError: "",
           });
@@ -105,6 +112,7 @@ const useAuthStore = create(
           set({ token, error: null, isLoading: false, isAuthenticated: true });
           await get().fetchDecodedToken();
           await get().fetchUserRoles();
+          await get().fetchUserDetails();
           set({
             loginError: "",
           });
@@ -182,17 +190,37 @@ const useAuthStore = create(
       },
 
       fetchUserRoles: async () => {
+        // console.log("log")
         try {
           const response = await apiService.get(GET_ALL_ROLES);
-          const roles = response.data;
+         
+          const roles = decryptRolesPayload(response.data.data);
+        
+          // const roles = response.data;
           set({ userRoles: roles, error: null });
-
           // Find role details based on decoded token roleId
           const roleId = get().decodedTokenData?.data?.RoleId;
           const roleDetails = roles.find((role) => role.id === roleId);
           if (roleDetails) {
             set({ roleDetails });
           }
+        } catch (error) {
+          set({ error: error.message });
+        }
+      },
+
+      // for userid and mobile number
+
+      fetchUserDetails: async () => {
+
+        const userId = get().decodedTokenData?.data?.UserId;
+        try {
+          const response = await apiService.get(`${GET_ALL_Details}${userId}`);
+         
+          const details = decryptRolesPayload(response.data.token);
+         
+
+          set({ Details: details });
         } catch (error) {
           set({ error: error.message });
         }

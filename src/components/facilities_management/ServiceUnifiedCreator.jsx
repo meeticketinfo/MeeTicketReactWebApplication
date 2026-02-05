@@ -330,6 +330,17 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   onChange={(e) => {
                     setFieldValue("facilityDto.description", e.target.value);
                   }}
+                  onKeyPress={(e) => {
+                    if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    const pastedText = e.clipboardData.getData("text");
+                    if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className={`mt-1 block w-full px-2 py-1 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   placeholder="Enter description"
                 />
@@ -366,6 +377,11 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
                               placeholder="Enter Sub-Facility"
+                              onKeyPress={(e) => {
+                                if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               astrix={true}
                             />
                             <TextInput

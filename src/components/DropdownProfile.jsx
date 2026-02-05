@@ -14,7 +14,7 @@ function DropdownProfile({ align }) {
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
-  const { logout, isAuthenticated, roleDetails, decodedTokenData,terminateSession } =
+  const { logout, isAuthenticated, roleDetails, decodedTokenData,terminateSession,Details } =
     useAuthStore();
   const { updateCaptchaInput } = useCaptchaStore();
   
@@ -75,9 +75,9 @@ function DropdownProfile({ align }) {
         <div className="flex items-center truncate max-w-[150px] sm:max-w-[200px] md:max-w-[250px] lg:max-w-[300px]">
           <span 
             className="truncate ml-2 text-sm font-medium text-gray-600 dark:text-gray-100 group-hover:text-gray-800 dark:group-hover:text-white break-words"
-            title={decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || decodedTokenData?.data?.email || "Name"}
+            title={decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || Details?.EmailId || "Name"}
           >
-            {decodedTokenData?.data?.email || "Name"}
+            {Details?.EmailId || "Name"}
           </span>
           <svg
             className="w-3 h-3 shrink-0 ml-1 fill-current text-gray-400 dark:text-gray-500"
@@ -111,7 +111,7 @@ function DropdownProfile({ align }) {
               title={decodedTokenData?.data?.name || decodedTokenData?.data?.firstName || "User Name"}
               onClick={handleMobileTooltip}
             >
-              {decodedTokenData?.data?.email || "Name"}
+              {Details?.EmailId || "Name"}
               {/* Mobile tooltip */}
               {showMobileTooltip && (
                 <div className="absolute bottom-full left-0 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-50 whitespace-nowrap">
@@ -120,9 +120,9 @@ function DropdownProfile({ align }) {
                 </div>
               )}
             </div>
-            {decodedTokenData?.data?.PhoneNumber&&
+            {Details?.PhoneNumber&&
             <div className="font-normal text-xs text-black dark:text-gray-100 break-words">
-              Mobile Number : <span>{decodedTokenData?.data?.PhoneNumber || "mobile"}</span>
+              Mobile Number : <span>{Details?.PhoneNumber || "mobile"}</span>
               {/* {decodedTokenData?.data?.email || "Name"} */}
             </div>
             }
@@ -144,11 +144,19 @@ function DropdownProfile({ align }) {
               <Link
                 className="font-medium text-sm text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 flex items-center py-1 px-3"
                 // to="/signin"
-                onClick={() => {
+                 onClick={async () => {
+                try {
+                  // Call backend to terminate session
+                  await terminateSession();
+                } catch (error) {
+                  console.error("Terminate session failed:", error);
+                } finally {
+                  // Clear frontend state
                   updateCaptchaInput("");
                   logout();
                   localStorage.clear();
-                }}
+                }
+              }}
               >
                 Sign out
               </Link>

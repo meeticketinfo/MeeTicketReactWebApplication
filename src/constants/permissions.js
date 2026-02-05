@@ -50,7 +50,6 @@ export const superAdminPermissions = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
-  "android-ios-entries",
 ];
 
 // department
@@ -137,7 +136,7 @@ export const MetroReports = [
   "summary-report",
   "transaction-report",
   "booking-details",
-  "pending-transaction-details",
+  "pending-transaction-details", 
   "transaction-general-report",
   // "Grievance-consolidate",
   "Grievance-Incident",
@@ -184,7 +183,6 @@ export const RtcAdmin = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
-  "add-intercity-cities"
  
 ];
 

@@ -18,7 +18,7 @@ const ServiceCreate = ({ onDataAdded }) => {
     ServiceEditDetails,
   } = useServiceStore();
   const { isCreateServiceEnabled } = useUnifiedFacilityStore();
-  const {  roleDetails } =
+  const { roleDetails } =
     useAuthStore();
   const role = roleDetails?.name;
 
@@ -32,7 +32,7 @@ const ServiceCreate = ({ onDataAdded }) => {
   const initialValues = {
     id: isCreateServiceEnabled ? "" : ServiceEditDetails.id,
     name: isCreateServiceEnabled ? "" : ServiceEditDetails.name,
-    limit: isCreateServiceEnabled ? null : (ServiceEditDetails.limit<0)&&(ServiceEditDetails.limit!=null)?"no limit":ServiceEditDetails.limit,
+    limit: isCreateServiceEnabled ? null : (ServiceEditDetails.limit < 0) && (ServiceEditDetails.limit != null) ? "no limit" : ServiceEditDetails.limit,
     serviceSequenceNumber: isCreateServiceEnabled
       ? ""
       : ServiceEditDetails.sequenceNumber,
@@ -137,11 +137,10 @@ const ServiceCreate = ({ onDataAdded }) => {
                   <Field
                     as="select"
                     name="facilityId"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.facilityId && touched.facilityId
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.facilityId && touched.facilityId
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Facility</option>
                     {allFacilities
@@ -167,13 +166,18 @@ const ServiceCreate = ({ onDataAdded }) => {
                     name="name"
                     type="text"
                     maxLength={50}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.name && touched.name
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.name && touched.name
                         ? "border-red-500"
                         : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Actual Name"
                   />
+
                   <ErrorMessage
                     name="name"
                     component="div"
@@ -185,7 +189,7 @@ const ServiceCreate = ({ onDataAdded }) => {
                   <label className="block text-sm font-medium">Limit</label>
                   <Field
                     name="limit"
-                   
+
                     onKeyDown={(e) => {
                       // Allow only numbers and backspace
                       if (
@@ -233,11 +237,10 @@ const ServiceCreate = ({ onDataAdded }) => {
                   <Field
                     as="select"
                     name="isActive"
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.isActive && touched.isActive
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.isActive && touched.isActive
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Status</option>
                     <option value={true}>Active</option>
@@ -259,11 +262,21 @@ const ServiceCreate = ({ onDataAdded }) => {
                     as="textarea"
                     name="description"
                     maxlength={255}
-                    className={`mt-1 block w-full px-2 py-1 border ${
-                      errors.description && touched.description
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    onKeyPress={(e) => {
+                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pastedText = e.clipboardData.getData("text");
+                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className={`mt-1 block w-full px-2 py-1 border ${errors.description && touched.description
+                      ? "border-red-500"
+                      : "border-gray-300"
+                      } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
                   />
                   <ErrorMessage
@@ -284,8 +297,8 @@ const ServiceCreate = ({ onDataAdded }) => {
                   {isSaveServiceDetailsLoading
                     ? "Saving..."
                     : isCreateServiceEnabled
-                    ? "Add Sub Facility"
-                    : "Update Sub Facility"}
+                      ? "Add Sub Facility"
+                      : "Update Sub Facility"}
                 </button>
               </div>
             </Form>

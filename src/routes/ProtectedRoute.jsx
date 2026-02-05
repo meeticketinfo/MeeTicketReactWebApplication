@@ -17,13 +17,13 @@ import {
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
-  const { isAuthenticated, roleDetails, decodedTokenData } = useAuthStore();
+  const { isAuthenticated, roleDetails, decodedTokenData,Details } = useAuthStore();
   const location = useLocation();
 
   const role = roleDetails?.name;
 
-  const email = decodedTokenData?.data?.email;
-
+  const email = Details?.EmailId;
+  
   const parkId = decodedTokenData?.data.ParkId;
 
   const rolePermissions = useMemo(() => {
