@@ -84,7 +84,7 @@ const EntityCreateForm = ({
             onSubmit(values, actions, saveEntityTypeDetails)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting,setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-3">
                 {/* Service Name */}
@@ -108,17 +108,7 @@ const EntityCreateForm = ({
                       const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
                       setFieldValue("entityTypeName", value);
                     }}
-                    onKeyPress={(e) => {
-                      if (!/^[a-zA-Z0-9]$/.test(e.key)) {
-                        e.preventDefault();
-                      }
-                    }}
-                    onPaste={(e) => {
-                      const pastedText = e.clipboardData.getData("text");
-                      if (!/^[a-zA-Z0-9]*$/.test(pastedText)) {
-                        e.preventDefault();
-                      }
-                    }}
+                    
                   />
                   <ErrorMessage
                     name="entityTypeName"

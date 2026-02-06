@@ -127,7 +127,7 @@ const ServiceCreate = ({ onDataAdded }) => {
             onSubmit(values, actions, saveServiceDetails)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting,setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-3">
                 <div>

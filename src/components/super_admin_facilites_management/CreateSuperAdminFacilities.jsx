@@ -105,7 +105,7 @@ function CreateSuperAdminFacilities({
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ errors, touched, isSubmitting }) => (
+        {({ errors, touched, isSubmitting ,setFieldValue}) => (
           <Form className="grid grid-cols-1 justify-center">
             <div className="grid grid-cols-1 gap-6 p-6  rounded-lg w-96 mx-auto">
 

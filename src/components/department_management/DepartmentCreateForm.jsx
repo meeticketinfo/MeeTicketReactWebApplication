@@ -98,7 +98,7 @@ const DepartmentCreateForm = ({
             onSubmit(values, actions, saveDepartmentTypeDetails)
           }
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, isSubmitting,setFieldValue }) => (
             <Form>
               <div className="grid grid-cols-1 md:grid-cols-1 gap-4 p-6">
                 {/* Service Name */}
