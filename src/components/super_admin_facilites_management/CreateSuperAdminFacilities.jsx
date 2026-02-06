@@ -175,6 +175,10 @@ function CreateSuperAdminFacilities({
                   type="text"
                   className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   placeholder="Enter Facility name"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                    setFieldValue("facilityName", value);
+                  }}
                   onKeyPress={(e) => {
                     if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                       e.preventDefault();

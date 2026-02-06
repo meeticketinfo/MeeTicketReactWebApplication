@@ -119,6 +119,10 @@ const CreateBanner = ({ setIsBannerCreateVisible, setIsEdit, isEdit }) => {
                   name="BannerTitle"
                   maxLength={100}
                   type="text"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                    setFieldValue("BannerTitle", value);
+                  }}
                   className={`mt-1 block w-full px-2 py-1 border-gray-300  rounded-md shadow-sm focus:outline-none  bg-white text-sm`}
                   placeholder="Enter banner title"
                 />
@@ -217,6 +221,7 @@ const CreateBanner = ({ setIsBannerCreateVisible, setIsEdit, isEdit }) => {
                   type="number"
                   min="1"
                   max="999"
+                 
                   onInput={(e) => {
                     if (e.target.value.length > 3) {
                       e.target.value = e.target.value.slice(0, 3);
@@ -242,6 +247,10 @@ const CreateBanner = ({ setIsBannerCreateVisible, setIsEdit, isEdit }) => {
                   name="BannerDescription"
                   className={`mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   placeholder="Enter description"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                    setFieldValue("BannerDescription", value);
+                  }}
                   onKeyPress={(e) => {
                     if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                       e.preventDefault();

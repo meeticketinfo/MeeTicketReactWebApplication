@@ -362,6 +362,10 @@ const ParkCreate = ({
                   <Field
                     name="Name"
                     type="text"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("Name", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -396,6 +400,10 @@ const ParkCreate = ({
                     name="Street1"
                     id="Street1"
                     type="text"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("Street1", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -428,6 +436,10 @@ const ParkCreate = ({
                   <Field
                     name="Street2"
                     type="text"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("Street2", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -461,6 +473,10 @@ const ParkCreate = ({
                   <Field
                     name="City"
                     type="text"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("City", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -499,6 +515,10 @@ const ParkCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Pincode"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("ZipCode", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^\d$/.test(e.key)) {
                         e.preventDefault(); // Prevent non-numeric characters
@@ -522,6 +542,10 @@ const ParkCreate = ({
                     <Field
                       name="Latitude"
                       type="text"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                        setFieldValue("Latitude", value);
+                      }}
                       onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -554,6 +578,10 @@ const ParkCreate = ({
                     <Field
                       name="Longitude"
                       type="text"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                        setFieldValue("Longitude", value);
+                      }}
                       onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -637,6 +665,11 @@ const ParkCreate = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter description"
+                   
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("Description", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();

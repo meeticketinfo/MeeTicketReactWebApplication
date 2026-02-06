@@ -328,7 +328,8 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                   maxlength={100}
                   name="facilityDto.description"
                   onChange={(e) => {
-                    setFieldValue("facilityDto.description", e.target.value);
+                    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                    setFieldValue("facilityDto.description", value);
                   }}
                   onKeyPress={(e) => {
                     if (!/^[a-zA-Z0-9]$/.test(e.key)) {
@@ -377,6 +378,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               name={`subFacilities[${index}].name`}
                               label="Sub-Facility Name"
                               placeholder="Enter Sub-Facility"
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                                setFieldValue(`subFacilities[${index}].name`, value);
+                              }}
                               onKeyPress={(e) => {
                                 if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                                   e.preventDefault();
@@ -389,6 +394,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                               placeholder="Enter Limit"
                               name={`subFacilities[${index}].Limit`}
                               label="Limit"
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                setFieldValue(`subFacilities[${index}].Limit`, value);
+                              }}
                               onKeyDown={(e) => {
                                 // Allow only numbers and backspace
                                 if (
@@ -492,6 +501,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                             maxLength={5}
                                             astrix={true}
                                             placeholder="Enter Amount"
+                                            onChange={(e) => {
+                                              const value = e.target.value.replace(/[^0-9]/g, "");
+                                              setFieldValue(`subFacilities[${index}].ticketTypes[${ticketIndex}].amount`, value);
+                                            }}
                                             onKeyDown={(e) => {
                                               // Allow only numbers and backspace
                                               if (
@@ -518,6 +531,10 @@ const ServiceUnifiedCreator = ({ setIsFacilityCreateVisible }) => {
                                             type="text"
                                             astrix={true}
                                             placeholder="Enter Sequence"
+                                            onChange={(e) => {
+                                              const value = e.target.value.replace(/[^0-9]/g, "");
+                                              setFieldValue(`subFacilities[${index}].ticketTypes[${ticketIndex}].typeOfTicketSequenceNumber`, value);
+                                            }}
                                             onKeyDown={(e) => {
                                               // Allow only numbers and backspace
                                               if (

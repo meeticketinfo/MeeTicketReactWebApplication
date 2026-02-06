@@ -161,6 +161,10 @@ const role = roleDetails?.name;
                     type="text"
                     name="name"
                     maxLength={50}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("name", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
@@ -299,6 +303,10 @@ const role = roleDetails?.name;
                     as="textarea"
                     name="description"
                     maxLength={255}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("description", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();

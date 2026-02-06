@@ -104,6 +104,10 @@ const EntityCreateForm = ({
                         : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                     placeholder="Enter Location Category Name"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      setFieldValue("entityTypeName", value);
+                    }}
                     onKeyPress={(e) => {
                       if (!/^[a-zA-Z0-9]$/.test(e.key)) {
                         e.preventDefault();
