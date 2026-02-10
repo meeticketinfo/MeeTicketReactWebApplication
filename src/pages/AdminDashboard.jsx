@@ -1366,13 +1366,13 @@ function AdminDashboard() {
         )}
         
 
-            <WalkerpassFilter />
+            {/* <WalkerpassFilter />
             <WalkerpassOverallDetails />
             <WalkerpassCategory />
-            <WalkerpassExpiredPasses />
+            <WalkerpassExpiredPasses /> */}
             {/* <WalkerpassRenewalPasses /> */}
             {/* <WalkerpassMostPopularPassType /> */}
-            <WalkerpassPassTypeDistribution />
+            {/* <WalkerpassPassTypeDistribution /> */}
       
       </div>
       {/* View Points Counts */}
