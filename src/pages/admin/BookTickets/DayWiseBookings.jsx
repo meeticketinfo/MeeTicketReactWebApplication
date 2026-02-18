@@ -31,6 +31,7 @@ function DayWiseBookings() {
     toDate: getCurrentDate(),
     bookingDateFrom: isBookingDate ? getCurrentDate() : "",
     bookingDateTo: isBookingDate ? getCurrentDate() : "",
+    bookingSource: "",
   };
 
   const onSubmit = (values) => {
@@ -40,6 +41,7 @@ function DayWiseBookings() {
       toDate: !isBookingDate ? values.toDate : "",
       bookingDateFrom: isBookingDate ? values.fromDate : "",
       bookingDateTo: isBookingDate ? values.toDate : "",
+      bookingSource:values.bookingSource
     });
   };
 
@@ -121,57 +123,57 @@ function DayWiseBookings() {
           ([serviceName, serviceVariants]) =>
             serviceName === "direct"
               ? // **2-Level Hierarchy** (Facility → Service Variant)
-                [
-                  ...Array.from(serviceVariants).map((serviceVariantName) => ({
-                    field: `${facilityName} - ${serviceVariantName} Quantity`,
-                    headerName: serviceVariantName,
-                    width: 130,
-                    headerClass: "text-blue-v1 capitalize  ",
-                  })),
-                  {
-                    field: `${facilityName} - Total Amount`,
-                    width: 120,
-                    headerName: "Total Amount",
-                    headerClass: "text-blue-v2 capitalize",
-                    valueGetter: (params) =>
-                      params.data[`${facilityName} - Total Amount`] || 0,
-                    valueFormatter: (params) =>
-                      params.value
-                        ? formatToCurrency(params.value, "INR", "en-IN")
-                        : "₹0",
-                  },
-                ]
+              [
+                ...Array.from(serviceVariants).map((serviceVariantName) => ({
+                  field: `${facilityName} - ${serviceVariantName} Quantity`,
+                  headerName: serviceVariantName,
+                  width: 130,
+                  headerClass: "text-blue-v1 capitalize  ",
+                })),
+                {
+                  field: `${facilityName} - Total Amount`,
+                  width: 120,
+                  headerName: "Total Amount",
+                  headerClass: "text-blue-v2 capitalize",
+                  valueGetter: (params) =>
+                    params.data[`${facilityName} - Total Amount`] || 0,
+                  valueFormatter: (params) =>
+                    params.value
+                      ? formatToCurrency(params.value, "INR", "en-IN")
+                      : "₹0",
+                },
+              ]
               : // **3-Level Hierarchy** (Facility → Service → Service Variant)
-                [
-                  {
-                    headerName: serviceName,
-                    headerClass: "text-blue-v2 text-center",
-                    children: [
-                      ...Array.from(serviceVariants).map(
-                        (serviceVariantName) => ({
-                          field: `${facilityName} - ${serviceName} - ${serviceVariantName} Quantity`,
-                          headerName: serviceVariantName,
-                          width: 130,
-                          headerClass: "text-blue-v2 capitalize ",
-                        })
-                      ),
-                      {
-                        field: `${facilityName} - ${serviceName} - Total Amount`,
-                        width: 120,
-                        headerName: "Total Amount",
-                        headerClass: "text-blue-v2 capitalize",
-                        valueGetter: (params) =>
-                          params.data[
-                            `${facilityName} - ${serviceName} - Total Amount`
-                          ] || 0,
-                        valueFormatter: (params) =>
-                          params.value
-                            ? formatToCurrency(params.value, "INR", "en-IN")
-                            : "₹0",
-                      },
-                    ],
-                  },
-                ]
+              [
+                {
+                  headerName: serviceName,
+                  headerClass: "text-blue-v2 text-center",
+                  children: [
+                    ...Array.from(serviceVariants).map(
+                      (serviceVariantName) => ({
+                        field: `${facilityName} - ${serviceName} - ${serviceVariantName} Quantity`,
+                        headerName: serviceVariantName,
+                        width: 130,
+                        headerClass: "text-blue-v2 capitalize ",
+                      })
+                    ),
+                    {
+                      field: `${facilityName} - ${serviceName} - Total Amount`,
+                      width: 120,
+                      headerName: "Total Amount",
+                      headerClass: "text-blue-v2 capitalize",
+                      valueGetter: (params) =>
+                        params.data[
+                        `${facilityName} - ${serviceName} - Total Amount`
+                        ] || 0,
+                      valueFormatter: (params) =>
+                        params.value
+                          ? formatToCurrency(params.value, "INR", "en-IN")
+                          : "₹0",
+                    },
+                  ],
+                },
+              ]
         ),
       };
     });
@@ -199,9 +201,9 @@ function DayWiseBookings() {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
-        //   hour: "2-digit",
-        //   minute: "2-digit",
-        //   hour12: true,
+          //   hour: "2-digit",
+          //   minute: "2-digit",
+          //   hour12: true,
         });
       },
     },
@@ -212,7 +214,7 @@ function DayWiseBookings() {
       valueFormatter: (params) =>
         params.value ? formatToCurrency(params.value, "INR", "en-IN") : "₹0",
     },
-  
+
     {
       field: "totalCashAmount",
       headerName: "Total Cash Amount (Rs.)",
@@ -237,7 +239,7 @@ function DayWiseBookings() {
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
-            Consolidated Facility Booking
+              Consolidated Facility Booking
             </h1>
           </div>
         </div>
@@ -260,6 +262,7 @@ function DayWiseBookings() {
                     <option value="true">Booking Date</option>
                   </select>
                 </div>
+                {/* from date */}
                 <div>
                   <label
                     htmlFor="fromDate"
@@ -274,6 +277,7 @@ function DayWiseBookings() {
                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   />
                 </div>
+                {/* to date */}
                 <div>
                   <label
                     htmlFor="toDate"
@@ -288,6 +292,26 @@ function DayWiseBookings() {
                     border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium">
+                    Created By
+                  </label>
+                  <Field
+                    as="select"
+                    name="bookingSource"
+                    className={` block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  >
+                    <option value="">Select Created By</option>
+
+                    <option value="MeeTicketApp">MeeTicket App</option>
+                    <option value="Counter">All Counters</option>
+                    <option value="NehruZooPark@gmail.com">NehruZooPark@gmail.com</option>
+                    <option value="NehruZooPark1@gmail.com">NehruZooPark1@gmail.com</option>
+                    <option value="NehruZooPark2@gmail.com">NehruZooPark2@gmail.com</option>
+                  </Field>
+                </div>
+
                 {/* <div>
                   <label className="block text-sm font-medium">
                     booking Source
@@ -320,7 +344,7 @@ function DayWiseBookings() {
           columnDefs={columnDefs}
           isFetchLoading={isFacilityDayWiseBookingsLoading}
           ExportName="Day Wise Facility Bookings"
-          //   pinnedBottomRowData={totalRow}
+        //   pinnedBottomRowData={totalRow}
         />
       </div>
     </AdminLayout>

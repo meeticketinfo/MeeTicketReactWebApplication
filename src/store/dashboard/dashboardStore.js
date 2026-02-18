@@ -283,7 +283,7 @@ export const useDashboardStore = create((set) => ({
     set({ isFacilityDayWiseBookingsLoading: true });
     try {
       const response = await apiService.get(
-        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DAY_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingDateFrom=${filters.bookingDateFrom}&bookingDateTo=${filters.bookingDateTo}`
+        `${API_ENDPOINTS.DASHBOARD.GET_ALL_DAY_WISE_BOOKINGS}?startDate=${filters.fromDate}&endDate=${filters.toDate}&bookingDateFrom=${filters.bookingDateFrom}&bookingDateTo=${filters.bookingDateTo}&bookingSource=${filters.bookingSource}`
       );
       console.log("response", response);
       if (response.status == 200) {
