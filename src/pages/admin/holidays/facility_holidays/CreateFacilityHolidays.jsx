@@ -3,15 +3,16 @@ import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useFacilityStore } from '../../../../store/masters/facilitiesStore';
 
-const weekdaysStartingWithSunday = [
-    "SUNDAY",
-    "MONDAY",
-    "TUESDAY",
-    "WEDNESDAY",
-    "THURSDAY",
-    "FRIDAY",
-    "SATURDAY",
-];
+const weekdaysStartingWithSunday =[
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday"
+  ]
+  ;
 
 const CreateFacilityHolidays = () => {
     const { fetchAllFacilities, allFacilities } = useFacilityStore();

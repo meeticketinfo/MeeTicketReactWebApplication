@@ -4,25 +4,24 @@ import { create } from "zustand";
 export const FacilityHolidayStore = create((set, get) => ({
 
 
+    allFacilityHolidays: [],
+    isFetchFacilityHolidaysLoading: false,
+    fetchFacilityHolidays: async () => {
+        set({ isFetchFacilityHolidaysLoading: true });
+        try {
 
-
-
-
-    // fetchAllHolidays: async (pageIndex = 1, pageSize = 10, filters = {}) => {
-    //     set({ isFetchAllHolidaysLoading: true });
-    //     try {
-    //         const filterString = get().serializeFilters(filters);
-    //         const response = await apiService.get(
-    //             `${API_ENDPOINTS.MASTERS.HOLIDAY.GET_HOLIDAYS}?PageIndex=${pageIndex}&PageSize=${pageSize}&${filterString}`
-    //         );
-    //         set({
-    //             allHolidays: response.data,
-    //             isFetchAllHolidaysLoading: false,
-    //         });
-    //     } catch (error) {
-    //         set({ isFetchAllHolidaysLoading: false });
-    //     }
-    // },
+            const response = await apiService.get(
+                `${API_ENDPOINTS.MASTERS.FACILITY_HOLIDAY.GET__FACILITY_HOLIDAY}`
+            );
+            set({
+                allFacilityHolidays: response.data,
+                isFetchFacilityHolidaysLoading: false,
+            });
+        } catch (error) {
+            set({ isFetchFacilityHolidaysLoading: false });
+            throw error;
+        }
+    },
 
 
 
@@ -40,7 +39,7 @@ export const FacilityHolidayStore = create((set, get) => ({
 
             const response = await apiService[method](url, Data);
             set({
-                
+
                 isSaveFacilityHolidayLoading: false,
             });
             return { success: true, data: response };
