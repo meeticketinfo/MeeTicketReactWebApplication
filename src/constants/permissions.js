@@ -76,6 +76,7 @@ export const parkAdminPermissions = [
   "bookings",
   "facility-services",
   "holidays",
+  "facility-holidays",
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",

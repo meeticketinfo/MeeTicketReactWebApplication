@@ -65,7 +65,7 @@ export default function BankTransactions() {
       toDate: getCurrentDate(),
       departmentId: "",
       entityTypeId: "",
-      ParkId:"",
+      ParkId: "",
     });
   }, [fetchParkBankTransactions]);
   useEffect(() => {
@@ -110,7 +110,7 @@ export default function BankTransactions() {
     {
       field: "purchaseDate",
       headerName: "Purchase Date",
-       maxWidth: "130",
+      maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         `${formatToStandardDate(params.value)} ` || "N/A",
@@ -131,7 +131,7 @@ export default function BankTransactions() {
     {
       field: "entityTypeName",
       headerName: "Location Category",
-       maxWidth: "180",
+      maxWidth: "180",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -139,14 +139,14 @@ export default function BankTransactions() {
     {
       field: "bookings",
       headerName: "Bookings",
-       maxWidth: "110",
+      maxWidth: "110",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
     {
       field: "quantity",
       headerName: "Quantity",
-       maxWidth: "110",
+      maxWidth: "110",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => `${params.value} ` || "0",
     },
@@ -154,7 +154,7 @@ export default function BankTransactions() {
       field: "cashCollectedAmount",
       headerName: "Collected Cash Amount",
       headerClass: "text-blue-v2",
-        maxWidth: "180",
+      maxWidth: "180",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -169,7 +169,7 @@ export default function BankTransactions() {
       field: "upiCollectedAmount",
       headerName: "Collected UPI Amount",
       headerClass: "text-blue-v2",
-        maxWidth: "180",
+      maxWidth: "180",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -198,7 +198,7 @@ export default function BankTransactions() {
       field: "verifiedAmount",
       headerName: " Verified Amount",
       headerClass: "text-blue-v2",
-        maxWidth: "140",
+      maxWidth: "140",
       cellRenderer: (params) =>
         params.value ? (
           <>
@@ -311,17 +311,16 @@ export default function BankTransactions() {
       cellRenderer: (params) =>
         params.value ? (
           <span
-            className={`${
-              params.value == "Settled"
+            className={`${params.value == "Settled"
                 ? "text-green-900 bg-green-100 px-2 py-0.5 rounded-lg"
                 : params.value == "In Progress"
-                ? "text-orange-900 bg-orange-200 px-2 py-0.5 rounded-lg"
-                : params.value == "Completed"
-                ? "text-green-900 bg-green-200 px-2 py-0.5 rounded-lg"
-                : params.value == "Verified"
-                ? "text-green-900 bg-blue-200 px-2 py-0.5 rounded-lg"
-                : "text-orange-700 bg-orange-100 px-2 py-0.5 rounded-lg"
-            } font-normal`}
+                  ? "text-orange-900 bg-orange-200 px-2 py-0.5 rounded-lg"
+                  : params.value == "Completed"
+                    ? "text-green-900 bg-green-200 px-2 py-0.5 rounded-lg"
+                    : params.value == "Verified"
+                      ? "text-green-900 bg-blue-200 px-2 py-0.5 rounded-lg"
+                      : "text-orange-700 bg-orange-100 px-2 py-0.5 rounded-lg"
+              } font-normal`}
           >
             {params.value}
           </span>
@@ -336,8 +335,8 @@ export default function BankTransactions() {
       hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
 
-        if (params.data?.departmentId=== 28||params.data?.parK_ID=== "100") {
-          return <span className="text-center text-red-500 text-xs font-bold ">HMDA / Zoo Park</span>; 
+        if (params.data?.departmentId === 28 || params.data?.parK_ID === "100") {
+          return <span className="text-center text-red-500 text-xs font-bold ">HMDA / Zoo Park</span>;
         }
         const settlementId = params.data.settlementId;
 
@@ -366,11 +365,10 @@ export default function BankTransactions() {
             {email !== "esdfinancialadmin@meeseva.com" ? (
               <>
                 <button
-                  className={`${
-                    params.data.status !== "Verified"
+                  className={`${params.data.status !== "Verified"
                       ? "bg-gray-300 cursor-not-allowed"
                       : "bg-green-400"
-                  } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+                    } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
                   disabled={params.data.status !== "Verified"}
                   onClick={() => {
                     setOpenModal(true);
@@ -413,9 +411,8 @@ export default function BankTransactions() {
                     >
                       <span>
                         <IoIosRefresh
-                          className={`text-[24px] text-blue-v2 ${
-                            isDisabled ? "text-gray-300 cursor-not-allowed" : ""
-                          }`}
+                          className={`text-[24px] text-blue-v2 ${isDisabled ? "text-gray-300 cursor-not-allowed" : ""
+                            }`}
                         />
                       </span>
                     </button>
@@ -424,12 +421,11 @@ export default function BankTransactions() {
             ) : (
               <>
                 <button
-                  className={`${
-                    params.data.status === "No Settlement" || params.data.status === "Not Settled"
+                  className={`${params.data.status === "Not Settled"
                       ? "bg-blue-v2"
                       : "bg-gray-300 cursor-not-allowed"
-                  } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                  disabled={params.data.status !== "No Settlement" && params.data.status !== "Not Settled"}
+                    } text-white leading-normal px-2 py-1 mt-1.5 rounded-md`}
+                  disabled={params.data.status != "Not Settled"}
                   onClick={() => {
                     setVerifyOpenModal(true);
                     setAmount_Date({
@@ -623,7 +619,7 @@ export default function BankTransactions() {
           text: ` Please try again.`,
           icon: "error",
           confirmButtonText: "OK",
-        }).then(() => {});
+        }).then(() => { });
       }
     } catch {
       Swal.fire({
@@ -631,7 +627,7 @@ export default function BankTransactions() {
         text: ` Please try again.`,
         icon: "error",
         confirmButtonText: "OK",
-      }).then(() => {});
+      }).then(() => { });
     }
   };
 
@@ -836,7 +832,7 @@ export default function BankTransactions() {
                   placeholder="Location"
                   className="mt-[4px] text-sm"
                   classNamePrefix="react-select"
-                styles={{
+                  styles={{
                     control: (base) => ({
                       ...base,
                       outline: "none",
@@ -865,7 +861,7 @@ export default function BankTransactions() {
                 <button
                   type="submit"
                   className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                  // disabled={isFetchAllParkBankTransactionsLoading}
+                // disabled={isFetchAllParkBankTransactionsLoading}
                 >
                   Search
                 </button>

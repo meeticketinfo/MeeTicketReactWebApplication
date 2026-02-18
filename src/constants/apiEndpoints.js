@@ -1,7 +1,7 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/api/";
 
 //  PARK UAT
 // export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
@@ -229,6 +229,11 @@ export const API_ENDPOINTS = {
       ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
       GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
     },
+      FACILITY_HOLIDAY:{
+        ADD_FACILITY_HOLIDAY: `${API_BASE_URL}Master/AddHolidaysList`,
+        UPDATE_FACILITY_HOLIDAY:`${API_BASE_URL}Master/AddHolidaysList`,
+        GET__FACILITY_HOLIDAY: `${API_BASE_URL}Master/GetAllHolidays`,
+      },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
     },

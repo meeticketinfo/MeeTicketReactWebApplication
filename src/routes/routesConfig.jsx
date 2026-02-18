@@ -206,6 +206,7 @@ import MainIntercitySettlementReport from "../components/rtc/rtc_reports/interci
 import IntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/intercitySettlementReport";
 import AndroidIosForm from "../pages/admin/android_ios_entries/AndroidIosForm";
 import AddIntercityCities from "../components/rtc/intercity_masters/IntercityCities";
+import MainFacilityHoliday from "../pages/admin/holidays/facility_holidays/MainFacilityHoliday";
 
 export const routes = [
   {
@@ -306,6 +307,7 @@ export const routes = [
     element: <ProtectedRoute element={<WorkingDays />} />,
   },
   { path: "/holidays", element: <ProtectedRoute element={<Holidays />} /> },
+  { path: "/facility-holidays", element: <ProtectedRoute element={<MainFacilityHoliday />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/book-tickets", element: <CustomBookTickets /> },
   {

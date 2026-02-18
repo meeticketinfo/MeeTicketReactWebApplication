@@ -267,6 +267,11 @@ const sidebarItems = [
         icon: MdOutlineWorkOff,
         path: "/holidays",
       },
+      {
+        title: "Facility Holidays",
+        icon: MdOutlineWorkOff,
+        path: "/facility-holidays",
+      },
     ],
   },
 
