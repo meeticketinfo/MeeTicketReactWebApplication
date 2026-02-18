@@ -97,7 +97,7 @@ export const useAmrabadPosStore = create((set) => ({
     try {
       const method = "get";
       const response = await apiService[method](
-        `${API_ENDPOINTS.MASTERS.POS_USER.GET_POS_VIEW_POINTS}`
+        `${API_ENDPOINTS.AMRABAD.REPORTS.GET_AMRABAD_BOOKING_POS_VIEW_POINTS}`
       );
       set({
         AmrabadPosViewPointsData: response.data,

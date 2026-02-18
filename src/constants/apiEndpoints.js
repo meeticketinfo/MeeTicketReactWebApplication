@@ -1,13 +1,13 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
 // export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  PARK Prod
-export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
 // export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
@@ -16,29 +16,28 @@ export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/"
 export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
 
 // metro dev
-// export const METRO_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/metroapi/";
+export const METRO_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/metroapi/";
 
 // METRO UAT
 // export const METRO_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/metrohsmapi/";
 
 // METRO Prod
-export const METRO_API_BASE_URL = "https://meeticket.telangana.gov.in/metrohsmapi/";
+// export const METRO_API_BASE_URL = "https://meeticket.telangana.gov.in/metrohsmapi/";
 
 // metroapi UAT
-// export const METRO_API_Plain_BASE_URL = "https://uat.meeticket.telangana.gov.in/metroapi/";
+export const METRO_API_Plain_BASE_URL = "https://uat.meeticket.telangana.gov.in/metroapi/";
 
 // metroapi Prod
-export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metroapi/";
+// export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metroapi/";
 
 //  Grievance DEV
-// export const GRIEVANCE_API_BASE_URL =
-//   "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
+export const GRIEVANCE_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/meesevaconnectapi/v1/";
 
 //  Grievance UAT
 // export const GRIEVANCE_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  Grievance Prod
-export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
+// export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
 export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
@@ -49,33 +48,34 @@ export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.hel
 //  TOURSIM Prod
 // export const TOURISM_API_BASE_URL = "https://meeticket.telangana.gov.in/webservices/v1/";
 
-// RTC dev// export const RTC_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
+// RTC dev
+export const RTC_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcbuspassapi/v1/";
 
 // RTC UAT
 // export const RTC_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC Prod
-export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 //RTC Intercity
-// export const RTC_INTERCITY_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
+export const RTC_INTERCITY_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/v1/";
 
 // RTC Intercity UAT
 // export const RTC_INTERCITY_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcintercity/v1/";
 
 // RTC Intercity Prod
-export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
+// export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
 
 // RTC BUS PASS DEV
-// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
+export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
 
 // RTC BUS PASS UAT
 // export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC BUS PASS Prod
-export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 
 // Amarabad dev
@@ -322,16 +322,15 @@ export const API_ENDPOINTS = {
         GET_RTC_TICKET_NOT_GENERATED_PIE_CHART: `${RTC_API_BASE_URL}BusPassDashboard/PaymentSuccessButNotGeneratedReport`,
         GET_RTC_TRACK_ORDER: `${RTC_API_BASE_URL}BusPassDashboard/TransactionOrderTrackingReport`,
         GET_BUS_PASS_VERIFY_STATUS: `${RTC_API_BASE_URL}RTCDashboard/OrderStatusCall`,
-        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/InsertGeneralPassData`,
-        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalInitiate`,
+        GET_BUS_PASS_GENERATE_TICKET_NEW_PASS: `${RTC_API_BASE_URL}API/InsertGeneralPassData`,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL: `${RTC_API_BASE_URL}API/RenewalInitiate`,
         GET_BUS_PASS_INITIATE_REFUND: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
-        GET_VIEW_BUS_PASS: `${RTC_BUS_PASS_API_BASE_URL}API/GetTicketDetailsForWeb`,
+        GET_VIEW_BUS_PASS: `${RTC_API_BASE_URL}API/GetTicketDetailsForWeb`,
         GET_BUS_PASS_BOOKING_RECORDS: `${RTC_API_BASE_URL}BusPassDashboard/GetBookingDetailsOuterReport`,
-        GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/paymentResponse`,
+        GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_API_BASE_URL}API/paymentResponse`,
         GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_API_BASE_URL}API/GetTicketAndPassDetailsById`,
-        GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_BUS_PASS_API_BASE_URL}API/RenewalPaymentResponse`,
-      }
-      ,
+        GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_API_BASE_URL}API/RenewalPaymentResponse`,
+      },
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/PaymentTransactionsReport`,
         GET_INTERCITY_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
@@ -473,8 +472,9 @@ export const API_ENDPOINTS = {
       GET_AMRABAD_BOOKING_SOURCE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingSourceOptions`,
       GET_AMRABAD_PAYMENT_STATUS_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetPaymentStatusOptions`,
       GET_AMRABAD_BOOKING_MODE_OPTIONS: `${AMRABAD_API_BASE_URL}Master/GetBookingModeOptions`,
-      GET_POS_REPORT: `${API_BASE_URL}v3/Parking/ParkingTransactionsReport`,
-      GET_POS_VEHICLE_TYPES: `${API_BASE_URL}v3/Parking/GetVehicleTypes`,
+      GET_AMRABAD_BOOKING_POS_VIEW_POINTS: `${AMRABAD_API_BASE_URL}Parking/GetViewPoints`,
+      GET_POS_REPORT: `${AMRABAD_API_BASE_URL}Reports/ParkingTransactionsReport`,
+      GET_POS_VEHICLE_TYPES: `${AMRABAD_API_BASE_URL}Parking/GetAllVehicleTypes`,
     },
     DASHBOARD: {
       GET_AMRABAD_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/GetBookingDashboardSummary`,

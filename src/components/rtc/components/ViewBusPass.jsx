@@ -70,6 +70,7 @@ const ViewBusPass = ({ isOpen, onClose, AipData }) => {
       ) : (
         <div className="space-y-6 p-4 mt-6">
           {/* Identity Card */}
+          {RtcViewBusPassData?.idDetails?.pass_name !== "ONE DAY PASS" && (
           <div>
             <div className="flex items-center gap-2 mb-3 ml-2">
               {/* <FaIdCard className="text-blue-600" /> */}
@@ -78,7 +79,7 @@ const ViewBusPass = ({ isOpen, onClose, AipData }) => {
               </h4>
             </div>
             <IdentityCard data={RtcViewBusPassData?.idDetails} />
-          </div>
+          </div>)}
 
           {/* Latest Bus Pass */}
           {RtcViewBusPassData?.ticketDetailsList?.map((item, index) => (
@@ -88,7 +89,7 @@ const ViewBusPass = ({ isOpen, onClose, AipData }) => {
                   {item.ticket_type}
                 </h4>
               </div>
-              <BusPassCard data={item} data1={RtcViewBusPassData?.idDetails}/>
+              <BusPassCard data={item} data1={RtcViewBusPassData?.idDetails} apiData={AipData?.data} />
             </div>
           ))}
         </div>

@@ -2,7 +2,8 @@ import React from "react";
 import idCardBg from "../../../../images/user/idCardBg.png";
 import tsrtclogo from "../../../../images/user/tsrtclogo.png";
 import ExpiryLogo from "../../../../images/user/ExpiryLogo.png";
-const BusPassCard = ({ data,data1 }) => {
+import { formatDateTime } from "../../../../utils/Helper";
+const BusPassCard = ({ data,data1,apiData }) => {
   return (
     <div className="w-full flex justify-center ">
       <div
@@ -113,6 +114,8 @@ const BusPassCard = ({ data,data1 }) => {
                       ₹{data.amount ? data.amount : "N/A"}
                     </p>
                   </div>
+                  {data.pass_name !== "ONE DAY PASS" && (
+                    <>
                   <div className="flex  items-start gap-1 mb-2 text-xs">
                     <h1 className="font-medium text-[11px] text-black">
                       Late fee:
@@ -136,7 +139,7 @@ const BusPassCard = ({ data,data1 }) => {
                     <p className="text-gray-500 text-[11px]">
                       {data.total_amount ? data.total_amount : "N/A"}
                     </p>
-                  </div>
+                  </div></>)}
                 </div>
               </div>
             </div>
@@ -145,7 +148,8 @@ const BusPassCard = ({ data,data1 }) => {
           <div className="absolute bottom-0 left-0 right-0 py-1  bg-gradient-to-r from-[#EFF1D9] via-[#B1B867] to-[#EFF1D9]">
             <div className="px-3 py-1 text-center text-[11px] font-bold tracking-wide">
               <span className="text-black">
-                VALIDITY: {data.ticket_valid_from} TO {data.ticket_valid_to}
+                {data.pass_name !== "ONE DAY PASS" && `VALIDITY: ${data.ticket_valid_from} TO ${data.ticket_valid_to}`}
+                {data.pass_name === "ONE DAY PASS" && `VALIDITY: ${formatDateTime(apiData?.updatedDate)} TO ${formatDateTime(new Date(new Date(apiData?.updatedDate).getTime() + 24 * 60 * 60 * 1000))}`}
               </span>
             </div>
           </div>

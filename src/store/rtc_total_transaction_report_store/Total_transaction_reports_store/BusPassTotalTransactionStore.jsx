@@ -876,11 +876,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           Object.assign(jsonPaymentRequest, convertedRequest);
         }
 
-        const paymentResponse = await apiService.post(
-          `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_BUS_PASS_PAYMENT_RESPONSE}`,
-          jsonPaymentRequest
-        );
-
         // Get existing RtcGeneratePassData to use for applicationNo and referenceNo
         // const currentState = useBusPassTotalTransactionStore.getState();
         const existingRtcGeneratePassData = response.data;
@@ -888,12 +883,9 @@ export const useBusPassTotalTransactionStore = create((set) => ({
         const finalResponse = {
           ...response.data,
           applicationNo:
-            existingRtcGeneratePassData?.applicationNo ||
-            paymentResponse.data.applicationNo,
+            existingRtcGeneratePassData?.applicationNo,
           referenceNo:
-            existingRtcGeneratePassData?.referenceNo ||
-            paymentResponse.data.referenceNo,
-          paymentResponse: paymentResponse.data,
+            existingRtcGeneratePassData?.referenceNo ,
         };
 
         set({

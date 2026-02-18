@@ -139,8 +139,8 @@ const BusPassBookingReportList = () => {
     } finally {
       setTimeout(() => {
         fetchRtcBusPassBookingData({
-          fromDate: savedFilters?.fromDate || "",
-          toDate: savedFilters?.toDate || "",
+          fromDate: savedFilters?.fromDate || getCurrentDate(),
+          toDate: savedFilters?.toDate || getCurrentDate(),
           mobileNumber: savedFilters?.phoneNumber
             ? savedFilters.phoneNumber
             : "",
@@ -243,7 +243,7 @@ const BusPassBookingReportList = () => {
     try {
       const res = await fetchRtcGeneratePassData(RegeneratePassPayload);
       setOpenRegenerateTicketModal(false);
-      if (res.response?.status === 200) {
+      if (res.response?.status === 200 || res.response?.Status === "200") {
         const resultMsg = res.response?.messageType;
         Swal.fire({
           title: "Success!",
@@ -382,8 +382,12 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          if (!params.value) return "N/A";
-          const date = new Date(params.value);
+          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          // use updatedDate for the special pass type; otherwise use bookingDate (params.value)
+          const source = params.data?.passTypeId === SPECIAL_PASS_ID ? params.data?.updatedDate || params.value : params.value;
+          if (!source) return "N/A";
+          const date = new Date(source);
+          if (isNaN(date.getTime())) return "N/A";
           const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
           const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
           const year = date.getFullYear(); // Get year
@@ -504,8 +508,12 @@ const BusPassBookingReportList = () => {
         // maxWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          if (!params.value) return "N/A";
-          const date = new Date(params.value);
+          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          // use updatedDate for the special pass type; fall back to params.value
+          const source = params.data?.passTypeId === SPECIAL_PASS_ID ? params.data?.updatedDate || params.value : params.value;
+          if (!source) return "N/A";
+          const date = new Date(source);
+          if (isNaN(date.getTime())) return "N/A";
           const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
           const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
           const year = date.getFullYear(); // Get year
@@ -527,13 +535,25 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          if (!params.value) return "N/A";
-          const date = new Date(params.value);
-          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-          const year = date.getFullYear(); // Get year
+          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          // For the special pass type use updatedDate + 24 hours, otherwise use busPassValidityEndTime (params.value)
+          let dateValue = null;
+          if (params.data?.passTypeId === SPECIAL_PASS_ID) {
+            if (!params.data?.updatedDate) return "N/A";
+            const updated = new Date(params.data.updatedDate);
+            if (isNaN(updated.getTime())) return "N/A";
+            dateValue = new Date(updated.getTime() + 24 * 60 * 60 * 1000); // add 24 hours
+          } else {
+            if (!params.value) return "N/A";
+            dateValue = new Date(params.value);
+            if (isNaN(dateValue.getTime())) return "N/A";
+          }
+
+          const day = String(dateValue.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(dateValue.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = dateValue.getFullYear(); // Get year
           const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-          const formattedTime = date.toLocaleTimeString("en-US", {
+          const formattedTime = dateValue.toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
@@ -551,7 +571,14 @@ const BusPassBookingReportList = () => {
         maxWidth: 140,
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+        valueFormatter: (params) => {
+          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          // Show N/A for the special pass type, otherwise format as currency
+          if (params.data?.passTypeId === SPECIAL_PASS_ID) {
+            return "N/A";
+          }
+          return params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A";
+        },
       },
       {
         field: "busPassAmount",
@@ -755,6 +782,7 @@ const BusPassBookingReportList = () => {
                   setIsViewBusPassOpen(true);
                   setViewTicketDetails({
                     passId: params.data.bookingId,
+                    data: params.data,
                   });
                 }}
                 disabled={isDisabled}

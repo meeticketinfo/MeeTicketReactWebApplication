@@ -45,36 +45,36 @@ const BusPassRefundTransactionsReport = () => {
               },
      
         },
-        {
-            headerName: "Actions",
-            field: "actions",
-            maxWidth: "100",
-            //   hide: email === "esdadmin@gmail.com",
-            cellRenderer: (params) => {
-                // console.log("params",params)
-                return (
-                    <div className="flex align-center gap-2">
-                        <>
-                            <button
-                                className={` ${params.data.refundStatus === "NotRefund"
-                                    ? "bg-green-400"
-                                    : "bg-green-100 cursor-not-allowed "
-                                    } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                                disabled={params.data.refundStatus != "NotRefund"}
-                                onClick={() => {
-                                    setRefundOrderId(params.data.orderID);
-                                    setInitiatRefundModal(true);
-                                }}
-                            >
-                                Initiate
-                            </button>
-                        </>
-                    </div>
-                );
-            },
-            flex: 1,
-            headerClass: "text-blue-v2",
-        },
+        // {
+        //     headerName: "Actions",
+        //     field: "actions",
+        //     maxWidth: "100",
+        //     //   hide: email === "esdadmin@gmail.com",
+        //     cellRenderer: (params) => {
+        //         // console.log("params",params)
+        //         return (
+        //             <div className="flex align-center gap-2">
+        //                 <>
+        //                     <button
+        //                         className={` ${params.data.refundStatus === "NotRefund"
+        //                             ? "bg-green-400"
+        //                             : "bg-green-100 cursor-not-allowed "
+        //                             } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
+        //                         disabled={params.data.refundStatus != "NotRefund"}
+        //                         onClick={() => {
+        //                             setRefundOrderId(params.data.orderID);
+        //                             setInitiatRefundModal(true);
+        //                         }}
+        //                     >
+        //                         Initiate
+        //                     </button>
+        //                 </>
+        //             </div>
+        //         );
+        //     },
+        //     flex: 1,
+        //     headerClass: "text-blue-v2",
+        // },
         {
             field: "refundStatus",
             headerName: "Refund Status",

@@ -121,6 +121,7 @@ const HyderabadPassesDashboard = () => {
       </div>
 
       {/* New Passes Section */}
+      {title !== "ONE DAY PASS" && (
       <div className="bg-[#F1F6FB] rounded-lg p-3 mb-3">
         <div className="mb-3">
           <h4 className="text-sm sm:text-base font-semibold text-[#032E69]">New Passes</h4>
@@ -150,9 +151,10 @@ const HyderabadPassesDashboard = () => {
             <div className="text-xs sm:text-sm font-medium text-gray-500">New Pass Amount</div>
           </div>
         </div>
-      </div>
+      </div>)}
 
       {/* Renewal Passes Section */}
+      {title !== "ONE DAY PASS" && (
       <div className="bg-[#F1F6FB] rounded-lg p-3">
         <div className="mb-3">
           <h4 className="text-sm sm:text-base font-semibold text-[#032E69]">Renewal Passes</h4>
@@ -182,7 +184,7 @@ const HyderabadPassesDashboard = () => {
             <div className="text-xs sm:text-sm font-medium text-gray-500">Renewal Amount</div>
           </div>
         </div>
-      </div>
+      </div>)}
     </div>
   );
 
