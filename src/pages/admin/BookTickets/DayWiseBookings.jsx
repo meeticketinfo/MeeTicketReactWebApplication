@@ -190,6 +190,12 @@ function DayWiseBookings() {
     },
 
     {
+      field: "bookingSource",
+      headerName: "Creacted By",
+      headerClass: "text-blue-v2",
+    },
+
+    {
       field: "bookingDate",
       headerName: "Booking Date",
       width: 100,

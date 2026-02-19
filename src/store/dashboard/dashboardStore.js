@@ -274,7 +274,9 @@ export const useDashboardStore = create((set) => ({
         });
       }
     } catch (error) {
-      set({ error: error.error.message, isFetchFacilityBookingsLoading: true });
+      set({ error: error.error.message, isFetchFacilityBookingsLoading: false });
+    }finally{
+      set({ isFetchFacilityBookingsLoading: false });
     }
   },
 
