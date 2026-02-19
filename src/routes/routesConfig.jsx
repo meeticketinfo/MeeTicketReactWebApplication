@@ -207,6 +207,8 @@ import IntercitySettlementReport from "../components/rtc/rtc_reports/intercity_r
 import AndroidIosForm from "../pages/admin/android_ios_entries/AndroidIosForm";
 import AddIntercityCities from "../components/rtc/intercity_masters/IntercityCities";
 import MainFacilityHoliday from "../pages/admin/holidays/facility_holidays/MainFacilityHoliday";
+import MainGroupDetails from "../pages/admin/group_details/MainGroupDetails";
+import MainLanguage from "../pages/admin/language_masters/MainLanguage";
 
 export const routes = [
   {
@@ -940,6 +942,17 @@ export const routes = [
   {
     path: "/pos-admin",
     element: <ProtectedRoute element={<PosMain />} />,
+  },
+
+  // group details
+  {
+    path: "/group-details",
+    element: <ProtectedRoute element={<MainGroupDetails />} />,
+  },
+  // Language masters
+  {
+    path: "/add-language",
+    element: <ProtectedRoute element={<MainLanguage />} />,
   },
   // create banner
   {

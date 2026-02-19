@@ -2,8 +2,9 @@ import { ErrorMessage, Field, Formik, Form, FieldArray } from 'formik'
 import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useFacilityStore } from '../../../../store/masters/facilitiesStore';
+import { FacilityHolidayStore } from './FacilityHolidayStore';
 
-const weekdaysStartingWithSunday =[
+const weekdaysStartingWithSunday = [
     "sunday",
     "monday",
     "tuesday",
@@ -11,26 +12,56 @@ const weekdaysStartingWithSunday =[
     "thursday",
     "friday",
     "saturday"
-  ]
-  ;
+]
+    ;
 
-const CreateFacilityHolidays = () => {
+const CreateFacilityHolidays = ({ setIsCreate }) => {
     const { fetchAllFacilities, allFacilities } = useFacilityStore();
+    const { FacilityHolidayEditDetails, saveFacilityHolidayDetails, setCurrentFacilityHolidayEditDetails, isSaveFacilityHolidayLoading } = FacilityHolidayStore();
+
     useEffect(() => {
         fetchAllFacilities();
     }, []);
     const initialValues = {
-        facilityId: "",
-        dayName: [],
+        facilityId: FacilityHolidayEditDetails ? FacilityHolidayEditDetails.facilityId : "",
+        dayName: FacilityHolidayEditDetails ? FacilityHolidayEditDetails.listofBlockedDays.map(day => day.toLowerCase()) : [],
     }
 
-    const onSubmit = (values) => {
-        const finalValues = {
+    const onSubmit = async (values,{ resetForm }) => {
+        const AddValues = {
             masterFacilityId: values.facilityId,
             listofAvailableDays: values.dayName,
-
         }
-        console.log("finalValues", finalValues)
+        const EditValues = {
+            facilityId: values.facilityId,
+            listofAvailableDays: values.dayName,
+        }
+
+        const finalValues = FacilityHolidayEditDetails ? EditValues : AddValues
+        const isEdit = FacilityHolidayEditDetails ? true : false
+        try {
+            const res = await saveFacilityHolidayDetails(finalValues, isEdit);
+
+            if (res.data.status === 200) {
+
+                console.log("res", res.data.status)
+                toast.success(
+                    isEdit
+                        ? "Holiday Updated Successfully"
+                        : "Holiday Created Successfully"
+                );
+                setTimeout(() => {
+                    setIsCreate(false);
+                    setCurrentFacilityHolidayEditDetails(null);
+                    resetForm();
+                }, 1000);
+            } else {
+                toast.error("something went wrong");
+            }
+        } catch (err) {
+            console.log("err", err);
+            toast.error(err.response.data|| err.response.data.message || err.message);
+        }
     }
     return (
         <>
@@ -117,7 +148,7 @@ const CreateFacilityHolidays = () => {
                                     type="submit"
                                     className="bg-blue-v1 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-900 transition shadow"
                                 >
-                                    Add Holiday
+                                    {isSaveFacilityHolidayLoading ? "Loading..." : (FacilityHolidayEditDetails ? "Edit Holiday" : "Add Holiday")}
                                 </button>
                             </div>
 

@@ -4,16 +4,18 @@ import FacilityHolidayList from './FacilityHolidayList'
 import BackButton from '../../../../components/BackButton'
 import CreateFacilityHolidays from './CreateFacilityHolidays'
 import { ToastContainer } from 'react-toastify'
+import { FacilityHolidayStore } from './FacilityHolidayStore'
 
 const MainFacilityHoliday = () => {
-
+    const { setCurrentFacilityHolidayEditDetails, FacilityHolidayEditDetails } = FacilityHolidayStore();
+    console.log("FacilityHolidayEditDetails", FacilityHolidayEditDetails)
     const [isCreate, setIsCreate] = useState(false)
 
 
     return (
         <>
             <AdminLayout>
-                <ToastContainer/>
+                <ToastContainer />
                 <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
                     {/* Dashboard actions */}
                     <div className="sm:flex sm:justify-between sm:items-center mb-8">
@@ -28,7 +30,10 @@ const MainFacilityHoliday = () => {
                             {isCreate ? (
                                 <BackButton
                                     label="Back"
-                                    onClick={() => setIsCreate(false)}
+                                    onClick={() => {
+                                        setIsCreate(false)
+                                        setCurrentFacilityHolidayEditDetails(null)
+                                    }}
                                     className="bg-blue-600 hover:bg-blue-700"
                                 />
 
@@ -38,14 +43,14 @@ const MainFacilityHoliday = () => {
                                     <button className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                                         onClick={() => { setIsCreate(true) }}
                                     >
-                                        <span className="max-xs:sr-only">Add Holidays</span>
+                                        <span className="max-xs:sr-only">Add Block Facility</span>
                                     </button>
                                 </>
                             )}
                         </div>
                     </div>
                     <div>
-                        {isCreate ? <CreateFacilityHolidays /> : <FacilityHolidayList />}
+                        {isCreate ? <CreateFacilityHolidays setIsCreate={setIsCreate} /> : <FacilityHolidayList setIsCreate={setIsCreate} />}
                     </div>
 
                     <div className="grid grid-cols-12 gap-6"></div>

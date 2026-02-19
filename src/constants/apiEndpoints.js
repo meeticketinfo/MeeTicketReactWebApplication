@@ -230,9 +230,19 @@ export const API_ENDPOINTS = {
       GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
     },
       FACILITY_HOLIDAY:{
-        ADD_FACILITY_HOLIDAY: `${API_BASE_URL}Master/AddHolidaysList`,
-        UPDATE_FACILITY_HOLIDAY:`${API_BASE_URL}Master/AddHolidaysList`,
-        GET__FACILITY_HOLIDAY: `${API_BASE_URL}Master/GetAllHolidays`,
+        ADD_FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/AddFacilityAvaliablityBookingDate`,
+        UPDATE_FACILITY_HOLIDAY:`${API_BASE_URL}VolunteerGuide/UpdateFacilityAvaliablityBookingDate`,
+        GET__FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/GetFacilityAvaliablityBookingDate`,
+      },
+      GROUP_DETAILS:{
+        ADD_GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/AddFacilityGroupDetails`,
+        UPDATE_GROUP_DETAILS:`${API_BASE_URL}VolunteerGuide/UpdateFacilityGroupDetails`,
+        GET__GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/GetFacilityGroupDetails`,
+      },
+      LANGUAGE:{
+        ADD_LANGUAGE: `${API_BASE_URL}VolunteerGuide/AddFacilityLanguage`,
+        UPDATE_LANGUAGE:`${API_BASE_URL}VolunteerGuide/UpdateFacilityLanguage`,
+        GET__LANGUAGE: `${API_BASE_URL}VolunteerGuide/GetFacilityLanguages`,
       },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,

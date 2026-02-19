@@ -88,6 +88,8 @@ export const parkAdminPermissions = [
   "pos-admin",
   // "pos-admin"
   "pos-reports",
+  "add-language",
+  "group-details",
 ];
 
 // botanical garden park admin permissions
