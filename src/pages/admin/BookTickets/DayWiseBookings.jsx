@@ -191,7 +191,7 @@ function DayWiseBookings() {
 
     {
       field: "bookingSource",
-      headerName: "Creacted By",
+      headerName: "Created By",
       headerClass: "text-blue-v2",
     },
 

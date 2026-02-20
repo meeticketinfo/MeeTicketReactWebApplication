@@ -8,6 +8,7 @@ import {
 } from "../../../utils/TypographyHelper";
 import { Field, Form, Formik } from "formik";
 import useAuthStore from "../../../store/authStore";
+import { ToastContainer } from "react-toastify";
 
 function FacilityBookings() {
   const [isBookingDate, setIsBookingDate] = useState(false);
@@ -197,7 +198,7 @@ function FacilityBookings() {
     {
       field: "bookingSource",
       
-      headerName: "Creacted By",
+      headerName: "Created By",
       headerClass: "text-blue-v2",
     },
     {
@@ -285,6 +286,7 @@ function FacilityBookings() {
 
   return (
     <AdminLayout>
+      <ToastContainer/>
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">

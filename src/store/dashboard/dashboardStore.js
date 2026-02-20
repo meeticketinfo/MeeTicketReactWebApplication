@@ -27,21 +27,21 @@ export const useDashboardStore = create((set) => ({
   allZooDashboardTicketWise: [],
   AllFacilityBookings: [],
   isFetchFacilityBookingsLoading: false,
-  AllDetailedReport:[],
+  AllDetailedReport: [],
   isFetchDetailedLoading: false,
 
   //Dashboard Bokings
-  isFetchDepartmentEntitiesLoading:false,
+  isFetchDepartmentEntitiesLoading: false,
   AllDepartmentEntities: [],
 
   // Day Wise Bookings
-  AllFacilityDayWiseBookings:  [],
+  AllFacilityDayWiseBookings: [],
   isFacilityDayWiseBookingsLoading: false,
   // Application Facility Bookings By Booking Source
   AllApplicationFacilityBookings: [],
   isFetchFacilityBookingSourceLoading: false,
 
-  
+
   serializeFilters: (filters) =>
     Object.entries(filters)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
@@ -81,11 +81,11 @@ export const useDashboardStore = create((set) => ({
       const role = roleDetails?.name;
       // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
       const endpoint =
-        role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN"||role === "ROLE_COUNTERLOGIN"
+        role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN" || role === "ROLE_COUNTERLOGIN"
           ? `${API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE}${date}`
           : role === "ROLE_METROADMIN"
-          ? `${API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT}${date}`
-          : `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}${date}`;
+            ? `${API_ENDPOINTS.DASHBOARD.GET_METRO_DASHBOARD_COUNT}${date}`
+            : `${API_ENDPOINTS.DASHBOARD.GET_DASHBOARD_COUNTS}${date}`;
 
       //   const filterString = useBookingstore.getState().serializeFilters(filters);
       const response = await apiService.get(
@@ -216,7 +216,7 @@ export const useDashboardStore = create((set) => ({
   },
 
   // ZOO DASH BOARD
-  fetchAllZooDashBoardCounts: async ({DashboardDate, bookingDateFrom}) => {
+  fetchAllZooDashBoardCounts: async ({ DashboardDate, bookingDateFrom }) => {
     set({ isFetchZooDashboardLoading: true });
     try {
       const response = await apiService.get(
@@ -275,7 +275,8 @@ export const useDashboardStore = create((set) => ({
       }
     } catch (error) {
       set({ error: error.error.message, isFetchFacilityBookingsLoading: false });
-    }finally{
+      toast.error(error.message||"somthing went wrong please try again")
+    } finally {
       set({ isFetchFacilityBookingsLoading: false });
     }
   },
@@ -296,6 +297,9 @@ export const useDashboardStore = create((set) => ({
       }
     } catch (error) {
       set({ error: error.error.message, isFacilityDayWiseBookingsLoading: true });
+      toast.error(error.message||"somthing went wrong please try again")
+    } finally {
+      set({ isFacilityDayWiseBookingsLoading: true });
     }
   },
 
@@ -315,6 +319,9 @@ export const useDashboardStore = create((set) => ({
       }
     } catch (error) {
       set({ error: error.error.message, isFetchFacilityBookingSourceLoading: true });
+      toast.error(error.message||"somthing went wrong please try again")
+    } finally {
+      set({ isFetchFacilityBookingSourceLoading: false });
     }
   },
 
@@ -334,9 +341,12 @@ export const useDashboardStore = create((set) => ({
       }
     } catch (error) {
       set({ error: error.error.message, isFetchDetailedLoading: true });
+      toast.error(error.message||"somthing went wrong please try again")
+    }finally{
+      set({  isFetchDetailedLoading: false });
     }
   },
-   fetchAllDepartmentEntities: async (payload) => {
+  fetchAllDepartmentEntities: async (payload) => {
     set({ isFetchDepartmentEntitiesLoading: true });
     try {
       const response = await apiService.get(
@@ -356,7 +366,7 @@ export const useDashboardStore = create((set) => ({
   isFetchViewPointsLoading: false,
   allViewPoints: [],
   fetchAllViewPointsCounts: async (payload) => {
-    const date =  `?FromDate=${payload.fromDate}&ToDate=${payload.toDate}`
+    const date = `?FromDate=${payload.fromDate}&ToDate=${payload.toDate}`
     set({ isFetchViewPointsLoading: true });
     try {
       const response = await apiService.get(
@@ -367,7 +377,7 @@ export const useDashboardStore = create((set) => ({
         isFetchViewPointsLoading: false,
       });
     } catch (error) {
-      set({ error: error.message, isFetchViewPointsLoading: false,allViewPoints:[] });
+      set({ error: error.message, isFetchViewPointsLoading: false, allViewPoints: [] });
     }
   },
 
