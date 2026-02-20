@@ -353,7 +353,7 @@ const BusPassBookingReportList = () => {
         headerName: "User Name",
         // flex: 1,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+        valueFormatter: (params) => (params.value ? params.value?.toUpperCase() : "N/A"),
       },
       {
         field: "userMobileNo",

@@ -64,13 +64,13 @@ const BusPassCard = ({ data,data1,apiData }) => {
                 <div>
                   <div className="flex flex-col items-start  text-xs mb-1.5">
                     <h1 className="font-medium text-[11px] text-black">
-                      {data.id_no ? data.id_no : "N/A"}
+                      {data.id_no ? data?.id_no?.toUpperCase() : "N/A"}
                     </h1>
                     <p className="text-gray-500 text-[11px]">ID No</p>
                   </div>
                   <div className="flex flex-col items-start  text-xs mb-1.5">
                     <h1 className="font-medium text-[11px] text-black">
-                       {data1?.employee_name ? data1?.employee_name : "N/A"}
+                       {data1?.employee_name ? data1?.employee_name?.toUpperCase() : "N/A"}
                     </h1>
                     <p className="text-gray-500 text-[11px]">Name</p>
                   </div>
@@ -84,7 +84,7 @@ const BusPassCard = ({ data,data1,apiData }) => {
                   </div>
                   <div className="flex flex-col items-start  text-xs">
                     <h1 className="font-medium text-[11px] text-black">
-                      {data.ticket_no ? data.ticket_no : "N/A"}
+                      {data.ticket_no ? data.ticket_no?.toUpperCase() : "N/A"}
                     </h1>
                     <p className="text-gray-500 text-[11px]">Ticket No</p>
                   </div>
@@ -148,8 +148,8 @@ const BusPassCard = ({ data,data1,apiData }) => {
           <div className="absolute bottom-0 left-0 right-0 py-1  bg-gradient-to-r from-[#EFF1D9] via-[#B1B867] to-[#EFF1D9]">
             <div className="px-3 py-1 text-center text-[11px] font-bold tracking-wide">
               <span className="text-black">
-                {data.pass_name !== "ONE DAY PASS" && `VALIDITY: ${data.ticket_valid_from} TO ${data.ticket_valid_to}`}
-                {data.pass_name === "ONE DAY PASS" && `VALIDITY: ${formatDateTime(apiData?.updatedDate)} TO ${formatDateTime(new Date(new Date(apiData?.updatedDate).getTime() + 24 * 60 * 60 * 1000))}`}
+                {data.pass_name !== "ONE DAY PASS" && `Validity: ${data.ticket_valid_from} TO ${data.ticket_valid_to}`}
+                {data.pass_name === "ONE DAY PASS" && `Validity: ${formatDateTime(apiData?.updatedDate)} TO ${formatDateTime(new Date(new Date(apiData?.updatedDate).getTime() + 24 * 60 * 60 * 1000))}`}
               </span>
             </div>
           </div>

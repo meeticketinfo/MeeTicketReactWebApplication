@@ -392,34 +392,6 @@ export const useBusPassTotalTransactionStore = create((set) => ({
           } else {
             additionalData[key] = value == null ? "" : value;
           }
-        } else if (key === "employeeDob") {
-          // Ensure employeeDob is not blank - convert to MM/DD/YYYY format
-          if (value && typeof value === "string" && value.trim() !== "") {
-            try {
-              // Parse the date string and convert to MM/DD/YYYY format
-              const date = new Date(value);
-              if (!isNaN(date.getTime())) {
-                const month = String(date.getMonth() + 1).padStart(2, "0");
-                const day = String(date.getDate()).padStart(2, "0");
-                const year = date.getFullYear();
-                const formattedDate = `${month}/${day}/${year}`;
-                additionalData[key] = formattedDate;
-              } else {
-                // If date parsing fails, use the original value
-                additionalData[key] = value;
-              }
-            } catch (error) {
-              additionalData[key] = value;
-            }
-          } else {
-            // If employeeDob is blank, provide a default date to avoid validation error
-            const defaultDate = new Date("1990-01-01");
-            const month = String(defaultDate.getMonth() + 1).padStart(2, "0");
-            const day = String(defaultDate.getDate()).padStart(2, "0");
-            const year = defaultDate.getFullYear();
-            const formattedDefaultDate = `${month}/${day}/${year}`;
-            additionalData[key] = formattedDefaultDate;
-          }
         } else if (key === "passtypeId") {
           // Convert passtypeId to passTypeId
           additionalData["passTypeId"] = value == null ? "" : value;
@@ -557,7 +529,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
             if (response && response.data && response.data.referenceNo) {
               jsonRenewalPaymentRequest.ReferenceNo = response.data.referenceNo;
             }
-            console.log("jsonRenewalPaymentRequest", jsonRenewalPaymentRequest.ReferenceNo);
+            // console.log("jsonRenewalPaymentRequest", jsonRenewalPaymentRequest.ReferenceNo);
 
             if (
               jsonRenewalPaymentRequest &&
