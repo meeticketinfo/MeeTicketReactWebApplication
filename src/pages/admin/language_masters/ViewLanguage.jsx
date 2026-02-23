@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { LuClipboardEdit } from 'react-icons/lu';
 import AgGridTable from '../../../components/tables/AgGridTable';
+import { LanguageMasterStore } from './LanguageMasterStore';
+import useAuthStore from '../../../store/authStore';
 
 
 const ViewLanguage = ({ setIsCreate }) => {
 
+    const { decodedTokenData } = useAuthStore();
+        const parkId = decodedTokenData?.data?.ParkId;
+
+    const { fetchLanguages, allLanguages, isFetchLanguagesLoading,setLanguageEditDetails } = LanguageMasterStore();
 
 
     useEffect(() => {
-        // fetchFacilityHolidays()
+        fetchLanguages(parkId)
     }, [])
 
     const [columnDefs] = useState([
@@ -19,50 +25,27 @@ const ViewLanguage = ({ setIsCreate }) => {
             maxWidth: 80,
             headerClass: "text-blue-v2",
         },
-
-
-        {
-            field: "facilityName",
-            headerName: "Group Name",
-            flex: 1,
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
         {
             field: "facilityName",
             headerName: "Facility Name",
             flex: 1,
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "N/A",
-        },
+          },
+
         {
-            field: "facilityName",
-            headerName: "SubFacility Name",
+            field: "languageName",
+            headerName: "language Name",
             flex: 1,
             headerClass: "text-blue-v2",
+            
             valueFormatter: (params) => params.value || "N/A",
         },
-        {
-            field: "facilityName",
-            headerName: "Maximum value",
-            minWidth: 135,    
-            flex: 1,
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
-        {
-            field: "facilityName",
-            headerName: "Minimum value",
-            flex: 1,
-            minWidth: 135,
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
-      
+        
         {
             headerName: "Actions",
             field: "actions",
-            minWidth: 135,
+            flex: 1,
             cellRenderer: (params) => {
                 return (
                     <div className={` flex items-center justify-around py-2`}>
@@ -71,7 +54,7 @@ const ViewLanguage = ({ setIsCreate }) => {
                             className=""
                             onClick={() => {
                                 setIsCreate(true);
-                                setCurrentFacilityHolidayEditDetails(params.data);
+                                setLanguageEditDetails(params.data);
                             }}
                         >
                             <span className="">
@@ -89,10 +72,10 @@ const ViewLanguage = ({ setIsCreate }) => {
     return (
         <>
             <AgGridTable
-                ExportName="Group_Details"
-                // rowData={allFacilityHolidays}
+                ExportName="Language Details"
+                rowData={allLanguages}
                 columnDefs={columnDefs}
-                isFetchLoading={false}
+                isFetchLoading={isFetchLanguagesLoading}
             />
         </>
     )

@@ -4,53 +4,54 @@ import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 
 
 
-export const FacilityHolidayStore = create((set) => ({
+export const LanguageMasterStore = create((set) => ({
 
-    FacilityHolidayEditDetails: null,
-    setCurrentFacilityHolidayEditDetails: (details) => {
-        set({ FacilityHolidayEditDetails: details });
-      },
+    LanguageEditDetails: null,
+    setLanguageEditDetails: (details) => {
+        set({ LanguageEditDetails: details });
+    },
 
-    allFacilityHolidays: [],
-    isFetchFacilityHolidaysLoading: false,
-    fetchFacilityHolidays: async () => {
-        set({ isFetchFacilityHolidaysLoading: true });
+    allLanguages: [],
+    isFetchLanguagesLoading: false,
+    fetchLanguages: async (parkId) => {
+        set({ isFetchLanguagesLoading: true });
         try {
 
             const response = await apiService.get(
-                `${API_ENDPOINTS.MASTERS.FACILITY_HOLIDAY.GET__FACILITY_HOLIDAY}`
+                `${API_ENDPOINTS.MASTERS.LANGUAGE.GET__LANGUAGE}?parkId=${parkId}`
             );
             set({
-                allFacilityHolidays: response.data,
-                isFetchFacilityHolidaysLoading: false,
+                allLanguages: response.data,
+                isFetchLanguagesLoading: false,
             });
         } catch (error) {
-            set({ isFetchFacilityHolidaysLoading: false });
+            set({ isFetchLanguagesLoading: false, allLanguages: [] });
+
             throw error;
-        }finally{
-            set({ isFetchFacilityHolidaysLoading: false });
+        } finally {
+            set({ isFetchLanguagesLoading: false });
         }
     },
 
     // Save holiday details (add or update)
-    isSaveFacilityHolidayLoading: false,
-    saveFacilityHolidayDetails: async (Data, isUpdate = false) => {
-        set({ isSaveFacilityHolidayLoading: true });
+    isSaveLanguageLoading: false,
+    saveLanguageDetails: async (Data, isUpdate = false) => {
+        set({ isSaveLanguageLoading: true });
         try {
             const url = isUpdate
-                ? API_ENDPOINTS.MASTERS.FACILITY_HOLIDAY.UPDATE_FACILITY_HOLIDAY
-                : API_ENDPOINTS.MASTERS.FACILITY_HOLIDAY.ADD_FACILITY_HOLIDAY;
+                ? API_ENDPOINTS.MASTERS.LANGUAGE.UPDATE_LANGUAGE
+                : API_ENDPOINTS.MASTERS.LANGUAGE.ADD_LANGUAGE;
             const method = isUpdate ? "put" : "post";
             const response = await apiService[method](url, Data);
             set({
-                isSaveFacilityHolidayLoading: false,
+                isSaveLanguageLoading: false,
             });
-            return { success: true, data: response };
+            return response;
         } catch (error) {
-            set({ isSaveFacilityHolidayLoading: false });
+            set({ isSaveLanguageLoading: false });
             throw error;
-        }finally{
-            set({ isSaveFacilityHolidayLoading: false });
+        } finally {
+            set({ isSaveLanguageLoading: false });
         }
     },
 

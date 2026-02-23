@@ -4,7 +4,10 @@ import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 
 
 
+
 export const GroupDetailsStore = create((set) => ({
+
+
 
     GroupDetailsEditDetails: null,
     setGroupDetailsEditDetails: (details) => {
@@ -13,18 +16,20 @@ export const GroupDetailsStore = create((set) => ({
 
     allGroupDetails: [],
     isFetchGroupDetailsLoading: false,
-    fetchGroupDetails: async () => {
+    fetchGroupDetails: async (parkId) => {
+        
         set({ isFetchGroupDetailsLoading: true });
         try {
 
             const response = await apiService.get(
-                `${API_ENDPOINTS.MASTERS.GROUP_DETAILS.GET__GROUP_DETAILS}`
+                `${API_ENDPOINTS.MASTERS.GROUP_DETAILS.GET__GROUP_DETAILS}?parkId=${parkId}`
             );
             set({
                 allGroupDetails: response.data,
                 isFetchGroupDetailsLoading: false,
             });
         } catch (error) {
+            set({ allGroupDetails: [] });
             throw error;
         } finally {
             set({ isFetchGroupDetailsLoading: false });

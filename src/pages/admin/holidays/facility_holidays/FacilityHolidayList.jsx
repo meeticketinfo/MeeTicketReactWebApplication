@@ -35,17 +35,23 @@ const FacilityHolidayList = ({ setIsCreate }) => {
       cellRenderer: (params) => {
         return (
           <div className="flex f gap-2">
-            {params.data.listofBlockedDays?.map((day, index) => (
-              <span
-                key={index}
-                className="px-2 mt-3 text-xs font-semibold text-black bg-gray-200  rounded-full shadow-md border border-gray-200  whitespace-nowrap "
-              >
-                {day}
-              </span>
-            ))}
+            {params.data.listofBlockedDays?.length <= 0 ? <span>No Blocked days</span> : <div>
+              {params.data.listofBlockedDays?.map((day, index) => (
+                <span
+                  key={index}
+                  className="px-2 mt-3 text-xs font-semibold text-black bg-gray-200  rounded-full shadow-md border border-gray-200  whitespace-nowrap "
+                >
+                  {day}
+                </span>
+              ))}
+
+            </div>}
           </div>
         );
       },
+
+
+
     },
 
     {

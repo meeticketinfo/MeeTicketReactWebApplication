@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useFacilityStore } from '../../../../store/masters/facilitiesStore';
 import { FacilityHolidayStore } from './FacilityHolidayStore';
+import * as Yup from "yup";
 
 const weekdaysStartingWithSunday = [
     "sunday",
@@ -26,6 +27,15 @@ const CreateFacilityHolidays = ({ setIsCreate }) => {
         facilityId: FacilityHolidayEditDetails ? FacilityHolidayEditDetails.facilityId : "",
         dayName: FacilityHolidayEditDetails ? FacilityHolidayEditDetails.listofBlockedDays.map(day => day.toLowerCase()) : [],
     }
+     const validationSchema = Yup.object().shape({
+        facilityId: Yup.string()
+          .required("Facility is required"),
+      
+        // dayName: Yup.array()
+        //   .min(1, "Please select at least one day")
+        //   .required("Please select at least one day"),
+
+      });
 
     const onSubmit = async (values,{ resetForm }) => {
         const AddValues = {
@@ -67,7 +77,7 @@ const CreateFacilityHolidays = ({ setIsCreate }) => {
         <>
             <Formik
                 initialValues={initialValues}
-                // validationSchema={validationSchema}
+                validationSchema={validationSchema}
                 onSubmit={onSubmit}
             >
                 {({ values, }) => (
@@ -134,7 +144,7 @@ const CreateFacilityHolidays = ({ setIsCreate }) => {
                                                         className="w-4 h-4 text-blue-v2 rounded focus:outline-none focus:ring-0"
                                                     />
 
-                                                    <span className="text-sm text-blue-v1">{weekday}</span>
+                                                    <span className="text-sm text-blue-v1 capitalize">{weekday}</span>
                                                 </label>
                                             ))}
                                         </div>
@@ -148,7 +158,7 @@ const CreateFacilityHolidays = ({ setIsCreate }) => {
                                     type="submit"
                                     className="bg-blue-v1 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-900 transition shadow"
                                 >
-                                    {isSaveFacilityHolidayLoading ? "Loading..." : (FacilityHolidayEditDetails ? "Edit Holiday" : "Add Holiday")}
+                                    {isSaveFacilityHolidayLoading ? "Loading..." : (FacilityHolidayEditDetails ? "Edit Blocked Facility" : "Block Facility")}
                                 </button>
                             </div>
 

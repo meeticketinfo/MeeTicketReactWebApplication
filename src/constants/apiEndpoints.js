@@ -75,16 +75,15 @@ export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtec
 // export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC BUS PASS Prod
-// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/"; 
 
 
 // Amarabad dev
 export const AMRABAD_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 // PARK PROD
-//  PARK UAT testing
-// export const API_BASE_URL =
-//   "https://uat.meeticket.telangana.gov.in/parkapiv2/api/";
+//  PARK  testing
+// export const API_BASE_URL = "https://l2vs2gb4-7169.inc1.devtunnels.ms/API/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -271,7 +270,7 @@ export const API_ENDPOINTS = {
   },
   REPORTS: {
     BOOKING_REPORTS: {
-      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
+      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`, 
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,

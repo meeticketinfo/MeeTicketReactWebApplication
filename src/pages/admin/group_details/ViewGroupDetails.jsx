@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { LuClipboardEdit } from 'react-icons/lu';
 import AgGridTable from '../../../components/tables/AgGridTable';
 import { GroupDetailsStore } from './GroupDetailsStore';
+import useAuthStore from '../../../store/authStore';
 
 const ViewGroupDetails = ({ setIsCreate }) => {
-
+    const { decodedTokenData } = useAuthStore();
+    const parkId = decodedTokenData?.data?.ParkId;
 const {fetchGroupDetails,isFetchGroupDetailsLoading,allGroupDetails,setGroupDetailsEditDetails}=GroupDetailsStore();
     
 console.log("allGroupDetails",allGroupDetails)
     useEffect(() => {
-        fetchGroupDetails()
+        fetchGroupDetails(parkId)
     }, [])
 
 
@@ -29,6 +31,20 @@ console.log("allGroupDetails",allGroupDetails)
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value || "N/A",
         },
+        {
+            field: "facilityName",
+            headerName: "Facility Name",
+            flex: 1,
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value || "N/A",
+          },
+          {
+            field: "subFacilityName",
+            headerName: "SubFacility Name",
+            flex: 1,
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value || "N/A",
+          },
        
         {
             field: "groupMaxRange",
