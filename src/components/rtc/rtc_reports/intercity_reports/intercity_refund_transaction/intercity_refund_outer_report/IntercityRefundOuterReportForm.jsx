@@ -145,7 +145,7 @@ const IntercityRefundOuterReportForm = () => {
       >
         {({ values, setFieldValue, setValues }) => (
           <Form>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3 uppercase">
               <div>
                 <label
                   htmlFor="fromDate"
@@ -267,14 +267,14 @@ const IntercityRefundOuterReportForm = () => {
               <div className="flex gap-2 items-end">
                 <button
                   type="submit"
-                  className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                  className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 //   disabled={isfetchIntercityRefundTransactionsReport}
                 >
                   Search
                 </button>
                 <button
                   type="button"
-                  className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
+                  className="bg-green-700 text-xs uppercase text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                   onClick={() => resetForm(setValues)}
                 //   disabled={isFetchIntercityRefundTransactionsReport}
                 >

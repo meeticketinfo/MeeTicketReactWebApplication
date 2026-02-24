@@ -66,302 +66,363 @@ function IntercityIndividualList() {
     });
   }, [currentPage, PAGE_LIMIT]);
 
+  const isTotalRow = (params) => params.node?.rowPinned === "bottom";
+
+  const textFormatter = (params) => {
+    if (isTotalRow(params)) return "";
+    return params.value || "N/A";
+  };
+
+  const CustomtextFormatter = (params) => {
+    if (isTotalRow(params)) return "";
+    return params.value.toUpperCase() || "N/A";
+  };
+
+  const dateFormatter = (params) => {
+    if (isTotalRow(params)) return "";
+    if (!params.value) return "N/A";
+
+    const d = new Date(params.value);
+
+    return `${String(d.getDate()).padStart(2, "0")}-${String(
+      d.getMonth() + 1
+    ).padStart(2, "0")}-${d.getFullYear()}`;
+  };
+
+  const currencyFormatter = (params) => {
+    if (isTotalRow(params))
+      return params.value ? `₹ ${params.value}` : "";
+
+    return params.value ? `₹ ${params.value}` : "N/A";
+  };
+
+  const ticketQtyFormatter = (params) => {
+    if (isTotalRow(params)) return params.value || "";
+    return params.value || "0";
+  };
+
+
+  const getTotalRow = () => {
+    if (!IntercityIndividualData?.length) return [];
+
+    const totals = IntercityIndividualData.reduce(
+      (acc, row) => {
+
+        acc.basicFare += Number(row.basicFare || 0);
+        acc.passengerFee += Number(row.passengerFee || 0);
+        acc.totalTollFare += Number(row.totalTollFare || 0);
+        acc.totalLeviesFee += Number(row.totalLeviesFee || 0);
+        acc.serviceFee += Number(row.serviceFee || 0);
+        acc.serviceTax_GST += Number(row.serviceTax_GST || 0);
+        acc.flexiFare += Number(row.flexiFare || 0);
+        acc.eachTicketAmount += Number(row.eachTicketAmount || 0);
+        acc.totalAmount += Number(row.totalAmount || 0);
+        acc.ticketQuantity += Number(row.ticketQuantity || 0);
+
+        return acc;
+
+      },
+      {
+        pnrNumber: "TOTAL",
+
+        basicFare: 0,
+        passengerFee: 0,
+        totalTollFare: 0,
+        totalLeviesFee: 0,
+        serviceFee: 0,
+        serviceTax_GST: 0,
+        flexiFare: 0,
+        eachTicketAmount: 0,
+        totalAmount: 0,
+        ticketQuantity: 0,
+      }
+    );
+
+    return [totals];
+  };
+
   const columnDefs = [
+
     {
       field: "sno",
       headerName: "S.No",
       maxWidth: 70,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
+
+        if (isTotalRow(params)) return "";
+
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
-      },
+      }
     },
+
     {
       field: "pnrNumber",
       headerName: "PNR Number",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "TOTAL";
+        return params.value || "N/A";
+      }
     },
+
     {
       field: "returnPNRNumber",
       headerName: "Return PNR No",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
-    // ------------------
 
     {
       field: "departureLocation",
       headerName: "Departure Location",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "arrivalLocation",
       headerName: "Arrival Location",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "phoneNumber",
       headerName: "Mobile number",
       maxWidth: 150,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "busType",
-      headerName: " Bus Type",
+      headerName: "Bus Type",
       maxWidth: 170,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "seatLayoutType",
       headerName: "Seat Layout Type",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: CustomtextFormatter
     },
-    // -------------------
 
     {
       field: "isReturnType",
       headerName: "Travel type",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: CustomtextFormatter
     },
+
     {
       field: "gender",
       headerName: "Gender",
-      // flex: 1,
       maxWidth: 120,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: CustomtextFormatter
     },
+
     {
       field: "concessionType",
       headerName: "Concession Type",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "ticketID",
       headerName: "Ticket ID",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "returnJourneyTicketID",
       headerName: "Return Journey Ticket ID",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "mid",
       headerName: "MID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
 
     {
       field: "purchaseDate",
       headerName: "Purchase Date",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      valueFormatter: dateFormatter
     },
+
     {
       field: "travelDate",
       headerName: "Travel Date",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-       
-        return `${formattedDate} `;
-      },
+      valueFormatter: dateFormatter
     },
+
     {
       field: "returnDate",
       headerName: "Return Journey Travel Date",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-       
-        return `${formattedDate} `;
-      },
+      valueFormatter: dateFormatter
     },
+
     {
       field: "ticketQuantity",
       headerName: "Ticket Quantity",
       maxWidth: 130,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: ticketQtyFormatter
     },
+
     {
       field: "orderId",
       headerName: "Order ID",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: textFormatter
     },
+
     {
       field: "modeOfPayment",
       headerName: "Payment Mode",
       maxWidth: 130,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      // valueFormatter: (params) =>
-      //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: textFormatter
     },
+
     {
       field: "basicFare",
-      maxWidth: 150,
       headerName: "Basic Fare",
-      // flex: 1,
+      maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       headerName: "Total Levies Fee Charges break down Summary",
       headerClass: "text-blue-v2",
+
       children: [
+
         {
           field: "passengerFee",
           headerName: "Passenger fee",
-          // flex: 1,
-
           headerClass: "text-blue-v2",
-
-          valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+          valueFormatter: currencyFormatter
         },
+
         {
           field: "waterBottle",
           headerName: "Water bottle",
-          maxWidth: 130,
-          // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => params.value || "N/A",
+          valueFormatter: textFormatter
         },
+
         {
           field: "safetyCess",
           headerName: "Safety cess",
-          // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => params.value || "N/A",
+          valueFormatter: textFormatter
         },
+
         {
           field: "srt",
           headerName: "SRT",
-          // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => params.value || "N/A",
+          valueFormatter: textFormatter
         },
+
         {
           field: "totalTollFare",
           headerName: "Total Toll fare",
-          // flex: 1,
           headerClass: "text-blue-v2",
-          valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
-        },
-      ],
+          valueFormatter: currencyFormatter
+        }
+
+      ]
     },
+
     {
       field: "totalLeviesFee",
       headerName: "Total Levies Fee",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "serviceFee",
       headerName: "Service fee",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "serviceTax_GST",
       headerName: "Service Tax",
-      // flex: 1,
       maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "flexiFare",
       headerName: "Flexi Fare",
       maxWidth: 150,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "eachTicketAmount",
       headerName: "Each Ticket Amount",
-      // flex: 1,
       maxWidth: 170,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "totalAmount",
       headerName: "Total Amount",
       maxWidth: 150,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+      valueFormatter: currencyFormatter
     },
+
     {
       field: "paymentGatewayTransactionId",
       headerName: "Payment Transaction ID",
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: textFormatter
     },
+
     {
       field: "bookingStatus",
-      headerName: "Booking  Status",
+      headerName: "Booking Status",
       maxWidth: 150,
-      // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: CustomtextFormatter
     },
 
     {
       headerName: "Ticket",
       field: "action",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+      cellRenderer: (params) => {
+        if (params.node?.rowPinned === "bottom") return "";
+
+        return (<div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.pnrNumber ? (
             <NavLink
               end
               to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -369,28 +430,30 @@ function IntercityIndividualList() {
             </NavLink>
           ) : (
             <span
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
               aria-disabled="true"
               tabIndex={-1}
             >
               Onwards Journey
             </span>
           )}
-        </div>
-      ),
+        </div>)
+      },
       flex: 1,
       headerClass: "text-blue-v2",
     },
     {
       headerName: "Ticket",
       field: "action",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+
+      cellRenderer: (params) => {
+        if (params.node?.rowPinned === "bottom") return "";
+        return (<div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.returnPNRNumber ? (
             <NavLink
               end
               to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -398,19 +461,41 @@ function IntercityIndividualList() {
             </NavLink>
           ) : (
             <span
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
               aria-disabled="true"
               tabIndex={-1}
             >
               Return Journey
             </span>
           )}
-        </div>
-      ),
+        </div>)
+      },
       flex: 1,
       headerClass: "text-blue-v2",
     },
+
   ];
+
+  const updatedColumnDefs = columnDefs.map((col) => {
+    if (col.headerName) {
+      return {
+        ...col,
+        headerName: col.headerName.toUpperCase(),
+        children: col.children
+          ? col.children.map((child) => ({
+            ...child,
+            headerName: child.headerName?.toUpperCase(),
+          }))
+          : undefined,
+      };
+    }
+    return col;
+  });
+
+
+
+
+
 
   return (
     <div>
@@ -419,10 +504,20 @@ function IntercityIndividualList() {
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
       />
+      <div>
+        {IntercityIndividualData?.length > 0 && (
+          <div className="     flex justify-end gap-10 font-semibold">
+            <span className=" bg-gray-100 px-2 border rounded-lg">
+              Grand Total Amount: ₹{IntercityIndividualData[0].grandTotalAmount}
+            </span>
+          </div>
+        )}
+      </div>
       <AgGridTable
         ExportName="Intercity Individual Report"
         rowData={IntercityIndividualData}
-        columnDefs={columnDefs}
+        columnDefs={updatedColumnDefs}
+        pinnedBottomRowData={getTotalRow()}
         isFetchLoading={isFetchIntercityIndividualData}
         isPagination={false}
         IsReactPaginate={true}

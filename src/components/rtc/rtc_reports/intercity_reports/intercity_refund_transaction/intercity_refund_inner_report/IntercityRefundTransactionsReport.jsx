@@ -36,48 +36,45 @@ const IntercityRefundTransactionsReport = () => {
 
   const { fetchIntercityPaymentTransactionRefund } =
     useIntercityPaymentTransactionStore();
-  const columnDefs = [
-    {
-      headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
-      maxWidth: "80",
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "transactionDateandTime",
-      headerName: "Date and Time of Transaction",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+    const columnDefs = [
+      {
+        headerName: "S.NO",
+        valueGetter: (params) =>
+          currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+        maxWidth: "80",
+        headerClass: "text-blue-v2",
       },
-    },
-    {
-      headerName: "Actions",
-      field: "actions",
-      maxWidth: "100",
-      //   hide: email === "esdadmin@gmail.com",
-      cellRenderer: (params) => {
-        // console.log("params",params)
-        return (
-          <div className="flex align-center gap-2">
-            <>
+      {
+        field: "transactionDateandTime",
+        headerName: "DATE AND TIME OF TRANSACTION",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        },
+      },
+      {
+        headerName: "ACTIONS",
+        field: "actions",
+        maxWidth: "110",
+        cellRenderer: (params) => {
+          return (
+            <div className="flex align-center gap-2">
               <button
-                className={` ${
+                className={`${
                   params.data.refundStatus === "NotRefund"
                     ? "bg-green-400"
-                    : "bg-green-100 cursor-not-allowed "
-                } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-                disabled={params.data.refundStatus != "NotRefund"}
+                    : "bg-green-100 cursor-not-allowed"
+                } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md uppercase`}
+                disabled={params.data.refundStatus !== "NotRefund"}
                 onClick={() => {
                   setRefundOrderId(params.data.orderID);
                   setInitiatRefundModal(true);
@@ -85,108 +82,104 @@ const IntercityRefundTransactionsReport = () => {
               >
                 Initiate
               </button>
-            </>
-          </div>
-        );
+            </div>
+          );
+        },
+        flex: 1,
+        headerClass: "text-blue-v2",
       },
-
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "refundStatus",
-      headerName: "Refund Status",
-      // maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "refundDate",
-      headerName: "Refund Date",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        const date = new Date(params.value);
-        return date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        });
+      {
+        field: "refundStatus",
+        headerName: "REFUND STATUS",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
       },
-    },
-    {
-      field: "mobileNumber",
-      minWidth: 90,
-      headerName: "Mobile Number",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "departureLocation",
-      headerName: "Departure Location",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "arrivalLocation",
-      headerName: "Arrival Location",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      maxWidth: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "noOfTickets",
-      headerName: "Ticket Quantity",
-      maxWidth: "130",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "modeofPayment",
-      headerName: "Payment Mode",
-      maxWidth: "150",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
-    {
-      field: "transactionStatus",
-      headerName: "Transaction Status",
-      maxWidth: "230",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "orderID",
-      headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-
-    {
-      field: "bookingID",
-      headerName: "Booking ID",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-  ];
+      {
+        field: "refundDate",
+        headerName: "REFUND DATE",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          if (!params.value) return "N/A";
+          const date = new Date(params.value);
+          return date.toLocaleString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        },
+      },
+      {
+        field: "mobileNumber",
+        minWidth: 90,
+        headerName: "MOBILE NUMBER",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value || params.value === " " ? params.value : "N/A",
+      },
+      {
+        field: "departureLocation",
+        headerName: "DEPARTURE LOCATION",
+        flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value || params.value === " " ? params.value : "N/A",
+      },
+      {
+        field: "arrivalLocation",
+        headerName: "ARRIVAL LOCATION",
+        flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value || params.value === " " ? params.value : "N/A",
+      },
+      {
+        field: "amount",
+        headerName: "AMOUNT",
+        maxWidth: "100",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      },
+      {
+        field: "noOfTickets",
+        headerName: "TICKET QUANTITY",
+        maxWidth: "130",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value || params.value === " " ? params.value : "N/A",
+      },
+      {
+        field: "modeofPayment",
+        headerName: "PAYMENT MODE",
+        maxWidth: "150",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value ?? "N/A",
+      },
+      {
+        field: "transactionStatus",
+        headerName: "TRANSACTION STATUS",
+        maxWidth: "230",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          params.value || params.value === " " ? params.value : "N/A",
+      },
+      {
+        field: "orderID",
+        headerName: "ORDER ID",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "bookingID",
+        headerName: "BOOKING ID",
+        maxWidth: "120",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "0",
+      },
+    ];
 
   const loadRefundTransactionsReport = (page = 0) => {
     try {
@@ -305,10 +298,10 @@ const IntercityRefundTransactionsReport = () => {
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4 uppercase" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
                 Refund Transactions Report{" "}
                 {searchParams.get("RefundStatus")
                   ? `(${searchParams.get("RefundStatus")})`
@@ -318,7 +311,7 @@ const IntercityRefundTransactionsReport = () => {
             <div className="">
               <Link
                 to={`/intercity-refund-report?${amrabadRefundTransactionSearchParams}`}
-                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
+                className="btn-sm bg-gray-900 text-gray-100 uppercase hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
               </Link>

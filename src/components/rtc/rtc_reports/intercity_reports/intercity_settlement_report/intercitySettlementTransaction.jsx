@@ -43,7 +43,7 @@ function IntercitySettlementTransaction() {
         </div>
 
         {/* Transactions by reason chart */}
-        <div className="col-span-full xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
+        <div className="col-span-full uppercase xl:col-span-12 bg-white/30 backdrop-blur-sm dark:bg-gray-800 rounded-xl shadow-[0px_0px_27.8px_rgba(0,0,0,0.12)]">
           <div className="flex">
             <div className="flex-1 rounded-lg overflow-hidden shadow-md relative">
               {/* <Loader/> */}

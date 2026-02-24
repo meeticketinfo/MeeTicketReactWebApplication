@@ -83,7 +83,7 @@ const IntercityTotalTransactionTrackOrder = () => {
     {
       field: "requestTimestamp",
       maxWidth: "200",
-      headerName: "Request Time Stamp",
+      headerName: "REQUEST TIME STAMP",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "";
@@ -93,7 +93,7 @@ const IntercityTotalTransactionTrackOrder = () => {
     {
       field: "responseTimestamp",
       maxWidth: "200",
-      headerName: "Response Time Stamp",
+      headerName: "RESPONSE TIME STAMP",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return " ";
@@ -103,7 +103,7 @@ const IntercityTotalTransactionTrackOrder = () => {
     {
       field: "transactionStatus",
       flex: 1,
-      headerName: "Transaction Status",
+      headerName: "TRANSACTION STATUS",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value == "INITIATE"
@@ -128,11 +128,11 @@ const IntercityTotalTransactionTrackOrder = () => {
     {
       field: "resultMsg",
       flex: 1,
-      headerName: "Result Msg",
+      headerName: "RESULT MESSAGE",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
+        <span title={params.value.toUpperCase()}>{params.value.toUpperCase()}</span>
       ),
     },
   ]);
@@ -168,10 +168,10 @@ const IntercityTotalTransactionTrackOrder = () => {
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4 uppercase" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
                 Transaction Order Tracking Report
               </h1>
             </div>

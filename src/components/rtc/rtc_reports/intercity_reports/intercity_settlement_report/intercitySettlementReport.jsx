@@ -24,7 +24,7 @@ const IntercitySettlementReport = () => {
   const columnDefs = [
     {
       field: "sno",
-      headerName: "S.No",
+      headerName: "S.NO",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: 80,
@@ -39,10 +39,9 @@ const IntercitySettlementReport = () => {
     },
     {
       field: "UTRProcessTime",
-      headerName: "UTR Process Date Time",
-      // maxWidth: 200,
+      headerName: "UTR PROCESS DATE TIME",
       headerClass: "text-blue-v2",
-            valueFormatter: (params) => {
+      valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
         const day = String(date.getDate()).padStart(2, "0");
@@ -58,70 +57,39 @@ const IntercitySettlementReport = () => {
         return `${formattedDate} ${formattedTime}`;
       },
     },
-    
-    // {
-    //   field: "PaymentDate",
-    //   headerName: "Payment Date Time",
-    //   // maxWidth: 130,
-    //   headerClass: "text-blue-v2",
-    //         valueFormatter: (params) => {
-    //     if (!params.value) return "N/A";
-    //     const date = new Date(params.value);
-    //     const day = String(date.getDate()).padStart(2, "0");
-    //     const month = String(date.getMonth() + 1).padStart(2, "0");
-    //     const year = date.getFullYear();
-    //     const formattedDate = `${day}-${month}-${year}`;
-    //     const formattedTime = date.toLocaleTimeString("en-US", {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //       second: "2-digit",
-    //       hour12: true,
-    //     });
-    //     return `${formattedDate} ${formattedTime}`;
-    //   },
-    // },
-
     {
-        field: "busType",
-        headerName: "Bus Type",
-        // maxWidth: 120,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
-      {
-        field: "transactionId",
-        headerName: "Transaction ID",
-        // maxWidth: 120,
-        headerClass: "text-blue-v2",
-        valueFormatter: (params) => params.value ?? "N/A",
-      },
-
-
+      field: "busType",
+      headerName: "BUS TYPE",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
+    {
+      field: "transactionId",
+      headerName: "TRANSACTION ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    },
     {
       field: "orderId",
-      headerName: "Order ID",
-      // maxWidth: 120,
+      headerName: "ORDER ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "pnrNumber",
-      headerName: "PNR Number",
-      // maxWidth: 120,
+      headerName: "PNR NUMBER",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "ticketStatus",
-      headerName: "Ticket Status",
-      // maxWidth: 120,
+      headerName: "TICKET STATUS",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "settlementDate",
-      headerName: "PG Settled Date Time",
-      // maxWidth: 130,
+      headerName: "PG SETTLED DATE TIME",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -141,12 +109,16 @@ const IntercitySettlementReport = () => {
     },
     {
       field: "settlementAmount",
-      headerName: "Settled Amount",
-      // maxWidth: 150,
+      headerName: "SETTLED AMOUNT",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+      valueFormatter: (params) =>
+        params.value
+          ? formatToCurrency(params.value, "INR", "en-IN")
+          : "N/A",
     },
   ];
+
+  
 
 useEffect(() => {
 
@@ -204,7 +176,7 @@ useEffect(() => {
         <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
-            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
             {searchParams.get("status")} Summary Report{" "}
             </h1>
           </div>

@@ -382,7 +382,7 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          const SPECIAL_PASS_ID = "100";
           // use updatedDate for the special pass type; otherwise use bookingDate (params.value)
           const source = params.data?.passTypeId === SPECIAL_PASS_ID ? params.data?.updatedDate || params.value : params.value;
           if (!source) return "N/A";
@@ -508,7 +508,7 @@ const BusPassBookingReportList = () => {
         // maxWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          const SPECIAL_PASS_ID = "100";
           // use updatedDate for the special pass type; fall back to params.value
           const source = params.data?.passTypeId === SPECIAL_PASS_ID ? params.data?.updatedDate || params.value : params.value;
           if (!source) return "N/A";
@@ -535,7 +535,7 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          const SPECIAL_PASS_ID = "100";
           // For the special pass type use updatedDate + 24 hours, otherwise use busPassValidityEndTime (params.value)
           let dateValue = null;
           if (params.data?.passTypeId === SPECIAL_PASS_ID) {
@@ -572,7 +572,7 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
-          const SPECIAL_PASS_ID = "B6AAB50B-6D0E-469D-8FE6-FFE37CFDAC60";
+          const SPECIAL_PASS_ID = "100";
           // Show N/A for the special pass type, otherwise format as currency
           if (params.data?.passTypeId === SPECIAL_PASS_ID) {
             return "N/A";

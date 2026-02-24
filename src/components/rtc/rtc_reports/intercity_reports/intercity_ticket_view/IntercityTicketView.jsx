@@ -226,15 +226,14 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 <img
                   src={logo2}
                   alt="Meeticket Logo"
-                  className={`transition-all duration-300 ${
-                    isScrolled
+                  className={`transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
-                  }`}
+                    }`}
                 />
               </div>
             </div>
-            
+
             {/* Middle Content */}
             <div className="flex flex-col items-center justify-center text-center order-2 lg:order-2 flex-1 px-2">
               <h1 className="text-xs sm:text-sm lg:text-sm font-bold text-gray-900 mb-1 sm:mb-2 leading-tight">
@@ -256,26 +255,25 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 <img
                   src={Logo}
                   alt="Meeticket Logo"
-                  className={`transition-all duration-300 ${
-                    isScrolled
+                  className={`transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
-                  }`}
+                    }`}
                 />
               </div>
             </div>
           </div>
 
           {/* Important Note */}
-          <div className="px-2 sm:px-4 lg:px-8 py-0">
-            <div className="p-3 sm:p-4 border-t-2 border-gray-200">
-              <p className="text-xs sm:text-sm text-gray-900 font-semibold leading-relaxed">
+          <div className="px-2 sm:px-4 lg:px-8 py-0 ">
+            <div className="p-3 sm:p-4 border-t-2 border-gray-200 ">
+              <p className="text-xs sm:text-xs text-gray-900 font-semibold leading-relaxed uppercase">
                 <strong>Please Note:</strong> It is mandatory to follow the
                 travel guidelines of your source and destination state for
                 travel.
               </p>
-              <p className="text-xs sm:text-sm text-black mt-2">
-                <strong>View Guidelines:</strong>
+              <p className="text-xs sm:text-xs text-black mt-2">
+                <strong className="uppercase">View Guidelines:</strong>
                 <a
                   href="https://bit.ly/meeticket-guidelines"
                   target="_blank"
@@ -290,24 +288,24 @@ const IntercityTicketView = ({ isScrolled = true }) => {
 
           {/* Reservation Voucher */}
           <div className="px-2 sm:px-4 lg:px-8 py-0">
-            <h2 className="text-sm sm:text-base font-extrabold text-start text-gray-900 mb-3 sm:mb-4 border-b border-t border-gray-400 py-3 sm:py-4">
+            <h2 className="text-sm sm:text-sm font-extrabold text-start text-gray-900 mb-3 sm:mb-4 border-b border-t border-gray-400 py-3 sm:py-4">
               INTERCITY TICKET DETAILS
             </h2>
 
-          {/* .. */}
+            {/* .. */}
             <div className="overflow-x-auto">
               <table className="w-full border border-none min-w-full">
                 <tbody>
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 font-bold text-[15px] text-black w-48">
+                    <td className="px-3 py-2 uppercase font-bold text-[13px] text-black w-48">
                       PNR No.
                     </td>
                     <td className="px-1 py-2  text-gray-900 w-2">:</td>
                     <td className="px-3 py-2 text-[15px] text-gray-900">
-                   { id?? "N/A"}
+                      {id ?? "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black w-48">
+                    <td className="px-3 py-2 uppercase text-[13px] font-bold text-black w-48">
                       Date of Journey
                     </td>
                     <td className="px-1 py-2 text-gray-900 w-2">:</td>
@@ -319,146 +317,147 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   </tr>
 
                   <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Ticket No.
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.ticketNumber
                         ? IntercityTicketViewData.ticketNumber
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black uppercase">
                       Coach Type
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900 uppercase">
                       {IntercityTicketViewData.busType
                         ? IntercityTicketViewData.busType
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Depot Name
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.depo
                         ? IntercityTicketViewData.depo
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Drop Off
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.dropOffName
                         ? IntercityTicketViewData.dropOffName
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Service Number
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.serviceNumber
                         ? IntercityTicketViewData.serviceNumber
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Arrival On
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.arrivelTime
                         ? IntercityTicketViewData.arrivelTime
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">From</td>
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">From</td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.fromStationName
                         ? IntercityTicketViewData.fromStationName
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">To</td>
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">To</td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.toStationName
                         ? IntercityTicketViewData.toStationName
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Boarding
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.pickUpName
                         ? IntercityTicketViewData.pickUpName
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Depart On
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.departureTime
                         ? IntercityTicketViewData.departureTime
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Status
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                      <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className={`px-3 py-2 text-[13px] ${IntercityTicketViewData.ticketStatus === "Confirmed" ? "text-green-700" : "text-orange-500"} font-medium `}>
                       {IntercityTicketViewData.ticketStatus
                         ? IntercityTicketViewData.ticketStatus
                         : "N/A"}
                     </td>
 
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       No. of Seats
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">
+                    <td className="px-3 py-2 text-[13px] text-gray-900">
                       {IntercityTicketViewData.totalNoOfSeats
                         ? IntercityTicketViewData.totalNoOfSeats
                         : "N/A"}
                     </td>
                   </tr>
 
-                  <tr className="border-b border-none">
-                    <td className="px-3 py-2 text-[15px] font-bold text-black">
+                  <tr className="border-b border-none uppercase">
+                    <td className="px-3 py-2 text-[13px] font-bold text-black">
                       Concession
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">GENERAL PUBLIC</td>
+                    <td className="px-3 py-2 text-[13px] text-gray-900">GENERAL PUBLIC</td>
 
                     <td className="px-3 py-2 font-bold text-black">
                       Booked By
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[15px] text-gray-900">MeeTicket</td>
+                    <td className="px-3 py-2 text-[13px] text-gray-900">MeeTicket</td>
                   </tr>
+
                 </tbody>
               </table>
             </div>
@@ -466,19 +465,22 @@ const IntercityTicketView = ({ isScrolled = true }) => {
 
           {/* Passenger Details */}
           <div className="px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
-            <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 pb-2">
+            <h3 className="text-base sm:text-md font-bold text-gray-900 mb-3 sm:mb-4 pb-2 uppercase">
               PASSENGER DETAILS
             </h3>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full border border-gray-200 min-w-full">
-                <thead>
+                <thead className="uppercase">
                   <tr className="bg-gray-100">
                     <th className="px-3 py-2 text-left text-sm font-bold text-blue-v1">
                       S.No
                     </th>
                     <th className="px-3 py-2 text-left text-sm font-bold text-blue-v1">
                       Name
+                    </th>
+                    <th className="px-3 py-2 text-left text-sm font-bold text-blue-v1">
+                      mobile no
                     </th>
                     <th className="px-3 py-2 text-center text-sm font-bold text-blue-v1">
                       Age
@@ -493,18 +495,22 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 </thead>
                 <tbody>
                   {IntercityTicketViewData?.seats &&
-                  IntercityTicketViewData.seats.length > 0 ? (
+                    IntercityTicketViewData.seats.length > 0 ? (
                     IntercityTicketViewData.seats.map((passenger, index) => (
-                      <tr key={index} className="border-b border-gray-200">
+                      <tr key={index} className="border-b border-gray-200 uppercase">
                         <td className="px-3 py-2 text-sm text-center">
                           {index + 1}
                         </td>
                         <td className="px-3 py-2 text-sm font-medium">
                           {passenger.passengers[0].passengerName || "N/A"}
                         </td>
+                        <td className="px-3 py-2 text-sm text-start">
+                          {passenger.passengers[0].phonenumber || "N/A"}
+                        </td>
                         <td className="px-3 py-2 text-sm text-center">
                           {passenger.passengers[0].passengerAge || "N/A"}
                         </td>
+
                         <td className="px-3 py-2 text-sm text-center">
                           {passenger.passengers[0].passengerGender || "N/A"}
                         </td>
@@ -545,11 +551,11 @@ const IntercityTicketView = ({ isScrolled = true }) => {
           </div>
 
           {/* Fare Details */}
-          <div className="px-2 sm:px-4 lg:px-8 py-4">
+          <div className="px-2 sm:px-4 lg:px-8 py-4 uppercase">
             <h3 className="text-base sm:text-lg text-gray-900 font-bold mb-3 sm:mb-4 pb-2">
               FARE DETAILS
             </h3>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Column */}
               <div className="space-y-2">
@@ -557,7 +563,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   <span className="font-bold text-[15px] text-black">Basic Fare</span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.basicFare?? "N/A"}
+                    {IntercityTicketViewData?.total?.basicFare ?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -566,14 +572,14 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   </span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.reservationFee?? "N/A"}
+                    {IntercityTicketViewData?.total?.reservationFee ?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-black text-[15px]">GST</span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.gstSum?? "N/A"}
+                    {IntercityTicketViewData?.total?.gstSum ?? "N/A"}
                   </span>
                 </div>
               </div>
@@ -584,14 +590,14 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   <span className="font-bold text-black">Toll Fee</span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.tollSum?? "N/A"}
+                    {IntercityTicketViewData?.total?.tollSum ?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-black">Service Fee</span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.serviceSum?? "N/A"}
+                    {IntercityTicketViewData?.total?.serviceSum ?? "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -600,7 +606,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   </span>
                   <span className="text-gray-900">
                     : ₹{" "}
-                    {IntercityTicketViewData?.total?.concessionAmt?? "N/A"}
+                    {IntercityTicketViewData?.total?.concessionAmt ?? "N/A"}
                   </span>
                 </div>
               </div>

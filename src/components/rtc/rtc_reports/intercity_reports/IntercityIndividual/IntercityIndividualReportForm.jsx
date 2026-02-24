@@ -112,7 +112,7 @@ const IntercityIndividualReportForm = ({
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
+          <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3 uppercase">
             {/* from date */}
             <div>
               <label
@@ -125,7 +125,7 @@ const IntercityIndividualReportForm = ({
                 type="date"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
-                  border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  border-gray-300 rounded-md shadow-sm uppercase focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 // min={getCurrentDate()}
                 onChange={(e) => {
                   const fromDateValue = e.target.value;
@@ -167,7 +167,7 @@ const IntercityIndividualReportForm = ({
                 type="text"
                 name="mobileNumber"
                 maxLength="10"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter mobile number"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) e.preventDefault();
@@ -182,7 +182,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 as="select"
                 name="busType"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 {IntercityBusTypesData?.filter((item) => item.isActive).map(
@@ -202,7 +202,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 as="select"
                 name="seatLayoutType"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 {IntercitySeatLayoutsData?.filter((item) => item.isActive).map(
@@ -222,7 +222,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 as="select"
                 name="paymentMode"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 <option value="Credit Card">Credit Card</option>
@@ -238,7 +238,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="orderId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Order ID"
               />
             </div>
@@ -250,7 +250,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="transactionId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Transaction ID"
               />
             </div>
@@ -262,7 +262,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 as="select"
                 name="bookingStatus"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 <option value="Confirmed">Confirmed</option>
@@ -278,7 +278,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="pnrNumber"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter PNR"
               />
             </div>
@@ -290,7 +290,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="ticketId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Ticket Id"
               />
             </div>
@@ -302,7 +302,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="returnPnrNumber"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Return PNR"
               />
             </div>
@@ -315,7 +315,7 @@ const IntercityIndividualReportForm = ({
               <Field
                 type="text"
                 name="returnTicketId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Return Ticket Id"
               />
             </div>
@@ -338,7 +338,7 @@ const IntercityIndividualReportForm = ({
                 minSearchLength={2}
                 debounceMs={300}
                 className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                inputClassName="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                 // loading={loadingCities}
@@ -365,7 +365,7 @@ const IntercityIndividualReportForm = ({
                 minSearchLength={2}
                 debounceMs={300}
                 className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                inputClassName="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                 // loading={isFetchIntercityRefundTransactionsReport}
@@ -377,17 +377,17 @@ const IntercityIndividualReportForm = ({
             </div>
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
             {/* submit */}
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 ">
               <button
                 type="submit"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
               <button
                 type="button"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem("intercity-individual-filters");

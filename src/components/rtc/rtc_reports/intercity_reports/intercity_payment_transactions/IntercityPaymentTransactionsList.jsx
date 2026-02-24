@@ -52,7 +52,7 @@ function IntercityPaymentTransactionsList() {
   const [columnDefs] = useState([
     {
       field: "sno",
-      headerName: "S.No",
+      headerName: "S.NO",
       valueGetter: (params) =>
         currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: 80,
@@ -60,146 +60,154 @@ function IntercityPaymentTransactionsList() {
     },
     {
       field: "orderID",
-      headerName: "Order ID",
+      headerName: "ORDER ID",
       minWidth: 200,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "mobileNumber",
-      headerName: "Mobile Number",
+      headerName: "MOBILE NUMBER",
       minWidth: 120,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
       field: "ticketQuantity",
-      headerName: "Ticket Quantity",
+      headerName: "TICKET QUANTITY",
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "amount",
-      headerName: "Amount",
+      headerName: "AMOUNT",
       maxWidth: 100,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ? `₹${params.value}` : "N/A",
     },
     {
       field: "purchaseDate",
-      headerName: "Purchase Date",
+      headerName: "PURCHASE DATE",
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
-        return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN');
+        return (
+          date.toLocaleDateString("en-IN") +
+          " " +
+          date.toLocaleTimeString("en-IN")
+        );
       },
     },
     {
       field: "paymentStatus",
-      headerName: "Payment Status",
+      headerName: "PAYMENT STATUS",
       maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "actualPaymentStatus",
-      headerName: "Actual Payment Status",
+      headerName: "ACTUAL PAYMENT STATUS",
       maxWidth: 200,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "refundDate",
-      headerName: "Refund Date",
+      headerName: "REFUND DATE",
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
         const date = new Date(params.value);
-        return date.toLocaleDateString('en-IN') + ' ' + date.toLocaleTimeString('en-IN');
+        return (
+          date.toLocaleDateString("en-IN") +
+          " " +
+          date.toLocaleTimeString("en-IN")
+        );
       },
     },
     {
       field: "refundId",
-      headerName: "Refund ID",
+      headerName: "REFUND ID",
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
     {
       field: "refundStatus",
-      headerName: "Refund Status",
+      headerName: "REFUND STATUS",
       maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-    {
-      field: "VerifyTicket",
-      headerName: "Verify Ticket",
-      maxWidth: 140,
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const isDisabled = !params.data.verifyStatus;
-        // || params.data.isTicketGe nerated;
+    // {
+    //   field: "VerifyTicket",
+    //   headerName: "VERIFY TICKET",
+    //   maxWidth: 140,
+    //   headerClass: "text-blue-v2",
+    //   cellRenderer: (params) => {
+    //     const isDisabled = !params.data.verifyStatus;
+    //     // || params.data.isTicketGe nerated;
 
-        return (
-          <div className="flex justify-center mt-1">
-            <button
-              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-v2 text-white hover:bg-blue-v1"
-              }`}
-              onClick={() => {
-                if (!isDisabled) {
-                  setVerifyData(params.data.orderID);
-                  setOpenVerifyModal(true);
-                }
-              }}
-              disabled={isDisabled}
-            >
-              Verify Status
-            </button>
-          </div>
-        );
-      },
-    },
-    {
-      field: "VerifyTicket",
-      headerName: "Generate Ticket",
-      maxWidth: 160,
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const isDisabled = !params.data.generateTicket;
-        // || params.data.isTicketGenerated;
+    //     return (
+    //       <div className="flex justify-center mt-1 ">
+    //         <button
+    //           className={`px-4 py-2 text-xs font-semibold uppercase rounded-md transition-all duration-200 ${
+    //             isDisabled
+    //               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+    //               : "bg-blue-v2 text-white hover:bg-blue-v1"
+    //           }`}
+    //           onClick={() => {
+    //             if (!isDisabled) {
+    //               setVerifyData(params.data.orderID);
+    //               setOpenVerifyModal(true);
+    //             }
+    //           }}
+    //           disabled={isDisabled}
+    //         >
+    //           Verify Status
+    //         </button>
+    //       </div>
+    //     );
+    //   },
+    // },
+    // {
+    //   field: "VerifyTicket",
+    //   headerName: "GENERATE TICKET",
+    //   maxWidth: 160,
+    //   headerClass: "text-blue-v2",
+    //   cellRenderer: (params) => {
+    //     const isDisabled = !params.data.generateTicket;
+    //     // || params.data.isTicketGenerated;
 
-        return (
-          <div className="flex justify-center mt-1">
-            <button
-              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-v2 text-white hover:bg-blue-v1"
-              }`}
-              onClick={() => {
-                if (!isDisabled) {
-                  setRegenerateTicketData(params.data);
-                  setOpenRegenerateTicketModal(true);
-                }
-              }}
-              disabled={isDisabled}
-            >
-              Generate Ticket
-            </button>
-          </div>
-        );
-      },
-    },
+    //     return (
+    //       <div className="flex justify-center mt-1">
+    //         <button
+    //           className={`px-4 py-2 text-xs font-semibold uppercase rounded-md transition-all duration-200 ${
+    //             isDisabled
+    //               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+    //               : "bg-blue-v2 text-white hover:bg-blue-v1"
+    //           }`}
+    //           onClick={() => {
+    //             if (!isDisabled) {
+    //               setRegenerateTicketData(params.data);
+    //               setOpenRegenerateTicketModal(true);
+    //             }
+    //           }}
+    //           disabled={isDisabled}
+    //         >
+    //           Generate Ticket
+    //         </button>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
-      headerName: "Initiate Refund",
+      headerName: "INITIATE REFUND",
       field: "InitiateRefund",
       maxWidth: 130,
       //   hide: email === "esdadmin@gmail.com",
@@ -210,7 +218,7 @@ function IntercityPaymentTransactionsList() {
           <div className="flex justify-center mt-1">
             <>
               <button
-                className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                className={`px-4 py-2 text-xs font-semibold uppercase rounded-md transition-all duration-200 ${
                   isDisabled
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-blue-v2 text-white hover:bg-blue-v1"
@@ -232,7 +240,7 @@ function IntercityPaymentTransactionsList() {
     },
     {
       field: "actions",
-      headerName: "Ticket",
+      headerName: "TICKET",
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
@@ -242,15 +250,15 @@ function IntercityPaymentTransactionsList() {
               <NavLink
                 end
                 to={`/intercity-ticket-view-details/${params?.data?.pnrNumber}`}
-                className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
+                className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 uppercase py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="View ticket"
               >
-                <span className="text-white">Onwards Journey</span>
+                <span className="text-white uppercase">Onwards Journey</span>
               </NavLink>
             ) : (
-              <span className="text-gray-400">Not available</span>
+              <span className="text-gray-400 uppercase">Not available</span>
             )}
           </div>
         );
@@ -258,7 +266,7 @@ function IntercityPaymentTransactionsList() {
     },
     {
       field: "actions",
-      headerName: "Ticket",
+      headerName: "TICKET",
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
@@ -273,10 +281,10 @@ function IntercityPaymentTransactionsList() {
                 rel="noopener noreferrer"
                 title="View ticket"
               >
-                <span className="text-white">Return Journey</span>
+                <span className="text-white uppercase">Return Journey</span>
               </NavLink>
             ) : (
-              <span className="text-gray-400">Not available</span>
+              <span className="text-gray-400 uppercase">Not available</span>
             )}
           </div>
         );

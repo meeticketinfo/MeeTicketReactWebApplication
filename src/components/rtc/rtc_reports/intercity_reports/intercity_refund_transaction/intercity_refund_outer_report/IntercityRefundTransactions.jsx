@@ -57,7 +57,7 @@ function IntercityRefundTransactions() {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-3">
+      <div className="grid grid-cols-12 gap-3 ">
         <div className="col-span-full ">
           <IntercityRefundOuterReportForm />
         </div>

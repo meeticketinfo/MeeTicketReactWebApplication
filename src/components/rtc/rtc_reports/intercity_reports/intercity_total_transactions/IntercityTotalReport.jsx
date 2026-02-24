@@ -81,7 +81,7 @@ const InetercityTotalReport = () => {
   const columnDefs = [
     {
       field: "sno",
-      headerName: "S.No",
+      headerName: "S.NO",
       valueGetter: (params) => {
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
@@ -92,7 +92,7 @@ const InetercityTotalReport = () => {
     {
       field: "createdDate",
       maxWidth: "200",
-      headerName: "Transaction Date & Time",
+      headerName: "TRANSACTION DATE & TIME",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "N/A";
@@ -102,11 +102,11 @@ const InetercityTotalReport = () => {
     {
       field: "action",
       maxWidth: "180",
-      headerName: "Action",
+      headerName: "ACTION",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => (
         <Link
-          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm uppercase"
           to={"/intercity-total-transactions-order-tracker"}
           state={{
             orderId: params.data.orderId,
@@ -128,95 +128,92 @@ const InetercityTotalReport = () => {
     },
     {
       field: "userName",
-      headerName: "User Name",
+      headerName: "USER NAME",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "mobileNumber",
-      headerName: "Mobile No.",
+      headerName: "MOBILE NO.",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-
     {
       field: "busType",
-      headerName: "Type of Bus",
+      headerName: "TYPE OF BUS",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value  === "" ? "N/A" : params.value,
+      valueFormatter: (params) =>
+        params.value === "" ? "N/A" : params.value,
     },
     {
       field: "ticketQuantity",
-      headerName: "Ticket Quantity",
+      headerName: "TICKET QUANTITY",
       maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-   
-    
     {
       field: "departureLocation",
-      headerName: "Departure Location",
-      // maxWidth: "120",
+      headerName: "DEPARTURE LOCATION",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "arrivalLocation",
-      headerName: "Arrival Location",
-      // maxWidth: "120",
+      headerName: "ARRIVAL LOCATION",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "amount",
-      headerName: "Amount",
+      headerName: "AMOUNT",
       maxWidth: "120",
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
-
     {
       field: "paymentMode",
-      headerName: "Payment Mode",
+      headerName: "PAYMENT MODE",
       maxWidth: "170",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "transactionStatus",
-      headerName: "Transaction Status",
+      headerName: "TRANSACTION STATUS",
       maxWidth: "220",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => params.value.toUpperCase() ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value}>{params.value}</span>
+        <span title={params.value.toUpperCase()}>{params.value.toUpperCase()}</span>
       ),
     },
     {
       field: "orderId",
-      headerName: "Order ID",
+      headerName: "ORDER ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "bookingId",
-      headerName: "Booking ID",
+      headerName: "BOOKING ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
     {
       field: "resultMessage",
       hide: outerFilters.status === "Success",
-      headerName: "Result Message",
+      headerName: "RESULT MESSAGE",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
-        <span title={params.value ?? "N/A"}>{params.value ?? "N/A"}</span>
+        <span title={params.value ?? "N/A"}>
+          {params.value ?? "N/A"}
+        </span>
       ),
     },
   ];
@@ -240,11 +237,11 @@ const InetercityTotalReport = () => {
       <ToastContainer />
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <div className="mb-6">
-          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4 uppercase" />
         </div>
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
-            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+            <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
               Total {outerFilters.status ? outerFilters.status : "Transaction"}{" "}
               Report
             </h1>
@@ -252,7 +249,7 @@ const InetercityTotalReport = () => {
           <div className="">
             <Link
               to="/intercity-total-transaction"
-              className="bg-black text-white font-semibold px-4 py-1.5 rounded"
+              className="bg-black text-white font-semibold px-4 py-1.5 rounded uppercase"
               onClick={() => {
                 resetDeepInnerFilters();
               }}

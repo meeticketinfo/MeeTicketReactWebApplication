@@ -92,7 +92,7 @@ const IntercityPaymentTransactionsForm = ({
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
-          <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-3 py-3">
+          <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-3 py-3 uppercase">
             <div>
               <label
                 htmlFor="fromDate"
@@ -241,17 +241,17 @@ const IntercityPaymentTransactionsForm = ({
                   uniqueId="arrival-location-dropdown"
                 />
               </div>
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-2 ">
               <button
                 type="submit"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 uppercase text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
               // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
               <button
                 type="button"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem(

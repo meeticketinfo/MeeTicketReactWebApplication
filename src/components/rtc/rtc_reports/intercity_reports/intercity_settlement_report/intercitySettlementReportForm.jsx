@@ -167,7 +167,7 @@ const IntercitySettlementReportForm = ({
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, setValues }) => (
-          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4">
+          <Form className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 uppercase">
             
             {/* Transaction Date */}
             <div>

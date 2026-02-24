@@ -71,7 +71,7 @@ const IntercityUserTrackOrder = () => {
     {
       field: "requestTimestamp",
       maxWidth: "200",
-      headerName: "Request Time Stamp",
+      headerName: "REQUEST TIME STAMP",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return "";
@@ -81,7 +81,7 @@ const IntercityUserTrackOrder = () => {
     {
       field: "responseTimestamp",
       maxWidth: "200",
-      headerName: "Response Time Stamp",
+      headerName: "RESPONSE TIME STAMP",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (!params.value) return " ";
@@ -91,7 +91,7 @@ const IntercityUserTrackOrder = () => {
     {
       field: "transactionStatus",
       flex: 1,
-      headerName: "Transaction Status",
+      headerName: "TRANSACTION STATUS",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value == "INITIATE" ? "Request Sent"
         : params.value == "INPROCESS" ? "Deep Link Status"
@@ -107,7 +107,7 @@ const IntercityUserTrackOrder = () => {
     {
       field: "resultMsg",
       flex: 1,
-      headerName: "Result Msg",
+      headerName: "RESULT MSG",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
       cellRenderer: (params) => (
@@ -141,17 +141,17 @@ const IntercityUserTrackOrder = () => {
     <>
       <AdminLayout>
         <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
+          <Breadcrumb customItems={breadcrumbItems} className="mb-4 uppercase" />
           <div className="sm:flex sm:justify-between sm:items-center mb-2">
             <div className="mb-4 sm:mb-0">
-              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold">
+              <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
                 Transaction Order Tracking Report
               </h1>
             </div>
             <div className="">
               <Link
                 to={`/intercity-user-detailed-report?${userDetailedIntercityReportSearchParams}`}
-                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
+                className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 uppercase dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white "
               >
                 Back
               </Link>
@@ -161,14 +161,14 @@ const IntercityUserTrackOrder = () => {
           {/* Transaction Details Cards */}
           <div className="flex flex-wrap gap-1.5 mb-4">
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Date</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Date</h3>
               <p className="text-sm font-semibold text-gray-900">
                 {formatDateTime(date) || 'N/A'}
               </p>
             </div>
 
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Order ID</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Order ID</h3>
 
               <p className="text-sm font-semibold text-gray-900">
                 {orderId || 'N/A'}
@@ -187,7 +187,7 @@ const IntercityUserTrackOrder = () => {
             </div>
             {pnrNumber && (
               <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-xs font-medium text-gray-500 mb-1">
+                <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">
                   Onwards Journey
                 </h3>
                 <p className="text-sm font-semibold text-gray-900">
@@ -199,7 +199,7 @@ const IntercityUserTrackOrder = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span>View Ticket</span>
+                    <span className="uppercase">View Ticket</span>
                   </NavLink>
                 </p>
               </div>
@@ -218,30 +218,30 @@ const IntercityUserTrackOrder = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <span>View Ticket</span>
+                    <span className="uppercase">View Ticket</span>
                   </NavLink>
                 </p>
               </div>
             )}
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Booking ID</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Booking ID</h3>
               <p className="text-sm font-semibold text-gray-900">{bookingId || 'N/A'}</p>
 
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Mobile Number</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Mobile Number</h3>
               <p className="text-sm font-semibold text-gray-900">{MobileNumber || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Amount</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Amount</h3>
               <p className="text-sm font-semibold text-gray-900">{amount ? formatToCurrency(amount) : 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Departure Location</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Departure Location</h3>
               <p className="text-sm font-semibold text-gray-900">{departureLocation || 'N/A'}</p>
             </div>
             <div className="bg-white p-1.5 px-3 rounded-lg shadow-sm border border-gray-200">
-              <h3 className="text-xs font-medium text-gray-500 mb-1">Arrival Location</h3>
+              <h3 className="text-xs font-medium text-gray-500 mb-1 uppercase">Arrival Location</h3>
               <p className="text-sm font-semibold text-gray-900">{arrivalLocation || 'N/A'}</p>
             </div>
           </div>

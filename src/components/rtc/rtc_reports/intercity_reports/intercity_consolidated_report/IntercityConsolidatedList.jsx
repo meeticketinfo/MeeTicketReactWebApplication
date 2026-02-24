@@ -24,7 +24,7 @@ function IntercityConsolidatedList() {
   } = useIntercityConsolidateStore();
   useEffect(() => {
     fetchIntercityConsolidateData({
-      purchaseOrBooking:savedFilters?.purchaseOrBooking ?? "Purchase",
+      purchaseOrBooking: savedFilters?.purchaseOrBooking ?? "Purchase",
       fromDate: savedFilters?.fromDate ?? getCurrentDate(),
       toDate: savedFilters?.toDate ?? getCurrentDate(),
       mobileNumber: savedFilters?.mobileNumber ?? "",
@@ -48,172 +48,183 @@ function IntercityConsolidatedList() {
       maxWidth: 70,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
+        // Empty for total row
+        if (params.node?.rowPinned === "bottom") return "";
+    
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
     },
     {
       field: "pnrNumber",
-      headerName: "PNR Number",
+      headerName: "PNR NUMBER",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "Total";
+        return params.value || "N/A";
+      }
     },
     {
       field: "returnPNRNumber",
-      headerName: "Return PNR No",
+      headerName: "RETURN PNR NO",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     // ------------------
 
     {
       field: "departureLocation",
-      headerName: "Departure Location",
+      headerName: "DEPARTURE LOCATION",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "arrivalLocation",
-      headerName: "Arrival Location",
+      headerName: "ARRIVAL LOCATION",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "mobileNumber",
-      headerName: "Mobile number",
+      headerName: "MOBILE NUMBER",
       maxWidth: 140,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "busType",
-      headerName: " Bus Type",
+      headerName: "BUS TYPE",
       maxWidth: 170,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "seatLayoutType",
-      headerName: "Seat Layout Type",
+      headerName: "SEAT LAYOUT TYPE",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value.toUpperCase() || "N/A";
+      }
     },
     // -------------------
 
     {
       field: "travelType",
-      headerName: "Travel type",
+      headerName: "TRAVEL TYPE",
       maxWidth: 150,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node?.rowPinned === "bottom") return "";
+
+        if (!params.value || String(params.value).trim() === "") {
+          return "N/A";
+        }
+
+        return String(params.value).toUpperCase();
+      }
     },
     {
       field: "mid",
       headerName: "MID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
 
     {
       field: "bookingDate",
-      headerName: "Purchase Date",
+      headerName: "PURCHASE DATE",
       maxWidth: 150,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
-    // {
-    //   field: "bookingDate",
-    //   headerName: "Booking Date",
-    //   // flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => {
-    //     if (!params.value) return "N/A";
-    //     const date = new Date(params.value);
-    //     const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-    //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-    //     const year = date.getFullYear(); // Get year
-    //     const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-    //     const formattedTime = date.toLocaleTimeString("en-US", {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //       second: "2-digit",
-    //       hour12: true,
-    //     });
-    //     return `${formattedDate} ${formattedTime}`;
-    //   },
-    //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
-    // },
+   
     {
       field: "totalAmount",
-      headerName: "Total Amount",
-      minWidth: 130, 
+      headerName: "TOTAL AMOUNT",
+      minWidth: 130,
       maxWidth: 130,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom")
+          return params.value ? `₹ ${params.value}` : "";
+        return params.value ? `₹ ${params.value}` : "N/A";
+      }
     },
     {
       field: "settled_Date",
-      headerName: "Settled Date",
-      // flex: 1,
+      headerName: "SETTLED DATE",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        // Empty for total row
+        if (params.node?.rowPinned === "bottom") return "";
+
+        // Show N/A for normal rows if empty
         if (!params.value) return "N/A";
+
         const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+
+        const formattedDate = `${day}-${month}-${year}`;
+
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
           hour12: true,
         });
+
         return `${formattedDate} ${formattedTime}`;
       },
-      // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
     },
     {
       field: "settledamount",
-      headerName: "Settled Amount",
+      headerName: "SETTLED AMOUNT",
       maxWidth: 150,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom")
+          return params.value ? `₹ ${params.value}` : "";
+        return params.value ? `₹ ${params.value}` : "N/A";
+      }
     },
 
-    // {
-    //   field: "payout_Date",
-    //   headerName: "Payout Date",
-    //   // maxWidth: 170,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => {
-    //     if (!params.value) return "N/A";
-    //     const date = new Date(params.value);
-    //     const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-    //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-    //     const year = date.getFullYear(); // Get year
-    //     const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-    //     const formattedTime = date.toLocaleTimeString("en-US", {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //       second: "2-digit",
-    //       hour12: true,
-    //     });
-    //     return `${formattedDate} ${formattedTime}`;
-    //   },
-    //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
-    // },
+   
 
     {
       field: "utr",
@@ -221,158 +232,153 @@ function IntercityConsolidatedList() {
       // minWidth: 130,
       maxWidth: 140,
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      // formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
+     
     },
 
 
-    // {
-    //   field: "utrprocessedtime",
-    //   headerName: "Utr Processed Date",
-    //   // maxWidth: 170,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => {
-    //     if (!params.value) return "N/A";
-    //     const date = new Date(params.value);
-    //     const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-    //     const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-    //     const year = date.getFullYear(); // Get year
-    //     const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-    //     const formattedTime = date.toLocaleTimeString("en-US", {
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //       second: "2-digit",
-    //       hour12: true,
-    //     });
-    //     return `${formattedDate} ${formattedTime}`;
-    //   },
-    //   // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
-    // },
+   
     {
       field: "purchaseDate",
-      headerName: "Travel Date",
+      headerName: "TRAVEL DATE",
       maxWidth: 180,
-      // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        // Empty for total row
+        if (params.node?.rowPinned === "bottom") return "";
+    
+        // N/A for normal rows
         if (!params.value) return "N/A";
+    
         const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-       
-        return `${formattedDate} `;
+    
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+    
+        return `${day}-${month}-${year}`;
       },
     },
     {
       field: "returnJourneyTravelDate",
-      headerName: "Return Journey Travel Date",
-      // flex: 1,
+      headerName: "RETURN JOURNEY TRAVEL DATE",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        // Empty for total row
+        if (params.node?.rowPinned === "bottom") return "";
+    
+        // N/A for normal rows
         if (!params.value) return "N/A";
+    
         const date = new Date(params.value);
-        const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
-        const year = date.getFullYear(); // Get year
-        const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
-       
-        return `${formattedDate} `;
+    
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+    
+        return `${day}-${month}-${year}`;
       },
     },
     {
       field: "ticketQuantity",
-      headerName: "Ticket Quantity",
+      headerName: "TICKET QUANTITY",
       maxWidth: 130,
       // flex: 1,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
       valueFormatter: (params) => params.value || "0",
     },
     {
       field: "orderId",
-      headerName: "Order ID",
+      headerName: "ORDER ID",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "paymentMode",
-      headerName: "Payment Mode",
+      headerName: "PAYMENT MODE",
       // flex: 1,
       maxWidth: 130,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-      // valueFormatter: (params) =>
-      //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "basicFare",
-      headerName: "Basic Fare",
+      headerName: "BASIC FARE",
       // flex: 1,
       maxWidth: 100,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
       valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "totalLeviesFee",
-      headerName: "Total Levies Fee",
+      headerName: "TOTAL LEVIES FEE",
       // flex: 1,
       maxWidth: 150,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
       valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "serviceTaxGST",
-      headerName: "Service Tax(GST)",
+      headerName: "SERVICE TAX (GST)",
       // flex: 1,
       maxWidth: 150,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
       valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
     {
       field: "flexiFare",
-      headerName: "Flexi Fare",
+      headerName: "FLEXI FARE",
       // flex: 1,
       maxWidth: 100,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
       valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
 
-    // {
-    //   field: "totalAmount",
-    //   headerName: "Total Amount",
-    //   // flex: 1,
-    //   maxWidth: 150,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
-    // },
+    
     {
       field: "paymentTransactionId",
-      headerName: "Payment Transaction ID",
+      headerName: "PAYMENT TRANSACTION ID",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "bookingStatus",
-      headerName: "Booking  Status",
+      headerName: "BOOKING STATUS",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+     
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value.toUpperCase() || "N/A";
+      }
     },
 
     {
       headerName: "Ticket",
       field: "action",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+      cellRenderer: (params) => {
+        if (params.node?.rowPinned === "bottom") return "";
+      return ( <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.pnrNumber ? (
             <NavLink
               end
               to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition uppercase text-blue-v2"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -380,28 +386,29 @@ function IntercityConsolidatedList() {
             </NavLink>
           ) : (
             <span
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 uppercase cursor-not-allowed text-blue-v2"
               aria-disabled="true"
               tabIndex={-1}
             >
               Onwards Journey
             </span>
           )}
-        </div>
-      ),
+        </div>)
+      },
       flex: 1,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
     },
     {
       headerName: "Ticket",
       field: "action",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+      cellRenderer: (params) => {
+        if (params.node?.rowPinned === "bottom") return "";
+      return ( <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           {params.data.returnPNRNumber ? (
             <NavLink
               end
               to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold transition"
+              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition text-blue-v2 uppercase"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -409,54 +416,99 @@ function IntercityConsolidatedList() {
             </NavLink>
           ) : (
             <span
-              className="bg-blue-v2 text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed"
+              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase text-blue-v2"
               aria-disabled="true"
               tabIndex={-1}
             >
               Return Journey
             </span>
           )}
-        </div>
-      ),
+        </div>)
+      },
       flex: 1,
-      headerClass: "text-blue-v2",
+      headerClass: "text-blue-v2  ",
     },
     {
       field: "refundDate",
-      headerName: "Refund Date",
+      headerName: "REFUND DATE",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "refundId",
-      headerName: "Refund ID",
+      headerName: "REFUND ID",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "refundStatus",
-      headerName: "Refund status",
+      headerName: "REFUND STATUS",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "paytmSettledUTR",
-      headerName: "Paytm Settled UTR",
+      headerName: "PAYTM SETTLED UTR",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
     {
       field: "utrProcessedTime",
-      headerName: "UTR Processed Time",
+      headerName: "UTR PROCESSED TIME",
       // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
     },
   ];
+
+  const getTotalRow = () => {
+    if (!IntercityConsolidateData?.length) return [];
+
+    const totals = IntercityConsolidateData.reduce(
+      (acc, row) => {
+        acc.totalAmount += Number(row.totalAmount || 0);
+        acc.settledamount += Number(row.settledamount || 0);
+        acc.basicFare += Number(row.basicFare || 0);
+        acc.totalLeviesFee += Number(row.totalLeviesFee || 0);
+        acc.serviceTaxGST += Number(row.serviceTaxGST || 0);
+        acc.flexiFare += Number(row.flexiFare || 0);
+        acc.ticketQuantity += Number(row.ticketQuantity || 0);
+        return acc;
+      },
+      {
+        pnrNumber: "TOTAL",
+        totalAmount: 0,
+        settledamount: 0,
+        basicFare: 0,
+        totalLeviesFee: 0,
+        serviceTaxGST: 0,
+        flexiFare: 0,
+        ticketQuantity: 0,
+      }
+    );
+
+    return [totals];
+  };
+
   return (
     <div>
       <IntercityConsolidatedReportForm
@@ -464,10 +516,20 @@ function IntercityConsolidatedList() {
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
       />
+      <div>
+         {IntercityConsolidateData?.length > 0 && (
+        <div className="     flex justify-end gap-10 font-semibold">
+          <span className=" bg-gray-100 px-2 border rounded-lg">
+            Grand Total Amount: ₹{IntercityConsolidateData[0].grandTotalAmount}
+          </span>
+        </div>
+      )}
+      </div>
       <AgGridTable
         ExportName="Intercity Consolidated Report"
         rowData={IntercityConsolidateData}
         columnDefs={columnDefs}
+        pinnedBottomRowData={getTotalRow()}
         isFetchLoading={isFetchIntercityConsolidateData}
         isPagination={false}
         IsReactPaginate={true}
@@ -481,6 +543,20 @@ function IntercityConsolidatedList() {
         SetcurrentPage={setCurrentPage}
         showSearch={false}
       />
+
+      {/* {IntercityConsolidateData?.length > 0 && (
+        <div className="mt-3 p-3 bg-gray-100 rounded-xl border flex justify-end gap-10 font-semibold">
+          <div>
+            Total Amount: ₹{totals.totalAmount.toLocaleString("en-IN")}
+          </div>
+          <div>
+            Settled Amount: ₹{totals.settledAmount.toLocaleString("en-IN")}
+          </div>
+          <div>
+            Tickets: {totals.ticketQuantity}
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }

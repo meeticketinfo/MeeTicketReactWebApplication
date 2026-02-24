@@ -95,13 +95,13 @@ const IntercityConsolidatedReportForm = ({
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
             {/* purchase date */}
             <div>
-              <label className="block text-sm font-medium">
+              <label className="block text-xs font-light uppercase">
                 Purchase Date/ Booking Date
               </label>
               <Field
                 as="select"
                 name="purchaseOrBooking"
-                className={` block w-full px-2 py-1 border border-gray-300
+                className={` block w-full px-2 py-1 border border-gray-300 uppercase
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
                 <option value="Purchase">Purchase Date</option>
@@ -112,7 +112,7 @@ const IntercityConsolidatedReportForm = ({
             <div>
               <label
                 htmlFor="fromDate"
-                className="block text-xs font-medium text-gray-700"
+                className="block text-xs font-medium text-gray-700 uppercase"
               >
                 From Date
               </label>
@@ -136,14 +136,14 @@ const IntercityConsolidatedReportForm = ({
             <div>
               <label
                 htmlFor="toDate"
-                className="block text-xs font-medium text-gray-700"
+                className="block text-xs font-medium text-gray-700 uppercase"
               >
                 To Date
               </label>
               <Field
                 type="date"
                 name="toDate"
-                className={`mt-1 block w-full px-2 py-1 border
+                className={`mt-1 block w-full px-2 py-1 border 
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 min={values.fromDate || getCurrentDate()}
                 onChange={(e) => {
@@ -154,14 +154,14 @@ const IntercityConsolidatedReportForm = ({
             </div>
             {/* mobile no */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Mobile No
               </label>
               <Field
                 type="text"
                 name="mobileNumber"
                 maxLength="10"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter mobile number"
                 onKeyPress={(e) => {
                   if (!/^\d$/.test(e.key)) e.preventDefault();
@@ -170,25 +170,25 @@ const IntercityConsolidatedReportForm = ({
             </div>
             {/* pnr no / return pnr */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 PNR No / Return PNR No
               </label>
               <Field
                 type="text"
                 name="PNRNumber"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter PNR"
               />
             </div>
             {/* type of bus */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Type of Bus
               </label>
               <Field
                 as="select"
                 name="typeOfBus"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 {IntercityBusTypesData?.filter((item) => item.isActive).map(
@@ -202,13 +202,13 @@ const IntercityConsolidatedReportForm = ({
             </div>
             {/* payment mode */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Payment Mode
               </label>
               <Field
                 as="select"
                 name="paymentMode"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">All</option>
                 <option value="Credit Card">Credit Card</option>
@@ -218,31 +218,31 @@ const IntercityConsolidatedReportForm = ({
             </div>
             {/* order id */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Order ID
               </label>
               <Field
                 type="text"
                 name="orderId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Order ID"
               />
             </div>
             {/* transaction id */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Transaction ID
               </label>
               <Field
                 type="text"
                 name="transactionId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 placeholder="Enter Transaction ID"
               />
             </div>
             {/* departure location */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Departure Location
               </label>
 
@@ -259,7 +259,7 @@ const IntercityConsolidatedReportForm = ({
                 minSearchLength={2}
                 debounceMs={300}
                 className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                inputClassName="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                 // loading={loadingCities}
@@ -270,7 +270,7 @@ const IntercityConsolidatedReportForm = ({
             </div>
             {/* arrival location */}
             <div>
-              <label className="block text-xs font-medium text-gray-700">
+              <label className="block text-xs font-medium text-gray-700 uppercase">
                 Arrival Location
               </label>
 
@@ -287,7 +287,7 @@ const IntercityConsolidatedReportForm = ({
                 minSearchLength={2}
                 debounceMs={300}
                 className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                inputClassName="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
                 optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                 // loading={isFetchIntercityRefundTransactionsReport}
@@ -303,14 +303,14 @@ const IntercityConsolidatedReportForm = ({
             <div className="flex items-end gap-2">
               <button
                 type="submit"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
               <button
                 type="button"
-                className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                 // disabled={isFetchAllMetroSummaryReportsLoading}
                 onClick={() => {
                   localStorage.removeItem("intercity-consolidated-filters");

@@ -147,7 +147,7 @@ const IntercityNotGenerated = () => {
 
   return (
     <AdminLayout>
-      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto uppercase">
         <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
         <div className="flex justify-between mb-4 sm:mb-0">
           <div>
