@@ -159,7 +159,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
           ))
         ) : !hasHouses ? (
           // No houses available message
-          <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="flex flex-col items-center justify-center py-12 px-4 bg-[]">
             <div className="text-center max-w-md">
               {/* House icon */}
               <div className="mb-6">
@@ -266,7 +266,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 )}
               </div>
                 {/* Content */}
-                <div className="flex-1 flex flex-col justify-between min-w-0">
+                <div className="flex-1 flex flex-col justify-between min-w-0 bg-[]">
                   <div>
                     {/* Title and Price */}
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
@@ -338,8 +338,8 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
                       onClick={(e) => handleBookNowClick(house, e)}
-                      // state={{ fromDate: fromDate, toDate: toDate }}
-                      className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
+                      // state={{ fromDate: fromDate, toDate: toDate }}#C4A97A
+                      className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
                       <span className="text-lg sm:text-xl inline-flex items-center">

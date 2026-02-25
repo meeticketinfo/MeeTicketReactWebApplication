@@ -17,7 +17,7 @@ const Packages = () => {
 
   return (
     <UserLayout>
-      <div className="grid grid-cols-6 text-center gap-1">
+      <div className="grid grid-cols-6 text-center gap-1 bg-[#F2EDE7]">
         {isUserPackagesLoading ? (
           <>
             <div className="col-span-6 md:col-span-3 w-full">
@@ -38,7 +38,7 @@ const Packages = () => {
                   <h4 className="text-white text-2xl md:text-3xl font-bold capitalize">{item.packageName}</h4>
                   <Link
                     to={`/amrabad-resort/packages/${item.packageId}`}
-                    className="bg-white text-[#362D86] px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-xl font-bold"
+                    className="bg-[#F2EDE7] text-[#3f2508] px-6 py-2 rounded-md hover:bg-[#C4A97A] hover:text-white transition duration-300 text-xl font-bold"
                   >
                     BOOK NOW
                   </Link>

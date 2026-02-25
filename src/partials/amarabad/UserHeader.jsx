@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
+import DeccanTrailsLogo from "../../images/user/DeccanTrailsLogo.png"
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
 import { FaHistory, FaShoppingCart, FaUser } from "react-icons/fa";
 
@@ -99,13 +100,13 @@ export const UserHeader = ({ isScrolled = false }) => {
       </div> */}
 
       {/* Main Header/Navigation */}
-      <nav className={`bg-gradient-to-r from-[#8B7355] to-[#C4A97A] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
+      <nav className={`bg-gradient-to-r from-[#C4A97A] to-[#C4A97A] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
         } px-2 md:px-4`}>
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/amrabad-resort" className="flex items-center gap-2">
             <img
-              src={Logo}
-              alt="Meeticket Logo"
+              src={DeccanTrailsLogo}
+              alt="Deccan Trails Logo"
               className={`transition-all duration-300 ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'
                 }`}
             />
@@ -118,7 +119,7 @@ export const UserHeader = ({ isScrolled = false }) => {
           </Link>
           <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
             {links.map((link) => (
-              <NavLink key={link.to} target={link.target} to={link.to} className="text-black hover:text-[#362D86]">
+              <NavLink key={link.to} target={link.target} to={link.to} className="text-[#3f2508] font-medium hover:text-[#F2EDE7]">
                 {link.label}
               </NavLink>
             ))}
@@ -174,19 +175,19 @@ export const UserHeader = ({ isScrolled = false }) => {
               </div>
             ) : (
               <>
-                <Link to="/amrabad-resort/login" className="bg-[#E3E3E3] text-black px-2 md:px-6 py-2 rounded-md hover:bg-gray-300 transition duration-300 flex items-center gap-2">
+                <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-black px-2 md:px-6 py-2 rounded-md hover:bg-[#FDFAF7] transition duration-300 flex items-center gap-2">
                   <span className="hidden md:block">Login</span>
                   <FaUser className="md:hidden" />
                 </Link>
-                <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-indigo-800 transition duration-300">Register</Link>
+                <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#3f250885] text-[#EDE8E1] px-6 py-2 rounded-md hover:bg-[#3f2508da] transition duration-300">Register</Link>
               </>
             )}
-            <img
+            {/* <img
               src={TelanganaRising}
               alt="Telangana Rising Logo"
               className={`transition-all duration-300 ${isScrolled ? 'w-[30px] md:w-[40px]' : 'w-[40px] md:w-[59px]'
                 }`}
-            />
+            /> */}
           </div>
         </div>
       </nav>

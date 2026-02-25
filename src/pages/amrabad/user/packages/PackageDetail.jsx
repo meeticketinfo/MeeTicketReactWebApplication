@@ -52,7 +52,7 @@ const PackageDetail = () => {
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{GetPackageDetail?.title}</h4>
             <Link
               to={`/amrabad-resort/houses/${packageId}`}
-              className="bg-white filter text-[#362D86] px-4 md:px-6 py-2 rounded-md hover:bg-indigo-800 hover:text-white transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
+              className="bg-[#F2EDE7] text-[#3f2508] hover:bg-[#C4A97A] hover:text-white px-4 md:px-6 py-2 rounded-md  transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
       </div>
@@ -60,8 +60,8 @@ const PackageDetail = () => {
         <div className=" ">
           {/* Highlights */}
           <section className="mb-8">
-            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#271F6E]">
+            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+              <h2 className="text-lg font-semibold text-[#3f2508]">
                 Adventure Highlights
               </h2>
             </div>}
@@ -70,8 +70,8 @@ const PackageDetail = () => {
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-xl">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#362D86" />
-                      <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#362D86" />
+                      <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#C4A97A" />
+                      <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#C4A97A" />
                     </svg>
                   </span>
                   <span>
@@ -87,15 +87,15 @@ const PackageDetail = () => {
           <section className="mb-8">
             {GetPackageDetail?.rooms?.length > 0 && (
               <>
-                <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-                  <h2 className="text-lg font-semibold text-[#271F6E]">
+                <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                  <h2 className="text-lg font-semibold text-[#3f2508]">
                     Accommodation Details
                   </h2>
                 </div>
                 <div className="overflow-x-auto w-full md:max-w-[50%]  border border-gray-200 rounded-lg">
                   <table className="min-w-full">
                     <thead>
-                      <tr className="bg-indigo-50">
+                      <tr className="bg-[#F2EDE7]">
                         <th className="px-4 py-2 text-left font-medium">Room Type</th>
                         <th className="px-4 py-2 text-left font-medium">Count</th>
                       </tr>
@@ -119,12 +119,12 @@ const PackageDetail = () => {
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#D7D5E7] to-[#F6F7FB] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#271F6E]">
+            <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+              <h2 className="text-lg font-semibold text-[#3f2508]">
                 Discount & Schedule Details
               </h2>
             </div>
-            <div className="bg-[#EEEDFA] p-3 md:p-5 rounded-xl">
+            <div className="bg-[#FDFAF7] p-3 md:p-5 rounded-xl">
 
               {/* Discounts */}
               <div className="mb-5">
@@ -135,8 +135,8 @@ const PackageDetail = () => {
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-xl">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#362D86" />
-                          <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#362D86" />
+                          <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#C4A97A" />
+                          <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#C4A97A" />
                         </svg>
                       </span>
                       <span>
@@ -152,7 +152,7 @@ const PackageDetail = () => {
                 <h3 className="mb-4 text-black text-base md:text-xl font-bold">2-Day Itinerary Schedule</h3>
 
                 {/* Day 1 Card */}
-                <div className="bg-white rounded-lg p-3 md:p-5 mb-4 shadow-sm">
+                <div className="bg-[#F2EDE7] rounded-lg p-3 md:p-5 mb-4 shadow-sm">
                   <div className="flex items-center">
                     <div className="">
                       <div className="text-gray-500 text-sm md:text-base mb-1">Check-In Time:</div>
@@ -305,10 +305,10 @@ const PackageDetail = () => {
                 BOOKINGS ARE OPEN
               </div>
               <div className="flex gap-3 md:gap-6 flex-col md:flex-row">
-                <Link to={`/amrabad-resort/houses/${packageId}`} className="bg-white border border-white text-indigo-700 font-semibold px-5 py-2 rounded-lg hover:bg-indigo-100 transition text-center">
+                <Link to={`/amrabad-resort/houses/${packageId}`} className="bg-[#F2EDE7] text-[#3f2508] hover:bg-[#C4A97A] hover:text-white font-semibold px-5 py-2 rounded-lg  transition text-center">
                   BOOK NOW
                 </Link>
-                <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-indigo-700 transition">
+                <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-[#3f2508] transition">
                   GET DIRECTIONS
                 </Link>
               </div>
