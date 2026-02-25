@@ -51,7 +51,7 @@ export const UserHeader = ({ isScrolled = false }) => {
   return (
     <>
       {/* Top Bar */}
-      <div className="bg-[#362D86] text-white py-2 px-4 font-poppins text-sm">
+      {/* <div className="bg-[#362D86] text-white py-2 px-4 font-poppins text-sm">
         <div className='flex justify-between items-center container mx-auto'>
           <div className="flex items-center space-x-6">
             <a href='tel:080-25478698' className="flex items-center gap-2">
@@ -96,10 +96,10 @@ export const UserHeader = ({ isScrolled = false }) => {
             </a>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Header/Navigation */}
-      <nav className={`bg-white sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
+      <nav className={`bg-gradient-to-r from-[#8B7355] to-[#C4A97A] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
         } px-2 md:px-4`}>
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/amrabad-resort" className="flex items-center gap-2">
@@ -109,12 +109,12 @@ export const UserHeader = ({ isScrolled = false }) => {
               className={`transition-all duration-300 ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'
                 }`}
             />
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <div className={`font-bold text-[#362D86] transition-all duration-300 ${isScrolled ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
                 }`}>MEETICKET</div>
               <div className={`text-[#515151] transition-all duration-300 ${isScrolled ? 'text-[8px] md:text-[10px]' : 'text-[10px] md:text-xs'
                 }`}>GOVERNMENT OF TELANGANA</div>
-            </div>
+            </div> */}
           </Link>
           <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
             {links.map((link) => (
