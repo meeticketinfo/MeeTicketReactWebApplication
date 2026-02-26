@@ -116,7 +116,7 @@ const CheckoutDetails = () => {
           {/* Left: House & Room Details */}
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center">
-              <Link to={`/amrabad-resort`} className="text-blue-700 text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
+              <Link to={`/amrabad-resort`} className="text-[#3f2508] text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
                 + Add More Packages
               </Link>
               <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 flex items-center whitespace-nowrap">
@@ -141,7 +141,7 @@ const CheckoutDetails = () => {
                   {/* Table */}
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
-                      <thead className="bg-[#F6F7FB]">
+                      <thead className="bg-[#FDFAF7]">
                         <tr>
                           <th className="p-2 text-left font-semibold min-w-[260px]">House Name</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Room Count</th>
@@ -203,7 +203,7 @@ const CheckoutDetails = () => {
                   </div>
 
                   {/* Summary */}
-                  <div className="bg-[#F6F7FB] rounded-lg p-3 sm:p-4 mb-4">
+                  <div className="bg-[#FDFAF7] shadow rounded-lg p-3 sm:p-4 mb-4">
                     <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
                       <span>Sub total</span>
                       <span>₹{groupTotals.amount?.toLocaleString()}</span>
@@ -216,7 +216,7 @@ const CheckoutDetails = () => {
                     </div>
                     <div className="flex justify-between font-bold text-base sm:text-lg mt-2">
                       <span>TOTAL PAYABLE AMOUNT</span>
-                      <span className="text-blue-900">
+                      <span className="text-[#c4a97a]">
                         ₹{groupTotals.cartTotalAmount?.toLocaleString()}
                       </span>
                     </div>
@@ -228,7 +228,7 @@ const CheckoutDetails = () => {
 
           {/* Right: Cart Total */}
           <div className="w-full lg:max-w-[300px]">
-            <div className="bg-[#F6F7FB] rounded-lg p-4 sm:p-6">
+            <div className="bg-[#FDFAF7] shadow rounded-lg p-4 sm:p-6">
               <div className="text-base sm:text-lg font-semibold mb-4">CART TOTAL</div>
               <div className="flex justify-between mb-2 text-gray-700 text-sm sm:text-base">
                 <span>Sub-total</span>
@@ -243,7 +243,7 @@ const CheckoutDetails = () => {
                 <span>₹{totalPayable?.toLocaleString()}</span>
               </div>
               <button
-                className="w-full flex items-center justify-center gap-2 text-white py-3 rounded-lg font-semibold transition text-sm sm:text-base bg-[#362D86] hover:bg-blue-800"
+                className="w-full flex items-center justify-center gap-2 bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white py-3 rounded-lg font-semibold transition text-sm sm:text-base "
                 onClick={() => navigate("/amrabad-resort/booking-details")}
               >
                 Proceed to checkout

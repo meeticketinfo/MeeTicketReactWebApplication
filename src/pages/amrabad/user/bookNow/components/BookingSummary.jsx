@@ -127,7 +127,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-base font-bold text-gray-800">TOTAL PAYABLE AMOUNT:</span>
-            <span className="text-lg font-bold text-[#362D86]">
+            <span className="text-lg font-bold text-[#c4a97a]">
               ₹{finalAmount.toLocaleString()}
             </span>
           </div>
@@ -137,7 +137,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
       <button
         onClick={handleAddToCart}
         disabled={houseCount === 0}
-        className="w-full bg-[#362D86] text-white py-3 rounded-lg font-semibold hover:bg-[#362D86]/90 transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white py-3 rounded-lg font-semibold  transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="text-lg sm:text-xl font-bold">₹{finalAmount.toLocaleString()}</span>
         {loadingAddToCart && <CgSpinner className="animate-spin" />}

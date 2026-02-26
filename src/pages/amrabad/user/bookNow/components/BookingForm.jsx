@@ -306,7 +306,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
   return (
     <div className="w-full max-w-full sm:max-w-md lg:max-w-[400px] ">
-      <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-lg ">
+      <div className="bg-[#FDFAF7] rounded-lg p-4 sm:p-6 shadow-lg ">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
           Book {house?.roomName}
         </h2>

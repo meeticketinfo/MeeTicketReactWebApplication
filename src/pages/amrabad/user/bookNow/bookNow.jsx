@@ -34,7 +34,7 @@ const BookNow = () => {
 
   return (
     <UserLayout>
-      <div className="bg-gray-50">
+      <div className="">
         <div className="container mx-auto py-6 px-4">
           {/* Breadcrumb */}
           <Breadcrumb house={house} />

@@ -7,6 +7,7 @@ import { useUserBookingStore } from "../../../../../../store/amrabad/user/userBo
 import { useEffect, useState } from "react";
 import { formatDateTimeToReadable } from "../../../../../../utils/Helper";
 import { downloadTicketReliable } from "../amrabadBookingHistory/pdfDownloader";
+import DeccaanTrailsLogo from "../../../../../../images/user/DeccanTrailsLogo.png";
 
 const formatDateTime = (dateString) => {
   if (!dateString) return '';
@@ -136,7 +137,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                 isDownloading 
                   ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white'
               }`}
             >
               <FaDownload />
@@ -155,31 +156,31 @@ const TicketViewDetails = ({ isScrolled = false }) => {
           )} */}
 
           {/* Header with Logos */}
-          <div className="flex sm:flex-row justify-between items-start px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 gap-4">
+          <div className="flex sm:flex-row justify-between items-start px-4 sm:px-6 lg:px-8  gap-4">
             {/* Left Logo Section */}
             <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
               <img
-                src={Logo}
+                src={DeccaanTrailsLogo}
                 alt="Meeticket Logo"
                 className={`transition-all duration-300 ${isScrolled ? "w-[40px] sm:w-[50px] md:w-[60px]" : "w-[50px] sm:w-[60px] md:w-[85px]"
                   }`}
               />
-              <div>
+              {/* <div>
                 <h1 className="font-bold text-[#362D86] transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl">
                   MEETICKET
                 </h1>
                 <p className="text-[#515151] transition-all duration-300 text-[8px] sm:text-[10px] md:text-xs">
                   GOVERNMENT OF TELANGANA
                 </p>
-              </div>
+              </div> */}
             </div>
 
             {/* Right Logo Section */}
-            <div className="text-right">
+            {/* <div className="text-right">
               <div className="bg-black rounded-full flex items-center justify-center w-[80px] h-[75px] sm:w-[129px] sm:h-[125px]">
                 <img src={AmrabadLogo} />
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Ticket Title and QR Code */}
@@ -201,12 +202,12 @@ const TicketViewDetails = ({ isScrolled = false }) => {
           </div>
           <div className="px-3 sm:px-6">
             {/* Guest and Booking Details */}
-            <div className="bg-[#E0E0E099] py-2 px-3 sm:px-4 rounded-sm shadow-md">
+            <div className="bg-[#FDFAF7] border bordder-[#C8BFB2] py-2 px-3 sm:px-4 rounded-sm shadow-md">
               <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
                 {/* Guest Details */}
                 <div className="space-y-1 sm:space-y-2">
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm leading-[20px] sm:leading-[24px]">
                       GUEST NAME:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -214,7 +215,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       MOBILE NO:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -222,7 +223,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       EMAIL ID:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -234,7 +235,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                 {/* Booking Details */}
                 <div className="space-y-1 sm:space-y-2">
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       DATE:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -242,13 +243,13 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       Ticket ID:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">#{GetTicketViewDetails?.bookingItems?.[0]?.bookingId}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-blue-v2 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       PAYMENT TYPE:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -285,23 +286,23 @@ const TicketViewDetails = ({ isScrolled = false }) => {
 
             {/* Booking Details Table */}
             <div className="py-3 mt-4">
-              <h3 className="font-bold text-base sm:text-lg mb-4 text-blue-v2">
+              <h3 className="font-bold text-base sm:text-lg mb-4 text-[#C4A97A]">
                 Booking Details:
               </h3>
               <div className="overflow-x-auto shadow-md rounded-md">
                 <table className="w-full border border-gray-100 min-w-[600px]">
                   <thead>
-                    <tr className="bg-[#E1E1E1] text-blue-v1">
+                    <tr className="bg-[#FDFAF7] shadow text-[#3f2508]/80">
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         S.No
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         Package Name
                       </th>
-                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
                         House Name
                       </th>
-                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap" >
                         House Count
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
@@ -310,7 +311,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         Check-out Date
                       </th>
-                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
                         Actual Amount
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
@@ -324,17 +325,17 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                   <tbody className="text-black">
                     {GetTicketViewDetails?.bookingItems?.map((house, index) => (
                       <tr key={index} className="">
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{index + 1}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm font-medium">
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{index + 1}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs font-medium ">
                           {house.packageName ? house.packageName : "N/A"}
                         </td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm font-medium">
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs font-medium">
                           {house.roomName ? house.roomName : "N/A"}
                         </td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.roomCount}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkIn ? formatDateTime(house.checkIn) : "N/A"}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">{house.checkOut ? formatDateTime(house.checkOut) : "N/A"}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm">
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.roomCount}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkIn ? formatDateTime(house.checkIn) : "N/A"}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkOut ? formatDateTime(house.checkOut) : "N/A"}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">
                           {house.totalTariff
                             ? `₹${house.totalTariff.toLocaleString()}`
                             : "0"}
@@ -355,8 +356,8 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                 </table>
               </div>
               <div className="mt-4 text-right">
-                <div className="flex justify-end gap-8 sm:gap-16 lg:gap-24">
-                  <span className="text-base sm:text-lg font-bold text-blue-v1">
+                <div className="flex justify-end gap-8 sm:gap-16 lg:gap-24  ">
+                  <span className="text-base sm:text-lg font-bold text-black">
                     Grand Total:
                   </span>
                   <span className="text-base sm:text-lg font-bold text-black pr-2 sm:pr-8">
@@ -369,7 +370,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
 
             {/* Visitor Instructions */}
             <div className="py-4">
-              <h3 className="font-bold text-blue-v2 text-sm sm:text-base mb-3 sm:mb-4">
+              <h3 className="font-bold text-[#C4A97A] text-sm sm:text-base mb-3 sm:mb-4">
                 Visitor Instructions:
               </h3>
               <ul className="space-y-2 text-xs sm:text-[14px] text-gray-700">

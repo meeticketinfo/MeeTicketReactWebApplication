@@ -104,7 +104,7 @@ const Houses = () => {
       <div className="container mx-auto py-3 px-3">
         <div className="flex items-center gap-1 flex-wrap text-sm">
           <Link
-            className="text-[#362D86] hover:text-[#362D86]/80 font-semibold"
+            className="text-[#3f2508] hover:text-[#3f2508]/80 font-semibold"
             to="/amrabad-resort/packages"
           >
             Amrabad Resorts
@@ -120,7 +120,7 @@ const Houses = () => {
           alt="Packages"
           className="w-full h-full object-cover absolute top-0 left-0"
         />
-        <div className="absolute top-0 left-0 w-full h-full bg-[#1b1065af] z-10 backdrop-blur-sm"></div>
+        <div className="absolute top-0 left-0 w-full h-full  z-10 backdrop-blur-sm"></div>
         <div className="container mx-auto relative z-20">
           <h1 className="text-2xl  md:text-3xl xl:text-4xl font-bold text-white uppercase">
             {userPackage?.packageName}
@@ -163,7 +163,7 @@ const Houses = () => {
             <button
               type="submit"
               onClick={handleSearch}
-              className="bg-[#362D86] text-white px-6 py-2 rounded-md hover:bg-[#362D86]/90 transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
+              className="bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white px-6 py-2 rounded-md  transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
             >
               Search Houses
             </button>

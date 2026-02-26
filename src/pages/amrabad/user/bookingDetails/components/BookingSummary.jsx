@@ -171,7 +171,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
         
         <div className="flex justify-between items-center pt-1 border-t border-[#C0C0C5]">
           <span className="font-bold text-gray-800 text-sm">TOTAL</span>
-          <span className="font-bold text-[#362D86] text-lg">
+          <span className="font-bold text-[#C4A97A] text-lg">
             ₹{grandTotal?.toLocaleString()}
           </span>
         </div>

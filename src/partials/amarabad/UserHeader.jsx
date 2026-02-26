@@ -39,14 +39,14 @@ export const UserHeader = ({ isScrolled = false }) => {
       label: "Home",
       to: "/amrabad-resort",
     },
-    {
-      label: 'Download',
-      to: 'https://play.google.com/store/apps/details?id=com.me_ticket_app&pcampaignid=web_share',
-      target: '_blank'
-    },
+    // {
+    //   label: 'Download',
+    //   to: 'https://play.google.com/store/apps/details?id=com.me_ticket_app&pcampaignid=web_share',
+    //   target: '_blank'
+    // },
     {
       label: 'Support',
-      to: '/amrabad-resort/contact-us'
+      // to: '/amrabad-resort/contact-us'
     },
   ]
   return (
@@ -100,10 +100,11 @@ export const UserHeader = ({ isScrolled = false }) => {
       </div> */}
 
       {/* Main Header/Navigation */}
-      <nav className={`bg-gradient-to-r from-[#C4A97A] to-[#C4A97A] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
+      <nav className={`bg-gradient-to-r from-[#baa479] to-[#baa479] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
         } px-2 md:px-4`}>
         <div className="container mx-auto flex justify-between items-center">
-          <Link to="/amrabad-resort" className="flex items-center gap-2">
+          <div className="">
+          <Link to="/amrabad-resort" className="flex  items-center gap-2">
             <img
               src={DeccanTrailsLogo}
               alt="Deccan Trails Logo"
@@ -117,77 +118,81 @@ export const UserHeader = ({ isScrolled = false }) => {
                 }`}>GOVERNMENT OF TELANGANA</div>
             </div> */}
           </Link>
-          <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
-            {links.map((link) => (
-              <NavLink key={link.to} target={link.target} to={link.to} className="text-[#3f2508] font-medium hover:text-[#F2EDE7]">
-                {link.label}
-              </NavLink>
-            ))}
           </div>
-          <div className="flex items-center space-x-2 md:space-x-4">
-            {isLoggedIn ? (
-              // After login: show user profile section
-              <div className="flex items-center gap-3" ref={dropdownRef}>
-                <div className="relative">
-                  <div 
-                    className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    {/* User icon SVG */}
-                    <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-                      <circle cx="16" cy="16" r="16" fill="#E3E3E3"/>
-                      <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#362D86"/>
-                    </svg>
-                  </div>
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-[150px] bg-white shadow-lg border border-gray-200 py-0 z-50">
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        {decodedTokenData ? (
-                          <div className="font-bold text-black capitalize text-sm">
-                            {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + " " + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
-                          </div>
-                        ) : (
-                          <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
-                        )}
-                      </div>
-                      <Link to="/amrabad-resort/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
-                        <FaHistory />
-                        Booking History
-                      </Link>
-                      <Link to="/amrabad-resort/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
-                        <FaShoppingCart />
-                        Go to Cart
-                      </Link>
-                      <div className="py-0">
-                        <button
-                          onClick={handleLogout}
-                          className="w-full text-left px-4 py-2 text-xs text-red-500 hover:bg-red-100 flex items-center gap-2"
-                        >
-                          <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
-                            <path d="M6 2H4C3.45 2 3 2.45 3 3V13C3 13.55 3.45 14 4 14H6C6.55 14 7 13.55 7 13V3C7 2.45 6.55 2 6 2ZM12.5 7L9.5 4.5C9.22 4.22 8.78 4.22 8.5 4.5C8.22 4.78 8.22 5.22 8.5 5.5L10.29 7.25H3.75C3.34 7.25 3 7.59 3 8C3 8.41 3.34 8.75 3.75 8.75H10.29L8.5 10.5C8.22 10.78 8.22 11.22 8.5 11.5C8.78 11.78 9.22 11.78 9.5 11.5L12.5 9C12.78 8.72 12.78 8.28 12.5 8L12.5 7Z" fill="currentColor"/>
-                          </svg>
-                          Logout
-                        </button>
-                      </div>
+          <div className="  flex justify-between gap-12 items-center">
+            <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
+              {links.map((link) => (
+                <NavLink key={link.to} target={link.target} to={link.to} className="text-[#3f2508] font-medium hover:text-[#F2EDE7]">
+                  {link.label}
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="flex items-center space-x-2 md:space-x-4">
+              {isLoggedIn ? (
+                // After login: show user profile section
+                <div className="flex items-center gap-3" ref={dropdownRef}>
+                  <div className="relative">
+                    <div
+                      className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      {/* User icon SVG */}
+                      <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
+                        <circle cx="16" cy="16" r="16" fill="#E3E3E3" />
+                        <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#3f2508" />
+                      </svg>
                     </div>
-                  )}
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-[150px] bg-white shadow-lg border border-gray-200 py-0 z-50">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          {decodedTokenData ? (
+                            <div className="font-bold text-black capitalize text-sm">
+                              {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + " " + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
+                            </div>
+                          ) : (
+                            <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
+                          )}
+                        </div>
+                        <Link to="/amrabad-resort/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                          <FaHistory />
+                          Booking History
+                        </Link>
+                        <Link to="/amrabad-resort/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                          <FaShoppingCart />
+                          Go to Cart
+                        </Link>
+                        <div className="py-0">
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-xs text-red-500 hover:bg-red-100 flex items-center gap-2"
+                          >
+                            <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
+                              <path d="M6 2H4C3.45 2 3 2.45 3 3V13C3 13.55 3.45 14 4 14H6C6.55 14 7 13.55 7 13V3C7 2.45 6.55 2 6 2ZM12.5 7L9.5 4.5C9.22 4.22 8.78 4.22 8.5 4.5C8.22 4.78 8.22 5.22 8.5 5.5L10.29 7.25H3.75C3.34 7.25 3 7.59 3 8C3 8.41 3.34 8.75 3.75 8.75H10.29L8.5 10.5C8.22 10.78 8.22 11.22 8.5 11.5C8.78 11.78 9.22 11.78 9.5 11.5L12.5 9C12.78 8.72 12.78 8.28 12.5 8L12.5 7Z" fill="currentColor" />
+                            </svg>
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <>
-                <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-black px-2 md:px-6 py-2 rounded-md hover:bg-[#FDFAF7] transition duration-300 flex items-center gap-2">
-                  <span className="hidden md:block">Login</span>
-                  <FaUser className="md:hidden" />
-                </Link>
-                <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#3f250885] text-[#EDE8E1] px-6 py-2 rounded-md hover:bg-[#3f2508da] transition duration-300">Register</Link>
-              </>
-            )}
-            {/* <img
+              ) : (
+                <>
+                  <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-black px-2 md:px-6 py-2 rounded-md hover:bg-[#FDFAF7] transition duration-300 flex items-center gap-2">
+                    <span className="hidden md:block">Login</span>
+                    <FaUser className="md:hidden" />
+                  </Link>
+                  <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#3f250885] text-[#EDE8E1] px-6 py-2 rounded-md hover:bg-[#3f2508da] transition duration-300">Register</Link>
+                </>
+              )}
+              {/* <img
               src={TelanganaRising}
               alt="Telangana Rising Logo"
               className={`transition-all duration-300 ${isScrolled ? 'w-[30px] md:w-[40px]' : 'w-[40px] md:w-[59px]'
                 }`}
             /> */}
+            </div>
           </div>
         </div>
       </nav>

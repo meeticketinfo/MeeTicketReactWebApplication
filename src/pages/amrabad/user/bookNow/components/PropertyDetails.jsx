@@ -112,12 +112,12 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
 
             {/* Price and Guest Capacity */}
             <div className="mb-2 flex flex-wrap items-center">
-              <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#362D86]">₹{house?.tariffPerDay}</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#c4a97a]">₹{house?.tariffPerDay}</span>
               <span className="text-gray-600 ml-2 text-base sm:text-lg">/ For 2 Guests</span>
             </div>
 
             {/* Check-in/Check-out Times */}
-            <div className="bg-gray-100 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 max-w-full md:max-w-[400px]">
+            <div className="bg-[#FDFAF7] shadow rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 max-w-full md:max-w-[400px]">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div className="text-gray-700">
                   <div className="text-xs sm:text-sm text-gray-500 mb-1">Check-In Time:</div>

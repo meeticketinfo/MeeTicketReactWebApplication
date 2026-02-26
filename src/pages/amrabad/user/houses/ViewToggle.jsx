@@ -9,7 +9,7 @@ const ViewToggle = ({ viewMode, setViewMode }) => {
           onClick={() => setViewMode('map')}
           className={`px-3 sm:px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center gap-1 sm:gap-2 text-sm ${
             viewMode === 'map'
-              ? 'bg-[#362D86] text-white shadow-sm'
+              ? 'bg-[#C4A97A] text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
           }`}
         >
@@ -21,7 +21,7 @@ const ViewToggle = ({ viewMode, setViewMode }) => {
           onClick={() => setViewMode('list')}
           className={`px-3 sm:px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center gap-1 sm:gap-2 text-sm ${
             viewMode === 'list'
-              ? 'bg-[#362D86] text-white shadow-sm'
+              ? 'bg-[#C4A97A] text-white shadow-sm'
               : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
           }`}
         >

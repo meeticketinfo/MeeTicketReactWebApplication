@@ -461,7 +461,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
                       <Link
                         to={`/amrabad-resort/book-now/${house.packageId}/${house.roomId}`}
                         onClick={(e) => handleBookNowClick(house, e)}
-                        className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
+                        className="inline-block bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white px-4 py-0.5 rounded text-xs font-medium  transition"
                         // onClick={(e) => e.stopPropagation()}
                       >
                         Book

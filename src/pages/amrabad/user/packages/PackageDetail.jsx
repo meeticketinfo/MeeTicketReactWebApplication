@@ -60,7 +60,7 @@ const PackageDetail = () => {
         <div className=" ">
           {/* Highlights */}
           <section className="mb-8">
-            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#C4A97A] to-[#FDFAF7] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#3f2508]">
                 Adventure Highlights
               </h2>
@@ -87,12 +87,12 @@ const PackageDetail = () => {
           <section className="mb-8">
             {GetPackageDetail?.rooms?.length > 0 && (
               <>
-                <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                <div className="bg-gradient-to-r from-[c] to-[#FDFAF7] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
                   <h2 className="text-lg font-semibold text-[#3f2508]">
                     Accommodation Details
                   </h2>
                 </div>
-                <div className="overflow-x-auto w-full md:max-w-[50%]  border border-gray-200 rounded-lg">
+                <div className="overflow-x-auto w-full md:max-w-[50%] shadow border border-gray-200 rounded-lg">
                   <table className="min-w-full">
                     <thead>
                       <tr className="bg-[#F2EDE7]">
@@ -119,7 +119,7 @@ const PackageDetail = () => {
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#C4A97A] to-[#faf7f4] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+            <div className="bg-gradient-to-r from-[#C4A97A] to-[#FDFAF7] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#3f2508]">
                 Discount & Schedule Details
               </h2>

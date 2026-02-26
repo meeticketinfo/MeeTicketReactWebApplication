@@ -130,7 +130,7 @@ const BookingCard = ({ booking }) => {
               <p className="text-sm sm:text-base text-black mb-1 sm:mb-2  min-w-0">{booking?.packageName ?? "N/A"}</p>
             </div>
             <div className="text-left sm:text-right">
-              <div className="text-lg sm:text-2xl font-bold text-[#362D86]">
+              <div className="text-lg sm:text-2xl font-bold text-[#C4A97A]">
                 ₹{booking?.amountAfterDiscount?.toLocaleString() ?? "N/A"}
               </div>
               <div className="text-xs sm:text-sm text-gray-500">Total Amount</div>

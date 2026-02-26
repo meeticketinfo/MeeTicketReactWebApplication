@@ -190,7 +190,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
               {/* Button to Amarabad page */}
               <Link
                 to="/amrabad-resort/packages"
-                className="inline-flex items-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 <span>Go to Packages</span>
                 <svg
@@ -214,7 +214,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
           houses?.map((house, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-xl p-3 sm:p-4 space-y-4"
+              className="bg-white shadow rounded-xl p-3 sm:p-4 space-y-4"
             >
               <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6">
                 {/* Image */}
@@ -266,7 +266,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 )}
               </div>
                 {/* Content */}
-                <div className="flex-1 flex flex-col justify-between min-w-0 bg-[]">
+                <div className="flex-1 flex flex-col justify-between min-w-0 ">
                   <div>
                     {/* Title and Price */}
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
@@ -275,7 +275,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                           {house?.roomName}
                         </h2>
                         {/* Check-in/out */}
-                        <div className="bg-[#EEEDFAB0] text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
+                        <div className="bg-[#FDFAF7] shadow   text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
                           <div className="flex-1">
                             <div className="text-[#79787E] text-xs mb-1">
                               Check-In Time:
@@ -300,7 +300,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#362D86]">
+                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#C4A97A]">
                           ₹{house?.tariffPerDay?.toLocaleString()}
                         </span>
                         <div className="text-[#5A5961] text-xs sm:text-sm">

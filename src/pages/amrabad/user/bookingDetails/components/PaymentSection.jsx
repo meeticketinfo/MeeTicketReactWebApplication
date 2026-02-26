@@ -25,7 +25,7 @@ const PaymentSection = ({ subTotal, isSubmitting }) => {
             <button
                 type="submit"
                 form="booking-form"
-                className="w-full flex items-center justify-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60 text-sm sm:text-base"
+                className="w-full flex items-center justify-center gap-2 bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white  font-semibold py-3 rounded-md transition-colors duration-200 disabled:opacity-60 text-sm sm:text-base"
                 disabled={isSubmitting || subTotal <= 0}
             >
                 {subTotal > 0 ? (
