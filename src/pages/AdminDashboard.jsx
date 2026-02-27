@@ -10,19 +10,15 @@ import { IoReloadCircle, IoTicketSharp } from "react-icons/io5";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { FaChildren } from "react-icons/fa6";
 import { HiCurrencyRupee } from "react-icons/hi";
-import AgGridTable from "../components/tables/AgGridTable";
+
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import dashboardColumnDefs from "../config/agGrid/dashboardColumnDefs";
 import { useDashboardStore } from "../store/dashboard/dashboardStore";
-import {
-  formatToCurrency,
-  getCurrentDate,
-} from "../utils/TypographyHelper";
+import { formatToCurrency, getCurrentDate } from "../utils/TypographyHelper";
 import PieChart from "../config/dashboard/Piecharts";
 import { data } from "autoprefixer";
 import { useParkStore } from "../store/masters/parksStore";
-import AdminLayout from "../layouts/AdminLayout";
-import ServerSideAgGridTable from "../components/tables/ServerSideAgGridTable";
+
 import useAuthStore from "../store/authStore";
 import { toast } from "react-toastify";
 import CountUp from "react-countup";
@@ -42,7 +38,7 @@ import WalkerpassMostPopularPassType from "../components/walkerPass/WalkerpassMo
 import WalkerpassPassTypeDistribution from "../components/walkerPass/WalkerpassPassTypeDistribution";
 import WalkerpassExpiredPasses from "../components/walkerPass/WalkerpassExpiredPasses";
 import WalkerpassFilter from "../components/walkerPass/WalkerpassFilter";
-import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";  
+import { useWalkerpassStore } from "../components/walkerPass/store/walkerpassStore";
 import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
 import DashboardViewPoints from "./park_admin/dashboard_components/DashboardViewPoints";
 
@@ -55,7 +51,11 @@ function AdminDashboard() {
   const [filters, setFilters] = useState({
     entityTypeId: "",
   });
-  const { walkerPassDashboard, isFetchWalkerpassDashboardLoading,fetchWalkerpassDashboard } = useWalkerpassStore();
+  const {
+    walkerPassDashboard,
+    isFetchWalkerpassDashboardLoading,
+    fetchWalkerpassDashboard,
+  } = useWalkerpassStore();
   const {
     allParks,
     fetchAllParks,
@@ -117,7 +117,7 @@ function AdminDashboard() {
   useEffect(() => {
     fetchAllDepartmentTypes();
     const currentDate = getCurrentDate();
-    fetchWalkerpassDashboard({ fromDate: '', toDate: '' });
+    fetchWalkerpassDashboard({ fromDate: "", toDate: "" });
     fetchAllEntityTypes();
     fetchAllDepartmentEntities({
       fromDate: "",
@@ -130,7 +130,14 @@ function AdminDashboard() {
       toDate: "",
       active: false,
     });
-    fetchAllZooDashBoardCounts({DashboardDate : "", bookingDateFrom: ""});
+    const RoleDetailS = "ROLE_NODALOFFICER";
+    fetchAllZooDashBoardCounts(
+      {
+        DashboardDate: "",
+        bookingDateFrom: "",
+      },
+      roleDetails,
+    );
 
     if (role === "ROLE_ADMIN" || role === "ROLE_ZOOPARKADMIN") {
       fetchAllZooDashBoardCountsTicketWise({
@@ -180,7 +187,7 @@ function AdminDashboard() {
       } else {
         // Handling a response with an unexpected status code
         toast.error(
-          result?.data?.message || "Unexpected response. Please try again."
+          result?.data?.message || "Unexpected response. Please try again.",
         );
       }
     } catch (error) {
@@ -266,97 +273,6 @@ function AdminDashboard() {
       ? dashboardCardsCountByRole
       : dashboardCards;
 
-  const [dashboardColumnDefs] = useState([
-    {
-      headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
-      minWidth: 80,
-      maxWidth: 80,
-      headerClass: "text-blue-v2",
-    },
-    // {
-    //   field: "bookingId",
-    //   headerName: "Booking Id",
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) =>
-    //     params.value && params.value.trim() !== "" ? params.value : "N/A",
-    // },
-    {
-      field: "transactionId",
-      headerName: "Transaction ID",
-      flex: 2,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "userPhoneNumber",
-      headerName: "User Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "parkName",
-      headerName: "Location Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    // {
-    //   field: "locationCategoryName",
-    //   headerName: "Location Category",
-
-    //   flex: 1,
-    //   headerClass: "text-blue-v2",
-    //   valueFormatter: (params) => params.value || "N/A",
-    // },
-    {
-      field: "facilityName",
-      headerName: "Facility Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "serviceName",
-      headerName: "Service Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-
-    {
-      field: "serviceVariantName",
-      headerName: "Service Variant Name",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
-    {
-      field: "bookingRegistredDate",
-      headerName: "Booking Date",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "amount",
-      headerName: "Booking Amount",
-      flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "modeOfPayment",
-      headerName: "mode Of Payment",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-  ]);
-
   const EsdInitialValues = {
     fromDate: "",
     toDate: "",
@@ -365,7 +281,6 @@ function AdminDashboard() {
     locationId: "",
   };
   const overAllOnSubmit = (values) => {
-
     fetchAllDashboardCounts(roleDetails, {
       ...values,
       active: true,
@@ -404,7 +319,7 @@ function AdminDashboard() {
     return (
       allEntityTypes?.filter(
         (entity) =>
-          entity.isActive && allowedCategories.includes(entity.entityTypeName)
+          entity.isActive && allowedCategories.includes(entity.entityTypeName),
       ) || []
     );
   };
@@ -412,10 +327,17 @@ function AdminDashboard() {
   // Function to get department name by ID
   const getDepartmentNameById = (departmentId) => {
     const department = allDepartmentTypes?.find(
-      (dept) => dept.departmentId === departmentId
+      (dept) => dept.departmentId === departmentId,
     );
     return department?.departmentName || "";
   };
+
+  // const finalFacilitiesTicket =
+  //   roleDetails?.name === "ROLE_NODALOFFICER"
+  //     ? allZooDashboard
+  //     : allZooDashboard;
+
+  console.log("allZooDashboard", allZooDashboard);
 
   return (
     <>
@@ -505,7 +427,7 @@ function AdminDashboard() {
                                 }))
                                 .find(
                                   (option) =>
-                                    option.value === values.departmentId
+                                    option.value === values.departmentId,
                                 ) || null
                             }
                             options={allDepartmentTypes
@@ -561,18 +483,18 @@ function AdminDashboard() {
                           name="entityId"
                           value={
                             getFilteredLocationCategories(
-                              getDepartmentNameById(values.departmentId)
+                              getDepartmentNameById(values.departmentId),
                             )
                               .map((entity) => ({
                                 value: entity.entityTypeId,
                                 label: entity.entityTypeName,
                               }))
                               .find(
-                                (option) => option.value === values.entityId
+                                (option) => option.value === values.entityId,
                               ) || null
                           }
                           options={getFilteredLocationCategories(
-                            getDepartmentNameById(values.departmentId)
+                            getDepartmentNameById(values.departmentId),
                           ).map((entity) => ({
                             value: entity.entityTypeId,
                             label: entity.entityTypeName,
@@ -625,7 +547,7 @@ function AdminDashboard() {
                                 label: park.name,
                               }))
                               .find(
-                                (option) => option.value === values.locationId
+                                (option) => option.value === values.locationId,
                               ) || null
                           }
                           options={allParks
@@ -634,7 +556,7 @@ function AdminDashboard() {
                                 (park.departmentId == values.departmentId ||
                                   values.departmentId == "") &&
                                 (park.entityTypeId == values.entityId ||
-                                  values.entityId == "")
+                                  values.entityId == ""),
                             )
                             .map((park) => ({
                               value: park.id,
@@ -792,7 +714,6 @@ function AdminDashboard() {
         <div className="col-span-full lg:col-span-6  xl:col-span-6"></div>
         {roleDetails?.name === "ROLE_ZOOPARKADMIN" ||
         roleDetails?.name === "ROLE_ADMIN" ||
-        roleDetails?.name === "ROLE_NODALOFFICER" ||
         roleDetails?.name === "ROLE_COUNTERLOGIN" ? (
           <>
             <div className="col-span-full ">
@@ -837,14 +758,17 @@ function AdminDashboard() {
                 <div className="flex items-end">
                   <button
                     onClick={() => {
-                      fetchAllZooDashBoardCounts({
-                        DashboardDate: !isFacilitiesBookingDate
-                          ? DashboardDate
-                          : "",
-                        bookingDateFrom: isFacilitiesBookingDate
-                          ? DashboardDate
-                          : "",
-                      });
+                      fetchAllZooDashBoardCounts(
+                        {
+                          DashboardDate: !isFacilitiesBookingDate
+                            ? DashboardDate
+                            : "",
+                          bookingDateFrom: isFacilitiesBookingDate
+                            ? DashboardDate
+                            : "",
+                        },
+                        roleDetails,
+                      );
                     }}
                     className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
                   >
@@ -865,7 +789,7 @@ function AdminDashboard() {
               allZooDashboard.data?.map((services, serviceIndex, index) => (
                 <div
                   key={serviceIndex}
-                  className="flex flex-col col-span-full   md:col-span-4  xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                  className="flex flex-col col-span-full   md:col-span-4  xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
                 >
                   <div className="flex items-center">
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white bg-gray-400 border  rounded-lg shadow-md shadow-gray-300">
@@ -923,13 +847,14 @@ function AdminDashboard() {
                 </div>
               ))
             )}
+
             {isFetchZooDashboardLoading ? (
               <div className="px-96 py-20"></div>
             ) : (
               allZooDashboard.service?.map((service, serviceIndex, index) => (
                 <div
                   key={serviceIndex}
-                  className="flex flex-col col-span-full   justify-center sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                  className="flex flex-col col-span-full   justify-center sm:col-span-4 xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
                 >
                   <div className="flex items-center">
                     <div className="inline-flex flex-shrink-0 justify-center items-center w-12 h-12 text-white  bg-gray-400 rounded-lg shadow-md shadow-gray-300">
@@ -973,6 +898,204 @@ function AdminDashboard() {
             )}
           </>
         ) : null}
+
+        {/* for nodal officer */}
+
+       
+        {roleDetails?.name === "ROLE_NODALOFFICER" && (
+          <>
+            <div className="col-span-full ">
+              <h1 className=" text-xl font-bold">
+                Facilities and Ticket Details
+              </h1>
+              <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-4 ">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700">
+                    Booking/Purchase Date
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      setIsFacilitiesBookingDate(e.target.value === "true");
+                    }}
+                    name="bookingDate"
+                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                  >
+                    <option value="false">Purchase Date</option>
+                    <option value="true">Booking Date</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="fromDate"
+                    className="block text-xs font-medium text-gray-700"
+                  >
+                    Search By Date
+                  </label>
+                  <input
+                    type="date"
+                    name="fromDate"
+                    className={`mt-1 block px-2 py-1 border w-full
+               border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                    // min={getCurrentDate()}
+                    value={DashboardDate}
+                    onChange={(e) => {
+                      setDashboardDate(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    onClick={() => {
+                      fetchAllZooDashBoardCounts(
+                        {
+                          DashboardDate: !isFacilitiesBookingDate
+                            ? DashboardDate
+                            : "",
+                          bookingDateFrom: isFacilitiesBookingDate
+                            ? DashboardDate
+                            : "",
+                        },
+                        roleDetails,
+                      );
+                    }}
+                    className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
+                  >
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+           
+            
+            {!isFetchZooDashboardLoading ? (
+              allZooDashboard?.map((dashboardItem, dashboardIndex) => (
+                <>
+               
+                 {(dashboardItem?.data.length||dashboardItem?.service.length)!=0&&<div className=" col-span-full font-semibold text-base "><span className="">{dashboardItem.parkName}</span></div>}
+                  {/* DATA MAP */}
+                  {dashboardItem?.data?.map((services, serviceIndex) => (
+                    <div
+                      key={`data-${serviceIndex}`}
+                      className="flex flex-col col-span-full md:col-span-4 xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                    >
+                      <div className="flex items-center">
+                        <div className="inline-flex justify-center items-center w-12 h-12 bg-gray-400 rounded-lg shadow-md">
+                          <img
+                            src={services?.service?.[0]?.serviceImage}
+                            className="w-8 h-8 object-contain"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                            }}
+                            alt={
+                              services?.service?.[0]?.serviceName || "Service"
+                            }
+                          />
+                        </div>
+
+                        <div className="ml-3">
+                          <div
+                            className="text-2xl font-bold leading-none"
+                            onClick={() =>
+                              setDetailedReportParams({
+                                Date: DashboardDate,
+                                ServiceId: services?.service?.[0]?.serviceId,
+                                serviceName:
+                                  services?.service?.[0]?.serviceName,
+                              })
+                            }
+                          >
+                            <CountUp
+                              end={services?.service?.[0]?.totalQuantity || 0}
+                              duration={2}
+                              separator=","
+                            />
+                          </div>
+
+                          <h1 className="text-xs font-medium">
+                            {services?.service?.[0]?.serviceName}
+                          </h1>
+
+                          <div className="flex gap-2">
+                            {services?.service?.map((variant, variantIndex) => (
+                              <div
+                                key={variantIndex}
+                                className="flex gap-1 items-center"
+                              >
+                                <h3 className="text-sm text-gray-500">
+                                  {variant.serviceVariantName}:
+                                </h3>
+                                <h3 className="text-base font-semibold text-gray-500">
+                                  {variant.totalQuantitys}
+                                </h3>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {/* SERVICE MAP */}
+                  {dashboardItem?.service?.map((service, serviceIndex) => (
+                    <div
+                      key={`service-${serviceIndex}`}
+                      className="flex flex-col col-span-full sm:col-span-4 xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+                    >
+                      <div className="flex items-center">
+                        <div className="inline-flex justify-center items-center w-12 h-12 bg-gray-400 rounded-lg shadow-md">
+                          <img
+                            src={service?.serviceImage}
+                            className="w-8 h-8 object-contain"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect width="24" height="24" x="0" y="0" fill="%23f3f4f6" rx="2"/><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22V12" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7l10 5 10-5" fill="none" stroke="%239ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+                            }}
+                            alt={service?.serviceName || "Service"}
+                          />
+                        </div>
+
+                        <div className="ml-3">
+                          <div
+                            className="text-2xl font-bold leading-none"
+                            onClick={() =>
+                              setDetailedReportParams({
+                                Date: DashboardDate,
+                                ServiceId: service?.serviceId,
+                                serviceName: service?.serviceName,
+                              })
+                            }
+                          >
+                            <CountUp
+                              end={service?.totalQuantity || 0}
+                              duration={2}
+                              separator=","
+                            />
+                          </div>
+
+                          <h1 className="text-sm font-medium">
+                            {service?.serviceName}
+                          </h1>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                 
+                </>
+              ))
+            ) : (
+              <div className="px-96 py-20 flex justify-center">
+                <l-superballs
+                  size="40"
+                  speed="1.4"
+                  color="black"
+                ></l-superballs>
+              </div>
+            )}
+          </>
+        )}
+       
         {/* PIE CHART */}
         {(roleDetails?.name == "ROLE_SUPERADMIN" ||
           roleDetails?.name == "Role_DeptAdmin") && (
@@ -1027,13 +1150,17 @@ function AdminDashboard() {
                         <input
                           type="text"
                           value={bookingLocationFilter}
-                          onChange={(e) => setBookingLocationFilter(e.target.value)}
+                          onChange={(e) =>
+                            setBookingLocationFilter(e.target.value)
+                          }
                           placeholder="location name..."
                           className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <label className="text-xs font-semibold text-gray-700">
+                          Sort by:
+                        </label>
                         <select
                           className="border w-28 border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                           value={bookingSortOrder}
@@ -1056,7 +1183,7 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Bookings 
+                              Bookings
                             </th>
                           </tr>
                         </thead>
@@ -1074,44 +1201,65 @@ function AdminDashboard() {
                             </tr>
                           ) : allPieCharts && allPieCharts.length > 0 ? (
                             (() => {
-                              const filtered = (allPieCharts || []).filter((item) => {
-                                const name = (item?.entity || "").toString().toLowerCase();
-                                return bookingLocationFilter
-                                  ? name.includes(bookingLocationFilter.toLowerCase())
-                                  : true;
-                              });
+                              const filtered = (allPieCharts || []).filter(
+                                (item) => {
+                                  const name = (item?.entity || "")
+                                    .toString()
+                                    .toLowerCase();
+                                  return bookingLocationFilter
+                                    ? name.includes(
+                                        bookingLocationFilter.toLowerCase(),
+                                      )
+                                    : true;
+                                },
+                              );
                               if (filtered.length === 0) {
                                 return (
                                   <tr>
-                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                    <td
+                                      colSpan="3"
+                                      className="px-4 py-8 text-center text-gray-500"
+                                    >
                                       No data available
                                     </td>
                                   </tr>
                                 );
                               }
-                              const sorted = bookingSortOrder === "none"
-                                ? filtered
-                                : [...filtered].sort((a, b) => {
-                                    const av = Number(a?.entityWiseTotalBookings || 0);
-                                    const bv = Number(b?.entityWiseTotalBookings || 0);
-                                    return bookingSortOrder === "asc" ? av - bv : bv - av;
-                                  });
+                              const sorted =
+                                bookingSortOrder === "none"
+                                  ? filtered
+                                  : [...filtered].sort((a, b) => {
+                                      const av = Number(
+                                        a?.entityWiseTotalBookings || 0,
+                                      );
+                                      const bv = Number(
+                                        b?.entityWiseTotalBookings || 0,
+                                      );
+                                      return bookingSortOrder === "asc"
+                                        ? av - bv
+                                        : bv - av;
+                                    });
                               return sorted.map((item, index) => (
-                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {index + 1}
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || "N/A"}
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalBookings
-                                    ? new Intl.NumberFormat("en-IN").format(
-                                        item.entityWiseTotalBookings
-                                      )
-                                    : "0"}
-                                </td>
-                              </tr>
+                                <tr
+                                  key={index}
+                                  className={
+                                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                  }
+                                >
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {index + 1}
+                                  </td>
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {item.entity || "N/A"}
+                                  </td>
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {item.entityWiseTotalBookings
+                                      ? new Intl.NumberFormat("en-IN").format(
+                                          item.entityWiseTotalBookings,
+                                        )
+                                      : "0"}
+                                  </td>
+                                </tr>
                               ));
                             })()
                           ) : (
@@ -1125,38 +1273,59 @@ function AdminDashboard() {
                             </tr>
                           )}
                         </tbody>
-                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
-                          const filtered = (allPieCharts || []).filter((item) => {
-                            const name = (item?.entity || "").toString().toLowerCase();
-                            return bookingLocationFilter
-                              ? name.includes(bookingLocationFilter.toLowerCase())
-                              : true;
-                          });
-                          return filtered.length > 0;
-                        })() && (
-                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                            <tr>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                {/* Empty S.No column */}
-                              </td>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                Total
-                              </td>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                {(() => {
-                                  const filtered = (allPieCharts || []).filter((item) => {
-                                    const name = (item?.entity || "").toString().toLowerCase();
-                                    return bookingLocationFilter
-                                      ? name.includes(bookingLocationFilter.toLowerCase())
-                                      : true;
-                                  });
-                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalBookings || 0), 0);
-                                  return new Intl.NumberFormat('en-IN').format(total);
-                                })()}
-                              </td>
-                            </tr>
-                          </tfoot>
-                        )}
+                        {!isFetchPieChartsLoading &&
+                          allPieCharts?.length > 0 &&
+                          (() => {
+                            const filtered = (allPieCharts || []).filter(
+                              (item) => {
+                                const name = (item?.entity || "")
+                                  .toString()
+                                  .toLowerCase();
+                                return bookingLocationFilter
+                                  ? name.includes(
+                                      bookingLocationFilter.toLowerCase(),
+                                    )
+                                  : true;
+                              },
+                            );
+                            return filtered.length > 0;
+                          })() && (
+                            <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
+                              <tr>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  {/* Empty S.No column */}
+                                </td>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  Total
+                                </td>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  {(() => {
+                                    const filtered = (
+                                      allPieCharts || []
+                                    ).filter((item) => {
+                                      const name = (item?.entity || "")
+                                        .toString()
+                                        .toLowerCase();
+                                      return bookingLocationFilter
+                                        ? name.includes(
+                                            bookingLocationFilter.toLowerCase(),
+                                          )
+                                        : true;
+                                    });
+                                    const total = filtered.reduce(
+                                      (sum, item) =>
+                                        sum +
+                                        (item.entityWiseTotalBookings || 0),
+                                      0,
+                                    );
+                                    return new Intl.NumberFormat(
+                                      "en-IN",
+                                    ).format(total);
+                                  })()}
+                                </td>
+                              </tr>
+                            </tfoot>
+                          )}
                       </table>
                     </div>
                   </div>
@@ -1214,13 +1383,17 @@ function AdminDashboard() {
                         <input
                           type="text"
                           value={locationNameFilter}
-                          onChange={(e) => setLocationNameFilter(e.target.value)}
+                          onChange={(e) =>
+                            setLocationNameFilter(e.target.value)
+                          }
                           placeholder="location name..."
                           className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <label className="text-xs font-semibold text-gray-700">Sort by:</label>
+                        <label className="text-xs font-semibold text-gray-700">
+                          Sort by:
+                        </label>
                         <select
                           className="border border-gray-300 w-28 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                           value={amountSortOrder}
@@ -1243,7 +1416,7 @@ function AdminDashboard() {
                               Location Name
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-bold text-[#002352] tracking-wider border-b">
-                              Amount 
+                              Amount
                             </th>
                           </tr>
                         </thead>
@@ -1262,46 +1435,67 @@ function AdminDashboard() {
                           ) : allPieCharts && allPieCharts.length > 0 ? (
                             // Compute filtered and sorted data for display
                             (() => {
-                              const filtered = (allPieCharts || []).filter((item) => {
-                                const name = (item?.entity || "").toString().toLowerCase();
-                                return locationNameFilter
-                                  ? name.includes(locationNameFilter.toLowerCase())
-                                  : true;
-                              });
+                              const filtered = (allPieCharts || []).filter(
+                                (item) => {
+                                  const name = (item?.entity || "")
+                                    .toString()
+                                    .toLowerCase();
+                                  return locationNameFilter
+                                    ? name.includes(
+                                        locationNameFilter.toLowerCase(),
+                                      )
+                                    : true;
+                                },
+                              );
                               if (filtered.length === 0) {
                                 return (
                                   <tr>
-                                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
+                                    <td
+                                      colSpan="3"
+                                      className="px-4 py-8 text-center text-gray-500"
+                                    >
                                       No data available
                                     </td>
                                   </tr>
                                 );
                               }
-                              const sorted = amountSortOrder === "none"
-                                ? filtered
-                                : [...filtered].sort((a, b) => {
-                                    const av = Number(a?.entityWiseTotalAmount || 0);
-                                    const bv = Number(b?.entityWiseTotalAmount || 0);
-                                    return amountSortOrder === "asc" ? av - bv : bv - av;
-                                  });
+                              const sorted =
+                                amountSortOrder === "none"
+                                  ? filtered
+                                  : [...filtered].sort((a, b) => {
+                                      const av = Number(
+                                        a?.entityWiseTotalAmount || 0,
+                                      );
+                                      const bv = Number(
+                                        b?.entityWiseTotalAmount || 0,
+                                      );
+                                      return amountSortOrder === "asc"
+                                        ? av - bv
+                                        : bv - av;
+                                    });
                               return sorted.map((item, index) => (
-                              <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {index + 1}
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entity || "N/A"}
-                                </td>
-                                <td className="px-4 py-3 text-sm text-gray-900 border-b">
-                                  {item.entityWiseTotalAmount
-                                    ? formatToCurrency(
-                                        item.entityWiseTotalAmount,
-                                        "INR",
-                                        "en-IN"
-                                      )
-                                    : "₹0"}
-                                </td>
-                              </tr>
+                                <tr
+                                  key={index}
+                                  className={
+                                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                  }
+                                >
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {index + 1}
+                                  </td>
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {item.entity || "N/A"}
+                                  </td>
+                                  <td className="px-4 py-3 text-sm text-gray-900 border-b">
+                                    {item.entityWiseTotalAmount
+                                      ? formatToCurrency(
+                                          item.entityWiseTotalAmount,
+                                          "INR",
+                                          "en-IN",
+                                        )
+                                      : "₹0"}
+                                  </td>
+                                </tr>
                               ));
                             })()
                           ) : (
@@ -1315,38 +1509,60 @@ function AdminDashboard() {
                             </tr>
                           )}
                         </tbody>
-                        {!isFetchPieChartsLoading && allPieCharts?.length > 0 && (() => {
-                          const filtered = (allPieCharts || []).filter((item) => {
-                            const name = (item?.entity || "").toString().toLowerCase();
-                            return locationNameFilter
-                              ? name.includes(locationNameFilter.toLowerCase())
-                              : true;
-                          });
-                          return filtered.length > 0;
-                        })() && (
-                          <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
-                            <tr>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                {/* Empty S.No column */}
-                              </td>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                Total
-                              </td>
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
-                                {(() => {
-                                  const filtered = (allPieCharts || []).filter((item) => {
-                                    const name = (item?.entity || "").toString().toLowerCase();
-                                    return locationNameFilter
-                                      ? name.includes(locationNameFilter.toLowerCase())
-                                      : true;
-                                  });
-                                  const total = filtered.reduce((sum, item) => sum + (item.entityWiseTotalAmount || 0), 0);
-                                  return formatToCurrency(total, "INR", "en-IN");
-                                })()}
-                              </td>
-                            </tr>
-                          </tfoot>
-                        )}
+                        {!isFetchPieChartsLoading &&
+                          allPieCharts?.length > 0 &&
+                          (() => {
+                            const filtered = (allPieCharts || []).filter(
+                              (item) => {
+                                const name = (item?.entity || "")
+                                  .toString()
+                                  .toLowerCase();
+                                return locationNameFilter
+                                  ? name.includes(
+                                      locationNameFilter.toLowerCase(),
+                                    )
+                                  : true;
+                              },
+                            );
+                            return filtered.length > 0;
+                          })() && (
+                            <tfoot className="sticky bottom-0 bg-[#DDF2FF] border-[#DDF2FF] shadow-lg">
+                              <tr>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  {/* Empty S.No column */}
+                                </td>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  Total
+                                </td>
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                                  {(() => {
+                                    const filtered = (
+                                      allPieCharts || []
+                                    ).filter((item) => {
+                                      const name = (item?.entity || "")
+                                        .toString()
+                                        .toLowerCase();
+                                      return locationNameFilter
+                                        ? name.includes(
+                                            locationNameFilter.toLowerCase(),
+                                          )
+                                        : true;
+                                    });
+                                    const total = filtered.reduce(
+                                      (sum, item) =>
+                                        sum + (item.entityWiseTotalAmount || 0),
+                                      0,
+                                    );
+                                    return formatToCurrency(
+                                      total,
+                                      "INR",
+                                      "en-IN",
+                                    );
+                                  })()}
+                                </td>
+                              </tr>
+                            </tfoot>
+                          )}
                       </table>
                     </div>
                   </div>
@@ -1365,19 +1581,18 @@ function AdminDashboard() {
             />
           </DashboardCard07>
         )}
-        
 
-            {/* <WalkerpassFilter />
+        {/* <WalkerpassFilter />
             <WalkerpassOverallDetails />
             <WalkerpassCategory />
             <WalkerpassExpiredPasses /> */}
-            {/* <WalkerpassRenewalPasses /> */}
-            {/* <WalkerpassMostPopularPassType /> */}
-            {/* <WalkerpassPassTypeDistribution /> */}
-      
+        {/* <WalkerpassRenewalPasses /> */}
+        {/* <WalkerpassMostPopularPassType /> */}
+        {/* <WalkerpassPassTypeDistribution /> */}
       </div>
       {/* View Points Counts */}
-      {(roleDetails?.name === "ROLE_ADMIN"&&decodedTokenData.data?.ParkId === "100") && <DashboardViewPoints />}
+      {roleDetails?.name === "ROLE_ADMIN" &&
+        decodedTokenData.data?.ParkId === "100" && <DashboardViewPoints />}
     </>
   );
 }

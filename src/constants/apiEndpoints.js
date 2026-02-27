@@ -247,6 +247,8 @@ export const API_ENDPOINTS = {
       GET_LOCATION_ADMINS: `${API_BASE_URL}Master/GetAllEntityAdminsForNodalOfficer`,
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
+      GET_NODAL_OFFICERS_DASHBOARD_COUNTS:`${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
+
     },
     BUS_PASS: {
       GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}BusPassDashboard/GetAllBusPasses`,
@@ -410,6 +412,7 @@ export const API_ENDPOINTS = {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
+     GET_NODAL_OFFICERS_DASHBOARD_COUNTS:`${API_BASE_URL}NodalOfficer/GetNodalOfficerParkDashboard`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
     GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
   GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,

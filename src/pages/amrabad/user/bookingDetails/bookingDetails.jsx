@@ -72,7 +72,7 @@ const AmarabadBookingDetails = () => {
                         <BookingForm onSubmit={handleSubmit} />
 
                         {/* Right: Booking Summary & Payment */}
-                        <div className="flex-1 w-full lg:max-w-[450px] flex flex-col gap-3">
+                        <div className="flex-1 w-full lg:max-w-[450px]  flex flex-col gap-3">
                             <BookingSummary
                                 bookingData={cartItems}
                                 loadingCart={loadingCart}
