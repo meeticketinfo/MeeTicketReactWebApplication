@@ -76,6 +76,7 @@ export const parkAdminPermissions = [
   "bookings",
   "facility-services",
   "holidays",
+  "facility-holidays",
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",
@@ -87,6 +88,8 @@ export const parkAdminPermissions = [
   "pos-admin",
   // "pos-admin"
   "pos-reports",
+  "add-language",
+  "group-details",
 ];
 
 // botanical garden park admin permissions
