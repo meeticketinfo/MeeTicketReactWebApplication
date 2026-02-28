@@ -390,6 +390,8 @@ export default function BankTransactions() {
                 {params.data.status !== "Verified" &&
                   params.data.status !== "Not Settled" &&
                   params.data.status !== "Completed" &&
+                  params.data.status !== "Processed" &&
+                  params.data.status !== "No Settlement" &&
                   params.data.status !== "SettledByPayTM" && (
                     <button
                       className={`mt-2.5 `}

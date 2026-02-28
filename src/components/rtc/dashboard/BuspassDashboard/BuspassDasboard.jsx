@@ -224,8 +224,8 @@ function BuspassDasboard() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                <div className=" grid md:grid-cols-2 gap-3">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       ID Cards
                     </span>
@@ -237,7 +237,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       New Passes
                     </span>
@@ -249,7 +249,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       Renewal Passes
                     </span>
@@ -261,7 +261,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       One Day Pass
                     </span>
@@ -301,8 +301,8 @@ function BuspassDasboard() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                <div className=" grid md:grid-cols-2 gap-3">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       ID Cards
                     </span>
@@ -314,7 +314,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       New Passes
                     </span>
@@ -326,7 +326,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       Renewal Passes
                     </span>
@@ -338,7 +338,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       One Day Pass
                     </span>
@@ -374,7 +374,7 @@ function BuspassDasboard() {
                   {
                     buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
                       return (
-                        <div className="flex justify-between shadow-md  items-center p-3 bg-[#F1F6FB] rounded-lg">
+                        <div className="flex justify-between shadow-md  items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                           <span className="text-sm font-medium text-gray-600">
                             {genderconfig[p.employeeGender]}
                           </span>
