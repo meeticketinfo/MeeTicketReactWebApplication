@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 const AmrabadTermsConditions = () => {
   return (
      <UserLayout>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F2EDE7]">
       {/* Header */}
-      <div className="bg-blue-v2 text-white py-8">
+      <div className="bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] text-[#FDFAF7] py-8">
         <div className="container mx-auto px-4">
           
           <h1
@@ -16,7 +16,7 @@ const AmrabadTermsConditions = () => {
           >
             Amrabad Tiger Reserve - Terms & Conditions
           </h1>
-          <p className="text-green-100">
+          <p className="text-[#D0D7CE]">
             Welcome to the Amrabad Tiger Reserve Booking Portal. Please read
             these terms carefully.
           </p>
@@ -25,11 +25,11 @@ const AmrabadTermsConditions = () => {
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8">
           {/* Section 1 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               1. General
@@ -57,7 +57,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 2 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               2. Packages and Houses Bookings
@@ -88,7 +88,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 3 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               3. Payments
@@ -112,7 +112,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 4 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               4. Cancellations & Refunds
@@ -140,7 +140,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 5 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               5. Visitor Rules & Responsibilities
@@ -170,7 +170,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 6 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               6. Resort Policies
@@ -194,7 +194,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 7 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               7. Liability Disclaimer
@@ -226,7 +226,7 @@ const AmrabadTermsConditions = () => {
           {/* Section 8 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               8. Privacy
@@ -236,14 +236,14 @@ const AmrabadTermsConditions = () => {
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               All personal information provided is handled as per our 
-             <Link to="/amrabad-resort/privacy-policy" className="text-blue-v1 ml-2">Privacy Policy</Link>.
+             <Link to="/amrabad-resort/privacy-policy" className="text-[#304A3A] ml-2 hover:text-[#2E3929]">Privacy Policy</Link>.
             </p>
           </div>
 
           {/* Section 9 */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               9. Modifications to Terms
@@ -266,7 +266,7 @@ const AmrabadTermsConditions = () => {
           {/* Contact Section */}
           <div className="mb-8">
             <h2
-              className="text-2xl font-bold text-blue-v1 mb-4"
+              className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
               10. Contact
@@ -278,7 +278,7 @@ const AmrabadTermsConditions = () => {
               For any queries regarding these Terms & Conditions, please
               contact:
             </p>
-            <div className="bg-blue-v2 text-white p-4 rounded-lg">
+            <div className="bg-[#394D48] text-[#FDFAF7] p-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
               <p
                 className=" mb-2"
                 style={{ fontFamily: "Arial Nova, sans-serif" }}

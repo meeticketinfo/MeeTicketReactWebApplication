@@ -40,7 +40,7 @@ const BookNow = () => {
           <Breadcrumb house={house} />
           
           {/* Main Content */}
-          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-6 lg:p-8">
+          <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-3 sm:p-4 md:p-6 lg:p-8">
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Left Column - Property Details */}
               <PropertyDetails house={house} userPackage={userPackage} isUserPackagesLoading={isUserPackagesLoading} />

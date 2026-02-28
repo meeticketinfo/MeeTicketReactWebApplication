@@ -97,7 +97,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
   if (isTicketViewDetailsLoading || !GetTicketViewDetails || !GetTicketViewDetails.bookingItems) {
     return (
       <div className="font-manrope overflow-auto h-screen bg-gray-100 px-2 sm:px-4 py-2 sm:py-4 border">
-        <div className="bg-white rounded-lg shadow-lg w-full max-w-6xl mx-auto">
+        <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] w-full max-w-6xl mx-auto">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -137,7 +137,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                 isDownloading 
                   ? 'bg-gray-400 text-gray-600 cursor-not-allowed' 
-                  : 'bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white'
+                  : 'bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90'
               }`}
             >
               <FaDownload />
@@ -148,7 +148,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
           {/* Show downloading indicator */}
           {/* {isDownloading && (
             <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg text-center">
+              <div className="bg-white p-6 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                 <p className="text-gray-600">Generating PDF...</p>
               </div>
@@ -166,7 +166,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                   }`}
               />
               {/* <div>
-                <h1 className="font-bold text-[#362D86] transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+                <h1 className="font-bold text-[#304A3A] transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl">
                   MEETICKET
                 </h1>
                 <p className="text-[#515151] transition-all duration-300 text-[8px] sm:text-[10px] md:text-xs">
@@ -207,7 +207,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                 {/* Guest Details */}
                 <div className="space-y-1 sm:space-y-2">
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm leading-[20px] sm:leading-[24px]">
                       GUEST NAME:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -215,7 +215,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       MOBILE NO:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -223,7 +223,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       EMAIL ID:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -235,7 +235,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                 {/* Booking Details */}
                 <div className="space-y-1 sm:space-y-2">
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       DATE:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -243,13 +243,13 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       Ticket ID:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">#{GetTicketViewDetails?.bookingItems?.[0]?.bookingId}</span>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-1">
-                    <span className="text-[#3f2508]/80 font-bold text-sm  leading-[20px] sm:leading-[24px]">
+                    <span className="text-[#304A3A]/90 font-bold text-sm  leading-[20px] sm:leading-[24px]">
                       PAYMENT TYPE:
                     </span>
                     <span className="font-medium text-black text-sm sm:text-base">
@@ -286,13 +286,13 @@ const TicketViewDetails = ({ isScrolled = false }) => {
 
             {/* Booking Details Table */}
             <div className="py-3 mt-4">
-              <h3 className="font-bold text-base sm:text-lg mb-4 text-[#C4A97A]">
+              <h3 className="font-bold text-base sm:text-lg mb-4 text-[#304A3A]">
                 Booking Details:
               </h3>
               <div className="overflow-x-auto shadow-md rounded-md">
                 <table className="w-full border border-gray-100 min-w-[600px]">
                   <thead>
-                    <tr className="bg-[#FDFAF7] shadow text-[#3f2508]/80">
+                    <tr className="bg-[#FDFAF7] shadow text-[#304A3A]/90">
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         S.No
                       </th>
@@ -370,7 +370,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
 
             {/* Visitor Instructions */}
             <div className="py-4">
-              <h3 className="font-bold text-[#C4A97A] text-sm sm:text-base mb-3 sm:mb-4">
+              <h3 className="font-bold text-[#304A3A] text-sm sm:text-base mb-3 sm:mb-4">
                 Visitor Instructions:
               </h3>
               <ul className="space-y-2 text-xs sm:text-[14px] text-gray-700">

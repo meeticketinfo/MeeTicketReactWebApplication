@@ -103,7 +103,7 @@ const ResetPinOtp = () => {
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
-        <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8">
+        <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 w-full mb-8">
           <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
             <img src={Lock} alt="Lock" />
           </div>
@@ -166,7 +166,7 @@ const ResetPinOtp = () => {
                     <span
                       className={`clr_link ${
                         canResend
-                          ? "cursor-pointer text-blue-v1 underline font-bold"
+                          ? "cursor-pointer text-[#304A3A] underline font-bold"
                           : "text-gray-900 opacity-40"
                       }`}
                       onClick={() => {

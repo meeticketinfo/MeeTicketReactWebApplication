@@ -67,7 +67,7 @@ const AmarabadBookingDetails = () => {
         <UserLayout>
             <div className="container mx-auto py-4 sm:py-6 md:py-8 px-3">
                 <div className="">
-                    <div className="bg-white rounded-lg p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
+                    <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
                         {/* Left: Billing/Guest Details Form */}
                         <BookingForm onSubmit={handleSubmit} />
 

@@ -38,7 +38,7 @@ const AmarabadLogin = () => {
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
-        <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
+        <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 w-full mb-8">
           <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
             <img src={Lock} alt="Lock" className="" />
           </div>
@@ -60,7 +60,7 @@ const AmarabadLogin = () => {
               Not Registered yet?{" "}
               <Link
                 to="/amrabad-resort/register"
-                className="text-[#EB723C] font-bold hover:underline"
+                className="text-[#304A3A] font-bold hover:underline hover:text-[#2E3929]"
               >
                 Create an Account
               </Link>

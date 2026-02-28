@@ -431,7 +431,7 @@ export const getStatusBadgeClass = (status) => {
     case "cancelled":
       return "bg-red-50 text-red-800";
     case "upcoming":
-      return "bg-blue-50 text-blue-800";
+      return "bg-[#EDEBE1] text-[#304A3A]";
     default:
       return "bg-gray-50 text-gray-800";
   }

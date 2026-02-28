@@ -48,7 +48,7 @@ const BookingCard = ({ booking }) => {
       case "Cancelled":
         return <IoIosCloseCircleOutline className="text-red-600" />;
       case "upcoming":
-        return <FaClock className="text-blue-600" />;
+        return <FaClock className="text-[#304A3A]" />;
       case "Past":
         return <MdHistory className="text-gray-600" />;
       default:
@@ -63,7 +63,7 @@ const BookingCard = ({ booking }) => {
       case "Cancelled":
         return "bg-red-50 text-red-800";
       case "upcoming":
-        return "bg-blue-50 text-blue-800";
+        return "bg-[#EDEBE1] text-[#304A3A]";
       case "Past":
         return "bg-gray-50 text-gray-800";
       default:
@@ -88,7 +88,7 @@ const BookingCard = ({ booking }) => {
 
   // console.log("BookingCard booking:", booking);
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4">
+    <div className="bg-white border border-[#D0D7CE] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-3 sm:p-4">
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Image */}
         <div className="flex-shrink-0 flex justify-center lg:block mb-3 lg:mb-0">
@@ -130,7 +130,7 @@ const BookingCard = ({ booking }) => {
               <p className="text-sm sm:text-base text-black mb-1 sm:mb-2  min-w-0">{booking?.packageName ?? "N/A"}</p>
             </div>
             <div className="text-left sm:text-right">
-              <div className="text-lg sm:text-2xl font-bold text-[#C4A97A]">
+              <div className="text-lg sm:text-2xl font-bold text-[#304A3A]">
                 ₹{booking?.amountAfterDiscount?.toLocaleString() ?? "N/A"}
               </div>
               <div className="text-xs sm:text-sm text-gray-500">Total Amount</div>
@@ -140,7 +140,7 @@ const BookingCard = ({ booking }) => {
           {/* Details Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-4 sm:mb-6 gap-3">
             <div className="flex items-start gap-2 sm:gap-3">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-[#EDEBE1] rounded-md flex items-center justify-center text-[#304A3A] p-2">
                 <IoCalendarClearOutline />
               </div>
               <div>
@@ -150,7 +150,7 @@ const BookingCard = ({ booking }) => {
               </div>
             </div>
             <div className="flex items-start gap-2 sm:gap-3 ">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700 p-2">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-[#EDEBE1] rounded-md flex items-center justify-center text-[#304A3A] p-2">
                 <IoCalendarClearOutline />
               </div>
               <div>
@@ -160,7 +160,7 @@ const BookingCard = ({ booking }) => {
               </div>
             </div>
             <div className="flex items-start gap-2 sm:gap-3 ">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-blue-50 rounded-md flex items-center justify-center text-blue-700">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 text-base sm:text-lg bg-[#EDEBE1] rounded-md flex items-center justify-center text-[#304A3A]">
                 <TbUsers />
               </div>
               <div>
@@ -195,7 +195,7 @@ const BookingCard = ({ booking }) => {
           </div> */}
         </div>
         <div className="flex gap-3 lg:gap-4">
-          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}`} className="flex items-center gap-1 sm:gap-2 text-blue-600 hover:text-blue-700 transition-colors text-xs sm:text-sm">
+          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${booking?.paymentTransactionId}`} className="flex items-center gap-1 sm:gap-2 text-[#304A3A] hover:text-[#2E3929] transition-colors text-xs sm:text-sm">
             <FaEye />
             <span className="hidden xs:inline">View Details</span>
           </Link>

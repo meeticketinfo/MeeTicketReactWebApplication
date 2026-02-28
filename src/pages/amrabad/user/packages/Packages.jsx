@@ -38,7 +38,7 @@ const Packages = () => {
                   <h4 className="text-white text-2xl md:text-3xl font-bold capitalize">{item.packageName}</h4>
                   <Link
                     to={`/amrabad-resort/packages/${item.packageId}`}
-                    className="bg-[#F2EDE7] text-[#3f2508] px-6 py-2 rounded-md hover:bg-[#C4A97A] hover:text-white transition duration-300 text-xl font-bold"
+                    className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] px-6 py-2 rounded-md hover:opacity-90 transition duration-300 text-xl font-bold"
                   >
                     BOOK NOW
                   </Link>

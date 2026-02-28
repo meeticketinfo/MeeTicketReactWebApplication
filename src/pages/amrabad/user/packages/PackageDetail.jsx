@@ -33,7 +33,7 @@ const PackageDetail = () => {
         <div className="flex items-center justify-center h-[50vh]">
           <div className="text-center">
             <div className="text-gray-500 text-xl mb-4">Package not found</div>
-            <Link to="/amrabad-resort/packages" className="text-blue-600 hover:text-blue-800 underline">
+            <Link to="/amrabad-resort/packages" className="text-[#304A3A] hover:text-[#2E3929] underline">
               Back to Packages
             </Link>
           </div>
@@ -52,7 +52,7 @@ const PackageDetail = () => {
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{GetPackageDetail?.title}</h4>
             <Link
               to={`/amrabad-resort/houses/${packageId}`}
-              className="bg-[#F2EDE7] text-[#3f2508] hover:bg-[#C4A97A] hover:text-white px-4 md:px-6 py-2 rounded-md  transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
+              className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-4 md:px-6 py-2 rounded-md transition duration-300 text-base md:text-xl font-bold">BOOK NOW</Link>
           </div>
         </div>
       </div>
@@ -60,8 +60,8 @@ const PackageDetail = () => {
         <div className=" ">
           {/* Highlights */}
           <section className="mb-8">
-            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#C4A97A] to-[#FDFAF7] p-3 md:p-4  pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#3f2508]">
+            {GetPackageDetail?.highlights?.length > 0 && <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+              <h2 className="text-lg font-semibold text-[#304A3A]">
                 Adventure Highlights
               </h2>
             </div>}
@@ -70,8 +70,8 @@ const PackageDetail = () => {
                 <li key={idx} className="flex items-start gap-2">
                   <span className="text-xl">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#C4A97A" />
-                      <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#C4A97A" />
+                      <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#304A3A" />
+                      <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#304A3A" />
                     </svg>
                   </span>
                   <span>
@@ -87,8 +87,8 @@ const PackageDetail = () => {
           <section className="mb-8">
             {GetPackageDetail?.rooms?.length > 0 && (
               <>
-                <div className="bg-gradient-to-r from-[c] to-[#FDFAF7] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-                  <h2 className="text-lg font-semibold text-[#3f2508]">
+                <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                  <h2 className="text-lg font-semibold text-[#304A3A]">
                     Accommodation Details
                   </h2>
                 </div>
@@ -102,7 +102,7 @@ const PackageDetail = () => {
                     </thead>
                     <tbody>
                       {GetPackageDetail?.rooms?.map((room, idx) => (
-                        <tr key={idx} className="border-t">
+                        <tr key={idx} className="border-t bg-[#FDFAF7]">
                           <td className="px-4 py-2">{room.type}</td>
                           <td className="px-4 py-2">{room.count}</td>
                         </tr>
@@ -119,12 +119,12 @@ const PackageDetail = () => {
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#C4A97A] to-[#FDFAF7] p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#3f2508]">
+            <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+              <h2 className="text-lg font-semibold text-[#304A3A]">
                 Discount & Schedule Details
               </h2>
             </div>
-            <div className="bg-[#FDFAF7] p-3 md:p-5 rounded-xl">
+            <div className="bg-[#FDFAF7] p-3 md:p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
 
               {/* Discounts */}
               <div className="mb-5">
@@ -135,8 +135,8 @@ const PackageDetail = () => {
                     <li key={idx} className="flex items-start gap-2">
                       <span className="text-xl">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#C4A97A" />
-                          <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#C4A97A" />
+                          <path d="M15.5 5H11L16 12L11 19H15.5L20.5 12L15.5 5Z" fill="#304A3A" />
+                          <path d="M8.5 5H4L9 12L4 19H8.5L13.5 12L8.5 5Z" fill="#304A3A" />
                         </svg>
                       </span>
                       <span>
@@ -152,7 +152,7 @@ const PackageDetail = () => {
                 <h3 className="mb-4 text-black text-base md:text-xl font-bold">2-Day Itinerary Schedule</h3>
 
                 {/* Day 1 Card */}
-                <div className="bg-[#F2EDE7] rounded-lg p-3 md:p-5 mb-4 shadow-sm">
+                <div className="bg-[#F2EDE7] rounded-lg p-3 md:p-5 mb-4 shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
                   <div className="flex items-center">
                     <div className="">
                       <div className="text-gray-500 text-sm md:text-base mb-1">Check-In Time:</div>
@@ -217,7 +217,7 @@ const PackageDetail = () => {
                     <li key={idx} className="flex items-start gap-2">
                       <svg className="flex-shrink-0" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_8676_13856)">
-                          <path d="M18.0312 13.7874L20.8596 10.959C20.9533 10.8653 21.006 10.7381 21.006 10.6055C21.006 10.4729 20.9533 10.3457 20.8596 10.2519L18.0312 7.42349C17.9613 7.35334 17.8721 7.30553 17.775 7.28612C17.6779 7.2667 17.5772 7.27655 17.4857 7.31442C17.3943 7.35229 17.3161 7.41647 17.2611 7.49883C17.2061 7.58119 17.1768 7.67802 17.177 7.77704L17.1777 10.1055L0.707037 10.1048L0.707037 11.1061L17.1777 11.1054L17.177 13.4339C17.1768 13.5329 17.2061 13.6297 17.2611 13.7121C17.3161 13.7945 17.3943 13.8586 17.4857 13.8965C17.5772 13.9344 17.6779 13.9442 17.775 13.9248C17.8721 13.9054 17.9613 13.8576 18.0312 13.7874Z" fill="#362D86" />
+                          <path d="M18.0312 13.7874L20.8596 10.959C20.9533 10.8653 21.006 10.7381 21.006 10.6055C21.006 10.4729 20.9533 10.3457 20.8596 10.2519L18.0312 7.42349C17.9613 7.35334 17.8721 7.30553 17.775 7.28612C17.6779 7.2667 17.5772 7.27655 17.4857 7.31442C17.3943 7.35229 17.3161 7.41647 17.2611 7.49883C17.2061 7.58119 17.1768 7.67802 17.177 7.77704L17.1777 10.1055L0.707037 10.1048L0.707037 11.1061L17.1777 11.1054L17.177 13.4339C17.1768 13.5329 17.2061 13.6297 17.2611 13.7121C17.3161 13.7945 17.3943 13.8586 17.4857 13.8965C17.5772 13.9344 17.6779 13.9442 17.775 13.9248C17.8721 13.9054 17.9613 13.8576 18.0312 13.7874Z" fill="#304A3A" />
                         </g>
                         <defs>
                           <clipPath id="clip0_8676_13856">
@@ -268,7 +268,7 @@ const PackageDetail = () => {
               <>
               <button
                 onClick={() => setOpenModalId("cancellation-policy")}
-                className="text-[#362D86] underline transition duration-300"
+                className="text-[#304A3A] underline transition duration-300"
               >
                 Cancellation Policy
               </button>
@@ -278,7 +278,7 @@ const PackageDetail = () => {
               <>
                 <button
                   onClick={() => setOpenModalId("terms-conditions")}
-                  className="text-[#362D86] underline transition duration-300"
+                  className="text-[#304A3A] underline transition duration-300"
                 >
                   Terms & Conditions
                 </button>
@@ -288,7 +288,7 @@ const PackageDetail = () => {
               <>
                 <button
                   onClick={() => setOpenModalId("privacy-policy")}
-                  className="text-[#362D86] underline transition duration-300"
+                  className="text-[#304A3A] underline transition duration-300"
                 >
                   Privacy Policy
                 </button>
@@ -305,10 +305,10 @@ const PackageDetail = () => {
                 BOOKINGS ARE OPEN
               </div>
               <div className="flex gap-3 md:gap-6 flex-col md:flex-row">
-                <Link to={`/amrabad-resort/houses/${packageId}`} className="bg-[#F2EDE7] text-[#3f2508] hover:bg-[#C4A97A] hover:text-white font-semibold px-5 py-2 rounded-lg  transition text-center">
+                <Link to={`/amrabad-resort/houses/${packageId}`} className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 font-semibold px-5 py-2 rounded-lg transition text-center">
                   BOOK NOW
                 </Link>
-                <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-[#3f2508] transition">
+                <Link target="_black" to={`https://maps.google.com?q=${GetPackageDetail?.latitude},${GetPackageDetail?.longitude}`} className="text-white border border-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-[#304A3A] transition">
                   GET DIRECTIONS
                 </Link>
               </div>

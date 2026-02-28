@@ -7,7 +7,7 @@ const CancellationSuccessModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-[600px] w-full p-10 text-center relative">
+      <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] max-w-[600px] w-full p-10 text-center relative">
         {/* Close Button */}
         <button
           onClick={() => onClose()}
@@ -40,7 +40,7 @@ const CancellationSuccessModal = ({ isOpen, onClose }) => {
         <Link
           onClick={() => onClose()}
           to="/amrabad-resort"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+          className="w-full bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] hover:opacity-90 text-[#FDFAF7] py-3 px-4 rounded-lg font-medium transition-colors"
         >
           Proceed to Homepage
         </Link>

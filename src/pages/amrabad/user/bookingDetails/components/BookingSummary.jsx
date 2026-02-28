@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 // Skeleton loader component for BookingSummary
 const BookingSummarySkeleton = () => {
   return (
-    <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5]">
+    <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
       {/* Header Skeleton */}
       <div className="flex items-center justify-between mb-3">
         <div className="h-5 bg-gray-300 rounded animate-pulse w-32"></div>
@@ -15,7 +15,7 @@ const BookingSummarySkeleton = () => {
 
       {/* Booking Item Card Skeleton */}
       <div className="mb-1">
-        <div className="bg-white rounded-md p-2 border border-gray-200">
+        <div className="bg-white rounded-md p-2 border border-[#D0D7CE] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
           <div className="flex items-start gap-2 mb-2">
             {/* Image skeleton */}
             <div className="w-10 h-10 bg-gray-300 rounded animate-pulse"></div>
@@ -83,11 +83,11 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
   // If no booking data or empty data array
   if (!bookingData?.data || bookingData?.data?.length === 0) {
     return (
-      <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5]">
+      <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="text-center text-gray-600 py-3 text-sm">
           No booking items found <br/>
           <Link to="/amrabad-resort">
-            <button className="text-[#362D86] text-sm rounded-md underline font-semibold">
+            <button className="text-[#304A3A] text-sm rounded-md underline font-semibold">
               Go to Houses
             </button>
           </Link>
@@ -115,7 +115,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
   };
 
   return (
-    <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5]">
+    <div className="bg-[#EEEDFA] rounded-lg p-3 border border-[#C0C0C5] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-base text-gray-800">Booking Summary</h3>
@@ -171,7 +171,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
         
         <div className="flex justify-between items-center pt-1 border-t border-[#C0C0C5]">
           <span className="font-bold text-gray-800 text-sm">TOTAL</span>
-          <span className="font-bold text-[#C4A97A] text-lg">
+          <span className="font-bold text-[#304A3A] text-lg">
             ₹{grandTotal?.toLocaleString()}
           </span>
         </div>
@@ -187,7 +187,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
         }
         
         .booking-swiper .swiper-pagination-bullet-active {
-          background: #362D86;
+          background: #304A3A;
         }
         
         .booking-swiper .swiper-pagination {
@@ -207,7 +207,7 @@ const BookingItemCard = ({ item, formatDate }) => {
   if (!item) return null;
 
   return (
-    <div className="bg-white rounded-md p-2 border border-gray-200">
+    <div className="bg-white rounded-md p-2 border border-[#D0D7CE] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
       <div className="flex items-start gap-2 mb-2">
         <img 
           src={item?.houseImageUrl} 
@@ -242,7 +242,7 @@ const BookingItemCard = ({ item, formatDate }) => {
       <div className="flex justify-between items-center text-xs border-t border-gray-200 pt-1">
         <span className="text-gray-600">Amount</span>
         <div className="text-right flex gap-1 items-end">
-          <div className="font-semibold text-[#362D86] text-sm">
+          <div className="font-semibold text-[#304A3A] text-sm">
             ₹{((item?.amount || 0) - (item?.discountAmount || 0))?.toLocaleString()}
           </div>
           {(item?.discountAmount || 0) > 0 && (

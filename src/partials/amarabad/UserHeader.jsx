@@ -99,66 +99,64 @@ export const UserHeader = ({ isScrolled = false }) => {
         </div>
       </div> */}
 
-      {/* Main Header/Navigation */}
-      <nav className={`bg-gradient-to-r from-[#baa479] to-[#baa479] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2 shadow-md' : 'py-1'
-        } px-2 md:px-4`}>
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="">
-          <Link to="/amrabad-resort" className="flex  items-center gap-2">
+      {/* Main Header/Navigation - Amrabad theme: header gradient #304A3A → #7A8F7C */}
+      <nav className={`bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2' : 'py-1'
+        } px-2 md:px-4 shadow-[0_4px_20px_rgba(0,0,0,0.15),0_2px_8px_rgba(48,74,58,0.2)]`}>
+        <div className="container mx-auto flex justify-between items-center relative">
+          <div className="flex-shrink-0">
+            <img
+              src={DeccanTrailsLogo}
+              alt=""
+              aria-hidden="true"
+              className={`transition-all duration-300 opacity-0 pointer-events-none ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'}`}
+            />
+          </div>
+          <Link to="/amrabad-resort" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center flex-shrink-0 pointer-events-auto z-10">
             <img
               src={DeccanTrailsLogo}
               alt="Deccan Trails Logo"
-              className={`transition-all duration-300 ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'
-                }`}
+              className={`transition-all duration-300 ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'} brightness-0 invert`}
             />
-            {/* <div className="hidden md:block">
-              <div className={`font-bold text-[#362D86] transition-all duration-300 ${isScrolled ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
-                }`}>MEETICKET</div>
-              <div className={`text-[#515151] transition-all duration-300 ${isScrolled ? 'text-[8px] md:text-[10px]' : 'text-[10px] md:text-xs'
-                }`}>GOVERNMENT OF TELANGANA</div>
-            </div> */}
           </Link>
-          </div>
-          <div className="  flex justify-between gap-12 items-center">
+          <div className="flex justify-between gap-12 items-center">
             <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
               {links.map((link) => (
-                <NavLink key={link.to} target={link.target} to={link.to} className="text-[#3f2508] font-medium hover:text-[#F2EDE7]">
+                <NavLink key={link.to} target={link.target} to={link.to} className="text-[#FDFAF7] font-medium hover:text-[#D0D7CE]">
                   {link.label}
                 </NavLink>
               ))}
             </div>
-
             <div className="flex items-center space-x-2 md:space-x-4">
               {isLoggedIn ? (
                 // After login: show user profile section
                 <div className="flex items-center gap-3" ref={dropdownRef}>
                   <div className="relative">
                     <div
-                      className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-colors"
+                      className="w-12 h-12 rounded-full bg-[#7A8F7C] flex items-center justify-center cursor-pointer hover:bg-[#4A6360] transition-colors"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
                       {/* User icon SVG */}
                       <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-                        <circle cx="16" cy="16" r="16" fill="#E3E3E3" />
-                        <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#3f2508" />
+                        <circle cx="16" cy="16" r="16" fill="#D0D7CE" />
+                        <path d="M16 16c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z" fill="#304A3A" />
                       </svg>
                     </div>
                     {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-[150px] bg-white shadow-lg border border-gray-200 py-0 z-50">
-                        <div className="px-4 py-3 border-b border-gray-100">
+                      <div className="absolute right-0 mt-2 w-[150px] bg-[#FDFAF7] shadow-[0_4px_20px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)] border border-[#C8BFB2] py-0 z-50">
+                        <div className="px-4 py-3 border-b border-[#D0D7CE]">
                           {decodedTokenData ? (
-                            <div className="font-bold text-black capitalize text-sm">
+                            <div className="font-bold text-[#304A3A] capitalize text-sm">
                               {`${decodedTokenData?.FirstName || decodedTokenData?.LastName ? decodedTokenData?.FirstName + " " + decodedTokenData?.LastName : decodedTokenData.PhoneNumber}`}
                             </div>
                           ) : (
-                            <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-32"></div>
+                            <div className="h-4 bg-[#EDEBE1] rounded-lg animate-pulse w-32"></div>
                           )}
                         </div>
-                        <Link to="/amrabad-resort/booking-history" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                        <Link to="/amrabad-resort/booking-history" className="px-4 py-2 text-xs text-[#394D48] hover:bg-[#EDEBE1] flex items-center gap-2">
                           <FaHistory />
                           Booking History
                         </Link>
-                        <Link to="/amrabad-resort/checkout-details" className="px-4 py-2 text-xs text-gray-700 hover:bg-gray-100 flex items-center gap-2">
+                        <Link to="/amrabad-resort/checkout-details" className="px-4 py-2 text-xs text-[#394D48] hover:bg-[#EDEBE1] flex items-center gap-2">
                           <FaShoppingCart />
                           Go to Cart
                         </Link>
@@ -179,11 +177,11 @@ export const UserHeader = ({ isScrolled = false }) => {
                 </div>
               ) : (
                 <>
-                  <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-black px-2 md:px-6 py-2 rounded-md hover:bg-[#FDFAF7] transition duration-300 flex items-center gap-2">
+                  <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-[#304A3A] px-2 md:px-6 py-2 rounded-md hover:bg-[#EDEBE1] transition duration-300 flex items-center gap-2">
                     <span className="hidden md:block">Login</span>
                     <FaUser className="md:hidden" />
                   </Link>
-                  <Link to="/amrabad-resort/register" className="hidden lg:block bg-[#3f250885] text-[#EDE8E1] px-6 py-2 rounded-md hover:bg-[#3f2508da] transition duration-300">Register</Link>
+                  <Link to="/amrabad-resort/register" className="hidden lg:block bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] px-6 py-2 rounded-md hover:opacity-90 transition duration-300">Register</Link>
                 </>
               )}
               {/* <img

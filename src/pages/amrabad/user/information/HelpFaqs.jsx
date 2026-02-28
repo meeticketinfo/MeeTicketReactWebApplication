@@ -7,7 +7,7 @@ const HelpFaqs = () => {
     <UserLayout>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="bg-blue-v2 text-white py-8">
+        <div className="bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] text-[#FDFAF7] py-8">
           <div className="container mx-auto px-4">
            
             <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -24,8 +24,8 @@ const HelpFaqs = () => {
           <div className="max-w-4xl mx-auto">
             
             {/* General Information Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  General Information
               </h2>
               
@@ -60,8 +60,8 @@ const HelpFaqs = () => {
             </div>
 
             {/* Booking & Entry Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Booking & Entry
               </h2>
               
@@ -87,8 +87,8 @@ const HelpFaqs = () => {
             </div>
 
             {/* Travel & Requirements Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Travel & Requirements
               </h2>
               
@@ -123,8 +123,8 @@ const HelpFaqs = () => {
             </div>
 
             {/* Rules & Safety Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Rules & Safety
               </h2>
               
@@ -150,15 +150,15 @@ const HelpFaqs = () => {
             </div>
 
             {/* Resorts Section Header */}
-            <div className="bg-gradient-to-r from-blue-v1 to-blue-v2 text-white rounded-lg p-6 mb-8">
+            <div className="bg-gradient-to-r from-[#304A3A] to-[#394D48] text-[#FDFAF7] rounded-lg p-6 mb-8">
               <h1 className="text-2xl font-bold text-center" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Help & FAQs – Resorts in Amrabad Tiger Reserve
               </h1>
             </div>
 
             {/* Accommodation Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Accommodation
               </h2>
               
@@ -193,8 +193,8 @@ const HelpFaqs = () => {
             </div>
 
             {/* Amenities & Facilities Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 🌿 Amenities & Facilities
               </h2>
               
@@ -229,8 +229,8 @@ const HelpFaqs = () => {
             </div>
 
             {/* Cancellations & Policies Section */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+            <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 mb-8">
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-6" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                  Cancellations & Policies
               </h2>
               
@@ -257,7 +257,7 @@ const HelpFaqs = () => {
 
             {/* Contact Section */}
             <div className="bg-blue-50 border-l-4 border-blue-200 p-6 rounded-lg">
-              <h3 className="text-xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h3 className="text-xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 Need More Help?
               </h3>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -266,15 +266,15 @@ const HelpFaqs = () => {
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="font-semibold text-gray-800" style={{ fontFamily: 'Arial Nova, sans-serif' }}>Email</p>
-                  <p className="text-blue-v1">support@amrabadresorts.com</p>
+                  <p className="text-[#304A3A]">support@amrabadresorts.com</p>
                 </div>
                 <div className="text-center">
                   <p className="font-semibold text-gray-800" style={{ fontFamily: 'Arial Nova, sans-serif' }}>Phone</p>
-                  <p className="text-blue-v1">+91 9154281766</p>
+                  <p className="text-[#304A3A]">+91 9154281766</p>
                 </div>
                 <div className="text-center">
                   <p className="font-semibold text-gray-800" style={{ fontFamily: 'Arial Nova, sans-serif' }}>Office Hours</p>
-                  <p className="text-blue-v1">9 AM - 6 PM</p>
+                  <p className="text-[#304A3A]">9 AM - 6 PM</p>
                 </div>
               </div>
             </div>

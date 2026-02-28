@@ -68,7 +68,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
+      <div className="bg-white rounded-lg p-4 mb-4 border border-[#D0D7CE] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded w-32 mb-3"></div>
 
@@ -97,7 +97,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
   return (
     <>
-      <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
+      <div className="bg-white rounded-lg p-4 mb-4 border border-[#D0D7CE] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
         <h3 className="text-sm font-semibold text-gray-800 mb-3">Booking Summary</h3>
 
         <div className="space-y-2">
@@ -137,7 +137,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
       <button
         onClick={handleAddToCart}
         disabled={houseCount === 0}
-        className="w-full bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white py-3 rounded-lg font-semibold  transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 py-3 rounded-lg font-semibold transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="text-lg sm:text-xl font-bold">₹{finalAmount.toLocaleString()}</span>
         {loadingAddToCart && <CgSpinner className="animate-spin" />}

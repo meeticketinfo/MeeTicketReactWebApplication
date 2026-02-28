@@ -211,7 +211,7 @@ const AmarabadRegisterOtp = () => {
                     <span
                       className={`clr_link ${
                         canResend
-                          ? "cursor-pointer text-blue-v1 underline font-bold"
+                          ? "cursor-pointer text-[#304A3A] underline font-bold"
                           : "text-gray-900 opacity-40"
                       }`}
                       onClick={() => {

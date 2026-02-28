@@ -23,7 +23,7 @@ const CancelTicketModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-3">
-      <div className="bg-white rounded-lg max-w-[600px] w-full p-4 relative">
+      <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] max-w-[600px] w-full p-4 relative">
         {/* Close Button */}
         <button
           onClick={onClose}

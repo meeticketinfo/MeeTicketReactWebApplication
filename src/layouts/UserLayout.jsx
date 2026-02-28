@@ -22,10 +22,10 @@ function UserLayout({ children }) {
   }, [containerRef]);
   return (
     <>
-      <ToastContainer />  
+      <ToastContainer />
       <div
         ref={containerRef}
-        className="font-manrope overflow-auto h-screen bg-[#FDFAF7]"
+        className="font-manrope overflow-auto h-screen bg-gradient-to-b from-[#F2EDE7] to-[#EDEBE1]"
       >
         <UserHeader isScrolled={isScrolled} />
         <main>{children}</main>

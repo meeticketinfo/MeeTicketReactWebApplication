@@ -104,13 +104,13 @@ const Houses = () => {
       <div className="container mx-auto py-3 px-3">
         <div className="flex items-center gap-1 flex-wrap text-sm">
           <Link
-            className="text-[#3f2508] hover:text-[#3f2508]/80 font-semibold"
+            className="text-[#304A3A] hover:text-[#2E3929] font-semibold"
             to="/amrabad-resort/packages"
           >
             Amrabad Resorts
           </Link>
-          <span className="text-gray-500"> &gt; </span>
-          <span className="text-gray-500 capitalize">{userPackage?.packageName}</span>
+          <span className="text-[#4A6360]"> &gt; </span>
+          <span className="text-[#4A6360] capitalize">{userPackage?.packageName}</span>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ const Houses = () => {
                     const nextDay = getNextDayString(e.target.value);
                     setToDate(nextDay);
                   }}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
                 />
               </div>
               <div className="flex flex-col w-full">
@@ -156,14 +156,14 @@ const Houses = () => {
                   max={fromDate ? getMaxDateString(fromDate) : ""}
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#362D86] focus:border-transparent"
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
                 />
               </div>
             </div>
             <button
               type="submit"
               onClick={handleSearch}
-              className="bg-[#C4A97A] text-white hover:bg-[#e7cb9a] hover:text-white px-6 py-2 rounded-md  transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
+              className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-6 py-2 rounded-md transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
             >
               Search Houses
             </button>

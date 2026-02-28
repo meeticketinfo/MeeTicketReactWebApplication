@@ -9,16 +9,16 @@ const AmrabadPrivacyPolicy = () => {
     <UserLayout>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="bg-blue-v2 text-white py-8">
+        <div className="bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] text-[#FDFAF7] py-8">
           <div className="container mx-auto px-4">
 
             <h1 className="text-3xl flex items-center gap-2 font-bold mb-2" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
               <MdOutlinePolicy/> Privacy Policy
             </h1>
-            <p className="text-blue-100">
+            <p className="text-[#D0D7CE]">
               Last Updated: December 2024
             </p>
-            <p className="text-blue-100 mt-2">
+            <p className="text-[#D0D7CE] mt-2">
               At Amrabad Tiger Reserve Booking Portal, we value your privacy and are committed to protecting your personal information.This Privacy Policy explains how we collect, use, and safeguard your data when you use our website, mobile app, or services.
             </p>
           </div>
@@ -30,7 +30,7 @@ const AmrabadPrivacyPolicy = () => {
             
             {/* Section 1 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 1. Information We Collect
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -46,7 +46,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 2 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 2. How We Use Your Information
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -63,7 +63,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 3 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 3. Sharing of Information
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -79,7 +79,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 4 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 4. Data Security
               </h2>
               <ul className="space-y-2 text-gray-700" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -91,7 +91,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 5 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 5. Cookies & Tracking
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -109,7 +109,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 6 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 6. Your Rights
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -124,7 +124,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 7 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 7. Third-Party Links
               </h2>
               <p className="text-gray-700" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -134,7 +134,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Section 8 */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 8. Changes to This Policy
               </h2>
               <p className="text-gray-700" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
@@ -144,7 +144,7 @@ const AmrabadPrivacyPolicy = () => {
 
             {/* Contact Section */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-blue-v2 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#304A3A] mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
                 9. Contact Us
               </h2>
               <p className="text-gray-700 mb-4" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
