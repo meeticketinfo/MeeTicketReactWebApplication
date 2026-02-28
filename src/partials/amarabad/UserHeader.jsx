@@ -51,8 +51,8 @@ export const UserHeader = ({ isScrolled = false }) => {
   ]
   return (
     <>
-      {/* Top Bar */}
-      {/* <div className="bg-[#362D86] text-white py-2 px-4 font-poppins text-sm">
+      {/* Top Bar - same theme as main nav: darker green into primary */}
+      <div className="bg-gradient-to-r from-[#263328] to-[#304A3A] text-white py-2 px-4 font-poppins text-sm">
         <div className='flex justify-between items-center container mx-auto'>
           <div className="flex items-center space-x-6">
             <a href='tel:080-25478698' className="flex items-center gap-2">
@@ -66,15 +66,20 @@ export const UserHeader = ({ isScrolled = false }) => {
                   </clipPath>
                 </defs>
               </svg>
-              <span className="hidden md:inline">080-25478698</span>
+              {/* <span className="hidden md:inline">080-25478698</span> */}
+              <span className="hidden md:inline">9885298980</span>
             </a>
             <a href="mailto:info@meeticket.telangana.in" className="flex items-center gap-2">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 20C3.45 20 2.97933 19.8043 2.588 19.413C2.196 19.021 2 18.55 2 18V6C2 5.45 2.196 4.97933 2.588 4.588C2.97933 4.196 3.45 4 4 4H14.1C14.0333 4.33333 14 4.66667 14 5C14 5.33333 14.0333 5.66667 14.1 6H4L12 11L15.65 8.725C15.8833 8.94167 16.1377 9.129 16.413 9.287C16.6877 9.44567 16.975 9.58333 17.275 9.7L12 13L4 8V18H20V9.9C20.3833 9.81667 20.7417 9.7 21.075 9.55C21.4083 9.4 21.7167 9.21667 22 9V18C22 18.55 21.8043 19.021 21.413 19.413C21.021 19.8043 20.55 20 20 20H4ZM19 8C18.1667 8 17.4583 7.70833 16.875 7.125C16.2917 6.54167 16 5.83333 16 5C16 4.16667 16.2917 3.45833 16.875 2.875C17.4583 2.29167 18.1667 2 19 2C19.8333 2 20.5417 2.29167 21.125 2.875C21.7083 3.45833 22 4.16667 22 5C22 5.83333 21.7083 6.54167 21.125 7.125C20.5417 7.70833 19.8333 8 19 8Z" fill="white" />
               </svg>
-              <span className="hidden md:inline">
+              {/* <span className="hidden md:inline">
                 info@meeticket.telangana.in
+              </span> */}
+               <span className="hidden md:inline">
+               thedeccanwoodsandtrails@gmail.com
               </span>
+
             </a>
           </div>
           <div className="flex items-center space-x-4">
@@ -97,7 +102,7 @@ export const UserHeader = ({ isScrolled = false }) => {
             </a>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Main Header/Navigation - Amrabad theme: header gradient #304A3A → #7A8F7C */}
       <nav className={`bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2' : 'py-1'
@@ -121,7 +126,7 @@ export const UserHeader = ({ isScrolled = false }) => {
           <div className="flex justify-between gap-12 items-center">
             <div className="flex gap-2 md:gap-8 items-center text-xs md:text-base">
               {links.map((link) => (
-                <NavLink key={link.to} target={link.target} to={link.to} className="text-[#FDFAF7] font-medium hover:text-[#D0D7CE]">
+                <NavLink key={link.to} target={link.target} to={link.to} className="text-[#FDFAF7]  hover:text-[#D0D7CE]">
                   {link.label}
                 </NavLink>
               ))}
@@ -177,11 +182,11 @@ export const UserHeader = ({ isScrolled = false }) => {
                 </div>
               ) : (
                 <>
-                  <Link to="/amrabad-resort/login" className="bg-[#F2EDE7] text-[#304A3A] px-2 md:px-6 py-2 rounded-md hover:bg-[#EDEBE1] transition duration-300 flex items-center gap-2">
+                  <Link to="/amrabad-resort/login" className="bg-[#4A6360] text-white shadow-md px-2 md:px-6 py-2 rounded-md hover:bg-[#394D4B] transition duration-300 flex items-center gap-2">
                     <span className="hidden md:block">Login</span>
                     <FaUser className="md:hidden" />
                   </Link>
-                  <Link to="/amrabad-resort/register" className="hidden lg:block bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] px-6 py-2 rounded-md hover:opacity-90 transition duration-300">Register</Link>
+                  <Link to="/amrabad-resort/register" className="hidden shadow-md lg:block bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] px-6 py-2 rounded-md hover:opacity-90 transition duration-300">Register</Link>
                 </>
               )}
               {/* <img

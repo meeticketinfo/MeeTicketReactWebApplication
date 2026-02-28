@@ -13,29 +13,29 @@ const AmarabadRegister = () => {
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
-          <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
+          <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(48,74,58,0.08)] p-8 w-full mb-8 ">
             <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
               <img src={Register} alt="Lock" className="" />
             </div>
             <div className="max-w-[730px] mx-auto relative z-10">
-              <h1 className="text-3xl font-bold text-center mb-7 text-black">
+              <h1 className="text-3xl font-bold text-center mb-7 text-[#304A3A]">
                 REGISTER
               </h1>
               <AmarabadRegisterForm />
-              <div className="flex items-center my-6 opacity-50 max-w-[350px] mx-auto">
-                <div className="flex-grow border-t border-black relative">
-                  <span className="absolute top-1/2 -translate-y-1/2 left-0 w-0 h-0 border-solid border-l-black border-l-8 border-y-transparent border-y-4 border-r-0" />
+              <div className="flex items-center my-6 opacity-60 max-w-[350px] mx-auto">
+                <div className="flex-grow border-t border-[#304A3A]/30 relative">
+                  <span className="absolute top-1/2 -translate-y-1/2 left-0 w-0 h-0 border-solid border-l-[#304A3A]/30 border-l-8 border-y-transparent border-y-4 border-r-0" />
                 </div>
-                <span className="mx-2 text-black">or</span>
-                <div className="flex-grow border-t border-black relative">
-                  <span className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-solid border-r-black border-r-8 border-y-transparent border-y-4 border-l-0" />
+                <span className="mx-2 text-[#394D48]">or</span>
+                <div className="flex-grow border-t border-[#304A3A]/30 relative">
+                  <span className="absolute top-1/2 -translate-y-1/2 right-0 w-0 h-0 border-solid border-r-[#304A3A]/30 border-r-8 border-y-transparent border-y-4 border-l-0" />
                 </div>
               </div>
-              <div className="text-center text-base text-black">
+              <div className="text-center text-base text-[#394D48]">
                 Already have an account?{" "}
                 <Link
                   to="/amrabad-resort/login"
-                  className="text-[#EB723C] font-bold hover:underline"
+                  className="text-[#304A3A] font-bold hover:underline"
                 >
                   Login
                 </Link>

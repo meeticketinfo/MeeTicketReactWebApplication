@@ -44,10 +44,12 @@ const PackageDetail = () => {
 
   return (
     <UserLayout>
-      <div className="h-[350px] relative mb-7">
-        <img src={GetPackageDetail?.image} alt="Package" className="w-full h-full object-cover object-center" />
-        {/* <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2]"></div> */}
-        <div className="absolute bottom-0 left-0 z-10 w-full bg-[#0A0818B2] py-4 md:py-8 backdrop-blur-sm">
+      <div className="h-[350px] relative mb-7 overflow-hidden">
+        <img src={GetPackageDetail?.image} alt="Package" className="w-full h-full object-cover" />
+        {/* Gradient overlay: fade from transparent to dark at bottom for title bar */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.4)_45%,transparent_100%)]" aria-hidden />
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(15,31,26,0.75)_0%,transparent_55%)]" aria-hidden />
+        <div className="absolute bottom-0 left-0 z-10 w-full py-4 md:py-8">
           <div className="container flex flex-col md:flex-row gap-3 md:gap-6 justify-between items-start md:items-center mx-auto px-3">
             <h4 className="text-white text-xl md:text-3xl font-bold capitalize">{GetPackageDetail?.title}</h4>
             <Link
@@ -95,14 +97,14 @@ const PackageDetail = () => {
                 <div className="overflow-x-auto w-full md:max-w-[50%] shadow border border-gray-200 rounded-lg">
                   <table className="min-w-full">
                     <thead>
-                      <tr className="bg-[#F2EDE7]">
+                      <tr className="bg-[#FDFAF7]">
                         <th className="px-4 py-2 text-left font-medium">Room Type</th>
                         <th className="px-4 py-2 text-left font-medium">Count</th>
                       </tr>
                     </thead>
                     <tbody>
                       {GetPackageDetail?.rooms?.map((room, idx) => (
-                        <tr key={idx} className="border-t bg-[#FDFAF7]">
+                        <tr key={idx} className="border-t bg-white">
                           <td className="px-4 py-2">{room.type}</td>
                           <td className="px-4 py-2">{room.count}</td>
                         </tr>
@@ -254,7 +256,7 @@ const PackageDetail = () => {
                     <img
                       src={img?.imageUrl}
                       alt={`Slide ${idx + 1}`}
-                      className="w-full object-cover aspect-[3.5/4]"
+                      className="w-full rounded-xl object-cover aspect-[3.5/4]"
                       style={{ objectPosition: "center" }}
                     />
                   </div>
@@ -297,9 +299,10 @@ const PackageDetail = () => {
           </div>
 
           {/* Bookings Open Banner */}
-          <div className="mt-8 mb-6 relative">
-            <img src={GetPackageDetail?.image} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0 rounded-lg" />
-            <div className="absolute top-0 left-0 w-full h-full bg-[#0A0818B2] rounded-lg backdrop-blur-sm" />
+          <div className="mt-8 mb-6 relative overflow-hidden rounded-lg">
+            <img src={GetPackageDetail?.image} alt="Packages" className="w-full h-full object-cover absolute top-0 left-0 rounded-xl" />
+            <div className="absolute inset-0 rounded-lg bg-[linear-gradient(to_top,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0.5)_40%,rgba(0,0,0,0.2)_70%,transparent_100%)]" aria-hidden />
+            <div className="absolute inset-0 rounded-lg bg-[linear-gradient(to_top,rgba(15,31,26,0.8)_0%,rgba(26,46,40,0.3)_50%,transparent_100%)]" aria-hidden />
             <div className="relative z-10 p-6 flex flex-col items-center justify-evenly gap-4 rounded-lg min-h-[250px]">
               <div className="text-white text-xl md:text-2xl lg:text-3xl font-semibold relative z-10">
                 BOOKINGS ARE OPEN

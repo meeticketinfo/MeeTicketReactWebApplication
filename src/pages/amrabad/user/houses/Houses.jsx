@@ -114,13 +114,14 @@ const Houses = () => {
         </div>
       </div>
 
-      <div className="text-center min-h-[130px] flex items-center justify-center relative p-3">
+      <div className="text-center min-h-[130px] flex items-center justify-center relative p-3 overflow-hidden">
         <img
           src={userPackage?.packageImages?.[0]?.imageUrl}
           alt="Packages"
-          className="w-full h-full object-cover absolute top-0 left-0"
+          className="absolute inset-0 w-full h-full object-cover "
         />
-        <div className="absolute top-0 left-0 w-full h-full  z-10 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(to_top,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.45)_50%,rgba(0,0,0,0.15)_100%)]" aria-hidden />
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(to_top,rgba(15,31,26,0.75)_0%,rgba(26,46,40,0.25)_50%,transparent_100%)]" aria-hidden />
         <div className="container mx-auto relative z-20">
           <h1 className="text-2xl  md:text-3xl xl:text-4xl font-bold text-white uppercase">
             {userPackage?.packageName}
@@ -145,7 +146,7 @@ const Houses = () => {
                     const nextDay = getNextDayString(e.target.value);
                     setToDate(nextDay);
                   }}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
+                  className="px-3 py-2 border-none shadow-md  rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
                 />
               </div>
               <div className="flex flex-col w-full">
@@ -156,14 +157,14 @@ const Houses = () => {
                   max={fromDate ? getMaxDateString(fromDate) : ""}
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
+                  className="px-3 py-2 border-none shadow-md rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
                 />
               </div>
             </div>
             <button
               type="submit"
               onClick={handleSearch}
-              className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-6 py-2 rounded-md transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
+              className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-6 py-2 rounded-md shadow-md transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
             >
               Search Houses
             </button>

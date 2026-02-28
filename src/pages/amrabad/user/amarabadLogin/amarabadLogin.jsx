@@ -39,8 +39,8 @@ const AmarabadLogin = () => {
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
         <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-8 w-full mb-8">
-          <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
-            <img src={Lock} alt="Lock" className="" />
+          <div className="hidden md:flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+            <img src={Lock} alt="Lock" className="block filter-[brightness(0)_saturate(100%)_invert(18%)_sepia(25%)_saturate(1500%)_hue-rotate(115deg)_brightness(90%)_contrast(90%)]" />
           </div>
           <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto relative z-10">
             <h1 className="text-3xl font-extrabold text-center mb-7 text-black">

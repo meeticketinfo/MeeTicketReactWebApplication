@@ -334,12 +334,12 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                     </div>
                   </div>
                   {/* Book Now Button */}
-                  <div className="mt-4 sm:mt-6">
+                  <div className="mt-4 sm:mt-6 ">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
                       onClick={(e) => handleBookNowClick(house, e)}
                       // state={{ fromDate: fromDate, toDate: toDate }}#C4A97A
-                      className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
+                      className="w-full sm:w-auto min-w-[160px]  flex items-center justify-between gap-2 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
                       <span className="text-lg sm:text-xl inline-flex items-center">
