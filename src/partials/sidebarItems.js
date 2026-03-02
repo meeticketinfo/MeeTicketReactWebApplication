@@ -138,6 +138,17 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/android-ios-entries",
       },
+      {
+        title: "Add Language",
+        icon: RiDashboard3Fill,
+        path: "/add-language",
+      },
+      {
+        title: "Group Details",
+        icon: RiDashboard3Fill,
+        path: "/group-details",
+      },
+
     ],
   },
   {
@@ -266,6 +277,11 @@ const sidebarItems = [
         title: "Holidays",
         icon: MdOutlineWorkOff,
         path: "/holidays",
+      },
+      {
+        title: "Block Facility",
+        icon: MdOutlineWorkOff,
+        path: "/facility-holidays",
       },
     ],
   },

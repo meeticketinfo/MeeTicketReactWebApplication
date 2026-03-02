@@ -3,7 +3,7 @@ import useAuthStore from "../store/authStore";
 import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // dev
 
- const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/api/";
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
@@ -12,7 +12,7 @@ import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
 
 // test
-// const API_BASE_URL =  "https://chh7gchr-7237.inc1.devtunnels.ms/api/"
+// const API_BASE_URL =  "https://l2vs2gb4-7169.inc1.devtunnels.ms//API/"
 
 const api = axios.create({
   baseURL: API_BASE_URL,

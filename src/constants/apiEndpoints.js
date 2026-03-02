@@ -1,7 +1,7 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/api/";
 
 //  PARK UAT
 // export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
@@ -75,14 +75,15 @@ export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtec
 // export const RTC_BUS_PASS_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/rtcbuspassapi/v1/";
 
 // RTC BUS PASS Prod
-// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/";
+// export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassapi/v1/"; 
 
 
 // Amarabad dev
 export const AMRABAD_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
-/// test
-// export const API_BASE_URL =  "https://chh7gchr-7237.inc1.devtunnels.ms/api/"
+// PARK PROD
+//  PARK  testing
+// export const API_BASE_URL = "https://l2vs2gb4-7169.inc1.devtunnels.ms/API/";
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -227,6 +228,21 @@ export const API_ENDPOINTS = {
       ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
       GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
     },
+      FACILITY_HOLIDAY:{
+        ADD_FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/AddFacilityAvaliablityBookingDate`,
+        UPDATE_FACILITY_HOLIDAY:`${API_BASE_URL}VolunteerGuide/UpdateFacilityAvaliablityBookingDate`,
+        GET__FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/GetFacilityAvaliablityBookingDate`,
+      },
+      GROUP_DETAILS:{
+        ADD_GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/AddFacilityGroupDetails`,
+        UPDATE_GROUP_DETAILS:`${API_BASE_URL}VolunteerGuide/UpdateFacilityGroupDetails`,
+        GET__GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/GetFacilityGroupDetails`,
+      },
+      LANGUAGE:{
+        ADD_LANGUAGE: `${API_BASE_URL}VolunteerGuide/AddFacilityLanguage`,
+        UPDATE_LANGUAGE:`${API_BASE_URL}VolunteerGuide/UpdateFacilityLanguage`,
+        GET__LANGUAGE: `${API_BASE_URL}VolunteerGuide/GetFacilityLanguages`,
+      },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
     },
@@ -254,7 +270,7 @@ export const API_ENDPOINTS = {
   },
   REPORTS: {
     BOOKING_REPORTS: {
-      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
+      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`, 
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
