@@ -166,9 +166,9 @@ const AmrabadResetPin = () => {
                 )}
               </Formik>
             </div>
-            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
+            {/* <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
               <img src={Logo} alt="MeeTicket Logo" className="w-56" />
-            </div>
+            </div> */}
           </div>
         </div>
       </UserLayout>
