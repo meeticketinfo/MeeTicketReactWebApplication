@@ -14,6 +14,7 @@ import {
   Amrabad,
   Department,
   BotanicalGardenParkAdminPermissions,
+  EsdTech,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -36,6 +37,8 @@ const ProtectedRoute = ({ element }) => {
       return SupportAdmin;
     } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
+    } else if (role === "ROLE_ESD_TECH") {
+      return EsdTech;
     } else if (role === "ROLE_ADMIN") {
       return parkId === "100"
         ? CustomParkAdminPermissions

@@ -568,7 +568,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-bold text-[15px] text-black">
-                    Reservation & Levy Fee
+                    Reservation Fee
                   </span>
                   <span className="text-gray-900 text-[15px]">
                     : ₹{" "}
@@ -582,12 +582,20 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     {IntercityTicketViewData?.total?.gstSum ?? "N/A"}
                   </span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="font-bold text-black text-[15px]">Round OFF</span>
+                  <span className="text-gray-900 text-[15px]">
+                    : ₹{" "}
+                    {IntercityTicketViewData?.total?.roundOff ?? "N/A"}
+                  </span>
+                </div>
+                
               </div>
 
               {/* Right Column */}
               <div className="space-y-2 text-[15px]">
                 <div className="flex justify-between text-[15px]">
-                  <span className="font-bold text-black">Toll Fee</span>
+                  <span className="font-bold text-black">Levy Fee</span>
                   <span className="text-gray-900">
                     : ₹{" "}
                     {IntercityTicketViewData?.total?.tollSum ?? "N/A"}
@@ -607,6 +615,13 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                   <span className="text-gray-900">
                     : ₹{" "}
                     {IntercityTicketViewData?.total?.concessionAmt ?? "N/A"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-bold text-black text-[15px]">Flexi Fare</span>
+                  <span className="text-gray-900 text-[15px]">
+                    : ₹{" "}
+                    {IntercityTicketViewData?.total?.flexifare ?? "N/A"}
                   </span>
                 </div>
               </div>
@@ -637,13 +652,17 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     parseFloat(IntercityTicketViewData?.total?.concessionAmt) ||
                     0;
 
+                  const confirmAmount =
+                    parseFloat(IntercityTicketViewData?.total?.confirmAmount) || 0;
+
                   const total =
-                    basicFare +
-                    reservationFee +
-                    gstSum +
-                    tollSum +
-                    serviceSum +
-                    concessionAmt;
+                    // basicFare +
+                    // reservationFee +
+                    // gstSum +
+                    // tollSum +
+                    // serviceSum +
+                    // concessionAmt;
+                    confirmAmount;
                   return total.toFixed(2);
                 })()}
               </span>

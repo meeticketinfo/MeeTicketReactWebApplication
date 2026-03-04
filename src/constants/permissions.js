@@ -53,6 +53,28 @@ export const superAdminPermissions = [
   "android-ios-entries",
 ];
 
+// ESD TECH
+export const EsdTech = [
+  "dashboard",
+  "Grievance-consolidate",
+  "Grievance-Incident",
+  "bus-pass-user-report",
+  "bus-pass-total-transaction",
+  "bus-pass-booking-report",
+  "bus-pass-refund-report",
+  "bus-pass-settlement-summary-report",
+  // "pending-pass",
+  "intercity-settlement-summary-report",
+  "intercity-consolidated-report",
+  "intercity-individual-report",
+  "intercity-total-transaction",
+  "intercity-user-report",
+  "intercity-refund-report",
+  "intercity-payment-transactions",
+ 
+ 
+];
+
 // department
 export const Department = [
   "dashboard",
@@ -80,13 +102,12 @@ export const parkAdminPermissions = [
   "entity-bookings",
   "facility/unified-create",
   "completed-bookings",
-  "walkers-pass-report",
+  // "walkers-pass-report",
   "payment-transaction-report",
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
   "pos-admin",
-  // "pos-admin"
   // "facility-holidays",
   // "pos-reports",
   // "add-language",

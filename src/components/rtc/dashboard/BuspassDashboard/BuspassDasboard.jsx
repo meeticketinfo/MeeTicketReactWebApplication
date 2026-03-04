@@ -263,7 +263,7 @@ function BuspassDasboard() {
                   </div>
                   <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
-                      One Day Pass
+                      One Day Pass T24
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       <CountUp
@@ -340,7 +340,7 @@ function BuspassDasboard() {
                   </div>
                   <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
-                      One Day Pass
+                      One Day Pass T24
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       ₹<CountUp
@@ -357,24 +357,24 @@ function BuspassDasboard() {
                 <div className="flex justify-between items-center gap-3 mb-0">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="p-2 bg-blue-100 rounded-lg">
-                      <FaIndianRupeeSign className="w-5 h-5 text-gray-600" />
+                      <IoTicketSharp className="w-5 h-5 text-blue-700" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
-                         Count
+                        Count
                       </h3>
                       <p className="text-sm text-gray-500">
-                        One Day Pass
+                        One Day Pass T24
                       </p>
                     </div>
                   </div>
                 </div>
-         
+
                 <div className=" grid grid-cols-2 gap-3 my-1">
                   {
                     buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
                       return (
-                        <div className="flex justify-between shadow-md  items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
+                        <div className="flex justify-between shadow-md  items-center p-3  bg-[#F1F6FB] rounded-lg">
                           <span className="text-sm font-medium text-gray-600">
                             {genderconfig[p.employeeGender]}
                           </span>
@@ -390,7 +390,7 @@ function BuspassDasboard() {
                     })
                   }
                 </div>
-                
+
               </div>
 
               {/* on day pass amount */}
@@ -403,15 +403,15 @@ function BuspassDasboard() {
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
-                         Amount
+                        Amount
                       </h3>
                       <p className="text-sm text-gray-500">
-                        One Day Pass
+                        One Day Pass T24
                       </p>
                     </div>
                   </div>
                 </div>
-         
+
                 <div className=" grid grid-cols-2 gap-3 my-1">
                   {
                     buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
@@ -421,7 +421,7 @@ function BuspassDasboard() {
                             {genderconfig[p.employeeGender]}
                           </span>
                           <span className="text-sm font-semibold text-gray-800">
-                          ₹<CountUp
+                            ₹<CountUp
                               end={parseFloat(p.categoryWiseAmount || 0)}
                               duration={2}
                               separator=","
@@ -432,7 +432,7 @@ function BuspassDasboard() {
                     })
                   }
                 </div>
-                
+
               </div>
             </div>
           )}

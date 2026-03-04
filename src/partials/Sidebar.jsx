@@ -23,6 +23,7 @@ import {
   Amrabad,
   Department,
   BotanicalGardenParkAdminPermissions,
+  EsdTech,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -104,6 +105,8 @@ function Sidebar({ variant = "default" }) {
       return SupportAdmin;
     } else if (role === "ROLE_SUPERADMIN") {
       return superAdminPermissions;
+    } else if (role === "ROLE_ESD_TECH") {
+      return EsdTech;
     } else if (role === "ROLE_ADMIN") {
       return parkId === "100"
         ? CustomParkAdminPermissions

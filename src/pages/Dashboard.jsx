@@ -21,7 +21,7 @@ function Dashboard() {
   const RenderContent = () => {
     if (roleDetails?.name === "ROLE_METROADMIN") {
       return <MetroDashboard />;
-    } else if (roleDetails?.name === "Role_RTCADMIN") {
+    } else if (roleDetails?.name === "Role_RTCADMIN"| roleDetails?.name === "ROLE_ESD_TECH") {
       return <MainDashboard />;
     } else if (roleDetails?.name === "Role_TourismAdmin") {
       return <ToursimDashboard />;
