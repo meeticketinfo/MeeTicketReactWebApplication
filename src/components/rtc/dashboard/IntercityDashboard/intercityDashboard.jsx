@@ -87,8 +87,8 @@ function IntercitypassDasboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium">
-                        Purchase / Booking
+                      <label className="block text-sm font-medium whitespace-nowrap">
+                      Date of Booking / Date of Journey
                       </label>
                       <Field
                         as="select"
@@ -97,8 +97,8 @@ function IntercitypassDasboard() {
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       >
                         <option value="">Select</option>
-                        <option value="Purchase">Purchase Date</option>
-                        <option value="Booking">Booking Date</option>
+                        <option value="Purchase">Date of Booking</option>
+                        <option value="Booking">Date of Journey</option>
                       </Field>
                     </div>
                     <div className="flex items-end">
@@ -180,7 +180,7 @@ function IntercitypassDasboard() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
-                          Total Bookings
+                        Total Tickets
                         </h3>
                         <div className="text-2xl font-bold text-gray-800">
                           <CountUp end={intercityDashboard.overallTotals.totalBookings || 0} duration={2} separator="," />
@@ -197,7 +197,7 @@ function IntercitypassDasboard() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
-                          Total Tickets
+                        Total Passengers
                         </h3>
                         <div className="text-2xl font-bold text-gray-800 mb-2">
                           <CountUp end={intercityDashboard.overallTotals.totalTickets || 0} duration={2} separator="," />

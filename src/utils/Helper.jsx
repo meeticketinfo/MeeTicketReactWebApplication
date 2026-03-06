@@ -132,6 +132,30 @@ export const getEndOfCurrentDay = () => {
   return getFormattedDate(endOfDay);
 };
 
+// for rtc busspass total transaction report
+
+export const getStartOfCurrentDayRtc = () => {
+  const currentDate = new Date();
+  return currentDate.toISOString().split("T")[0] ;
+};
+
+export const getEndOfCurrentDayRtc = () => {
+  const currentDate = new Date();
+  return currentDate.toISOString().split("T")[0];
+};
+
+// intercity total transaction report
+
+export const getStartOfCurrentDayIntercity = () => {
+  const currentDate = new Date();
+  return currentDate.toISOString().split("T")[0] ;
+};
+
+export const getEndOfCurrentDayIntercity = () => {
+  const currentDate = new Date();
+  return currentDate.toISOString().split("T")[0];
+};
+
 export const cleanString = (str, symbol1, symbol2) => {
   return typeof str === "string" ? str ? str.replace(symbol1, symbol2) : str : str;
 }

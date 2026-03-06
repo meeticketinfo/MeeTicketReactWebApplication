@@ -82,7 +82,7 @@ const RtcFailedOtherReasonReportForm = ({
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 max={getCurrentDateTime()}
                 className={`mt-1 block w-full px-2 py-1 border
@@ -105,7 +105,7 @@ const RtcFailedOtherReasonReportForm = ({
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 max={getCurrentDateWithEndTime()}
                 className={`mt-1 block w-full px-2 py-1 border

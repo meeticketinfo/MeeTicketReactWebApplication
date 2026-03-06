@@ -4,7 +4,9 @@ import { Link, useLocation } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import {
   getEndOfCurrentDay,
+  getEndOfCurrentDayIntercity,
   getStartOfCurrentDay,
+  getStartOfCurrentDayIntercity,
 } from "../../../../../../../utils/Helper";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
@@ -24,8 +26,8 @@ const IntercityFailedGateway = () => {
   const toDate = searchParams.get("toDate");
   const status = searchParams.get("status");
   const busType = searchParams.get("busType");
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayIntercity();
+  const endOfDay = getEndOfCurrentDayIntercity();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
   const {
@@ -178,7 +180,7 @@ const IntercityFailedGateway = () => {
                       From Date
                     </label>
                     <Field
-                      type="datetime-local"
+                      type="date"
                       name="fromDate"
                       className={`mt-1 block w-full px-2 py-1 border
                                 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -202,7 +204,7 @@ const IntercityFailedGateway = () => {
                       To Date
                     </label>
                     <Field
-                      type="datetime-local"
+                      type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
                                    border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

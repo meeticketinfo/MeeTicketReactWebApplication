@@ -4,7 +4,9 @@ import { Field, Form, Formik } from "formik";
 import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import {
   getEndOfCurrentDay,
+  getEndOfCurrentDayIntercity,
   getStartOfCurrentDay,
+  getStartOfCurrentDayIntercity,
 } from "../../../../../../../utils/Helper";
 import Breadcrumb from "../../../../../../../components/Breadcrumb";
 import IntercityFailedOtherReasonsChart from "../../charts/IntercityFailedOtherReasonsChart";
@@ -23,8 +25,8 @@ const IntercityFailedOtherReason = () => {
   const arrivalLocation = searchParams.get("arrivalLocation");
   const departureLocation = searchParams.get("departureLocation");
   const status = searchParams.get("status");
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayIntercity();
+  const endOfDay = getEndOfCurrentDayIntercity();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
   const { fetchCitiesData, fetchIntercityBusTypesData, IntercityBusTypesData } =
@@ -217,7 +219,7 @@ const IntercityFailedOtherReason = () => {
                       From Date
                     </label>
                     <Field
-                      type="datetime-local"
+                      type="date"
                       name="fromDate"
                       className={`mt-1 block w-full px-2 py-1 border
                                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -241,7 +243,7 @@ const IntercityFailedOtherReason = () => {
                       To Date
                     </label>
                     <Field
-                      type="datetime-local"
+                      type="date"
                       name="toDate"
                       className={`mt-1 block w-full px-2 py-1 border
                                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

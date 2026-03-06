@@ -8,6 +8,8 @@ import AdminLayout from "../../../../../../../layouts/AdminLayout";
 import {
   getStartOfCurrentDay,
   getEndOfCurrentDay,
+  getStartOfCurrentDayRtc,
+  getEndOfCurrentDayRtc,
 } from "../../../../../../../utils/Helper";
 
 // Helper function to get current datetime in the format required for datetime-local max attribute
@@ -34,8 +36,8 @@ import BusPassFailedOtherReasonChart from "../../charts/BusPassFailedOtherReason
 import { useBusPassTotalTransactionStore } from "../../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 
 const RtcFailedOtherReason = () => {
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayRtc();
+  const endOfDay = getEndOfCurrentDayRtc();
   const { setInnerFilters, outerFilters, resetInnerFilters, innerFilters } =
     busPassTotalCommonStore();
   const {
@@ -126,7 +128,7 @@ const RtcFailedOtherReason = () => {
                     From Date
                   </label>
                   <Field
-                    type="datetime-local"
+                    type="date"
                     name="fromDate"
                     max={getCurrentDateTime()}
                     className={`mt-1 block w-full px-2 py-1 border
@@ -149,7 +151,7 @@ const RtcFailedOtherReason = () => {
                     To Date
                   </label>
                   <Field
-                    type="datetime-local"
+                    type="date"
                     name="toDate"
                     max={getCurrentDateWithEndTime()}
                     className={`mt-1 block w-full px-2 py-1 border

@@ -96,7 +96,7 @@ const IntercityConsolidatedReportForm = ({
             {/* purchase date */}
             <div>
               <label className="block text-xs font-light uppercase">
-                Purchase Date/ Booking Date
+              Date of Booking/Journey
               </label>
               <Field
                 as="select"
@@ -104,8 +104,8 @@ const IntercityConsolidatedReportForm = ({
                 className={` block w-full px-2 py-1 border border-gray-300 uppercase
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
               >
-                <option value="Purchase">Purchase Date</option>
-                <option value="Booking">Booking Date</option>
+                <option value="Purchase">Date of Booking</option>
+                <option value="Booking">Date of Journey</option>
               </Field>
             </div>
             {/* from date */}

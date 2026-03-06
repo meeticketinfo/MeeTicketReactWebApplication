@@ -5,6 +5,7 @@ import Logo from "../../../../../images/logo.jpg";
 import logo2 from "../../../../../images/logo-2.png";
 import { useIntercityTicketViewStore } from "./IntercityTicketViewStore";
 import { useParams } from "react-router-dom";
+import { formatToStandardDate } from "../../../../../utils/TypographyHelper";
 
 // Beautiful Loader Component
 const BeautifulLoader = ({
@@ -120,7 +121,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
     isFetchIntercityTicketViewData,
     fetchIntercityTicketViewData,
   } = useIntercityTicketViewStore();
-  console.log(IntercityTicketViewData, "IntercityTicketViewData");
+  
   useEffect(() => {
     fetchIntercityTicketViewData(id);
   }, []);
@@ -237,7 +238,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
             {/* Middle Content */}
             <div className="flex flex-col items-center justify-center text-center order-2 lg:order-2 flex-1 px-2">
               <h1 className="text-xs sm:text-sm lg:text-sm font-bold text-gray-900 mb-1 sm:mb-2 leading-tight">
-                తెలంగాణ రాష్ట్ర రహదారి రవాణా సంస్థ
+                తెలంగాణ రాష్ట్ర రోడ్డు రవాణా సంస్థ  
               </h1>
               <h1 className="text-xs sm:text-sm lg:text-sm font-bold text-gray-900 mb-1 sm:mb-2 leading-tight">
                 TELANGANA STATE ROAD TRANSPORT CORPORATION
@@ -311,7 +312,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     <td className="px-1 py-2 text-gray-900 w-2">:</td>
                     <td className="px-3 py-2 text-[15px] text-gray-900">
                       {IntercityTicketViewData.trvaelDate
-                        ? IntercityTicketViewData.trvaelDate
+                        ? formatToStandardDate(IntercityTicketViewData.trvaelDate)
                         : "N/A"}
                     </td>
                   </tr>
@@ -376,7 +377,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
                     <td className="px-3 py-2 text-[13px] text-gray-900">
-                      {IntercityTicketViewData.arrivelTime
+                    {IntercityTicketViewData.trvaelDate?formatToStandardDate(IntercityTicketViewData.trvaelDate):""} {IntercityTicketViewData.arrivelTime
                         ? IntercityTicketViewData.arrivelTime
                         : "N/A"}
                     </td>
@@ -416,7 +417,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
                     <td className="px-3 py-2 text-[13px] text-gray-900">
-                      {IntercityTicketViewData.departureTime
+                     {IntercityTicketViewData.departureTime
                         ? IntercityTicketViewData.departureTime
                         : "N/A"}
                     </td>
@@ -427,7 +428,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                       Status
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className={`px-3 py-2 text-[13px] ${IntercityTicketViewData.ticketStatus === "Confirmed" ? "text-green-700" : "text-orange-500"} font-medium `}>
+                    <td className={`px-3 py-2 font-extrabold ${IntercityTicketViewData.ticketStatus === "Confirmed" ? "text-green-700 " : "text-orange-500"} font-medium `}>
                       {IntercityTicketViewData.ticketStatus
                         ? IntercityTicketViewData.ticketStatus
                         : "N/A"}

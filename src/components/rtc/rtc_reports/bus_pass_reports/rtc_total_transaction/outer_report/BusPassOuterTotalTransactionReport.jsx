@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import busPassTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/busPassTotalCommonStore";
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import BusPassTotalTransactionChart from "../charts/BusPassTotalTransactionChart";
-import { getStartOfCurrentDay,getEndOfCurrentDay } from "../../../../../../utils/Helper";
+import { getStartOfCurrentDay,getEndOfCurrentDay, getStartOfCurrentDayRtc, getEndOfCurrentDayRtc } from "../../../../../../utils/Helper";
 
 // Helper function to get current datetime in the format required for datetime-local max attribute
 const getCurrentDateTime = () => {
@@ -56,8 +56,8 @@ const data=[
 
 
 const BusPassOuterTotalTransactionReport = () => {
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayRtc();
+  const endOfDay = getEndOfCurrentDayRtc();
   const {
     setOuterFilters,
     outerFilters,
@@ -121,7 +121,7 @@ const BusPassOuterTotalTransactionReport = () => {
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="fromDate"
                 max={getCurrentDateTime()}
                 className={`mt-1 block w-full px-2 py-1 border
@@ -144,7 +144,7 @@ const BusPassOuterTotalTransactionReport = () => {
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="toDate"
                 max={getCurrentDateWithEndTime()}
                 className={`mt-1 block w-full px-2 py-1 border

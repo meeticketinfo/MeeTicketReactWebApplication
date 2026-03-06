@@ -11,7 +11,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
   isRtcTransactionByReasonLoading: false,
   fetchRtcTransactionByReason: async (payload) => {
     set({ isRtcTransactionByReasonLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    const param = `?startDate=${payload.fromDate}${payload.fromDate ? "T00:00" : ""}&endDate=${payload.toDate}${payload.toDate ? "T23:59" : ""}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TRANSACTIONS_BY_REASON}${param}`
@@ -37,7 +37,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
   isRtcTotalTransactionsLoading: false,
   fetchRtcTotalTransactions: async (payload) => {
     set({ isRtcTotalTransactionsLoading: true });
-    const param = `?startDate=${payload.startDate}&endDate=${payload.endDate}&phoneNumber=${payload.phoneNumber}&status=${payload.status}&passTypeId=${payload.BusPassType}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
+    const param = `?startDate=${payload.startDate}${payload.startDate ? "T00:00" : ""}&endDate=${payload.endDate}${payload.endDate ? "T23:59" : ""}&phoneNumber=${payload.phoneNumber}&status=${payload.status}&passTypeId=${payload.BusPassType}&subCategory=${payload.subCategory}&pageNumber=${payload.pageNumber}&pageSize=${payload.pageSize}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TOTAL_TRANSACTIONS}${param}`
@@ -63,7 +63,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
   fetchRtcGateWayPieChart: async (payload) => {
     set({ RtcisGateWayPieChartLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    const param = `?startDate=${payload.fromDate}${payload.fromDate ? "T00:00" : ""}&endDate=${payload.toDate}${payload.toDate ? "T23:59" : ""}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_GATEWAY_PIE_CHART}${param}`
@@ -89,7 +89,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
   fetchRtcTicketNotGeneratedPieChart: async (payload) => {
     set({ RtcisTicketNotGeneratedPieChartLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    const param = `?startDate=${payload.fromDate}${payload.fromDate ? "T00:00" : ""}&endDate=${payload.toDate}${payload.toDate ? "T23:59" : ""}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_TICKET_NOT_GENERATED_PIE_CHART}${param}`
@@ -115,7 +115,7 @@ export const useBusPassTotalTransactionStore = create((set) => ({
 
   fetchRtcOtherReasonsPieChart: async (payload) => {
     set({ RtcisOtherReasonsPieChartLoading: true });
-    const param = `?startDate=${payload.fromDate}&endDate=${payload.toDate}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
+    const param = `?startDate=${payload.fromDate}${payload.fromDate ? "T00:00" : ""}&endDate=${payload.toDate}${payload.toDate ? "T23:59" : ""}&phoneNumber=${payload.mobileNumber}&passTypeId=${payload.BusPassType}`;
     try {
       const response = await apiService.get(
         `${API_ENDPOINTS.REPORTS.RTC_REPORTS.RTC_TOTAL_TRANSACTIONS_REPORT.GET_RTC_OTHER_REASON_PIE_CHART}${param}`

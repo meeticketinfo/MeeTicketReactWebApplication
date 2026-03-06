@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import {
   getEndOfCurrentDay,
+  getEndOfCurrentDayIntercity,
   getStartOfCurrentDay,
+  getStartOfCurrentDayIntercity,
 } from "../../../../../../utils/Helper";
 import { useIntercityTotalTransactionStore } from "../store/IntercityTotalTransactionStore";
 import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
@@ -22,8 +24,8 @@ const IntercityTotalTransactionForm = ({
   busType,
   status,
 }) => {
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayIntercity();
+  const endOfDay = getEndOfCurrentDayIntercity();
   const { setOuterFilters, outerFilters, resetOuterFilters, setInnerFilters, deepInnerFilters, innerFilters } =
     IntercityTotalCommonStore();
   const {
@@ -111,7 +113,7 @@ const IntercityTotalTransactionForm = ({
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -133,7 +135,7 @@ const IntercityTotalTransactionForm = ({
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

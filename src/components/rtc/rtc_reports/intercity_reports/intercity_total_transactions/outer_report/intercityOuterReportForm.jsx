@@ -4,7 +4,9 @@ import Select from "react-select";
 import { ToastContainer } from "react-toastify";
 import {
   getEndOfCurrentDay,
+  getEndOfCurrentDayIntercity,
   getStartOfCurrentDay,
+  getStartOfCurrentDayIntercity,
 } from "../../../../../../utils/Helper";
 import IntercityTotalTransactionChart from "../charts/IntercityTotalTransactionChart";
 import SearchableDropdown from "../../../../../../components/searchable_dropdown/SearchableDropdown";
@@ -13,8 +15,8 @@ import IntercityTotalCommonStore from "../../../../../../store/rtc_total_transac
 import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
 
 const IntercityOuterReportForm = () => {
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayIntercity();
+  const endOfDay = getEndOfCurrentDayIntercity();
   const { setOuterFilters, outerFilters, resetOuterFilters, setInnerFilters } =
     IntercityTotalCommonStore();
 
@@ -135,7 +137,7 @@ const IntercityOuterReportForm = () => {
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -157,7 +159,7 @@ const IntercityOuterReportForm = () => {
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="toDate"
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

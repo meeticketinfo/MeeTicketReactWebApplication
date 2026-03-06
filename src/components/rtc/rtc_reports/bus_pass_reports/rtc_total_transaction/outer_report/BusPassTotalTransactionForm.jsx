@@ -4,7 +4,9 @@ import busPassTotalCommonStore from "../../../../../../store/rtc_total_transacti
 import { useBusPassTotalTransactionStore } from "../../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import {
   getEndOfCurrentDay,
+  getEndOfCurrentDayRtc,
   getStartOfCurrentDay,
+  getStartOfCurrentDayRtc,
 } from "../../../../../../utils/Helper";
 
 // Helper function to get current datetime in the format required for datetime-local max attribute
@@ -33,8 +35,8 @@ const BusPassTotalTransactionForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
-  const startOfDay = getStartOfCurrentDay();
-  const endOfDay = getEndOfCurrentDay();
+  const startOfDay = getStartOfCurrentDayRtc();
+  const endOfDay = getEndOfCurrentDayRtc();
   const { outerFilters, deepInnerFilters, setDeepInnerFilters } =
     busPassTotalCommonStore();
 
@@ -91,7 +93,7 @@ const BusPassTotalTransactionForm = ({
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 max={getCurrentDateTime()}
                 className={`mt-1 block w-full px-2 py-1 border
@@ -114,7 +116,7 @@ const BusPassTotalTransactionForm = ({
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 max={getCurrentDateWithEndTime()}
                 className={`mt-1 block w-full px-2 py-1 border

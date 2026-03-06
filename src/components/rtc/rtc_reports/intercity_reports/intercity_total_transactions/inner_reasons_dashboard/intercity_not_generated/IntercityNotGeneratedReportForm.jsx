@@ -117,7 +117,7 @@ const IntercityNotGeneratedReportForm = ({
                 From Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 className={`mt-1 block w-full px-2 py-1 border
                       border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -139,7 +139,7 @@ const IntercityNotGeneratedReportForm = ({
                 To Date
               </label>
               <Field
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
@@ -149,7 +149,6 @@ const IntercityNotGeneratedReportForm = ({
                 }}
               />
             </div>
-
             {/* mobile number */}
             <div>
               <label
