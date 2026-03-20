@@ -16,15 +16,15 @@ function IntercitypassDasboard() {
     isFetchIntercityDashboardLoading,
   } = useIntercityDashboardStore();
   const initialValues = {
-    fromDate: "",
-    toDate: "",
-    typeOfBooking: "",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    typeOfBooking: "Purchase",
   };
   useEffect(() => {
     fetchIntercityDashboard({
-      fromDate: "",
-      toDate: "",
-      typeOfBooking: "",
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
+      typeOfBooking: "Purchase",
     });
   }, []);
 
@@ -88,7 +88,7 @@ function IntercitypassDasboard() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium whitespace-nowrap">
-                      Date of Booking / Date of Journey
+                        Date of Booking / Date of Journey
                       </label>
                       <Field
                         as="select"
@@ -96,7 +96,6 @@ function IntercitypassDasboard() {
                         className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       >
-                        <option value="">Select</option>
                         <option value="Purchase">Date of Booking</option>
                         <option value="Booking">Date of Journey</option>
                       </Field>
@@ -105,7 +104,7 @@ function IntercitypassDasboard() {
                       <button
                         type="submit"
                         className="bg-green-700 text-xs  uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                        // disabled={isFetchEntityBookingsLoading}
+                      // disabled={isFetchEntityBookingsLoading}
                       >
                         Search
                       </button>
@@ -180,7 +179,7 @@ function IntercitypassDasboard() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
-                        Total Tickets
+                          Total Tickets
                         </h3>
                         <div className="text-2xl font-bold text-gray-800">
                           <CountUp end={intercityDashboard.overallTotals.totalBookings || 0} duration={2} separator="," />
@@ -197,7 +196,7 @@ function IntercitypassDasboard() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="text-sm font-medium text-gray-600 mb-2">
-                        Total Passengers
+                          Total Passengers
                         </h3>
                         <div className="text-2xl font-bold text-gray-800 mb-2">
                           <CountUp end={intercityDashboard.overallTotals.totalTickets || 0} duration={2} separator="," />
@@ -352,7 +351,7 @@ function IntercitypassDasboard() {
             )}
           </div>
           <div className="col-span-full mb-8">
-            <BuswiseDetails intercityDashboard={intercityDashboard}/>
+            <BuswiseDetails intercityDashboard={intercityDashboard} />
           </div>
         </>
       </div>

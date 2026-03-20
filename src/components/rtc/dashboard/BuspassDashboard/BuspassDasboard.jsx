@@ -34,14 +34,14 @@ function BuspassDasboard() {
   superballs.register();
   const { fetchBuspassDashboard, buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
   const initialValues = {
-    fromDate: "",
-    toDate: "",
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
   };
-  console.log("buspassDashboard", buspassDashboard);
+ 
   useEffect(() => {
     fetchBuspassDashboard({
-      fromDate: "",
-      toDate: "",
+      fromDate: getCurrentDate(),
+      toDate: getCurrentDate(),
     })
   }, []);
 
@@ -261,7 +261,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
+                  {/* <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       One Day Pass T24
                     </span>
@@ -272,7 +272,7 @@ function BuspassDasboard() {
                         separator=","
                       />
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -338,7 +338,7 @@ function BuspassDasboard() {
                       />
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
+                  {/* <div className="flex justify-between items-center p-3 shadow-md bg-[#F1F6FB] rounded-lg">
                     <span className="text-sm font-medium text-gray-600">
                       One Day Pass T24
                     </span>
@@ -349,7 +349,7 @@ function BuspassDasboard() {
                         separator=","
                       />
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* one day pass category */}
@@ -364,9 +364,18 @@ function BuspassDasboard() {
                         Count
                       </h3>
                       <p className="text-sm text-gray-500">
-                        One Day Pass T24
+                        T24 Passes
                       </p>
                     </div>
+                  </div>
+                  <div>
+                    <span className="text-md font-semibold text-gray-800">
+                      <CountUp
+                        end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.oneDayPassCount || 0)}
+                        duration={2}
+                        separator=","
+                      />
+                    </span>
                   </div>
                 </div>
 
@@ -409,6 +418,13 @@ function BuspassDasboard() {
                         One Day Pass T24
                       </p>
                     </div>
+                  </div>
+                  <div><span className="text-md font-semibold text-gray-800">₹<CountUp
+                        end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.oneDayPassAmount || 0)}
+                        duration={2}
+                        separator=","
+                      />
+                    </span>
                   </div>
                 </div>
 
