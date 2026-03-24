@@ -138,20 +138,99 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
         </div>
 
         {/* Overview Section */}
-        <div className="mt-2 mb-2">
+        <div className="mt-2  border-b py-3">
           <h2 className="text-sm sm:text-base font-semibold text-[#304A3A] mb-1">Overview:</h2>
           <p className="text-[#394D48] text-xs sm:text-sm leading-snug mb-1">
             {house?.overview}
           </p>
         </div>
 
-        {/* Special Offer Section */}
-        <div>
-          <h2 className="text-sm sm:text-base font-semibold text-[#304A3A] mb-1">Special Offer:</h2>
-          <p className="text-[#394D48] text-xs sm:text-sm">
-            {house?.specialOffers}
-          </p>
+        {/* special offers */}
+
+       { (house?.specialOffers!==""||house?.specialOffers)&&<div className=" border-b py-3">
+         
+          <div className="  text-[#394D48] text-xs sm:text-sm">
+            {house?.specialOffers?.split("\n").map((line, index) => {
+              const text = line.trim();
+              if (!text) return null;
+
+              // 👉 Detect headings (no ":" OR ends with ":")
+              const isHeading =
+                (!text.includes(":") && text.length < 60) ||
+                text.endsWith(":");
+
+              // 👉 Detect note lines
+              const isNote = text.toLowerCase().startsWith("note");
+
+              if (isHeading) {
+                return (
+                  <h3 key={index} className="font-semibold mt-2 text-[#304A3A]">
+                    {text}
+                  </h3>
+                );
+              }
+
+              if (isNote) {
+                return (
+                  <p key={index} className="mt-2 text-[#6B7280] italic">
+                    {text}
+                  </p>
+                );
+              }
+
+              return (
+                <li key={index} className="ml-4 list-disc">
+                  {text.replace(/^[-•]\s*/, "")}
+                </li>
+              );
+            })}
+          </div>
+        </div>}
+
+        {/* remarks */}
+        <div className=" border-b py-3">
+          {/* <h2 className="text-sm sm:text-base font-semibold text-[#304A3A] mb-1">Special Offer:</h2> */}
+          <div className="  text-[#394D48] text-xs sm:text-sm">
+            {house?.remarks?.split("\n").map((line, index) => {
+              const text = line.trim();
+              if (!text) return null;
+
+              // 👉 Detect headings (no ":" OR ends with ":")
+              const isHeading =
+                (!text.includes(":") && text.length < 60) ||
+                text.endsWith(":");
+
+              // 👉 Detect note lines
+              const isNote = text.toLowerCase().startsWith("note");
+
+              if (isHeading) {
+                return (
+                  <h3 key={index} className="font-semibold mt-2 text-[#304A3A]">
+                    {text}
+                  </h3>
+                );
+              }
+
+              if (isNote) {
+                return (
+                  <p key={index} className="mt-2 text-[#6B7280] italic">
+                    {text}
+                  </p>
+                );
+              }
+
+              return (
+                <li key={index} className="ml-4 list-disc">
+                  {text.replace(/^[-•]\s*/, "")}
+                </li>
+              );
+            })}
+          </div>
         </div>
+
+
+
+
       </div>
     </>
   );

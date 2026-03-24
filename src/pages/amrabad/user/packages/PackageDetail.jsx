@@ -13,6 +13,14 @@ const PackageDetail = () => {
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
   const { fetchPackageDetail, isPackageDetailLoading, GetPackageDetail } = useUserBookingStore();
 
+  const OverviewConfig = {
+   
+    182: "Tented accommodation with concrete bathrooms",
+    180: "Cottages",
+    179: "Tented accommodation with concrete bath & dressing",
+
+  }
+
   useEffect(() => {
     fetchPackageDetail(packageId);
   }, [packageId]);
@@ -86,7 +94,7 @@ const PackageDetail = () => {
           </section>
 
           {/* Accommodation Details */}
-          <section className="mb-8">
+          {/* <section className="mb-8">
             {GetPackageDetail?.rooms?.length > 0 && (
               <>
                 <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
@@ -117,20 +125,20 @@ const PackageDetail = () => {
             <p className="text-sm text-gray-600 mt-2">
               <span className="font-semibold">Note:</span> {GetPackageDetail?.priceNote}
             </p>
-          </section>
+          </section> */}
 
           {/* Discounts & Schedule */}
           <section className="mb-8">
-            <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+            {/* <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
               <h2 className="text-lg font-semibold text-[#304A3A]">
                 Discount & Schedule Details
               </h2>
-            </div>
+            </div> */}
             <div className="bg-[#FDFAF7] p-3 md:p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
 
               {/* Discounts */}
               <div className="mb-5">
-                <h3 className="mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts</h3>
+                <h3 className="mb-2 text-black text-base md:text-xl font-bold">Bulk Booking Discounts : N/A</h3>
 
                 <ul className="space-y-2">
                   {GetPackageDetail?.discounts?.map((item, idx) => (
@@ -151,7 +159,7 @@ const PackageDetail = () => {
               </div>
               {/* Itinerary */}
               <div>
-                <h3 className="mb-4 text-black text-base md:text-xl font-bold">2-Day Itinerary Schedule</h3>
+                {/* <h3 className="mb-4 text-black text-base md:text-xl font-bold">2-Day Itinerary Schedule</h3> */}
 
                 {/* Day 1 Card */}
                 <div className="bg-[#F2EDE7] rounded-lg p-3 md:p-5 mb-4 shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
@@ -178,38 +186,38 @@ const PackageDetail = () => {
                 </div>
 
                 {/* Detailed Schedule Table (hidden by default, can be toggled) */}
-                <div className="mt-4">
-                  <div className="overflow-x-auto border border-gray-200 rounded-lg text-[#1B2128]">
-                    <table className="min-w-full text-xs md:text-sm">
-                      <thead>
-                        <tr className="bg-white">
-                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[80px]">Day</th>
-                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[160px]">Time</th>
-                          <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold  min-w-[260px]">Schedule</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-[#FFFFFF7A]">
-                        {GetPackageDetail?.itinerary?.map((day, i) =>
-                          day.schedule.map((item, j) => (
-                            <tr key={i + "-" + j} className="border-t">
-                              {j === 0 && (
-                                <td
-                                  width="100px"
-                                  className="px-2 md:px-3 py-2 md:py-4 font-semibold w-[100px]"
-                                  rowSpan={day.schedule.length}
-                                >
-                                  {day.day}
-                                </td>
-                              )}
-                              <td width="150px" className="px-2 md:px-3 py-2 md:py-4 w-[150px]">{item.time}</td>
-                              <td className="px-2 md:px-3 py-2 md:py-4">{item.desc}</td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                {/* <div className="mt-4">
+                          <div className="overflow-x-auto border border-gray-200 rounded-lg text-[#1B2128]">
+                            <table className="min-w-full text-xs md:text-sm">
+                              <thead>
+                                <tr className="bg-white">
+                                  <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[80px]">Day</th>
+                                  <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold min-w-[160px]">Time</th>
+                                  <th className="px-2 md:px-3 py-2 md:py-4 text-left font-semibold  min-w-[260px]">Schedule</th>
+                                </tr>
+                              </thead>
+                              <tbody className="bg-[#FFFFFF7A]">
+                                {GetPackageDetail?.itinerary?.map((day, i) =>
+                                  day.schedule.map((item, j) => (
+                                    <tr key={i + "-" + j} className="border-t">
+                                      {j === 0 && (
+                                        <td
+                                          width="100px"
+                                          className="px-2 md:px-3 py-2 md:py-4 font-semibold w-[100px]"
+                                          rowSpan={day.schedule.length}
+                                        >
+                                          {day.day}
+                                        </td>
+                                      )}
+                                      <td width="150px" className="px-2 md:px-3 py-2 md:py-4 w-[150px]">{item.time}</td>
+                                      <td className="px-2 md:px-3 py-2 md:py-4">{item.desc}</td>
+                                    </tr>
+                                  ))
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> */}
               </div>
               {/* Notes */}
               <section className="mt-4">
@@ -232,6 +240,24 @@ const PackageDetail = () => {
               </section>
             </div>
           </section>
+
+
+          {/* over View Details */}
+         { OverviewConfig[packageId]&&<section className="mb-8">
+
+            <>
+              <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                <h2 className="text-lg font-semibold text-[#304A3A]">
+                  Over View
+                </h2>
+              </div>
+              <div className="overflow-x-auto w-full md:max-w-[50%]   border-gray-200 rounded-lg">
+                <h1 className="font-normal">{OverviewConfig[packageId]}</h1>
+              </div>
+            </>
+
+
+          </section>}
 
 
           {/* Swiper Slider - place this just above the Policy Links section */}
@@ -268,12 +294,12 @@ const PackageDetail = () => {
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6 font-bold">
             {GetPackageDetail?.cancellationPolicy && (
               <>
-              <button
-                onClick={() => setOpenModalId("cancellation-policy")}
-                className="text-[#304A3A] underline transition duration-300"
-              >
-                Cancellation Policy
-              </button>
+                <button
+                  onClick={() => setOpenModalId("cancellation-policy")}
+                  className="text-[#304A3A] underline transition duration-300"
+                >
+                  Cancellation Policy
+                </button>
               </>
             )}
             {GetPackageDetail?.termsConditions && (

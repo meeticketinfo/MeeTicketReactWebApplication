@@ -562,7 +562,7 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        titlFe: "Packages",
+        title: "Packages",
         icon: TbReportSearch,
         path: "/amrabad-packages",
       },
