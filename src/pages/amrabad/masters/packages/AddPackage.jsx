@@ -180,7 +180,6 @@ const AddPackage = () => {
       guidelines: Yup.string().max(1000),
       cancellationPolicy: Yup.string().max(1000),
       termsConditions: Yup.string()
-        .max(1000, "Max 1000 characters")
         .required("T&C are required"),
 
       privacyPolicy: Yup.string().max(1000),
@@ -466,7 +465,6 @@ const AddPackage = () => {
                     </label>
                     <Field
                       as="textarea"
-                      maxLength={1000}
                       name="package.termsConditions"
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                       placeholder="Enter Terms & Conditions"
