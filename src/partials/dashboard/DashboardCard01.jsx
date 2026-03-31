@@ -13,7 +13,7 @@ function DashboardCard01({
   return (
     <>
       <div
-        className="flex flex-col justify-center col-span-full sm:col-span-3 xl:col-span-3 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
+        className="flex flex-col justify-center col-span-full sm:col-span-4 xl:col-span-4 bg-white/30 backdrop-blur-sm shadow-lg shadow-gray-200 rounded-2xl p-4 border-2 border-gray-200"
         onMouseEnter={() => {
           isPopup === true && setIsHovered(true);
         }}

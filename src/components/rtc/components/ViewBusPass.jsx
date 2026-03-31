@@ -70,7 +70,7 @@ const ViewBusPass = ({ isOpen, onClose, AipData }) => {
       ) : (
         <div className="space-y-6 p-4 mt-6">
           {/* Identity Card */}
-          {RtcViewBusPassData?.idDetails?.pass_name !== "ONE DAY PASS" && (
+          {RtcViewBusPassData?.idDetails?.pass_name !== "T24 PASS" && (
           <div>
             <div className="flex items-center gap-2 mb-3 ml-2">
               {/* <FaIdCard className="text-blue-600" /> */}

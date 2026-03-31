@@ -412,6 +412,7 @@ export const API_ENDPOINTS = {
   },
   DASHBOARD: {
     GET_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCount`,
+    GET_BOTANICAL_DASHBOARD_COUNTS: `${API_BASE_URL}v2/DashBoard/GetTotalBookingCountByRolebotanical`,
     GET_METRO_DASHBOARD_COUNT: `${METRO_API_BASE_URL}v2/MetroReport/GetTotalBookingCount`,
     GET_ALL_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetAllEntityBookingByFilters`,
     GET_ALL_NEHRU_COUNTER_BOOKINGS: `${API_BASE_URL}v3/Transaction/GetNehruCounterBookings`,

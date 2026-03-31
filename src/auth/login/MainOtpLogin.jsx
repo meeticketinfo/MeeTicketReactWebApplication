@@ -8,7 +8,7 @@ import useAuthStore from "../../store/authStore";
 
 const MainOtpLogin = ({ closeModal }) => {
   const [userId, setUserId] = useState(false);
-  console.log("userId", userId);
+
   const [timeLeft, setTimeLeft] = useState(60); // Initial time
 
   // Get token and setToken from Zustand store

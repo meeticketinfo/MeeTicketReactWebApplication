@@ -111,6 +111,46 @@ export const useDashboardStore = create((set) => ({
     }
   },
 
+  // for botanical garden
+
+  BotanicalallCounts:[],
+
+  isFetchBotanicalCountsLoading:false,
+
+  fetchBotanicalDashboardCounts: async (
+
+    {
+      fromDate,
+      toDate,
+      entityId,
+      active,
+      departmentId,
+      locationId,
+      bookingDateFrom,
+      bookingDateTo,
+    },
+  ) => {
+    const date = active
+      ? `?FromDate=${fromDate}&ToDate=${toDate}&LocationCategoryId=${entityId}&DepartmentId=${departmentId}&LocationId=${locationId}&bookingDateFrom=${bookingDateFrom}&bookingDateTo=${bookingDateTo}`
+      : "";
+    set({ isFetchBotanicalCountsLoading: true });
+    try {
+      // const endpoint =API_ENDPOINTS.DASHBOARD.GET_BOOKINGS_BY_ROLE
+      const endpoint = `${API_ENDPOINTS.DASHBOARD.GET_BOTANICAL_DASHBOARD_COUNTS}${date}`;
+
+      //   const filterString = useBookingstore.getState().serializeFilters(filters);
+      const response = await apiService.get(
+        `${endpoint}`,
+      );
+      set({
+        BotanicalallCounts: response.data,
+        isFetchBotanicalCountsLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isFetchBotanicalCountsLoading: false });
+    }
+  },
+
   fetchAllEntityWiseCounts: async ({
     fromDate,
     toDate,
@@ -239,7 +279,7 @@ export const useDashboardStore = create((set) => ({
 
   // ZOO DASH BOARD
   fetchAllZooDashBoardCounts: async (
-    { DashboardDate, bookingDateFrom },
+    { DashboardDateFrom, DashboardDateTo, bookingDateFrom, bookingDateTo },
     roleDetails,
   ) => {
     console.log("roleDetails name", roleDetails?.name);
@@ -250,7 +290,7 @@ export const useDashboardStore = create((set) => ({
         : API_ENDPOINTS.DASHBOARD.GET_ZOO_PARK_DASHBOARD_COUNTS;
     try {
       const response = await apiService.get(
-        `${apiUrl}?date=${DashboardDate}&bookingDateFrom=${bookingDateFrom}`,
+        `${apiUrl}?dateFrom=${DashboardDateFrom}&dateTo=${DashboardDateTo}&bookingDateFrom=${bookingDateFrom}&bookingDateTo=${bookingDateTo}`,
       );
       set({
         allZooDashboard: response.data,

@@ -119,7 +119,7 @@ const viewPoints = [
 const DashboardViewPoints = () => {
   const { allViewPoints, fetchAllViewPointsCounts, isFetchViewPointsLoading } =
     useDashboardStore();
-  console.log("allViewPoints", allViewPoints);
+  
   const InitialValues = {
     fromDate: "",
     toDate: "",
@@ -129,7 +129,7 @@ const DashboardViewPoints = () => {
     fetchAllViewPointsCounts({ fromDate: "", toDate: "" });
   }, []);
   const OnSubmit = (values) => {
-    console.log("values", values);
+   
     fetchAllViewPointsCounts(values);
   };
   return (

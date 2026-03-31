@@ -107,22 +107,11 @@ export const parkAdminPermissions = [
   // "Grievance-consolidate",
   "Grievance-Incident",
   // "Grievance-individual",
-  "pos-admin",
+  // "pos-admin",
   // "facility-holidays",
   // "pos-reports",
   // "add-language",
   // "group-details",
-];
-
-// botanical garden park admin permissions
-export const BotanicalGardenParkAdminPermissions = [
-  "dashboard",
-  "bookings",
-  "facility-services",
-  "entity-bookings",
-  "completed-bookings",
-  "payment-transaction-report",
-  "book-tickets",
 ];
 
 // custom park admin permissions
@@ -144,6 +133,19 @@ export const CustomParkAdminPermissions = [
   "day-wise-bookings",
   "pos-reports",
 ];
+
+// botanical garden park admin permissions
+export const BotanicalGardenParkAdminPermissions = [
+  "dashboard",
+  "bookings",
+  "facility-services",
+  "entity-bookings",
+  "completed-bookings",
+  "payment-transaction-report",
+  "book-tickets",
+];
+
+
 
 // nodal officer permissions
 export const nodalOfficerPermissions = [

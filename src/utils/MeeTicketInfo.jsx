@@ -9,7 +9,7 @@ const MeeTicketInfo = () => {
 
   const { fetchLoginDashboardData, LoginDashboardData, isLoginDashboardDataLoading } = LoginDashboardStore();
   // const isLoginDashboardDataLoading=false
-  console.log("LoginDashboardData", LoginDashboardData)
+ 
   useEffect(() => {
     fetchLoginDashboardData()
   }, []);
