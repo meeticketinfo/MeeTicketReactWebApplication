@@ -270,7 +270,7 @@ function PaymentTransactionReport() {
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
-        const isDisabled = params.data.isTicketGenerated||params?.data?.resultStatus==="TXN_SUCCESS";
+        const isDisabled = params.data.isTicketGenerated;
 
         return (
           <div className="flex justify-center">
