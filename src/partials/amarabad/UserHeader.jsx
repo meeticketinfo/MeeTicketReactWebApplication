@@ -44,10 +44,10 @@ export const UserHeader = ({ isScrolled = false }) => {
     //   to: 'https://play.google.com/store/apps/details?id=com.me_ticket_app&pcampaignid=web_share',
     //   target: '_blank'
     // },
-    {
-      label: 'Support',
-      // to: '/amrabad-resort/contact-us'
-    },
+    // {
+    //   label: 'Support',
+    //   // to: '/amrabad-resort/contact-us'
+    // },
   ]
   return (
     <>

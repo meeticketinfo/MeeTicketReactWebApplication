@@ -17,8 +17,8 @@ const DatePickerField = ({
     if (isCheckout) {
       const isSelected = date.toDateString() === endDate.toDateString();
       const isAvailable = filterDate(date);
-      const commonClass = "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[50px] !h-[60px]";
-      
+      const commonClass = "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[46px] !h-[54px]";
+
       if (!isAvailable) {
         return "!text-[#D0D7CE] !cursor-not-allowed !bg-[#F2EDE7] " + commonClass;
       }
@@ -33,7 +33,7 @@ const DatePickerField = ({
       const isToday = date.toDateString() === today.toDateString();
       const isSelected = date.toDateString() === startDate.toDateString();
       const isAvailable = isDateAvailable(date);
-      const commonClass = "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[50px] !h-[60px]";
+      const commonClass = "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[46px] !h-[54px]";
       
       if (!isAvailable) {
         return "!text-[#D0D7CE] !cursor-not-allowed !bg-[#F2EDE7] " + commonClass;
@@ -69,9 +69,10 @@ const DatePickerField = ({
             onChange={onChange}
             wrapperClassName="w-full"
             calendarClassName="!bg-[#FDFAF7] !border-[#C8BFB2] !rounded-lg !shadow-lg"
+            popperClassName="!z-[9999]"
             monthClassName="!bg-[#FDFAF7]"
             weekDayClassName={(date) => {
-              return "!text-[#4A6360] !text-xs !font-medium !py-2 !text-center !w-[50px] !h-auto";
+              return "!text-[#4A6360] !text-xs !font-medium !py-0.5 !text-center !w-[50px] !h-auto";
             }}
             dayClassName={getDayClassName}
             calendarIconClassName="!h-5 !w-5 !cursor-pointer !right-0 !top-1/2 !transform !-translate-y-1/2 !pointer-events-auto text-[#304A3A] fill-[#304A3A]"
