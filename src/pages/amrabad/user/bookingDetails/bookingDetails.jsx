@@ -13,6 +13,8 @@ import { useTransactionHandler } from "./components/TransactionHandler";
 
 const AmarabadBookingDetails = () => {
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
+    const PackageId=cartItems.data[0]?.packageId;
+   
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
     const userLocalStorage = JSON.parse(localStorage.getItem("amrabadlogin-store"));
@@ -31,9 +33,10 @@ const AmarabadBookingDetails = () => {
     }, []);
 
     const handleSubmit = async (formValues, { setSubmitting }) => {
+      
         try {
             // Step 1: Initiate Transaction
-            const transactionResponse = await handleTransaction(formValues);
+            const transactionResponse = await handleTransaction(formValues,PackageId);
             
             // Load Paytm script and initiate payment
             loadPaytmScript(transactionResponse?.data, (paymentData) => {

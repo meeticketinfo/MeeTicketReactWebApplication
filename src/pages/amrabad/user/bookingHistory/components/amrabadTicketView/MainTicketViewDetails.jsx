@@ -22,6 +22,16 @@ const formatDateTime = (dateString) => {
   }).toUpperCase();
 };
 
+const formatTimeOnly = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).toUpperCase();
+};
+
 const TicketViewDetails = ({ isScrolled = false }) => {
   const { bookingId } = useParams();
   const location = useLocation();
@@ -308,7 +318,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         Check-in Date
                       </th>
-                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
                         Check-out Date
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
@@ -341,7 +351,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                             : "0"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-sm text-red-600">
-                          -{house.discountValuePerRecord
+                          {house.discountValuePerRecord
                             ? `₹${house.discountValuePerRecord.toLocaleString()}`
                             : "0"}
                         </td>
@@ -377,7 +387,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                 <li className="flex items-start gap-2 text-[#7B7979]">
                   <span className="text-black mt-1">•</span>
                   <span>
-                    Check-in is at 12:30 PM and check-out is by 10:00 AM the next
+                    Check-in is at {formatTimeOnly(GetTicketViewDetails?.bookingItems?.[0]?.checkIn) || '12:30 PM'} and check-out is by {formatTimeOnly(GetTicketViewDetails?.bookingItems?.[0]?.checkOut) || '10:00 AM'} the next
                     day. Please be punctual to join scheduled safari and trek
                     activities.
                   </span>

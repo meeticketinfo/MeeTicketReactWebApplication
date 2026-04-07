@@ -190,7 +190,7 @@ const CheckoutDetails = () => {
                               </td>
                               <td className="p-2 text-center">₹{(item?.amount || 0)?.toLocaleString()}</td>
                               <td className="p-2 text-center text-red-600">
-                                -₹{(item?.discountAmount || 0)?.toLocaleString()}
+                                ₹{(item?.discountAmount || 0)?.toLocaleString()}
                               </td>
                               <td className="p-2 text-center font-semibold">
                                 ₹{(item?.cartTotalAmount || 0)?.toLocaleString()}
@@ -211,7 +211,7 @@ const CheckoutDetails = () => {
                     <div className="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
                       <span>Discount</span>
                       <span className="text-red-600">
-                        -₹{groupTotals.discountAmount?.toLocaleString()}
+                        ₹{groupTotals.discountAmount?.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between font-bold text-base sm:text-lg mt-2">
@@ -236,7 +236,7 @@ const CheckoutDetails = () => {
               </div>
               <div className="flex justify-between mb-2 text-gray-700 text-sm sm:text-base">
                 <span>Discount</span>
-                <span className="text-red-600">-₹{discount?.toLocaleString()}</span>
+                <span className="text-red-600">₹{discount?.toLocaleString()}</span>
               </div>
               <div className="flex justify-between font-bold text-base sm:text-lg border-t border-gray-200 pt-2 mb-6">
                 <span>Total</span>

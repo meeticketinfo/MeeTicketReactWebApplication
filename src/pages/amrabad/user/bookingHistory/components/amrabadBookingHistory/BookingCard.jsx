@@ -175,7 +175,7 @@ const BookingCard = ({ booking }) => {
               </div>
               <div>
                 <div className="text-xs text-gray-500">Houses</div>
-                <div className="text-xs sm:text-sm font-medium text-black">{booking?.roomCount ?? "N/A"}<span> House</span></div>
+                <div className="text-xs sm:text-sm font-medium text-black">{booking?.roomCount ?? "N/A"}<span> Houses</span></div>
               </div>
             </div>
           </div>

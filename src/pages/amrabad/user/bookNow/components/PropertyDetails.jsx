@@ -130,7 +130,7 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
                 </div>
                 <div className="text-[#394D48]">
                   <div className="text-xs sm:text-sm text-[#4A6360] mb-1">Check-Out Time:</div>
-                  <div className="text-base sm:text-lg font-semibold text-[#304A3A]">{convertTo12HourFormat(userPackage?.checkOutTime)} (Next Day)</div>
+                  <div className="text-base sm:text-lg font-semibold text-[#304A3A]">{convertTo12HourFormat(userPackage?.checkOutTime)}</div>
                 </div>
               </div>
             </div>
