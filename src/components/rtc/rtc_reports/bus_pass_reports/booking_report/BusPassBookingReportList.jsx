@@ -613,7 +613,32 @@ const BusPassBookingReportList = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
-
+  {
+        field: "createdDate",
+        headerName: "Payment CreatedDate",     
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => {
+          const SPECIAL_PASS_ID = "100";
+          // use updatedDate for the special pass type; otherwise use bookingDate (params.value)
+          const source = params.data?.passTypeId === SPECIAL_PASS_ID ? params.data?.updatedDate || params.value : params.value;
+          if (!source) return "N/A";
+          const date = new Date(source);
+          if (isNaN(date.getTime())) return "N/A";
+          const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
+          const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
+          const year = date.getFullYear(); // Get year
+          const formattedDate = `${day}-${month}-${year}`; // Combine as dd-mm-yyyy
+          const formattedTime = date.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          });
+          return `${formattedDate} ${formattedTime}`;
+        },
+        // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      },
       {
         field: "currentPaymentStatus",
         headerName: "Payment Status",

@@ -320,6 +320,7 @@ export const API_ENDPOINTS = {
         GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
         GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
         GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+        GET_REFUND_TRACKING: `${RTC_API_BASE_URL}BusPassDashboard/GetRefundTransactionStatus`,
       },
        BUS_PASS_PAYMENT_TRANSACTION: {
         GET_BUS_PASS_PAYMENT_TRANSACTION: `${RTC_API_BASE_URL}RTCDashboard/GetSettlementReports`,
