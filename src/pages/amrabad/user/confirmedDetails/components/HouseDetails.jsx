@@ -22,7 +22,7 @@ const HouseDetails = ({ houses }) => {
   return (
     <div className="">
       <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-black flex items-center gap-2">
-        <PiHouseLine className="w-5 h-5 text-[#362D86]" />
+        <PiHouseLine className="w-5 h-5 text-[#304A3A]" />
         House Details:
       </h2>
       
@@ -35,7 +35,7 @@ const HouseDetails = ({ houses }) => {
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#362D86] text-white rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="w-8 h-8 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] rounded-full flex items-center justify-center text-sm font-bold">
                   {idx + 1}
                 </div>
                 <div>
@@ -62,7 +62,7 @@ const HouseDetails = ({ houses }) => {
 
             {/* Package Info */}
             <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-              <FaBox className="w-4 h-4 text-[#362D86]" />
+              <FaBox className="w-4 h-4 text-[#304A3A]" />
               <div>
                 <span className="text-xs text-gray-500">Package</span>
                 <div className="font-medium text-gray-900 text-sm">
@@ -76,7 +76,7 @@ const HouseDetails = ({ houses }) => {
               {/* Check-in */}
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <IoCalendarClearOutline className="w-4 h-4 text-blue-600" />
+                  <IoCalendarClearOutline className="w-4 h-4 text-[#304A3A]" />
                 </div>
                 <div className="flex-1">
                   <div className="text-xs text-gray-500 mb-1">Check-in</div>

@@ -45,8 +45,8 @@ export const downloadTicketAsPDF = async (filename = 'amrabad-ticket.pdf') => {
       logging: false,
       width: ticketElement.scrollWidth,
       height: ticketElement.scrollHeight,
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
+      windowWidth: ticketElement.scrollWidth,
+      windowHeight: ticketElement.scrollHeight
     });
 
     console.log('Canvas captured, creating PDF...');

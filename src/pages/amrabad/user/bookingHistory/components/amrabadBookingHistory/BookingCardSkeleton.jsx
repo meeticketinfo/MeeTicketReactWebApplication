@@ -2,7 +2,7 @@ import React from "react";
 
 const BookingCardSkeleton = () => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 animate-pulse">
+    <div className="bg-white border border-[#D0D7CE] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-3 sm:p-4 animate-pulse">
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Image Skeleton */}
         <div className="flex-shrink-0 flex justify-center lg:block mb-3 lg:mb-0">

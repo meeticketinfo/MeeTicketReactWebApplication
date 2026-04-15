@@ -36,9 +36,9 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
   /** ---------------- validation schema ---------------- */
   const updatePackageValidationSchema = Yup.object().shape({
     packageName: Yup.string().required("Package name is required"),
-    description: Yup.string()
-      .max(1000, "Max 1000 characters")
-      .required("Description is required"),
+    // description: Yup.string()
+    //   .max(1000, "Max 1000 characters")
+    //   .required("Description is required"),
     checkInTime: Yup.string().required("Check-in time is required"),
     // .matches(/^\d{2}:\d{2}$/, "Use HH:MM format"),
     checkOutTime: Yup.string()
@@ -52,22 +52,22 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
       //     return !value || !checkInTime || value > checkInTime;
       //   }
       // ),
-    termsConditions: Yup.string()
-      .max(1000, "Max 1000 characters")
-      .required("T&C are required"),
-    privacyPolicy: Yup.string().max(1000),
-    latitude: Yup.number()
-      .typeError("Latitude must be a number")
-      .required("Latitude is required")
-      .min(-90)
-      .max(90)
-      .nullable(),
-    longitude: Yup.number()
-      .typeError("Longitude must be a number")
-      .required("Longitude is required")
-      .min(-180)
-      .max(180)
-      .nullable(),
+    // termsConditions: Yup.string()
+    //   .max(1000, "Max 1000 characters")
+    //   .required("T&C are required"),
+    // privacyPolicy: Yup.string().max(1000),
+    // latitude: Yup.number()
+    //   .typeError("Latitude must be a number")
+    //   .required("Latitude is required")
+    //   .min(-90)
+    //   .max(90)
+    //   .nullable(),
+    // longitude: Yup.number()
+    //   .typeError("Longitude must be a number")
+    //   .required("Longitude is required")
+    //   .min(-180)
+    //   .max(180)
+    //   .nullable(),
     packageImages: Yup.array()
       .of(
         Yup.object().shape({
@@ -169,13 +169,14 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
       <div className="p-3">
         <Formik
           initialValues={initialValues}
-          validationSchema={updatePackageValidationSchema}
+           validationSchema={updatePackageValidationSchema}
           onSubmit={onSubmit}
           enableReinitialize
           validateOnChange={true}
           validateOnBlur={true}
         >
-          {({ values, setFieldValue, isSubmitting }) => {
+          {({ values, setFieldValue, isSubmitting ,errors}) => {
+            console.log("errors",errors)
             /* ---------- file input handler ---------- */
             const handleFileChange = async (e) => {
               const files = Array.from(e.target.files || []);
@@ -391,7 +392,7 @@ const UpdatePackage = ({ data, onUpdateSuccess }) => {
                     </label>
                     <Field
                       as="textarea"
-                      maxlength={1000}
+                      // maxlength={1000}
                       name="termsConditions"
                       rows={2}
                       className={`mt-1 block w-full px-2 py-1 border border-gray-200 rounded-md shadow-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}

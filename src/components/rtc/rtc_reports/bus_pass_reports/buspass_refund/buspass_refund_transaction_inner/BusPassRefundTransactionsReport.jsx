@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, createSearchParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import BusPassRefundTransactionsReportForm from "./BusPassRefundTransactionsReportForm";
 import AgGridTable from "../../../../../tables/AgGridTable";
@@ -23,6 +23,7 @@ const BusPassRefundTransactionsReport = () => {
         refundBusPassTransactionsInnerReport,
         refundTransactionsPagination,
         fetchBusPassRefundTransactionsInnerReport,
+        fetchBusPassRefundOrderId,
         fetchBusPassInitiateRefundOrderId,
         isInitiateRefund,
     } = useRtcRefundStore();
@@ -151,6 +152,46 @@ const BusPassRefundTransactionsReport = () => {
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
+         {
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          onClick={() => {
+            if (params.data.orderID) {
+              fetchBusPassRefundOrderId(params.data.orderID);
+            }
+          }}
+          to={{
+            pathname: "/bus-pass-user-transactions-Refund-tracker",
+            search: `?${createSearchParams({
+              orderId: params.data.orderID ?? "",
+              date: params.data.transactionDateandTime ?? "",
+              mobileNo: params.data.mobileNumber ?? "",
+              typeOfBusPass: params.data.typeofBusPass ?? "",
+              status: params.data.refundStatus ?? "",
+              amount: params.data.amount ?? "",
+              bookingId: params.data.bookingID ?? "",
+            }).toString()}`,
+          }}
+          state={{
+            orderId: params.data.orderID,
+            date: params.data.transactionDateandTime ,
+            mobileNo: params.data.mobileNumber,
+            typeOfBusPass: params.data.typeofBusPass,
+            status: params.data.refundStatus,
+            amount: params.data.amount,
+            bookingId: params.data.bookingID,
+            // backTitle: title(),
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
+    },
     ];
 
     const loadRefundTransactionsReport = (page = 0) => {

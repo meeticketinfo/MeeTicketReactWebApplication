@@ -12,9 +12,6 @@ import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
 
 // test
-// const API_BASE_URL =  "https://chh7gchr-7237.inc1.devtunnels.ms/api/"
-
-// test
 // const API_BASE_URL =  "https://l2vs2gb4-7169.inc1.devtunnels.ms//API/"
 
 const api = axios.create({

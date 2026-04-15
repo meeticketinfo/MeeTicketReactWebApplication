@@ -22,6 +22,9 @@ export const useRtcRefundStore = create((set) => ({
     isFetchBusPassRefundTransactions: false,
     BusPassRefundTransactions: [],
 
+  isFetchBusPassRefundTrackingReport: false,
+    refundBusPassRefundTrackingReport: [],
+
     isInitiateRefund: false,
     InitiateRefundByOrderIdData:[],
 
@@ -101,7 +104,28 @@ export const useRtcRefundStore = create((set) => ({
         }
     },      
 
+fetchBusPassRefundOrderId: async (orderID) =>{
+    set({ isFetchBusPassRefundTrackingReport : true});
 
+  try {
+            const url = API_ENDPOINTS.REPORTS.RTC_REPORTS.REFUND_TRANSACTIONS_REPORT.GET_REFUND_TRACKING;
+            const response = await apiService.get(url, { orderId: orderID });
+
+            set({
+                refundBusPassRefundTrackingReport: response.data?.data || [],
+            });
+            return { response: response };
+        } catch (error) {
+            set({
+                error: error.message,
+            });
+            throw error;
+        } finally {
+            set({
+                isFetchBusPassRefundTrackingReport: false,
+            });
+        }
+    },
 
     fetchBusPassInitiateRefundOrderId: async (orderID) => {
         set({ isInitiateRefund: true });

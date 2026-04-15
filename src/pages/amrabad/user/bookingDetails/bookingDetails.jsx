@@ -13,6 +13,8 @@ import { useTransactionHandler } from "./components/TransactionHandler";
 
 const AmarabadBookingDetails = () => {
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
+    const PackageId=cartItems.data[0]?.packageId;
+   
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
     const userLocalStorage = JSON.parse(localStorage.getItem("amrabadlogin-store"));
@@ -31,9 +33,10 @@ const AmarabadBookingDetails = () => {
     }, []);
 
     const handleSubmit = async (formValues, { setSubmitting }) => {
+      
         try {
             // Step 1: Initiate Transaction
-            const transactionResponse = await handleTransaction(formValues);
+            const transactionResponse = await handleTransaction(formValues,PackageId);
             
             // Load Paytm script and initiate payment
             loadPaytmScript(transactionResponse?.data, (paymentData) => {
@@ -67,7 +70,7 @@ const AmarabadBookingDetails = () => {
         <UserLayout>
             <div className="container mx-auto py-4 sm:py-6 md:py-8 px-3">
                 <div className="">
-                    <div className="bg-white rounded-lg p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
+                    <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-4 sm:p-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
                         {/* Left: Billing/Guest Details Form */}
                         <BookingForm onSubmit={handleSubmit} />
 

@@ -5,8 +5,9 @@ export const useTransactionHandler = (usePaymentStore, useCartStore, userDetails
     const { initiateTransaction, addNewBookingDetails, orderStatusCall } = usePaymentStore;
     const { cartItems } = useCartStore;
 
-    const createTransactionData = (formValues) => ({
+    const createTransactionData = (formValues, PackageId) => ({
         amount: cartItems?.grandTotal,
+        PackageId:PackageId,
         customerId: userDetails?.UserId,
         isIOS: false,
         paymentType: "UPI",
@@ -58,10 +59,10 @@ export const useTransactionHandler = (usePaymentStore, useCartStore, userDetails
         bookingItems: mapCartItemsForBookingDetails(cartItems)
     });
 
-    const handleTransaction = async (formValues) => {
+    const handleTransaction = async (formValues,PackageId) => {
         try {
             // Step 1: Initiate Transaction
-            const transactionData = createTransactionData(formValues);
+            const transactionData = createTransactionData(formValues,PackageId);
             const transactionResponse = await initiateTransaction(transactionData);
 
             return transactionResponse;

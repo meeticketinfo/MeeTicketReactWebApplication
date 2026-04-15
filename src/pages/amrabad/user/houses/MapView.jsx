@@ -332,7 +332,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
     return (
       <div className="w-full h-[80vh] rounded-2xl bg-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#362D86] mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#304A3A] mb-4"></div>
           <p className="text-gray-600 font-medium">Loading houses data...</p>
         </div>
       </div>
@@ -367,7 +367,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-20 rounded-2xl">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#362D86] mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#304A3A] mb-4"></div>
             <p className="text-gray-600 font-medium">Loading map...</p>
           </div>
         </div>
@@ -455,13 +455,13 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
                         )}
                       </h4>
                       <div className="flex items-center gap-1 mb-0.5">
-                        <p className="text-sm font-bold text-[#362D86] leading-none">₹{house?.tariffPerDay?.toLocaleString()}</p>
+                        <p className="text-sm font-bold text-[#304A3A] leading-none">₹{house?.tariffPerDay?.toLocaleString()}</p>
                         <span className="text-[10px] text-gray-500 ml-1">/ 2 Guests</span>
                       </div>
                       <Link
                         to={`/amrabad-resort/book-now/${house.packageId}/${house.roomId}`}
                         onClick={(e) => handleBookNowClick(house, e)}
-                        className="inline-block bg-[#362D86] text-white px-4 py-0.5 rounded text-xs font-medium hover:bg-indigo-800 transition"
+                        className="inline-block bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-4 py-0.5 rounded text-xs font-medium transition"
                         // onClick={(e) => e.stopPropagation()}
                       >
                         Book

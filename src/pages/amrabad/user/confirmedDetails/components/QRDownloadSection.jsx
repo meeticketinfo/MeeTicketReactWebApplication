@@ -7,7 +7,7 @@ const QRDownloadSection = ({ bookingId, onCancelTicket, GetTicketViewDetails }) 
     <div className="flex flex-col gap-4 sm:gap-6 min-w-[200px] sm:min-w-[220px]">
       <div className="p-4 sm:p-6 flex flex-col items-center">
         <div className="text-center ">
-          <h2 className="text-[#348E20] font-extrabold text-xl sm:text-2xl">
+          <h2 className="text-[#304A3A] font-extrabold text-xl sm:text-2xl">
             Your Ticket
           </h2>
           <img
@@ -20,7 +20,7 @@ const QRDownloadSection = ({ bookingId, onCancelTicket, GetTicketViewDetails }) 
           Scan to view booking
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full">
-          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${bookingId}?download=true`} className="bg-[#362D86] hover:bg-indigo-800 text-white px-3 sm:px-4 py-2 rounded flex items-center justify-center gap-2 text-xs sm:text-sm">
+          <Link target="_blank" to={`/amrabad-resort/ticket-view-details/${bookingId}?download=true`} className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] hover:opacity-90 text-[#FDFAF7] px-3 sm:px-4 py-2 rounded flex items-center justify-center gap-2 text-xs sm:text-sm">
             <FaDownload />
             Download Ticket
           </Link>
