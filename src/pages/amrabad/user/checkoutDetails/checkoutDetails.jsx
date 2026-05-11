@@ -116,9 +116,9 @@ const CheckoutDetails = () => {
           {/* Left: House & Room Details */}
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center">
-              <Link to={`/amrabad-resort`} className="text-[#304A3A] text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
+              {/* <Link to={`/amrabad-resort`} className="text-[#304A3A] text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
                 + Add More Packages
-              </Link>
+              </Link> */}
               <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 flex items-center whitespace-nowrap">
                 Clear Cart
                 {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
