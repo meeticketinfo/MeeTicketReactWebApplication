@@ -3,17 +3,15 @@ import useAuthStore from "../store/authStore";
 import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 // dev
 
-<<<<<<< HEAD
+
 //  const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
-=======
- const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/rtcintercity/api/";
->>>>>>> 63a4c0183c11b5c4ff424e4cfbe08827c749d5a6
+
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
-// const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
+const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
 
 // test
 // const API_BASE_URL =  "https://l2vs2gb4-7169.inc1.devtunnels.ms//API/"

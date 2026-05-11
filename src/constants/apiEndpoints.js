@@ -40,7 +40,8 @@ export const METRO_API_Plain_BASE_URL = "https://meeticket.telangana.gov.in/metr
 export const GRIEVANCE_API_BASE_URL = "https://meeticket.telangana.gov.in/grievanceapi/v1/";
 
 //  TOURSIM DEV
-export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
+export const TOURISM_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
 
 //  TOURSIM UAT
 // export const TOURISM_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/webservices/v1/";
@@ -67,7 +68,6 @@ export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassap
 // RTC Intercity Prod
 export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
-
 // RTC BUS PASS DEV
 // export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
 
@@ -79,7 +79,8 @@ export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtc
 
 
 // Amarabad dev
-export const AMRABAD_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+export const AMRABAD_API_BASE_URL =
+  "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 /// test
 // export const API_BASE_URL =  "https://chh7gchr-7237.inc1.devtunnels.ms/api/"
@@ -110,16 +111,16 @@ export const API_ENDPOINTS = {
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
       GET_NODAL_OFFICER_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
     },
-      INTERCITY:{
-         ADD_INTERCITY_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/CreateRTCCity`,
-      },
+    INTERCITY: {
+      ADD_INTERCITY_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/CreateRTCCity`,
+    },
     PARK_ADMIN: {
       GET_PARK_ADMINS: `${API_BASE_URL}Master/GetAllUsersByRoleId?RoleId=901a561a-2c54-4f1f-9a40-5aa8b71e2e71`,
     },
     DEPARTMENT_ADMIN: {
       GET_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/GetDepartmentAdmin`,
-      ADD_NEW_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/AddDepartmentAdmin`,
-      UPDATE_DEPARTMENT_ADMIN:`${API_BASE_URL}Master/UpdateDepartmentAdmin`,
+      ADD_NEW_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/AddDepartmentAdmin`,
+      UPDATE_DEPARTMENT_ADMIN: `${API_BASE_URL}Master/UpdateDepartmentAdmin`,
     },
     FACILITY: {
       GET_FACILITIES: `v2/Master/GetAllFacilities`,
@@ -173,7 +174,6 @@ export const API_ENDPOINTS = {
     WALKERS_PASS: {
       ADD_NEW_WALKERS_PASS: `${API_BASE_URL}Master/AddWalkerPassType`,
       UPDATE_WALKERS_PASS: `${API_BASE_URL}Master/UpdateWalkerPassType`,
-      
     },
     BANNER: {
       GET_BANNERS: `${API_BASE_URL}Advertisement/GetAllBanners`,
@@ -182,9 +182,7 @@ export const API_ENDPOINTS = {
       DELETE_BANNER: `${API_BASE_URL}Advertisement/DeleteBanner`,
     },
     ANDROID_IOS: {
-     
       UPDATE_ANDROID_IOS_COUNT: `${API_BASE_URL}v2/DashBoard/AddNewAppDownloadDetails`,
-      
     },
     SCANNED_USER: {
       GET_SCANNED_USERS: `Master/GetAllScanUsers`,
@@ -227,21 +225,21 @@ export const API_ENDPOINTS = {
       ADD_NEW_RECURRING_HOLIDAY: `${API_BASE_URL}Master/AddRecurringHoliday`,
       GET_RECURRING_HOLIDAYS: `${API_BASE_URL}Master/GetAllRecurringHolidays`,
     },
-      FACILITY_HOLIDAY:{
-        ADD_FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/AddFacilityAvaliablityBookingDate`,
-        UPDATE_FACILITY_HOLIDAY:`${API_BASE_URL}VolunteerGuide/UpdateFacilityAvaliablityBookingDate`,
-        GET__FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/GetFacilityAvaliablityBookingDate`,
-      },
-      GROUP_DETAILS:{
-        ADD_GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/AddFacilityGroupDetails`,
-        UPDATE_GROUP_DETAILS:`${API_BASE_URL}VolunteerGuide/UpdateFacilityGroupDetails`,
-        GET__GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/GetFacilityGroupDetails`,
-      },
-      LANGUAGE:{
-        ADD_LANGUAGE: `${API_BASE_URL}VolunteerGuide/AddFacilityLanguage`,
-        UPDATE_LANGUAGE:`${API_BASE_URL}VolunteerGuide/UpdateFacilityLanguage`,
-        GET__LANGUAGE: `${API_BASE_URL}VolunteerGuide/GetFacilityLanguages`,
-      },
+    FACILITY_HOLIDAY: {
+      ADD_FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/AddFacilityAvaliablityBookingDate`,
+      UPDATE_FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/UpdateFacilityAvaliablityBookingDate`,
+      GET__FACILITY_HOLIDAY: `${API_BASE_URL}VolunteerGuide/GetFacilityAvaliablityBookingDate`,
+    },
+    GROUP_DETAILS: {
+      ADD_GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/AddFacilityGroupDetails`,
+      UPDATE_GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/UpdateFacilityGroupDetails`,
+      GET__GROUP_DETAILS: `${API_BASE_URL}VolunteerGuide/GetFacilityGroupDetails`,
+    },
+    LANGUAGE: {
+      ADD_LANGUAGE: `${API_BASE_URL}VolunteerGuide/AddFacilityLanguage`,
+      UPDATE_LANGUAGE: `${API_BASE_URL}VolunteerGuide/UpdateFacilityLanguage`,
+      GET__LANGUAGE: `${API_BASE_URL}VolunteerGuide/GetFacilityLanguages`,
+    },
     MY_PROFILE: {
       GET_PROFILES: `${API_BASE_URL}AccountProfile/GetAccountProfileDetails`,
     },
@@ -262,8 +260,7 @@ export const API_ENDPOINTS = {
       GET_LOCATION_ADMINS: `${API_BASE_URL}Master/GetAllEntityAdminsForNodalOfficer`,
       UPDATE_NODAL_OFFICERS_DETAILS: `${API_BASE_URL}NodalOfficer/UpdateNodalOfficer`,
       ADD_NEW_NODAL_OFFICERS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
-      GET_NODAL_OFFICERS_DASHBOARD_COUNTS:`${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
-
+      GET_NODAL_OFFICERS_DASHBOARD_COUNTS: `${API_BASE_URL}NodalOfficer/AddNewNodalOfficer`,
     },
     BUS_PASS: {
       GET_ALL_BUS_PASSES: `${RTC_API_BASE_URL}BusPassDashboard/GetAllBusPasses`,
@@ -271,7 +268,7 @@ export const API_ENDPOINTS = {
   },
   REPORTS: {
     BOOKING_REPORTS: {
-      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`, 
+      GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
@@ -323,9 +320,8 @@ export const API_ENDPOINTS = {
         GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
         GET_REFUND_TRACKING: `${RTC_API_BASE_URL}BusPassDashboard/GetRefundTransactionStatus`,
       },
-       BUS_PASS_PAYMENT_TRANSACTION: {
+      BUS_PASS_PAYMENT_TRANSACTION: {
         GET_BUS_PASS_PAYMENT_TRANSACTION: `${RTC_API_BASE_URL}RTCDashboard/GetSettlementReports`,
-    
       },
       INTERCITY_SETTLEMENT_TRANSACTIONS: {
         GET_INTERCITY_SETTLEMENT_TRANSACTIONS: `${RTC_INTERCITY_API_BASE_URL}Reports/GetTransactionSettlementSummary`,
@@ -389,10 +385,6 @@ export const API_ENDPOINTS = {
     USER_REPORTS: {
       GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
       GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
-    },
-    USER_REPORTS: {
-      GET_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentSummaryReport`,
-      GET_STATUS_TRANSACTIONS_REPORTS: `${API_BASE_URL}UserTransactions/paymentDetailedReport`,
       GET_USER_REPORT: `${API_BASE_URL}UserTransactions/GetAllUsers`,
       GET_USER_DETAILED_REPORT: `${API_BASE_URL}UserTransactions/GetUserTransactionReports`,
       GET_REFUND_TRANSACTIONS: `${API_BASE_URL}ParkReport/GetParkRefundSummaryFiltered`,
@@ -404,7 +396,7 @@ export const API_ENDPOINTS = {
     FAILED_TRANSACTIONS: {
       GET_FAILURE_INNER_REPORTS: `${API_BASE_URL}v3/AllPaymentTransactionAudit/GetFailureDashboardInnerReport`,
     },
-     // Walkers pass report endpoints
+    // Walkers pass report endpoints
     WALKERS_PASS_REPORT: {
       GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
     },
@@ -430,10 +422,10 @@ export const API_ENDPOINTS = {
       GET_ENTITY_WISE_COUNTS: `${API_BASE_URL}v2/DashBoard/GetEntityWiseTotalBookings`,
     },
     GET_ZOO_PARK_DASHBOARD_COUNTS: `${API_BASE_URL}ParkReport/GetDashboardZooPark`,
-     GET_NODAL_OFFICERS_DASHBOARD_COUNTS:`${API_BASE_URL}NodalOfficer/GetNodalOfficerParkDashboard`,
+    GET_NODAL_OFFICERS_DASHBOARD_COUNTS: `${API_BASE_URL}NodalOfficer/GetNodalOfficerParkDashboard`,
     GET_ZOO_PARK_DASHBOARD_COUNTS_TICKET_WISE: `${API_BASE_URL}ParkReport/GetZooParkCounts`,
     GET_SALARJUNG_MUSEUM_DASHBOARD_COUNTS: `${API_BASE_URL}DashBoard/GetSalarjungMuseumDashBoardCount`,
-  GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,
+    GET_WALKER_PASS_DASHBOARD: `${API_BASE_URL}WalkersPass/WalkerpassDashboard`,
   },
   RTC_DASHBOARD: {
     GET_OVER_ALL: `${RTC_API_BASE_URL}BusPassDashboard/GetAdminDashboardReports`,
@@ -477,7 +469,7 @@ export const API_ENDPOINTS = {
       //refund transaction report
       GET_REFUND_TRANSACTION_DASHBOARD: `${AMRABAD_API_BASE_URL}Reports/RefundTransactionsDashboardReport`,
       GET_REFUND_TRANSACTION_REPORT: `${AMRABAD_API_BASE_URL}Reports/RefundTransactionsInnerReport`,
-      GET_INITIATE_REFUND: `${AMRABAD_API_BASE_URL}v1/PaymentTransaction/request`,
+
       AMRABAD_REGENERATE_TICKET: `${AMRABAD_API_BASE_URL}WebBooking/RegenerateTicket`,
       AMRABAD_BOOKINGS: `${AMRABAD_API_BASE_URL}Reports/BookingsReport`,
       AMRABAD_HOUSE_WISE_REPORT: `${AMRABAD_API_BASE_URL}Reports/HousewiseReport`,
