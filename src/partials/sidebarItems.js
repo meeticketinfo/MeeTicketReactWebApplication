@@ -432,7 +432,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/bus-pass-refund-report",
       },
-
+      {
+        title: "Daily & Monthly Statement",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-sales-statement-report",
+      },
       {
         title: "Settlement Summary Report",
         icon: RiDashboard3Fill,
