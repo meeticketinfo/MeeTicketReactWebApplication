@@ -109,7 +109,7 @@ export const parkAdminPermissions = [
   // "Grievance-individual",
   // "pos-admin",
   // "facility-holidays",
-  // "pos-reports",
+  "pos-reports",
   // "add-language",
   // "group-details",
 ];

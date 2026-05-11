@@ -6,6 +6,7 @@ import Breadcrumb from "../../../../../Breadcrumb";
 import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
 import { formatDateTime } from "../../../../../../utils/Helper";
 import { useRtcRefundStore } from "../../../../../../store/rtc/RtcRefundTransactionStore";
+import { ToastContainer } from "react-toastify";
 
 const BusPassUserTransactionsRefundTracker = () => {
   const location = useLocation();
@@ -44,7 +45,7 @@ const BusPassUserTransactionsRefundTracker = () => {
       minWidth: 190,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
-        params.value ? formatDateTime(params.value) : "N/A",
+        params.value ? params.requestTimestamp : "N/A",
     },
     {
       field: "responseTimestamp",
@@ -52,7 +53,7 @@ const BusPassUserTransactionsRefundTracker = () => {
       minWidth: 190,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
-        params.value ? formatDateTime(params.value) : "N/A",
+        params.value ? params.responseTimestamp : "N/A",
     },
     {
       field: "transactionStatus",
@@ -127,6 +128,7 @@ const BusPassUserTransactionsRefundTracker = () => {
 
   return (
     <AdminLayout>
+      <ToastContainer />
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <Breadcrumb customItems={breadcrumbItems} className="mb-4" />
 

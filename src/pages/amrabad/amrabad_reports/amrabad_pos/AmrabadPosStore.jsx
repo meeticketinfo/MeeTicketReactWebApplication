@@ -13,13 +13,15 @@ export const useAmrabadPosStore = create((set) => ({
   fetchAmrabadPosReportData: async (payload) => {
     set({ isFetchAmrabadPosReportData: true });
     try {
-      const params = `fromDate=${payload.fromDate}&toDate=${payload.toDate}&adminMobile=${payload.adminMobileNumber}&vehicleTypeName=${payload.ticketType}&paymentType=${payload.paymentMode}&transactionStatus=${payload.transactionStatus}&vehicleNumber=${payload.vehicleNumber}&userMobile=${payload.userMobileNumber}&userName=${payload.userName}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
+      // const params = `ParkId=${payload.ParkId}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&PhoneNumber=${payload.adminMobileNumber}&vehicleTypeName=${payload.ticketType}&paymentType=${payload.paymentMode}&PaymentStatus=${payload.transactionStatus}&vehicleNumber=${payload.vehicleNumber}&userMobile=${payload.userMobileNumber}&userName=${payload.userName}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
+      const params = `ParkId=${payload.ParkId}&FromDate=${payload.fromDate}&ToDate=${payload.toDate}&PhoneNumber=${payload.adminMobileNumber}&paymentType=${payload.paymentMode}&PaymentStatus=${payload.transactionStatus}&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
       const method = "get";
       const response = await apiService[method](
         `${API_ENDPOINTS.AMRABAD.REPORTS.GET_POS_REPORT}?${params}`
       );
+     
       set({
-        AmrabadPosReportData: response.data,
+        AmrabadPosReportData: response.data.data,
       });
       return { response: response.data };
     } catch (error) {

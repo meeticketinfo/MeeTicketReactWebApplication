@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import apiService from "../../services/apiService";
+import { toast } from "react-toastify";
 
 export const useRtcRefundStore = create((set) => ({
     allBusPassUserReports: [],
@@ -116,13 +117,16 @@ fetchBusPassRefundOrderId: async (orderID) =>{
             });
             return { response: response };
         } catch (error) {
+            toast.error("Failed to fetch refund tracking report. Please try again.");
             set({
                 error: error.message,
+                refundBusPassRefundTrackingReport:[]
             });
             throw error;
         } finally {
             set({
                 isFetchBusPassRefundTrackingReport: false,
+
             });
         }
     },

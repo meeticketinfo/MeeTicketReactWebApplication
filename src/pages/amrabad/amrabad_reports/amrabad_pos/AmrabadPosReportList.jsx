@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AmrabadPosReportForm from "./AmrabadPosReportForm";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { useAmrabadPosStore } from "./AmrabadPosStore";
+import useAuthStore from "../../../../store/authStore";
 // import { getCurrentDate } from "../../../../utils/TypographyHelper";
 
 const getCurrentDate = () => {
@@ -31,14 +32,17 @@ const AmrabadPosReportList = () => {
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
+   const {  decodedTokenData } = useAuthStore();
+  const parkId = decodedTokenData?.data.ParkId;
   const {
     fetchAmrabadPosReportData,
     AmrabadPosReportData,
     isFetchAmrabadPosReportData
   } = useAmrabadPosStore();
-  // console.log("AmrabadPosReportData", AmrabadPosReportData);
+  console.log("AmrabadPosReportData", AmrabadPosReportData);
   useEffect(() => {
     fetchAmrabadPosReportData({
+      ParkId: parkId || "",
       fromDate: savedFilters?.fromDate ?? getCurrentDateAtMidnight(),
       toDate: savedFilters?.toDate ?? getCurrentDate(),
       adminMobileNumber: savedFilters?.adminMobileNumber
@@ -75,14 +79,14 @@ const AmrabadPosReportList = () => {
       },
     },
     {
-      field: "posTransactionID",
+      field: "transactionId",
       headerName: "POS Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "transactionDateTime",
+      field: "transactionDate",
       headerName: "Transaction Date & Time",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -102,92 +106,112 @@ const AmrabadPosReportList = () => {
     // ------------------
 
     {
-      field: "posMachineID",
-      headerName: "POS Machine ID",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "viewPointNames",
-      headerName: "View Point Name",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    
-    {
-      field: "location",
-      headerName: "Location",
-      maxWidth: 120,
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "adminLoginMobile",
-      headerName: "Admin/Operator Login Mobile number",
+      field: "orderId",
+      headerName: "Order ID",
 
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    {
-      field: "ticketType",
-      headerName: "Ticket Type",
-      maxWidth: 170,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "ticketNumber",
-      headerName: "Ticket Number(Booking Reference ID)",
+     
+     
+      {
+      field: "mobileNumber",
+      headerName: "Mobile number",
+
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
-    // -------------------
+     {
+      field: "paymentMode",
+      headerName: "Payment Mode",
 
-    {
-      field: "totalAmount",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+     {
+      field: "totalAmt",
       headerName: "Total Amount",
-      // flex: 1,
-      maxWidth: 130,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
-    },
 
-    {
-      field: "paymentMethod",
-      headerName: "Payment Method",
-      maxWidth: 150,
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "transactionStatus",
-      headerName: "Transaction Status",
-      maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
+   
+   
+    {
+  field: "resultStatus",
+  headerName: "Transaction Status",
+  headerClass: "text-blue-v2",
 
-    {
-      field: "customerVehicleNumber",
-      headerName: "Customer Vehicle Number",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "customerMobileNumber",
-      headerName: "Customer Mobile Number",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
+  cellRenderer: (params) => {
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 shadow`}
+      >
+        {params.value}
+      </span>
+    );
+  },
+},
+     // -------------------
+    // {
+    //   field: "ticketType",
+    //   headerName: "Ticket Type",
+    //   maxWidth: 170,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
+    // {
+    //   field: "ticketNumber",
+    //   headerName: "Ticket Number(Booking Reference ID)",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
+
+    // {
+    //   field: "totalAmount",
+    //   headerName: "Total Amount",
+    //   // flex: 1,
+    //   maxWidth: 130,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
+    // },
+
+    // {
+    //   field: "paymentMethod",
+    //   headerName: "Payment Method",
+    //   maxWidth: 150,
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "N/A",
+    // },
+    // {
+    //   field: "transactionStatus",
+    //   headerName: "Transaction Status",
+    //   maxWidth: 150,
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
+
+    // {
+    //   field: "customerVehicleNumber",
+    //   headerName: "Customer Vehicle Number",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
+    // {
+    //   field: "customerMobileNumber",
+    //   headerName: "Customer Mobile Number",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
   ];
   return (
     <div>

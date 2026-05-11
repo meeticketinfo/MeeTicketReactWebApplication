@@ -3,21 +3,21 @@ import { Formik, Form, Field } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../utils/TypographyHelper";
 import { useAmrabadPosStore } from "./AmrabadPosStore";
+import useAuthStore from "../../../../store/authStore";
 
 const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const savedFilters = JSON.parse(
-    localStorage.getItem("amrabad-pos-report-filters")
+    localStorage.getItem("amrabad-pos-report-filters"),
   );
   const {
     fetchAmrabadPosReportData,
     fetchAmrabadPosVehicleTypesData,
-    AmrabadPosVehicleTypesData,
+
     fetchAmrabadPosViewPointsData,
-    AmrabadPosViewPointsData,
-    isFetchAmrabadPosViewPointsData,
   } = useAmrabadPosStore();
+  const { decodedTokenData } = useAuthStore();
+  const parkId = decodedTokenData?.data.ParkId;
   useEffect(() => {
-  
     fetchAmrabadPosVehicleTypesData();
     fetchAmrabadPosViewPointsData();
   }, []);
@@ -39,6 +39,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   };
 
   const initialValues = {
+    ParkId: parkId || "",
     fromDate: savedFilters?.fromDate || getCurrentDateAtMidnight(),
     toDate: savedFilters?.toDate || getCurrentDateAtEndOfDay(),
     adminMobileNumber: savedFilters?.adminMobileNumber
@@ -117,7 +118,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
             />
           </div>
           {/* Transaction Status */}
-          <div>
+          {/* <div>
             <label className="block text-xs font-medium text-gray-700">
               View Point Name
             </label>
@@ -134,18 +135,18 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 <option value={item.viewPointName}>{item.viewPointName}</option>
               ))}
             </Field>
-          </div>
+          </div> */}
           {/* mobile no */}
           <div>
             <label className="block text-xs font-medium text-gray-700">
-              Admin login Mobile Number
+              Mobile Number
             </label>
             <Field
               type="text"
               name="adminMobileNumber"
               maxLength="10"
               className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              placeholder="Enter Admin mobile Num..."
+              placeholder="Enter Mobile Number"
               onKeyPress={(e) => {
                 if (!/^\d$/.test(e.key)) e.preventDefault();
               }}
@@ -153,7 +154,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
           </div>
 
           {/* Ticket Type */}
-          <div>
+          {/* <div>
             <label className="block text-xs font-medium text-gray-700">
               Ticket Type(2 or 4 wheeler etc..)
             </label>
@@ -169,7 +170,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 </option>
               ))}
             </Field>
-          </div>
+          </div> */}
           {/* payment mode */}
           <div>
             <label className="block text-xs font-medium text-gray-700">
@@ -204,7 +205,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
             </Field>
           </div>
           {/* Vehicle Number */}
-          <div>
+          {/* <div>
             <label className="block text-xs font-medium text-gray-700">
               Vehicle Number
             </label>
@@ -214,9 +215,9 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               placeholder="Enter Vehicle Number"
             />
-          </div>
+          </div> */}
           {/* User Mobile Number */}
-          <div>
+          {/* <div>
             <label className="block text-xs font-medium text-gray-700">
               User Mobile Number
             </label>
@@ -230,7 +231,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 if (!/^\d$/.test(e.key)) e.preventDefault();
               }}
             />
-          </div>
+          </div> */}
 
           {/* Optional fields like Department/Location removed to avoid undefined data sources */}
           {/* submit */}
@@ -249,6 +250,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
               onClick={() => {
                 localStorage.removeItem("amrabad-pos-report-filters");
                 setValues({
+                  ParkId: parkId || "",
                   fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDateAtEndOfDay(),
                   userName: "",
@@ -260,6 +262,7 @@ const AmrabadPosReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                   ticketType: "",
                 });
                 fetchAmrabadPosReportData({
+                  ParkId: parkId || "",
                   fromDate: getCurrentDateAtMidnight(),
                   toDate: getCurrentDateAtEndOfDay(),
                   userName: "",
