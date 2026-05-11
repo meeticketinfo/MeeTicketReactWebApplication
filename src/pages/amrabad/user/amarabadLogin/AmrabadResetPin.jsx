@@ -61,12 +61,12 @@ const AmrabadResetPin = () => {
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
-          <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
+          <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(48,74,58,0.08)] p-8 w-full mb-8 ">
             <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
-              <img src={Lock} alt="Lock" className="" />
+              <img src={Lock} alt="Lock" className="block filter-[brightness(0)_saturate(100%)_invert(18%)_sepia(25%)_saturate(1500%)_hue-rotate(115deg)_brightness(90%)_contrast(90%)]" />
             </div>
             <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
-              <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
+              <h1 className="text-3xl font-extrabold text-center mb-7 text-[#304A3A]">
                 RESET PIN
               </h1>
 
@@ -79,7 +79,7 @@ const AmrabadResetPin = () => {
                   <Form>
                     <div className="flex flex-col gap-4 mb-6">
                       <div className="">
-                        <label className="block text-sm mb-1">
+                        <label className="block text-sm mb-1 text-[#304A3A] font-medium">
                           4-Digit Pin
                         </label>
                         <div className="relative">
@@ -88,18 +88,18 @@ const AmrabadResetPin = () => {
                             placeholder="Enter your 4-digit pin"
                             type={showPin ? "text" : "password"}
                             maxLength={4}
-                            className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                            className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                               touched.pin &&
                               !errors.pin &&
                               values.pin.length === 4
-                                ? "border-green-500 focus:border-green-500"
+                                ? "border-[#304A3A] focus:border-[#304A3A]"
                                 : ""
                             }`}
                           />
                           {touched.pin &&
                             !errors.pin &&
                             values.pin.length === 4 && (
-                              <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                              <FaCheckCircle className="text-[#304A3A] absolute right-8 top-1/2 -translate-y-1/2" />
                             )}
                           <span className="absolute inset-y-0 right-3 flex items-center">
                             <button
@@ -117,7 +117,7 @@ const AmrabadResetPin = () => {
                         />
                       </div>
                       <div className="">
-                        <label className="block text-sm mb-1">
+                        <label className="block text-sm mb-1 text-[#304A3A] font-medium">
                           Confirm 4-Digit Pin
                         </label>
                         <div className="relative">
@@ -126,11 +126,11 @@ const AmrabadResetPin = () => {
                             placeholder="Confirm your 4-digit pin"
                             type={showConfirmPin ? "text" : "password"}
                             maxLength={4}
-                            className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                            className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                               touched.confirmPin &&
                               !errors.confirmPin &&
                               values.confirmPin.length === 4
-                                ? "border-green-500 focus:border-green-500"
+                                ? "border-[#304A3A] focus:border-[#304A3A]"
                                 : ""
                             }`}
                           />
@@ -145,7 +145,7 @@ const AmrabadResetPin = () => {
                           {touched.confirmPin &&
                             !errors.confirmPin &&
                             values.confirmPin.length === 4 && (
-                              <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                              <FaCheckCircle className="text-[#304A3A] absolute right-8 top-1/2 -translate-y-1/2" />
                             )}
                         </div>
                         <ErrorMessage
@@ -157,7 +157,8 @@ const AmrabadResetPin = () => {
                     </div>
                     <button
                       type="submit"
-                      className="block max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
+                      disabled={isResetPinLoading}
+                      className={`block max-w-[180px] mx-auto bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] font-bold py-3 rounded-lg text-lg w-full hover:opacity-90 transition ${isResetPinLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       {isResetPinLoading ? "Submitting..." : "Submit"}
                     </button>
@@ -165,9 +166,9 @@ const AmrabadResetPin = () => {
                 )}
               </Formik>
             </div>
-            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
+            {/* <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
               <img src={Logo} alt="MeeTicket Logo" className="w-56" />
-            </div>
+            </div> */}
           </div>
         </div>
       </UserLayout>

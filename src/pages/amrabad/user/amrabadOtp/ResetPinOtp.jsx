@@ -103,12 +103,12 @@ const ResetPinOtp = () => {
         <div className="text-sm text-[#888888] text-right py-3">
           <span className="text-red-500">*</span> Indicates mandatory fields
         </div>
-        <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8">
+        <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(48,74,58,0.08)] p-8 w-full mb-8">
           <div className="flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:flex">
-            <img src={Lock} alt="Lock" />
+            <img src={Lock} alt="Lock" className="block filter-[brightness(0)_saturate(100%)_invert(18%)_sepia(25%)_saturate(1500%)_hue-rotate(115deg)_brightness(90%)_contrast(90%)]" />
           </div>
           <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto">
-            <h1 className="text-3xl font-extrabold text-center mb-8 text-black">
+            <h1 className="text-3xl font-extrabold text-center mb-8 text-[#304A3A]">
               Enter OTP
             </h1>
 
@@ -145,7 +145,7 @@ const ResetPinOtp = () => {
                         }
                         onKeyDown={(e) => handleKeyDown(e, index, values)}
                         ref={(el) => (inputRefs.current[index] = el)}
-                        className={`  rounded-md border border-none w-10 md:w-12 h-10 md:h-12 bg-[#EEEEEE] backdrop-blur-sm py-2 px-3 text-gray-700  focus:outline-none focus:shadow-outline ${
+                        className={`  rounded-md border border-none w-10 md:w-12 h-10 md:h-12 bg-[#EDEBE1] backdrop-blur-sm py-2 px-3 text-[#394D48] focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                           errors.otp && touched.otp ? "border-red-500" : ""
                         }`}
                       />
@@ -166,7 +166,7 @@ const ResetPinOtp = () => {
                     <span
                       className={`clr_link ${
                         canResend
-                          ? "cursor-pointer text-blue-v1 underline font-bold"
+                          ? "cursor-pointer text-[#304A3A] underline font-bold"
                           : "text-gray-900 opacity-40"
                       }`}
                       onClick={() => {
@@ -186,7 +186,8 @@ const ResetPinOtp = () => {
 
                   <button
                     type="submit"
-                    className="block mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full mt-8"
+                    disabled={isForgetOtpRequestLoading}
+                    className={`block mx-auto bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] font-bold py-3 rounded-lg text-lg w-full mt-8 hover:opacity-90 transition ${isForgetOtpRequestLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {isForgetOtpRequestLoading ? "Submitting..." : "VERIFY"}
                   </button>

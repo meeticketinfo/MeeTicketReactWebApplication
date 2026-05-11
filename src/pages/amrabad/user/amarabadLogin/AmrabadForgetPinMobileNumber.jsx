@@ -45,15 +45,15 @@ const AmrabadForgetPinMobileNumber = () => {
           <div className="text-sm text-[#888888] text-right py-3">
             <span className="text-red-500">*</span> Indicates mandatory fields
           </div>
-          <div className="relative bg-white rounded-xl border border-[#CCCCCC] p-8 w-full mb-8 ">
-            <div className="flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2 hidden md:block">
-              <img src={Lock} alt="Lock" className="" />
+          <div className="relative bg-white rounded-xl border border-[#C8BFB2] shadow-[0_4px_20px_rgba(48,74,58,0.08)] p-8 w-full mb-8 ">
+            <div className="hidden md:flex flex-col items-center justify-center absolute top-1/2 left-[5%] -translate-y-1/2">
+              <img src={Lock} alt="Lock" className="block filter-[brightness(0)_saturate(100%)_invert(18%)_sepia(25%)_saturate(1500%)_hue-rotate(115deg)_brightness(90%)_contrast(90%)]" />
             </div>
             <div className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto relative z-10">
-              <h1 className="text-3xl font-extrabold text-center mb-7 text-black">
+              <h1 className="text-3xl font-extrabold text-center mb-7 text-[#304A3A]">
                 Forget PIN?
               </h1>
-              <p className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto text-xs font-medium mb-12 text-center">
+              <p className="flex-1 flex flex-col justify-center max-w-[350px] mx-auto text-xs font-medium mb-12 text-center text-[#394D48]">
                 Please enter the mobile number associated with the account. 
                 We will send you 6-digit OTP to change your PIN number.
               </p>
@@ -67,7 +67,7 @@ const AmrabadForgetPinMobileNumber = () => {
                   <Form>
                     <div className="flex gap-4 mb-8">
                       <div className="w-full">
-                        <label className="block text-sm mb-1 font-bold text-black">
+                        <label className="block text-sm mb-1 font-bold text-[#304A3A]">
                           Enter Mobile Number{" "}
                           <span className="text-red-700">*</span>
                         </label>
@@ -77,18 +77,18 @@ const AmrabadForgetPinMobileNumber = () => {
                             type="text"
                             maxLength={10}
                             placeholder="Enter your mobile number"
-                            className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                            className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                               touched.mobile &&
                               !errors.mobile &&
                               values.mobile.length === 10
-                                ? "border-green-500 focus:border-green-500"
+                                ? "border-[#304A3A] focus:border-[#304A3A]"
                                 : ""
                             }`}
                           />
                           {touched.mobile &&
                             !errors.mobile &&
                             values.mobile.length === 10 && (
-                              <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                              <FaCheckCircle className="text-[#304A3A] absolute right-3 top-1/2 -translate-y-1/2" />
                             )}
                         </div>
                         <ErrorMessage
@@ -100,7 +100,7 @@ const AmrabadForgetPinMobileNumber = () => {
                     </div>
                     <button
                       type="submit"
-                      className="block  mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full"
+                      className="block mx-auto bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] font-bold py-3 rounded-lg text-lg w-full hover:opacity-90 transition"
                     >
                       {isForgetOtpRequestLoading
                         ? "Sending Otp..."
@@ -110,9 +110,9 @@ const AmrabadForgetPinMobileNumber = () => {
                 )}
               </Formik>
             </div>
-            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
+            {/* <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
               <img src={Logo} alt="MeeTicket Logo" className="w-56" />
-            </div>
+            </div> */}
           </div>
         </div>
       </UserLayout>

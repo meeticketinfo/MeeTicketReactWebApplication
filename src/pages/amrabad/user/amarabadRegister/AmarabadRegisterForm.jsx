@@ -93,18 +93,18 @@ const AmarabadRegisterForm = () => {
                     type="text"
                     maxLength={10}
                     placeholder="Enter your mobile no"
-                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                    className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                       touched.mobileNumber &&
                       !errors.mobileNumber &&
                       values.mobileNumber.length === 10
-                        ? "border-green-500 focus:border-green-500"
+                        ? "border-[#304A3A] focus:border-[#304A3A]"
                         : ""
                     }`}
                   />
                   {touched.mobileNumber &&
                     !errors.mobileNumber &&
                     values.mobileNumber.length === 10 && (
-                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                      <FaCheckCircle className="text-[#304A3A] absolute right-3 top-1/2 -translate-y-1/2" />
                     )}
                 </div>
                 <ErrorMessage
@@ -120,9 +120,9 @@ const AmarabadRegisterForm = () => {
                     name="firstName"
                     type="text"
                     placeholder="Enter your full name"
-                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                    className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                       touched.firstName && !errors.firstName
-                        ? "border-green-500 focus:border-green-500"
+                        ? "border-[#304A3A] focus:border-[#304A3A]"
                         : ""
                     }`}
                     maxLength={50}
@@ -130,7 +130,7 @@ const AmarabadRegisterForm = () => {
                   {touched.firstName &&
                     !errors.firstName &&
                     values.firstName.length > 0 && (
-                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                      <FaCheckCircle className="text-[#304A3A] absolute right-3 top-1/2 -translate-y-1/2" />
                     )}
                 </div>
 
@@ -147,9 +147,9 @@ const AmarabadRegisterForm = () => {
                     name="lastName"
                     type="text"
                     placeholder="Enter your Last name"
-                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                    className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                       touched.lastName && !errors.lastName
-                        ? "border-green-500 focus:border-green-500"
+                        ? "border-[#304A3A] focus:border-[#304A3A]"
                         : ""
                     }`}
                     maxLength={50}
@@ -157,7 +157,7 @@ const AmarabadRegisterForm = () => {
                   {touched.lastName &&
                     !errors.lastName &&
                     values.lastName.length > 0 && (
-                      <FaCheckCircle className="text-green-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                      <FaCheckCircle className="text-[#304A3A] absolute right-3 top-1/2 -translate-y-1/2" />
                     )}
                 </div>
 
@@ -180,18 +180,18 @@ const AmarabadRegisterForm = () => {
                     onCopy={(e) => e.preventDefault()}
                     onPaste={(e) => e.preventDefault()}
                     onCut={(e) => e.preventDefault()}
-                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                    className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                       touched.pinNumber &&
                       !errors.pinNumber &&
                       values.pinNumber.length === 4
-                        ? "border-green-500 focus:border-green-500"
+                        ? "border-[#304A3A] focus:border-[#304A3A]"
                         : ""
                     }`}
                   />
                   {touched.pinNumber &&
                     !errors.pinNumber &&
                     values.pinNumber.length === 4 && (
-                      <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                      <FaCheckCircle className="text-[#304A3A] absolute right-8 top-1/2 -translate-y-1/2" />
                     )}
                   <span className="absolute inset-y-0 right-3 flex items-center">
                     <button type="button" onClick={() => setShowPin(!showPin)}>
@@ -218,11 +218,11 @@ const AmarabadRegisterForm = () => {
                     onCopy={(e) => e.preventDefault()}
                     onPaste={(e) => e.preventDefault()}
                     onCut={(e) => e.preventDefault()}
-                    className={`w-full bg-[#EEEEEE] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none ${
+                    className={`w-full bg-[#EDEBE1] border border-transparent rounded-md px-3 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-[#304A3A]/30 ${
                       touched.confirmPin &&
                       !errors.confirmPin &&
                       values.confirmPin.length === 4
-                        ? "border-green-500 focus:border-green-500"
+                        ? "border-[#304A3A] focus:border-[#304A3A]"
                         : ""
                     }`}
                   />
@@ -237,7 +237,7 @@ const AmarabadRegisterForm = () => {
                   {touched.confirmPin &&
                     !errors.confirmPin &&
                     values.confirmPin.length === 4 && (
-                      <FaCheckCircle className="text-green-500 absolute right-8 top-1/2 -translate-y-1/2" />
+                      <FaCheckCircle className="text-[#304A3A] absolute right-8 top-1/2 -translate-y-1/2" />
                     )}
                 </div>
                 <ErrorMessage
@@ -250,7 +250,7 @@ const AmarabadRegisterForm = () => {
             <button
               type="submit"
               disabled={AmrabadRegisterLoading}
-              className={`block max-w-full md:max-w-[180px] mx-auto bg-[#3B358A] text-white font-bold py-3 rounded-lg text-lg w-full ${AmrabadRegisterLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`block max-w-full md:max-w-[180px] mx-auto bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] font-bold py-3 rounded-lg text-lg w-full hover:opacity-90 transition ${AmrabadRegisterLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {AmrabadRegisterLoading ? "Registering..." : "Register"}
             </button>

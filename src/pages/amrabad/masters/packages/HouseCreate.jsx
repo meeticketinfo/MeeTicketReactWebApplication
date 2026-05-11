@@ -305,10 +305,7 @@ const HouseCreate = () => {
       .required("Overview is required.")
       .min(10, "Overview must be at least 10 characters.")
       .max(500, "Overview cannot exceed 500 characters."),
-    specialOffers: Yup.string()
-      .required("Special offers is required.")
-      .min(10, "Special offers must be at least 10 characters.")
-      .max(500, "Special offers cannot exceed 500 characters."),
+  
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -1120,21 +1117,17 @@ const HouseCreate = () => {
                       htmlFor="specialOffers"
                       className="block text-xs font-medium text-gray-700"
                     >
-                      Special Offers <span className="text-red-500">*</span>
+                      Special Offers 
                     </label>
                     <Field
                       as="textarea"
                       name="specialOffers"
                       rows="3"
-                      maxLength="500"
+                      maxLength="1000"
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                       placeholder="Enter special offers"
                     />
-                    <ErrorMessage
-                      name="specialOffers"
-                      component="div"
-                      className="text-red-500 text-xs mt-1"
-                    />
+                   
                   </div>
                   {/* Remarks */}
                   <div className="col-span-3">
@@ -1148,7 +1141,7 @@ const HouseCreate = () => {
                       as="textarea"
                       name="remarks"
                       rows="4"
-                      maxLength="500"
+                      maxLength="2000"
                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                       placeholder="Enter your remarks"
                     />

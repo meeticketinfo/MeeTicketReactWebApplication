@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUserBookingStore } from "../../../../../store/amrabad/user/userBookingStore";
+import { useCartStore } from "../../../../../store/amrabad/user/userCartStore";
 import DatePickerField from "./DatePickerField";
 import HouseCounter from "./HouseCounter";
 import BookingSummary from "./BookingSummary";
@@ -8,6 +9,11 @@ import ContinueButton from "./ContinueButton";
 // Main Booking Form Component
 export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
   const { GetCalendar, isCalendarLoading, fetchCalendar } = useUserBookingStore();
+  const { cartItems, fetchCartItems } = useCartStore();
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
 
   useEffect(() => {
     fetchCalendar(packageId, houseId);
@@ -28,26 +34,17 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
-  // Fallback test data if API is not working
-  const testCalendarData = [
-    {
-      "date": new Date().toISOString().split('T')[0],
-      "price": 100.00,
-      "housesLeft": 4
-    },
-    {
-      "date": new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      "price": 100.00,
-      "housesLeft": 4
-    },
-    {
-      "date": new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      "price": 100.00,
-      "housesLeft": 4
+  // Clamp houseCount whenever cart or dates change — prevents stale count exceeding max
+  useEffect(() => {
+    const max = getMaxAvailableHouses(startDate, endDate);
+    if (houseCount > max) {
+      const clamped = Math.max(0, max);
+      setHouseCount(clamped);
+      calculatePricing(startDate, endDate, clamped);
     }
-  ];
+  }, [cartItems, startDate, endDate]);
 
-  const calendarData = GetCalendar && GetCalendar.length > 0 ? GetCalendar : testCalendarData;
+  const calendarData = GetCalendar || [];
 
   const availableDatesMapWithFallback = calendarData.reduce((acc, item) => {
     let normalizedDate;
@@ -136,6 +133,31 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     setTotalPrice(finalAmount);
   };
 
+  // How many of this specific room are already in the cart for an overlapping date range.
+  // Compares date-string portions only (YYYY-MM-DD extracted from the ISO datetime).
+  // Since checkout time (e.g. 10:00 AM) is always BEFORE check-in time (e.g. 12:30 PM)
+  // in the same package, two bookings whose checkout/checkin land on the same calendar date
+  // do NOT overlap — so itemToDate <= selFromDate means no conflict.
+  const getAlreadyCartedCount = (checkInDate, checkOutDate) => {
+    const items = cartItems?.data || [];
+    const selFromDateStr = getLocalDateString(new Date(checkInDate));
+    const selToDateStr   = getLocalDateString(new Date(checkOutDate));
+
+    return items
+      .filter(item => {
+        if (String(item.roomId) !== String(houseId) || String(item.packageId) !== String(packageId)) return false;
+        // Extract date-only portion regardless of timezone suffix
+        const itemFromDateStr = item.roomFromDate?.split('T')[0];
+        const itemToDateStr   = item.roomToDate?.split('T')[0];
+        if (!itemFromDateStr || !itemToDateStr) return false;
+        // No overlap when item ends on or before new check-in date,
+        // or item starts on or after new checkout date
+        const noOverlap = itemToDateStr <= selFromDateStr || itemFromDateStr >= selToDateStr;
+        return !noOverlap;
+      })
+      .reduce((sum, item) => sum + (item.roomCount || 0), 0);
+  };
+
   // Calculate maximum available houses for the selected date range
   const getMaxAvailableHouses = (checkInDate, checkOutDate) => {
     let minHousesAvailable = Infinity;
@@ -178,7 +200,9 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     const available = minHousesAvailable === Infinity ? fallbackHouses : minHousesAvailable;
     const limit = minRoomLimit === Infinity ? fallbackRoomLimit : minRoomLimit;
 
-    return Math.max(0, Math.min(available, limit));
+    // Subtract only cart items whose dates overlap with this specific date range
+    const alreadyCarted = getAlreadyCartedCount(checkInDate, checkOutDate);
+    return Math.max(0, Math.min(available, limit) - alreadyCarted);
   };
 
   const handleHouseCountChange = (increment) => {
@@ -306,7 +330,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
   return (
     <div className="w-full max-w-full sm:max-w-md lg:max-w-[400px] ">
-      <div className="bg-gray-50 rounded-lg p-4 sm:p-6 shadow-lg ">
+      <div className="bg-[#FDFAF7] rounded-lg p-4 sm:p-6 shadow-lg ">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6">
           Book {house?.roomName}
         </h2>
@@ -342,13 +366,15 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
         />
 
         {/* Number of Houses */}
-        <HouseCounter 
-          houseCount={houseCount} 
+        <HouseCounter
+          houseCount={houseCount}
           onHouseCountChange={handleHouseCountChange}
           maxHouses={maxAvailableHouses}
           calendarData={calendarData}
           startDate={startDate}
           endDate={endDate}
+          alreadyCarted={getAlreadyCartedCount(startDate, endDate)}
+          roomLimit={calendarData.find(item => typeof item.roomLimit === 'number' && item.roomLimit > 0)?.roomLimit ?? null}
         />
 
         {/* Booking Summary */}

@@ -2,16 +2,32 @@ import Breadcrumb from "./components/Breadcrumb";
 import PropertyDetails from "./components/PropertyDetails";
 import UserLayout from "../../../../layouts/UserLayout";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BookingForm } from "./components/BookingForm";
+
+const getDefaultDates = () => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return {
+    fromDate: today.toISOString().split("T")[0],
+    toDate: tomorrow.toISOString().split("T")[0],
+  };
+};
 
 const BookNow = () => {
   const { GetRoomsByPackageId, fetchRoomsByPackageId, isRoomsByPackageIdLoading, fetchUserPackages, GetUserPackages, isUserPackagesLoading } = useUserBookingStore();
   const [house, setHouse] = useState(null);
   const [userPackage, setUserPackage] = useState(null);
   const { packageId, houseId } = useParams();
-  const { fromDate, toDate } = JSON.parse(localStorage.getItem("bookingDate"));
+
+  const stored = localStorage.getItem("bookingDate");
+  const booking = stored ? JSON.parse(stored) : null;
+  const defaults = getDefaultDates();
+  const fromDate = booking?.fromDate ?? defaults.fromDate;
+  const toDate = booking?.toDate ?? defaults.toDate;
+
   useEffect(() => {
     fetchUserPackages();
   }, []);
@@ -34,13 +50,13 @@ const BookNow = () => {
 
   return (
     <UserLayout>
-      <div className="bg-gray-50">
+      <div className="">
         <div className="container mx-auto py-6 px-4">
           {/* Breadcrumb */}
           <Breadcrumb house={house} />
           
           {/* Main Content */}
-          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 md:p-6 lg:p-8">
+          <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-3 sm:p-4 md:p-6 lg:p-8">
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Left Column - Property Details */}
               <PropertyDetails house={house} userPackage={userPackage} isUserPackagesLoading={isUserPackagesLoading} />

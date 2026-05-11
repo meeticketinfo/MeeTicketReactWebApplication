@@ -321,6 +321,7 @@ export const API_ENDPOINTS = {
         GET_REFUND_TRANSACTIONS_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundDashboard`,
         GET_REFUND_TRANSACTIONS_INNER_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/RefundInnerReport`,
         GET_INITIATE_REFUND_BY_ORDER_ID: `${RTC_API_BASE_URL}RTCDashboard/RefundInitiate`,
+        GET_REFUND_TRACKING: `${RTC_API_BASE_URL}BusPassDashboard/GetRefundTransactionStatus`,
       },
        BUS_PASS_PAYMENT_TRANSACTION: {
         GET_BUS_PASS_PAYMENT_TRANSACTION: `${RTC_API_BASE_URL}RTCDashboard/GetSettlementReports`,
@@ -345,6 +346,7 @@ export const API_ENDPOINTS = {
         GET_BUS_PASS_PAYMENT_RESPONSE: `${RTC_API_BASE_URL}API/paymentResponse`,
         GET_BUS_PASS_GET_TICKET_AND_PASS_DETAILS_BY_ID: `${RTC_API_BASE_URL}API/GetTicketAndPassDetailsById`,
         GET_BUS_PASS_GENERATE_TICKET_RENEWAL_PAYMENT_RESPONSE: `${RTC_API_BASE_URL}API/RenewalPaymentResponse`,
+        GET_BUS_PASS_DAILY_MONTHLY_SALES_STATEMENT_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/GetDailyandMonthlySummaryReport`,
       },
       INTERCITY_REPORTS: {
         GET_INTERCITY_PAYMENT_TRANSACTION_REPORT: `${RTC_API_BASE_URL}BusPassDashboard/PaymentTransactionsReport`,

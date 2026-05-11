@@ -432,7 +432,11 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/bus-pass-refund-report",
       },
-
+      {
+        title: "Daily & Monthly Statement",
+        icon: RiDashboard3Fill,
+        path: "/bus-pass-sales-statement-report",
+      },
       {
         title: "Settlement Summary Report",
         icon: RiDashboard3Fill,
@@ -562,7 +566,7 @@ const sidebarItems = [
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
       {
-        titlFe: "Packages",
+        title: "Packages",
         icon: TbReportSearch,
         path: "/amrabad-packages",
       },

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, createSearchParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import BusPassRefundTransactionsReportForm from "./BusPassRefundTransactionsReportForm";
 import AgGridTable from "../../../../../tables/AgGridTable";
@@ -23,6 +23,7 @@ const BusPassRefundTransactionsReport = () => {
         refundBusPassTransactionsInnerReport,
         refundTransactionsPagination,
         fetchBusPassRefundTransactionsInnerReport,
+        fetchBusPassRefundOrderId,
         fetchBusPassInitiateRefundOrderId,
         isInitiateRefund,
     } = useRtcRefundStore();
@@ -45,45 +46,36 @@ const BusPassRefundTransactionsReport = () => {
               },
      
         },
-        // {
-        //     headerName: "Actions",
-        //     field: "actions",
-        //     maxWidth: "100",
-        //     //   hide: email === "esdadmin@gmail.com",
-        //     cellRenderer: (params) => {
-        //         // console.log("params",params)
-        //         return (
-        //             <div className="flex align-center gap-2">
-        //                 <>
-        //                     <button
-        //                         className={` ${params.data.refundStatus === "NotRefund"
-        //                             ? "bg-green-400"
-        //                             : "bg-green-100 cursor-not-allowed "
-        //                             } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-        //                         disabled={params.data.refundStatus != "NotRefund"}
-        //                         onClick={() => {
-        //                             setRefundOrderId(params.data.orderID);
-        //                             setInitiatRefundModal(true);
-        //                         }}
-        //                     >
-        //                         Initiate
-        //                     </button>
-        //                 </>
-        //             </div>
-        //         );
-        //     },
-        //     flex: 1,
-        //     headerClass: "text-blue-v2",
-        // },
+         {
+            field: "typeofBusPass",
+            headerName: "Type of Bus Pass",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value || "N/A",
+        },
+          
         {
-            field: "refundStatus",
-            headerName: "Refund Status",
-            maxWidth: "130",
+            field: "bookingID",
+            headerName: "Booking ID",
+            // Width: "260",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value ?? "N/A",
+        },
+         {
+            field: "amount",
+            headerName: "Amount",
+            maxWidth: "100",
             headerClass: "text-blue-v2",
             valueFormatter: (params) =>
-                params.value || params.value === " " ? params.value : "N/A",
+                formatToCurrency(params.value, "INR", "en-IN") || "00:00",
         },
-        {
+          {
+            field: "orderID",
+            headerName: "Order ID",
+            // Width: "390",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) => params.value ?? "N/A",
+        },
+           {
             field: "refundDate",
             headerName: "Refund Date",
             // maxWidth: "130",
@@ -94,6 +86,15 @@ const BusPassRefundTransactionsReport = () => {
               },
         },
         {
+            field: "refundStatus",
+            headerName: "Refund Status",
+            maxWidth: "130",
+            headerClass: "text-blue-v2",
+            valueFormatter: (params) =>
+                params.value || params.value === " " ? params.value : "N/A",
+        },
+     
+        {
             field: "mobileNumber",
             minWidth: 100,
             headerName: "Mobile Number",
@@ -102,34 +103,16 @@ const BusPassRefundTransactionsReport = () => {
                 params.value || params.value === " " ? params.value : "N/A",
 
         },
-        {
-            field: "typeofBusPass",
-            headerName: "Type of Bus Pass",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "N/A",
-        },
-        {
-            field: "amount",
-            headerName: "Amount",
-            maxWidth: "100",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) =>
-                formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-        },
-        {
-            field: "noOfTickets",
-            headerName: "No of Tickets",
-            maxWidth: "120",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value || "0",
-        },
+       
+       
         // {
-        //     field: "modeofTransaction",
-        //     headerName: "Mode of Transaction",
-        //     // maxWidth: "120",
+        //     field: "noOfTickets",
+        //     headerName: "No of Tickets",
+        //     maxWidth: "120",
         //     headerClass: "text-blue-v2",
-        //     valueFormatter: (params) => params.value || "N/A",
+        //     valueFormatter: (params) => params.value || "0",
         // },
+   
         {
             field: "modeofPayment",
             headerName: "Mode of Payment",
@@ -137,20 +120,47 @@ const BusPassRefundTransactionsReport = () => {
             headerClass: "text-blue-v2",
             valueFormatter: (params) => params.value ?? "N/A",
         },
+     
          {
-            field: "orderID",
-            headerName: "Order ID",
-            // Width: "390",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value ?? "N/A",
-        },
-        {
-            field: "bookingID",
-            headerName: "Booking ID",
-            // Width: "260",
-            headerClass: "text-blue-v2",
-            valueFormatter: (params) => params.value ?? "N/A",
-        },
+      field: "action",
+      maxWidth: "180",
+      headerName: "Action",
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) => (
+        <Link
+          className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
+          onClick={() => {
+            if (params.data.orderID) {
+              fetchBusPassRefundOrderId(params.data.orderID);
+            }
+          }}
+          to={{
+            pathname: "/bus-pass-user-transactions-Refund-tracker",
+            search: `?${createSearchParams({
+              orderId: params.data.orderID ?? "",
+              date: params.data.transactionDateandTime ?? "",
+              mobileNo: params.data.mobileNumber ?? "",
+              typeOfBusPass: params.data.typeofBusPass ?? "",
+              status: params.data.refundStatus ?? "",
+              amount: params.data.amount ?? "",
+              bookingId: params.data.bookingID ?? "",
+            }).toString()}`,
+          }}
+          state={{
+            orderId: params.data.orderID,
+            date: params.data.transactionDateandTime ,
+            mobileNo: params.data.mobileNumber,
+            typeOfBusPass: params.data.typeofBusPass,
+            status: params.data.refundStatus,
+            amount: params.data.amount,
+            bookingId: params.data.bookingID,
+            // backTitle: title(),
+          }}
+        >
+          View Track Order
+        </Link>
+      ),
+    },
     ];
 
     const loadRefundTransactionsReport = (page = 0) => {

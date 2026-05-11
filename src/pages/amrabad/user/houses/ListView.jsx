@@ -69,7 +69,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
           Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
-              className="flex flex-col lg:flex-row bg-white rounded-xl p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
+              className="flex flex-col lg:flex-row bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] p-3 sm:p-4 md:p-6 gap-3 sm:gap-4 md:gap-6"
             >
               {/* Left Column - Image Placeholder with Shimmer */}
               <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full">
@@ -159,7 +159,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
           ))
         ) : !hasHouses ? (
           // No houses available message
-          <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="flex flex-col items-center justify-center py-12 px-4 bg-[]">
             <div className="text-center max-w-md">
               {/* House icon */}
               <div className="mb-6">
@@ -190,7 +190,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
               {/* Button to Amarabad page */}
               <Link
                 to="/amrabad-resort/packages"
-                className="inline-flex items-center gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 font-semibold py-3 px-6 rounded-lg transition-colors"
               >
                 <span>Go to Packages</span>
                 <svg
@@ -214,7 +214,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
           houses?.map((house, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-xl p-3 sm:p-4 space-y-4"
+              className="bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] rounded-xl p-3 sm:p-4 space-y-4"
             >
               <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6">
                 {/* Image */}
@@ -266,7 +266,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 )}
               </div>
                 {/* Content */}
-                <div className="flex-1 flex flex-col justify-between min-w-0">
+                <div className="flex-1 flex flex-col justify-between min-w-0 ">
                   <div>
                     {/* Title and Price */}
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
@@ -275,7 +275,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                           {house?.roomName}
                         </h2>
                         {/* Check-in/out */}
-                        <div className="bg-[#EEEDFAB0] text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
+                        <div className="bg-[#FDFAF7] shadow   text-xs sm:text-sm rounded-lg px-3 py-2 mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-sm">
                           <div className="flex-1">
                             <div className="text-[#79787E] text-xs mb-1">
                               Check-In Time:
@@ -300,7 +300,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                         </div>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#362D86]">
+                        <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#304A3A]">
                           ₹{house?.tariffPerDay?.toLocaleString()}
                         </span>
                         <div className="text-[#5A5961] text-xs sm:text-sm">
@@ -334,12 +334,12 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                     </div>
                   </div>
                   {/* Book Now Button */}
-                  <div className="mt-4 sm:mt-6">
+                  <div className="mt-4 sm:mt-6 ">
                     <Link
                       to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`}
                       onClick={(e) => handleBookNowClick(house, e)}
-                      // state={{ fromDate: fromDate, toDate: toDate }}
-                      className="w-full sm:w-auto min-w-[160px] flex items-center justify-between gap-2 bg-[#362D86] hover:bg-indigo-800 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
+                      // state={{ fromDate: fromDate, toDate: toDate }}#C4A97A
+                      className="w-full sm:w-auto min-w-[160px]  flex items-center justify-between gap-2 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-lg transition max-w-sm"
                     >
                       Book Now
                       <span className="text-lg sm:text-xl inline-flex items-center">
@@ -378,7 +378,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                           to={`/amrabad-resort/book-now/${house?.packageId}/${house?.roomId}`} 
                           onClick={(e) => handleCalendarItemClick(house, item, idx, e)}
                           // state={{ fromDate: item?.date, toDate: house?.calendar[idx + 1]?.date }}
-                          className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#362D86]"
+                          className="relative rounded-md p-2 border transition-all duration-200 cursor-pointer hover:shadow-sm block min-w-[120px] hover:border-[#304A3A]"
                         >
                           {/* Date */}
                           <div className="text-center">
@@ -481,7 +481,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
       <style jsx>{`
         .calendar-swiper .swiper-button-next,
         .calendar-swiper .swiper-button-prev {
-          color: #362D86;
+          color: #304A3A;
           background: white;
           width: 28px;
           height: 28px;
@@ -504,7 +504,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
         
         .calendar-swiper .swiper-button-next:hover,
         .calendar-swiper .swiper-button-prev:hover {
-          background: #362D86;
+          background: #304A3A;
           color: white;
           transform: scale(1.05);
         }

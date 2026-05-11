@@ -1,11 +1,17 @@
+import { useState, useEffect } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { useCartStore } from "../../../../../store/amrabad/user/userCartStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, isLoading = false, startDate, endDate, userPackage }) => {
-  const { addToCart, loadingAddToCart } = useCartStore();
+  const { addToCart, loadingAddToCart, cartItems, fetchCartItems } = useCartStore();
   const navigate = useNavigate();
+  const [conflictModal, setConflictModal] = useState(null); // { existingPackageName, existingPackageId }
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
 
   const ShimmerLine = ({ className = "" }) => (
     <div className={`animate-pulse bg-gray-200 rounded h-4 ${className}`}></div>
@@ -40,6 +46,18 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
   };
 
   const handleAddToCart = async () => {
+    // Check if cart has items from a different package
+    const existingItems = cartItems?.data || [];
+    if (existingItems.length > 0) {
+      const existingPackageId = existingItems[0]?.packageId;
+      if (existingPackageId && existingPackageId !== house?.packageId) {
+        setConflictModal({
+          existingPackageName: existingItems[0]?.packageName || "another package",
+        });
+        return;
+      }
+    }
+
     try {
       // Combine dates with check-in and check-out times from userPackage
       const roomFromDateTime = combineDateWithTime(startDate, userPackage?.checkInTime);
@@ -68,7 +86,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
+      <div className="bg-white rounded-lg p-4 mb-4 border border-[#D0D7CE] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded w-32 mb-3"></div>
 
@@ -97,7 +115,34 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
   return (
     <>
-      <div className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
+      {/* Package conflict modal */}
+      {conflictModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full">
+            <h3 className="text-base font-bold text-gray-800 mb-2">Different Package in Cart</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              You already have rooms from <span className="font-semibold text-gray-800">"{conflictModal.existingPackageName}"</span> in your cart.
+              To book a different package, please complete or clear your current booking first.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => navigate("/amrabad-resort/checkout-details")}
+                className="flex-1 bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-white py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition"
+              >
+                Go to Cart
+              </button>
+              <button
+                onClick={() => setConflictModal(null)}
+                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white rounded-lg p-4 mb-4 border border-[#D0D7CE] shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
         <h3 className="text-sm font-semibold text-gray-800 mb-3">Booking Summary</h3>
 
         <div className="space-y-2">
@@ -127,7 +172,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-base font-bold text-gray-800">TOTAL PAYABLE AMOUNT:</span>
-            <span className="text-lg font-bold text-[#362D86]">
+            <span className="text-lg font-bold text-[#c4a97a]">
               ₹{finalAmount.toLocaleString()}
             </span>
           </div>
@@ -137,7 +182,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
       <button
         onClick={handleAddToCart}
         disabled={houseCount === 0}
-        className="w-full bg-[#362D86] text-white py-3 rounded-lg font-semibold hover:bg-[#362D86]/90 transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 py-3 rounded-lg font-semibold transition-colors flex items-center justify-between px-4 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="text-lg sm:text-xl font-bold">₹{finalAmount.toLocaleString()}</span>
         {loadingAddToCart && <CgSpinner className="animate-spin" />}

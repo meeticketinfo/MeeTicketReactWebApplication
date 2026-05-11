@@ -45,7 +45,7 @@ const AmrabadContactUs = () => {
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0">
                         <svg
-                          className="w-6 h-6 text-blue-v2"
+                          className="w-6 h-6 text-[#304A3A]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -69,7 +69,7 @@ const AmrabadContactUs = () => {
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0">
                         <svg
-                          className="w-6 h-6 text-blue-v2"
+                          className="w-6 h-6 text-[#304A3A]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -105,7 +105,7 @@ const AmrabadContactUs = () => {
                 }}
               >
                 {/* Green overlay */}
-                <div className="absolute inset-0 bg-blue-v1 bg-opacity-60"></div>
+                <div className="absolute inset-0 bg-[#304A3A] bg-opacity-60"></div>
 
                 {/* Content */}
                 <div className="relative z-10">

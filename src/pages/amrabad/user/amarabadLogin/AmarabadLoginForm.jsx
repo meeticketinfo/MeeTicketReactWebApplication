@@ -200,7 +200,7 @@ const AmarabadLoginForm = () => {
                 />
                 <Link
                   to="/forget-pin-mobile"
-                  className="text-[#362D86] text-sm font-normal"
+                  className="text-[#304A3A] text-sm font-normal"
                 >
                   Forgot Pin?
                 </Link>
@@ -209,7 +209,7 @@ const AmarabadLoginForm = () => {
             <button
               type="submit"
               disabled={AmrabadLoginLoading}
-              className={`text-lg w-full bg-[#362D86] text-white py-3 rounded-md font-semibold hover:bg-indigo-800 transition mb-4 ${AmrabadLoginLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`text-lg w-full bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] py-3 rounded-md font-semibold hover:opacity-90 transition mb-4 ${AmrabadLoginLoading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {AmrabadLoginLoading ? "LOGGING IN..." : "LOGIN"}
             </button>

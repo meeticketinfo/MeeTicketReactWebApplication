@@ -173,6 +173,7 @@ import RtcNotGeneratedReport from "../components/rtc/rtc_reports/bus_pass_report
 import RtcTotalTracker from "../components/rtc/rtc_reports/bus_pass_reports/rtc_total_transaction/rtc_track_order/RtcTotalTracker";
 import IntercityNotGeneratedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_total_transactions/inner_reasons_dashboard/intercity_not_generated/IntercityNotGeneratedReport";
 import BusPassBookingReport from "../components/rtc/rtc_reports/bus_pass_reports/booking_report/BusPassBookingReport";
+import BusPassSalesStatementReport from "../components/rtc/rtc_reports/bus_pass_reports/bus_pass_sales_statement/BusPassSalesStatementReport";
 import ViewBusPass from "../components/rtc/components/ViewBusPass";
 import BusPassRefundTransactionsReport from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassRefundTransactionsReport";
 import MainBusPassRefundTransactions from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_outer/MainBusPassRefundTransactions";
@@ -209,6 +210,7 @@ import AddIntercityCities from "../components/rtc/intercity_masters/IntercityCit
 import MainFacilityHoliday from "../pages/admin/holidays/facility_holidays/MainFacilityHoliday";
 import MainGroupDetails from "../pages/admin/group_details/MainGroupDetails";
 import MainLanguage from "../pages/admin/language_masters/MainLanguage";
+import BusPassUserTransactionsRefundTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassUserTransactionsRefundTracker";
 
 export const routes = [
   {
@@ -619,6 +621,12 @@ export const routes = [
       <ProtectedRoute element={<BusPassUserTransactionsOrderTracker />} />
     ),
   },
+   {
+    path: "/bus-pass-user-transactions-Refund-tracker",
+    element: (
+      <ProtectedRoute element={<BusPassUserTransactionsRefundTracker />} />
+    ),
+  },
   {
     path: "/bus-pass-refund-report",
     element: <ProtectedRoute element={<MainBusPassRefundTransactions />} />,
@@ -626,6 +634,10 @@ export const routes = [
   {
     path: "/bus-pass-refund-inner-report",
     element: <ProtectedRoute element={<BusPassRefundTransactionsReport />} />,
+  },
+  {
+    path: "/bus-pass-sales-statement-report",
+    element: <ProtectedRoute element={<BusPassSalesStatementReport />} />,
   },
   {
     path: "/bus-pass-settlement-summary-report",
