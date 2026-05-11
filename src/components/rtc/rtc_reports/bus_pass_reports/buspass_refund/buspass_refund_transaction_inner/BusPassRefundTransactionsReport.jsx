@@ -50,37 +50,49 @@ const BusPassRefundTransactionsReport = () => {
         if (!params.value) return "N/A";
         return formatDateTime(params.value);
       },
+    },   {
+      field: "typeofBusPass",
+      headerName: "Type of Bus Pass",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value || "N/A",
+    },  {
+      field: "amount",
+      headerName: "Amount",
+      maxWidth: "100",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+    },  {
+      field: "orderID",
+      headerName: "Order ID",
+      // Width: "390",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => params.value ?? "N/A",
+    }, {
+      field: "refundDate",
+      headerName: "Refund Date",
+      // maxWidth: "130",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => {
+        if (!params.value) return "N/A";
+        return formatDateTime(params.value);
+      },
+    },   {
+      field: "refundStatus",
+      headerName: "Refund Status",
+      maxWidth: "130",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
     },
-    // {
-    //     headerName: "Actions",
-    //     field: "actions",
-    //     maxWidth: "100",
-    //     //   hide: email === "esdadmin@gmail.com",
-    //     cellRenderer: (params) => {
-    //         // console.log("params",params)
-    //         return (
-    //             <div className="flex align-center gap-2">
-    //                 <>
-    //                     <button
-    //                         className={` ${params.data.refundStatus === "NotRefund"
-    //                             ? "bg-green-400"
-    //                             : "bg-green-100 cursor-not-allowed "
-    //                             } text-white font-medium leading-normal px-2 py-1 mt-1.5 rounded-md`}
-    //                         disabled={params.data.refundStatus != "NotRefund"}
-    //                         onClick={() => {
-    //                             setRefundOrderId(params.data.orderID);
-    //                             setInitiatRefundModal(true);
-    //                         }}
-    //                     >
-    //                         Initiate
-    //                     </button>
-    //                 </>
-    //             </div>
-    //         );
-    //     },
-    //     flex: 1,
-    //     headerClass: "text-blue-v2",
-    // },
+     {
+      field: "mobileNumber",
+      minWidth: 100,
+      headerName: "Mobile Number",
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) =>
+        params.value || params.value === " " ? params.value : "N/A",
+    },
     {
       field: "action",
       maxWidth: "180",
@@ -126,60 +138,14 @@ const BusPassRefundTransactionsReport = () => {
         );
       },
     },
-    {
-      field: "refundStatus",
-      headerName: "Refund Status",
-      maxWidth: "130",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "refundDate",
-      headerName: "Refund Date",
-      // maxWidth: "130",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        return formatDateTime(params.value);
-      },
-    },
 
-    {
-      field: "mobileNumber",
-      minWidth: 100,
-      headerName: "Mobile Number",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
-    },
-    {
-      field: "typeofBusPass",
-      headerName: "Type of Bus Pass",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      maxWidth: "100",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-    },
-    {
-      field: "noOfTickets",
-      headerName: "No of Tickets",
-      maxWidth: "120",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
-    },
+  
     // {
-    //     field: "modeofTransaction",
-    //     headerName: "Mode of Transaction",
-    //     // maxWidth: "120",
-    //     headerClass: "text-blue-v2",
-    //     valueFormatter: (params) => params.value || "N/A",
+    //   field: "noOfTickets",
+    //   headerName: "No of Tickets",
+    //   maxWidth: "120",
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => params.value || "0",
     // },
     {
       field: "modeofPayment",
@@ -188,13 +154,7 @@ const BusPassRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-    {
-      field: "orderID",
-      headerName: "Order ID",
-      // Width: "390",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-    },
+  
     {
       field: "bookingID",
       headerName: "Booking ID",
