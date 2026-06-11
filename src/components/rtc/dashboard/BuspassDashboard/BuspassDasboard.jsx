@@ -32,24 +32,34 @@ import RenewalBuspassDashboard from "./RenewalBuspassDashboard";
 
 function BuspassDasboard() {
   superballs.register();
-  const { fetchBuspassDashboard, buspassDashboard, isFetchBuspassDashboardLoading } = useBuspassDashboardStore();
+  const {
+    fetchBuspassDashboard,
+    buspassDashboard,
+    isFetchBuspassDashboardLoading,
+  } = useBuspassDashboardStore();
   const initialValues = {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
   };
- 
+
   useEffect(() => {
     fetchBuspassDashboard({
       fromDate: getCurrentDate(),
       toDate: getCurrentDate(),
-    })
+    });
   }, []);
 
   // overAll on submit
   const overAllOnSubmit = (values) => {
     // Validate date range
-    if (values.fromDate && values.toDate && new Date(values.fromDate) > new Date(values.toDate)) {
-      alert("From Date cannot be greater than To Date. Please select a valid date range.");
+    if (
+      values.fromDate &&
+      values.toDate &&
+      new Date(values.fromDate) > new Date(values.toDate)
+    ) {
+      alert(
+        "From Date cannot be greater than To Date. Please select a valid date range.",
+      );
       return;
     }
 
@@ -76,7 +86,10 @@ function BuspassDasboard() {
 
         <div className="space-y-3">
           {[1, 2, 3].map((index) => (
-            <div key={index} className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg"
+            >
               <div className="h-4 bg-gray-300 rounded w-20"></div>
               <div className="h-4 bg-gray-300 rounded w-12"></div>
             </div>
@@ -101,7 +114,10 @@ function BuspassDasboard() {
 
         <div className="space-y-3">
           {[1, 2, 3].map((index) => (
-            <div key={index} className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg">
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-[#F1F6FB] rounded-lg"
+            >
               <div className="h-4 bg-gray-300 rounded w-20"></div>
               <div className="h-4 bg-gray-300 rounded w-16"></div>
             </div>
@@ -111,21 +127,18 @@ function BuspassDasboard() {
     </div>
   );
 
-
   const genderconfig = {
-    "C": "Child",
-    "M": "Men",
-    "O": "Others",
-    "S": "Senior Citizen",
-    "UNKNOWN": "Unknown",
-    "W": "Women",
-  }
+    C: "Child",
+    M: "Men",
+    O: "Others",
+    S: "Senior Citizen",
+    UNKNOWN: "Unknown",
+    W: "Women",
+  };
 
   return (
     <>
-
       <div className="grid grid-cols-12 gap-6">
-
         <div className="col-span-full ">
           <Formik initialValues={initialValues} onSubmit={overAllOnSubmit}>
             {({ values, setFieldValue }) => (
@@ -148,7 +161,10 @@ function BuspassDasboard() {
                         const fromDateValue = e.target.value;
                         setFieldValue("fromDate", fromDateValue);
                         // If fromDate is greater than toDate, update toDate to match fromDate
-                        if (values.toDate && new Date(fromDateValue) > new Date(values.toDate)) {
+                        if (
+                          values.toDate &&
+                          new Date(fromDateValue) > new Date(values.toDate)
+                        ) {
                           setFieldValue("toDate", fromDateValue);
                         }
                       }}
@@ -170,7 +186,10 @@ function BuspassDasboard() {
                       onChange={(e) => {
                         const toDateValue = e.target.value;
                         // If toDate is less than fromDate, update fromDate to match toDate
-                        if (values.fromDate && new Date(toDateValue) < new Date(values.fromDate)) {
+                        if (
+                          values.fromDate &&
+                          new Date(toDateValue) < new Date(values.fromDate)
+                        ) {
                           setFieldValue("fromDate", toDateValue);
                         }
                         setFieldValue("toDate", toDateValue);
@@ -181,7 +200,7 @@ function BuspassDasboard() {
                     <button
                       type="submit"
                       className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                    // disabled={isFetchEntityBookingsLoading}
+                      // disabled={isFetchEntityBookingsLoading}
                     >
                       Search
                     </button>
@@ -210,14 +229,22 @@ function BuspassDasboard() {
                       <h3 className="text-lg font-semibold text-gray-800">
                         Total Count
                       </h3>
-                      <p className="text-sm text-gray-500">
-                        All Passes Count
-                      </p>
+                      <p className="text-sm text-gray-500">All Passes Count</p>
                     </div>
                   </div>
                   <div className="text-xl font-bold text-gray-800 mb-6">
                     <CountUp
-                      end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0)}
+                      end={
+                        parseInt(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.newPassCount || 0,
+                        ) +
+                        (buspassDashboard?.data?.renewalSummary?.reduce(
+                          (total, item) =>
+                            total + parseInt(item.renewalCount || 0),
+                          0,
+                        ) || 0)
+                      }
                       duration={2}
                       separator=","
                     />
@@ -231,7 +258,10 @@ function BuspassDasboard() {
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       <CountUp
-                        end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsCount || 0)}
+                        end={parseInt(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.idCardsCount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -243,7 +273,10 @@ function BuspassDasboard() {
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       <CountUp
-                        end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassCount || 0)}
+                        end={parseInt(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.newPassCount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -255,7 +288,13 @@ function BuspassDasboard() {
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
                       <CountUp
-                        end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseInt(item.renewalCount || 0), 0) || 0}
+                        end={
+                          buspassDashboard?.data?.renewalSummary?.reduce(
+                            (total, item) =>
+                              total + parseInt(item.renewalCount || 0),
+                            0,
+                          ) || 0
+                        }
                         duration={2}
                         separator=","
                       />
@@ -276,7 +315,6 @@ function BuspassDasboard() {
                 </div>
               </div>
 
-
               <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
                 <div className="flex justify-between items-center gap-3 mb-0">
                   <div className="flex items-center gap-3 mb-5">
@@ -287,14 +325,27 @@ function BuspassDasboard() {
                       <h3 className="text-lg font-semibold text-gray-800">
                         Total Amount
                       </h3>
-                      <p className="text-sm text-gray-500">
-                        All Passes Amount
-                      </p>
+                      <p className="text-sm text-gray-500">All Passes Amount</p>
                     </div>
                   </div>
                   <div className="text-xl font-bold text-gray-800 mb-6">
-                    ₹<CountUp
-                      end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0) + (buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0)}
+                    ₹
+                    <CountUp
+                      end={
+                        parseFloat(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.idCardsAmount || 0,
+                        ) +
+                        parseFloat(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.newPassAmount || 0,
+                        ) +
+                        (buspassDashboard?.data?.renewalSummary?.reduce(
+                          (total, item) =>
+                            total + parseFloat(item.renewalAmount || 0),
+                          0,
+                        ) || 0)
+                      }
                       duration={2}
                       separator=","
                     />
@@ -307,8 +358,12 @@ function BuspassDasboard() {
                       ID Cards
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
-                      ₹<CountUp
-                        end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.idCardsAmount || 0)}
+                      ₹
+                      <CountUp
+                        end={parseFloat(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.idCardsAmount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -319,8 +374,12 @@ function BuspassDasboard() {
                       New Passes
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
-                      ₹<CountUp
-                        end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.newPassAmount || 0)}
+                      ₹
+                      <CountUp
+                        end={parseFloat(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.newPassAmount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -331,8 +390,15 @@ function BuspassDasboard() {
                       Renewal Passes
                     </span>
                     <span className="text-sm font-semibold text-gray-800">
-                      ₹<CountUp
-                        end={buspassDashboard?.data?.renewalSummary?.reduce((total, item) => total + parseFloat(item.renewalAmount || 0), 0) || 0}
+                      ₹
+                      <CountUp
+                        end={
+                          buspassDashboard?.data?.renewalSummary?.reduce(
+                            (total, item) =>
+                              total + parseFloat(item.renewalAmount || 0),
+                            0,
+                          ) || 0
+                        }
                         duration={2}
                         separator=","
                       />
@@ -363,15 +429,16 @@ function BuspassDasboard() {
                       <h3 className="text-lg font-semibold text-gray-800">
                         Count
                       </h3>
-                      <p className="text-sm text-gray-500">
-                        T24 Passes
-                      </p>
+                      <p className="text-sm text-gray-500">T24 Passes</p>
                     </div>
                   </div>
                   <div>
                     <span className="text-md font-semibold text-gray-800">
                       <CountUp
-                        end={parseInt(buspassDashboard?.data?.freshPassSummary?.[0]?.oneDayPassCount || 0)}
+                        end={parseInt(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.oneDayPassCount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -380,26 +447,23 @@ function BuspassDasboard() {
                 </div>
 
                 <div className=" grid grid-cols-2 gap-3 my-1">
-                  {
-                    buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
-                      return (
-                        <div className="flex justify-between shadow-md  items-center p-3  bg-[#F1F6FB] rounded-lg">
-                          <span className="text-sm font-medium text-gray-600">
-                            {genderconfig[p.employeeGender]}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-800">
-                            <CountUp
-                              end={parseFloat(p.categoryWiseCount || 0)}
-                              duration={2}
-                              separator=","
-                            />
-                          </span>
-                        </div>
-                      )
-                    })
-                  }
+                  {buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
+                    return (
+                      <div className="flex justify-between shadow-md  items-center p-3  bg-[#F1F6FB] rounded-lg">
+                        <span className="text-sm font-medium text-gray-600">
+                          {genderconfig[p.employeeGender]}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-800">
+                          <CountUp
+                            end={parseFloat(p.categoryWiseCount || 0)}
+                            duration={2}
+                            separator=","
+                          />
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-
               </div>
 
               {/* on day pass amount */}
@@ -414,13 +478,17 @@ function BuspassDasboard() {
                       <h3 className="text-lg font-semibold text-gray-800">
                         Amount
                       </h3>
-                      <p className="text-sm text-gray-500">
-                        One Day Pass T24
-                      </p>
+                      <p className="text-sm text-gray-500">One Day Pass T24</p>
                     </div>
                   </div>
-                  <div><span className="text-md font-semibold text-gray-800">₹<CountUp
-                        end={parseFloat(buspassDashboard?.data?.freshPassSummary?.[0]?.oneDayPassAmount || 0)}
+                  <div>
+                    <span className="text-md font-semibold text-gray-800">
+                      ₹
+                      <CountUp
+                        end={parseFloat(
+                          buspassDashboard?.data?.freshPassSummary?.[0]
+                            ?.oneDayPassAmount || 0,
+                        )}
                         duration={2}
                         separator=","
                       />
@@ -429,26 +497,24 @@ function BuspassDasboard() {
                 </div>
 
                 <div className=" grid grid-cols-2 gap-3 my-1">
-                  {
-                    buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
-                      return (
-                        <div className="flex justify-between shadow-md  items-center p-3 bg-[#F1F6FB] rounded-lg">
-                          <span className="text-sm font-medium text-gray-600">
-                            {genderconfig[p.employeeGender]}
-                          </span>
-                          <span className="text-sm font-semibold text-gray-800">
-                            ₹<CountUp
-                              end={parseFloat(p.categoryWiseAmount || 0)}
-                              duration={2}
-                              separator=","
-                            />
-                          </span>
-                        </div>
-                      )
-                    })
-                  }
+                  {buspassDashboard?.data?.oneDayPassCategoryCount?.map((p) => {
+                    return (
+                      <div className="flex justify-between shadow-md  items-center p-3 bg-[#F1F6FB] rounded-lg">
+                        <span className="text-sm font-medium text-gray-600">
+                          {genderconfig[p.employeeGender]}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-800">
+                          ₹
+                          <CountUp
+                            end={parseFloat(p.categoryWiseAmount || 0)}
+                            duration={2}
+                            separator=","
+                          />
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-
               </div>
             </div>
           )}
