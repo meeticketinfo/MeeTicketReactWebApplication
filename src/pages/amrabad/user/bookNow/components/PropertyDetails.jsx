@@ -145,10 +145,13 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
           </p>
         </div>
 
+        <div className="py-3">
+          <p className="text-xl xl:text-base font-medium text-[#304A3A] mb-1">Room Booking Details:</p>
+        </div>
         {/* special offers */}
 
-       { (house?.specialOffers!==""||house?.specialOffers)&&<div className=" border-b py-3">
-         
+        {(house?.specialOffers !== "" || house?.specialOffers) && <div className=" border-b py-3">
+
           <div className="  text-[#394D48] text-xs sm:text-sm">
             {house?.specialOffers?.split("\n").map((line, index) => {
               const text = line.trim();
@@ -188,7 +191,7 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
         </div>}
 
         {/* remarks */}
-        <div className=" border-b py-3">
+        <div>
           {/* <h2 className="text-sm sm:text-base font-semibold text-[#304A3A] mb-1">Special Offer:</h2> */}
           <div className="  text-[#394D48] text-xs sm:text-sm">
             {house?.remarks?.split("\n").map((line, index) => {
@@ -203,14 +206,30 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
               // 👉 Detect note lines
               const isNote = text.toLowerCase().startsWith("note");
 
+
               if (isHeading) {
                 return (
-                  <h3 key={index} className="font-semibold mt-2 text-[#304A3A]">
-                    {text}
-                  </h3>
-                );
-              }
+                  <div key={index}>
+                    {text.toLowerCase() === "no cancellation permitted" ? (
+                      <>
+                        <p className="text-xl xl:text-base font-medium text-[#304A3A] mb-1 mt-2">
+                          Cancellation Policy:
+                        </p>
 
+                        <li className="ml-4 list-disc text-[#394D48] text-xs sm:text-sm">
+                          {text}
+                        </li>
+                      </>
+                    ) : (
+                      <h3 className="font-semibold mt-2 text-[#304A3A]">
+                        {text}
+                      </h3>
+                    )}
+                  </div>
+                );
+              };
+
+            
               if (isNote) {
                 return (
                   <p key={index} className="mt-2 text-[#6B7280] italic">
@@ -225,6 +244,8 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
                 </li>
               );
             })}
+
+
           </div>
         </div>
 

@@ -14,7 +14,7 @@ const PackageDetail = () => {
   const { fetchPackageDetail, isPackageDetailLoading, GetPackageDetail } = useUserBookingStore();
 
   const OverviewConfig = {
-   
+
     182: "Tented accommodation with concrete bathrooms",
     180: "Cottages",
     179: "Tented accommodation with concrete bath & dressing",
@@ -185,6 +185,8 @@ const PackageDetail = () => {
                   </div>
                 </div>
 
+
+
                 {/* Detailed Schedule Table (hidden by default, can be toggled) */}
                 {/* <div className="mt-4">
                           <div className="overflow-x-auto border border-gray-200 rounded-lg text-[#1B2128]">
@@ -219,6 +221,8 @@ const PackageDetail = () => {
                           </div>
                         </div> */}
               </div>
+
+
               {/* Notes */}
               <section className="mt-4">
                 {GetPackageDetail?.notes?.length > 0 && <h3 className="mb-4 text-black text-xl font-bold">Notes:</h3>}
@@ -243,7 +247,7 @@ const PackageDetail = () => {
 
 
           {/* over View Details */}
-         { OverviewConfig[packageId]&&<section className="mb-8">
+          {OverviewConfig[packageId] && <section className="mb-8">
 
             <>
               <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
@@ -259,6 +263,21 @@ const PackageDetail = () => {
 
           </section>}
 
+          <div className="w-full">
+            {/* Overview Header */}
+             <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+              <h2 className="text-[16px] font-medium text-[#234235]">
+                Over View
+              </h2>
+            </div>
+
+            {/* Content */}
+            <div className="mt-4 mb-4">
+              <p className="text-[#3b4b5a] text-base">
+                Cottages
+              </p>
+            </div>
+          </div>
 
           {/* Swiper Slider - place this just above the Policy Links section */}
           <div className="w-full mx-auto mb-6 relative">
