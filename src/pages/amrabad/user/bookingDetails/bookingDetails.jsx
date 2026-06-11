@@ -13,7 +13,7 @@ import { useTransactionHandler } from "./components/TransactionHandler";
 
 const AmarabadBookingDetails = () => {
     const { cartItems, loadingCart, fetchCartItems } = useCartStore();
-    const PackageId=cartItems.data[0]?.packageId;
+    const PackageId=cartItems?.data[0]?.packageId;
    
     const { initiateTransaction, loadingInitiateTransaction, addNewBookingDetails, loadingAddNewBookingDetails } = usePaymentStore();
     const navigate = useNavigate();
