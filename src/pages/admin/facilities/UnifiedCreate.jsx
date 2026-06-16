@@ -86,17 +86,17 @@ export default function UnifiedCreate() {
                 >
                   <span className="max-xs:sr-only">Add Ticket Type</span>
                 </button>
-                {/* <button
+                <button
                   onClick={() => {
                     setIsWalkersPassAdd(true);
                     setCurrentWalkersPassEditDetails({});
                     setIsWalkersPassEdit(false)
-                   
+
                   }}
                   className="btn bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
                 >
                   <span className="max-xs:sr-only">Add Walker Pass Type</span>
-                </button> */}
+                </button>
               </>
             ) : (
               <BackButton
