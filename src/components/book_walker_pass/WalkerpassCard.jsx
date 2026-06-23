@@ -30,6 +30,7 @@ const CARD_CANVAS_HEIGHT = 214;
 const CARD_CANVAS_GAP = 12;
 const CARD_PRINT_GAP_MM = (CARD_CANVAS_GAP / CARD_CANVAS_HEIGHT) * CARD_PRINT_HEIGHT_MM;
 const PASS_PRINT_HEIGHT_MM = CARD_PRINT_HEIGHT_MM * 2 + CARD_PRINT_GAP_MM;
+const PDF_PAGE_MARGIN_MM = 5;
 
 const normalizePassResponse = (response) => response?.data || response;
 
@@ -563,13 +564,16 @@ const WalkerPassCard = () => {
             const pdf = new jsPDF({
                 orientation: "portrait",
                 unit: "mm",
-                format: [CARD_PRINT_WIDTH_MM, PASS_PRINT_HEIGHT_MM],
+                format: [
+                    CARD_PRINT_WIDTH_MM + PDF_PAGE_MARGIN_MM * 2,
+                    PASS_PRINT_HEIGHT_MM + PDF_PAGE_MARGIN_MM * 2,
+                ],
             });
             pdf.addImage(
                 imgData,
                 "PNG",
-                0,
-                0,
+                PDF_PAGE_MARGIN_MM,
+                PDF_PAGE_MARGIN_MM,
                 CARD_PRINT_WIDTH_MM,
                 PASS_PRINT_HEIGHT_MM
             );
