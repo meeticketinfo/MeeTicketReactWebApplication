@@ -61,6 +61,7 @@ const UpiPaymentQR = () => {
             const passData = passResponse?.data || passResponse;
 
             if (passData) {
+
                 navigateToPassCard(paymentResponse);
                 return;
             }
@@ -73,7 +74,9 @@ const UpiPaymentQR = () => {
                 paymentResponse,
             });
         } catch (error) {
-            console.log("View pass failed after payment success:", error.response?.data || error.message);
+            console.log("STATUS:", error.response?.status);
+            console.log("ERROR:", error.response?.data);
+
             openPaymentModal({
                 type: "ticket-api-failed",
                 title: "Payment Successful",
@@ -81,7 +84,8 @@ const UpiPaymentQR = () => {
                     "Payment was successful, but we could not fetch the generated walker pass right now. Please retry verification.",
                 paymentResponse,
             });
-        } finally {
+        }
+        finally {
             setIsVerifyingPass(false);
         }
     }, [navigateToPassCard, openPaymentModal, passUserDetailsId, viewPass]);
@@ -93,24 +97,42 @@ const UpiPaymentQR = () => {
         await verifyPassAndNavigate(paymentResponse);
     }, [paymentModal, verifyPassAndNavigate]);
 
+
+
     // Generate QR Code
     useEffect(() => {
         const generateQR = async () => {
             try {
-                if (!upiDeepLink) return;
+                if (!upiDeepLink) {
+                    openPaymentModal({
+                        type: "upi-link-missing",
+                        title: "Payment Information Missing",
+                        message:
+                            "Unable to generate the payment QR code. Please start the booking process again.",
+                    });
+                    return;
+                }
 
                 setIsGeneratingQR(true);
+
                 const url = await QRCode.toDataURL(upiDeepLink);
                 setQrCodeUrl(url);
             } catch (error) {
                 console.error("QR Generation Error:", error);
+
+                openPaymentModal({
+                    type: "qr-failed",
+                    title: "Unable to Generate QR Code",
+                    message:
+                        "We couldn't generate the payment QR code. Please try again.",
+                });
             } finally {
                 setIsGeneratingQR(false);
             }
         };
 
         generateQR();
-    }, [upiDeepLink]);
+    }, [upiDeepLink, openPaymentModal]);
 
     // Countdown Timer
     useEffect(() => {
@@ -182,10 +204,17 @@ const UpiPaymentQR = () => {
             <div className="p-6">
 
                 {/* Header */}
-                <div className="px-6 py-4">
+                <div className="px-6 py-4 flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-gray-800">
                         Book Walker Pass
                     </h2>
+
+                    <button
+                        onClick={() => navigate("/book-walker-pass")}
+                        className="bg-[#09094D] hover:bg-[#07073D] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                        ← Back
+                    </button>
                 </div>
 
                 {/* Full Width Card */}
@@ -266,6 +295,7 @@ const UpiPaymentQR = () => {
                                 </span>
                             </button>
                         )}
+
                         <button
                             type="button"
                             onClick={() => navigate("/book-walker-pass", { replace: true })}

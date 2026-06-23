@@ -83,7 +83,7 @@ export const AMRABAD_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 /// test
-// export const API_BASE_URL =  "https://chh7gchr-7237.inc1.devtunnels.ms/api/"
+ //export const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms/api/"
 
 export const API_ENDPOINTS = {
   AUTH: {

@@ -114,9 +114,6 @@ const WalkerpassDetails = () => {
                         Book Walker Pass
                     </h2>
 
-                    <button className="bg-gray-300 text-white text-xs px-3 py-2 rounded">
-                        PRINT PASS
-                    </button>
                 </div>
                 <div className="bg-white rounded-xl shadow-md border border-gray-200">
 
