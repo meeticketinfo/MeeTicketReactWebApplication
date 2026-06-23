@@ -24,6 +24,13 @@ const renderSpinner = (className = "h-4 w-4") => (
     />
 );
 
+const CARD_PRINT_WIDTH_MM = 85.6;
+const CARD_PRINT_HEIGHT_MM = 53.98;
+const CARD_CANVAS_HEIGHT = 214;
+const CARD_CANVAS_GAP = 12;
+const CARD_PRINT_GAP_MM = (CARD_CANVAS_GAP / CARD_CANVAS_HEIGHT) * CARD_PRINT_HEIGHT_MM;
+const PASS_PRINT_HEIGHT_MM = CARD_PRINT_HEIGHT_MM * 2 + CARD_PRINT_GAP_MM;
+
 const normalizePassResponse = (response) => response?.data || response;
 
 const getPassImageValue = (data) =>
@@ -183,6 +190,63 @@ const loadImage = (src) =>
         img.src = src;
     });
 
+const removeEdgeWhiteBackground = (img) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const { data, width, height } = imageData;
+    const visited = new Uint8Array(width * height);
+    const queue = [];
+
+    const isWhitePixel = (index) =>
+        data[index] > 245 &&
+        data[index + 1] > 245 &&
+        data[index + 2] > 245 &&
+        data[index + 3] > 0;
+
+    const enqueue = (x, y) => {
+        if (x < 0 || y < 0 || x >= width || y >= height) return;
+
+        const pixelIndex = y * width + x;
+        if (visited[pixelIndex]) return;
+
+        const dataIndex = pixelIndex * 4;
+        if (!isWhitePixel(dataIndex)) return;
+
+        visited[pixelIndex] = 1;
+        queue.push([x, y]);
+    };
+
+    for (let x = 0; x < width; x += 1) {
+        enqueue(x, 0);
+        enqueue(x, height - 1);
+    }
+
+    for (let y = 0; y < height; y += 1) {
+        enqueue(0, y);
+        enqueue(width - 1, y);
+    }
+
+    while (queue.length) {
+        const [x, y] = queue.pop();
+        const dataIndex = (y * width + x) * 4;
+        data[dataIndex + 3] = 0;
+
+        enqueue(x + 1, y);
+        enqueue(x - 1, y);
+        enqueue(x, y + 1);
+        enqueue(x, y - 1);
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    return canvas;
+};
+
 const WalkerPassCard = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -330,6 +394,8 @@ const WalkerPassCard = () => {
             loadImage(qrCodeUrl),
         ]);
         const userImg = userImageSource ? await loadImage(userImageSource).catch(() => null) : null;
+        const forestLogoImg = removeEdgeWhiteBackground(forestImg);
+        const meeLogoImg = removeEdgeWhiteBackground(meeImg);
 
         // ════════════════════════════════════════════
         // CARD 1 — Pass Card
@@ -349,19 +415,9 @@ const WalkerPassCard = () => {
             roundRectTop(ctx, x, y, w, HEADER_H, 12 * SCALE);
             ctx.fill();
 
-            // Forest logo circle
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(x + 28 * SCALE, y + 26 * SCALE, 20 * SCALE, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.drawImage(forestImg, x + 8 * SCALE, y + 6 * SCALE, 40 * SCALE, 40 * SCALE);
-
-            // MeeTicket logo circle
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(x + w - 28 * SCALE, y + 26 * SCALE, 20 * SCALE, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.drawImage(meeImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
+            // Logos
+            ctx.drawImage(forestLogoImg, x + 8 * SCALE, y + 6 * SCALE, 40 * SCALE, 40 * SCALE);
+            ctx.drawImage(meeLogoImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
 
             // Park name + pass name
             ctx.fillStyle = "#ffffff";
@@ -447,12 +503,8 @@ const WalkerPassCard = () => {
             ctx.font = `bold ${14 * SCALE}px Arial`;
             ctx.fillText("Pass Instruction", x + 12 * SCALE, y + 32 * SCALE);
 
-            // MeeTicket logo circle
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath();
-            ctx.arc(x + w - 28 * SCALE, y + 26 * SCALE, 20 * SCALE, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.drawImage(meeImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
+            // MeeTicket logo
+            ctx.drawImage(meeLogoImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
 
             // Body
             const bodyY = y + HEADER_H;
@@ -508,10 +560,19 @@ const WalkerPassCard = () => {
         try {
             const canvas = await drawCanvas();
             const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF("p", "mm", "a4");
-            const pdfW = pdf.internal.pageSize.getWidth();
-            const pdfH = (canvas.height * pdfW) / canvas.width;
-            pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH);
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "mm",
+                format: [CARD_PRINT_WIDTH_MM, PASS_PRINT_HEIGHT_MM],
+            });
+            pdf.addImage(
+                imgData,
+                "PNG",
+                0,
+                0,
+                CARD_PRINT_WIDTH_MM,
+                PASS_PRINT_HEIGHT_MM
+            );
             pdf.save("WalkerPass.pdf");
         } catch (err) {
             console.error("PDF generation failed:", err);
@@ -533,11 +594,36 @@ const WalkerPassCard = () => {
                         <title>Walker Pass</title>
                         <style>
                             * { margin: 0; padding: 0; box-sizing: border-box; }
-                            body { display: flex; justify-content: center; background: #fff; }
-                            img { max-width: 100%; height: auto; display: block; }
+                            @page {
+                                size: ${CARD_PRINT_WIDTH_MM}mm ${PASS_PRINT_HEIGHT_MM}mm;
+                                margin: 0;
+                            }
+                            html, body {
+                                width: ${CARD_PRINT_WIDTH_MM}mm;
+                                min-height: ${PASS_PRINT_HEIGHT_MM}mm;
+                                background: #fff;
+                            }
+                            body {
+                                display: flex;
+                                justify-content: center;
+                                align-items: flex-start;
+                            }
+                            img {
+                                width: ${CARD_PRINT_WIDTH_MM}mm;
+                                height: ${PASS_PRINT_HEIGHT_MM}mm;
+                                max-width: none;
+                                display: block;
+                            }
                             @media print {
-                                body { margin: 0; }
-                                img { width: 100%; page-break-inside: avoid; }
+                                html, body {
+                                    width: ${CARD_PRINT_WIDTH_MM}mm;
+                                    min-height: ${PASS_PRINT_HEIGHT_MM}mm;
+                                }
+                                img {
+                                    width: ${CARD_PRINT_WIDTH_MM}mm;
+                                    height: ${PASS_PRINT_HEIGHT_MM}mm;
+                                    page-break-inside: avoid;
+                                }
                             }
                         </style>
                     </head>
