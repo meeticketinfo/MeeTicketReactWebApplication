@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { usePackagesCommonStore } from "../../../../store/amrabad/masters/packagesCommonStore";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import UpdatePackage from "../packages/UpdatePackage";
@@ -86,7 +86,7 @@ const AccordionRow = ({ serial, row }) => {
                 setOpenModal(true);
               }}
             >
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </button>
           </div>
         </td>
@@ -231,7 +231,7 @@ const AccordionSubRow = ({ subRow, subRowSerial, subRowIndex }) => {
                 setSelectedSubRow(subRow);
               }}
             >
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </button>
           </span>
         </td>

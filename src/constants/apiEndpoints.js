@@ -1,19 +1,19 @@
 import useAuthStore from "../store/authStore";
 
 /// dev park
-// export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 //  PARK UAT
 // export const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  PARK Prod
-export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
+// export const API_BASE_URL = "https://meeticket.telangana.gov.in/parkuatapi/api/";
 
 //  paynow UAT
-// export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
+export const PAYNOW_API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkapi/";
 
 //  paynow Prod
-export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
+// export const PAYNOW_API_BASE_URL = "https://meeticket.telangana.gov.in/parkapi/";
 
 // metro dev
 // export const METRO_API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/metroapi/";
@@ -400,6 +400,13 @@ export const API_ENDPOINTS = {
     WALKERS_PASS_REPORT: {
       GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
     },
+  },
+  WALKERS_PASS_BOOKING: {
+    ADD_WALKERS_PASS: `${API_BASE_URL}Transaction/AddPassUserDetails`,
+    GET_PASS_LOCATION_MASTERS: `${API_BASE_URL}Master/GetPassLocationMasters`,
+    INITIATE_PAYMENT: `${API_BASE_URL}v2/PaymentTransaction/IntiateTransactionforCard`,
+    ORDER_STATUS_CALL: `${API_BASE_URL}v3/PaymentTransaction/OrderStatusCall`,
+    VIEW_PASS: `${API_BASE_URL}WalkersPass/ViewPass`,
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,

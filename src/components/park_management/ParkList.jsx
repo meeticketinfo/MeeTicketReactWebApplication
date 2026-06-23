@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { useParkStore } from "../../store/masters/parksStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 import { PiPark } from "react-icons/pi";
 import useAuthStore from "../../store/authStore";
@@ -229,7 +229,7 @@ const ParkList = ({
               }}
             >
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                <FiEdit className="text-[24px] text-blue-600 " />
               </span>
             </button>
             {role === "ROLE_NODALOFFICER" && (

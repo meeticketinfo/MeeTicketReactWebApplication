@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { PosUserCreationStore } from "./pos_store/PosUserCreationStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import PosListForm from "./PosListForm";
 import { ToastContainer } from "react-toastify";
 
@@ -119,7 +119,7 @@ const PosList = ({ setIsEdit, isEdit, setIsPosCreateVisible }) => {
               }}
             >
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                <FiEdit className="text-[24px] text-blue-600 " />
               </span>
             </button>
           </div>

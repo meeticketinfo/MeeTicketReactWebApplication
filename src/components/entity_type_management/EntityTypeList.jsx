@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PopupModal from "../utils/popup_modal/PopupModal";
 import AgGridTable from "../tables/AgGridTable";
 import { useEntityTypesStore } from "../../store/masters/EntityTypesStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import EntityCreateForm from "./EntityCreateForm";
 import { useModalStore } from "../../store/modalStore";
 import { ToastContainer } from "react-toastify";
@@ -76,7 +76,7 @@ const EntityTypeList = ({
             }}
           >
             <span className="">
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </span>
           </button>
         </div>

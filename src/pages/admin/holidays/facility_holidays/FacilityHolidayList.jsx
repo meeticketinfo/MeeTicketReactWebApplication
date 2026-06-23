@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AgGridTable from '../../../../components/tables/AgGridTable';
 import { FacilityHolidayStore } from './FacilityHolidayStore';
-import { LuClipboardEdit } from 'react-icons/lu';
+import { FiEdit } from "react-icons/fi";
 
 const FacilityHolidayList = ({ setIsCreate }) => {
 
@@ -69,7 +69,7 @@ const FacilityHolidayList = ({ setIsCreate }) => {
               }}
             >
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-blue-600" />
+                <FiEdit className="text-[24px] text-blue-600" />
               </span>
             </button>
           </div>

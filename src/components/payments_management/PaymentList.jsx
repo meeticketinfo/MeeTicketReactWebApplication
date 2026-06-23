@@ -1,7 +1,7 @@
 import React, { useState , useEffect } from "react"
 import AgGridTable from "../tables/AgGridTable"
 import { usePaymentStore } from "../../store/masters/paymentsStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 
 const PaymentList = () => {
@@ -54,7 +54,7 @@ const PaymentList = () => {
                 <div style={{ display: "flex align-center", gap: "0.5rem" }}>
                   <button className="btn-edit" onClick={() => handleEdit(params.data)}>
                     <span className="">
-                      <LuClipboardEdit className="text-[24px] " />
+                      <FiEdit className="text-[24px] " />
                     </span>
                   </button>
                   <button

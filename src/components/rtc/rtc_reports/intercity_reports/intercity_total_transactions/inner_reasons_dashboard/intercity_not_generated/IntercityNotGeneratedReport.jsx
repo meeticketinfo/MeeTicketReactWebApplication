@@ -41,8 +41,6 @@ const IntercityNotGeneratedReport = () => {
       endDate: toDate ?? deepInnerFilters.endDate ?? innerFilters.toDate ?? "",
       phoneNumber:
         mobileNumber ?? deepInnerFilters.mobileNumber ?? innerFilters.mobileNumber ?? "",
-      arrivalLocation: deepInnerFilters.arrivalLocation ?? innerFilters.arrivalLocation ?? outerFilters.arrivalLocation ?? "",
-      departureLocation: deepInnerFilters.departureLocation ?? innerFilters.departureLocation ?? outerFilters.departureLocation ?? "",
       status: status ?? innerFilters.status ?? outerFilters.status ?? "",
       subCategory: subCategory ?? innerFilters.subCategory ?? outerFilters.subCategory ?? "",
       arrivalLocation: arrivalLocation ?? innerFilters.arrivalLocation ?? outerFilters.arrivalLocation ?? "",

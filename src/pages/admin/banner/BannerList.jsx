@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import AgGridTable from "../../../components/tables/AgGridTable";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 
@@ -112,7 +112,7 @@ const BannerList = ({ setIsEdit, setIsBannerCreateVisible }) => {
             >
               <Tippy content="Edit" placement="top">
                 <span className="">
-                  <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                  <FiEdit className="text-[24px] text-blue-600 " />
                 </span>
               </Tippy>
             </button>

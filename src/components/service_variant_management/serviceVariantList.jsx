@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import { useServiceVariantStore } from "../../store/masters/serviceVariantsStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import Tippy from "@tippyjs/react";
 import { formatToCurrency } from "../../utils/TypographyHelper";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -108,7 +108,7 @@ const ServiceVariantList = ({
               }}
             >
               <span className="">
-                <LuClipboardEdit className="text-[24px] text-[#0C3770]" />
+                <FiEdit className="text-[24px] text-[#0C3770]" />
               </span>
             </button>
           </Tippy>
