@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import AdminLayout from "../../layouts/AdminLayout";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useWalkerpassStore } from "./WalkerpassStore";
+import { getStoredWalkerPassImage } from "./walkerPassImageUtils";
+import PopupModal from "../utils/popup_modal/PopupModal";
+
+const renderSpinner = (className = "h-4 w-4") => (
+    <span
+        className={`${className} inline-block animate-spin rounded-full border-2 border-current border-t-transparent`}
+        aria-hidden="true"
+    />
+);
 
 const UpiPaymentQR = () => {
     const location = useLocation();
@@ -11,16 +20,78 @@ const UpiPaymentQR = () => {
         localStorage.getItem("passUserDetailsId");
     const [qrCodeUrl, setQrCodeUrl] = useState("");
     const [timeLeft, setTimeLeft] = useState(180); // 3 minutes
+    const [paymentModal, setPaymentModal] = useState(null);
+    const [isGeneratingQR, setIsGeneratingQR] = useState(false);
+    const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+    const [isVerifyingPass, setIsVerifyingPass] = useState(false);
+    const hasHandledPaymentRef = useRef(false);
 
     const navigate = useNavigate();
     const upiDeepLink = location.state?.redirectUrl;
     const orderId = location.state?.orderId;
+    const userImageBase64 =
+        location.state?.userImageBase64 ||
+        getStoredWalkerPassImage(passUserDetailsId);
 
     console.log("Location State:", location.state);
     console.log("UPI Deep Link:", upiDeepLink);
 
     const { checkOrderStatus, viewPass } = useWalkerpassStore();
 
+    const openPaymentModal = useCallback((modalDetails) => {
+        hasHandledPaymentRef.current = true;
+        setPaymentModal(modalDetails);
+    }, []);
+
+    const navigateToPassCard = useCallback((paymentResponse) => {
+        navigate("/walker-pass-card", {
+            state: {
+                paymentResponse,
+                orderId,
+                passUserDetailsId,
+                userImageBase64,
+            },
+        });
+    }, [navigate, orderId, passUserDetailsId, userImageBase64]);
+
+    const verifyPassAndNavigate = useCallback(async (paymentResponse) => {
+        try {
+            setIsVerifyingPass(true);
+            const passResponse = await viewPass(passUserDetailsId);
+            const passData = passResponse?.data || passResponse;
+
+            if (passData) {
+                navigateToPassCard(paymentResponse);
+                return;
+            }
+
+            openPaymentModal({
+                type: "ticket-pending",
+                title: "Payment Successful",
+                message:
+                    "Payment was successful, but the walker pass is still being generated. Please retry in a few seconds.",
+                paymentResponse,
+            });
+        } catch (error) {
+            console.log("View pass failed after payment success:", error.response?.data || error.message);
+            openPaymentModal({
+                type: "ticket-api-failed",
+                title: "Payment Successful",
+                message:
+                    "Payment was successful, but we could not fetch the generated walker pass right now. Please retry verification.",
+                paymentResponse,
+            });
+        } finally {
+            setIsVerifyingPass(false);
+        }
+    }, [navigateToPassCard, openPaymentModal, passUserDetailsId, viewPass]);
+
+    const handleRetryPassVerification = useCallback(async () => {
+        const paymentResponse = paymentModal?.paymentResponse;
+        setPaymentModal(null);
+        hasHandledPaymentRef.current = false;
+        await verifyPassAndNavigate(paymentResponse);
+    }, [paymentModal, verifyPassAndNavigate]);
 
     // Generate QR Code
     useEffect(() => {
@@ -28,10 +99,13 @@ const UpiPaymentQR = () => {
             try {
                 if (!upiDeepLink) return;
 
+                setIsGeneratingQR(true);
                 const url = await QRCode.toDataURL(upiDeepLink);
                 setQrCodeUrl(url);
             } catch (error) {
                 console.error("QR Generation Error:", error);
+            } finally {
+                setIsGeneratingQR(false);
             }
         };
 
@@ -52,57 +126,53 @@ const UpiPaymentQR = () => {
     // Timeout Handling
     useEffect(() => {
         if (timeLeft === 0) {
-            alert("Payment session expired");
-
-            navigate("/book-walker-pass", {
-                replace: true,
+            openPaymentModal({
+                type: "timeout",
+                title: "Payment Session Expired",
+                message:
+                    "Payment was not completed within the allowed time. Please start the walker pass booking again.",
             });
         }
-    }, [timeLeft, navigate]);
+    }, [timeLeft, openPaymentModal]);
 
     // Check Payment Status
     useEffect(() => {
-        if (!orderId) return;
+        if (!orderId || paymentModal || hasHandledPaymentRef.current) return;
 
         const interval = setInterval(async () => {
             try {
+                if (hasHandledPaymentRef.current) return;
+                setIsCheckingPayment(true);
                 const response = await checkOrderStatus(orderId);
 
                 console.log("Order Status Response:", response);
                 console.log("Result Status:", response?.data?.resultStatus);
 
                 if (response?.data?.resultStatus === "TXN_SUCCESS") {
+                    hasHandledPaymentRef.current = true;
+                    await verifyPassAndNavigate(response);
+                    return;
+                }
 
-                    // verify pass generated
-                    const passResponse = await viewPass(passUserDetailsId);
-
-                    if (passResponse?.status === 200 && passResponse?.data) {
-
-                        navigate("/walker-pass-card", {
-                            state: {
-                                paymentResponse: response,
-                                orderId,
-                                passUserDetailsId,
-                            },
-                        });
-
-                    } else {
-
-                        alert(
-                            "Payment was successful, but your pass is still being generated. Please check My Passes after a few minutes."
-                        );
-
-                        navigate("/my-passes");
-                    }
+                if (response?.data?.resultStatus === "TXN_FAILURE") {
+                    openPaymentModal({
+                        type: "payment-failed",
+                        title: "Payment Failed",
+                        message:
+                            response?.data?.resultMsg ||
+                            "Payment failed. Please try booking the walker pass again.",
+                    });
                 }
             } catch (error) {
                 console.log("STATUS:", error.response?.status);
                 console.log("ERROR:", error.response?.data);
+            } finally {
+                setIsCheckingPayment(false);
             }
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [orderId, navigate, checkOrderStatus]);
+    }, [orderId, paymentModal, checkOrderStatus, openPaymentModal, verifyPassAndNavigate]);
 
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
@@ -127,7 +197,16 @@ const UpiPaymentQR = () => {
                             Scan the QR Code for Payment
                         </h3>
 
-                        {qrCodeUrl && (
+                        {isGeneratingQR && (
+                            <div className="w-64 h-64 border border-dashed border-gray-300 rounded flex flex-col items-center justify-center text-gray-600">
+                                {renderSpinner("h-8 w-8 text-[#09094D]")}
+                                <p className="mt-3 text-xs font-medium">
+                                    Generating payment QR...
+                                </p>
+                            </div>
+                        )}
+
+                        {!isGeneratingQR && qrCodeUrl && (
                             <img
                                 src={qrCodeUrl}
                                 alt="UPI QR Code"
@@ -140,11 +219,63 @@ const UpiPaymentQR = () => {
                             {" "}
                             {minutes}:{seconds.toString().padStart(2, "0")}sec
                         </p>
+                        <div className="mt-3 min-h-[28px] flex items-center gap-2 text-xs font-medium text-[#09094D]">
+                            {(isCheckingPayment || isVerifyingPass) && (
+                                <>
+                                    {renderSpinner("h-4 w-4")}
+                                    <span>
+                                        {isVerifyingPass
+                                            ? "Payment successful. Generating pass..."
+                                            : "Checking payment status..."}
+                                    </span>
+                                </>
+                            )}
+                        </div>
 
                     </div>
                 </div>
 
             </div>
+            <PopupModal
+                popupModalId="walker-pass-payment-status"
+                isOpen={Boolean(paymentModal)}
+                onClose={() => setPaymentModal(null)}
+                size="small"
+                closeButton={false}
+                contentClassName="bg-white rounded-lg shadow-lg"
+                overlayClassName="bg-gray-800 bg-opacity-60"
+            >
+                <div className="p-6 text-center">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                        {paymentModal?.title}
+                    </h3>
+                    <p className="mt-3 text-sm text-gray-600">
+                        {paymentModal?.message}
+                    </p>
+                    <div className="mt-6 flex justify-center gap-3">
+                        {["ticket-pending", "ticket-api-failed"].includes(paymentModal?.type) && (
+                            <button
+                                type="button"
+                                onClick={handleRetryPassVerification}
+                                disabled={isVerifyingPass}
+                                className="bg-[#09094D] text-white px-4 py-2 rounded text-xs font-semibold disabled:opacity-60"
+                            >
+                                <span className="inline-flex items-center gap-2">
+                                    {isVerifyingPass && renderSpinner("h-3 w-3")}
+                                    {isVerifyingPass ? "Verifying..." : "Retry Ticket"}
+                                </span>
+                            </button>
+                        )}
+                        <button
+                            type="button"
+                            onClick={() => navigate("/book-walker-pass", { replace: true })}
+                            className="bg-gray-200 text-gray-800 px-4 py-2 rounded text-xs font-semibold"
+                        >
+                            Back To Booking
+                        </button>
+                    </div>
+                </div>
+            </PopupModal>
         </AdminLayout>
     );
 };

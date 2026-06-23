@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FiPrinter } from "react-icons/fi";
 import * as Yup from "yup";
 import { useWalkerpassStore } from "./WalkerpassStore.jsx";
 import useAuthStore from "../../store/authStore";
 import { toast, ToastContainer } from "react-toastify";
+import {
+    fileToCompressedDataUrl,
+    storeWalkerPassImage,
+} from "./walkerPassImageUtils";
 
 const WalkerpassForm = () => {
     const navigate = useNavigate();
@@ -119,10 +121,9 @@ const WalkerpassForm = () => {
     const [idProofPreview, setIdProofPreview] = useState(null);
     const [selfiePreview, setSelfiePreview] = useState(null);
 
-    const [amount, setAmount] = useState(0);
     const [passes, setPasses] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isPassLoading, setIsPassLoading] = useState(false);
+    const [, setIsPassLoading] = useState(false);
 
     useEffect(() => {
         const fetchPasses = async () => {
@@ -141,7 +142,7 @@ const WalkerpassForm = () => {
         };
 
         fetchPasses();
-    }, [parkId]);
+    }, [parkId, getPassLocationMasters]);
 
     useEffect(() => {
         console.log("PASS LOCATION DATA:", passLocationData);
@@ -159,46 +160,6 @@ const WalkerpassForm = () => {
     useEffect(() => {
         console.log("Available Passes:", passes);
     }, [passes]);
-
-    const handleIdProofChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            setIdProofPreview(URL.createObjectURL(file));
-        }
-    };
-
-    const handleSelfieChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            setSelfiePreview(URL.createObjectURL(file));
-        }
-    };
-    const calculateAge = (dob) => {
-        if (!dob) return "";
-
-        const birthDate = new Date(dob);
-        const today = new Date();
-
-        let age =
-            today.getFullYear() -
-            birthDate.getFullYear();
-
-        const monthDiff =
-            today.getMonth() -
-            birthDate.getMonth();
-
-        if (
-            monthDiff < 0 ||
-            (monthDiff === 0 &&
-                today.getDate() < birthDate.getDate())
-        ) {
-            age--;
-        }
-
-        return age;
-    };
 
     useEffect(() => {
         return () => {
@@ -260,6 +221,9 @@ const WalkerpassForm = () => {
                 throw new Error("Pass creation failed");
             }
 
+            const userImageBase64 = await fileToCompressedDataUrl(values.selfie);
+            storeWalkerPassImage(response.passUserDetailsId, userImageBase64);
+
             toast.success("Walker Pass Added Successfully!");
 
             setTimeout(() => {
@@ -267,6 +231,7 @@ const WalkerpassForm = () => {
                     state: {
                         ...values,
                         parkId,
+                        userImageBase64,
                         passUserDetailsId:
                             response?.passUserDetailsId,
                     },

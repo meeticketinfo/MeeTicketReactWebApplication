@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AdminLayout from "../../layouts/AdminLayout";
 import upiIcon from "../../images/upi.svg";
-import HandCash from "../../images/cash.svg";
 import { useWalkerpassStore } from "./WalkerpassStore.jsx";
 import PopupModal from "../utils/popup_modal/PopupModal";
+import { toast } from "react-toastify";
+import {
+    fileToCompressedDataUrl,
+    storeWalkerPassImage,
+} from "./walkerPassImageUtils";
 
 
 const WalkerpassDetails = () => {
@@ -31,11 +35,6 @@ const WalkerpassDetails = () => {
     const [mobileNumber, setMobileNumber] = useState("");
 
     const [openModalId, setOpenModalId] = useState(null);
-
-    const isValidMobile =
-        /^[6-9]\d{9}$/.test(mobileNumber);
-
-
 
     const openModal = (id) => setOpenModalId(id);
     const closeModal = () => setOpenModalId(null);
@@ -70,6 +69,11 @@ const WalkerpassDetails = () => {
             if (response?.status === 200) {
 
                 localStorage.setItem("passUserDetailsId", customerId);
+                let userImageBase64 = data?.userImageBase64 || "";
+                if (!userImageBase64 && data?.selfie instanceof File) {
+                    userImageBase64 = await fileToCompressedDataUrl(data.selfie);
+                }
+                storeWalkerPassImage(customerId, userImageBase64);
 
                 closeModal();
 
@@ -85,6 +89,7 @@ const WalkerpassDetails = () => {
                         orderId: response.data.orderId,
                         amount: amount,
                         passUserDetailsId: customerId,
+                        userImageBase64,
                     },
                 });
 
