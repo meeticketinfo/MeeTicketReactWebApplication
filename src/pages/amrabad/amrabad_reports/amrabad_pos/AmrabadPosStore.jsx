@@ -21,7 +21,7 @@ export const useAmrabadPosStore = create((set) => ({
       );
      
       set({
-        AmrabadPosReportData: response.data.data,
+        AmrabadPosReportData: response.data ?? [],
       });
       return { response: response.data };
     } catch (error) {

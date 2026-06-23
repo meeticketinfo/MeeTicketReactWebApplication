@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import { BsTrash } from "react-icons/bs";
-import { IoArrowForward } from "react-icons/io5";
+import { IoArrowForward, IoArrowBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../../../store/amrabad/user/userCartStore";
 import CheckoutDetailsShimmer from "../../shimmer/CheckoutDetailsShimmer";
@@ -119,10 +119,16 @@ const CheckoutDetails = () => {
               {/* <Link to={`/amrabad-resort`} className="text-[#304A3A] text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
                 + Add More Packages
               </Link> */}
-              <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 flex items-center whitespace-nowrap">
-                Clear Cart
-                {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
-              </button>
+              <div className="flex items-center gap-2 ms-auto mb-4">
+                <button onClick={() => navigate(-1)} className="bg-[#304A3A] text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center flex items-center whitespace-nowrap">
+                  <IoArrowBack className="mr-2" />
+                  Back
+                </button>
+                <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center flex items-center whitespace-nowrap">
+                  Clear Cart
+                  {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
+                </button>
+              </div>
             </div>
 
             {Object.values(groupedCartItems).map((group) => {
