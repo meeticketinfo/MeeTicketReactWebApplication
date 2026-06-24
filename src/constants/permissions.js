@@ -104,6 +104,7 @@ export const parkAdminPermissions = [
   "facility/unified-create",
   "completed-bookings",
   "walkers-pass-report",
+  "walkers-pass-summary-report",
   "payment-transaction-report",
   // "Grievance-consolidate",
   "Grievance-Incident",

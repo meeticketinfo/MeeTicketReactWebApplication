@@ -83,7 +83,7 @@ export const AMRABAD_API_BASE_URL =
   "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
 
 /// test
- //export const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms/api/"
+//export const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms/api/"
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -174,6 +174,7 @@ export const API_ENDPOINTS = {
     WALKERS_PASS: {
       ADD_NEW_WALKERS_PASS: `${API_BASE_URL}Master/AddWalkerPassType`,
       UPDATE_WALKERS_PASS: `${API_BASE_URL}Master/UpdateWalkerPassType`,
+      WALKER_PASS_SUMMARY_REPORT: `${API_BASE_URL}WalkersPass/WalkerPassSummaryReport`,
     },
     BANNER: {
       GET_BANNERS: `${API_BASE_URL}Advertisement/GetAllBanners`,

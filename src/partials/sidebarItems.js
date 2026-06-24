@@ -36,6 +36,7 @@ import { VscCompassActive } from "react-icons/vsc";
 import { MdEventAvailable } from "react-icons/md";
 import { GrAtm } from "react-icons/gr";
 
+
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -205,6 +206,11 @@ const sidebarItems = [
         title: "Walkers Pass Report",
         icon: TbReportAnalytics,
         path: "/walkers-pass-report",
+      },
+      {
+        title: "Walkers Pass Summary Report",
+        icon: TbReportAnalytics,
+        path: "/walkers-pass-summary-report",
       },
       {
         title: "Bank Payments",
@@ -631,5 +637,5 @@ const sidebarItems = [
     ],
   },
 ];
-
+console.log(sidebarItems);
 export default sidebarItems;
