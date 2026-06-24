@@ -399,7 +399,7 @@ export const API_ENDPOINTS = {
     },
     // Walkers pass report endpoints
     WALKERS_PASS_REPORT: {
-      GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/WalkerpassDetailedReport`,
+      GET_WALKERS_PASS_REPORT: `${API_BASE_URL}WalkersPass/GetWalkerPassDetailedReport`,
     },
   },
   WALKERS_PASS_BOOKING: {

@@ -435,38 +435,82 @@ const WalkerPassCard = () => {
 
             // User photo
             if (userImg) {
-                ctx.drawImage(userImg, x + 9 * SCALE, bodyY + 8 * SCALE, 62 * SCALE, 76 * SCALE);
+                ctx.drawImage(
+                    userImg,
+                    x + 9 * SCALE,
+                    bodyY + 8 * SCALE,
+                    95 * SCALE,
+                    95 * SCALE
+                );
             } else {
                 ctx.strokeStyle = "#cccccc";
                 ctx.lineWidth = 1 * SCALE;
-                ctx.strokeRect(x + 9 * SCALE, bodyY + 8 * SCALE, 62 * SCALE, 76 * SCALE);
+                ctx.strokeRect(x + 9 * SCALE, bodyY + 8 * SCALE, 80 * SCALE, 80 * SCALE);
             }
 
-            // Name label
-            ctx.fillStyle = "#000000";
+            // Name & DOB between Image and QR
+            const textX = x + 115 * SCALE;
+
             ctx.textAlign = "left";
-            ctx.font = `bold ${9 * SCALE}px Arial`;
-            ctx.fillText((passData?.userName || "").toUpperCase(), x + 9 * SCALE, bodyY + 92 * SCALE);
+
+            // Name
+            ctx.fillStyle = "#000000";
+            ctx.font = `bold ${10 * SCALE}px Arial`;
+            ctx.fillText(
+                (passData?.userName || "").toUpperCase(),
+                textX,
+                bodyY + 35 * SCALE
+            );
+
+            // Name Label
             ctx.fillStyle = "#666666";
             ctx.font = `${8 * SCALE}px Arial`;
-            ctx.fillText("Name", x + 9 * SCALE, bodyY + 103 * SCALE);
+            ctx.fillText(
+                "Name",
+                textX,
+                bodyY + 50 * SCALE
+            );
 
             // DOB
             ctx.fillStyle = "#000000";
-            ctx.font = `bold ${9 * SCALE}px Arial`;
-            ctx.fillText(passData?.dateOfBirth || "", x + 9 * SCALE, bodyY + 118 * SCALE);
+            ctx.font = `bold ${10 * SCALE}px Arial`;
+            ctx.fillText(
+                passData?.dateOfBirth || "",
+                textX,
+                bodyY + 75 * SCALE
+            );
+
+            // DOB Label
             ctx.fillStyle = "#666666";
             ctx.font = `${8 * SCALE}px Arial`;
-            ctx.fillText("Date Of Birth", x + 9 * SCALE, bodyY + 129 * SCALE);
+            ctx.fillText(
+                "Date Of Birth",
+                textX,
+                bodyY + 90 * SCALE
+            );
 
             // QR code
-            ctx.drawImage(qrImg, x + w - 120 * SCALE, bodyY + 6 * SCALE, 108 * SCALE, 108 * SCALE);
+            const qrSize = 110 * SCALE;
+            const qrX = x + w - qrSize - 8 * SCALE;
+            const qrY = bodyY + 4 * SCALE;
 
-            // Amount
-            ctx.fillStyle = "#000000";
+            ctx.drawImage(
+                qrImg,
+                qrX,
+                qrY,
+                qrSize,
+                qrSize
+            );
+
+            ctx.fillStyle = "#000";
             ctx.textAlign = "center";
             ctx.font = `bold ${10 * SCALE}px Arial`;
-            ctx.fillText(`Amount: ₹${passData?.price || ""}`, x + w - 66 * SCALE, bodyY + 122 * SCALE);
+
+            ctx.fillText(
+                `Amount: ₹${passData?.price || ""}`,
+                qrX + qrSize / 2,
+                qrY + qrSize + 20 * SCALE
+            );
 
             // Footer
             ctx.fillStyle = "#091A8C";
@@ -765,110 +809,113 @@ const WalkerPassCard = () => {
                                 <div className="h-[214px] rounded-[12px] border border-gray-200 bg-gray-100 animate-pulse" />
                             </div>
                         ) : (
-                        <div className="w-[340px]">
-                            <div className="bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
-                                <div className="bg-[#091A8C] text-white px-2 py-1">
-                                    <div className="flex items-center justify-between">
-                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                            <img src={ForestLogo} alt="Forest Logo" className="w-10 h-10 rounded-full object-contain" />
-                                        </div>
-                                        <div className="text-center flex-1">
-                                            <h1 className="text-[14px] font-bold leading-tight">{passData?.parkName}</h1>
-                                            <p className="text-[14px] font-semibold">{passData?.passName}</p>
-                                        </div>
-                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                            <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="px-3 py-2 flex-1" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-                                    <div className="flex justify-between">
-                                        <div className="flex flex-col">
-                                            <img
-                                                src={userImageBase64 || getPassImageValue(passData)}
-                                                alt="User"
-                                                className="w-[62px] h-[76px] border border-gray-300 object-cover"
-                                                onError={() => {
-                                                    if (!userImageBase64) {
-                                                        setImageLoadMessage(
-                                                            "User image could not be loaded from the server. Select the photo here once to include it in PDF/print."
-                                                        );
-                                                    }
-                                                }}
-                                            />
-                                            {isPreparingImage && (
-                                                <div className="mt-1 flex items-center gap-1 text-[7px] text-[#09094D]">
-                                                    {renderSpinner("h-3 w-3")}
-                                                    <span>Preparing photo...</span>
-                                                </div>
-                                            )}
-                                            {imageLoadMessage && !userImageBase64 && (
-                                                <label className="mt-1 w-[120px] text-[7px] leading-[9px] text-red-600 cursor-pointer">
-                                                    {imageLoadMessage}
-                                                    <span className="block mt-1 text-blue-700 underline">
-                                                        Select photo
-                                                    </span>
-                                                    <input
-                                                        type="file"
-                                                        accept=".jpg,.jpeg,.png"
-                                                        className="hidden"
-                                                        onChange={handleUserPhotoUpload}
-                                                    />
-                                                </label>
-                                            )}
-                                            <div className="mt-1 leading-[7px]">
-                                                <p className="text-[9px] font-bold uppercase">{passData?.userName}</p>
-                                                <p className="text-[8px] text-gray-600 mt-[1px]">Name</p>
-                                                <p className="text-[9px] font-bold mt-2">{passData?.dateOfBirth}</p>
-                                                <p className="text-[8px] text-gray-600 mt-[1px]">Date Of Birth</p>
+                            <div className="w-[340px]">
+                                <div className="bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
+                                    <div className="bg-[#091A8C] text-white px-2 py-1">
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                                <img src={ForestLogo} alt="Forest Logo" className="w-10 h-10 rounded-full object-contain" />
                                             </div>
-                                        </div>
-                                        <div className="flex flex-col items-center">
-                                            {qrCodeUrl ? (
-                                                <img src={qrCodeUrl} alt="QR Code" className="w-[108px] h-[108px]" />
-                                            ) : (
-                                                <div className="w-[108px] h-[108px] border border-dashed border-gray-300 flex items-center justify-center bg-white">
-                                                    {renderSpinner("h-5 w-5 text-[#09094D]")}
-                                                </div>
-                                            )}
-                                            <div className="w-[108px] flex justify-center items-center gap-1 mt-[2px]">
-                                                <span className="text-[10px] font-bold">Amount:</span>
-                                                <span className="text-[10px] font-bold">₹{passData?.price}</span>
+                                            <div className="text-center flex-1">
+                                                <h1 className="text-[14px] font-bold leading-tight">{passData?.parkName}</h1>
+                                                <p className="text-[14px] font-semibold">{passData?.passName}</p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                                <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="bg-[#091A8C] text-white text-center py-[7px] -mt-[7px] relative z-10">
-                                    <p className="text-[8px] font-bold">
-                                        VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
-                                    </p>
-                                </div>
-                            </div>
+                                    <div className="px-3 py-2 flex-1" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+                                        <div className="flex justify-between items-start">
+                                            {/* User Photo */}
+                                            <div>
+                                                <img
+                                                    src={userImageBase64 || getPassImageValue(passData)}
+                                                    alt="User"
+                                                    className="w-[95px] h-[95px] border border-gray-300 object-cover"
+                                                    onError={() => {
+                                                        if (!userImageBase64) {
+                                                            setImageLoadMessage(
+                                                                "User image could not be loaded from the server. Select the photo here once to include it in PDF/print."
+                                                            );
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
 
-                            {/* Instructions Card Preview */}
-                            <div className="mt-3 bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
-                                <div className="bg-[#091A8C] text-white px-3 py-2">
-                                    <div className="flex items-center justify-between">
-                                        <h1 className="text-[14px] font-semibold">Pass Instruction</h1>
-                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                            <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
+                                            {/* Name & DOB */}
+                                            <div className="flex flex-col ml-2 mt-2 flex-1">
+                                                <p className="text-[10px] font-bold uppercase">
+                                                    {passData?.userName}
+                                                </p>
+                                                <p className="text-[8px] text-gray-600">
+                                                    Name
+                                                </p>
+
+                                                <p className="text-[10px] font-bold mt-3">
+                                                    {passData?.dateOfBirth}
+                                                </p>
+                                                <p className="text-[8px] text-gray-600">
+                                                    Date Of Birth
+                                                </p>
+                                            </div>
+
+                                            {/* QR */}
+                                            <div className="flex flex-col items-center">
+                                                {qrCodeUrl ? (
+                                                    <img
+                                                        src={qrCodeUrl}
+                                                        alt="QR Code"
+                                                        className="w-[110px] h-[110px]"
+                                                    />
+                                                ) : (
+                                                    <div className="w-[120px] h-[120px] border border-dashed border-gray-300 flex items-center justify-center bg-white">
+                                                        {renderSpinner("h-5 w-5 text-[#09094D]")}
+                                                    </div>
+                                                )}
+
+                                                <div className="w-[108px] flex justify-center items-center gap-1 mt-[2px]">
+                                                    <span className="text-[10px] font-bold">
+                                                        Amount:
+                                                    </span>
+                                                    <span className="text-[10px] font-bold">
+                                                        ₹{passData?.price}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className="bg-[#091A8C] text-white text-center py-[4px] -mt-[7px] relative z-10">
+                                        <p className="text-[8px] font-bold">
+                                            VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex-1 px-3 py-3 text-[7px] font-bold text-[#333]" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-                                    <p className="text-red-600 font-bold text-[10px] mb-1">Terms and Conditions</p>
-                                    <p className="leading-[10px]">Monthly Walker pass Validity is only till the end of the month,<br />irrespective of the date of purchase</p>
-                                    <p className="leading-[10px] mt-1">Monthly Walker pass Validity is only till 30th of June Next Year,<br />irrespective of the Month of purchase</p>
-                                    <p className="leading-[10px] mt-1">The Walker pass is only valid once a Day.</p>
-                                    <p className="leading-[10px] mt-1">Park Timings: Open daily from 06:00 am – 6:00 pm</p>
-                                </div>
-                                <div className="bg-[#091A8C] text-white py-[5px] flex justify-center items-center">
-                                    <p className="text-[8px] font-bold text-center">
-                                        VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
-                                    </p>
+
+                                {/* Instructions Card Preview */}
+                                <div className="mt-3 bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
+                                    <div className="bg-[#091A8C] text-white px-3 py-2">
+                                        <div className="flex items-center justify-between">
+                                            <h1 className="text-[14px] font-semibold">Pass Instruction</h1>
+                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                                                <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 px-3 py-3 text-[7px] font-bold text-[#333]" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
+                                        <p className="text-red-600 font-bold text-[10px] mb-1">Terms and Conditions</p>
+                                        <p className="leading-[10px]">Monthly Walker pass Validity is only till the end of the month,<br />irrespective of the date of purchase</p>
+                                        <p className="leading-[10px] mt-1">Monthly Walker pass Validity is only till 30th of June Next Year,<br />irrespective of the Month of purchase</p>
+                                        <p className="leading-[10px] mt-1">The Walker pass is only valid once a Day.</p>
+                                        <p className="leading-[10px] mt-1">Park Timings: Open daily from 06:00 am – 6:00 pm</p>
+                                    </div>
+                                    <div className="bg-[#091A8C] text-white py-[5px] flex justify-center items-center">
+                                        <p className="text-[8px] font-bold text-center">
+                                            VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         )}
 
                         {/* Buttons */}
@@ -876,11 +923,10 @@ const WalkerPassCard = () => {
                             <button
                                 onClick={downloadPass}
                                 disabled={isDownloading || isPrinting || isPassLoading || !passData || !qrCodeUrl}
-                                className={`text-white text-[10px] px-4 py-1 rounded transition-all ${
-                                    isDownloading || isPrinting || isPassLoading || !passData || !qrCodeUrl
-                                        ? "bg-gray-400 cursor-not-allowed"
-                                        : "bg-green-600 hover:bg-green-700 cursor-pointer"
-                                }`}
+                                className={`text-white text-[10px] px-4 py-1 rounded transition-all ${isDownloading || isPrinting || isPassLoading || !passData || !qrCodeUrl
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-green-600 hover:bg-green-700 cursor-pointer"
+                                    }`}
                             >
                                 <span className="inline-flex items-center gap-2">
                                     {isDownloading && renderSpinner("h-3 w-3")}
@@ -891,11 +937,10 @@ const WalkerPassCard = () => {
                             <button
                                 onClick={printPass}
                                 disabled={isPrinting || isDownloading || isPassLoading || !passData || !qrCodeUrl}
-                                className={`text-white text-[10px] px-4 py-1 rounded transition-all ${
-                                    isPrinting || isDownloading || isPassLoading || !passData || !qrCodeUrl
-                                        ? "bg-gray-400 cursor-not-allowed"
-                                        : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                                }`}
+                                className={`text-white text-[10px] px-4 py-1 rounded transition-all ${isPrinting || isDownloading || isPassLoading || !passData || !qrCodeUrl
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                                    }`}
                             >
                                 <span className="inline-flex items-center gap-2">
                                     {isPrinting && renderSpinner("h-3 w-3")}

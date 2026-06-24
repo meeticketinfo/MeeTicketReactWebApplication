@@ -8,12 +8,12 @@ import useAuthStore from '../../../store/authStore'
 const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const { fetchWalkersPassReportData } = useWalkersPassReportStore()
   const [isBookingDate, setIsBookingDate] = useState(false);
-  
+
   // Get saved filters from localStorage
   const savedFilters = JSON.parse(
     localStorage.getItem("walkers-pass-report-filters") || "{}"
   );
-  
+
   console.log('Saved filters from localStorage:', savedFilters);
 
   const initialValues = {
@@ -29,10 +29,10 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   }
 
   const { allServices, fetchAllServices, allPassTypes, fetchAllPassTypes } = useServiceStore();
-  
-  const {  roleDetails } =
-  useAuthStore();
-const role = roleDetails?.name;
+
+  const { roleDetails } =
+    useAuthStore();
+  const role = roleDetails?.name;
   useEffect(() => {
     fetchAllServices(role);
     fetchAllPassTypes();
@@ -49,23 +49,23 @@ const role = roleDetails?.name;
     // Add a small delay to ensure component is fully mounted
     const timer = setTimeout(() => {
       const savedBookingDate = savedFilters.purchaseOrBooking || 'Purchase';
-      
+
       // Use saved values or defaults
       const fromDate = savedFilters.fromDate || getCurrentDate();
       const toDate = savedFilters.toDate || getCurrentDate();
-      
-       const formattedValues = {
-         fromDate: fromDate,
-         toDate: toDate,
-         passTypeId: savedFilters.passTypeId || "",
-         subFacilityId: savedFilters.subFacilityId || "",
-         locationId: savedFilters.locationId || "",
-         status: savedFilters.status || "CONFIRMED",
-         purchaseOrBooking: savedBookingDate,
-         pageNumber: 1,
-         PageSize: savedFilters.PageSize || 10
-       };
-      
+
+      const formattedValues = {
+        fromDate: fromDate,
+        toDate: toDate,
+        passTypeId: savedFilters.passTypeId || "",
+        subFacilityId: savedFilters.subFacilityId || "",
+        locationId: savedFilters.locationId || "",
+        status: savedFilters.status || "CONFIRMED",
+        purchaseOrBooking: savedBookingDate,
+        pageNumber: 1,
+        PageSize: savedFilters.PageSize || 10
+      };
+
       console.log('Initial API call with values:', formattedValues);
       fetchWalkersPassReportData(formattedValues);
     }, 100);
@@ -73,13 +73,15 @@ const role = roleDetails?.name;
     return () => clearTimeout(timer);
   }, [fetchWalkersPassReportData]);
   const onSubmit = async (values, { setSubmitting }) => {
+    console.log("SEARCH CLICKED");
+console.log("Values:", values);
     try {
       // Save filters to localStorage
       localStorage.setItem("walkers-pass-report-filters", JSON.stringify(values))
-      
+
       // Reset to first page when searching
       SetcurrentPage(0)
-      
+
       // Format values based on booking date selection
       const formattedValues = {
         ...values,
@@ -93,7 +95,7 @@ const role = roleDetails?.name;
         pageNumber: 1,
         PageSize: values.PageSize
       };
-      
+
       setSubmitting(true);
       const filters = formattedValues;
       const result = await fetchWalkersPassReportData(filters);
@@ -119,7 +121,7 @@ const role = roleDetails?.name;
     try {
       // Clear localStorage
       localStorage.removeItem("walkers-pass-report-filters");
-      
+
       // Reset form to initial values
       const defaultValues = {
         fromDate: getCurrentDate(),
@@ -132,13 +134,13 @@ const role = roleDetails?.name;
         pageNumber: 1,
         PageSize: 10
       };
-      
+
       resetForm({ values: defaultValues });
       setIsBookingDate(false);
-      
+
       // Reset to first page
       SetcurrentPage(0);
-      
+
       // Call API with default values
       const formattedValues = {
         fromDate: getCurrentDate(),
@@ -151,7 +153,9 @@ const role = roleDetails?.name;
         pageNumber: 1,
         PageSize: 10
       };
-      
+
+      console.log("Search Form Values:", values);
+      console.log("Formatted Values:", formattedValues);
       await fetchWalkersPassReportData(formattedValues);
     } catch (error) {
       console.error('Error resetting form:', error);
@@ -221,46 +225,46 @@ const role = roleDetails?.name;
                 }}
               />
             </div>
-             <div>
-                  <label className="block text-xs font-medium text-gray-700">
-                    Sub Facility
-                  </label>
-                  <Field
-                    as="select"
-                    name="subFacilityId"
-                    className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  >
-                    <option value="">Select sub facility</option>
-                    {allServices
-                      ?.filter((service) => service.isActive)
-                      ?.map((service) => (
-                        <option key={service.id} value={service.id}>
-                          {service.name}
-                        </option>
-                      ))}
-                  </Field>
-                </div>
-             <div>
-               <label
-                 className="block text-xs font-medium text-gray-700"
-               >
-                 Pass Type
-               </label>
-                 <Field
-                   as="select"
-                   name="passTypeId"
-                   className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                 >
-                   <option value="">ALL</option>
-                   {allPassTypes
-                     ?.map((passType) => (
-                       <option key={passType.passLocationMasterId} value={passType.passLocationMasterId}>
-                         {passType.passName}
-                       </option>
-                     ))}
-                 </Field>
-             </div>
-           
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Sub Facility
+              </label>
+              <Field
+                as="select"
+                name="subFacilityId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">Select sub facility</option>
+                {allServices
+                  ?.filter((service) => service.isActive)
+                  ?.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name}
+                    </option>
+                  ))}
+              </Field>
+            </div>
+            <div>
+              <label
+                className="block text-xs font-medium text-gray-700"
+              >
+                Pass Type
+              </label>
+              <Field
+                as="select"
+                name="passTypeId"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="">ALL</option>
+                {allPassTypes
+                  ?.map((passType) => (
+                    <option key={passType.passLocationMasterId} value={passType.passLocationMasterId}>
+                      {passType.passName}
+                    </option>
+                  ))}
+              </Field>
+            </div>
+
             {/* Status */}
             <div>
               <label className="block text-xs font-medium text-gray-700">
@@ -273,14 +277,14 @@ const role = roleDetails?.name;
               >
                 <option value="CONFIRMED">CONFIRMED</option>
               </Field>
-             
+
             </div>
             {/* submit */}
             <div className="flex items-end gap-2">
               <button
                 type="submit"
                 className="bg-green-700 text-xs text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+              // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
@@ -288,7 +292,7 @@ const role = roleDetails?.name;
                 type="button"
                 onClick={() => handleReset(resetForm)}
                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-600 border border-gray-500 hover:border-gray-600"
-               >
+              >
                 Reset
               </button>
             </div>

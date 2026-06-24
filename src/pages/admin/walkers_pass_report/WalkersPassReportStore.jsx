@@ -2,30 +2,58 @@ import { create } from "zustand";
 import { toast } from "react-toastify";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
-export const useWalkersPassReportStore = create((set) => ({
-  //  -----------------API CALLS-----------------------
 
-  // Walkers Pass Report
+export const useWalkersPassReportStore = create((set) => ({
   WalkersPassReportData: [],
+  totalCount: 0,
   isFetchWalkersPassReportData: false,
+
   fetchWalkersPassReportData: async (payload) => {
-    set({ isFetchWalkersPassReportData: true });
+    console.log("Request Payload:", payload);
+    set({
+      isFetchWalkersPassReportData: true,
+    });
+
     try {
-      const params = `purchaseOrBooking=${payload.purchaseOrBooking}&fromDate=${payload.fromDate}&toDate=${payload.toDate}&passTypeId=${payload.passTypeId}&subFacilityId=${payload.subFacilityId}&status=${payload.status}
-&pageNumber=${payload.pageNumber}&pageSize=${payload.PageSize}`;
-      const method = "get";
-      const response = await apiService[method](
-        `${API_ENDPOINTS.REPORTS.WALKERS_PASS_REPORT.GET_WALKERS_PASS_REPORT}?${params}`
+      const response = await apiService.post(
+        API_ENDPOINTS.REPORTS.WALKERS_PASS_REPORT.GET_WALKERS_PASS_REPORT,
+        {
+          request: {
+            purchaseOrBooking: payload.purchaseOrBooking,
+            fromDate: payload.fromDate,
+            toDate: payload.toDate,
+            passTypeId: payload.passTypeId || 0,
+            subFacilityId: payload.subFacilityId || null,
+            status: payload.status,
+            pageNumber: payload.pageNumber,
+            pageSize: payload.PageSize,
+          },
+        }
       );
+
+      console.log(
+        "Returned Records:",
+        response.data.data.map(item => ({
+          UserName: item.UserName,
+          BookingDate: item.BookingDate,
+          ValidityStartDate: item.ValidityStartDate
+        }))
+      );
+
       set({
-        WalkersPassReportData: response.data,
+        WalkersPassReportData: Array.isArray(response.data?.data)
+          ? response.data.data
+          : [],
+        totalCount: response.data?.count || 0,
       });
-      return { response: response.data };
+
+      return response.data;
     } catch (error) {
       toast.error(error.message);
+
       set({
-        error: error.message,
         WalkersPassReportData: [],
+        totalCount: 0,
       });
     } finally {
       set({
