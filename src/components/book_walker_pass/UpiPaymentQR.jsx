@@ -36,7 +36,7 @@ const UpiPaymentQR = () => {
     console.log("Location State:", location.state);
     console.log("UPI Deep Link:", upiDeepLink);
 
-    const { checkOrderStatus, viewPass } = useWalkerpassStore();
+    const { checkOrderStatus } = useWalkerpassStore();
 
     const openPaymentModal = useCallback((modalDetails) => {
         hasHandledPaymentRef.current = true;
@@ -59,38 +59,12 @@ const UpiPaymentQR = () => {
     const verifyPassAndNavigate = useCallback(async (paymentResponse) => {
         try {
             setIsVerifyingPass(true);
-            const passResponse = await viewPass(passUserDetailsId);
-            const passData = passResponse?.data || passResponse;
-
-            if (passData) {
-
-                navigateToPassCard(paymentResponse);
-                return;
-            }
-
-            openPaymentModal({
-                type: "ticket-pending",
-                title: "Payment Successful",
-                message:
-                    "Payment was successful, but the walker pass is still being generated. Please retry in a few seconds.",
-                paymentResponse,
-            });
-        } catch (error) {
-            console.log("STATUS:", error.response?.status);
-            console.log("ERROR:", error.response?.data);
-
-            openPaymentModal({
-                type: "ticket-api-failed",
-                title: "Payment Successful",
-                message:
-                    "Payment was successful, but we could not fetch the generated walker pass right now. Please retry verification.",
-                paymentResponse,
-            });
+            navigateToPassCard(paymentResponse);
         }
         finally {
             setIsVerifyingPass(false);
         }
-    }, [navigateToPassCard, openPaymentModal, passUserDetailsId, viewPass]);
+    }, [navigateToPassCard]);
 
     const handleRetryPassVerification = useCallback(async () => {
         const paymentResponse = paymentModal?.paymentResponse;
@@ -173,6 +147,7 @@ const UpiPaymentQR = () => {
                 console.log("Result Status:", response?.data?.resultStatus);
 
                 if (response?.data?.resultStatus === "TXN_SUCCESS") {
+                    if (hasHandledPaymentRef.current) return;
                     hasHandledPaymentRef.current = true;
                     await verifyPassAndNavigate(response);
                     return;
@@ -212,7 +187,7 @@ const UpiPaymentQR = () => {
                     </h2>
 
                     <button
-                        onClick={() => navigate("/book-walker-pass")}
+                        onClick={() => navigate("/book-walker-pass", { replace: true })}
                         className="bg-[#09094D] hover:bg-[#07073D] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                     >
                         ← Back

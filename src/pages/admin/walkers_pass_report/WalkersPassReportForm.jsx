@@ -1,15 +1,36 @@
-import { useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import { Formik, Form, Field } from 'formik'
 import { getCurrentDate } from '../../../utils/TypographyHelper'
 import { useWalkersPassReportStore } from './WalkersPassReportStore'
-import { useServiceStore } from '../../../store/masters/servicesStore'
 import useAuthStore from '../../../store/authStore'
+import { API_ENDPOINTS } from '../../../constants/apiEndpoints'
+import apiService from '../../../services/apiService'
 
-const WalkersPassReportForm = ({
-  SetcurrentPage,
-}) => {
+const REPORT_PAGE_SIZE = 50000;
+
+const isActiveRecord = (record) =>
+  !(
+    record?.isActive === false ||
+    record?.active === false ||
+    record?.status?.toString().toLowerCase() === "inactive"
+  );
+
+const getUniquePassTypes = (passes) => {
+  const passMap = new Map();
+
+  passes.filter(isActiveRecord).forEach((pass) => {
+    if (!passMap.has(pass.passLocationMasterId)) {
+      passMap.set(pass.passLocationMasterId, pass);
+    }
+  });
+
+  return Array.from(passMap.values());
+};
+
+const WalkersPassReportForm = () => {
   const { fetchWalkersPassReportData } = useWalkersPassReportStore()
+  const maxDate = getCurrentDate();
+  const [passTypes, setPassTypes] = useState([]);
 
 
 
@@ -22,21 +43,40 @@ const WalkersPassReportForm = ({
     passTypeId: '',
     subFacilityId: '',
     locationId: '',
-    status: 'CONFIRMED',
+    status: '',
     purchaseOrBooking: 'Purchase',
     pageNumber: 1,
-    PageSize: 10
+    PageSize: REPORT_PAGE_SIZE
   };
 
-  const { fetchAllServices, allPassTypes, fetchAllPassTypes } = useServiceStore();
-
-  const { roleDetails } =
+  const { decodedTokenData } =
     useAuthStore();
-  const role = roleDetails?.name;
+  const parkId = decodedTokenData?.data?.ParkId;
+
   useEffect(() => {
-    fetchAllServices(role);
-    fetchAllPassTypes();
-  }, []);
+    const fetchPassTypes = async () => {
+      if (!parkId) return;
+
+      try {
+        const response = await apiService.get(
+          `${API_ENDPOINTS.WALKERS_PASS_BOOKING.GET_PASS_LOCATION_MASTERS}?parkId=${parkId}`
+        );
+        const services = response?.data?.service || response?.data?.data?.service || [];
+        const activeServices = services.filter(isActiveRecord);
+        const normalService = activeServices.find(
+          (service) => service?.name === "Normal Walkers pass"
+        );
+        const passes = normalService?.passes || activeServices.flatMap((service) => service?.passes || []);
+
+        setPassTypes(getUniquePassTypes(passes));
+      } catch (error) {
+        console.error("Error fetching walker pass types:", error);
+        setPassTypes([]);
+      }
+    };
+
+    fetchPassTypes();
+  }, [parkId]);
 
 
 
@@ -49,9 +89,9 @@ const WalkersPassReportForm = ({
         passTypeId: "",
         subFacilityId: "",
         locationId: "",
-        status: "CONFIRMED",
+        status: "",
         pageNumber: 1,
-        PageSize: 10,
+        PageSize: REPORT_PAGE_SIZE,
       };
 
       console.log("Initial API call with values:", formattedValues);
@@ -66,10 +106,6 @@ const WalkersPassReportForm = ({
     console.log("Values:", values);
     try {
      
-
-      // Reset to first page when searching
-      SetcurrentPage(0)
-
       // Format values based on booking date selection
       const formattedValues = {
         ...values,
@@ -81,7 +117,7 @@ const WalkersPassReportForm = ({
         status: values.status,
         purchaseOrBooking: values.purchaseOrBooking,
         pageNumber: 1,
-        PageSize: values.PageSize
+        PageSize: REPORT_PAGE_SIZE
       };
 
       setSubmitting(true);
@@ -115,17 +151,13 @@ const WalkersPassReportForm = ({
         passTypeId: '',
         subFacilityId: '',
         locationId: '',
-        status: 'CONFIRMED',
+        status: '',
         purchaseOrBooking: 'Purchase',
         pageNumber: 1,
-        PageSize: 10
+        PageSize: REPORT_PAGE_SIZE
       };
 
       resetForm({ values: defaultValues });
-
-
-      // Reset to first page
-      SetcurrentPage(0);
 
       // Call API with default values
       const formattedValues = {
@@ -134,9 +166,9 @@ const WalkersPassReportForm = ({
         passTypeId: "",
         subFacilityId: "",
         locationId: "",
-        status: "CONFIRMED",
+        status: "",
         pageNumber: 1,
-        PageSize: 10
+        PageSize: REPORT_PAGE_SIZE
       };
 
       console.log("Formatted Values:", formattedValues);
@@ -164,9 +196,9 @@ const WalkersPassReportForm = ({
                 name="fromDate"
                 className={`mt-1 block w-full px-2 py-1 border
                   border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                // min={getCurrentDate()}
+                max={maxDate}
                 onChange={(e) => {
-                  const fromDateValue = e.target.value;
+                  const fromDateValue = e.target.value > maxDate ? maxDate : e.target.value;
                   setFieldValue("fromDate", fromDateValue);
                   if (new Date(fromDateValue) > new Date(values.toDate)) {
                     // Automatically update toDate if it's earlier than fromDate
@@ -188,8 +220,9 @@ const WalkersPassReportForm = ({
                 className={`mt-1 block w-full px-2 py-1 border
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 min={values.fromDate || getCurrentDate()}
+                max={maxDate}
                 onChange={(e) => {
-                  const toDateValue = e.target.value;
+                  const toDateValue = e.target.value > maxDate ? maxDate : e.target.value;
                   setFieldValue("toDate", toDateValue);
                 }}
               />
@@ -207,13 +240,9 @@ const WalkersPassReportForm = ({
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">ALL</option>
-                <option value="">Annual Walker&apos;s Pass</option>
-                <option value="">Monthly Walker&apos;s Pass</option>
-                <option value="">Annual Senior Citizen</option>
-                <option value="">Monthly Senior Citizen</option>
-                {allPassTypes
+                {passTypes
                   ?.map((passType) => (
-                    <option key={passType.passLocationMasterId} value={passType.passLocationMasterId}>
+                    <option key={passType.passLocationMasterId} value={String(passType.passLocationMasterId)}>
                       {passType.passName}
                     </option>
                   ))}
@@ -230,6 +259,7 @@ const WalkersPassReportForm = ({
                 name="status"
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
+                <option value="">ALL</option>
                 <option value="CONFIRMED">CONFIRMED</option>
                 <option value="HOLD">HOLD</option>
               </Field>
@@ -257,9 +287,5 @@ const WalkersPassReportForm = ({
     </div>
   )
 }
-
-WalkersPassReportForm.propTypes = {
-  SetcurrentPage: PropTypes.func.isRequired,
-};
 
 export default WalkersPassReportForm

@@ -371,6 +371,7 @@ const WalkerPassCard = () => {
     const [isPrinting, setIsPrinting] = useState(false);
 
     const canvasRef = useRef(null);
+    const fetchedPassIdRef = useRef(null);
 
     const getUserImageSource = async (data = passData) => {
         if (userImageBase64 && !(await isBlankUserImage(userImageBase64))) {
@@ -803,10 +804,14 @@ const WalkerPassCard = () => {
     useEffect(() => {
         const fetchPassDetails = async () => {
             if (!passUserDetailsId) return;
+            if (fetchedPassIdRef.current === passUserDetailsId) return;
+
             try {
+                fetchedPassIdRef.current = passUserDetailsId;
                 setIsPassLoading(true);
                 const response = await viewPass(passUserDetailsId);
                 const data = normalizePassResponse(response);
+
                 if (!data) {
                     setPassLoadError(
                         "Payment may be successful, but the walker pass is not available yet. Please retry after a few seconds."
