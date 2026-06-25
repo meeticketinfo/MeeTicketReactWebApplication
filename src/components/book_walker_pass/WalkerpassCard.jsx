@@ -415,9 +415,18 @@ const WalkerPassCard = () => {
         return "";
     };
 
+
     // ─── Format date ──────────────────────────────────────────────────────
-    const fmtDate = (d) =>
-        d ? new Date(d).toLocaleDateString("en-GB") : "-";
+    const formatDate = (date) => {
+        if (!date) return "-";
+
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    };
 
     // ─── Rounded rect helpers ─────────────────────────────────────────────
     const roundRect = (ctx, x, y, w, h, r) => {
@@ -562,7 +571,7 @@ const WalkerPassCard = () => {
             ctx.fillStyle = "#000000";
             ctx.font = `bold ${10 * SCALE}px Arial`;
             ctx.fillText(
-                passData?.dateOfBirth || "",
+                formatDate(passData?.dateOfBirth),
                 textX,
                 bodyY + 75 * SCALE
             );
@@ -607,7 +616,7 @@ const WalkerPassCard = () => {
             ctx.textAlign = "center";
             ctx.font = `bold ${8 * SCALE}px Arial`;
             ctx.fillText(
-                `VALIDITY: ${fmtDate(passData?.validFrom)} TO ${fmtDate(passData?.validTo)}`,
+                `VALIDITY: ${formatDate(passData?.validFrom)} TO ${formatDate(passData?.validTo)}`,
                 x + w / 2,
                 y + h - 8 * SCALE
             );
@@ -675,7 +684,7 @@ const WalkerPassCard = () => {
             ctx.textAlign = "center";
             ctx.font = `bold ${8 * SCALE}px Arial`;
             ctx.fillText(
-                `VALIDITY: ${fmtDate(passData?.validFrom)} TO ${fmtDate(passData?.validTo)}`,
+                `VALIDITY: ${formatDate(passData?.validFrom)} TO ${formatDate(passData?.validTo)}`,
                 x + w / 2,
                 y + h - 8 * SCALE
             );
@@ -944,10 +953,10 @@ const WalkerPassCard = () => {
                                                 </p>
 
                                                 <p className="text-[10px] font-bold mt-3">
-                                                    {passData?.dateOfBirth}
+                                                    {formatDate(passData?.dateOfBirth)}
                                                 </p>
                                                 <p className="text-[8px] text-gray-600">
-                                                    Date Of Birth
+                                                    Date of Birth
                                                 </p>
                                             </div>
 
@@ -978,7 +987,7 @@ const WalkerPassCard = () => {
                                     </div>
                                     <div className="bg-[#091A8C] text-white text-center py-[4px] -mt-[7px] relative z-10">
                                         <p className="text-[8px] font-bold">
-                                            VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
+                                            VALIDITY: {formatDate(passData?.validFrom)} TO {formatDate(passData?.validTo)}
                                         </p>
                                     </div>
                                 </div>
@@ -1002,7 +1011,7 @@ const WalkerPassCard = () => {
                                     </div>
                                     <div className="bg-[#091A8C] text-white py-[5px] flex justify-center items-center">
                                         <p className="text-[8px] font-bold text-center">
-                                            VALIDITY: {fmtDate(passData?.validFrom)} TO {fmtDate(passData?.validTo)}
+                                            VALIDITY: {formatDate(passData?.validFrom)} TO {formatDate(passData?.validTo)}
                                         </p>
                                     </div>
                                 </div>

@@ -12,6 +12,7 @@ import {
 
 
 const WalkerpassDetails = () => {
+
     const { passLocationData } = useWalkerpassStore();
     const { initiatePayment } = useWalkerpassStore();
     const location = useLocation();
@@ -33,6 +34,8 @@ const WalkerpassDetails = () => {
     console.log("customerId:", customerId);
     const [paymentMethod, setPaymentMethod] = useState("");
     const [mobileNumber, setMobileNumber] = useState("");
+    const [paymentError, setPaymentError] = useState("");
+    const [mobileError, setMobileError] = useState("");
 
     const [openModalId, setOpenModalId] = useState(null);
 
@@ -40,68 +43,87 @@ const WalkerpassDetails = () => {
     const closeModal = () => setOpenModalId(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const isProceedEnabled =
-        paymentMethod === "upi" &&
-        mobileNumber.length === 10;
 
-    const handleProceed = async () => {
+
+    const handleProceed = () => {
+        setPaymentError("");
+        setMobileError("");
+
+        if (!paymentMethod) {
+            setPaymentError("Please select a payment method");
+            return;
+        }
+
+        if (!mobileNumber) {
+            setMobileError("Mobile Number is required");
+            return;
+        }
+
+        if (!/^[6-9][0-9]{9}$/.test(mobileNumber)) {
+            setMobileError(
+                "Mobile Number must be 10 digits and start with 6, 7, 8, or 9"
+            );
+            return;
+        }
+
+        openModal("cash");
+    };
+    const processPayment = async () => {
         try {
             setIsLoading(true);
 
             const payload = {
-                amount: amount,
+                amount,
                 customerId: customerId.toString(),
                 isIOS: false,
                 paymentType: "UPI",
-                parkId: parkId,
+                parkId,
                 departmentId: 1,
                 bookingDate: new Date().toISOString(),
-                mobileNumber: mobileNumber,
+                mobileNumber,
                 passUserId: customerId.toString(),
             };
 
-            console.log("Payment Payload:", payload);
-
             const response = await initiatePayment(payload);
 
-            console.log("Payment Response:", response);
+            console.log("PAYMENT RESPONSE:", response);
 
-            if (response?.status === 200) {
+            closeModal();
 
-                localStorage.setItem("passUserDetailsId", customerId);
-                let userImageBase64 = data?.userImageBase64 || "";
-                if (!userImageBase64 && data?.selfie instanceof File) {
-                    userImageBase64 = await fileToCompressedDataUrl(data.selfie);
-                }
-                storeWalkerPassImage(customerId, userImageBase64);
+            navigate("/upi-payment-qr", {
+                state: {
+                    redirectUrl:
+                        response?.data?.redirectUrl ||
+                        response?.data?.upiLink ||
+                        response?.data?.qrString,
 
-                closeModal();
+                    orderId:
+                        response?.data?.orderId,
 
-                console.log("Passing to QR Page", {
-                    redirectUrl: response.data.redirectUrl,
-                    orderId: response.data.orderId,
-                    amount: amount,
-                });
+                    passUserDetailsId: customerId,
 
-                navigate("/upi-payment-qr", {
-                    state: {
-                        redirectUrl: response.data.redirectUrl,
-                        orderId: response.data.orderId,
-                        amount: amount,
-                        passUserDetailsId: customerId,
-                        userImageBase64,
-                    },
-                });
+                    userImageBase64: data?.userImageBase64,
+                },
+            });
 
-            } else {
-                toast.error("Payment initiation failed");
-            }
         } catch (error) {
-            console.log("FULL ERROR DATA");
-            console.log(JSON.stringify(error.response?.data, null, 2));
+            console.log("Payment Error:", error);
+
+            toast.error("Unable to initiate payment");
         } finally {
             setIsLoading(false);
         }
+    };
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+
+        const date = new Date(dateString);
+
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
     };
 
 
@@ -130,7 +152,9 @@ const WalkerpassDetails = () => {
 
                             <div>
                                 <p className="text-gray-500 text-sm">Date of Birth</p>
-                                <p className="font-medium">{data?.dateOfBirth}</p>
+                                <p className="font-medium">
+                                    {formatDate(data?.dateOfBirth)}
+                                </p>
                             </div>
 
                             <div>
@@ -171,10 +195,10 @@ const WalkerpassDetails = () => {
 
                             <div>
                                 <p className="text-gray-500 text-sm">
-                                    Walkers Type
+                                    Walkers Pass Type
                                 </p>
                                 <p className="font-semibold">
-                                    {data?.walkerPassType}
+                                    {data?.walkerPassTypeName}
                                 </p>
                             </div>
 
@@ -182,7 +206,7 @@ const WalkerpassDetails = () => {
                                 <p className="text-gray-500 text-sm">
                                     Residential Address
                                 </p>
-                                <p className="font-medium">
+                                <p className="font-medium break-all">
                                     {data?.residentialAddress}
                                 </p>
                             </div>
@@ -210,7 +234,10 @@ const WalkerpassDetails = () => {
                                 {/* UPI */}
                                 <button
                                     type="button"
-                                    onClick={() => setPaymentMethod("upi")}
+                                    onClick={() => {
+                                        setPaymentMethod("upi");
+                                        setPaymentError("");
+                                    }}
                                     className={`flex items-center gap-2 px-3 py-2 rounded text-xs font-semibold border transition-all ${paymentMethod === "upi"
                                         ? "bg-[#09094D] text-white"
                                         : "bg-white text-gray-700 border-gray-300"
@@ -224,6 +251,11 @@ const WalkerpassDetails = () => {
                                     UPI Payment
                                 </button>
 
+                                {paymentError && (
+                                    <p className="text-red-500 text-xs mt-1">
+                                        {paymentError}
+                                    </p>
+                                )}
 
 
                                 {/* Mobile Number */}
@@ -242,10 +274,20 @@ const WalkerpassDetails = () => {
                                         onChange={(e) => {
                                             const value = e.target.value.replace(/\D/g, "");
                                             setMobileNumber(value);
+
+                                            if (mobileError) {
+                                                setMobileError("");
+                                            }
                                         }}
                                         className="w-40 border border-gray-300 rounded px-2 py-1 text-xs bg-white"
                                         placeholder="Enter mobile number"
                                     />
+
+                                    {mobileError && (
+                                        <p className="text-red-500 text-xs mt-1">
+                                            {mobileError}
+                                        </p>
+                                    )}
                                 </div>
 
                             </div>
@@ -257,13 +299,8 @@ const WalkerpassDetails = () => {
                         <div className="flex justify-center mt-6">
                             <button
                                 type="button"
-                                onClick={() => openModal("cash")}
-                                disabled={!isProceedEnabled}
-                                className={`px-8 py-2 rounded-md text-sm font-medium text-white
-    ${isProceedEnabled
-                                        ? "bg-[#09094D] cursor-pointer"
-                                        : "bg-gray-400 cursor-not-allowed"
-                                    }`}
+                                onClick={handleProceed}
+                                className="px-8 py-2 rounded-md text-sm font-medium text-white bg-[#09094D]"
                             >
                                 PROCEED
                             </button>
@@ -288,9 +325,7 @@ const WalkerpassDetails = () => {
                             <button
                                 type="button"
                                 disabled={isLoading}
-                                onClick={async () => {
-                                    await handleProceed();
-                                }}
+                                onClick={processPayment}
                                 className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md disabled:opacity-50"
                             >
                                 {isLoading ? "Processing..." : "Proceed"}

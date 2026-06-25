@@ -9,8 +9,11 @@ import {
     fileToCompressedDataUrl,
     storeWalkerPassImage,
 } from "./walkerPassImageUtils";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const WalkerpassForm = () => {
+
     const navigate = useNavigate();
     const initialValues = {
         fullName: "",
@@ -56,8 +59,15 @@ const WalkerpassForm = () => {
             .required("Age is required"),
 
         mobileNumber: Yup.string()
-            .matches(/^[0-9]{10}$/, "Mobile Number must be exactly 10 digits")
-            .required("Mobile Number is required"),
+            .required("Mobile Number is required")
+            .matches(
+                /^[6-9]/,
+                "Mobile Number must start with 6, 7, 8, or 9"
+            )
+            .matches(
+                /^[6-9][0-9]{9}$/,
+                "Mobile Number must be exactly 10 digits"
+            ),
 
         city: Yup.string()
             .matches(/^[A-Za-z ]+$/, "Only alphabets and spaces are allowed")
@@ -69,7 +79,10 @@ const WalkerpassForm = () => {
 
         residentialAddress: Yup.string()
             .max(100, "Maximum 100 characters allowed")
-            .min(5, "Address should contain at least 5 characters")
+            .matches(
+                /^[A-Za-z0-9\s,./#-]+$/,
+                "Invalid address format"
+            )
             .required("Residential Address is required"),
         idProof: Yup.mixed()
             .required("ID Proof is required")
@@ -222,21 +235,28 @@ const WalkerpassForm = () => {
             }
 
             const userImageBase64 = await fileToCompressedDataUrl(values.selfie);
-            storeWalkerPassImage(response.passUserDetailsId, userImageBase64);
 
-            toast.success("Walker Pass Added Successfully!");
+            storeWalkerPassImage(
+                response.passUserDetailsId,
+                userImageBase64
+            );
 
-            setTimeout(() => {
-                navigate("/walker-pass-details", {
-                    state: {
-                        ...values,
-                        parkId,
-                        userImageBase64,
-                        passUserDetailsId:
-                            response?.passUserDetailsId,
-                    },
-                });
-            }, 1500);
+            // ADD HERE
+            const selectedPass = passes.find(
+                (pass) =>
+                    String(pass.passLocationMasterId) === values.walkerPassType
+            );
+
+            navigate("/walker-pass-details", {
+                state: {
+                    ...values,
+                    walkerPassTypeName: selectedPass?.passName,
+                    parkId,
+                    userImageBase64,
+                    passUserDetailsId: response?.passUserDetailsId,
+                },
+            });
+
         } catch (error) {
             console.error("Submit Error:", error);
 
@@ -273,7 +293,7 @@ const WalkerpassForm = () => {
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ setFieldValue, values }) => (
+                    {({ setFieldValue, setFieldTouched, setFieldError, values }) => (
                         <Form>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -306,43 +326,55 @@ const WalkerpassForm = () => {
                                 {/* DOB */}
                                 <div>
                                     <label className="block mb-1 text-base font-medium text-gray-700">
-                                        Date Of Birth <span className="text-red-500">*</span>
+                                        Date of Birth <span className="text-red-500">*</span>
                                     </label>
 
-                                    <Field
-                                        name="dateOfBirth"
-                                        type="date"
-                                        min="1900-01-01"
-                                        max="2021-12-31"
-                                        className="w-full h-8 border border-gray-300 rounded text-xs px-2 focus:outline-none focus:border-blue-500"
-                                        onChange={(e) => {
-                                            const dob = e.target.value;
-
-                                            setFieldValue("dateOfBirth", dob);
-
-                                            if (dob) {
-                                                const birthDate = new Date(dob);
-                                                const today = new Date();
-
-                                                let age =
-                                                    today.getFullYear() - birthDate.getFullYear();
-
-                                                const monthDiff =
-                                                    today.getMonth() - birthDate.getMonth();
-
-                                                if (
-                                                    monthDiff < 0 ||
-                                                    (monthDiff === 0 &&
-                                                        today.getDate() < birthDate.getDate())
-                                                ) {
-                                                    age--;
-                                                }
-
-                                                setFieldValue("age", age);
-                                            } else {
+                                    <DatePicker
+                                        selected={
+                                            values.dateOfBirth
+                                                ? new Date(values.dateOfBirth)
+                                                : null
+                                        }
+                                        onChange={(date) => {
+                                            if (!date) {
+                                                setFieldValue("dateOfBirth", "");
                                                 setFieldValue("age", "");
+                                                return;
                                             }
+
+                                            const formattedDate =
+                                                date.toISOString().split("T")[0];
+
+                                            setFieldValue("dateOfBirth", formattedDate);
+
+                                            const today = new Date();
+                                            let age =
+                                                today.getFullYear() -
+                                                date.getFullYear();
+
+                                            const monthDiff =
+                                                today.getMonth() -
+                                                date.getMonth();
+
+                                            if (
+                                                monthDiff < 0 ||
+                                                (monthDiff === 0 &&
+                                                    today.getDate() < date.getDate())
+                                            ) {
+                                                age--;
+                                            }
+
+                                            setFieldValue("age", age);
                                         }}
+                                        dateFormat="dd-MM-yyyy"
+                                        placeholderText="DD-MM-YYYY"
+                                        minDate={new Date("1900-01-01")}
+                                        maxDate={new Date("2021-12-31")}
+                                        showMonthDropdown
+                                        showYearDropdown
+                                        dropdownMode="select"
+                                        wrapperClassName="w-full"
+                                        className="w-full h-8 border border-gray-300 rounded text-xs px-2 focus:outline-none focus:border-blue-500"
                                     />
                                     <ErrorMessage
                                         name="dateOfBirth"
@@ -409,8 +441,19 @@ const WalkerpassForm = () => {
                                             type="text"
                                             maxLength={10}
                                             className="flex-1 h-full px-2 text-xs outline-none border-none focus:ring-0"
-                                            onInput={(e) => {
-                                                e.target.value = e.target.value.replace(/\D/g, "");
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(/\D/g, "");
+
+                                                setFieldValue("mobileNumber", value);
+                                                setFieldTouched("mobileNumber", true, false);
+
+                                                // Show error immediately for first digit
+                                                if (value.length > 0 && !/^[6-9]/.test(value)) {
+                                                    setFieldError(
+                                                        "mobileNumber",
+                                                        "Mobile Number must start with 6, 7, 8, or 9"
+                                                    );
+                                                }
                                             }}
                                         />
                                     </div>
