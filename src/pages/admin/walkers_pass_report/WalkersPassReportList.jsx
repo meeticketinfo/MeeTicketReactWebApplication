@@ -44,6 +44,112 @@ const escapeHtml = (value) =>
 const sanitizeImageSrc = (value) =>
   typeof value === "string" ? value.trim().replace(/(%22|")/g, "") : "";
 
+const isRawBase64Image = (value) =>
+  /^[A-Za-z0-9+/]+={0,2}$/.test(value) && value.length > 100;
+
+const getImageUrlCandidates = (url) => {
+  if (!url || typeof url !== "string") return [];
+
+  const trimmedUrl = sanitizeImageSrc(url);
+  if (!trimmedUrl) return [];
+
+  if (/^data:/i.test(trimmedUrl)) {
+    return [trimmedUrl];
+  }
+
+  if (isRawBase64Image(trimmedUrl)) {
+    return [`data:image/jpeg;base64,${trimmedUrl}`];
+  }
+
+  if (/^(blob:|https?:\/\/)/i.test(trimmedUrl)) {
+    return [trimmedUrl];
+  }
+
+  try {
+    return [new URL(trimmedUrl, window.location.origin).href];
+  } catch (error) {
+    console.error("Invalid bulk pass image URL:", trimmedUrl, error);
+    return [];
+  }
+};
+
+const blobToDataUrl = (blob) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+
+const loadImage = (src) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+
+const fetchImageAsDataUrl = async (url) => {
+  const imageUrls = getImageUrlCandidates(url);
+
+  for (const imageUrl of imageUrls) {
+    if (imageUrl.startsWith("data:")) return imageUrl;
+
+    try {
+      const response = await fetch(imageUrl, {
+        method: "GET",
+        credentials: "omit",
+        cache: "no-store",
+        headers: {
+          Accept: "image/*",
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Bulk image fetch failed:", imageUrl, response.status);
+        continue;
+      }
+
+      const blob = await response.blob();
+      if (blob.size === 0 || (blob.type && !blob.type.startsWith("image/"))) {
+        console.error("Bulk image blob is invalid:", imageUrl, blob.type, blob.size);
+        continue;
+      }
+
+      return await blobToDataUrl(blob);
+    } catch (error) {
+      console.error("Bulk image fetch error:", imageUrl, error);
+    }
+  }
+
+  return "";
+};
+
+const prepareImageForOutput = async (url) => {
+  const dataUrl = await fetchImageAsDataUrl(url);
+  if (!dataUrl) return "";
+
+  const img = await loadImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth || img.width || 1;
+  canvas.height = img.naturalHeight || img.height || 1;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  return canvas.toDataURL("image/jpeg", 0.9);
+};
+
+const prepareBulkPassImages = async (passes) =>
+  Promise.all(
+    passes.map(async (pass) => ({
+      ...pass,
+      preparedUserImage: await prepareImageForOutput(pass?.userImage),
+    }))
+  );
+
 const fmtDate = (date) => (date ? new Date(date).toLocaleDateString("en-GB") : "-");
 
 const getInstructionLines = (passDescription) => {
@@ -298,7 +404,9 @@ const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
             </div>
             <div class="card-body">
               <div class="details-row">
-                <img class="user-photo" src="${escapeHtml(sanitizeImageSrc(pass?.userImage))}" alt="User" />
+                ${pass?.preparedUserImage
+          ? `<img class="user-photo" src="${escapeHtml(pass.preparedUserImage)}" alt="User" />`
+          : `<div class="user-photo"></div>`}
                 <div class="user-copy">
                   <p class="value">${escapeHtml(pass?.userName)}</p>
                   <p class="label">Name</p>
@@ -446,13 +554,16 @@ function WalkersPassReportList() {
       return null;
     }
 
-    const qrCodes = await Promise.all(
-      passes.map((pass) =>
-        pass?.bookingId ? QRCode.toDataURL(pass.bookingId) : Promise.resolve("")
-      )
-    );
+    const [passesWithImages, qrCodes] = await Promise.all([
+      prepareBulkPassImages(passes),
+      Promise.all(
+        passes.map((pass) =>
+          pass?.bookingId ? QRCode.toDataURL(pass.bookingId) : Promise.resolve("")
+        )
+      ),
+    ]);
 
-    return { passes, qrCodes };
+    return { passes: passesWithImages, qrCodes };
   };
 
   const handleBulkPrint = async () => {

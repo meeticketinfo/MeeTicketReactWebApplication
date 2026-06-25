@@ -159,6 +159,7 @@ const fetchToBase64 = async (url) => {
             {
                 method: "GET",
                 credentials: "omit",
+                cache: "no-store",
                 headers: {
                     Accept: "image/*",
                 },
@@ -166,6 +167,7 @@ const fetchToBase64 = async (url) => {
             {
                 method: "GET",
                 credentials: "include",
+                cache: "no-store",
                 headers: {
                     Accept: "image/*",
                     ...(token && { Authorization: `Bearer ${token}` }),
@@ -211,7 +213,7 @@ const loadImage = (src) =>
         img.src = src;
     });
 
-const isMostlyBlackImage = async (src) => {
+const isBlankUserImage = async (src) => {
     try {
         const img = await loadImage(src);
         const canvas = document.createElement("canvas");
@@ -224,6 +226,7 @@ const isMostlyBlackImage = async (src) => {
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         let opaquePixels = 0;
         let blackPixels = 0;
+        let whitePixels = 0;
 
         for (let i = 0; i < pixels.length; i += 4) {
             if (pixels[i + 3] < 20) continue;
@@ -232,9 +235,17 @@ const isMostlyBlackImage = async (src) => {
             if (pixels[i] < 12 && pixels[i + 1] < 12 && pixels[i + 2] < 12) {
                 blackPixels += 1;
             }
+            if (pixels[i] > 245 && pixels[i + 1] > 245 && pixels[i + 2] > 245) {
+                whitePixels += 1;
+            }
         }
 
-        return opaquePixels > 0 && blackPixels / opaquePixels > 0.9;
+        if (opaquePixels < 50) return true;
+
+        const blackRatio = blackPixels / opaquePixels;
+        const whiteRatio = whitePixels / opaquePixels;
+
+        return blackRatio > 0.9 || whiteRatio > 0.98;
     } catch (error) {
         console.error("Unable to inspect user image:", error);
         return false;
@@ -338,12 +349,12 @@ const WalkerPassCard = () => {
     const canvasRef = useRef(null);
 
     const getUserImageSource = async (data = passData) => {
-        if (userImageBase64 && !(await isMostlyBlackImage(userImageBase64))) {
+        if (userImageBase64 && !(await isBlankUserImage(userImageBase64))) {
             return prepareImageForCanvas(userImageBase64);
         }
 
         const storedImage = getStoredWalkerPassImage(passUserDetailsId);
-        if (storedImage && !(await isMostlyBlackImage(storedImage))) {
+        if (storedImage && !(await isBlankUserImage(storedImage))) {
             const preparedImage = await prepareImageForCanvas(storedImage);
             setUserImageBase64(preparedImage);
             storeWalkerPassImage(passUserDetailsId, preparedImage);
@@ -365,7 +376,7 @@ const WalkerPassCard = () => {
 
             try {
                 const preparedImage = await prepareImageForCanvas(base64);
-                if (await isMostlyBlackImage(preparedImage)) {
+                if (await isBlankUserImage(preparedImage)) {
                     continue;
                 }
 
@@ -775,7 +786,7 @@ const WalkerPassCard = () => {
 
                 const storedImage = getStoredWalkerPassImage(passUserDetailsId);
                 let hasLoadedStoredImage = false;
-                if (storedImage && !(await isMostlyBlackImage(storedImage))) {
+                if (storedImage && !(await isBlankUserImage(storedImage))) {
                     const preparedImage = await prepareImageForCanvas(storedImage);
                     setUserImageBase64(preparedImage);
                     storeWalkerPassImage(passUserDetailsId, preparedImage);
@@ -795,7 +806,7 @@ const WalkerPassCard = () => {
 
                         try {
                             const preparedImage = await prepareImageForCanvas(base64);
-                            if (await isMostlyBlackImage(preparedImage)) {
+                            if (await isBlankUserImage(preparedImage)) {
                                 continue;
                             }
 
