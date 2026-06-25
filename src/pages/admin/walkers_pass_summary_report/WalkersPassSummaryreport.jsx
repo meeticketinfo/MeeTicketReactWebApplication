@@ -56,11 +56,12 @@ const WalkersPassSummaryReport = () => {
         try {
             setLoading(true);
 
+            const appliedFilters = searchFilters?.target ? filters : searchFilters;
             const defaultFilters = getDefaultFilters();
             const payload = {
-                fromDate: searchFilters.fromDate || defaultFilters.fromDate,
-                toDate: searchFilters.toDate || defaultFilters.toDate,
-                passType: searchFilters.passType,
+                fromDate: appliedFilters.fromDate || defaultFilters.fromDate,
+                toDate: appliedFilters.toDate || defaultFilters.toDate,
+                passType: appliedFilters.passType || "",
             };
 
             console.log("Final Payload:", payload);
@@ -77,9 +78,9 @@ const WalkersPassSummaryReport = () => {
 
             const rows = response?.data?.data || [];
 
-            const filteredRows = searchFilters.passType
+            const filteredRows = appliedFilters.passType
                 ? rows.filter(
-                    (item) => item.passType === searchFilters.passType
+                    (item) => item.passType === appliedFilters.passType
                 )
                 : rows;
 
@@ -262,7 +263,7 @@ const WalkersPassSummaryReport = () => {
 
                         <div className="flex items-end gap-2">
                             <button
-                                onClick={handleSearch}
+                                onClick={() => handleSearch()}
                                 disabled={loading}
                                 className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                             >
