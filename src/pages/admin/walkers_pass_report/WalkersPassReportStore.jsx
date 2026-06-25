@@ -22,8 +22,8 @@ export const useWalkersPassReportStore = create((set) => ({
         passTypeId: payload.passTypeId || null,
         subFacilityId: payload.subFacilityId || null,
         status: payload.status || null,
-        pageNumber: payload.pageNumber,
-        pageSize: payload.PageSize,
+        pageNumber: payload.pageNumber || 1,
+        pageSize: payload.PageSize || 50000,
       };
 
       console.log("Final Payload:", requestPayload);

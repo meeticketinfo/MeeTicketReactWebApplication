@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AgGridTable4 from "../../../components/tables/AgGridTable4";
-import { formatToStandardDate, getCurrentDate } from "../../../utils/TypographyHelper";
+import { formatDateTime } from "../../../utils/Helper";
 import WalkersPassReportForm from "./WalkersPassReportForm";
 import { useWalkersPassReportStore } from "./WalkersPassReportStore";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import { useNavigate } from "react-router-dom";
-import { useWalkerpassStore } from "../../../components/book_walker_pass/WalkerpassStore";
 import QRCode from "qrcode";
 import { toast } from "react-toastify";
+import { IoMdImages } from "react-icons/io";
+import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
+import apiService from "../../../services/apiService";
 import walkerPassBg from "../../../images/walker_pass_bg.png";
 import MeeTicketLogo from "../../../images/MeeTicketLogo.png";
 import ForestLogo from "../../../images/ForestLogo.png";
@@ -19,7 +21,7 @@ const StatusCellRenderer = (params) => {
   if (!params.value) return "N/A";
 
   const status = params.value.toLowerCase();
-  const colorClass = status === 'confirmed' ? 'text-green-600' : status === 'expired' ? 'text-red-600' : 'text-gray-600';
+  const colorClass = status === 'confirmed' ? 'text-green-600' : ['expired', 'hold'].includes(status) ? 'text-red-600' : 'text-gray-600';
 
   return (
     <span className={`${colorClass} font-medium`}>
@@ -32,6 +34,27 @@ const getPassUserDetailsId = (passData) =>
   passData?.PassUserDetailsId ||
   passData?.passUserDetailsId ||
   passData?.BookingId;
+
+const getOrderId = (passData) => {
+  if (!passData) return "";
+
+  return (
+    passData.OrderId ||
+    passData.orderId ||
+    passData.TransactionId ||
+    Object.entries(passData).find(([key]) => key.toLowerCase() === "orderid")?.[1] ||
+    ""
+  );
+};
+
+const formatDateTimeCellValue = (dateValue) => {
+  if (!dateValue) return "N/A";
+
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return "N/A";
+
+  return formatDateTime(dateValue);
+};
 
 const escapeHtml = (value) =>
   String(value ?? "")
@@ -472,10 +495,10 @@ const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
 `;
 
 function WalkersPassReportList() {
-  const [responseModal, setResponseModal] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [isBulkPdfLoading, setIsBulkPdfLoading] = useState(false);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [selectedImageRecord, setSelectedImageRecord] = useState(null);
 
   const navigate = useNavigate();
 
@@ -493,71 +516,116 @@ function WalkersPassReportList() {
 
   const [openRegenerateModal, setOpenRegenerateModal] = useState(false);
   const [selectedPass, setSelectedPass] = useState(null);
-  const handleConfirmRegenerate = async () => {
+  const [selectedOrderId, setSelectedOrderId] = useState("");
+  const [isRegenerateLoading, setIsRegenerateLoading] = useState(false);
+  const [regenerateMessage, setRegenerateMessage] = useState("");
+  const [openRegenerateResultModal, setOpenRegenerateResultModal] = useState(false);
+
+  const getRegenerateStatusStyle = () => {
+    const message = regenerateMessage.toLowerCase();
+
+    if (message.includes("success")) {
+      return {
+        label: "Success",
+        icon: "✓",
+        wrapper: "bg-green-50 border-green-200",
+        badge: "bg-green-100 text-green-700",
+        iconClass: "bg-green-600 text-white",
+        text: "text-green-700",
+      };
+    }
+
+    if (message.includes("fail") || message.includes("error") || message.includes("unable")) {
+      return {
+        label: "Failed",
+        icon: "!",
+        wrapper: "bg-red-50 border-red-200",
+        badge: "bg-red-100 text-red-700",
+        iconClass: "bg-red-600 text-white",
+        text: "text-red-700",
+      };
+    }
+
+    if (message.includes("pending")) {
+      return {
+        label: "Pending",
+        icon: "i",
+        wrapper: "bg-amber-50 border-amber-200",
+        badge: "bg-amber-100 text-amber-700",
+        iconClass: "bg-amber-500 text-white",
+        text: "text-amber-700",
+      };
+    }
+
+    return {
+      label: "Status",
+      icon: "i",
+      wrapper: "bg-blue-50 border-blue-200",
+      badge: "bg-blue-100 text-blue-700",
+      iconClass: "bg-blue-600 text-white",
+      text: "text-blue-700",
+    };
+  };
+
+  const clearRegenerateState = () => {
+    setOpenRegenerateModal(false);
+    setOpenRegenerateResultModal(false);
+    setSelectedPass(null);
+    setSelectedOrderId("");
+    setRegenerateMessage("");
+  };
+
+  const showRegenerateResult = (message) => {
+    setOpenRegenerateModal(false);
+    setRegenerateMessage(message);
+    setOpenRegenerateResultModal(false);
+
+    setTimeout(() => {
+      setOpenRegenerateResultModal(true);
+    }, 250);
+
+    setTimeout(() => {
+      clearRegenerateState();
+    }, 5000);
+  };
+
+  const handleConfirmRegenerate = async (orderId) => {
+    const finalOrderId = orderId || selectedOrderId || getOrderId(selectedPass);
+
+    if (!finalOrderId) {
+      console.log("Regenerate selected row:", selectedPass);
+      showRegenerateResult("Order ID not found for this booking.");
+      return;
+    }
+
     try {
-      const passUserDetailsId =
-        selectedPass?.PassUserDetailsId ||
-        selectedPass?.passUserDetailsId ||
-        selectedPass?.BookingId;
+      setIsRegenerateLoading(true);
+      console.log("Checking walker pass order status:", finalOrderId);
+      const response = await apiService.post(
+        `${API_ENDPOINTS.WALKERS_PASS_BOOKING.ORDER_STATUS_CALL}/${finalOrderId}`
+      );
 
-      const response = await viewPass(passUserDetailsId);
-
-      console.log("Regenerate Response:", response);
-
-      // Close confirmation popup
-      setOpenRegenerateModal(false);
-
-      // Show API response popup
-      setResponseMessage(
-        response?.message ||
+      const message =
         response?.data?.message ||
-        "Pass generated successfully."
-      );
+        response?.data?.data?.resultMsg ||
+        "Payment status checked successfully.";
 
-      setResponseModal(true);
-
-      // Navigate only when success
-      if (
-        response?.status === 200 ||
-        response?.data?.statusCode === 200
-      ) {
-        navigate("/walker-pass-card", {
-          state: {
-            passUserDetailsId,
-            backTo: "/walkers-pass-report",
-          },
-        });
-      }
+      showRegenerateResult(message);
     } catch (error) {
-      setOpenRegenerateModal(false);
-
-      setResponseMessage(
-        error?.response?.data?.message ||
-        "Something went wrong."
-      );
-
-      setResponseModal(true);
+      const message = error?.response?.data?.message || "Unable to check payment status.";
+      showRegenerateResult(message);
+    } finally {
+      setIsRegenerateLoading(false);
     }
   };
 
-  const savedFilters = JSON.parse(
-    localStorage.getItem("walkers-pass-report-filters") || "{}"
-  );
-  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const [currentPage, setCurrentPage] = useState(0);
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
   const {
-    fetchWalkersPassReportData,
     WalkersPassReportData,
     totalCount,
     isFetchWalkersPassReportData,
     viewPassBulk,
     isViewPassBulkLoading,
   } = useWalkersPassReportStore();
-
-  const { viewPass } = useWalkerpassStore();
 
   const fetchSelectedBulkPasses = async () => {
     const passUserDetailsIds = selectedRows
@@ -689,30 +757,6 @@ function WalkersPassReportList() {
     }
   };
 
-  useEffect(() => {
-    // Only fetch data for pagination changes (not initial load)
-    // Initial load is handled by the form component
-    if (currentPage > 0) {
-      const savedBookingDate = savedFilters?.purchaseOrBooking || 'Purchase';
-      const isBookingDateValue = savedBookingDate === 'Booking';
-
-      const formattedValues = {
-        fromDate: !isBookingDateValue ? savedFilters?.fromDate ?? getCurrentDate() : "",
-        toDate: !isBookingDateValue ? savedFilters?.toDate ?? getCurrentDate() : "",
-        bookingDateFrom: isBookingDateValue ? savedFilters?.fromDate ?? getCurrentDate() : null,
-        bookingDateTo: isBookingDateValue ? savedFilters?.toDate ?? getCurrentDate() : null,
-        passTypeId: savedFilters?.passTypeId ?? "",
-        subFacilityId: savedFilters?.subFacilityId ?? "",
-        locationId: savedFilters?.locationId ?? "",
-        status: savedFilters?.status ?? "CONFIRMED",
-        pageNumber: currentPage + 1,
-        PageSize: PAGE_LIMIT,
-      };
-
-      fetchWalkersPassReportData(formattedValues);
-    }
-  }, [currentPage, PAGE_LIMIT, fetchWalkersPassReportData]);
-
   const columnDefs = [
     {
       headerName: "",
@@ -726,10 +770,7 @@ function WalkersPassReportList() {
       headerName: "S.No",
       maxWidth: 70,
       headerClass: "text-blue-v2",
-      valueGetter: (params) => {
-        const pageOffset = currentPage * PAGE_LIMIT;
-        return pageOffset + params.node.rowIndex + 1;
-      },
+      valueGetter: (params) => params.node.rowIndex + 1,
     },
     {
       field: "TransactionId",
@@ -747,20 +788,20 @@ function WalkersPassReportList() {
     },
     // ------------------
 
-    {
-      field: "FacilityName",
-      headerName: "Facility Name",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "SubFacilityName",
-      headerName: "Sub Facility Name",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
+    // {
+    //   field: "FacilityName",
+    //   headerName: "Facility Name",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
+    // {
+    //   field: "SubFacilityName",
+    //   headerName: "Sub Facility Name",
+    //   // flex: 1,
+    //   headerClass: "text-blue-v2",
+    //   valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    // },
     {
       field: "MobileNumber",
       headerName: "Mobile Number",
@@ -770,44 +811,24 @@ function WalkersPassReportList() {
     },
     {
       field: "BookingDate",
-      headerName: "Booking Date",
+      headerName: "Booking Date & Time",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        try {
-          return formatToStandardDate(params.value);
-        } catch {
-          return "N/A";
-        }
-      },
+      valueGetter: (params) => formatDateTimeCellValue(params.data?.BookingDate),
     },
 
     {
       field: "ValidityStartDate",
-      headerName: "Validity Start Date",
+      headerName: "Validity Start Date & Time",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        try {
-          return formatToStandardDate(params.value);
-        } catch {
-          return "N/A";
-        }
-      },
+      valueGetter: (params) =>
+        formatDateTimeCellValue(params.data?.ValidityStartDate || params.data?.ValidFrom),
     },
 
     {
       field: "ValidTo",
-      headerName: "Validity End Date",
+      headerName: "Validity End Date & Time",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (!params.value) return "N/A";
-        try {
-          return formatToStandardDate(params.value);
-        } catch {
-          return "N/A";
-        }
-      },
+      valueGetter: (params) => formatDateTimeCellValue(params.data?.ValidTo),
     },
     {
       field: "PassAmount",
@@ -841,7 +862,29 @@ function WalkersPassReportList() {
       maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => params.value || "N/A",
+    },
+    {
+      headerName: "ID Card Image",
+      maxWidth: 140,
+      headerClass: "text-blue-v2",
+      cellRenderer: (params) =>
+        params.data?.IdCardImage ? (
+          <div className="flex items-center justify-center gap-3">
+            <button
+              type="button"
+              className="mt-1.5"
+              onClick={() => {
+                setSelectedImageRecord(params.data);
+                setImageModalOpen(true);
+              }}
+            >
+              <IoMdImages className="text-[24px] text-blue-600" />
+            </button>
+          </div>
+        ) : (
+          <span className="flex items-center justify-center gap-3">N/A</span>
+        ),
     },
     {
       headerName: "Generate Pass",
@@ -860,7 +903,12 @@ function WalkersPassReportList() {
                 }`}
               onClick={() => {
                 if (!isDisabled) {
+                  const orderId = getOrderId(params.data);
+                  console.log("Regenerate row selected:", params.data);
+                  console.log("Regenerate order id:", orderId);
                   setSelectedPass(params.data);
+                  setSelectedOrderId(orderId);
+                  setRegenerateMessage("");
                   setOpenRegenerateModal(true);
                 }
               }}
@@ -906,11 +954,7 @@ function WalkersPassReportList() {
   ];
   return (
     <div>
-      <WalkersPassReportForm
-        pageNumber={currentPage + 1}
-        pageSize={PAGE_LIMIT}
-        SetcurrentPage={setCurrentPage}
-      />
+      <WalkersPassReportForm />
       <div className="flex justify-end items-center gap-3 my-3">
         {selectedRows.length > 0 && (
           <span className="text-xs font-semibold text-gray-600">
@@ -946,26 +990,18 @@ function WalkersPassReportList() {
         columnDefs={columnDefs}
         rowSelection="multiple"
         isFetchLoading={isFetchWalkersPassReportData}
-        isPagination={false}
-        IsReactPaginate={true}
-        setPageLimit={setPAGE_LIMIT}
-        pageLimit={PAGE_LIMIT}
-        handlePageClick={handlePageClick}
-        currentPage={currentPage}
+        isPagination={true}
+        IsReactPaginate={false}
         showTotalCount={true}
-        totalCount={totalCount}
+        totalCount={totalCount || WalkersPassReportData.length}
         tableHeight={WalkersPassReportData.length > 10 ? 550 : 300}
-        SetcurrentPage={setCurrentPage}
-        showSearch={false}
+        
         onSelectionChanged={setSelectedRows}
       />
       <PopupModal
         popupModalId="regenerate-pass-modal"
         isOpen={openRegenerateModal}
-        onClose={() => {
-          setOpenRegenerateModal(false);
-          setSelectedPass(null);
-        }}
+        onClose={clearRegenerateState}
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
@@ -975,20 +1011,37 @@ function WalkersPassReportList() {
           <h1 className="text-blue-v1 font-semibold">
             Are you sure you want to regenerate the pass for this booking?
           </h1>
+          {selectedOrderId && (
+            <p className="mt-2 text-xs text-gray-600 text-center">
+              Order ID: {selectedOrderId}
+            </p>
+          )}
 
           <div className="flex justify-center gap-8 mt-4 z-30">
             <button
-              onClick={handleConfirmRegenerate}
-              className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md"
+              type="button"
+              onMouseDown={async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                await handleConfirmRegenerate(selectedOrderId);
+              }}
+              disabled={isRegenerateLoading}
+              className="bg-blue-v1 hover:bg-blue-v2 text-white px-3 py-1 shadow-md rounded-md disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Proceed
+              {isRegenerateLoading ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-4 w-4 inline-block animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Checking payment status...
+                </span>
+              ) : (
+                "Proceed"
+              )}
             </button>
 
             <button
-              onClick={() => {
-                setOpenRegenerateModal(false);
-                setSelectedPass(null);
-              }}
+              type="button"
+              onClick={clearRegenerateState}
+              disabled={isRegenerateLoading}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
             >
               Deny
@@ -997,28 +1050,57 @@ function WalkersPassReportList() {
         </div>
       </PopupModal>
       <PopupModal
-        popupModalId="response-modal"
-        isOpen={responseModal}
-        onClose={() => setResponseModal(false)}
+        popupModalId="regenerate-result-modal"
+        isOpen={openRegenerateResultModal}
+        onClose={clearRegenerateState}
         size="small"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={true}
       >
-        <div className="p-8 text-center">
-          <h2 className="text-lg font-semibold mb-4">
-            Message
-          </h2>
+        <div className="px-8 py-10 text-center">
+          {(() => {
+            const statusStyle = getRegenerateStatusStyle();
 
-          <p className="text-red-600 font-medium">
-            {responseMessage}
-          </p>
-
-          <div className="mt-6">
-            <button
-              onClick={() => setResponseModal(false)}
-              className="bg-blue-v1 text-white px-4 py-2 rounded-md"
-            >
-              OK
-            </button>
-          </div>
+            return (
+              <div className={`border rounded-xl px-5 py-6 ${statusStyle.wrapper}`}>
+                <div className={`mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold ${statusStyle.iconClass}`}>
+                  {statusStyle.icon}
+                </div>
+                <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${statusStyle.badge}`}>
+                  {statusStyle.label}
+                </span>
+                <h2 className="text-blue-v1 font-semibold mt-3 mb-2">Payment Status</h2>
+                <p className={`text-sm font-medium ${statusStyle.text}`}>{regenerateMessage}</p>
+              </div>
+            );
+          })()}
+        </div>
+      </PopupModal>
+      <PopupModal
+        popupModalId="id-card-image-modal"
+        isOpen={imageModalOpen}
+        onClose={() => {
+          setImageModalOpen(false);
+          setSelectedImageRecord(null);
+        }}
+        title={"ID Card Image"}
+        size="small"
+        overlayClassName="bg-gray-800 bg-opacity-60"
+        contentClassName="bg-white"
+        defaultBodyPadding={false}
+        titleColour="text-blue-v1"
+      >
+        <div className="px-4 py-2">
+          {selectedImageRecord?.IdCardImage ? (
+            <img
+              className="max-h-[70vh] w-full object-contain"
+              src={selectedImageRecord.IdCardImage}
+              alt="ID Card"
+            />
+          ) : (
+            <p className="text-center text-sm text-gray-600">No image available.</p>
+          )}
         </div>
       </PopupModal>
     </div>
