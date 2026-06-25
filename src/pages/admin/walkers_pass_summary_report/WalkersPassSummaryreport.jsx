@@ -20,10 +20,23 @@ const WalkersPassSummaryReport = () => {
     });
 
     const handleChange = (e) => {
-        setFilters({
+        const { name, value } = e.target;
+
+        let updatedFilters = {
             ...filters,
-            [e.target.name]: e.target.value,
-        });
+            [name]: value,
+        };
+
+        // Clear To Date if it becomes earlier than From Date
+        if (
+            name === "fromDate" &&
+            filters.toDate &&
+            filters.toDate < value
+        ) {
+            updatedFilters.toDate = "";
+        }
+
+        setFilters(updatedFilters);
     };
 
     const handleSearch = async () => {
@@ -146,6 +159,7 @@ const WalkersPassSummaryReport = () => {
             ]
             : [];
 
+    const maxDate = new Date().toISOString().split("T")[0];
     return (
         <AdminLayout>
             <div className="p-6">
@@ -168,6 +182,7 @@ const WalkersPassSummaryReport = () => {
                                 name="fromDate"
                                 value={filters.fromDate}
                                 onChange={handleChange}
+                                max={maxDate}
                                 className="w-full border rounded px-3 py-2"
                             />
                         </div>
@@ -181,6 +196,8 @@ const WalkersPassSummaryReport = () => {
                                 name="toDate"
                                 value={filters.toDate}
                                 onChange={handleChange}
+                                min={filters.fromDate || ""}
+                                max={maxDate}
                                 className="w-full border rounded px-3 py-2"
                             />
                         </div>
@@ -196,11 +213,12 @@ const WalkersPassSummaryReport = () => {
                                 className="w-full border rounded px-3 py-2"
                             >
                                 <option value="">All</option>
-                                <option value="Monthly">Monthly</option>
+                                <option value="Annualy">Annual Walker's Pass </option>
+                                <option value="Monthly">Monthly Walker's Pass </option>
                                 <option value="Senior Citizen">
-                                    Senior Citizen
+                                    Annual Senior Citizen
                                 </option>
-                                <option value="Yearly">Yearly</option>
+                                <option value="Yearly">Monthly Senior Citizen</option>
                             </select>
                         </div>
 

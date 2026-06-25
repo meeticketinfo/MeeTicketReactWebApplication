@@ -225,47 +225,50 @@ const WalkerpassDetails = () => {
 
                         {/* Payment Section */}
                         <div className="mt-4 bg-gray-100 p-6 rounded-md">
-                            <h1>
-                                Payment Method
-                            </h1>
+                            <h1>Payment Method</h1>
 
-                            <div className="flex items-end gap-4 flex-wrap mt-3">
+                            <div className="flex gap-4 mt-3 items-end">
 
-                                {/* UPI */}
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setPaymentMethod("upi");
-                                        setPaymentError("");
-                                    }}
-                                    className={`flex items-center gap-2 px-3 py-2 rounded text-xs font-semibold border transition-all ${paymentMethod === "upi"
-                                        ? "bg-[#09094D] text-white"
-                                        : "bg-white text-gray-700 border-gray-300"
-                                        }`}
-                                >
-                                    <img
-                                        src={upiIcon}
-                                        alt="UPI"
-                                        className="w-4 h-4"
-                                    />
-                                    UPI Payment
-                                </button>
+                                {/* UPI Section */}
+                                <div className="w-[180px]">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPaymentMethod("upi");
+                                            setPaymentError("");
+                                        }}
+                                        className={`w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-semibold border transition-all ${paymentMethod === "upi"
+                                            ? "bg-[#09094D] text-white"
+                                            : "bg-white text-gray-700 border-gray-300"
+                                            }`}
+                                    >
+                                        <img
+                                            src={upiIcon}
+                                            alt="UPI"
+                                            className="w-4 h-4"
+                                        />
+                                        UPI Payment
+                                    </button>
 
-                                {paymentError && (
-                                    <p className="text-red-500 text-xs mt-1">
-                                        {paymentError}
-                                    </p>
-                                )}
-
+                                    {/* Fixed space for error */}
+                                    <div className="h-10 mt-1">
+                                        {paymentError && (
+                                            <p className="text-red-500 text-xs">
+                                                {paymentError}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
 
                                 {/* Mobile Number */}
-                                <div>
+                                <div className="flex flex-col">
                                     <label
                                         htmlFor="mobileNumber"
                                         className="block text-xs text-gray-600 mb-1"
                                     >
                                         Mobile Number <span className="text-red-500">*</span>
                                     </label>
+
                                     <input
                                         id="mobileNumber"
                                         type="text"
@@ -283,16 +286,17 @@ const WalkerpassDetails = () => {
                                         placeholder="Enter mobile number"
                                     />
 
-                                    {mobileError && (
-                                        <p className="text-red-500 text-xs mt-1">
-                                            {mobileError}
-                                        </p>
-                                    )}
+                                    <div className="h-10 mt-1">
+                                        {mobileError && (
+                                            <p className="text-red-500 text-xs">
+                                                {mobileError}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
                             </div>
                         </div>
-
 
 
                         {/* Proceed Button */}
