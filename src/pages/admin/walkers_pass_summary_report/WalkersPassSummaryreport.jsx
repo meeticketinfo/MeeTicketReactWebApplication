@@ -4,18 +4,23 @@ import apiService from "../../../services/apiService";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import AgGridTable from "../../../components/tables/AgGridTable";
 
-const WalkersPassSummaryReport = () => {
+const formatDateForInput = (date) => date.toISOString().split("T")[0];
 
+const getDefaultFilters = () => {
     const today = new Date();
-
     const lastWeek = new Date();
     lastWeek.setDate(today.getDate() - 6);
 
-    const [filters, setFilters] = useState({
-        fromDate: "",
-        toDate: "",
+    return {
+        fromDate: formatDateForInput(lastWeek),
+        toDate: formatDateForInput(today),
         passType: "",
-    });
+    };
+};
+
+const WalkersPassSummaryReport = () => {
+
+    const [filters, setFilters] = useState(getDefaultFilters);
     const [reportData, setReportData] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -47,29 +52,16 @@ const WalkersPassSummaryReport = () => {
         });
     };
 
-    const handleSearch = async () => {
+    const handleSearch = async (searchFilters = filters) => {
         try {
             setLoading(true);
 
-
-
-           const today = new Date();
-
-const lastWeek = new Date();
-lastWeek.setDate(today.getDate() - 6);
-
-const payload = {
-    fromDate:
-        filters.fromDate ||
-        lastWeek.toISOString().split("T")[0],
-
-    toDate:
-        filters.toDate ||
-        today.toISOString().split("T")[0],
-
-    passType: filters.passType,
-};
-
+            const defaultFilters = getDefaultFilters();
+            const payload = {
+                fromDate: searchFilters.fromDate || defaultFilters.fromDate,
+                toDate: searchFilters.toDate || defaultFilters.toDate,
+                passType: searchFilters.passType,
+            };
 
             console.log("Final Payload:", payload);
 
@@ -85,9 +77,9 @@ const payload = {
 
             const rows = response?.data?.data || [];
 
-            const filteredRows = filters.passType
+            const filteredRows = searchFilters.passType
                 ? rows.filter(
-                    (item) => item.passType === filters.passType
+                    (item) => item.passType === searchFilters.passType
                 )
                 : rows;
 
@@ -106,6 +98,12 @@ const payload = {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleReset = async () => {
+        const defaultFilters = getDefaultFilters();
+        setFilters(defaultFilters);
+        await handleSearch(defaultFilters);
     };
 
     useEffect(() => {
@@ -192,7 +190,7 @@ const payload = {
             ]
             : [];
     console.log("Current reportData:", reportData);
-    const maxDate = new Date().toISOString().split("T")[0];
+    const maxDate = formatDateForInput(new Date());
     return (
         <AdminLayout>
             <div className="p-6">
@@ -204,10 +202,10 @@ const payload = {
                 </div>
 
                 {/* Filters */}
-                <div className="bg-white shadow rounded-lg p-5 border mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3 py-3">
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="block text-xs font-medium text-gray-700">
                                 From Date
                             </label>
                             <input
@@ -216,13 +214,13 @@ const payload = {
                                 value={filters.fromDate}
                                 onChange={handleChange}
                                 max={maxDate}
-                                className="w-full border rounded px-3 py-2"
+                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                             />
 
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="block text-xs font-medium text-gray-700">
                                 To Date
                             </label>
                             <input
@@ -232,19 +230,19 @@ const payload = {
                                 onChange={handleChange}
                                 min={filters.fromDate || ""}
                                 max={maxDate}
-                                className="w-full border rounded px-3 py-2"
+                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">
+                            <label className="block text-xs font-medium text-gray-700">
                                 Type of Pass
                             </label>
                             <select
                                 name="passType"
                                 value={filters.passType}
                                 onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
+                                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                             >
                                 <option value="">All</option>
                                 <option value="Monthly Walker's Pass">
@@ -262,13 +260,21 @@ const payload = {
                             </select>
                         </div>
 
-                        <div className="flex items-end">
+                        <div className="flex items-end gap-2">
                             <button
                                 onClick={handleSearch}
                                 disabled={loading}
-                                className="bg-[#09094D] hover:bg-[#07073D] text-white px-6 py-2 rounded"
+                                className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700"
                             >
                                 {loading ? "Loading..." : "Search"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleReset}
+                                disabled={loading}
+                                className="bg-green-700 text-xs text-white rounded-lg px-3 py-1.5 hover:bg-gray-600 border border-gray-500 hover:border-gray-600"
+                            >
+                                Reset
                             </button>
                         </div>
                     </div>

@@ -212,6 +212,7 @@ const WalkerpassForm = () => {
             formData.append("UserImage", values.selfie);
             formData.append("IdCardImage", values.idProof);
             formData.append("ParkId", parkId);
+            formData.append("BookingSource", "web");
 
             formData.append("FatherOrHusbandName", "string");
             formData.append("Occupation", "string");
