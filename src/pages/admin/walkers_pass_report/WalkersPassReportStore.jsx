@@ -15,20 +15,21 @@ export const useWalkersPassReportStore = create((set) => ({
     });
 
     try {
+      const requestPayload = {
+        fromDate: payload.fromDate,
+        toDate: payload.toDate,
+        passTypeId: payload.passTypeId || null,
+        subFacilityId: payload.subFacilityId || null,
+        status: payload.status || null,
+        pageNumber: payload.pageNumber,
+        pageSize: payload.PageSize,
+      };
+
+      console.log("Final Payload:", requestPayload);
+
       const response = await apiService.post(
         API_ENDPOINTS.REPORTS.WALKERS_PASS_REPORT.GET_WALKERS_PASS_REPORT,
-        {
-          request: {
-            purchaseOrBooking: payload.purchaseOrBooking,
-            fromDate: payload.fromDate,
-            toDate: payload.toDate,
-            passTypeId: payload.passTypeId || 0,
-            subFacilityId: payload.subFacilityId || null,
-            status: payload.status,
-            pageNumber: payload.pageNumber,
-            pageSize: payload.PageSize,
-          },
-        }
+        requestPayload
       );
 
       console.log(

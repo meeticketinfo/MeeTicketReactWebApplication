@@ -7,26 +7,23 @@ import useAuthStore from '../../../store/authStore'
 
 const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   const { fetchWalkersPassReportData } = useWalkersPassReportStore()
-  const [isBookingDate, setIsBookingDate] = useState(false);
 
-  // Get saved filters from localStorage
-  const savedFilters = JSON.parse(
-    localStorage.getItem("walkers-pass-report-filters") || "{}"
-  );
 
-  console.log('Saved filters from localStorage:', savedFilters);
+
+
+
 
   const initialValues = {
-    fromDate: savedFilters.fromDate || getCurrentDate(),
-    toDate: savedFilters.toDate || getCurrentDate(),
-    passTypeId: savedFilters.passTypeId || '',
-    subFacilityId: savedFilters.subFacilityId || '',
-    locationId: savedFilters.locationId || '',
-    status: savedFilters.status || 'CONFIRMED', // Default to CONFIRMED
-    purchaseOrBooking: savedFilters.purchaseOrBooking || 'Purchase', // Default to Purchase Date
-    pageNumber: pageNumber || 1,
-    PageSize: pageSize || 10
-  }
+    fromDate: getCurrentDate(),
+    toDate: getCurrentDate(),
+    passTypeId: '',
+    subFacilityId: '',
+    locationId: '',
+    status: 'CONFIRMED',
+    purchaseOrBooking: 'Purchase',
+    pageNumber: 1,
+    PageSize: 10
+  };
 
   const { allServices, fetchAllServices, allPassTypes, fetchAllPassTypes } = useServiceStore();
 
@@ -38,35 +35,24 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     fetchAllPassTypes();
   }, []);
 
-  // Set the booking date state based on saved filters
-  useEffect(() => {
-    const savedBookingDate = savedFilters.purchaseOrBooking || 'Purchase';
-    setIsBookingDate(savedBookingDate === 'Booking');
-  }, [savedFilters.purchaseOrBooking]);
+
 
   // Trigger initial API call with current form values
   useEffect(() => {
-    // Add a small delay to ensure component is fully mounted
     const timer = setTimeout(() => {
-      const savedBookingDate = savedFilters.purchaseOrBooking || 'Purchase';
-
-      // Use saved values or defaults
-      const fromDate = savedFilters.fromDate || getCurrentDate();
-      const toDate = savedFilters.toDate || getCurrentDate();
-
       const formattedValues = {
-        fromDate: fromDate,
-        toDate: toDate,
-        passTypeId: savedFilters.passTypeId || "",
-        subFacilityId: savedFilters.subFacilityId || "",
-        locationId: savedFilters.locationId || "",
-        status: savedFilters.status || "CONFIRMED",
-        purchaseOrBooking: savedBookingDate,
+        fromDate: getCurrentDate(),
+        toDate: getCurrentDate(),
+        passTypeId: "",
+        subFacilityId: "",
+        locationId: "",
+        status: "CONFIRMED",
         pageNumber: 1,
-        PageSize: savedFilters.PageSize || 10
+        PageSize: 10,
       };
 
-      console.log('Initial API call with values:', formattedValues);
+      console.log("Initial API call with values:", formattedValues);
+
       fetchWalkersPassReportData(formattedValues);
     }, 100);
 
@@ -74,10 +60,9 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
   }, [fetchWalkersPassReportData]);
   const onSubmit = async (values, { setSubmitting }) => {
     console.log("SEARCH CLICKED");
-console.log("Values:", values);
+    console.log("Values:", values);
     try {
-      // Save filters to localStorage
-      localStorage.setItem("walkers-pass-report-filters", JSON.stringify(values))
+     
 
       // Reset to first page when searching
       SetcurrentPage(0)
@@ -119,8 +104,6 @@ console.log("Values:", values);
 
   const handleReset = async (resetForm) => {
     try {
-      // Clear localStorage
-      localStorage.removeItem("walkers-pass-report-filters");
 
       // Reset form to initial values
       const defaultValues = {
@@ -136,7 +119,7 @@ console.log("Values:", values);
       };
 
       resetForm({ values: defaultValues });
-      setIsBookingDate(false);
+
 
       // Reset to first page
       SetcurrentPage(0);
@@ -149,7 +132,6 @@ console.log("Values:", values);
         subFacilityId: "",
         locationId: "",
         status: "CONFIRMED",
-        purchaseOrBooking: 'Purchase',
         pageNumber: 1,
         PageSize: 10
       };
@@ -167,22 +149,7 @@ console.log("Values:", values);
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
-            <div>
-              <label className="block text-xs font-medium text-gray-700">Booking/Purchase Date</label>
-              <Field
-                as="select"
-                name="purchaseOrBooking"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setIsBookingDate(value === "Booking");
-                  setFieldValue("purchaseOrBooking", value);
-                }}
-              >
-                <option value="Purchase">Purchase Date</option>
-                <option value="Booking">Booking Date</option>
-              </Field>
-            </div>
+
             <div>
               <label
                 htmlFor="fromDate"
@@ -225,25 +192,7 @@ console.log("Values:", values);
                 }}
               />
             </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Sub Facility
-              </label>
-              <Field
-                as="select"
-                name="subFacilityId"
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="">Select sub facility</option>
-                {allServices
-                  ?.filter((service) => service.isActive)
-                  ?.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name}
-                    </option>
-                  ))}
-              </Field>
-            </div>
+
             <div>
               <label
                 className="block text-xs font-medium text-gray-700"
@@ -256,6 +205,10 @@ console.log("Values:", values);
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">ALL</option>
+                <option value="">Annual Walker's Pass</option>
+                <option value="">Monthly Walker's Pass</option>
+                <option value="">Annual Senior Citizen</option>
+                <option value="">Monthly Senior Citizen</option>
                 {allPassTypes
                   ?.map((passType) => (
                     <option key={passType.passLocationMasterId} value={passType.passLocationMasterId}>
@@ -276,8 +229,8 @@ console.log("Values:", values);
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="CONFIRMED">CONFIRMED</option>
+                <option value="HOLD">HOLD</option>
               </Field>
-
             </div>
             {/* submit */}
             <div className="flex items-end gap-2">

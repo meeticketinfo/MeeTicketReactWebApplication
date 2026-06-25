@@ -26,6 +26,9 @@ const StatusCellRenderer = (params) => {
   );
 };
 function WalkersPassReportList() {
+  const [responseModal, setResponseModal] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+
   const navigate = useNavigate();
 
   const handleRegenerate = async (passData) => {
@@ -66,12 +69,47 @@ function WalkersPassReportList() {
   const [selectedPass, setSelectedPass] = useState(null);
   const handleConfirmRegenerate = async () => {
     try {
-      await handleRegenerate(selectedPass);
+      const passUserDetailsId =
+        selectedPass?.PassUserDetailsId ||
+        selectedPass?.passUserDetailsId ||
+        selectedPass?.BookingId;
 
+      const response = await viewPass(passUserDetailsId);
+
+      console.log("Regenerate Response:", response);
+
+      // Close confirmation popup
       setOpenRegenerateModal(false);
-      setSelectedPass(null);
+
+      // Show API response popup
+      setResponseMessage(
+        response?.message ||
+        response?.data?.message ||
+        "Pass generated successfully."
+      );
+
+      setResponseModal(true);
+
+      // Navigate only when success
+      if (
+        response?.status === 200 ||
+        response?.data?.statusCode === 200
+      ) {
+        navigate("/walker-pass-card", {
+          state: {
+            passUserDetailsId,
+          },
+        });
+      }
     } catch (error) {
-      console.error(error);
+      setOpenRegenerateModal(false);
+
+      setResponseMessage(
+        error?.response?.data?.message ||
+        "Something went wrong."
+      );
+
+      setResponseModal(true);
     }
   };
 
@@ -365,6 +403,31 @@ function WalkersPassReportList() {
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
             >
               Deny
+            </button>
+          </div>
+        </div>
+      </PopupModal>
+      <PopupModal
+        popupModalId="response-modal"
+        isOpen={responseModal}
+        onClose={() => setResponseModal(false)}
+        size="small"
+      >
+        <div className="p-8 text-center">
+          <h2 className="text-lg font-semibold mb-4">
+            Message
+          </h2>
+
+          <p className="text-red-600 font-medium">
+            {responseMessage}
+          </p>
+
+          <div className="mt-6">
+            <button
+              onClick={() => setResponseModal(false)}
+              className="bg-blue-v1 text-white px-4 py-2 rounded-md"
+            >
+              OK
             </button>
           </div>
         </div>
