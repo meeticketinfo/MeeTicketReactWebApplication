@@ -7,6 +7,7 @@ export const useWalkersPassReportStore = create((set) => ({
   WalkersPassReportData: [],
   totalCount: 0,
   isFetchWalkersPassReportData: false,
+  isViewPassBulkLoading: false,
 
   fetchWalkersPassReportData: async (payload) => {
     console.log("Request Payload:", payload);
@@ -59,6 +60,28 @@ export const useWalkersPassReportStore = create((set) => ({
     } finally {
       set({
         isFetchWalkersPassReportData: false,
+      });
+    }
+  },
+
+  viewPassBulk: async (passUserDetailsIds) => {
+    set({
+      isViewPassBulkLoading: true,
+    });
+
+    try {
+      const response = await apiService.post(
+        API_ENDPOINTS.WALKERS_PASS_BOOKING.VIEW_PASS_BULK,
+        { passUserDetailsIds }
+      );
+
+      return response.data;
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+      throw error;
+    } finally {
+      set({
+        isViewPassBulkLoading: false,
       });
     }
   },

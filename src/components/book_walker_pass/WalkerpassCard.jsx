@@ -12,7 +12,7 @@ import useAuthStore from "../../store/authStore";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
 import { API_BASE_URL } from "../../constants/apiEndpoints";
 import {
-    fileToCompressedDataUrl,
+    getWalkerPassImageStorageKey,
     getStoredWalkerPassImage,
     storeWalkerPassImage,
 } from "./walkerPassImageUtils";
@@ -50,7 +50,7 @@ const isRawBase64Image = (value) =>
 const getImageUrlCandidates = (url) => {
     if (!url || typeof url !== "string") return [];
 
-    const trimmedUrl = url.trim();
+    const trimmedUrl = url.trim().replace(/(%22|")/g, "");
     if (!trimmedUrl) return [];
 
     if (/^data:/i.test(trimmedUrl)) {
@@ -136,47 +136,67 @@ const getAuthToken = () => {
     return fallback;
 };
 
-// ─── Fetch any URL → base64 WITH auth token ──────────────────────────
+const blobToDataUrl = (blob) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+
+// ─── Fetch any URL → base64 ──────────────────────────────────────────
 const fetchToBase64 = async (url) => {
-    const [imageUrl] = getImageUrlCandidates(url);
-    if (!imageUrl) return null;
-    if (imageUrl.startsWith("data:")) return imageUrl;
+    const imageUrls = getImageUrlCandidates(url);
+    if (imageUrls.length === 0) return null;
 
-    try {
+    for (const imageUrl of imageUrls) {
+        if (imageUrl.startsWith("data:")) return imageUrl;
+
         const token = getAuthToken();
-
-        const res = await fetch(imageUrl, {
-            method: "GET",
-            credentials: "include",
-            headers: {
-                ...(token && { Authorization: `Bearer ${token}` }),
+        const requestOptions = [
+            {
+                method: "GET",
+                credentials: "omit",
+                headers: {
+                    Accept: "image/*",
+                },
             },
-        });
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    Accept: "image/*",
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                },
+            },
+        ];
 
-        if (!res.ok) {
-            console.error("Image fetch failed:", res.status, res.statusText);
-            return null;
+        for (const options of requestOptions) {
+            try {
+                const res = await fetch(imageUrl, options);
+
+                if (!res.ok) {
+                    console.error("Image fetch failed:", imageUrl, res.status, res.statusText);
+                    continue;
+                }
+
+                const blob = await res.blob();
+
+                if (blob.size === 0 || (blob.type && !blob.type.startsWith("image/"))) {
+                    console.error("Image blob is invalid:", imageUrl, blob.type, blob.size);
+                    continue;
+                }
+
+                return await blobToDataUrl(blob);
+            } catch (e) {
+                console.error("fetchToBase64 error:", imageUrl, e);
+            }
         }
-
-        const blob = await res.blob();
-
-        if (blob.size === 0) {
-            console.error("Image blob is empty");
-            return null;
-        }
-
-        return await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                resolve(reader.result);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-    } catch (e) {
-        console.error("fetchToBase64 error:", e);
-        return null;
     }
+
+    return null;
 };
 
 // ─── Load base64 → HTMLImageElement ──────────────────────────────────
@@ -190,6 +210,50 @@ const loadImage = (src) =>
         img.onerror = reject;
         img.src = src;
     });
+
+const isMostlyBlackImage = async (src) => {
+    try {
+        const img = await loadImage(src);
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let opaquePixels = 0;
+        let blackPixels = 0;
+
+        for (let i = 0; i < pixels.length; i += 4) {
+            if (pixels[i + 3] < 20) continue;
+
+            opaquePixels += 1;
+            if (pixels[i] < 12 && pixels[i + 1] < 12 && pixels[i + 2] < 12) {
+                blackPixels += 1;
+            }
+        }
+
+        return opaquePixels > 0 && blackPixels / opaquePixels > 0.9;
+    } catch (error) {
+        console.error("Unable to inspect user image:", error);
+        return false;
+    }
+};
+
+const prepareImageForCanvas = async (src) => {
+    const img = await loadImage(src);
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth || img.width || 1;
+    canvas.height = img.naturalHeight || img.height || 1;
+
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/jpeg", 0.92);
+};
 
 const removeEdgeWhiteBackground = (img) => {
     const canvas = document.createElement("canvas");
@@ -254,6 +318,7 @@ const WalkerPassCard = () => {
     const passUserDetailsId =
         location.state?.passUserDetailsId ||
         localStorage.getItem("passUserDetailsId");
+    const backTo = location.state?.backTo || "/walkers-pass-report";
 
     const { viewPass } = useWalkerpassStore();
 
@@ -265,22 +330,31 @@ const WalkerPassCard = () => {
             getStoredWalkerPassImage(passUserDetailsId) ||
             ""
     );
-    const [imageLoadMessage, setImageLoadMessage] = useState("");
     const [passLoadError, setPassLoadError] = useState("");
     const [isPassLoading, setIsPassLoading] = useState(true);
-    const [isPreparingImage, setIsPreparingImage] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [isPrinting, setIsPrinting] = useState(false);
 
     const canvasRef = useRef(null);
 
     const getUserImageSource = async (data = passData) => {
-        if (userImageBase64) return userImageBase64;
+        if (userImageBase64 && !(await isMostlyBlackImage(userImageBase64))) {
+            return prepareImageForCanvas(userImageBase64);
+        }
 
         const storedImage = getStoredWalkerPassImage(passUserDetailsId);
+        if (storedImage && !(await isMostlyBlackImage(storedImage))) {
+            const preparedImage = await prepareImageForCanvas(storedImage);
+            setUserImageBase64(preparedImage);
+            storeWalkerPassImage(passUserDetailsId, preparedImage);
+            return preparedImage;
+        }
+
         if (storedImage) {
-            setUserImageBase64(storedImage);
-            return storedImage;
+            const storageKey = getWalkerPassImageStorageKey(passUserDetailsId);
+            if (storageKey) {
+                sessionStorage.removeItem(storageKey);
+            }
         }
 
         const imageUrls = getImageUrlCandidates(getPassImageValue(data));
@@ -290,42 +364,20 @@ const WalkerPassCard = () => {
             if (!base64) continue;
 
             try {
-                await loadImage(base64);
-                setUserImageBase64(base64);
-                storeWalkerPassImage(passUserDetailsId, base64);
-                setImageLoadMessage("");
-                return base64;
+                const preparedImage = await prepareImageForCanvas(base64);
+                if (await isMostlyBlackImage(preparedImage)) {
+                    continue;
+                }
+
+                setUserImageBase64(preparedImage);
+                storeWalkerPassImage(passUserDetailsId, preparedImage);
+                return preparedImage;
             } catch (error) {
                 console.error("Fetched user image is not drawable:", imageUrl, error);
             }
         }
 
-        if (getPassImageValue(data)) {
-            setImageLoadMessage(
-                "User image could not be loaded from the server. Select the photo here once to include it in PDF/print."
-            );
-        }
-
         return "";
-    };
-
-    const handleUserPhotoUpload = async (event) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        try {
-            setIsPreparingImage(true);
-            const base64 = await fileToCompressedDataUrl(file);
-            await loadImage(base64);
-            setUserImageBase64(base64);
-            storeWalkerPassImage(passUserDetailsId, base64);
-            setImageLoadMessage("");
-        } catch (error) {
-            console.error("Unable to load selected user photo:", error);
-            setImageLoadMessage("Selected photo could not be loaded. Please choose a JPG or PNG image.");
-        } finally {
-            setIsPreparingImage(false);
-        }
     };
 
     // ─── Format date ──────────────────────────────────────────────────────
@@ -722,31 +774,37 @@ const WalkerPassCard = () => {
                 setPassData(data);
 
                 const storedImage = getStoredWalkerPassImage(passUserDetailsId);
-                if (storedImage) {
-                    setUserImageBase64(storedImage);
-                    setImageLoadMessage("");
-                } else if (getPassImageValue(data)) {
+                let hasLoadedStoredImage = false;
+                if (storedImage && !(await isMostlyBlackImage(storedImage))) {
+                    const preparedImage = await prepareImageForCanvas(storedImage);
+                    setUserImageBase64(preparedImage);
+                    storeWalkerPassImage(passUserDetailsId, preparedImage);
+                    hasLoadedStoredImage = true;
+                } else if (storedImage) {
+                    const storageKey = getWalkerPassImageStorageKey(passUserDetailsId);
+                    if (storageKey) {
+                        sessionStorage.removeItem(storageKey);
+                    }
+                }
+
+                if (!hasLoadedStoredImage && getPassImageValue(data)) {
                     const imageUrls = getImageUrlCandidates(getPassImageValue(data));
-                    let isImageLoaded = false;
                     for (const imageUrl of imageUrls) {
                         const base64 = await fetchToBase64(imageUrl);
                         if (!base64) continue;
 
                         try {
-                            await loadImage(base64);
-                            setUserImageBase64(base64);
-                            storeWalkerPassImage(passUserDetailsId, base64);
-                            setImageLoadMessage("");
-                            isImageLoaded = true;
+                            const preparedImage = await prepareImageForCanvas(base64);
+                            if (await isMostlyBlackImage(preparedImage)) {
+                                continue;
+                            }
+
+                            setUserImageBase64(preparedImage);
+                            storeWalkerPassImage(passUserDetailsId, preparedImage);
                             break;
                         } catch (error) {
                             console.error("Fetched user image is not drawable:", imageUrl, error);
                         }
-                    }
-                    if (!isImageLoaded) {
-                        setImageLoadMessage(
-                            "User image could not be loaded from the server. Select the photo here once to include it in PDF/print."
-                        );
                     }
                 }
 
@@ -777,20 +835,25 @@ const WalkerPassCard = () => {
                     <h2 className="text-lg font-semibold text-gray-800">
                         Book Walker Pass
                     </h2>
+                    <button
+                        type="button"
+                        onClick={() => navigate(backTo, { replace: true })}
+                        className="bg-gray-800 text-white px-4 py-2 rounded-md text-xs font-semibold hover:bg-gray-700"
+                    >
+                        Back
+                    </button>
                 </div>
 
                 {/* Main Content */}
                 <div className="bg-white rounded-xl shadow-md border border-gray-200 min-h-[75vh] p-6">
                     <div className="flex flex-col items-center relative">
-                        {(isDownloading || isPrinting || isPreparingImage) && (
+                        {(isDownloading || isPrinting) && (
                             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-xl bg-white/80 backdrop-blur-sm">
                                 {renderSpinner("h-8 w-8 text-[#09094D]")}
                                 <p className="mt-3 text-sm font-semibold text-gray-700">
                                     {isDownloading
                                         ? "Preparing PDF..."
-                                        : isPrinting
-                                            ? "Preparing print..."
-                                            : "Preparing user photo..."}
+                                        : "Preparing print..."}
                                 </p>
                             </div>
                         )}
@@ -833,13 +896,6 @@ const WalkerPassCard = () => {
                                                     src={userImageBase64 || getPassImageValue(passData)}
                                                     alt="User"
                                                     className="w-[95px] h-[95px] border border-gray-300 object-cover"
-                                                    onError={() => {
-                                                        if (!userImageBase64) {
-                                                            setImageLoadMessage(
-                                                                "User image could not be loaded from the server. Select the photo here once to include it in PDF/print."
-                                                            );
-                                                        }
-                                                    }}
                                                 />
                                             </div>
 

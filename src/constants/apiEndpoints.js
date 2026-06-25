@@ -1,5 +1,3 @@
-import useAuthStore from "../store/authStore";
-
 /// dev park
 export const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
@@ -408,6 +406,7 @@ export const API_ENDPOINTS = {
     INITIATE_PAYMENT: `${API_BASE_URL}v2/PaymentTransaction/IntiateTransactionforCard`,
     ORDER_STATUS_CALL: `${API_BASE_URL}v3/PaymentTransaction/OrderStatusCall`,
     VIEW_PASS: `${API_BASE_URL}WalkersPass/ViewPass`,
+    VIEW_PASS_BULK: `${API_BASE_URL}WalkersPass/ViewPassBulk`,
   },
   ENTITIES: {
     DOWNLOAD_FILE: `${API_BASE_URL}Transaction/DownloadQRCodeByParkId`,

@@ -45,11 +45,13 @@ const UpiPaymentQR = () => {
 
     const navigateToPassCard = useCallback((paymentResponse) => {
         navigate("/walker-pass-card", {
+            replace: true,
             state: {
                 paymentResponse,
                 orderId,
                 passUserDetailsId,
                 userImageBase64,
+                backTo: "/walkers-pass-report",
             },
         });
     }, [navigate, orderId, passUserDetailsId, userImageBase64]);

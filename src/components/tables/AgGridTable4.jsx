@@ -10,7 +10,6 @@ import { useAggridStore } from "../../store/agGridStore";
 import { ModuleRegistry } from "ag-grid-community";
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 import ReactPaginate from "react-paginate";
-import { formatDateTime } from "../../utils/Helper";
 ModuleRegistry.registerModules([ExcelExportModule]);
 
 const AgGridTable4 = ({
@@ -31,7 +30,8 @@ const AgGridTable4 = ({
     totalCount = 0,
     SetcurrentPage,
     showSearch = true,
-    rowSelection = "multiple"
+    rowSelection = "multiple",
+    onSelectionChanged,
 }) => {
     const { activePage, setActivePage } = usePaginationStore();
     const { quickFilterText, setQuickFilterText } = useAggridStore();
@@ -45,7 +45,7 @@ const AgGridTable4 = ({
 
     useEffect(() => {
         setQuickFilterText("");
-    }, []);
+    }, [setQuickFilterText]);
 
     // Function to handle quick search input change
     const handleQuickFilterChange = (e) => {
@@ -53,13 +53,6 @@ const AgGridTable4 = ({
         setQuickFilterText(filterText);
         // Persist the filter text in localStorage
         localStorage.setItem("quickFilterText", filterText);
-    };
-
-    // Function to export data to CSV
-    const handleExportCsv = () => {
-        if (gridApi) {
-            gridApi.exportDataAsCsv([]);
-        }
     };
 
     const handleExportExcel = () => {
@@ -162,7 +155,7 @@ const AgGridTable4 = ({
         if (gridApi) {
             gridApi.refreshClientSideRowModel(); // Refresh indexes when filtering
         }
-    }, [quickFilterText]);
+    }, [gridApi, quickFilterText]);
 
     return (
         <div className="bg-white/30 backdrop-blur-md p-2 border rounded-2xl">
@@ -215,6 +208,9 @@ const AgGridTable4 = ({
                     quickFilterText={quickFilterText}
                     rowSelection={rowSelection}
                     suppressRowClickSelection={true}
+                    onSelectionChanged={(event) => {
+                        onSelectionChanged?.(event.api.getSelectedRows());
+                    }}
                     onGridReady={(params) => {
                         setGridApi(params.api); // Store the API instance
                         params.api.paginationGoToPage(activePage); // Navigate to the saved active page
@@ -299,7 +295,22 @@ AgGridTable4.propTypes = {
     rowData: PropTypes.array.isRequired,
     columnDefs: PropTypes.array.isRequired,
     isFetchLoading: PropTypes.bool.isRequired,
+    pinnedBottomRowData: PropTypes.array,
+    ExportName: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    gridOptions: PropTypes.object,
+    tableHeight: PropTypes.number,
+    isPagination: PropTypes.bool,
+    IsReactPaginate: PropTypes.bool,
+    setPageLimit: PropTypes.func,
+    pageLimit: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    handlePageClick: PropTypes.func,
+    currentPage: PropTypes.number,
+    showTotalCount: PropTypes.bool,
+    totalCount: PropTypes.number,
+    SetcurrentPage: PropTypes.func,
+    showSearch: PropTypes.bool,
     rowSelection: PropTypes.string,
+    onSelectionChanged: PropTypes.func,
 };
 
 export default AgGridTable4;

@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Formik, Form, Field } from 'formik'
 import { getCurrentDate } from '../../../utils/TypographyHelper'
 import { useWalkersPassReportStore } from './WalkersPassReportStore'
 import { useServiceStore } from '../../../store/masters/servicesStore'
 import useAuthStore from '../../../store/authStore'
 
-const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
+const WalkersPassReportForm = ({
+  SetcurrentPage,
+}) => {
   const { fetchWalkersPassReportData } = useWalkersPassReportStore()
 
 
@@ -25,7 +28,7 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     PageSize: 10
   };
 
-  const { allServices, fetchAllServices, allPassTypes, fetchAllPassTypes } = useServiceStore();
+  const { fetchAllServices, allPassTypes, fetchAllPassTypes } = useServiceStore();
 
   const { roleDetails } =
     useAuthStore();
@@ -136,7 +139,6 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
         PageSize: 10
       };
 
-      console.log("Search Form Values:", values);
       console.log("Formatted Values:", formattedValues);
       await fetchWalkersPassReportData(formattedValues);
     } catch (error) {
@@ -205,8 +207,8 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
                 className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
                 <option value="">ALL</option>
-                <option value="">Annual Walker's Pass</option>
-                <option value="">Monthly Walker's Pass</option>
+                <option value="">Annual Walker&apos;s Pass</option>
+                <option value="">Monthly Walker&apos;s Pass</option>
                 <option value="">Annual Senior Citizen</option>
                 <option value="">Monthly Senior Citizen</option>
                 {allPassTypes
@@ -255,5 +257,9 @@ const WalkersPassReportForm = ({ pageNumber, pageSize, SetcurrentPage }) => {
     </div>
   )
 }
+
+WalkersPassReportForm.propTypes = {
+  SetcurrentPage: PropTypes.func.isRequired,
+};
 
 export default WalkersPassReportForm
