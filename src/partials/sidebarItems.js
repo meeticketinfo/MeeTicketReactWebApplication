@@ -203,12 +203,12 @@ const sidebarItems = [
         path: "/pos-payment-transactions-reports",
       },
       {
-        title: "Walkers Pass Report",
+        title: "Walker's Pass Report",
         icon: TbReportAnalytics,
         path: "/walkers-pass-report",
       },
       {
-        title: "Walkers Pass Summary Report",
+        title: "Walker's Pass Summary",
         icon: TbReportAnalytics,
         path: "/walkers-pass-summary-report",
       },

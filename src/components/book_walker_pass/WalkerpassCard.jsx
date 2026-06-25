@@ -877,7 +877,7 @@ const WalkerPassCard = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4">
                     <h2 className="text-lg font-semibold text-gray-800">
-                        Book Walker Pass
+                        Book Walker's Pass
                     </h2>
                     <button
                         type="button"

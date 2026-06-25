@@ -20,7 +20,7 @@ const WalkersPassReport = () => {
             class="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white"
             onClick={() => navigate("/book-walker-pass")}>
 
-            Book Walker Pass
+            Book Walker's Pass
           </button>
         </div>
 

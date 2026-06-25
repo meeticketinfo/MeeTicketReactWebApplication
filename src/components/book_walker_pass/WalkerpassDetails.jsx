@@ -133,7 +133,7 @@ const WalkerpassDetails = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-4">
                     <h2 className="text-lg font-semibold text-gray-800">
-                        Book Walker Pass
+                        Book Walker's Pass
                     </h2>
 
                 </div>
@@ -195,7 +195,7 @@ const WalkerpassDetails = () => {
 
                             <div>
                                 <p className="text-gray-500 text-sm">
-                                    Walkers Pass Type
+                                    Walker's Pass Type
                                 </p>
                                 <p className="font-semibold">
                                     {data?.walkerPassTypeName}

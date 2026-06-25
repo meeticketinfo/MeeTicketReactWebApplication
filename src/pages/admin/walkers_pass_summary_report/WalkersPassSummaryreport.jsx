@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import apiService from "../../../services/apiService";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import AgGridTable from "../../../components/tables/AgGridTable";
 
 const WalkersPassSummaryReport = () => {
+
+    const today = new Date();
+
+    const lastWeek = new Date();
+    lastWeek.setDate(today.getDate() - 6);
+
     const [filters, setFilters] = useState({
         fromDate: "",
         toDate: "",
         passType: "",
     });
-
     const [reportData, setReportData] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -19,52 +24,76 @@ const WalkersPassSummaryReport = () => {
         netTotalAmount: 0,
     });
 
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        let updatedFilters = {
-            ...filters,
-            [name]: value,
-        };
+        setFilters((prev) => {
+            const updated = {
+                ...prev,
+                [name]: value,
+            };
 
-        // Clear To Date if it becomes earlier than From Date
-        if (
-            name === "fromDate" &&
-            filters.toDate &&
-            filters.toDate < value
-        ) {
-            updatedFilters.toDate = "";
-        }
+            // Clear To Date if From Date becomes later
+            if (
+                name === "fromDate" &&
+                updated.toDate &&
+                updated.toDate < value
+            ) {
+                updated.toDate = "";
+            }
 
-        setFilters(updatedFilters);
+            return updated;
+        });
     };
 
     const handleSearch = async () => {
         try {
             setLoading(true);
 
-            const payload = {
-                fromDate: filters.fromDate,
-                toDate: filters.toDate,
-                passType: filters.passType,
-            };
 
-            console.log("Payload:", payload);
+
+           const today = new Date();
+
+const lastWeek = new Date();
+lastWeek.setDate(today.getDate() - 6);
+
+const payload = {
+    fromDate:
+        filters.fromDate ||
+        lastWeek.toISOString().split("T")[0],
+
+    toDate:
+        filters.toDate ||
+        today.toISOString().split("T")[0],
+
+    passType: filters.passType,
+};
+
+
+            console.log("Final Payload:", payload);
 
             const response = await apiService.post(
                 API_ENDPOINTS.MASTERS.WALKERS_PASS.WALKER_PASS_SUMMARY_REPORT,
                 payload
             );
 
+            console.log("FULL RESPONSE:", response);
+            console.log("RESPONSE DATA:", response?.data);
+            console.log("RESPONSE DATA.DATA:", response?.data?.data);
+            console.log("IS ARRAY:", Array.isArray(response?.data?.data));
 
-            console.log("API DATA:", response?.data);
+            const rows = response?.data?.data || [];
 
-            console.log("Response:", response.data);
-            console.log("Grid Data:", response.data.data);
-            console.log("Summary:", response.data.summary);
+            const filteredRows = filters.passType
+                ? rows.filter(
+                    (item) => item.passType === filters.passType
+                )
+                : rows;
 
-            setReportData(response?.data?.data || []);
+            console.log("ROWS TO GRID:", filteredRows);
 
+            setReportData(filteredRows);
             setSummary(
                 response?.data?.summary || {
                     netQuantity: 0,
@@ -78,6 +107,10 @@ const WalkersPassSummaryReport = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        handleSearch();
+    }, []);
 
     const columnDefs = [
         {
@@ -158,7 +191,7 @@ const WalkersPassSummaryReport = () => {
                 },
             ]
             : [];
-
+    console.log("Current reportData:", reportData);
     const maxDate = new Date().toISOString().split("T")[0];
     return (
         <AdminLayout>
@@ -166,7 +199,7 @@ const WalkersPassSummaryReport = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold text-gray-800">
-                        Walkers Pass Summary Report
+                        Walker's Pass Summary Report
                     </h2>
                 </div>
 
@@ -185,6 +218,7 @@ const WalkersPassSummaryReport = () => {
                                 max={maxDate}
                                 className="w-full border rounded px-3 py-2"
                             />
+
                         </div>
 
                         <div>
@@ -213,12 +247,18 @@ const WalkersPassSummaryReport = () => {
                                 className="w-full border rounded px-3 py-2"
                             >
                                 <option value="">All</option>
-                                <option value="Annualy">Annual Walker's Pass </option>
-                                <option value="Monthly">Monthly Walker's Pass </option>
-                                <option value="Senior Citizen">
+                                <option value="Monthly Walker's Pass">
+                                    Monthly Walker's Pass
+                                </option>
+                                <option value="Monthly Senior Citizen">
+                                    Monthly Senior Citizen
+                                </option>
+                                <option value="Annual Walker's Pass">
+                                    Annual Walker's Pass
+                                </option>
+                                <option value="Annual Senior Citizen">
                                     Annual Senior Citizen
                                 </option>
-                                <option value="Yearly">Monthly Senior Citizen</option>
                             </select>
                         </div>
 
@@ -250,6 +290,6 @@ const WalkersPassSummaryReport = () => {
             </div>
         </AdminLayout>
     );
-};
 
+}
 export default WalkersPassSummaryReport;

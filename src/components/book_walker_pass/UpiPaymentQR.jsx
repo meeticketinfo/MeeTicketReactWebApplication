@@ -208,7 +208,7 @@ const UpiPaymentQR = () => {
                 {/* Header */}
                 <div className="px-6 py-4 flex justify-between items-center">
                     <h2 className="text-lg font-semibold text-gray-800">
-                        Book Walker Pass
+                        Book Walker's Pass
                     </h2>
 
                     <button

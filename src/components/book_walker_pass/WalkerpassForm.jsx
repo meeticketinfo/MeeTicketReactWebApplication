@@ -280,7 +280,7 @@ const WalkerpassForm = () => {
 
             <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-bold text-gray-800">
-                    Book Walker Pass
+                    Book Walker's Pass
                 </h2>
 
 
