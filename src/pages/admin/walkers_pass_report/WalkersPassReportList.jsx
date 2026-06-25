@@ -61,12 +61,35 @@ const getImageUrlCandidates = (url) => {
     return [`data:image/jpeg;base64,${trimmedUrl}`];
   }
 
+  const getLocalProxyUrl = (imageUrl) => {
+    if (typeof window === "undefined") return "";
+
+    try {
+      const parsedUrl = new URL(imageUrl, window.location.origin);
+      const imagePath = parsedUrl.pathname;
+      const marker = "/parkapi/WalkerPassParkImages/";
+
+      if (
+        window.location.hostname === "localhost" &&
+        imagePath.includes(marker)
+      ) {
+        const fileName = imagePath.split(marker).pop();
+        return `/parkapi-image-proxy/${fileName}${parsedUrl.search || ""}`;
+      }
+    } catch (error) {
+      console.error("Invalid bulk pass image URL:", imageUrl, error);
+    }
+
+    return "";
+  };
+
   if (/^(blob:|https?:\/\/)/i.test(trimmedUrl)) {
-    return [trimmedUrl];
+    return [getLocalProxyUrl(trimmedUrl), trimmedUrl].filter(Boolean);
   }
 
   try {
-    return [new URL(trimmedUrl, window.location.origin).href];
+    const appUrl = new URL(trimmedUrl, window.location.origin).href;
+    return [getLocalProxyUrl(appUrl), appUrl].filter(Boolean);
   } catch (error) {
     console.error("Invalid bulk pass image URL:", trimmedUrl, error);
     return [];

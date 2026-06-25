@@ -61,8 +61,30 @@ const getImageUrlCandidates = (url) => {
         return [`data:image/jpeg;base64,${trimmedUrl}`];
     }
 
+    const getLocalProxyUrl = (imageUrl) => {
+        if (typeof window === "undefined") return "";
+
+        try {
+            const parsedUrl = new URL(imageUrl, window.location.origin);
+            const imagePath = parsedUrl.pathname;
+            const marker = "/parkapi/WalkerPassParkImages/";
+
+            if (
+                window.location.hostname === "localhost" &&
+                imagePath.includes(marker)
+            ) {
+                const fileName = imagePath.split(marker).pop();
+                return `/parkapi-image-proxy/${fileName}${parsedUrl.search || ""}`;
+            }
+        } catch (error) {
+            console.error("Invalid walker pass image URL:", imageUrl, error);
+        }
+
+        return "";
+    };
+
     if (/^(blob:|https?:\/\/)/i.test(trimmedUrl)) {
-        return [trimmedUrl];
+        return [getLocalProxyUrl(trimmedUrl), trimmedUrl].filter(Boolean);
     }
 
     const candidates = [];
@@ -72,18 +94,20 @@ const getImageUrlCandidates = (url) => {
             : API_BASE_URL;
 
     try {
-        candidates.push(new URL(trimmedUrl, appBaseUrl).href);
+        const appUrl = new URL(trimmedUrl, appBaseUrl).href;
+        candidates.push(getLocalProxyUrl(appUrl), appUrl);
     } catch (error) {
         console.error("Invalid image URL:", trimmedUrl, error);
     }
 
     try {
-        candidates.push(new URL(trimmedUrl.replace(/^\/+/, ""), API_BASE_URL).href);
+        const apiUrl = new URL(trimmedUrl.replace(/^\/+/, ""), API_BASE_URL).href;
+        candidates.push(getLocalProxyUrl(apiUrl), apiUrl);
     } catch (error) {
         console.error("Invalid API image URL:", trimmedUrl, error);
     }
 
-    return [...new Set(candidates)];
+    return [...new Set(candidates.filter(Boolean))];
 };
 
 // ─── Get auth token from active auth stores ───────────────────────────
