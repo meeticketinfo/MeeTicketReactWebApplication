@@ -118,7 +118,7 @@ const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity, ca
 
       {/* Counter row */}
       <div className="flex items-center justify-between">
-        <span className="text-sm sm:text-base font-medium text-gray-700">No. of Houses</span>
+        <span className="text-sm sm:text-base font-medium text-gray-700">No of Cottages</span>
         <div className="flex items-center gap-3">
           <button
             onClick={() => onHouseCountChange(-1)}

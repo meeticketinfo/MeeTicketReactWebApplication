@@ -23,6 +23,7 @@
     "chart.js": "^4.4.1",
     "chartjs-adapter-moment": "^1.0.1",
     "crypto-browserify": "^3.12.1",
+    "date-fns": "^4.4.0",
     "formik": "^2.4.9",
     "framer-motion": "^12.23.6",
     "global": "^4.4.0",

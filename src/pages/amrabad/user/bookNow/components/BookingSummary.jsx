@@ -147,12 +147,12 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Total Houses:</span>
+            <span className="text-sm text-gray-600">Total Cottages:</span>
             <span className="text-sm font-medium text-gray-800">{houseCount}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">House Fare:</span>
+            <span className="text-sm text-gray-600">Cottage Fare:</span>
             <span className="text-sm font-medium text-gray-800">
               {nights} {nights === 1 ? "night" : "nights"} × ₹{pricePerNight.toLocaleString()}
             </span>
