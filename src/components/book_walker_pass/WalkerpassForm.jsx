@@ -88,13 +88,12 @@ const WalkerpassForm = () => {
             .required("ID Proof is required")
             .test(
                 "fileType",
-                "Only JPG, PNG and PDF files are allowed",
+                "Only JPG and PNG files are allowed",
                 (value) =>
                     !value ||
                     [
                         "image/jpeg",
                         "image/png",
-                        "application/pdf",
                     ].includes(value.type)
             ).test(
                 "fileSize",
@@ -585,7 +584,7 @@ const WalkerpassForm = () => {
                                                 </p>
 
                                                 <p className="mt-3 text-base font-semibold text-gray-500">
-                                                    (JPG/PNG/PDF)
+                                                    (JPG/PNG)
                                                 </p>
                                             </>
                                         )}
@@ -594,7 +593,7 @@ const WalkerpassForm = () => {
                                             type="file"
                                             className="hidden"
                                             id="idProof"
-                                            accept=".jpg,.png,.pdf"
+                                            accept=".jpg,.png"
                                             onChange={(event) => {
                                                 const file = event.currentTarget.files[0];
 

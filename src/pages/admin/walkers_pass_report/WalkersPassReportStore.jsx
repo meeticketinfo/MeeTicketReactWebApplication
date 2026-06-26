@@ -6,6 +6,7 @@ import apiService from "../../../services/apiService";
 export const useWalkersPassReportStore = create((set) => ({
   WalkersPassReportData: [],
   totalCount: 0,
+  walkersPassReportFilters: null,
   isFetchWalkersPassReportData: false,
   isViewPassBulkLoading: false,
 
@@ -23,10 +24,11 @@ export const useWalkersPassReportStore = create((set) => ({
         subFacilityId: payload.subFacilityId || null,
         status: payload.status || null,
         pageNumber: payload.pageNumber || 1,
-        pageSize: payload.PageSize || 50000,
+        pageSize: payload.PageSize || payload.pageSize || 50000,
       };
 
       console.log("Final Payload:", requestPayload);
+      set({ walkersPassReportFilters: requestPayload });
 
       const response = await apiService.post(
         API_ENDPOINTS.REPORTS.WALKERS_PASS_REPORT.GET_WALKERS_PASS_REPORT,

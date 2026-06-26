@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AgGridTable4 from "../../../components/tables/AgGridTable4";
 import { formatDateTime } from "../../../utils/Helper";
 import WalkersPassReportForm from "./WalkersPassReportForm";
@@ -520,6 +520,8 @@ function WalkersPassReportList() {
   const [isRegenerateLoading, setIsRegenerateLoading] = useState(false);
   const [regenerateMessage, setRegenerateMessage] = useState("");
   const [openRegenerateResultModal, setOpenRegenerateResultModal] = useState(false);
+  const [refreshAfterRegenerate, setRefreshAfterRegenerate] = useState(false);
+  const regenerateCloseTimerRef = useRef(null);
 
   const getRegenerateStatusStyle = () => {
     const message = regenerateMessage.toLowerCase();
@@ -567,25 +569,36 @@ function WalkersPassReportList() {
     };
   };
 
-  const clearRegenerateState = () => {
+  const clearRegenerateState = async (refreshReport = false) => {
+    if (regenerateCloseTimerRef.current) {
+      clearTimeout(regenerateCloseTimerRef.current);
+      regenerateCloseTimerRef.current = null;
+    }
+
     setOpenRegenerateModal(false);
     setOpenRegenerateResultModal(false);
     setSelectedPass(null);
     setSelectedOrderId("");
     setRegenerateMessage("");
+    setRefreshAfterRegenerate(false);
+
+    if (refreshReport && walkersPassReportFilters) {
+      await fetchWalkersPassReportData(walkersPassReportFilters);
+    }
   };
 
-  const showRegenerateResult = (message) => {
+  const showRegenerateResult = (message, refreshReport = true) => {
     setOpenRegenerateModal(false);
     setRegenerateMessage(message);
+    setRefreshAfterRegenerate(refreshReport);
     setOpenRegenerateResultModal(false);
 
     setTimeout(() => {
       setOpenRegenerateResultModal(true);
     }, 250);
 
-    setTimeout(() => {
-      clearRegenerateState();
+    regenerateCloseTimerRef.current = setTimeout(() => {
+      clearRegenerateState(refreshReport);
     }, 5000);
   };
 
@@ -594,7 +607,7 @@ function WalkersPassReportList() {
 
     if (!finalOrderId) {
       console.log("Regenerate selected row:", selectedPass);
-      showRegenerateResult("Order ID not found for this booking.");
+      showRegenerateResult("Order ID not found for this booking.", false);
       return;
     }
 
@@ -622,7 +635,9 @@ function WalkersPassReportList() {
   const {
     WalkersPassReportData,
     totalCount,
+    walkersPassReportFilters,
     isFetchWalkersPassReportData,
+    fetchWalkersPassReportData,
     viewPassBulk,
     isViewPassBulkLoading,
   } = useWalkersPassReportStore();
@@ -1001,7 +1016,7 @@ function WalkersPassReportList() {
       <PopupModal
         popupModalId="regenerate-pass-modal"
         isOpen={openRegenerateModal}
-        onClose={clearRegenerateState}
+        onClose={() => clearRegenerateState()}
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
@@ -1040,7 +1055,7 @@ function WalkersPassReportList() {
 
             <button
               type="button"
-              onClick={clearRegenerateState}
+              onClick={() => clearRegenerateState()}
               disabled={isRegenerateLoading}
               className="bg-blue-v1 hover:bg-blue-v2 text-white px-5 py-1 shadow-md rounded-md"
             >
@@ -1052,7 +1067,7 @@ function WalkersPassReportList() {
       <PopupModal
         popupModalId="regenerate-result-modal"
         isOpen={openRegenerateResultModal}
-        onClose={clearRegenerateState}
+        onClose={() => clearRegenerateState(refreshAfterRegenerate)}
         size="small"
         overlayClassName="bg-gray-800 bg-opacity-60"
         contentClassName="bg-white"
