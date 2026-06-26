@@ -21,7 +21,7 @@ const Breadcrumb = ({ house }) => {
         className="text-[#304A3A] hover:text-[#2E3929] font-semibold capitalize"
         to={`/amrabad-resort/houses/${house?.packageId}`}
       >
-        List of houses
+        List of Cottages
       </Link>
       <span className="text-gray-400"> &gt; </span>
       <span className="text-gray-800 font-semibold capitalize">{house?.roomName}</span>

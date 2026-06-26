@@ -38,7 +38,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
     // Check if the fromDate has available rooms
     if (!checkAvailabilityForDate(house, fromDate)) {
       e.preventDefault();
-      toast.error(`No room available on ${formatDate(fromDate)}`);
+      toast.error(`No cottage available on ${formatDate(fromDate)}`);
       return false;
     }
     
@@ -52,7 +52,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
     // Check if the selected date has available rooms
     if (!checkAvailabilityForDate(house, item.date)) {
       e.preventDefault();
-      toast.error(`No room available on ${formatDate(item.date)}`);
+      toast.error(`No cottage available on ${formatDate(item.date)}`);
       return false;
     }
     
@@ -181,10 +181,10 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
 
               {/* Message */}
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                No Houses Available
+                No Cottages Available
               </h3>
               <p className="text-gray-500 mb-6">
-                Currently there are no houses available for booking. Please check back later or explore other options. Or you can change from date and to date.
+                Currently there are no cottages available for booking. Please check back later or explore other options. Or you can change from date and to date.
               </p>
 
               {/* Button to Amarabad page */}
@@ -220,7 +220,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                 {/* Image */}
               <div className="flex-shrink-0 flex justify-center lg:max-w-[320px] md:max-w-[200px] w-full relative">
                 <span className="absolute top-0 right-0 text-sm text-gray-700 bg-white px-2 py-1 rounded-bl-lg z-10">
-                  Available House : <b>{house?.noOfHousesAvailable}</b>
+                  Available Cottages : <b>{house?.noOfHousesAvailable}</b>
                 </span>
 
                 {Array.isArray(house?.images) && house.images.length > 0 ? (
@@ -235,7 +235,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                       <SwiperSlide key={i}>
                         <img
                           src={src}
-                          alt={`${house?.roomName || "House"} ${i + 1}`}
+                          alt={`${house?.roomName || "Cottage"} ${i + 1}`}
                           className="aspect-square w-full object-cover rounded-lg"
                           onError={(e) => {
                             e.currentTarget.src =

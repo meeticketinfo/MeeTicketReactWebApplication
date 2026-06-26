@@ -6,7 +6,7 @@ const PaymentSummary = ({ payment }) => {
       </h2>
       <div className="text-xs sm:text-sm space-y-2">
         <div className="flex justify-between">
-          <span className="font-bold text-black">House charges:</span>
+          <span className="font-bold text-black">Cottage charges:</span>
           <span className="font-bold text-black">
             ₹{payment?.totalTariff?.toLocaleString() ?? "N/A"}
           </span>

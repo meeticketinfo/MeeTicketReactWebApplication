@@ -105,12 +105,12 @@ const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity, ca
           {/* Status message */}
           {allCartedOut && (
             <p className="mt-2 text-xs text-red-600 font-medium">
-              All available houses for this date range are already in your cart.
+              All available cottages for this date range are already in your cart.
             </p>
           )}
           {maxHouses === 0 && !allCartedOut && (
             <p className="mt-2 text-xs text-orange-600 font-medium">
-              No houses available for the selected dates.
+              No cottages available for the selected dates.
             </p>
           )}
         </div>
@@ -153,7 +153,7 @@ const HouseCounter = ({ houseCount, onHouseCountChange, maxHouses = Infinity, ca
       {/* Max reached hint */}
       {!allCartedOut && maxHouses !== Infinity && houseCount >= maxHouses && maxHouses > 0 && (
         <p className="text-xs text-[#c4a97a] mt-1 text-right">
-          Maximum available houses selected
+          Maximum available cottages selected
         </p>
       )}
     </div>

@@ -121,7 +121,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
           <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full">
             <h3 className="text-base font-bold text-gray-800 mb-2">Different Package in Cart</h3>
             <p className="text-sm text-gray-600 mb-4">
-              You already have rooms from <span className="font-semibold text-gray-800">"{conflictModal.existingPackageName}"</span> in your cart.
+              You already have cottages from <span className="font-semibold text-gray-800">"{conflictModal.existingPackageName}"</span> in your cart.
               To book a different package, please complete or clear your current booking first.
             </p>
             <div className="flex gap-3">

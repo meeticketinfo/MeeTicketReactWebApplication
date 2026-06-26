@@ -166,7 +166,7 @@ const Houses = () => {
               onClick={handleSearch}
               className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-6 py-2 rounded-md shadow-md transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
             >
-              Search Houses
+              Search Cottages
             </button>
           </div>
           <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />

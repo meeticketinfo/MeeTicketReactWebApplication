@@ -23,7 +23,7 @@ const HouseDetails = ({ houses }) => {
     <div className="">
       <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-black flex items-center gap-2">
         <PiHouseLine className="w-5 h-5 text-[#304A3A]" />
-        House Details:
+        Cottage Details:
       </h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">

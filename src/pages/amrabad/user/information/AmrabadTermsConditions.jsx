@@ -60,7 +60,7 @@ const AmrabadTermsConditions = () => {
               className="text-2xl font-bold text-[#304A3A] mb-4"
               style={{ fontFamily: "Arial Nova, sans-serif" }}
             >
-              2. Packages and Houses Bookings
+              2. Packages and Cottages Bookings
             </h2>
             <ul
               className="space-y-2 text-gray-700"

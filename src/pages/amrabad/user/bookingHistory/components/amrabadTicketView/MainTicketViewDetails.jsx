@@ -310,10 +310,10 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                         Package Name
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
-                        House Name
+                        Cottage Name
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap" >
-                        House Count
+                        Cottage Count
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         Check-in Date
