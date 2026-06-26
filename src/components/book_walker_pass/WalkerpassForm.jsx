@@ -9,8 +9,6 @@ import {
     fileToCompressedDataUrl,
     storeWalkerPassImage,
 } from "./walkerPassImageUtils";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const WalkerpassForm = () => {
 
@@ -329,24 +327,24 @@ const WalkerpassForm = () => {
                                         Date of Birth <span className="text-red-500">*</span>
                                     </label>
 
-                                    <DatePicker
-                                        selected={
-                                            values.dateOfBirth
-                                                ? new Date(values.dateOfBirth)
-                                                : null
-                                        }
-                                        onChange={(date) => {
-                                            if (!date) {
+                                    <Field
+                                        name="dateOfBirth"
+                                        type="date"
+                                        min="1900-01-01"
+                                        max="2021-12-31"
+                                        className="w-full h-8 border border-gray-300 rounded text-xs px-2 focus:outline-none focus:border-blue-500"
+                                        onChange={(e) => {
+                                            const selectedDate = e.target.value;
+
+                                            if (!selectedDate) {
                                                 setFieldValue("dateOfBirth", "");
                                                 setFieldValue("age", "");
                                                 return;
                                             }
 
-                                            const formattedDate =
-                                                date.toISOString().split("T")[0];
+                                            setFieldValue("dateOfBirth", selectedDate);
 
-                                            setFieldValue("dateOfBirth", formattedDate);
-
+                                            const date = new Date(`${selectedDate}T00:00:00`);
                                             const today = new Date();
                                             let age =
                                                 today.getFullYear() -
@@ -366,15 +364,6 @@ const WalkerpassForm = () => {
 
                                             setFieldValue("age", age);
                                         }}
-                                        dateFormat="dd-MM-yyyy"
-                                        placeholderText="DD-MM-YYYY"
-                                        minDate={new Date("1900-01-01")}
-                                        maxDate={new Date("2021-12-31")}
-                                        showMonthDropdown
-                                        showYearDropdown
-                                        dropdownMode="select"
-                                        wrapperClassName="w-full"
-                                        className="w-full h-8 border border-gray-300 rounded text-xs px-2 focus:outline-none focus:border-blue-500"
                                     />
                                     <ErrorMessage
                                         name="dateOfBirth"
