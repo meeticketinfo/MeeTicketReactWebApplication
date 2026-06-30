@@ -4,9 +4,10 @@ import AdminLayout from "../../layouts/AdminLayout";
 import PopupModal from "../utils/popup_modal/PopupModal";
 import { useWalkerpassStore } from "./WalkerpassStore";
 import QRCode from "qrcode";
-import walkerPassBg from "../../images/walker_pass_bg.png";
-import MeeTicketLogo from "../../images/MeeTicketLogo.png";
-import ForestLogo from "../../images/ForestLogo.png";
+import ForestLogo from "../../images/forestLogo.png";
+import DeccanTrailsLogo from "../../images/DeccanTrailsLogo.png";
+import TelanganaRisingLogo from "../../images/user/TS_rising_logo2.png";
+import SignatureImage from "../../images/signature.png";
 import jsPDF from "jspdf";
 import useAuthStore from "../../store/authStore";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
@@ -31,6 +32,27 @@ const CARD_CANVAS_GAP = 12;
 const CARD_PRINT_GAP_MM = (CARD_CANVAS_GAP / CARD_CANVAS_HEIGHT) * CARD_PRINT_HEIGHT_MM;
 const PASS_PRINT_HEIGHT_MM = CARD_PRINT_HEIGHT_MM * 2 + CARD_PRINT_GAP_MM;
 const PDF_PAGE_MARGIN_MM = 5;
+const PASS_HEADER_TEXT = "TELANGANA FOREST";
+const PASS_HEADER_TEXT_LINE_2 = "DEVELOPMENT CORPORATION LTD.";
+const PASS_SUBTITLE = "S.K.V.B.R BOTANICAL GARDEN";
+const PASS_HEADER_GREEN = "#3d6b3b";
+const PASS_BODY_BG = "#f7f5f1";
+const PASS_TEXT_BROWN = "#2c1b0f";
+const BACK_PAGE_RULES = [
+    "Destroy or damage the wildlife or its habitat in the Botanical Garden.",
+    "Set fire or candle any fire or leave any fire burning in the Botanical Garden.",
+    "Enter the Botanical Garden with any weapon.",
+    "Bring any chemicals or explosives into the Botanical Garden.",
+    "Use any path other than the designated foot paths for walking in visitor zone.",
+    "Litter in the Botanical Garden.",
+    "Smoke or consume any alcohol in the Botanical Garden.",
+    "Feed or tease any wild animals in the Botanical Garden.",
+    "Distribute pamphlets or any other printed material in the Botanical Garden.",
+    "Create any nuisance in the Botanical Garden.",
+];
+const BACK_PAGE_ABIDE_TEXT =
+    "I shall abide by the provisions of Forest Act 1967 & WildLife Protection Act 1972 and Rules made thereunder";
+const BACK_PAGE_EMERGENCY_TEXT = "EMERGENCY CONTACT NUMBER +91 8008301605";
 
 const normalizePassResponse = (response) => response?.data || response;
 
@@ -42,6 +64,20 @@ const getPassImageValue = (data) =>
     data?.profileImgUrl ||
     data?.photoUrl ||
     data?.imageUrl ||
+    "";
+
+const getPassFormNo = (data) =>
+    data?.assUserDetailsId ||
+    data?.AssUserDetailsId ||
+    data?.passUserDetailsId ||
+    data?.PassUserDetailsId ||
+    "";
+
+const getPassActualName = (data) =>
+    data?.passName ||
+    data?.PassName ||
+    data?.passActualName ||
+    data?.PassActualName ||
     "";
 
 const isRawBase64Image = (value) =>
@@ -468,12 +504,58 @@ const WalkerPassCard = () => {
         ctx.closePath();
     };
 
-    // ─── Draw both cards onto canvas ──────────────────────────────────────
+    const drawText = (ctx, text, x, y, options = {}) => {
+        const {
+            size = 26,
+            weight = "700",
+            color = PASS_TEXT_BROWN,
+            align = "left",
+            letterSpacing = 0,
+            font = "Arial",
+            maxWidth = null,
+            minSize = 5,
+        } = options;
+
+        ctx.fillStyle = color;
+        let effectiveSize = size;
+        ctx.font = `${weight} ${effectiveSize}px ${font}`;
+        if (maxWidth && !letterSpacing) {
+            while (ctx.measureText(text).width > maxWidth && effectiveSize > minSize) {
+                effectiveSize -= 0.5;
+                ctx.font = `${weight} ${effectiveSize}px ${font}`;
+            }
+        }
+        ctx.textAlign = align;
+        ctx.textBaseline = "alphabetic";
+
+        if (!letterSpacing) {
+            ctx.fillText(text, x, y);
+            return;
+        }
+
+        const chars = String(text).split("");
+        const textWidth = chars.reduce((width, char, index) => (
+            width + ctx.measureText(char).width + (index < chars.length - 1 ? letterSpacing : 0)
+        ), 0);
+        let cursorX = x;
+        if (align === "center") {
+            cursorX = x - textWidth / 2;
+        } else if (align === "right") {
+            cursorX = x - textWidth;
+        }
+
+        chars.forEach((char) => {
+            ctx.fillText(char, cursorX, y);
+            cursorX += ctx.measureText(char).width + letterSpacing;
+        });
+    };
+
+    // ─── Draw both original-size cards onto canvas ────────────────────────
     const drawCanvas = async () => {
         const SCALE = 3;
         const W = 340 * SCALE;
-        const GAP = 12 * SCALE;
-        const CARD_H = 214 * SCALE;
+        const GAP = CARD_CANVAS_GAP * SCALE;
+        const CARD_H = CARD_CANVAS_HEIGHT * SCALE;
         const TOTAL_H = CARD_H * 2 + GAP;
 
         const canvas = canvasRef.current;
@@ -483,216 +565,277 @@ const WalkerPassCard = () => {
 
         const userImageSourcePromise = getUserImageSource();
 
-        // Load all images in parallel
-        const [bgImg, forestImg, meeImg, userImageSource, qrImg] = await Promise.all([
-            fetchToBase64(walkerPassBg).then((b) => loadImage(b || walkerPassBg)),
+        const [forestImg, deccanImg, risingImg, signatureImg, userImageSource, qrImg] = await Promise.all([
             fetchToBase64(ForestLogo).then((b) => loadImage(b || ForestLogo)),
-            fetchToBase64(MeeTicketLogo).then((b) => loadImage(b || MeeTicketLogo)),
+            fetchToBase64(DeccanTrailsLogo).then((b) => loadImage(b || DeccanTrailsLogo)),
+            fetchToBase64(TelanganaRisingLogo).then((b) => loadImage(b || TelanganaRisingLogo)),
+            fetchToBase64(SignatureImage).then((b) => loadImage(b || SignatureImage)),
             userImageSourcePromise,
             loadImage(qrCodeUrl),
         ]);
         const userImg = userImageSource ? await loadImage(userImageSource).catch(() => null) : null;
         const forestLogoImg = removeEdgeWhiteBackground(forestImg);
-        const meeLogoImg = removeEdgeWhiteBackground(meeImg);
+        const deccanLogoImg = removeEdgeWhiteBackground(deccanImg);
+        const risingLogoImg = removeEdgeWhiteBackground(risingImg);
 
-        // ════════════════════════════════════════════
-        // CARD 1 — Pass Card
-        // ════════════════════════════════════════════
-        const drawCard1 = () => {
-            const x = 0, y = 0, w = W, h = CARD_H;
-            const HEADER_H = 52 * SCALE;
-            const FOOTER_H = 22 * SCALE;
-
-            // White background
-            ctx.fillStyle = "#ffffff";
-            roundRect(ctx, x, y, w, h, 12 * SCALE);
-            ctx.fill();
-
-            // Header
-            ctx.fillStyle = "#091A8C";
-            roundRectTop(ctx, x, y, w, HEADER_H, 12 * SCALE);
-            ctx.fill();
-
-            // Logos
-            ctx.drawImage(forestLogoImg, x + 8 * SCALE, y + 6 * SCALE, 40 * SCALE, 40 * SCALE);
-            ctx.drawImage(meeLogoImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
-
-            // Park name + pass name
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-            ctx.font = `bold ${14 * SCALE}px Arial`;
-            ctx.fillText(passData?.parkName || "", x + w / 2, y + 20 * SCALE);
-            ctx.font = `${13 * SCALE}px Arial`;
-            ctx.fillText(passData?.passName || "", x + w / 2, y + 38 * SCALE);
-
-            // Body background
-            const bodyY = y + HEADER_H;
-            const bodyH = h - HEADER_H - FOOTER_H;
-            ctx.drawImage(bgImg, x, bodyY, w, bodyH);
-
-            // User photo
-            if (userImg) {
-                ctx.drawImage(
-                    userImg,
-                    x + 9 * SCALE,
-                    bodyY + 8 * SCALE,
-                    95 * SCALE,
-                    95 * SCALE
-                );
-            } else {
-                ctx.strokeStyle = "#cccccc";
-                ctx.lineWidth = 1 * SCALE;
-                ctx.strokeRect(x + 9 * SCALE, bodyY + 8 * SCALE, 80 * SCALE, 80 * SCALE);
-            }
-
-            // Name & DOB between Image and QR
-            const textX = x + 115 * SCALE;
-
-            ctx.textAlign = "left";
-
-            // Name
-            ctx.fillStyle = "#000000";
-            ctx.font = `bold ${10 * SCALE}px Arial`;
-            ctx.fillText(
-                (passData?.userName || "").toUpperCase(),
-                textX,
-                bodyY + 35 * SCALE
-            );
-
-            // Name Label
-            ctx.fillStyle = "#666666";
-            ctx.font = `${8 * SCALE}px Arial`;
-            ctx.fillText(
-                "Name",
-                textX,
-                bodyY + 50 * SCALE
-            );
-
-            // DOB
-            ctx.fillStyle = "#000000";
-            ctx.font = `bold ${10 * SCALE}px Arial`;
-            ctx.fillText(
-                formatDate(passData?.dateOfBirth),
-                textX,
-                bodyY + 75 * SCALE
-            );
-
-            // DOB Label
-            ctx.fillStyle = "#666666";
-            ctx.font = `${8 * SCALE}px Arial`;
-            ctx.fillText(
-                "Date Of Birth",
-                textX,
-                bodyY + 90 * SCALE
-            );
-
-            // QR code
-            const qrSize = 110 * SCALE;
-            const qrX = x + w - qrSize - 8 * SCALE;
-            const qrY = bodyY + 4 * SCALE;
-
-            ctx.drawImage(
-                qrImg,
-                qrX,
-                qrY,
-                qrSize,
-                qrSize
-            );
-
-            ctx.fillStyle = "#000";
-            ctx.textAlign = "center";
-            ctx.font = `bold ${10 * SCALE}px Arial`;
-
-            ctx.fillText(
-                `Amount: ₹${passData?.price || ""}`,
-                qrX + qrSize / 2,
-                qrY + qrSize + 20 * SCALE
-            );
-
-            // Footer
-            ctx.fillStyle = "#091A8C";
-            roundRectBottom(ctx, x, y + h - FOOTER_H, w, FOOTER_H, 12 * SCALE);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-            ctx.font = `bold ${8 * SCALE}px Arial`;
-            ctx.fillText(
-                `VALIDITY: ${formatDate(passData?.validFrom)} TO ${formatDate(passData?.validTo)}`,
-                x + w / 2,
-                y + h - 8 * SCALE
-            );
+        const drawClippedCircleImage = (image, imageX, imageY, imageSize) => {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(imageX + imageSize / 2, imageY + imageSize / 2, imageSize / 2, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(image, imageX, imageY, imageSize, imageSize);
+            ctx.restore();
         };
 
-        // ════════════════════════════════════════════
-        // CARD 2 — Instructions
-        // ════════════════════════════════════════════
-        const drawCard2 = () => {
-            const x = 0, y = CARD_H + GAP, w = W, h = CARD_H;
-            const HEADER_H = 52 * SCALE;
-            const FOOTER_H = 22 * SCALE;
+        const drawWhiteLogo = (image, imageX, imageY, imageW, imageH) => {
+            const logoCanvas = document.createElement("canvas");
+            logoCanvas.width = imageW;
+            logoCanvas.height = imageH;
+            const logoCtx = logoCanvas.getContext("2d");
+            logoCtx.drawImage(image, 0, 0, imageW, imageH);
+            logoCtx.globalCompositeOperation = "source-in";
+            logoCtx.fillStyle = "#f7f4e9";
+            logoCtx.fillRect(0, 0, imageW, imageH);
+            ctx.drawImage(logoCanvas, imageX, imageY, imageW, imageH);
+        };
 
-            // White background
-            ctx.fillStyle = "#ffffff";
+        const drawFrontCard = () => {
+            const x = 0;
+            const y = 0;
+            const w = W;
+            const h = CARD_H;
+            const headerH = 57 * SCALE;
+            const bodyY = y + headerH;
+
+            ctx.fillStyle = PASS_BODY_BG;
             roundRect(ctx, x, y, w, h, 12 * SCALE);
             ctx.fill();
 
-            // Header
-            ctx.fillStyle = "#091A8C";
-            roundRectTop(ctx, x, y, w, HEADER_H, 12 * SCALE);
+            ctx.fillStyle = PASS_HEADER_GREEN;
+            roundRectTop(ctx, x, y, w, headerH, 12 * SCALE);
             ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "left";
-            ctx.font = `bold ${14 * SCALE}px Arial`;
-            ctx.fillText("Pass Instruction", x + 12 * SCALE, y + 32 * SCALE);
 
-            // MeeTicket logo
-            ctx.drawImage(meeLogoImg, x + w - 48 * SCALE, y + 7 * SCALE, 40 * SCALE, 40 * SCALE);
+            drawClippedCircleImage(forestLogoImg, x + 8 * SCALE, y + 6 * SCALE, 45 * SCALE);
+            drawWhiteLogo(deccanLogoImg, x + w - 49 * SCALE, y + 8 * SCALE, 38 * SCALE, 38 * SCALE);
 
-            // Body
-            const bodyY = y + HEADER_H;
-            const bodyH = h - HEADER_H - FOOTER_H;
-            ctx.drawImage(bgImg, x, bodyY, w, bodyH);
-
-            // Terms heading
-            ctx.fillStyle = "#dc2626";
-            ctx.font = `bold ${10 * SCALE}px Arial`;
-            ctx.textAlign = "left";
-            ctx.fillText("Terms and Conditions", x + 12 * SCALE, bodyY + 16 * SCALE);
-
-            // Terms lines
-            ctx.fillStyle = "#333333";
-            ctx.font = `bold ${7 * SCALE}px Arial`;
-            const lines = [
-                "Monthly Walker pass Validity is only till the end of the month,",
-                "irrespective of the date of purchase",
-                "",
-                "Monthly Walker pass Validity is only till 30th of June Next Year,",
-                "irrespective of the Month of purchase",
-                "",
-                "The Walker pass is only valid once a Day.",
-                "",
-                "Park Timings: Open daily from 06:00 am - 6:00 pm",
-            ];
-            lines.forEach((line, i) => {
-                ctx.fillText(line, x + 12 * SCALE, bodyY + 30 * SCALE + i * 10 * SCALE);
+            drawText(ctx, PASS_HEADER_TEXT, x + w / 2, y + 18 * SCALE, {
+                size: 11 * SCALE,
+                weight: "800",
+                color: "#f7f4e9",
+                align: "center",
+                letterSpacing: 0.6 * SCALE,
+            });
+            drawText(ctx, PASS_HEADER_TEXT_LINE_2, x + w / 2, y + 34 * SCALE, {
+                size: 9.2 * SCALE,
+                weight: "800",
+                color: "#f7f4e9",
+                align: "center",
+                letterSpacing: 0.25 * SCALE,
+            });
+            drawText(ctx, PASS_SUBTITLE, x + w / 2, y + 48 * SCALE, {
+                size: 7 * SCALE,
+                weight: "800",
+                color: "#f7f4e9",
+                align: "center",
+                letterSpacing: 0.15 * SCALE,
             });
 
-            // Footer
-            ctx.fillStyle = "#091A8C";
-            roundRectBottom(ctx, x, y + h - FOOTER_H, w, FOOTER_H, 12 * SCALE);
-            ctx.fill();
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-            ctx.font = `bold ${8 * SCALE}px Arial`;
-            ctx.fillText(
-                `VALIDITY: ${formatDate(passData?.validFrom)} TO ${formatDate(passData?.validTo)}`,
-                x + w / 2,
-                y + h - 8 * SCALE
+            const drawDetailLine = (label, value, textX, textY) => {
+                const maxWidth = 238 * SCALE;
+                const lineHeight = 8 * SCALE;
+                const labelText = `${label}: `;
+                const labelWidth = ctx.measureText("Pass Type: ").width;
+                const valueX = textX + labelWidth;
+                const words = String(value || "").split(" ");
+                let line = "";
+                let currentY = textY;
+                ctx.fillStyle = PASS_TEXT_BROWN;
+                ctx.font = `800 ${7 * SCALE}px Arial`;
+                ctx.textAlign = "left";
+                ctx.textBaseline = "alphabetic";
+                ctx.fillText(label, textX, currentY);
+                ctx.fillText(":", textX + labelWidth - ctx.measureText(": ").width, currentY);
+
+                words.forEach((word) => {
+                    const testLine = line ? `${line} ${word}` : word;
+                    if (ctx.measureText(testLine).width > maxWidth - labelWidth && line) {
+                        ctx.fillText(line, valueX, currentY);
+                        line = word;
+                        currentY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                });
+
+                if (line) {
+                    ctx.fillText(line, valueX, currentY);
+                    currentY += lineHeight;
+                }
+
+                return currentY;
+            };
+
+            const name = passData?.userName || passData?.UserName || "";
+            let detailY = bodyY + 13 * SCALE;
+            detailY = drawDetailLine("Name", name, x + 14 * SCALE, detailY) + 3 * SCALE;
+            detailY = drawDetailLine(
+                "Pass Type",
+                getPassActualName(passData),
+                x + 14 * SCALE,
+                detailY
+            ) + 3 * SCALE;
+            drawDetailLine("Form No", getPassFormNo(passData), x + 14 * SCALE, detailY);
+
+            const photoX = x + 14 * SCALE;
+            const photoY = bodyY + 49 * SCALE;
+            const photoW = 60 * SCALE;
+            const photoH = 60 * SCALE;
+            if (userImg) {
+                ctx.drawImage(userImg, photoX, photoY, photoW, photoH);
+            } else {
+                ctx.fillStyle = "#000000";
+                roundRect(ctx, photoX, photoY, photoW, photoH, 2 * SCALE);
+                ctx.fill();
+            }
+            ctx.drawImage(
+                signatureImg,
+                390,
+                390,
+                260,
+                330,
+                x + 24 * SCALE,
+                y + 166 * SCALE,
+                38 * SCALE,
+                10 * SCALE
             );
+
+            ctx.drawImage(risingLogoImg, x + 145 * SCALE, bodyY + 49 * SCALE, 58 * SCALE, 52 * SCALE);
+            ctx.drawImage(qrImg, x + 258 * SCALE, bodyY + 49 * SCALE, 60 * SCALE, 60 * SCALE);
+
+            ctx.strokeStyle = "#111111";
+            ctx.lineWidth = 1 * SCALE;
+            ctx.beginPath();
+            ctx.moveTo(x + 18 * SCALE, y + 179 * SCALE);
+            ctx.lineTo(x + 63 * SCALE, y + 179 * SCALE);
+            ctx.stroke();
+            drawText(ctx, "Authorized Signatory", x + 40.5 * SCALE, y + 185 * SCALE, {
+                size: 4.3 * SCALE,
+                weight: "400",
+                color: "#111111",
+                align: "center",
+            });
+            drawText(ctx, "L.RANJEET NAYAK, IFS", x + 13 * SCALE, y + 190 * SCALE, {
+                size: 5 * SCALE,
+                weight: "800",
+                color: "#111111",
+            });
+            drawText(ctx, "EXECUTIVE DIRECTOR,", x + 14 * SCALE, y + 196 * SCALE, {
+                size: 4.2 * SCALE,
+                weight: "800",
+                color: "#111111",
+            });
+            drawText(ctx, "ECO-TOURISM, TGFDC LTD.", x + 14 * SCALE, y + 202 * SCALE, {
+                size: 4.2 * SCALE,
+                weight: "800",
+                color: "#111111",
+            });
+
+            drawText(ctx, `Valid up to ${formatDate(passData?.validTo)}`, x + 96 * SCALE, y + 199 * SCALE, {
+                size: 8 * SCALE,
+                weight: "800",
+                letterSpacing: 0.3 * SCALE,
+            });
+            drawText(ctx, "•", x + 220 * SCALE, y + 198 * SCALE, {
+                size: 10 * SCALE,
+                weight: "800",
+                color: "#d60000",
+            });
+            drawText(ctx, "NOT TRANSFERABLE", x + 228 * SCALE, y + 199 * SCALE, {
+                size: 8 * SCALE,
+                weight: "800",
+                letterSpacing: 0.55 * SCALE,
+            });
         };
 
-        drawCard1();
-        drawCard2();
+        const drawInstructionCard = () => {
+            const x = 0;
+            const y = CARD_H + GAP;
+            const w = W;
+            const h = CARD_H;
+
+            ctx.fillStyle = PASS_BODY_BG;
+            roundRect(ctx, x, y, w, h, 12 * SCALE);
+            ctx.fill();
+
+            const wrapText = (text, textX, textY, maxWidth, lineHeight, options = {}) => {
+                const { indent = 0, after = 0 } = options;
+                const words = String(text).split(" ");
+                let line = "";
+                let currentY = textY;
+
+                words.forEach((word) => {
+                    const testLine = line ? `${line} ${word}` : word;
+                    if (ctx.measureText(testLine).width > maxWidth && line) {
+                        ctx.fillText(line, textX, currentY);
+                        line = word;
+                        currentY += lineHeight;
+                        textX += indent;
+                        maxWidth -= indent;
+                    } else {
+                        line = testLine;
+                    }
+                });
+
+                if (line) {
+                    ctx.fillText(line, textX, currentY);
+                    currentY += lineHeight;
+                }
+
+                return currentY + after;
+            };
+
+            drawText(ctx, "I Shall not:", x + 8 * SCALE, y + 18 * SCALE, {
+                size: 11 * SCALE,
+                weight: "800",
+                color: "#245f35",
+            });
+
+            ctx.fillStyle = PASS_TEXT_BROWN;
+            ctx.font = `800 ${6.8 * SCALE}px Arial`;
+            ctx.textAlign = "left";
+            let currentY = y + 35 * SCALE;
+            BACK_PAGE_RULES.forEach((rule, index) => {
+                currentY = wrapText(
+                    `${index + 1}. ${rule}`,
+                    x + 8 * SCALE,
+                    currentY,
+                    w - 16 * SCALE,
+                    9.8 * SCALE,
+                    { indent: 8 * SCALE, after: 1.8 * SCALE }
+                );
+            });
+
+            currentY += 6 * SCALE;
+            ctx.font = `800 ${7.2 * SCALE}px Arial`;
+            wrapText(
+                BACK_PAGE_ABIDE_TEXT,
+                x + 8 * SCALE,
+                currentY,
+                w - 16 * SCALE,
+                9.6 * SCALE
+            );
+
+            drawText(ctx, BACK_PAGE_EMERGENCY_TEXT, x + 8 * SCALE, y + h - 8 * SCALE, {
+                size: 8.2 * SCALE,
+                weight: "800",
+                color: "#e60000",
+                letterSpacing: 0.25 * SCALE,
+            });
+        };
+
+        drawFrontCard();
+        drawInstructionCard();
+
         return canvas;
     };
 
@@ -751,7 +894,7 @@ const WalkerPassCard = () => {
                             body {
                                 display: flex;
                                 justify-content: center;
-                                align-items: flex-start;
+                                align-items: center;
                             }
                             img {
                                 width: ${CARD_PRINT_WIDTH_MM}mm;
@@ -922,103 +1065,85 @@ const WalkerPassCard = () => {
                             </div>
                         ) : (
                             <div className="w-[340px]">
-                                <div className="bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
-                                    <div className="bg-[#091A8C] text-white px-2 py-1">
-                                        <div className="flex items-center justify-between">
-                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                                <img src={ForestLogo} alt="Forest Logo" className="w-10 h-10 rounded-full object-contain" />
-                                            </div>
-                                            <div className="text-center flex-1">
-                                                <h1 className="text-[14px] font-bold leading-tight">{passData?.parkName}</h1>
-                                                <p className="text-[14px] font-semibold">{passData?.passName}</p>
-                                            </div>
-                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                                <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
-                                            </div>
-                                        </div>
+                                <div className="relative h-[214px] w-[340px] overflow-hidden rounded-[12px] border border-gray-300 bg-[#f7f5f1] shadow">
+                                    <div className="absolute left-0 top-0 h-[57px] w-full bg-[#3d6b3b]" />
+                                    <img src={ForestLogo} alt="Forest Logo" className="absolute left-2 top-1.5 h-[45px] w-[45px] rounded-full object-cover" />
+                                    <img src={DeccanTrailsLogo} alt="Deccan Woods and Trails" className="absolute right-[11px] top-2 h-[38px] w-[38px] object-contain brightness-0 invert" />
+
+                                    <div className="absolute left-[58px] top-[8px] w-[224px] text-center font-extrabold uppercase text-[#f7f4e9]">
+                                        <p className="text-[11px] leading-[12px] tracking-[0.06em]">{PASS_HEADER_TEXT}</p>
+                                        <p className="mt-1 text-[9px] leading-[10px] tracking-[0.025em]">{PASS_HEADER_TEXT_LINE_2}</p>
+                                        <p className="mt-1 text-[7px] leading-[8px] tracking-[0.015em]">{PASS_SUBTITLE}</p>
                                     </div>
-                                    <div className="px-3 py-2 flex-1" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-                                        <div className="flex justify-between items-start">
-                                            {/* User Photo */}
-                                            <div>
-                                                <img
-                                                    src={userImageBase64 || getPassImageValue(passData)}
-                                                    alt="User"
-                                                    className="w-[95px] h-[95px] border border-gray-300 object-cover"
-                                                />
-                                            </div>
 
-                                            {/* Name & DOB */}
-                                            <div className="flex flex-col ml-2 mt-2 flex-1">
-                                                <p className="text-[10px] font-bold uppercase">
-                                                    {passData?.userName}
-                                                </p>
-                                                <p className="text-[8px] text-gray-600">
-                                                    Name
-                                                </p>
-
-                                                <p className="text-[10px] font-bold mt-3">
-                                                    {formatDate(passData?.dateOfBirth)}
-                                                </p>
-                                                <p className="text-[8px] text-gray-600">
-                                                    Date of Birth
-                                                </p>
-                                            </div>
-
-                                            {/* QR */}
-                                            <div className="flex flex-col items-center">
-                                                {qrCodeUrl ? (
-                                                    <img
-                                                        src={qrCodeUrl}
-                                                        alt="QR Code"
-                                                        className="w-[110px] h-[110px]"
-                                                    />
-                                                ) : (
-                                                    <div className="w-[120px] h-[120px] border border-dashed border-gray-300 flex items-center justify-center bg-white">
-                                                        {renderSpinner("h-5 w-5 text-[#09094D]")}
-                                                    </div>
-                                                )}
-
-                                                <div className="w-[108px] flex justify-center items-center gap-1 mt-[2px]">
-                                                    <span className="text-[10px] font-bold">
-                                                        Amount:
-                                                    </span>
-                                                    <span className="text-[10px] font-bold">
-                                                        ₹{passData?.price}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="bg-[#091A8C] text-white text-center py-[4px] -mt-[7px] relative z-10">
-                                        <p className="text-[8px] font-bold">
-                                            VALIDITY: {formatDate(passData?.validFrom)} TO {formatDate(passData?.validTo)}
+                                    <div className="absolute left-[14px] top-[64px] max-w-[238px] text-[#2c1b0f]">
+                                        <p className="grid grid-cols-[46px_1fr] text-[7px] font-extrabold leading-[8px]">
+                                            <span className="flex justify-between pr-1"><span>Name</span><span>:</span></span>
+                                            <span>{passData?.userName || passData?.UserName || ""}</span>
+                                        </p>
+                                        <p className="mt-[3px] grid grid-cols-[46px_1fr] text-[7px] font-extrabold leading-[8px]">
+                                            <span className="flex justify-between pr-1"><span>Pass Type</span><span>:</span></span>
+                                            <span>{getPassActualName(passData)}</span>
+                                        </p>
+                                        <p className="mt-[3px] grid grid-cols-[46px_1fr] text-[7px] font-extrabold leading-[8px]">
+                                            <span className="flex justify-between pr-1"><span>Form No</span><span>:</span></span>
+                                            <span>{getPassFormNo(passData)}</span>
                                         </p>
                                     </div>
+
+                                    {userImageBase64 || getPassImageValue(passData) ? (
+                                        <img
+                                            src={userImageBase64 || getPassImageValue(passData)}
+                                            alt="User"
+                                            className="absolute left-[14px] top-[106px] h-[60px] w-[60px] rounded-sm object-cover"
+                                        />
+                                    ) : (
+                                        <div className="absolute left-[14px] top-[106px] h-[60px] w-[60px] rounded-sm bg-black" />
+                                    )}
+                                    <img src={SignatureImage} alt="Authorized Signature" className="absolute left-[24px] top-[166px] h-[10px] w-[38px] object-cover object-center" />
+
+                                    <div className="absolute left-[18px] top-[179px] w-[45px] border-t border-black text-center text-black">
+                                        <p className="mt-[2px] text-[4px] leading-none">Authorized Signatory</p>
+                                    </div>
+                                    <div className="absolute left-[13px] top-[186px] text-black">
+                                        <p className="text-[5px] font-extrabold leading-[5px]">L.RANJEET NAYAK, IFS</p>
+                                        <p className="text-[4px] font-extrabold leading-[5px]">EXECUTIVE DIRECTOR,</p>
+                                        <p className="text-[4px] font-extrabold leading-[5px]">ECO-TOURISM, TGFDC LTD.</p>
+                                    </div>
+
+                                    <img src={TelanganaRisingLogo} alt="Telangana Rising" className="absolute left-[145px] top-[106px] h-[52px] w-[58px] object-contain mix-blend-multiply" />
+                                    {qrCodeUrl ? (
+                                        <img src={qrCodeUrl} alt="QR Code" className="absolute left-[258px] top-[106px] h-[60px] w-[60px] object-contain" />
+                                    ) : (
+                                        <div className="absolute left-[258px] top-[106px] flex h-[60px] w-[60px] items-center justify-center bg-white">
+                                            {renderSpinner("h-5 w-5 text-[#09094D]")}
+                                        </div>
+                                    )}
+
+                                    <p className="absolute bottom-[14px] left-[96px] text-[8px] font-extrabold tracking-[0.04em] text-[#2c1b0f]">
+                                        Valid up to {formatDate(passData?.validTo)}
+                                    </p>
+                                    <span className="absolute bottom-[15px] left-[220px] text-[10px] font-extrabold leading-none text-[#d60000]">•</span>
+                                    <p className="absolute bottom-[14px] left-[228px] text-[8px] font-extrabold tracking-[0.07em] text-[#2c1b0f]">
+                                        NOT TRANSFERABLE
+                                    </p>
                                 </div>
 
-                                {/* Instructions Card Preview */}
-                                <div className="mt-3 bg-white rounded-[12px] overflow-hidden shadow border border-gray-300 w-[340px] h-[214px] flex flex-col">
-                                    <div className="bg-[#091A8C] text-white px-3 py-2">
-                                        <div className="flex items-center justify-between">
-                                            <h1 className="text-[14px] font-semibold">Pass Instruction</h1>
-                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                                                <img src={MeeTicketLogo} alt="Mee Ticket" className="w-9 h-9 rounded-full object-contain" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 px-3 py-3 text-[7px] font-bold text-[#333]" style={{ backgroundImage: `url(${walkerPassBg})`, backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}>
-                                        <p className="text-red-600 font-bold text-[10px] mb-1">Terms and Conditions</p>
-                                        <p className="leading-[10px]">Monthly Walker pass Validity is only till the end of the month,<br />irrespective of the date of purchase</p>
-                                        <p className="leading-[10px] mt-1">Monthly Walker pass Validity is only till 30th of June Next Year,<br />irrespective of the Month of purchase</p>
-                                        <p className="leading-[10px] mt-1">The Walker pass is only valid once a Day.</p>
-                                        <p className="leading-[10px] mt-1">Park Timings: Open daily from 06:00 am – 6:00 pm</p>
-                                    </div>
-                                    <div className="bg-[#091A8C] text-white py-[5px] flex justify-center items-center">
-                                        <p className="text-[8px] font-bold text-center">
-                                            VALIDITY: {formatDate(passData?.validFrom)} TO {formatDate(passData?.validTo)}
-                                        </p>
-                                    </div>
+                                <div className="mt-3 h-[214px] w-[340px] overflow-hidden rounded-[12px] border border-gray-300 bg-[#f7f5f1] px-2 py-2 shadow">
+                                    <h1 className="text-[11px] font-extrabold leading-[12px] text-[#245f35]">
+                                        I Shall not:
+                                    </h1>
+                                    <ol className="mt-1 list-decimal space-y-[1.8px] pl-4 text-[6.8px] font-extrabold leading-[9.8px] text-[#2c1b0f]">
+                                        {BACK_PAGE_RULES.map((rule) => (
+                                            <li key={rule}>{rule}</li>
+                                        ))}
+                                    </ol>
+                                    <p className="mt-2 text-[7.2px] font-extrabold leading-[9.6px] text-[#2c1b0f]">
+                                        {BACK_PAGE_ABIDE_TEXT}
+                                    </p>
+                                    <p className="mt-1 text-[8.2px] font-extrabold leading-[9px] tracking-[0.04em] text-[#e60000]">
+                                        {BACK_PAGE_EMERGENCY_TEXT}
+                                    </p>
                                 </div>
                             </div>
                         )}

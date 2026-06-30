@@ -10,9 +10,25 @@ import { toast } from "react-toastify";
 import { IoMdImages } from "react-icons/io";
 import { API_ENDPOINTS } from "../../../constants/apiEndpoints";
 import apiService from "../../../services/apiService";
-import walkerPassBg from "../../../images/walker_pass_bg.png";
-import MeeTicketLogo from "../../../images/MeeTicketLogo.png";
-import ForestLogo from "../../../images/ForestLogo.png";
+import ForestLogo from "../../../images/forestLogo.png";
+import DeccanTrailsLogo from "../../../images/DeccanTrailsLogo.png";
+import TelanganaRisingLogo from "../../../images/user/TS_rising_logo2.png";
+import SignatureImage from "../../../images/signature.png";
+const BACK_PAGE_RULES = [
+  "Destroy or damage the wildlife or its habitat in the Botanical Garden.",
+  "Set fire or candle any fire or leave any fire burning in the Botanical Garden.",
+  "Enter the Botanical Garden with any weapon.",
+  "Bring any chemicals or explosives into the Botanical Garden.",
+  "Use any path other than the designated foot paths for walking in visitor zone.",
+  "Litter in the Botanical Garden.",
+  "Smoke or consume any alcohol in the Botanical Garden.",
+  "Feed or tease any wild animals in the Botanical Garden.",
+  "Distribute pamphlets or any other printed material in the Botanical Garden.",
+  "Create any nuisance in the Botanical Garden.",
+];
+const BACK_PAGE_ABIDE_TEXT =
+  "I shall abide by the provisions of Forest Act 1967 & WildLife Protection Act 1972 and Rules made thereunder";
+const BACK_PAGE_EMERGENCY_TEXT = "EMERGENCY CONTACT NUMBER +91 8008301605";
 
 
 
@@ -188,6 +204,48 @@ const prepareImageForOutput = async (url) => {
   return canvas.toDataURL("image/jpeg", 0.9);
 };
 
+const prepareWhiteImageForOutput = async (url) => {
+  const dataUrl = await fetchImageAsDataUrl(url);
+  if (!dataUrl) return "";
+
+  const img = await loadImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth || img.width || 1;
+  canvas.height = img.naturalHeight || img.height || 1;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillStyle = "#f7f4e9";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  return canvas.toDataURL("image/png");
+};
+
+const prepareTransparentWhiteImageForOutput = async (url) => {
+  const dataUrl = await fetchImageAsDataUrl(url);
+  if (!dataUrl) return "";
+
+  const img = await loadImage(dataUrl);
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth || img.width || 1;
+  canvas.height = img.naturalHeight || img.height || 1;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const { data } = imageData;
+  for (let index = 0; index < data.length; index += 4) {
+    if (data[index] > 245 && data[index + 1] > 245 && data[index + 2] > 245) {
+      data[index + 3] = 0;
+    }
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  return canvas.toDataURL("image/png");
+};
+
 const prepareBulkPassImages = async (passes) =>
   Promise.all(
     passes.map(async (pass) => ({
@@ -198,21 +256,19 @@ const prepareBulkPassImages = async (passes) =>
 
 const fmtDate = (date) => (date ? new Date(date).toLocaleDateString("en-GB") : "-");
 
-const getInstructionLines = (passDescription) => {
-  const lines = String(passDescription || "")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+const getPassFormNo = (pass) =>
+  pass?.assUserDetailsId ||
+  pass?.AssUserDetailsId ||
+  pass?.passUserDetailsId ||
+  pass?.PassUserDetailsId ||
+  "";
 
-  return lines.length > 0
-    ? lines
-    : [
-      "Monthly Walker pass Validity is only till the end of the month, irrespective of the date of purchase",
-      "Monthly Walker pass Validity is only till 30th of June Next Year, irrespective of the Month of purchase",
-      "The Walker pass is only valid once a Day.",
-      "Park Timings: Open daily from 06:00 am - 6:00 pm",
-    ];
-};
+const getPassActualName = (pass) =>
+  pass?.passName ||
+  pass?.PassName ||
+  pass?.passActualName ||
+  pass?.PassActualName ||
+  "";
 
 const waitForImages = (documentRef) => {
   const images = Array.from(documentRef.images || []);
@@ -231,7 +287,15 @@ const waitForImages = (documentRef) => {
 
 const yieldToBrowser = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
+const buildBulkPrintHtml = (
+  passes,
+  qrCodes,
+  {
+    autoPrint = true,
+    deccanLogoSrc = DeccanTrailsLogo,
+    risingLogoSrc = TelanganaRisingLogo,
+  } = {}
+) => `
 <!doctype html>
 <html>
   <head>
@@ -250,17 +314,17 @@ const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
         margin: 0;
         padding: 18px;
         font-family: Arial, sans-serif;
-        background: #f8fafc !important;
+        background: #ffffff !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
       .pass-sheet {
-        width: 372px;
+        width: 340px;
         margin: 0 auto 28px;
-        padding: 14px;
-        border: 1px dashed #94a3b8;
-        border-radius: 14px;
-        background: #ffffff !important;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent !important;
         page-break-inside: avoid;
         break-inside: avoid;
       }
@@ -269,155 +333,236 @@ const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
         break-after: page;
       }
       .pass-card {
+        position: relative;
         width: 340px;
         height: 214px;
         overflow: hidden;
         border: 1px solid #d1d5db;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
-        background: #ffffff !important;
-        display: flex;
-        flex-direction: column;
+        background: #f7f5f1 !important;
       }
       .pass-card + .pass-card { margin-top: 12px; }
       .card-header {
-        background: #091A8C !important;
-        color: #ffffff !important;
-        padding: 4px 8px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 57px;
+        background: #3d6b3b !important;
       }
-      .header-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .logo-wrap {
-        width: 40px;
-        height: 40px;
+      .forest-logo {
+        position: absolute;
+        left: 8px;
+        top: 6px;
+        width: 45px;
+        height: 45px;
         border-radius: 999px;
-        background: #ffffff !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
+        object-fit: cover;
       }
-      .logo-wrap img { width: 36px; height: 36px; object-fit: contain; border-radius: 999px; }
+      .deccan-logo {
+        position: absolute;
+        right: 11px;
+        top: 8px;
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+      }
       .header-title {
-        flex: 1;
-        min-width: 0;
+        position: absolute;
+        top: 8px;
+        left: 58px;
+        width: 224px;
         text-align: center;
-        padding: 0 6px;
+        color: #f7f4e9 !important;
+        font-weight: 800;
+        text-transform: uppercase;
       }
       .header-title h1 {
         margin: 0;
-        font-size: 14px;
-        line-height: 16px;
-        font-weight: 700;
+        font-size: 11px;
+        line-height: 12px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
       }
       .header-title p {
-        margin: 1px 0 0;
-        font-size: 14px;
-        line-height: 15px;
-        font-weight: 600;
+        margin: 4px 0 0;
+        font-size: 9px;
+        line-height: 10px;
+        font-weight: 800;
+        letter-spacing: 0.25px;
       }
-      .card-body {
-        flex: 1;
-        padding: 8px 12px;
-        background-image: url("${walkerPassBg}") !important;
-        background-color: #ffffff !important;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+      .header-title .subtitle {
+        font-size: 7px;
+        line-height: 8px;
+        letter-spacing: 0.15px;
       }
-      .details-row {
+      .pass-details {
+        position: absolute;
+        left: 14px;
+        top: 64px;
+        max-width: 238px;
+        color: #2c1b0f !important;
+      }
+      .detail-line {
+        display: grid;
+        grid-template-columns: 46px 1fr;
+        margin: 0 0 4px;
+        font-size: 7px;
+        line-height: 8px;
+        font-weight: 800;
+        letter-spacing: 0;
+        white-space: normal;
+      }
+      .detail-label {
         display: flex;
-        align-items: flex-start;
         justify-content: space-between;
+        padding-right: 4px;
+      }
+      .detail-line.form-no {
+        font-size: 7px;
       }
       .user-photo {
-        width: 95px;
-        height: 95px;
-        border: 1px solid #d1d5db;
+        position: absolute;
+        left: 14px;
+        top: 106px;
+        width: 60px;
+        height: 60px;
+        border-radius: 2px;
         object-fit: cover;
-        background: #ffffff !important;
+        background: #000000 !important;
       }
-      .user-copy {
-        flex: 1;
-        min-width: 0;
-        margin: 8px 4px 0 8px;
+      .signature-image {
+        position: absolute;
+        left: 24px;
+        top: 166px;
+        width: 38px;
+        height: 10px;
+        object-fit: cover;
+        object-position: center;
       }
-      .value {
-        margin: 0;
-        color: #000000;
-        font-size: 10px;
-        line-height: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        word-break: break-word;
+      .signature-line {
+        position: absolute;
+        left: 18px;
+        top: 179px;
+        width: 45px;
+        border-top: 1px solid #111111;
       }
-      .label {
-        margin: 0 0 10px;
-        color: #4b5563;
-        font-size: 8px;
-        line-height: 10px;
-      }
-      .qr-wrap {
-        width: 110px;
+      .signature-copy {
+        position: absolute;
+        left: 13px;
+        top: 178px;
+        width: 58px;
+        color: #111111 !important;
         text-align: center;
       }
-      .qr-wrap img {
-        width: 108px;
-        height: 108px;
+      .signature-copy .authorized {
+        margin: 0 0 3px;
+        font-size: 4px;
+        line-height: 5px;
+        font-weight: 400;
+      }
+      .signature-copy .officer {
+        margin: 0;
+        font-size: 5px;
+        line-height: 5px;
+        font-weight: 800;
+      }
+      .signature-copy .designation {
+        margin: 0;
+        font-size: 4px;
+        line-height: 5px;
+        font-weight: 800;
+      }
+      .rising-logo {
+        position: absolute;
+        left: 145px;
+        top: 106px;
+        width: 58px;
+        height: 52px;
         object-fit: contain;
       }
-      .amount {
-        margin-top: 2px;
-        font-size: 10px;
-        line-height: 12px;
-        font-weight: 700;
+      .qr-code {
+        position: absolute;
+        left: 258px;
+        top: 106px;
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
       }
-      .card-footer {
-        margin-top: -7px;
-        position: relative;
-        z-index: 1;
-        background: #091A8C !important;
-        color: #ffffff !important;
-        text-align: center;
-        padding: 4px 6px;
-        font-size: 8px;
-        line-height: 10px;
-        font-weight: 700;
-      }
-      .instruction-header {
-        background: #091A8C !important;
-        color: #ffffff !important;
-        padding: 8px 12px;
-      }
-      .instruction-header h1 {
+      .validity {
+        position: absolute;
+        left: 96px;
+        bottom: 14px;
         margin: 0;
-        font-size: 14px;
-        line-height: 18px;
-        font-weight: 600;
+        color: #2c1b0f !important;
+        font-size: 8px;
+        line-height: 9px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
       }
-      .instruction-body {
-        flex: 1;
-        padding: 12px;
-        color: #333333;
-        font-size: 7px;
-        line-height: 10px;
-        font-weight: 700;
-        background-image: url("${walkerPassBg}") !important;
-        background-color: #ffffff !important;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-      }
-      .terms-title {
-        margin: 0 0 4px;
-        color: #dc2626 !important;
+      .non-transferable-dot {
+        position: absolute;
+        left: 220px;
+        bottom: 15px;
+        color: #d60000 !important;
         font-size: 10px;
-        font-weight: 700;
+        line-height: 10px;
+        font-weight: 800;
       }
-      .instruction-body p { margin: 4px 0 0; }
+      .non-transferable {
+        position: absolute;
+        left: 228px;
+        bottom: 14px;
+        margin: 0;
+        color: #2c1b0f !important;
+        font-size: 8px;
+        line-height: 9px;
+        font-weight: 800;
+        letter-spacing: 0.55px;
+      }
+      .instruction-card {
+        background: #f7f5f1 !important;
+        padding: 8px;
+      }
+      .rules-title {
+        margin: 0;
+        color: #245f35 !important;
+        font-size: 11px;
+        line-height: 12px;
+        font-weight: 800;
+      }
+      .rules-list {
+        margin: 4px 0 0;
+        padding-left: 16px;
+        color: #2c1b0f !important;
+        font-size: 6.8px;
+        line-height: 9.8px;
+        font-weight: 800;
+      }
+      .rules-list li {
+        margin-bottom: 1.8px;
+      }
+      .rules-abide {
+        margin: 8px 0 0;
+        color: #2c1b0f !important;
+        font-size: 7.2px;
+        line-height: 9.6px;
+        font-weight: 800;
+      }
+      .rules-emergency {
+        margin: 4px 0 0;
+        color: #e60000 !important;
+        font-size: 8.2px;
+        line-height: 9px;
+        letter-spacing: 0.4px;
+        font-weight: 800;
+      }
+      @media screen {
+        .pass-sheet {
+          transform-origin: top center;
+        }
+      }
       @media print {
         body {
           padding: 0;
@@ -425,60 +570,58 @@ const buildBulkPrintHtml = (passes, qrCodes, { autoPrint = true } = {}) => `
         }
         .pass-sheet {
           margin-bottom: 0;
-          border: 1px solid #cbd5e1;
+          border: 0;
+          width: 340px;
+        }
+        .pass-card {
+          width: 340px;
+          height: 214px;
         }
       }
     </style>
   </head>
   <body>
     ${passes.map((pass, index) => {
-      const instructions = getInstructionLines(pass?.passDescription);
-      const validity = `${fmtDate(pass?.validFrom)} TO ${fmtDate(pass?.validTo)}`;
-
       return `
         <section class="pass-sheet">
           <div class="pass-card">
-            <div class="card-header">
-              <div class="header-row">
-                <div class="logo-wrap"><img src="${ForestLogo}" alt="Forest Logo" /></div>
-                <div class="header-title">
-                  <h1>${escapeHtml(pass?.parkName)}</h1>
-                  <p>${escapeHtml(pass?.passName)}</p>
-                </div>
-                <div class="logo-wrap"><img src="${MeeTicketLogo}" alt="Mee Ticket" /></div>
-              </div>
+            <div class="card-header"></div>
+            <img class="forest-logo" src="${ForestLogo}" alt="Forest Logo" />
+            <img class="deccan-logo" src="${deccanLogoSrc}" alt="Deccan Woods and Trails" />
+            <div class="header-title">
+              <h1>TELANGANA FOREST</h1>
+              <p>DEVELOPMENT CORPORATION LTD.</p>
+              <p class="subtitle">S.K.V.B.R BOTANICAL GARDEN</p>
             </div>
-            <div class="card-body">
-              <div class="details-row">
-                ${pass?.preparedUserImage
+            <div class="pass-details">
+              <p class="detail-line"><span class="detail-label"><span>Name</span><span>:</span></span><span>${escapeHtml(pass?.userName || pass?.UserName || "")}</span></p>
+              <p class="detail-line"><span class="detail-label"><span>Pass Type</span><span>:</span></span><span>${escapeHtml(getPassActualName(pass))}</span></p>
+              <p class="detail-line form-no"><span class="detail-label"><span>Form No</span><span>:</span></span><span>${escapeHtml(getPassFormNo(pass))}</span></p>
+            </div>
+            ${pass?.preparedUserImage
           ? `<img class="user-photo" src="${escapeHtml(pass.preparedUserImage)}" alt="User" />`
           : `<div class="user-photo"></div>`}
-                <div class="user-copy">
-                  <p class="value">${escapeHtml(pass?.userName)}</p>
-                  <p class="label">Name</p>
-                  <p class="value">${escapeHtml(pass?.dateOfBirth)}</p>
-                  <p class="label">Date Of Birth</p>
-                </div>
-                <div class="qr-wrap">
-                  ${qrCodes[index] ? `<img src="${qrCodes[index]}" alt="QR Code" />` : ""}
-                  <div class="amount">Amount: &#8377;${escapeHtml(pass?.price)}</div>
-                </div>
-              </div>
+            <img class="signature-image" src="${SignatureImage}" alt="Authorized Signature" />
+            <div class="signature-line"></div>
+            <div class="signature-copy">
+              <p class="authorized">Authorized Signatory</p>
+              <p class="officer">L.RANJEET NAYAK, IFS</p>
+              <p class="designation">EXECUTIVE DIRECTOR,</p>
+              <p class="designation">ECO-TOURISM, TGFDC LTD.</p>
             </div>
-            <div class="card-footer">VALIDITY: ${escapeHtml(validity)}</div>
+            <img class="rising-logo" src="${risingLogoSrc}" alt="Telangana Rising" />
+            ${qrCodes[index] ? `<img class="qr-code" src="${qrCodes[index]}" alt="QR Code" />` : ""}
+            <p class="validity">Valid up to ${escapeHtml(fmtDate(pass?.validTo))}</p>
+            <span class="non-transferable-dot">•</span>
+            <p class="non-transferable">NOT TRANSFERABLE</p>
           </div>
-          <div class="pass-card">
-            <div class="instruction-header">
-              <div class="header-row">
-                <h1>Pass Instruction</h1>
-                <div class="logo-wrap"><img src="${MeeTicketLogo}" alt="Mee Ticket" /></div>
-              </div>
-            </div>
-            <div class="instruction-body">
-              <p class="terms-title">Terms and Conditions</p>
-              ${instructions.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
-            </div>
-            <div class="card-footer">VALIDITY: ${escapeHtml(validity)}</div>
+          <div class="pass-card instruction-card">
+            <h1 class="rules-title">I Shall not:</h1>
+            <ol class="rules-list">
+              ${BACK_PAGE_RULES.map((rule) => `<li>${escapeHtml(rule)}</li>`).join("")}
+            </ol>
+            <p class="rules-abide">${escapeHtml(BACK_PAGE_ABIDE_TEXT)}</p>
+            <p class="rules-emergency">${escapeHtml(BACK_PAGE_EMERGENCY_TEXT)}</p>
           </div>
         </section>
       `;
@@ -660,16 +803,18 @@ function WalkersPassReportList() {
       return null;
     }
 
-    const [passesWithImages, qrCodes] = await Promise.all([
+    const [passesWithImages, qrCodes, deccanLogoSrc, risingLogoSrc] = await Promise.all([
       prepareBulkPassImages(passes),
       Promise.all(
         passes.map((pass) =>
           pass?.bookingId ? QRCode.toDataURL(pass.bookingId) : Promise.resolve("")
         )
       ),
+      prepareWhiteImageForOutput(DeccanTrailsLogo),
+      prepareTransparentWhiteImageForOutput(TelanganaRisingLogo),
     ]);
 
-    return { passes: passesWithImages, qrCodes };
+    return { passes: passesWithImages, qrCodes, deccanLogoSrc, risingLogoSrc };
   };
 
   const handleBulkPrint = async () => {
@@ -684,7 +829,12 @@ function WalkersPassReportList() {
       }
 
       printWindow.document.open();
-      printWindow.document.write(buildBulkPrintHtml(bulkPasses.passes, bulkPasses.qrCodes));
+      printWindow.document.write(
+        buildBulkPrintHtml(bulkPasses.passes, bulkPasses.qrCodes, {
+          deccanLogoSrc: bulkPasses.deccanLogoSrc,
+          risingLogoSrc: bulkPasses.risingLogoSrc,
+        })
+      );
       printWindow.document.close();
     } catch (error) {
       console.error("Unable to bulk print walker passes:", error);
@@ -714,7 +864,7 @@ function WalkersPassReportList() {
       iframe.style.position = "fixed";
       iframe.style.left = "-10000px";
       iframe.style.top = "0";
-      iframe.style.width = "430px";
+      iframe.style.width = "360px";
       iframe.style.height = "900px";
       iframe.setAttribute("aria-hidden", "true");
       document.body.appendChild(iframe);
@@ -722,7 +872,11 @@ function WalkersPassReportList() {
       const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
       iframeDocument.open();
       iframeDocument.write(
-        buildBulkPrintHtml(bulkPasses.passes, bulkPasses.qrCodes, { autoPrint: false })
+        buildBulkPrintHtml(bulkPasses.passes, bulkPasses.qrCodes, {
+          autoPrint: false,
+          deccanLogoSrc: bulkPasses.deccanLogoSrc,
+          risingLogoSrc: bulkPasses.risingLogoSrc,
+        })
       );
       iframeDocument.close();
 
@@ -737,19 +891,19 @@ function WalkersPassReportList() {
 
       const pdf = new JsPDF("p", "mm", "a4");
       const pageWidth = pdf.internal.pageSize.getWidth();
-      const pdfCardWidth = 95;
+      const pdfCardWidth = 85.6;
 
       for (let index = 0; index < sheets.length; index += 1) {
         await yieldToBrowser();
 
         const canvas = await html2canvas(sheets[index], {
-          scale: 1.5,
+          scale: 3,
           useCORS: true,
           backgroundColor: "#ffffff",
-          imageTimeout: 3000,
+          imageTimeout: 5000,
         });
 
-        const imageData = canvas.toDataURL("image/jpeg", 0.92);
+        const imageData = canvas.toDataURL("image/png");
         const imageHeight = (canvas.height * pdfCardWidth) / canvas.width;
         const x = (pageWidth - pdfCardWidth) / 2;
 
@@ -757,7 +911,7 @@ function WalkersPassReportList() {
           pdf.addPage();
         }
 
-        pdf.addImage(imageData, "JPEG", x, 10, pdfCardWidth, imageHeight);
+        pdf.addImage(imageData, "PNG", x, 10, pdfCardWidth, imageHeight);
       }
 
       pdf.save("Walkers-Pass-Bulk.pdf");
