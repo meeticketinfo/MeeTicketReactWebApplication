@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import { BsTrash } from "react-icons/bs";
-import { IoArrowForward } from "react-icons/io5";
+import { IoArrowForward, IoArrowBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../../../store/amrabad/user/userCartStore";
 import CheckoutDetailsShimmer from "../../shimmer/CheckoutDetailsShimmer";
@@ -119,10 +119,16 @@ const CheckoutDetails = () => {
               {/* <Link to={`/amrabad-resort`} className="text-[#304A3A] text-sm font-semibold hover:underline self-start sm:self-center mb-4 block">
                 + Add More Packages
               </Link> */}
-              <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center ms-auto mb-4 flex items-center whitespace-nowrap">
-                Clear Cart
-                {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
-              </button>
+              <div className="flex items-center gap-2 ms-auto mb-4">
+                <button onClick={() => navigate(-1)} className="bg-[#304A3A] text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center flex items-center whitespace-nowrap">
+                  <IoArrowBack className="mr-2" />
+                  Back
+                </button>
+                <button onClick={handleClearCart} className="bg-red-700 text-white px-4 py-2 rounded-md text-sm font-semibold hover:underline self-start sm:self-center flex items-center whitespace-nowrap">
+                  Clear Cart
+                  {loadingClearCart ? <CgSpinner className="animate-spin ml-2" /> : null}
+                </button>
+              </div>
             </div>
 
             {Object.values(groupedCartItems).map((group) => {
@@ -143,8 +149,8 @@ const CheckoutDetails = () => {
                     <table className="w-full text-xs sm:text-sm border rounded-lg mb-4">
                       <thead className="bg-[#FDFAF7]">
                         <tr>
-                          <th className="p-2 text-left font-semibold min-w-[260px]">House Name</th>
-                          <th className="p-2 text-center font-semibold whitespace-nowrap">Room Count</th>
+                          <th className="p-2 text-left font-semibold min-w-[260px]">Cottage Name</th>
+                          <th className="p-2 text-center font-semibold whitespace-nowrap">Cottage Count</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Check-in</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Check-out</th>
                           <th className="p-2 text-center font-semibold">Amount</th>
@@ -168,7 +174,7 @@ const CheckoutDetails = () => {
                                   </button>
                                   <img
                                     src={item?.houseImageUrl}
-                                    alt={item?.houseName || 'House'}
+                                    alt={item?.houseName || 'Cottage'}
                                     className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover border"
                                     onError={(e) => {
                                       e.target.onerror = null;
@@ -176,7 +182,7 @@ const CheckoutDetails = () => {
                                     }}
                                   />
                                   <div className="flex-1">
-                                    <div className="font-bold text-base sm:text-lg text-gray-800">{item?.houseName || 'House Name'}</div>
+                                    <div className="font-bold text-base sm:text-lg text-gray-800">{item?.houseName || 'Cottage Name'}</div>
                                     <div className="text-xs text-gray-500">{item?.packageName || 'Package Name'}</div>
                                   </div>
                                 </div>

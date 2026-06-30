@@ -135,7 +135,7 @@ const Houses = () => {
           <div className="flex flex-col sm:flex-row gap-4 items-end w-full">
             <div className="flex flex-row gap-4 flex-1 text-sm w-full">
               <div className="flex flex-col w-full">
-                <label className="text-xs font-medium text-gray-700 mb-1">From Date</label>
+                <label className="text-xs font-medium text-gray-700 mb-1">Check-in Date</label>
                 <input
                   type="date"
                   min={getCurrentDateString()}
@@ -150,7 +150,7 @@ const Houses = () => {
                 />
               </div>
               <div className="flex flex-col w-full">
-                <label className="text-xs font-medium text-gray-700 mb-1">To Date</label>
+                <label className="text-xs font-medium text-gray-700 mb-1">Check-out Date</label>
                 <input
                   type="date"
                   min={fromDate ? getNextDayString(fromDate) : getCurrentDateString()}
@@ -166,7 +166,7 @@ const Houses = () => {
               onClick={handleSearch}
               className="bg-[linear-gradient(135deg,#3D4A3A,#394D4B,#7A8F7C)] text-[#FDFAF7] hover:opacity-90 px-6 py-2 rounded-md shadow-md transition-colors duration-200 font-medium text-sm w-full sm:w-auto"
             >
-              Search Houses
+              Search Cottages
             </button>
           </div>
           <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />

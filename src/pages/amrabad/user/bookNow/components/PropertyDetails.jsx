@@ -146,7 +146,7 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
         </div>
 
         <div className="py-3">
-          <p className="text-xl xl:text-base font-medium text-[#304A3A] mb-1">Room Booking Details:</p>
+          <p className="text-xl xl:text-base font-medium text-[#304A3A] mb-1">Cottage Booking Details:</p>
         </div>
         {/* special offers */}
 

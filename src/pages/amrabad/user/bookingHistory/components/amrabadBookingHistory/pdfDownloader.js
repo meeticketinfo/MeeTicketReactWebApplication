@@ -193,7 +193,7 @@ export const downloadTicketAsTextPDF = async (filename = 'amrabad-ticket.pdf') =
     
     if (ticketData.bookingItems.length > 0) {
       ticketData.bookingItems.forEach((item, index) => {
-        pdf.text(`${index + 1}. ${item.roomName || 'House'} - Count: ${item.roomCount || '1'}`, margin, yPosition);
+        pdf.text(`${index + 1}. ${item.roomName || 'Cottage'} - Count: ${item.roomCount || '1'}`, margin, yPosition);
         yPosition += 5;
         pdf.text(`   Check-in: ${item.checkIn} | Check-out: ${item.checkOut}`, margin + 5, yPosition);
         yPosition += 5;
@@ -305,7 +305,7 @@ const extractBookingItems = () => {
     const cells = row.querySelectorAll('td');
     if (cells.length >= 6) {
       items.push({
-        roomName: cells[1]?.textContent?.trim() || 'House',
+        roomName: cells[1]?.textContent?.trim() || 'Cottage',
         roomCount: cells[2]?.textContent?.trim() || '1',
         checkIn: cells[3]?.textContent?.trim() || 'N/A',
         checkOut: cells[4]?.textContent?.trim() || 'N/A',

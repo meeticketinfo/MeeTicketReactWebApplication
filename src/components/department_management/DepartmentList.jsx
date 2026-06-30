@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PopupModal from "../utils/popup_modal/PopupModal";
 import AgGridTable from "../tables/AgGridTable";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { useModalStore } from "../../store/modalStore";
 import DepartmentCreateForm from "./DepartmentCreateForm";
 import { ToastContainer } from "react-toastify";
@@ -73,7 +73,7 @@ const DepartmentList = ({
             }}
           >
             <span className="">
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </span>
           </button>
         </div>

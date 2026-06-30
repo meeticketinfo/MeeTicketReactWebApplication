@@ -79,14 +79,14 @@ const AmrabadPosReportList = () => {
       },
     },
     {
-      field: "transactionId",
+      field: "posTransactionID",
       headerName: "POS Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
     {
-      field: "transactionDate",
+      field: "transactionDateTime",
       headerName: "Transaction Date & Time",
       // flex: 1,
       headerClass: "text-blue-v2",
@@ -124,7 +124,7 @@ const AmrabadPosReportList = () => {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
      {
-      field: "paymentMode",
+      field: "paymentMethod",
       headerName: "Payment Mode",
 
       // flex: 1,
@@ -132,7 +132,7 @@ const AmrabadPosReportList = () => {
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
      {
-      field: "totalAmt",
+      field: "totalAmount",
       headerName: "Total Amount",
 
       // flex: 1,
@@ -142,7 +142,7 @@ const AmrabadPosReportList = () => {
    
    
     {
-  field: "resultStatus",
+  field: "transactionStatus",
   headerName: "Transaction Status",
   headerClass: "text-blue-v2",
 
@@ -232,8 +232,8 @@ const AmrabadPosReportList = () => {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        totalCount={AmrabadPosReportData[0]?.totalCount}
-        tableHeight={AmrabadPosReportData.length > 10 ? 550 : 300}
+        totalCount={AmrabadPosReportData?.[0]?.totalCount}
+        tableHeight={AmrabadPosReportData?.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
       />

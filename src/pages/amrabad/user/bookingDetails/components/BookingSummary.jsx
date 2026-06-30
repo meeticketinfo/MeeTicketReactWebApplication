@@ -88,7 +88,7 @@ const BookingSummary = ({ bookingData, loadingCart }) => {
           No booking items found <br/>
           <Link to="/amrabad-resort">
             <button className="text-[#304A3A] text-sm rounded-md underline font-semibold">
-              Go to Houses
+              Go to Cottages
             </button>
           </Link>
         </div>
@@ -211,12 +211,12 @@ const BookingItemCard = ({ item, formatDate }) => {
       <div className="flex items-start gap-2 mb-2">
         <img 
           src={item?.houseImageUrl} 
-          alt={item?.houseName || 'House'} 
+          alt={item?.houseName || 'Cottage'} 
           className="w-10 h-10 object-cover rounded"
         />
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-sm text-gray-800 truncate">
-            {item?.houseName || 'House Name'}
+            {item?.houseName || 'Cottage Name'}
           </div>
           <div className="text-xs text-gray-500 truncate">
             {item?.packageName || 'Package Name'}
@@ -234,7 +234,7 @@ const BookingItemCard = ({ item, formatDate }) => {
           <div className="text-gray-700">{formatDate(item?.roomToDate)}</div>
         </div>
         <div>
-          <div className="font-medium text-gray-600 mb-0.5">Houses</div>
+          <div className="font-medium text-gray-600 mb-0.5">Cottages</div>
           <div className="text-gray-700">{item?.roomCount || 0}</div>
         </div>
       </div>

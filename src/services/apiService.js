@@ -1,20 +1,20 @@
 import axios from "axios";
 import useAuthStore from "../store/authStore";
 import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
+
+
 // dev
-
-
-//  const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+ const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
 
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
-const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
+// const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
 
 // test
-// const API_BASE_URL =  "https://l2vs2gb4-7169.inc1.devtunnels.ms//API/"
+//const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms//API/"
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -84,6 +84,8 @@ const apiService = {
     });
   },
 
+
+
   uploadFileWithPut: (url, file, additionalData = {}, headers = {}) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -97,6 +99,23 @@ const apiService = {
       },
     });
   },
+
+uploadMultipart: (
+  method,
+  url,
+  formData,
+  headers = {}
+) => {
+  return api({
+    method,
+    url,
+    data: formData,
+    headers: {
+      ...headers,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+},
 };
 
 export default apiService;

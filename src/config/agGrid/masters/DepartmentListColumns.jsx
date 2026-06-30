@@ -1,6 +1,6 @@
 // DepartmentListColumns.js
 import React from "react";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 
 const DepartmentListColumns = ({
   setOpenModalId,
@@ -55,7 +55,7 @@ const DepartmentListColumns = ({
           }}
         >
           <span>
-            <LuClipboardEdit className="text-[24px] text-blue-600 " />
+            <FiEdit className="text-[24px] text-blue-600 " />
           </span>
         </button>
       </div>

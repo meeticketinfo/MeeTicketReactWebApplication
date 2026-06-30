@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
 import Tippy from "@tippyjs/react";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { useAdminFacilityStore } from "../../store/masters/SuperAdminFacilitiesStore";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
@@ -75,7 +75,7 @@ function SuperAdminFacilitiesList({
                 setIsFacilityEditVisible(true);
               }}
             >
-              <LuClipboardEdit className="text-[24px] text-[#0C3770] " />
+              <FiEdit className="text-[24px] text-[#0C3770] " />
             </button>
           </Tippy>
         </div>

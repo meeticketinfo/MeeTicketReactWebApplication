@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { useFacilityStore } from "../../../store/masters/facilitiesStore";
 import { useModalStore } from "../../../store/modalStore";
 import { useServiceStore } from "../../../store/masters/servicesStore";
@@ -101,7 +101,7 @@ const AccordionRow = ({ serial, row }) => {
                 setOpenModalId("facility-modal");
               }}
             >
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </button>
           </div>
         </td>
@@ -214,7 +214,7 @@ const AccordionSubRow = ({
                 setIsCreateServiceEnabled(false);
               }}
             >
-              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+              <FiEdit className="text-[24px] text-blue-600 " />
             </button>
           </span>
         </td>
@@ -286,7 +286,7 @@ const AccordionSubRow = ({
                                 });
                               }}
                             >
-                              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                              <FiEdit className="text-[24px] text-blue-600 " />
                             </button>
                           </span>
                         </td>
@@ -343,7 +343,7 @@ const AccordionSubRow = ({
                                 });
                               }}
                             >
-                              <LuClipboardEdit className="text-[24px] text-blue-600 " />
+                              <FiEdit className="text-[24px] text-blue-600 " />
                             </button>
                           </span>
                         </td>

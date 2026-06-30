@@ -168,7 +168,7 @@ const HelpFaqs = () => {
                     Q: What types of resorts are available?
                   </h3>
                   <p className="text-gray-700" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
-                    A: Eco-resorts, forest guest houses, and government-run cottages are available inside and near the reserve.
+                    A: Eco-resorts, forest guest cottages, and government-run cottages are available inside and near the reserve.
                   </p>
                 </div>
 

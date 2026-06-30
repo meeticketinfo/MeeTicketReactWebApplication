@@ -36,6 +36,7 @@ import { VscCompassActive } from "react-icons/vsc";
 import { MdEventAvailable } from "react-icons/md";
 import { GrAtm } from "react-icons/gr";
 
+
 const sidebarItems = [
   {
     title: "Dashboard",
@@ -68,12 +69,12 @@ const sidebarItems = [
         icon: GrUserPolice,
         path: "/nodal-officer",
       },
-        {
-          title: "Department Admin",
-          icon: FaUsers,
-          path: "/department-admin",
-        
-        },
+      {
+        title: "Department Admin",
+        icon: FaUsers,
+        path: "/department-admin",
+
+      },
 
       {
         title: "Locations",
@@ -120,7 +121,7 @@ const sidebarItems = [
       },
       {
         title: "POS Admin",
-        icon: GrAtm ,
+        icon: GrAtm,
         path: "/pos-admin",
       },
       {
@@ -202,9 +203,14 @@ const sidebarItems = [
         path: "/pos-payment-transactions-reports",
       },
       {
-        title: "Walkers Pass Report",
+        title: "Walker's Pass Report",
         icon: TbReportAnalytics,
         path: "/walkers-pass-report",
+      },
+      {
+        title: "Walker's Pass Summary",
+        icon: TbReportAnalytics,
+        path: "/walkers-pass-summary-report",
       },
       {
         title: "Bank Payments",
@@ -361,7 +367,7 @@ const sidebarItems = [
       },
     ],
   },
-  
+
   // griveance
   {
     title: "Grievance",
@@ -388,13 +394,20 @@ const sidebarItems = [
     ],
   },
   {
+    title: "Book Walker Pass",
+    icon: TbReportSearch,
+    path: "/book-walker-pass",
+    subItems: [],
+  },
+
+  {
     title: "Intercity Masters",
     icon: CgDatabase,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
-   
+
       {
         title: "Add cities",
         icon: RiDashboard3Fill,
@@ -411,7 +424,7 @@ const sidebarItems = [
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
-     
+
       {
         title: "Booking Report",
         icon: MdEventAvailable,
@@ -445,7 +458,7 @@ const sidebarItems = [
 
     ],
   },
-  
+
   //intercity
   {
     title: "Intercity Reports",
@@ -464,13 +477,13 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-individual-report",
       },
-     
+
       {
         title: "Total Transactions",
         icon: RiDashboard3Fill,
         path: "/intercity-total-transaction",
       },
-      {     
+      {
         title: "User Report",
         icon: MdEventAvailable,
         path: "/intercity-user-report",
@@ -480,7 +493,7 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/intercity-refund-report",
       },
-      
+
       {
         title: "Payment Transactions",
         icon: TbReportAnalytics,
@@ -620,9 +633,9 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/amarabad-total-transaction",
       },
-     
+
     ],
   },
 ];
-
+console.log(sidebarItems);
 export default sidebarItems;

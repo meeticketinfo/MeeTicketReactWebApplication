@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { LuClipboardEdit } from 'react-icons/lu';
+import { FiEdit } from "react-icons/fi";
 import AgGridTable from '../../../components/tables/AgGridTable';
 import { LanguageMasterStore } from './LanguageMasterStore';
 import useAuthStore from '../../../store/authStore';
@@ -58,7 +58,7 @@ const ViewLanguage = ({ setIsCreate }) => {
                             }}
                         >
                             <span className="">
-                                <LuClipboardEdit className="text-[24px] text-blue-600" />
+                                <FiEdit className="text-[24px] text-blue-600" />
                             </span>
                         </button>
                     </div>

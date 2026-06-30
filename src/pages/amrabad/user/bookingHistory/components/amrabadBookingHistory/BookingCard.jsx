@@ -174,8 +174,8 @@ const BookingCard = ({ booking }) => {
                 <PiHouseLine />
               </div>
               <div>
-                <div className="text-xs text-gray-500">Houses</div>
-                <div className="text-xs sm:text-sm font-medium text-black">{booking?.roomCount ?? "N/A"}<span> Houses</span></div>
+                <div className="text-xs text-gray-500">Cottages</div>
+                <div className="text-xs sm:text-sm font-medium text-black">{booking?.roomCount ?? "N/A"}<span> Cottages</span></div>
               </div>
             </div>
           </div>

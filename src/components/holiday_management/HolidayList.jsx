@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AgGridTable from "../tables/AgGridTable";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 import { useHolidayStore } from "../../store/masters/holidayStore";
 import {

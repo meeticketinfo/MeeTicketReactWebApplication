@@ -66,7 +66,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
     // Check if the fromDate has available rooms
     if (!checkAvailabilityForDate(house, fromDate)) {
       e.preventDefault();
-      toast.error(`No room available on ${formatDate(fromDate)}`);
+      toast.error(`No cottage available on ${formatDate(fromDate)}`);
       return false;
     }
     
@@ -118,7 +118,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
 
   // Helper function to get house display name
   const getHouseDisplayName = (house) => {
-    return house.roomName || house.packageName || 'House';
+    return house.roomName || house.packageName || 'Cottage';
   };
 
   // Helper function to get house image
@@ -150,7 +150,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
         const validHouses = getValidHouses();
 
         if (validHouses.length === 0) {
-          setMapError("No houses with valid location data found. Please check the coordinates.");
+          setMapError("No cottages with valid location data found. Please check the coordinates.");
           setIsLoading(false);
           return;
         }
@@ -333,7 +333,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
       <div className="w-full h-[80vh] rounded-2xl bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#304A3A] mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading houses data...</p>
+          <p className="text-gray-600 font-medium">Loading cottages data...</p>
         </div>
       </div>
     );
@@ -356,7 +356,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
             <div className="text-sm">
               <p className="font-medium">Location Data Missing</p>
               <p className="text-xs mt-1">
-                {invalidHousesCount} house{invalidHousesCount > 1 ? 's' : ''} without location data
+                {invalidHousesCount} cottage{invalidHousesCount > 1 ? 's' : ''} without location data
               </p>
             </div>
           </div>
@@ -382,7 +382,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          {showHouseList ? 'Hide List' : 'Show Houses List'}
+          {showHouseList ? 'Hide List' : 'Show Cottages List'}
         </button>
       </div>
 
@@ -391,7 +391,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
         <div className="absolute top-4 left-4 z-10 bg-white rounded-lg shadow-xl max-w-xs max-h-[calc(80vh-2rem)] overflow-hidden border border-gray-200">
           <div className="p-2 border-b border-gray-100 flex justify-between items-center bg-gray-50">
             <h3 className="font-medium text-gray-800 text-sm">
-              Houses ({validHouses.length}/{houses.length})
+              Cottages ({validHouses.length}/{houses.length})
             </h3>
             <button
               onClick={() => setShowHouseList(false)}
@@ -416,7 +416,7 @@ const MapView = ({ houses, onHouseClick, fromDate, toDate }) => {
                       <>
                         <img
                           src={house.images[0]}
-                          alt={house?.roomName || "House Image"}
+                          alt={house?.roomName || "Cottage Image"}
                           className="w-12 h-12 object-cover rounded-md flex-shrink-0"
                           onError={(e) => {
                             e.target.onerror = null;

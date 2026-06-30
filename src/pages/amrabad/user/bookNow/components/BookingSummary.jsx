@@ -121,7 +121,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
           <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full">
             <h3 className="text-base font-bold text-gray-800 mb-2">Different Package in Cart</h3>
             <p className="text-sm text-gray-600 mb-4">
-              You already have rooms from <span className="font-semibold text-gray-800">"{conflictModal.existingPackageName}"</span> in your cart.
+              You already have cottages from <span className="font-semibold text-gray-800">"{conflictModal.existingPackageName}"</span> in your cart.
               To book a different package, please complete or clear your current booking first.
             </p>
             <div className="flex gap-3">
@@ -147,12 +147,12 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
 
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">Total Houses:</span>
+            <span className="text-sm text-gray-600">Total Cottages:</span>
             <span className="text-sm font-medium text-gray-800">{houseCount}</span>
           </div>
 
           <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">House Fare:</span>
+            <span className="text-sm text-gray-600">Cottage Fare:</span>
             <span className="text-sm font-medium text-gray-800">
               {nights} {nights === 1 ? "night" : "nights"} × ₹{pricePerNight.toLocaleString()}
             </span>

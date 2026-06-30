@@ -5,6 +5,7 @@ import DatePickerField from "./DatePickerField";
 import HouseCounter from "./HouseCounter";
 import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
+import { format } from "date-fns";
 
 // Main Booking Form Component
 export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
@@ -141,14 +142,14 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const getAlreadyCartedCount = (checkInDate, checkOutDate) => {
     const items = cartItems?.data || [];
     const selFromDateStr = getLocalDateString(new Date(checkInDate));
-    const selToDateStr   = getLocalDateString(new Date(checkOutDate));
+    const selToDateStr = getLocalDateString(new Date(checkOutDate));
 
     return items
       .filter(item => {
         if (String(item.roomId) !== String(houseId) || String(item.packageId) !== String(packageId)) return false;
         // Extract date-only portion regardless of timezone suffix
         const itemFromDateStr = item.roomFromDate?.split('T')[0];
-        const itemToDateStr   = item.roomToDate?.split('T')[0];
+        const itemToDateStr = item.roomToDate?.split('T')[0];
         if (!itemFromDateStr || !itemToDateStr) return false;
         // No overlap when item ends on or before new check-in date,
         // or item starts on or after new checkout date
@@ -228,18 +229,13 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const handleCheckInDateChange = (date) => {
     setStartDate(date);
 
-    const nextDay = new Date(date);
-    nextDay.setDate(nextDay.getDate() + 1);
-    setEndDate(nextDay);
-
-    // Reset house count if it exceeds new maximum
-    const newMaxHouses = getMaxAvailableHouses(date, nextDay);
-    if (houseCount > newMaxHouses) {
-      setHouseCount(newMaxHouses);
-      calculatePricing(date, nextDay, newMaxHouses);
-    } else {
-      calculatePricing(date, nextDay, houseCount);
+    if (date >= endDate) {
+      const nextDay = new Date(date);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setEndDate(nextDay);
     }
+
+    calculatePricing(date, endDate, houseCount);
   };
 
   const handleCheckOutDateChange = (date) => {
@@ -337,12 +333,28 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
         {/* Check-in Date */}
         <DatePickerField
-          label="Check-in date"
+          inline={true}
+          label=""
           selected={startDate}
-          onChange={handleCheckInDateChange}
+          onChange={(dates) => {
+            const [start, end] = dates;
+
+            if (!start) return;
+
+            setStartDate(start);
+
+            if (end) {
+              setEndDate(end);
+              calculatePricing(start, end, houseCount);
+            } else {
+              const nextDay = new Date(start);
+              nextDay.setDate(nextDay.getDate() + 1);
+              setEndDate(nextDay);
+              calculatePricing(start, nextDay, houseCount);
+            }
+          }}
           filterDate={filterDate}
           renderDayContents={renderDayContents}
-          placeholderText="Select available date"
           isCalendarLoading={isCalendarLoading}
           isDateAvailable={isDateAvailable}
           startDate={startDate}
@@ -350,20 +362,29 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           isCheckout={false}
         />
 
-        {/* Check-out Date */}
-        <DatePickerField
-          label="Check-out date"
-          selected={endDate}
-          onChange={handleCheckOutDateChange}
-          filterDate={filterCheckoutDate}
-          renderDayContents={renderDayContents}
-          placeholderText="Select checkout date"
-          isCalendarLoading={isCalendarLoading}
-          isDateAvailable={isDateAvailable}
-          startDate={startDate}
-          endDate={endDate}
-          isCheckout={true}
-        />
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-[#304A3A] mb-2">
+            Check-in Date
+          </label>
+
+          <input
+            readOnly
+            value={startDate ? format(startDate, "dd-MM-yyyy") : ""}
+            className="w-full px-3 py-4 border border-[#C8BFB2] rounded-lg bg-[#FDFAF7] text-[#304A3A]"
+          />
+        </div>
+
+        <div className="mb-5">
+          <label className="block text-sm font-medium text-[#304A3A] mb-2">
+            Check-out Date
+          </label>
+
+          <input
+            readOnly
+            value={endDate ? format(endDate, "dd-MM-yyyy") : ""}
+            className="w-full px-3 py-4 border border-[#C8BFB2] rounded-lg bg-[#FDFAF7] text-[#304A3A]"
+          />
+        </div>
 
         {/* Number of Houses */}
         <HouseCounter

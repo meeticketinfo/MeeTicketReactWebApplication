@@ -8,7 +8,7 @@ import {
 } from "../../../utils/TypographyHelper";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { useParkStore } from "../../../store/masters/parksStore";
-import { LuClipboardEdit } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
 import useAuthStore from "../../../store/authStore";

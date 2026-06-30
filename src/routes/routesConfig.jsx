@@ -1,3 +1,8 @@
+import WalkerpassMain from "../components/book_walker_pass/WalkerpassMain";
+import WalkerpassDetails from "../components/book_walker_pass/WalkerpassDetails";
+import UpiPaymentQR from "../components/book_walker_pass/UpiPaymentQR";
+import WalkerPassCard from "../components/book_walker_pass/WalkerPassCard";
+
 import Dashboard from "../pages/Dashboard";
 import AdminUsers from "../pages/admin/users/AdminUsers";
 import AdminParks from "../pages/admin/parks/AdminParks";
@@ -201,6 +206,7 @@ import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
 import WalkersPassReport from "../pages/admin/walkers_pass_report/WalkersPassReport";
+import WalkersPassSummaryreport from "../pages/admin/walkers_pass_summary_report/WalkersPassSummaryreport";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
 import MainPaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/mainPaymentGatewayReport";
 import MainIntercitySettlementReport from "../components/rtc/rtc_reports/intercity_reports/intercity_settlement_report/mainIntercitySettlementReport";
@@ -226,6 +232,25 @@ export const routes = [
     element: <AuthRoute element={<Login />} />,
   },
   { path: "/dashboard", element: <ProtectedRoute element={<Dashboard />} /> },
+
+  {
+    path: "/book-walker-pass",
+    element: <ProtectedRoute element={<WalkerpassMain />} />,
+  },
+
+  {
+    path: "/walker-pass-details",
+    element: <WalkerpassDetails />,
+  },
+
+  {
+    path: "/upi-payment-qr",
+    element: <UpiPaymentQR />,
+  },
+  {
+    path: "/walker-pass-card",
+    element: <WalkerPassCard />,
+  },
 
   // dashboard detailed report
 
@@ -621,7 +646,7 @@ export const routes = [
       <ProtectedRoute element={<BusPassUserTransactionsOrderTracker />} />
     ),
   },
-   {
+  {
     path: "/bus-pass-user-transactions-Refund-tracker",
     element: (
       <ProtectedRoute element={<BusPassUserTransactionsRefundTracker />} />
@@ -1031,7 +1056,7 @@ export const routes = [
   },
   {
     path: "/intercity-settlement-summary-report",
-    element: <ProtectedRoute element={<MainIntercitySettlementReport/>} />,
+    element: <ProtectedRoute element={<MainIntercitySettlementReport />} />,
   },
   {
     path: "/intercity-settlement-summary-inner-report",
@@ -1082,7 +1107,11 @@ export const routes = [
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
   {
-    path:"/walkers-pass-report",
-    element:<ProtectedRoute element={<WalkersPassReport />} />,
-  }
+    path: "/walkers-pass-report",
+    element: <ProtectedRoute element={<WalkersPassReport />} />,
+  },
+  {
+    path: "/walkers-pass-summary-report",
+    element: <ProtectedRoute element={<WalkersPassSummaryreport />} />,
+  },
 ];
