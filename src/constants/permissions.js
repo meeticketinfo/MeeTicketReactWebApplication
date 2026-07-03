@@ -144,6 +144,8 @@ export const BotanicalGardenParkAdminPermissions = [
   "entity-bookings",
   "completed-bookings",
   "payment-transaction-report",
+  "walkers-pass-report",
+  "walkers-pass-summary-report",
   "book-tickets",
 ];
 

@@ -51,7 +51,7 @@ const BACK_PAGE_RULES = [
     "Create any nuisance in the Botanical Garden.",
 ];
 const BACK_PAGE_ABIDE_TEXT =
-    "I shall abide by the provisions of Forest Act 1967 & WildLife Protection Act 1972 and Rules made thereunder";
+    "I shall abide by the provisions of Forest Act 1967 & Wildlife Protection Act 1972 and Rules made thereunder";
 const BACK_PAGE_EMERGENCY_TEXT = "EMERGENCY CONTACT NUMBER +91 8008301605";
 
 const normalizePassResponse = (response) => response?.data || response;
@@ -724,17 +724,17 @@ const WalkerPassCard = () => {
                 color: "#111111",
                 align: "center",
             });
-            drawText(ctx, "L.RANJEET NAYAK, IFS", x + 13 * SCALE, y + 190 * SCALE, {
+            drawText(ctx, "L.RANJEET NAYAK, IFS", x + 13 * SCALE, y + 192 * SCALE, {
                 size: 5 * SCALE,
                 weight: "800",
                 color: "#111111",
             });
-            drawText(ctx, "EXECUTIVE DIRECTOR,", x + 14 * SCALE, y + 196 * SCALE, {
+            drawText(ctx, "EXECUTIVE DIRECTOR,", x + 14 * SCALE, y + 198 * SCALE, {
                 size: 4.2 * SCALE,
                 weight: "800",
                 color: "#111111",
             });
-            drawText(ctx, "ECO-TOURISM, TGFDC LTD.", x + 14 * SCALE, y + 202 * SCALE, {
+            drawText(ctx, "ECO-TOURISM, TGFDC LTD.", x + 14 * SCALE, y + 204 * SCALE, {
                 size: 4.2 * SCALE,
                 weight: "800",
                 color: "#111111",
@@ -1105,7 +1105,7 @@ const WalkerPassCard = () => {
                                     <div className="absolute left-[18px] top-[179px] w-[45px] border-t border-black text-center text-black">
                                         <p className="mt-[2px] text-[4px] leading-none">Authorized Signatory</p>
                                     </div>
-                                    <div className="absolute left-[13px] top-[186px] text-black">
+                                    <div className="absolute left-[13px] top-[189px] text-black">
                                         <p className="text-[5px] font-extrabold leading-[5px]">L.RANJEET NAYAK, IFS</p>
                                         <p className="text-[4px] font-extrabold leading-[5px]">EXECUTIVE DIRECTOR,</p>
                                         <p className="text-[4px] font-extrabold leading-[5px]">ECO-TOURISM, TGFDC LTD.</p>

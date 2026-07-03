@@ -6,7 +6,9 @@ import { useWalkerpassStore } from "./WalkerpassStore.jsx";
 import useAuthStore from "../../store/authStore";
 import { toast, ToastContainer } from "react-toastify";
 import {
+    compressImageFile,
     fileToCompressedDataUrl,
+    formatFileSize,
     storeWalkerPassImage,
 } from "./walkerPassImageUtils";
 
@@ -130,6 +132,10 @@ const WalkerpassForm = () => {
     const parkId = decodedTokenData?.data?.ParkId;
     const [idProofPreview, setIdProofPreview] = useState(null);
     const [selfiePreview, setSelfiePreview] = useState(null);
+    const [idProofCompressInfo, setIdProofCompressInfo] = useState(null);
+    const [selfieCompressInfo, setSelfieCompressInfo] = useState(null);
+    const [isIdProofCompressing, setIsIdProofCompressing] = useState(false);
+    const [isSelfieCompressing, setIsSelfieCompressing] = useState(false);
 
     const [passes, setPasses] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,15 +161,15 @@ const WalkerpassForm = () => {
     }, [parkId, getPassLocationMasters]);
 
     useEffect(() => {
-        console.log("PASS LOCATION DATA:", passLocationData);
         if (passLocationData?.service) {
             const normalService = passLocationData.service.find(
                 (item) => item.name === "Normal Walkers pass"
             );
+            const allPasses =
+                normalService?.passes ||
+                passLocationData.service.flatMap((item) => item.passes || []);
 
-            if (normalService) {
-                setPasses(normalService.passes);
-            }
+            setPasses(allPasses);
         }
     }, [passLocationData]);
 
@@ -182,6 +188,54 @@ const WalkerpassForm = () => {
             }
         };
     }, [idProofPreview, selfiePreview]);
+
+    const handleImageUpload = async (
+        file,
+        {
+            fieldName,
+            setFieldValue,
+            setPreview,
+            setCompressInfo,
+            setCompressing,
+            currentPreview,
+        }
+    ) => {
+        if (!file) return;
+
+        setCompressing(true);
+        setCompressInfo(null);
+
+        try {
+            const result = await compressImageFile(file);
+            setFieldValue(fieldName, result.file);
+
+            if (currentPreview) {
+                URL.revokeObjectURL(currentPreview);
+            }
+
+            setPreview(URL.createObjectURL(result.file));
+
+            if (result.wasCompressed) {
+                setCompressInfo({
+                    originalSize: result.originalSize,
+                    compressedSize: result.compressedSize,
+                });
+            }
+        } catch (error) {
+            console.error("Image compression failed:", error);
+            toast.error("Unable to process image. Please try another file.");
+            setFieldValue(fieldName, null);
+            setCompressInfo(null);
+
+            if (currentPreview) {
+                URL.revokeObjectURL(currentPreview);
+            }
+
+            setPreview(null);
+        } finally {
+            setCompressing(false);
+        }
+    };
 
     const handleSubmit = async (values) => {
         try {
@@ -547,9 +601,21 @@ const WalkerpassForm = () => {
                                                     {values.idProof?.name}
                                                 </p>
 
+                                                {isIdProofCompressing && (
+                                                    <p className="text-xs text-blue-600 mt-2">
+                                                        Optimizing image...
+                                                    </p>
+                                                )}
 
-
-
+                                                {!isIdProofCompressing && idProofCompressInfo && (
+                                                    <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-2 text-center">
+                                                        Image optimized from{" "}
+                                                        {formatFileSize(idProofCompressInfo.originalSize)}{" "}
+                                                        to{" "}
+                                                        {formatFileSize(idProofCompressInfo.compressedSize)}{" "}
+                                                        for upload.
+                                                    </p>
+                                                )}
                                             </>
                                         ) : (
                                             <>
@@ -582,15 +648,21 @@ const WalkerpassForm = () => {
                                             type="file"
                                             className="hidden"
                                             id="idProof"
-                                            accept=".jpg,.png"
+                                            accept=".jpg,.png,.jpeg"
+                                            disabled={isIdProofCompressing}
                                             onChange={(event) => {
                                                 const file = event.currentTarget.files[0];
 
-                                                setFieldValue("idProof", file);
+                                                handleImageUpload(file, {
+                                                    fieldName: "idProof",
+                                                    setFieldValue,
+                                                    setPreview: setIdProofPreview,
+                                                    setCompressInfo: setIdProofCompressInfo,
+                                                    setCompressing: setIsIdProofCompressing,
+                                                    currentPreview: idProofPreview,
+                                                });
 
-                                                if (file) {
-                                                    setIdProofPreview(URL.createObjectURL(file));
-                                                }
+                                                event.currentTarget.value = "";
                                             }}
                                         />
                                     </label>
@@ -627,7 +699,21 @@ const WalkerpassForm = () => {
                                                     {values.selfie?.name}
                                                 </p>
 
+                                                {isSelfieCompressing && (
+                                                    <p className="text-xs text-blue-600 mt-2">
+                                                        Optimizing image...
+                                                    </p>
+                                                )}
 
+                                                {!isSelfieCompressing && selfieCompressInfo && (
+                                                    <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-2 text-center">
+                                                        Image optimized from{" "}
+                                                        {formatFileSize(selfieCompressInfo.originalSize)}{" "}
+                                                        to{" "}
+                                                        {formatFileSize(selfieCompressInfo.compressedSize)}{" "}
+                                                        for upload.
+                                                    </p>
+                                                )}
                                             </>
                                         ) : (
                                             <>
@@ -660,15 +746,21 @@ const WalkerpassForm = () => {
                                             type="file"
                                             className="hidden"
                                             id="selfie"
-                                            accept=".jpg,.png"
+                                            accept=".jpg,.png,.jpeg"
+                                            disabled={isSelfieCompressing}
                                             onChange={(event) => {
                                                 const file = event.currentTarget.files[0];
 
-                                                setFieldValue("selfie", file);
+                                                handleImageUpload(file, {
+                                                    fieldName: "selfie",
+                                                    setFieldValue,
+                                                    setPreview: setSelfiePreview,
+                                                    setCompressInfo: setSelfieCompressInfo,
+                                                    setCompressing: setIsSelfieCompressing,
+                                                    currentPreview: selfiePreview,
+                                                });
 
-                                                if (file) {
-                                                    setSelfiePreview(URL.createObjectURL(file));
-                                                }
+                                                event.currentTarget.value = "";
                                             }}
                                         />
                                     </label>
@@ -688,7 +780,7 @@ const WalkerpassForm = () => {
                             <div className="flex justify-center mt-8">
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || isIdProofCompressing || isSelfieCompressing}
                                     className={`text-white text-[14px] font-semibold px-6 py-2 rounded-md uppercase
         ${isSubmitting
                                             ? "bg-gray-400 cursor-not-allowed"

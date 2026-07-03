@@ -10,6 +10,23 @@ import {
     storeWalkerPassImage,
 } from "./walkerPassImageUtils";
 
+const getWalkerPassAmount = (pass, age) => {
+    if (!pass) return 0;
+
+    const userAge = Number(age);
+    const seniorCitizenAge = Number(pass.seniorCitizenAge);
+
+    if (
+        !Number.isNaN(userAge) &&
+        !Number.isNaN(seniorCitizenAge) &&
+        userAge >= seniorCitizenAge &&
+        pass.seniorCitizenPrice != null
+    ) {
+        return Number(pass.seniorCitizenPrice) || 0;
+    }
+
+    return Number(pass.price) || 0;
+};
 
 const WalkerpassDetails = () => {
 
@@ -28,7 +45,7 @@ const WalkerpassDetails = () => {
                     data?.walkerPassType
             );
 
-    const amount = selectedPass?.price || 0;
+    const amount = getWalkerPassAmount(selectedPass, data?.age);
     const parkId = data?.parkId;
     const customerId = data?.passUserDetailsId;
     console.log("customerId:", customerId);
@@ -136,6 +153,13 @@ const WalkerpassDetails = () => {
                         Book Walker's Pass
                     </h2>
 
+                    <button
+                        type="button"
+                        onClick={() => navigate("/book-walker-pass", { replace: true })}
+                        className="bg-[#09094D] hover:bg-[#07073D] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                        ← Back
+                    </button>
                 </div>
                 <div className="bg-white rounded-xl shadow-md border border-gray-200">
 

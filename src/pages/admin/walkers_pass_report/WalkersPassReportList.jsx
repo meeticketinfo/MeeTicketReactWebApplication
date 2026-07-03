@@ -27,7 +27,7 @@ const BACK_PAGE_RULES = [
   "Create any nuisance in the Botanical Garden.",
 ];
 const BACK_PAGE_ABIDE_TEXT =
-  "I shall abide by the provisions of Forest Act 1967 & WildLife Protection Act 1972 and Rules made thereunder";
+  "I shall abide by the provisions of Forest Act 1967 & Wildlife Protection Act 1972 and Rules made thereunder";
 const BACK_PAGE_EMERGENCY_TEXT = "EMERGENCY CONTACT NUMBER +91 8008301605";
 
 
@@ -457,7 +457,7 @@ const buildBulkPrintHtml = (
         text-align: center;
       }
       .signature-copy .authorized {
-        margin: 0 0 3px;
+        margin: 0 0 5px;
         font-size: 4px;
         line-height: 5px;
         font-weight: 400;
