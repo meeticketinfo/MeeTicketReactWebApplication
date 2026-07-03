@@ -637,7 +637,6 @@ const WalkerPassCard = () => {
                 weight: "800",
                 color: "#f7f4e9",
                 align: "center",
-                letterSpacing: 0.15 * SCALE,
             });
 
             const drawDetailLine = (label, value, textX, textY) => {
@@ -1073,7 +1072,7 @@ const WalkerPassCard = () => {
                                     <div className="absolute left-[58px] top-[8px] w-[224px] text-center font-extrabold uppercase text-[#f7f4e9]">
                                         <p className="text-[11px] leading-[12px] tracking-[0.06em]">{PASS_HEADER_TEXT}</p>
                                         <p className="mt-1 text-[9px] leading-[10px] tracking-[0.025em]">{PASS_HEADER_TEXT_LINE_2}</p>
-                                        <p className="mt-1 text-[7px] leading-[8px] tracking-[0.015em]">{PASS_SUBTITLE}</p>
+                                        <p className="mt-1 text-[7px] leading-[8px]">{PASS_SUBTITLE}</p>
                                     </div>
 
                                     <div className="absolute left-[14px] top-[64px] max-w-[238px] text-[#2c1b0f]">

@@ -395,7 +395,7 @@ const buildBulkPrintHtml = (
       .header-title .subtitle {
         font-size: 7px;
         line-height: 8px;
-        letter-spacing: 0.15px;
+        letter-spacing: 0;
       }
       .pass-details {
         position: absolute;
