@@ -688,8 +688,8 @@ const WalkerPassCard = () => {
 
             const photoX = x + 14 * SCALE;
             const photoY = bodyY + 49 * SCALE;
-            const photoW = 60 * SCALE;
-            const photoH = 60 * SCALE;
+            const photoW = 50 * SCALE;
+            const photoH = 50 * SCALE;
             if (userImg) {
                 ctx.drawImage(userImg, photoX, photoY, photoW, photoH);
             } else {
@@ -703,10 +703,10 @@ const WalkerPassCard = () => {
                 390,
                 260,
                 330,
-                x + 24 * SCALE,
-                y + 166 * SCALE,
-                38 * SCALE,
-                10 * SCALE
+                x + 10 * SCALE,
+                y + 158 * SCALE,
+                58 * SCALE,
+                20 * SCALE
             );
 
             ctx.drawImage(risingLogoImg, x + 145 * SCALE, bodyY + 49 * SCALE, 58 * SCALE, 52 * SCALE);
@@ -1095,12 +1095,12 @@ const WalkerPassCard = () => {
                                         <img
                                             src={userImageBase64 || getPassImageValue(passData)}
                                             alt="User"
-                                            className="absolute left-[14px] top-[106px] h-[60px] w-[60px] rounded-sm object-cover"
+                                            className="absolute left-[14px] top-[106px] h-[50px] w-[50px] rounded-sm object-cover"
                                         />
                                     ) : (
-                                        <div className="absolute left-[14px] top-[106px] h-[60px] w-[60px] rounded-sm bg-black" />
+                                        <div className="absolute left-[14px] top-[106px] h-[50px] w-[50px] rounded-sm bg-black" />
                                     )}
-                                    <img src={SignatureImage} alt="Authorized Signature" className="absolute left-[24px] top-[166px] h-[10px] w-[38px] object-cover object-center" />
+                                    <img src={SignatureImage} alt="Authorized Signature" className="absolute left-[10px] top-[158px] h-[20px] w-[58px] object-contain object-center" />
 
                                     <div className="absolute left-[18px] top-[179px] w-[45px] border-t border-black text-center text-black">
                                         <p className="mt-[2px] text-[4px] leading-none">Authorized Signatory</p>

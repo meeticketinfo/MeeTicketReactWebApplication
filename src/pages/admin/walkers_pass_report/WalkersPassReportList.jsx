@@ -426,19 +426,19 @@ const buildBulkPrintHtml = (
         position: absolute;
         left: 14px;
         top: 106px;
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         border-radius: 2px;
         object-fit: cover;
         background: #000000 !important;
       }
       .signature-image {
         position: absolute;
-        left: 24px;
-        top: 166px;
-        width: 38px;
-        height: 10px;
-        object-fit: cover;
+        left: 10px;
+        top: 158px;
+        width: 58px;
+        height: 20px;
+        object-fit: contain;
         object-position: center;
       }
       .signature-line {
