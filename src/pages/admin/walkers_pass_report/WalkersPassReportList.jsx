@@ -432,14 +432,21 @@ const buildBulkPrintHtml = (
         object-fit: cover;
         background: #000000 !important;
       }
-      .signature-image {
+      .signature-wrap {
         position: absolute;
         left: 10px;
         top: 158px;
         width: 58px;
         height: 20px;
-        object-fit: contain;
-        object-position: center;
+        overflow: hidden;
+      }
+      .signature-image {
+        position: absolute;
+        width: calc(58px * 1080 / 260);
+        height: calc(20px * 1080 / 330);
+        left: calc(-58px * 390 / 260);
+        top: calc(-20px * 390 / 330);
+        max-width: none;
       }
       .signature-line {
         position: absolute;
@@ -601,7 +608,9 @@ const buildBulkPrintHtml = (
             ${pass?.preparedUserImage
           ? `<img class="user-photo" src="${escapeHtml(pass.preparedUserImage)}" alt="User" />`
           : `<div class="user-photo"></div>`}
-            <img class="signature-image" src="${SignatureImage}" alt="Authorized Signature" />
+            <div class="signature-wrap">
+              <img class="signature-image" src="${SignatureImage}" alt="Authorized Signature" />
+            </div>
             <div class="signature-line"></div>
             <div class="signature-copy">
               <p class="authorized">Authorized Signatory</p>
