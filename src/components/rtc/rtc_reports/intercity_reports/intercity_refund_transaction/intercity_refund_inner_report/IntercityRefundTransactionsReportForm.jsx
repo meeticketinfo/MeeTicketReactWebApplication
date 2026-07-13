@@ -175,7 +175,7 @@ const IntercityRefundTransactionsReportForm = ({
               />
             </div>
             {/* departure location */}
-            <div>
+            {/* <div>
               <label className="block text-xs font-medium text-gray-700">
                 Departure Location
               </label>
@@ -200,9 +200,9 @@ const IntercityRefundTransactionsReportForm = ({
                 loadingText="Searching cities..."
                 initialDisplayText={values.departureLocation}
               />
-            </div>
+            </div> */}
             {/* arrival location */}
-            <div>
+            {/* <div>
               <label className="block text-xs font-medium text-gray-700">
                 Arrival Location
               </label>
@@ -227,7 +227,7 @@ const IntercityRefundTransactionsReportForm = ({
                 initialDisplayText={values.arrivalLocation}
                 uniqueId="arrival-location-dropdown"
               />
-            </div>
+            </div> */}
              {/* payment mode */}
             <div>
               <label className="block text-xs font-medium text-gray-700">

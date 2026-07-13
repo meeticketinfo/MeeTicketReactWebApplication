@@ -95,6 +95,13 @@ const IntercityRefundTransactionsReport = () => {
         valueFormatter: (params) => params.value || "N/A",
       },
       {
+        field: "refundAmount",
+        headerName: "REFUND AMOUNT",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) =>
+          formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      },
+      {
         field: "refundDate",
         headerName: "REFUND DATE",
         headerClass: "text-blue-v2",
