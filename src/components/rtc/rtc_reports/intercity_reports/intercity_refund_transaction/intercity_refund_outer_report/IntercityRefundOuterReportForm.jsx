@@ -82,6 +82,7 @@ const IntercityRefundOuterReportForm = () => {
       fromDate: cleanString(paramsToUse.get("fromDate"), "_", ":") || startOfDay,
       toDate: cleanString(paramsToUse.get("toDate"), "_", ":") || endOfDay,
       mobileNumber: paramsToUse.get("mobileNumber") || "",
+      pnrNumber: paramsToUse.get("pnrNumber") || "",
       departureLocation: paramsToUse.get("departureLocation") || "",
       arrivalLocation: paramsToUse.get("arrivalLocation") || "",
     };
@@ -108,6 +109,7 @@ const IntercityRefundOuterReportForm = () => {
       departureLocation: values.departureLocation?values.departureLocation:"",
       arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
       mobileNumber: values.mobileNumber,
+      pnrNumber: values.pnrNumber || "",
     };
 
     fetchIntercityRefundTransactionsReport(payload);
@@ -120,6 +122,7 @@ const IntercityRefundOuterReportForm = () => {
       departureLocation: "",
       arrivalLocation: "",
       mobileNumber: "",
+      pnrNumber: "",
     };
 
     // Clear URL search params
@@ -208,8 +211,23 @@ const IntercityRefundOuterReportForm = () => {
                   }}
                 />
               </div>
-              {/* departure location */}
+              {/* pnr number */}
               <div>
+                <label
+                  htmlFor="pnrNumber"
+                  className="block text-xs font-medium text-gray-700"
+                >
+                  PNR No
+                </label>
+                <Field
+                  type="text"
+                  name="pnrNumber"
+                  className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  placeholder="Enter PNR"
+                />
+              </div>
+              {/* departure location */}
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Departure Location
                 </label>
@@ -234,9 +252,9 @@ const IntercityRefundOuterReportForm = () => {
                   loadingText="Searching cities..."
                   initialDisplayText={values.departureLocation}
                 />
-              </div>
+              </div> */}
               {/* arrival location */}
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Arrival Location
                 </label>
@@ -262,7 +280,7 @@ const IntercityRefundOuterReportForm = () => {
                   initialDisplayText={values.arrivalLocation}
                   uniqueId="arrival-location-dropdown"
                 />
-              </div>
+              </div> */}
 
               <div className="flex gap-2 items-end">
                 <button

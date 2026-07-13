@@ -32,6 +32,7 @@ function IntercityRefundTransactions() {
           cleanString(urlParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(urlParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: urlParams.get("mobileNumber") || "",
+        pnrNumber: urlParams.get("pnrNumber") || "",
         departureLocation: urlParams.get("departureLocation") || "",
         arrivalLocation: urlParams.get("arrivalLocation") || "",
       };
@@ -42,6 +43,7 @@ function IntercityRefundTransactions() {
           cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
         mobileNumber: searchParams.get("mobileNumber") || "",
+        pnrNumber: searchParams.get("pnrNumber") || "",
         departureLocation: searchParams.get("departureLocation") || "",
         arrivalLocation: searchParams.get("arrivalLocation") || "",
       };

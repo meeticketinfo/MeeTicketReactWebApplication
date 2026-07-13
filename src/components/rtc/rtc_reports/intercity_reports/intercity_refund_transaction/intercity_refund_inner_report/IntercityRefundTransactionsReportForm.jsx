@@ -67,6 +67,7 @@ const IntercityRefundTransactionsReportForm = ({
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
     mobileNumber: searchParams.get("mobileNumber") || "",
+    pnrNumber: searchParams.get("pnrNumber") || "",
     departureLocation: searchParams.get("departureLocation") || "",
     arrivalLocation: searchParams.get("arrivalLocation") || "",
     paymentMode:searchParams.get("paymentMode") || "",
@@ -90,6 +91,7 @@ const IntercityRefundTransactionsReportForm = ({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber,
+      pnrNumber: values.pnrNumber || "",
       departureLocation: values.departureLocation?values.departureLocation:"",
       arrivalLocation: values.arrivalLocation?values.arrivalLocation:"",
       paymentMode:values.paymentMode?values.paymentMode:"",
@@ -172,6 +174,21 @@ const IntercityRefundTransactionsReportForm = ({
                 onChange={(e) => {
                   setFieldValue("mobileNumber", e.target.value);
                 }}
+              />
+            </div>
+            {/* pnr number */}
+            <div>
+              <label
+                htmlFor="pnrNumber"
+                className="block text-xs font-medium text-gray-700"
+              >
+                PNR No
+              </label>
+              <Field
+                type="text"
+                name="pnrNumber"
+                className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                placeholder="Enter PNR"
               />
             </div>
             {/* departure location */}

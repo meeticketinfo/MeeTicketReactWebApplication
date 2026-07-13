@@ -45,6 +45,12 @@ const IntercityRefundTransactionsReport = () => {
         headerClass: "text-blue-v2",
       },
       {
+        field: "pnrNumber",
+        headerName: "PNR NO",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
         field: "transactionDateandTime",
         headerName: "DATE AND TIME OF TRANSACTION",
         headerClass: "text-blue-v2",
@@ -195,6 +201,7 @@ const IntercityRefundTransactionsReport = () => {
           cleanString(searchParams.get("fromDate"), "_", ":") || fromDate,
         toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
         mobileNumber: searchParams.get("mobileNumber") || "",
+        pnrNumber: searchParams.get("pnrNumber") || "",
         departureLocation: searchParams.get("departureLocation") || "",
         arrivalLocation: searchParams.get("arrivalLocation") || "",
         refundStatus:
