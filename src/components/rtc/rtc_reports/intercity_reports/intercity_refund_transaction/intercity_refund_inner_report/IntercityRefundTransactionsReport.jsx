@@ -150,8 +150,8 @@ const IntercityRefundTransactionsReport = () => {
       },
       {
         field: "amount",
-        headerName: "AMOUNT",
-        maxWidth: "100",
+        headerName: "TOTAL AMOUNT",
+        maxWidth: "150",  
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           formatToCurrency(params.value, "INR", "en-IN") || "00:00",
@@ -159,7 +159,7 @@ const IntercityRefundTransactionsReport = () => {
       {
         field: "noOfTickets",
         headerName: "TICKET QUANTITY",
-        maxWidth: "130",
+        maxWidth: "150",
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params.value || params.value === " " ? params.value : "N/A",
