@@ -359,7 +359,7 @@ const { roleDetails } = useAuthStore();
                 }}
               >
                 <option value="">Select Mode</option>
-                <option value="MeeTicketApp">MeeTicketApp</option>
+                <option value="MeeTicketApp">Archaeological Survey of India App</option>
                 <option value="COUNTER">COUNTER</option>
               </Field>
             </div>

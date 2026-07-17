@@ -171,7 +171,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
             <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
               <img
                 src={DeccaanTrailsLogo}
-                alt="Meeticket Logo"
+                alt="Archaeological Survey of India Logo"
                 className={`transition-all duration-300 ${isScrolled ? "w-[40px] sm:w-[50px] md:w-[60px]" : "w-[50px] sm:w-[60px] md:w-[85px]"
                   }`}
               />

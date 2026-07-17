@@ -310,7 +310,7 @@ function DayWiseBookings() {
                   >
                     <option value="">Select Created By</option>
 
-                    <option value="MeeTicketApp">MeeTicket App</option>
+                    <option value="MeeTicketApp">Archaeological Survey of India App</option>
                     <option value="Counter">All Counters</option>
                     <option value="NehruZooPark@gmail.com">NehruZooPark@gmail.com</option>
                     <option value="NehruZooPark1@gmail.com">NehruZooPark1@gmail.com</option>
@@ -329,7 +329,7 @@ function DayWiseBookings() {
                   >
                     <option value="">Select Booking Source</option>
                     <option value="Counter">Counter</option>
-                    <option value="MeeTicketApp">MeeTicket App</option>
+                    <option value="MeeTicketApp">Archaeological Survey of India App</option>
                   </Field>
                 </div> */}
                 <div className="flex items-end">

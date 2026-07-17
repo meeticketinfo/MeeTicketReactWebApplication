@@ -295,7 +295,7 @@ export default function AdminBookings() {
                 <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-4">
                   <img
                     src="https://via.placeholder.com/50x50" // Placeholder for logo
-                    alt="Meeticket Logo"
+                    alt="Archaeological Survey of India Logo"
                     className="w-[50px] sm:w-[60px] md:w-[85px]"
                   />
                   <div>

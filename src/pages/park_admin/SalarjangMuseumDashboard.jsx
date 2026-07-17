@@ -245,7 +245,7 @@ const SalarjangMuseumDashboard = () => {
         {/* Mee ticket App Report */}
         <div className="my-4">
           <h1 className="text-lg text-gray-600 font-bold mb-3">
-            Mee Ticket App Report
+            Archaeological Survey of India App Report
           </h1>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8">
             {MeeTicketReportCard.map((item, index) => (
@@ -288,7 +288,7 @@ const SalarjangMuseumDashboard = () => {
 
         <div className="my-4">
           <h1 className="text-lg text-gray-600 font-bold mb-3">
-            Mee Ticket Counter Report
+            Archaeological Survey of India Counter Report
           </h1>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8">
             {MeeTicketCounterReportCard.map((item, index) => (

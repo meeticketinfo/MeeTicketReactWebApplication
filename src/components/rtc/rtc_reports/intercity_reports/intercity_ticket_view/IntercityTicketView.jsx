@@ -226,7 +226,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
               <div className="flex items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4">
                 <img
                   src={logo2}
-                  alt="Meeticket Logo"
+                  alt="Archaeological Survey of India Logo"
                   className={`transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
@@ -255,7 +255,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
               <div className="flex items-center justify-center gap-2 sm:gap-3 p-2 sm:p-4">
                 <img
                   src={Logo}
-                  alt="Meeticket Logo"
+                  alt="Archaeological Survey of India Logo"
                   className={`transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
@@ -456,7 +456,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                       Booked By
                     </td>
                     <td className="px-1 py-2 text-gray-900">:</td>
-                    <td className="px-3 py-2 text-[13px] text-gray-900">MeeTicket</td>
+                    <td className="px-3 py-2 text-[13px] text-gray-900">Archaeological Survey of India</td>
                   </tr>
 
                 </tbody>

@@ -71,7 +71,7 @@ const HelpFaqs = () => {
                     Q: How can I book a Packages ticket?
                   </h3>
                   <p className="text-gray-700" style={{ fontFamily: 'Arial Nova, sans-serif' }}>
-                    A: Packages tickets can be booked online through the Mee Ticket official portal or Amrabad website.
+                    A: Packages tickets can be booked online through the Archaeological Survey of India official portal or Amrabad website.
                   </p>
                 </div>
 

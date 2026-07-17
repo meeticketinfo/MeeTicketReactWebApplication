@@ -306,7 +306,7 @@ function ApplicationDayWiseBookings() {
                     className={` block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
                     <option value="">Select Created By</option>
-                    <option value="MeeTicketApp">MeeTicket App</option>
+                    <option value="MeeTicketApp">Archaeological Survey of India App</option>
                     <option value="Counter">All Counter</option>
                     <option value="NehruZooPark@gmail.com">NehruZooPark@gmail.com</option>
                     <option value="NehruZooPark1@gmail.com">NehruZooPark1@gmail.com</option>

@@ -331,7 +331,7 @@ function CompletedBookingsReportList() {
                 options={[
                   { value: "", label: "ALL" },
                   { value: "Counter", label: "Counter" },
-                  { value: "MeeTicketApp", label: "Mee TicketApp" },
+                  { value: "MeeTicketApp", label: "Archaeological Survey of India App" },
                 ]}
                 onChange={(selectedOption) =>
                   setFieldValue("typeOfBooking", selectedOption?.value || "")

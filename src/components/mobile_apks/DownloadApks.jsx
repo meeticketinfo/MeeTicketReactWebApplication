@@ -62,11 +62,11 @@ function DownloadApks() {
                         <div className="mb-4">
                             <img
                                 src={meeticketlogo}
-                                alt="MeeTicket Logo"
+                                alt="Archaeological Survey of India Logo"
                                 className="w-20 mx-auto"
                             />
                         </div>
-                        <div className="text-xl text-blue-v1 font-medium mb-4">Download MeeTicket App</div>
+                        <div className="text-xl text-blue-v1 font-medium mb-4">Download Archaeological Survey of India App</div>
                         <a
                             href="https://egovindia.in/meeticketapk/MeeTicket(1.0.9).apk"
                             className="hover:bg-blue-v1 bg-blue-v2   text-white font-semibold py-2 px-4 rounded inline-block transition duration-300"

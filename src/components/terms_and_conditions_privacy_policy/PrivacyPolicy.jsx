@@ -13,7 +13,7 @@ const PrivacyPolicy = () => {
         </p>
         <p className="text-gray-500 mb-3 text-sm">
           To provide you (<span className="font-semibold">“Your”, “User”</span>) with the Service (or
-          <span className="font-semibold"> MeeTicket App as defined in the Terms and Conditions of Use</span>),
+          <span className="font-semibold"> Archaeological Survey of India App as defined in the Terms and Conditions of Use</span>),
           Electronic Service Delivery, ITE&C Department, Government of Telangana
           (<span className="font-semibold">“We”, “Us”, “Our”, “ESD”, “ITE&C”, “GoT”</span>) needs to collect some
           information about you, and this Privacy Policy is where we describe the

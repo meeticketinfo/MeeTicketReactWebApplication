@@ -317,7 +317,7 @@ function PosConsolidatedBookingReports() {
                   >
                     <option value="">ALL</option>
                     <option value="Counter">Counter</option>
-                    <option value="MeeTicketApp">Mee TicketApp</option>
+                    <option value="MeeTicketApp">Archaeological Survey of India App</option>
                   </Field>
                 </div>
                 <div>

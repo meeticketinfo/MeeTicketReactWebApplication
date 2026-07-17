@@ -206,7 +206,7 @@ const RefundTransactionsReportForm = ({
                 }}
               >
                 <option value="">Select Mode</option>
-                <option value="meeTicket">MeeTicketApp</option>
+                <option value="meeTicket">Archaeological Survey of India App</option>
                 <option value="counter">COUNTER</option>
               </Field>
             </div>

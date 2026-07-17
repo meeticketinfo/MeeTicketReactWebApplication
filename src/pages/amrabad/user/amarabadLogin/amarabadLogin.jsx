@@ -67,7 +67,7 @@ const AmarabadLogin = () => {
             </div>
           </div>
           {/* <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
-            <img src={Logo} alt="MeeTicket Logo" className="w-56" />
+            <img src={Logo} alt="Archaeological Survey of India Logo" className="w-56" />
           </div> */}
         </div>
       </div>

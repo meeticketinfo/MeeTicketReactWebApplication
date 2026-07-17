@@ -125,8 +125,8 @@ const Login = () => {
               <div className="flex items-center space-x-2">
                 <img alt="site-logo" src={headerLogo} width={40} height={40} />
                 <div>
-                  <p className="text-base font-semibold">Government of Telangana</p>
-                  <small className="text-sm">ITE&C Department</small>
+                  <p className="text-base font-semibold">Archaeological Survey of India</p>
+                  {/* <small className="text-sm">ITE&C Department</small> */}
                 </div>
               </div>
             </div>
@@ -134,7 +134,7 @@ const Login = () => {
             {/* Mobile Layout - Second Row: CM and Details */}
             <div className="flex lg:hidden items-center justify-center w-full mb-3">
               {/* Chief Minister Section */}
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-base font-semibold">Sri A. Revanth Reddy</p>
                   <span className="block text-sm leading-tight">
@@ -146,13 +146,13 @@ const Login = () => {
                   alt="CM"
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Mobile Layout - Third Row: IT Minister and Details */}
             <div className="flex lg:hidden items-center justify-center w-full">
               {/* IT Minister Section */}
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-base font-semibold">Sri D. Sridhar Babu</p>
                   <span className="block text-sm leading-tight">
@@ -164,44 +164,44 @@ const Login = () => {
                   alt="Minister"
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Mobile Layout - Third Row: telangana rising */}
             <div className="flex lg:hidden items-center justify-center w-full">
               {/* IT Minister Section */}
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
 
                 <img
                   src={telanganaRisingLogo}
                   alt="Minister"
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Desktop Layout - Original Structure */}
             <div className="hidden lg:flex items-center space-x-2">
               <img alt="site-logo" src={headerLogo} width={40} height={40} />
               <div>
-                <p className="text-lg font-semibold">Government of Telangana</p>
-                <small className="text-[10px]">ITE&C Department</small>
+                <p className="text-lg font-semibold">Archaeological Survey of India</p>
+                {/* <small className="text-[10px]"></small> */}
               </div>
             </div>
 
             {/* Desktop Layout - Second Column */}
             <div className="hidden lg:flex gap-2  items-center space-x-8 pr-4">
               {/* telangana Risigning */}
-              <div className="flex items-center space-x-3 mx-20">
+              {/* <div className="flex items-center space-x-3 mx-20">
 
                 <img
                   src={telanganaRisingLogo}
                   alt="telangana"
                   className="w-16 h-20 rounded-[20px]"
                 />
-              </div>
+              </div> */}
               {/* Chief Minister Section */}
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-sm font-semibold">Sri A. Revanth Reddy</p>
                   <span className="block text-xs leading-tight">
@@ -213,10 +213,10 @@ const Login = () => {
                   alt="CM"
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
-              </div>
+              </div> */}
 
               {/* IT Minister Section */}
-              <div className="flex items-center space-x-3">
+              {/* <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-sm font-semibold">Sri D. Sridhar Babu</p>
                   <span className="block text-xs leading-tight">
@@ -228,7 +228,7 @@ const Login = () => {
                   alt="Minister"
                   className="w-16 h-20 rounded-[20px] border-2 border-gray-100"
                 />
-              </div>
+              </div> */}
 
 
             </div>
@@ -241,11 +241,11 @@ const Login = () => {
             <div className="px-8 mb-20">
               {/* Image Section */}
               <div className="w-full  flex justify-center ">
-                <img
+                {/* <img
                   src={meetickesTelanganaImg}
-                  alt="MeeTicket Telangana"
+                  alt="Archaeological Survey of India"
                   className="w-40 h-40 max-w-sm rounded-lg "
-                />
+                /> */}
               </div>
 
               <div className="w-full  mt-3 ">
@@ -258,7 +258,7 @@ const Login = () => {
             <div autoComplete="off" className="w-full  lg:w-1/2 max-w-md mb-2 ">
               <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 ">
                 <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
-                  Welcome to MeeTicket
+                  Welcome to Archaeological Survey of India
                 </h2>
                 {/* toggle logic */}
                 <div className="relative px-1 shadow-lg w-full h-12 py-1 bg-white rounded-md overflow-hidden border border-gray-300 ">

@@ -4,8 +4,8 @@ export const PrivacyPolicyMeeticketApp = () => {
     <>
       <div className="bg-gray-100 h-screen overflow-auto py-2 px-2 text-justify">
         <div className="w-full mx-auto bg-white rounded-lg shadow-md p-3">
-          <h1 className="text-black text-3xl font-bold mb-4">MeeTicket App</h1>
-          <h2 >Privacy Policy – MeeTicket App (Government of Telangana)</h2>
+          <h1 className="text-black text-3xl font-bold mb-4">Archaeological Survey of India App</h1>
+          <h2 >Privacy Policy – Archaeological Survey of India App (Government of Telangana)</h2>
           <p className="text-gray-500 mb-3 text-sm">
             This Privacy Policy outlines how the Government of Telangana (referred to as “We”, “Us”, “Our”) through the ITE&C Department and MeeSeva Electronic Service Delivery (ESD) handles and protects your personal and sensitive personal information (“Personal Information”) as per applicable Indian laws.
           </p>
@@ -24,7 +24,7 @@ export const PrivacyPolicyMeeticketApp = () => {
           </ul>
           <h2 className="text-base font-semibold text-gray-800 my-3">2. Consent</h2>
           <p className="text-gray-500 mb-3 text-sm">
-            By using the MeeTicket App or its associated services, you provide consent to collect, store, use, and share your Personal Information for lawful purposes as stated here.
+            By using the Archaeological Survey of India App or its associated services, you provide consent to collect, store, use, and share your Personal Information for lawful purposes as stated here.
           </p>
           <h2 className="text-base font-semibold text-gray-800 my-3">3. Storage</h2>
           <p className="text-gray-500 mb-3 text-sm">

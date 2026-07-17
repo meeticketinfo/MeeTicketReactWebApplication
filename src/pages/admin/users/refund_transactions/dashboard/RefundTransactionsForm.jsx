@@ -221,13 +221,13 @@ const TotalTransactionsForm = () => {
                   value={
                     [
                       { value: "", label: "Select Mode" },
-                      { value: "meeTicket", label: "MeeTicketApp" },
+                      { value: "meeTicket", label: "Archaeological Survey of India App" },
                       { value: "counter", label: "COUNTER" },
                     ].find((option) => option.value === values.bookingSource) || { value: "", label: "Select Mode" }
                   }
                   options={[
                     { value: "", label: "Select Mode" },
-                    { value: "meeTicket", label: "MeeTicketApp" },
+                    { value: "meeTicket", label: "Archaeological Survey of India App" },
                     { value: "counter", label: "COUNTER" },
                   ]}
                   onChange={(selectedOption) => {
