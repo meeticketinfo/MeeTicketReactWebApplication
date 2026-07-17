@@ -1,7 +1,7 @@
 import ITMinisterImg from "../../images/it_minister.png";
 import headerLogo from "../../images/Telangana-logo.png";
 import cmImg from "../../images/chief_minister.png";
-import MeeTicketLogo from "../../images/MeeTicketLogo.svg";
+import MeeTicketLogo from "../../images/ASI-logo.png";
 import Qrcodeweb from "../../images/qr-code.png";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -80,7 +80,7 @@ function MobileBookingDetails() {
                     <div className="md:w-4/12 w-full mx-auto">
                         <div className="bg-white rounded-[20px] px-6 py-2">
                             <div className="my-2 ">
-                                <img src={MeeTicketLogo} className="w-20 m-auto" />
+                                <img src={MeeTicketLogo} className="w-20 m-auto rounded-lg" />
                                 <h2 className="text-[#0da957] font-bold text-2xl text-center my-1">Entry Ticket</h2>
                                 <img src={Qrcodeweb} className="w-48 m-auto my-4" />
                             </div>

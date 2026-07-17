@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaDownload, FaPrint } from "react-icons/fa";
 import "./IntercityTicketView.css";
-import Logo from "../../../../../images/logo.jpg";
-import logo2 from "../../../../../images/logo-2.png";
+import Logo from "../../../../../images/ASI-logo.png";
+import logo2 from "../../../../../images/ASI-logo.png";
 import { useIntercityTicketViewStore } from "./IntercityTicketViewStore";
 import { useParams } from "react-router-dom";
 import { formatToStandardDate } from "../../../../../utils/TypographyHelper";
@@ -227,7 +227,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 <img
                   src={logo2}
                   alt="Archaeological Survey of India Logo"
-                  className={`transition-all duration-300 ${isScrolled
+                  className={`rounded-lg transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
                     }`}
@@ -256,7 +256,7 @@ const IntercityTicketView = ({ isScrolled = true }) => {
                 <img
                   src={Logo}
                   alt="Archaeological Survey of India Logo"
-                  className={`transition-all duration-300 ${isScrolled
+                  className={`rounded-lg transition-all duration-300 ${isScrolled
                       ? "w-[50px] sm:w-[60px] md:w-[70px] lg:w-[60px]"
                       : "w-[70px] sm:w-[80px] md:w-[90px] lg:w-[100px]"
                     }`}

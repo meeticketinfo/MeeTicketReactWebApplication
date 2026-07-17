@@ -1,5 +1,5 @@
 import React from 'react';
-import MeeTicketLogo from '../../images/user/logo.png';
+import MeeTicketLogo from '../../images/ASI-logo.png';
 import { Link } from 'react-router-dom';
 
 const footerLinks = [
@@ -34,7 +34,7 @@ function UserFooter() {
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 pb-12">
           {/* Left: Logo and tagline */}
           <div className="flex flex-col md:flex-row md:items-start md:w-2/5 gap-3">
-            <img src={MeeTicketLogo} alt="Chief Minister Logo" width={85} />
+            <img src={MeeTicketLogo} alt="Archaeological Survey of India Logo" width={85} className="rounded-lg" />
             <div>
               <div className="text-lg lg:text-xl xl:text-2xl font-normal text-[#FDFAF7] mb-2 mt-3">Quick Tickets & Easy Entry - Just Tap, Scan, and Go!</div>
 

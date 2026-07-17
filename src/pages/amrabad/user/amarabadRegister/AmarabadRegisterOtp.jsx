@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import Lock from "../../../../images/user/lock.png";
-import Logo from "../../../../images/user/logo.png";
+import Logo from "../../../../images/ASI-logo.png";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Navigate, useNavigate,useLocation } from "react-router-dom";
@@ -240,7 +240,7 @@ const AmarabadRegisterOtp = () => {
             </Formik>
           </div>
           <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
-            <img src={Logo} alt="Archaeological Survey of India Logo" className="w-56" />
+            <img src={Logo} alt="Archaeological Survey of India Logo" className="w-56 rounded-lg" />
           </div>
         </div>
       </div>

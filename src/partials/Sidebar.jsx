@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import logoIcon from "../images/logo.jpg";
+import logoIcon from "../images/ASI-logo.png";
 
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
@@ -193,7 +193,7 @@ function Sidebar({ variant = "default" }) {
           {/* Logo */}
           <NavLink end to="/dashboard" className="block">
             <img
-              className="rounded-full"
+              className="w-[60px] h-[60px] shrink-0 rounded-full object-contain bg-white"
               alt="site-logo"
               src={logoIcon}
               width={60}

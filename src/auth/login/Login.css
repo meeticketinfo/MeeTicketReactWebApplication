@@ -25,7 +25,7 @@ body {
 @media (max-width: 480px) {
   body {
     overflow: auto;
-    min-height: 120vh;
+    min-height: 100vh;
   }
   
   /* Ensure main container allows scroll on small mobile */
@@ -39,7 +39,7 @@ body {
 @media screen and (max-width: 768px) and (orientation: landscape) {
   body {
     overflow: auto;
-    min-height: 140vh;
+    min-height: 100vh;
   }
   
   .min-h-screen {

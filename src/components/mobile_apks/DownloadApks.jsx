@@ -3,7 +3,7 @@ import cmImg from "../../images/chief_minister.png";
 import ITMinisterImg from "../../images/it_minister.png";
 import meetickesTelanganaImg from "../../images/meetickets-telangana.png";
 import headerLogo from "../../images/Telangana-logo.png";
-import meeticketlogo from "../../images/MeeTicketLogo.svg";
+import meeticketlogo from "../../images/ASI-logo.png";
 
 function DownloadApks() {
     return (
@@ -63,7 +63,7 @@ function DownloadApks() {
                             <img
                                 src={meeticketlogo}
                                 alt="Archaeological Survey of India Logo"
-                                className="w-20 mx-auto"
+                                className="w-20 mx-auto rounded-lg"
                             />
                         </div>
                         <div className="text-xl text-blue-v1 font-medium mb-4">Download Archaeological Survey of India App</div>
@@ -81,7 +81,7 @@ function DownloadApks() {
                             <img
                                 src={meeticketlogo}
                                 alt="GateKeepar Logo"
-                                className="w-20 mx-auto"
+                                className="w-20 mx-auto rounded-lg"
                             />
                         </div>
                         <div className="text-xl font-medium text-blue-v1 mb-4">Download GateKeper App</div>

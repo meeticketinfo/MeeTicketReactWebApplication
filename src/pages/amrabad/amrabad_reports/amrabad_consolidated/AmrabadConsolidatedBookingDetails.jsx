@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { handleApiError } from "../../../../utils/apiErrorHandler.js";
 import { formatToCurrency, toTitleCase } from "../../../../utils/TypographyHelper.js";
 import { MdOutlineDownloadDone } from "react-icons/md";
-import Logo from "../../../../images/MeeTicketLogo.svg";
+import Logo from "../../../../images/ASI-logo.png";
 import useAuthStore from "../../../../store/authStore.js";
 // import useAuthStore from "../../../store/authStore";
 import QRCodeDisplay from "../../../admin/BookTickets/QrCodeDisplay.jsx";
@@ -231,6 +231,7 @@ export default function AmrabadConsolidatedBookingDetails() {
                   src={Logo}
                   width={100}
                   height={100}
+                  className="rounded-lg object-contain"
                   style={{ margin: "0 auto" }}
                 />
               </div>

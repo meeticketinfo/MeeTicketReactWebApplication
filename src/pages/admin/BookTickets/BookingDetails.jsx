@@ -8,7 +8,7 @@ import QRCodeDisplay from "./QrCodeDisplay";
 import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
 import { PaymentQR } from "./PaymentQR";
 import { MdOutlineDownloadDone } from "react-icons/md";
-import Logo from "../../../images/MeeTicketLogo.svg";
+import Logo from "../../../images/ASI-logo.png";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 import useAuthStore from "../../../store/authStore";
 import { launchPaytmPOS } from "../../../utils/Helper";
@@ -249,6 +249,7 @@ export default function BookingDetails() {
                   src={Logo}
                   width={100}
                   height={100}
+                  className="rounded-lg object-contain"
                   style={{ margin: "0 auto" }}
                 />
               </div>

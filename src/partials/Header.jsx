@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import UserMenu from "../components/DropdownProfile";
 import useSidebarStore from "../store/sidebarStore";
-import headerLogo from "../images/Telangana-logo.png";
+import headerLogo from "../images/ASI-logo.png";
 import useAuthStore from "../store/authStore";
 import { toTitleCase } from "../utils/TypographyHelper";
 import { RiMenuUnfold2Line } from "react-icons/ri";
@@ -82,11 +82,12 @@ function Header({ variant = "default" }) {
                     src={headerLogo}
                     width={30}
                     height={30}
+                    className="w-[30px] h-[30px] shrink-0  object-contain "
                   />
                 </div>
                 <div className="pl-2 flex flex-col text-black">
-                  <p>Government of Telangana</p>
-                  <small className="text-[10px] pl-1">ITE&C Department</small>
+                  <p>Archaeological Survey of India</p>
+                  {/* <small className="text-[10px] pl-1">ITE&C Department</small> */}
                 </div>
               </div>
             </div>

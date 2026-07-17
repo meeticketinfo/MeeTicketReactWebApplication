@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import headerLogo from "../../images/Telangana-logo.png";
+import headerLogo from "../../images/ASI-logo.png";
 import cmImg from "../../images/chief_minister.png";
 import ITMinisterImg from "../../images/it_minister.png";
 import meetickesTelanganaImg from "../../images/meetickets-telangana.png";
@@ -103,6 +103,19 @@ const Login = () => {
     }
   }, [isPhoneSelected, loadCaptcha]);
 
+  useEffect(() => {
+    // Match the page background to the login theme so no white space
+    // shows below the blue section while scrolling. Restore on unmount.
+    const prevBodyBg = document.body.style.backgroundColor;
+    const prevHtmlBg = document.documentElement.style.backgroundColor;
+    document.body.style.backgroundColor = "#002352";
+    document.documentElement.style.backgroundColor = "#002352";
+    return () => {
+      document.body.style.backgroundColor = prevBodyBg;
+      document.documentElement.style.backgroundColor = prevHtmlBg;
+    };
+  }, []);
+
   const handleToggle = () => {
     setOtpError(null);
     setIsPhoneSelected((prevState) => !prevState);
@@ -123,7 +136,7 @@ const Login = () => {
             {/* Mobile Layout - First Row: Government of Telangana Logo and Details */}
             <div className="flex lg:hidden items-center justify-center w-full mb-3">
               <div className="flex items-center space-x-2">
-                <img alt="site-logo" src={headerLogo} width={40} height={40} />
+                <img alt="site-logo" src={headerLogo} width={40} height={40} className="w-10 h-10 shrink-0 rounded-full object-contain bg-white" />
                 <div>
                   <p className="text-base font-semibold">Archaeological Survey of India</p>
                   {/* <small className="text-sm">ITE&C Department</small> */}
@@ -182,7 +195,7 @@ const Login = () => {
 
             {/* Desktop Layout - Original Structure */}
             <div className="hidden lg:flex items-center space-x-2">
-              <img alt="site-logo" src={headerLogo} width={40} height={40} />
+              <img alt="site-logo" src={headerLogo} width={40} height={40} className="w-10 h-10 shrink-0 rounded-full object-contain bg-white" />
               <div>
                 <p className="text-lg font-semibold">Archaeological Survey of India</p>
                 {/* <small className="text-[10px]"></small> */}
@@ -257,7 +270,7 @@ const Login = () => {
             {/* Form Section */}
             <div autoComplete="off" className="w-full  lg:w-1/2 max-w-md mb-2 ">
               <div className=" rounded-[20px] p-4  backdrop-blur-sm bg-white/30 ">
-                <h2 className="text-2xl font-semibold text-gray-100 mb-6 text-center">
+                <h2 className=" font-semibold text-gray-100 mb-6 text-center">
                   Welcome to Archaeological Survey of India
                 </h2>
                 {/* toggle logic */}
