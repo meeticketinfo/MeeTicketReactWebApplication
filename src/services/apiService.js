@@ -4,14 +4,14 @@ import { amrabadAuthStore } from "../store/amarabad/user/amrabadAuthStore";
 
 
 // dev
-//  const API_BASE_URL = "https://meeticketdevui.vmaxtechservices.help/parkapi/api/";
+ const API_BASE_URL = "https://dev.vmax.solutions/asiweb/api/";
 
 
 // uat
 // const API_BASE_URL = "https://uat.meeticket.telangana.gov.in/parkuatapi/api/";
 
 // prod
-const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
+// const API_BASE_URL =  "https://meeticket.telangana.gov.in/parkuatapi/api/"
 
 // test
 //const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms//API/"
