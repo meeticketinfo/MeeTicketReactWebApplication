@@ -11,7 +11,7 @@ import Internet from "./utils/Internet.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
-  <Router>
+  <Router basename="/asiwebsite">
     <ThemeProvider>
       <Internet>
         <App />
