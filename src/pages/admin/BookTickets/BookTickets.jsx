@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable"; // Adjust import path as needed
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
 import { FacilityServices } from "../../../components/bookings_management/FacilityServices";
+import { formatToCurrency } from "../../../utils/TypographyHelper";
 import {
-  formatToCurrency,
-  getCurrentDate,
-} from "../../../utils/TypographyHelper";
+  getEndOfCurrentDay,
+  getStartOfCurrentDay,
+} from "../../../utils/Helper";
 import BackButton from "../../../components/BackButton";
 import useAuthStore from "../../../store/authStore";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -96,9 +97,12 @@ export default function AdminBookings() {
     fetchData();
   }, []);
 
+  const startOfDay = getStartOfCurrentDay();
+  const endOfDay = getEndOfCurrentDay();
+
   const initialValues = {
-    fromDate: getCurrentDate(),
-    toDate: getCurrentDate(),
+    fromDate: startOfDay,
+    toDate: endOfDay,
     entityTypeId: "",
     departmentId: "",
     facilityId: "",
@@ -112,10 +116,27 @@ export default function AdminBookings() {
   const parksToRender =
     role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => [
+    {
+      isTotal: true,
+      transactionId: "TOTAL",
+      totalTicketAmount: displayedRows.reduce(
+        (sum, row) => sum + Number(row.totalTicketAmount || 0),
+        0,
+      ),
+    },
+  ], []);
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.node.rowIndex + 1;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -124,37 +145,52 @@ export default function AdminBookings() {
       field: "transactionId",
       headerName: "Transaction ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value && params.value.trim() !== "" ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "TOTAL";
+        return params.value && params.value.trim() !== "" ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "userPhoneNumber",
       headerName: "User Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return !params.value || params.value.trim() === "" ? "N/A" : params.value;
+      },
     },
     {
       field: "parkName",
       headerName: "Location Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "departmentName",
       headerName: "Department",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "entityTypeName",
       headerName: "Location category",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
 
     {
@@ -162,43 +198,65 @@ export default function AdminBookings() {
       headerName: "Facility Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "0";
+      },
     },
     {
       field: "serviceName",
       headerName: "Sub Facility Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "0";
+      },
     },
     {
       field: "serviceVariantName",
       headerName: "Ticket Type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "0";
+      },
     },
     {
       field: "validityDate",
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        if (!params.value) return "N/A";
+        // Remove seconds from datetime (e.g. 10:30:45 -> 10:30)
+        return String(params.value).replace(
+          /(\d{1,2}:\d{2}):\d{2}(\s*[AaPp][Mm])?/,
+          "$1$2",
+        );
+      },
     },
     {
       field: "quantity",
       headerName: "Quantity",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "amount",
       headerName: "Amount(Per Ticket)",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
+      },
     },
     {
       field: "totalTicketAmount",
@@ -207,28 +265,36 @@ export default function AdminBookings() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "modeOfPayment",
       headerName: "Mode of Payment",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       headerName: "Actions",
       field: "actions",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          <NavLink
-            end
-            to={`/entity-bookings/view-details/${params.data?.bookingId}`}
-            className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
-          >
-            <span className="text-blue-v2">View Bookings</span>
-          </NavLink>
-        </div>
-      ),
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return null;
+        return (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <NavLink
+              end
+              to={`/entity-bookings/view-details/${params.data?.bookingId}`}
+              className="bg-gray-100 text-white px-4 py-2 rounded-md hover:bg-gray-200 hover:text-gray-100 transition"
+            >
+              <span className="text-blue-v2">View Bookings</span>
+            </NavLink>
+          </div>
+        );
+      },
       flex: 1,
       headerClass: "text-blue-v2",
     },
@@ -442,11 +508,10 @@ export default function AdminBookings() {
                           From Date
                         </label>
                         <Field
-                          type="date"
+                          type="datetime-local"
                           name="fromDate"
                           className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          // min={getCurrentDate()}
                           onChange={(e) => {
                             const fromDateValue = e.target.value;
                             setFieldValue("fromDate", fromDateValue);
@@ -467,11 +532,11 @@ export default function AdminBookings() {
                           To Date
                         </label>
                         <Field
-                          type="date"
+                          type="datetime-local"
                           name="toDate"
                           className={`mt-1 block w-full px-2 py-1 border
                          border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
-                          min={values.fromDate || getCurrentDate()} // Ensure toDate can't be earlier than fromDate
+                          min={values.fromDate || startOfDay}
                           onChange={(e) => {
                             const toDateValue = e.target.value;
                             setFieldValue("toDate", toDateValue);
@@ -709,6 +774,8 @@ export default function AdminBookings() {
               isFetchLoading={isFetchEntityBookingsLoading}
               rowData={allEntityBookings || []}
               columnDefs={columnDefs}
+              getPagePinnedBottomRowData={getPagePinnedBottomRowData}
+              showPdfExport={true}
               // onPageChange={handlePageChange}
               totalRecords={totalEntityBookingRecords}
               enableAdvancedFilter={true}
