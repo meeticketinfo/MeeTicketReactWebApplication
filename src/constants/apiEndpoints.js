@@ -360,6 +360,14 @@ export const API_ENDPOINTS = {
         GET_INTERCITY_BUS_TYPES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllInterCityBusTypes`,
         GET_INTERCITY_SEAT_LAYOUTS: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllSeatLayoutTypes`,
       },
+      CURRENT_BOOKINGS_REPORTS: {
+        GET_CURRENT_CONSOLIDATED_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetConsolidatedReport`,
+        GET_CURRENT_INDIVIDUAL_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetIndividualReport`,
+        GET_CURRENT_PAYMENT_TRANSACTION_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionsReport`,
+        GET_CURRENT_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
+        GET_CURRENT_REGENERATE_TICKET: `${RTC_INTERCITY_API_BASE_URL}Bookings/ConfirmBooking`,
+        GET_CURRENT_PAYMENT_TRANSACTION_REFUND: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/IntiateRefund`,
+      },
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,

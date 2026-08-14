@@ -197,6 +197,9 @@ import IntercityTotalReport from "../components/rtc/rtc_reports/intercity_report
 import IntercityConsolidatedReport from "../components/rtc/rtc_reports/intercity_reports/intercity_consolidated_report/IntercityConsolidatedReport";
 import IntercityIndividualReport from "../components/rtc/rtc_reports/intercity_reports/IntercityIndividual/IntercityIndividualReport";
 import IntercityPaymentTransactionsReport from "../components/rtc/rtc_reports/intercity_reports/intercity_payment_transactions/IntercityPaymentTransactionsReport";
+import CurrentConsolidatedReport from "../components/rtc/rtc_reports/current_bookings_reports/current_consolidated_report/CurrentConsolidatedReport";
+import CurrentIndividualReport from "../components/rtc/rtc_reports/current_bookings_reports/current_individual/CurrentIndividualReport";
+import CurrentPaymentTransactionsReport from "../components/rtc/rtc_reports/current_bookings_reports/current_payment_transactions/CurrentPaymentTransactionsReport";
 import IntercityTotalTransactionTrackOrder from "../components/rtc/rtc_reports/intercity_reports/intercityTotalTransactionTrackOrder";
 import AmrabadPosReport from "../pages/amrabad/amrabad_reports/amrabad_pos/AmrabadPosReport";
 import AmrabadTermsConditions from "../pages/amrabad/user/information/AmrabadTermsConditions";
@@ -1098,6 +1101,22 @@ export const routes = [
     path: "/intercity-payment-transactions",
     element: (
       <ProtectedRoute element={<IntercityPaymentTransactionsReport />} />
+    ),
+  },
+
+  // current bookings reports
+  {
+    path: "/current-consolidated-report",
+    element: <ProtectedRoute element={<CurrentConsolidatedReport />} />,
+  },
+  {
+    path: "/current-individual-report",
+    element: <ProtectedRoute element={<CurrentIndividualReport />} />,
+  },
+  {
+    path: "/current-payment-transactions",
+    element: (
+      <ProtectedRoute element={<CurrentPaymentTransactionsReport />} />
     ),
   },
 

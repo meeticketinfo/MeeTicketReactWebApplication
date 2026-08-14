@@ -51,6 +51,9 @@ export const superAdminPermissions = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
+  "current-consolidated-report",
+  "current-individual-report",
+  "current-payment-transactions",
   "android-ios-entries",
 ];
 
@@ -72,6 +75,9 @@ export const EsdTech = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
+  "current-consolidated-report",
+  "current-individual-report",
+  "current-payment-transactions",
  
  
 ];
@@ -216,6 +222,9 @@ export const RtcAdmin = [
   "intercity-user-report",
   "intercity-refund-report",
   "intercity-payment-transactions",
+  "current-consolidated-report",
+  "current-individual-report",
+  "current-payment-transactions",
   "add-intercity-cities"
  
 ];

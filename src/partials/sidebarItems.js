@@ -518,17 +518,17 @@ const sidebarItems = [
       {
         title: "Consolidated Report",
         icon: RiDashboard3Fill,
-        path: "/intercity-consolidated-report",
+        path: "/current-consolidated-report",
       },
       {
         title: "Individual Report",
         icon: RiDashboard3Fill,
-        path: "/intercity-individual-report",
+        path: "/current-individual-report",
       },
       {
         title: "Payment Transactions",
         icon: TbReportAnalytics,
-        path: "/intercity-payment-transactions",
+        path: "/current-payment-transactions",
       }
     ],
 
