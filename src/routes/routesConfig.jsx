@@ -1126,6 +1126,10 @@ export const routes = [
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
   {
+    path: "/current-ticket-view-details/:id",
+    element: <ProtectedRoute element={<IntercityTicketView />} />,
+  },
+  {
     path: "/walkers-pass-report",
     element: <ProtectedRoute element={<WalkersPassReport />} />,
   },

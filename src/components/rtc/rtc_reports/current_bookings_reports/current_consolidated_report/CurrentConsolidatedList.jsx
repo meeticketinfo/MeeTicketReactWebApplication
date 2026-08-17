@@ -50,7 +50,7 @@ function CurrentConsolidatedList() {
       valueGetter: (params) => {
         // Empty for total row
         if (params.node?.rowPinned === "bottom") return "";
-    
+
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -126,7 +126,7 @@ function CurrentConsolidatedList() {
 
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
-        return params.value.toUpperCase() || "N/A";
+        return params.value ? String(params.value).toUpperCase() : "N/A";
       }
     },
     // -------------------
@@ -168,7 +168,7 @@ function CurrentConsolidatedList() {
         return params.value || "N/A";
       }
     },
-   
+
     {
       field: "totalAmount",
       headerName: "TOTAL AMOUNT",
@@ -224,7 +224,7 @@ function CurrentConsolidatedList() {
       }
     },
 
-   
+
 
     {
       field: "utr",
@@ -237,11 +237,11 @@ function CurrentConsolidatedList() {
         if (params.node.rowPinned === "bottom") return "";
         return params.value || "N/A";
       }
-     
+
     },
 
 
-   
+
     {
       field: "purchaseDate",
       headerName: "TRAVEL DATE",
@@ -250,16 +250,16 @@ function CurrentConsolidatedList() {
       valueFormatter: (params) => {
         // Empty for total row
         if (params.node?.rowPinned === "bottom") return "";
-    
+
         // N/A for normal rows
         if (!params.value) return "N/A";
-    
+
         const date = new Date(params.value);
-    
+
         const day = String(date.getDate()).padStart(2, "0");
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const year = date.getFullYear();
-    
+
         return `${day}-${month}-${year}`;
       },
     },
@@ -270,16 +270,16 @@ function CurrentConsolidatedList() {
       valueFormatter: (params) => {
         // Empty for total row
         if (params.node?.rowPinned === "bottom") return "";
-    
+
         // N/A for normal rows
         if (!params.value) return "N/A";
-    
+
         const date = new Date(params.value);
-    
+
         const day = String(date.getDate()).padStart(2, "0");
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const year = date.getFullYear();
-    
+
         return `${day}-${month}-${year}`;
       },
     },
@@ -345,7 +345,7 @@ function CurrentConsolidatedList() {
       valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
     },
 
-    
+
     {
       field: "paymentTransactionId",
       headerName: "PAYMENT TRANSACTION ID",
@@ -361,10 +361,10 @@ function CurrentConsolidatedList() {
       headerName: "BOOKING STATUS",
       // flex: 1,
       headerClass: "text-blue-v2  ",
-     
+
       valueFormatter: (params) => {
-        if (params.node.rowPinned === "bottom") return "";
-        return params.value.toUpperCase() || "N/A";
+        if (params?.node?.rowPinned === "bottom") return "";
+        return params?.value ? String(params.value).toUpperCase() : "N/A";
       }
     },
 
@@ -373,27 +373,36 @@ function CurrentConsolidatedList() {
       field: "action",
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
-      return ( <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          {params.data.pnrNumber ? (
-            <NavLink
-              end
-              to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
-              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition uppercase text-blue-v2"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Onwards Journey
-            </NavLink>
-          ) : (
-            <span
-              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 uppercase cursor-not-allowed text-blue-v2"
-              aria-disabled="true"
-              tabIndex={-1}
-            >
-              Onwards Journey
-            </span>
-          )}
-        </div>)
+        const pnr =
+          params.data?.BookingID && params.data?.BookingID !== "N/A"
+            ? params.data.BookingID
+            : params.data?.bookingID && params.data?.bookingID !== "N/A"
+            ? params.data.bookingID
+            : null;
+
+        return (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            {pnr ? (
+              <NavLink
+                end
+                to={`/current-ticket-view-details/${pnr}`}
+                className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition uppercase text-blue-v2"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Onwards Journey
+              </NavLink>
+            ) : (
+              <span
+                className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 uppercase cursor-not-allowed text-blue-v2"
+                aria-disabled="true"
+                tabIndex={-1}
+              >
+                Onwards Journey
+              </span>
+            )}
+          </div>
+        );
       },
       flex: 1,
       headerClass: "text-blue-v2  ",
@@ -403,27 +412,35 @@ function CurrentConsolidatedList() {
       field: "action",
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
-      return ( <div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          {params.data.returnPNRNumber ? (
-            <NavLink
-              end
-              to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
-              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition text-blue-v2 uppercase"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Return Journey
-            </NavLink>
-          ) : (
-            <span
-              className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase text-blue-v2"
-              aria-disabled="true"
-              tabIndex={-1}
-            >
-              Return Journey
-            </span>
-          )}
-        </div>)
+        const returnPnr =
+          params.data?.returnPNRNumber &&
+          params.data?.returnPNRNumber !== "N/A"
+            ? params.data.returnPNRNumber
+            : null;
+
+        return (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            {returnPnr ? (
+              <NavLink
+                end
+                to={`/current-ticket-view-details/${returnPnr}`}
+                className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold transition text-blue-v2 uppercase"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Return Journey
+              </NavLink>
+            ) : (
+              <span
+                className="bg-blue-v2 text-white text-xs px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase text-blue-v2"
+                aria-disabled="true"
+                tabIndex={-1}
+              >
+                Return Journey
+              </span>
+            )}
+          </div>
+        );
       },
       flex: 1,
       headerClass: "text-blue-v2  ",
@@ -517,13 +534,13 @@ function CurrentConsolidatedList() {
         SetcurrentPage={setCurrentPage}
       />
       <div>
-         {CurrentConsolidateData?.length > 0 && (
-        <div className="     flex justify-end gap-10 font-semibold">
-          <span className=" bg-gray-100 px-2 border rounded-lg">
-            Grand Total Amount: ₹{CurrentConsolidateData[0].grandTotalAmount}
-          </span>
-        </div>
-      )}
+        {CurrentConsolidateData?.length > 0 && (
+          <div className="     flex justify-end gap-10 font-semibold">
+            <span className=" bg-gray-100 px-2 border rounded-lg">
+              Grand Total Amount: ₹{CurrentConsolidateData[0].grandTotalAmount}
+            </span>
+          </div>
+        )}
       </div>
       <AgGridTable
         ExportName="Current Consolidated Report"

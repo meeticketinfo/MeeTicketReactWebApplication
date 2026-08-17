@@ -75,7 +75,7 @@ function CurrentIndividualList() {
 
   const CustomtextFormatter = (params) => {
     if (isTotalRow(params)) return "";
-    return params.value.toUpperCase() || "N/A";
+    return params.value ? String(params.value).toUpperCase() : "N/A";
   };
 
   const dateFormatter = (params) => {
@@ -416,28 +416,36 @@ function CurrentIndividualList() {
       field: "action",
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
+        const pnr =
+          params.data?.BookingID && params.data?.BookingID !== "N/A"
+            ? params.data.BookingID
+            : params.data?.bookingID && params.data?.bookingID !== "N/A"
+              ? params.data.bookingID
+              : null;
 
-        return (<div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          {params.data.pnrNumber ? (
-            <NavLink
-              end
-              to={`/intercity-ticket-view-details/${params.data.pnrNumber}`}
-              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Onwards Journey
-            </NavLink>
-          ) : (
-            <span
-              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
-              aria-disabled="true"
-              tabIndex={-1}
-            >
-              Onwards Journey
-            </span>
-          )}
-        </div>)
+        return (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            {pnr ? (
+              <NavLink
+                end
+                to={`/current-ticket-view-details/${pnr}`}
+                className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Onwards Journey
+              </NavLink>
+            ) : (
+              <span
+                className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
+                aria-disabled="true"
+                tabIndex={-1}
+              >
+                Onwards Journey
+              </span>
+            )}
+          </div>
+        );
       },
       flex: 1,
       headerClass: "text-blue-v2",
@@ -445,30 +453,37 @@ function CurrentIndividualList() {
     {
       headerName: "Ticket",
       field: "action",
-
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
-        return (<div style={{ display: "flex align-center", gap: "0.5rem" }}>
-          {params.data.returnPNRNumber ? (
-            <NavLink
-              end
-              to={`/intercity-ticket-view-details/${params.data.returnPNRNumber}`}
-              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Return Journey
-            </NavLink>
-          ) : (
-            <span
-              className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
-              aria-disabled="true"
-              tabIndex={-1}
-            >
-              Return Journey
-            </span>
-          )}
-        </div>)
+        const returnPnr =
+          params.data?.returnPNRNumber &&
+            params.data?.returnPNRNumber !== "N/A"
+            ? params.data.returnPNRNumber
+            : null;
+
+        return (
+          <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            {returnPnr ? (
+              <NavLink
+                end
+                to={`/current-ticket-view-details/${returnPnr}`}
+                className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold transition uppercase"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Return Journey
+              </NavLink>
+            ) : (
+              <span
+                className="bg-blue-v2 text-xs text-white px-4 py-2 rounded-md font-semibold opacity-50 cursor-not-allowed uppercase"
+                aria-disabled="true"
+                tabIndex={-1}
+              >
+                Return Journey
+              </span>
+            )}
+          </div>
+        );
       },
       flex: 1,
       headerClass: "text-blue-v2",

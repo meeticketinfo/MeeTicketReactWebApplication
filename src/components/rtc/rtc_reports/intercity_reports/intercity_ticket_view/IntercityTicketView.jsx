@@ -120,11 +120,16 @@ const IntercityTicketView = ({ isScrolled = true }) => {
     IntercityTicketViewData,
     isFetchIntercityTicketViewData,
     fetchIntercityTicketViewData,
+    fetchCurrentTicketViewData,
   } = useIntercityTicketViewStore();
   
   useEffect(() => {
-    fetchIntercityTicketViewData(id);
-  }, []);
+    if (window.location.pathname.includes("current-ticket-view-details")) {
+      fetchCurrentTicketViewData(id);
+    } else {
+      fetchIntercityTicketViewData(id);
+    }
+  }, [id]);
 
   // Download handler
   const handleDownload = async () => {

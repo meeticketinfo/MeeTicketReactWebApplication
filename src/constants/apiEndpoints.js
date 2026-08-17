@@ -66,6 +66,10 @@ export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassap
 // RTC Intercity Prod
 export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
+// MAVENCONNECT_API_BASE_URL
+export const MAVENCONNECT_API_BASE_URL = "https://meeticketapi.mavenconnect.biz/";
+export const MAVENCONNECT_HEADERS_TOKEN = "AmxsG7zkJB"
+
 // RTC BUS PASS DEV
 // export const RTC_BUS_PASS_API_BASE_URL = "https://meeticketbuspassdevapi.vmaxtechservices.help/v1/";
 
@@ -361,12 +365,14 @@ export const API_ENDPOINTS = {
         GET_INTERCITY_SEAT_LAYOUTS: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/GetAllSeatLayoutTypes`,
       },
       CURRENT_BOOKINGS_REPORTS: {
-        GET_CURRENT_CONSOLIDATED_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetConsolidatedReport`,
-        GET_CURRENT_INDIVIDUAL_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetIndividualReport`,
-        GET_CURRENT_PAYMENT_TRANSACTION_REPORT: `${RTC_INTERCITY_API_BASE_URL}Reports/GetPaymentTransactionsReport`,
+        GET_CURRENT_CONSOLIDATED_REPORT: `${MAVENCONNECT_API_BASE_URL}api/GetCurrentBookingReport`,
+        GET_CURRENT_INDIVIDUAL_REPORT: `${MAVENCONNECT_API_BASE_URL}api/GetCurrentBookingReport`,
+        GET_CURRENT_PAYMENT_TRANSACTION_REPORT: `${MAVENCONNECT_API_BASE_URL}api/GetCurrentBookingReport`,
+        GET_CURRENT_TICKET_VIEW: `${MAVENCONNECT_API_BASE_URL}api/BookingRetrieve/GetBookingsByBookingID`,
         GET_CURRENT_VERIFY_STATUS: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/OrderStatusCall`,
         GET_CURRENT_REGENERATE_TICKET: `${RTC_INTERCITY_API_BASE_URL}Bookings/ConfirmBooking`,
         GET_CURRENT_PAYMENT_TRANSACTION_REFUND: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/IntiateRefund`,
+        GET_ROUTES: `${MAVENCONNECT_API_BASE_URL}api/Common/GetRoutes`,
       },
     },
     GRIVEANCE_REPORTS: {

@@ -12,52 +12,25 @@ const CurrentConsolidatedReportForm = ({
   pageSize,
   SetcurrentPage,
 }) => {
- 
+
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const { fetchCurrentConsolidateData } = useCurrentConsolidateStore();
   const {
-    fetchCitiesData,
     fetchIntercityBusTypesData,
     fetchIntercitySeatLayoutsData,
     IntercityBusTypesData,
     IntercitySeatLayoutsData,
+    fetchMavenRoutes,
+    departureStages,
+    arrivalStages,
   } = useIntercityMastersStore();
-
-  // Separate state for each dropdown to prevent interference
-  const [departureCities, setDepartureCities] = useState([]);
-  const [arrivalCities, setArrivalCities] = useState([]);
 
   useEffect(() => {
     fetchIntercityBusTypesData();
     fetchIntercitySeatLayoutsData();
-  }, [fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData]);
-
-  const fetchDepartureCities = async (q) => {
-    try {
-      const response = await fetchCitiesData(q);
-      if (response?.response?.result) {
-        setDepartureCities(response?.response?.result);
-      }
-    } catch (error) {
-      console.error("Error fetching departure cities:", error);
-      setDepartureCities([]);
-    } finally {
-    }
-  };
-
-  const fetchArrivalCities = async (q) => {
-    try {
-      const response = await fetchCitiesData(q);
-      if (response?.response?.result) {
-        setArrivalCities(response?.response?.result);
-      }
-    } catch (error) {
-      console.error("Error fetching arrival cities:", error);
-      setArrivalCities([]);
-    } finally {
-    }
-  };
+    fetchMavenRoutes();
+  }, [fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData, fetchMavenRoutes]);
 
   const initialValues = {
     purchaseOrBooking: "Purchase",
@@ -70,8 +43,8 @@ const CurrentConsolidatedReportForm = ({
     orderId: "",
     transactionId: "",
     typeOfBus: "",
-    departureLocation: "",
-    arrivalLocation: "",
+    departureLocation: 0,
+    arrivalLocation: 0,
   };
 
   const onSubmit = (values) => {
@@ -96,7 +69,7 @@ const CurrentConsolidatedReportForm = ({
             {/* purchase date */}
             <div>
               <label className="block text-xs font-light uppercase">
-              Date of Booking/Journey
+                Date of Booking/Journey
               </label>
               <Field
                 as="select"
@@ -245,57 +218,36 @@ const CurrentConsolidatedReportForm = ({
               <label className="block text-xs font-medium text-gray-700 uppercase">
                 Departure Location
               </label>
-
-              <SearchableDropdown
-                key={`arrival-${resetTrigger}`}
+              <Field
+                as="select"
                 name="departureLocation"
-                value={values.departureLocation}
-                onChange={(value) => setFieldValue("departureLocation", value)}
-                onSearch={fetchDepartureCities}
-                options={departureCities}
-                displayKey="cityName"
-                valueKey="cityId"
-                placeholder="Search departure city..."
-                minSearchLength={2}
-                debounceMs={300}
-                className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                // loading={loadingCities}
-                noResultsText="No cities found"
-                loadingText="Searching cities..."
-                initialDisplayText={values.departureLocation}
-              />
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="0">All</option>
+                {departureStages?.map((item) => (
+                  <option key={item.FromStageID} value={item.FromStageID}>
+                    {item.FromStageName}
+                  </option>
+                ))}
+              </Field>
             </div>
             {/* arrival location */}
             <div>
               <label className="block text-xs font-medium text-gray-700 uppercase">
                 Arrival Location
               </label>
-
-              <SearchableDropdown
-                key={`arrival-${resetTrigger}`}
+              <Field
+                as="select"
                 name="arrivalLocation"
-                value={values.arrivalLocation}
-                onChange={(value) => setFieldValue("arrivalLocation", value)}
-                onSearch={fetchArrivalCities}
-                options={arrivalCities}
-                displayKey="cityName"
-                valueKey="cityId"
-                placeholder="Search arrival city..."
-                minSearchLength={2}
-                debounceMs={300}
-                className="mt-1"
-                inputClassName="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                // loading={isFetchIntercityRefundTransactionsReport}
-                noResultsText="No cities found"
-                loadingText="Searching cities..."
-                initialDisplayText={values.arrivalLocation}
-                uniqueId="arrival-location-dropdown"
-              />
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="0">All</option>
+                {arrivalStages?.map((item) => (
+                  <option key={item.ToStageID} value={item.ToStageID}>
+                    {item.ToStageName}
+                  </option>
+                ))}
+              </Field>
             </div>
 
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
@@ -304,7 +256,7 @@ const CurrentConsolidatedReportForm = ({
               <button
                 type="submit"
                 className="bg-green-700 text-xs uppercase text-white rounded-lg  px-3 py-1.5 hover:bg-gray-100 hover:text-green-700 border border-green-700 hover:border-green-700 "
-                // disabled={isFetchAllMetroSummaryReportsLoading}
+              // disabled={isFetchAllMetroSummaryReportsLoading}
               >
                 Search
               </button>
@@ -325,8 +277,8 @@ const CurrentConsolidatedReportForm = ({
                     orderId: "",
                     transactionId: "",
                     typeOfBus: "",
-                    departureLocation: "",
-                    arrivalLocation: "",
+                    departureLocation: 0,
+                    arrivalLocation: 0,
                   });
                   fetchCurrentConsolidateData({
                     purchaseOrBooking: "Purchase",
@@ -339,16 +291,13 @@ const CurrentConsolidatedReportForm = ({
                     orderId: "",
                     transactionId: "",
                     typeOfBus: "",
-                    departureLocation: "",
-                    arrivalLocation: "",
+                    departureLocation: 0,
+                    arrivalLocation: 0,
                     pageNumber: pageNumber,
                     PageSize: pageSize,
                   });
                   SetcurrentPage(0);
-                  setDepartureCities([]);
-                  setArrivalCities([]);
                   setResetTrigger((prev) => prev + 1);
-                  
                 }}
               >
                 Reset

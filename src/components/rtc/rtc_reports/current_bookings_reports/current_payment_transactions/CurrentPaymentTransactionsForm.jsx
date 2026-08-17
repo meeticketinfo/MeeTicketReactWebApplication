@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { getCurrentDate, getCurrentDateStartTime, getCurrentDateEndTime } from "../../../../../utils/TypographyHelper";
 import { useCurrentPaymentTransactionStore } from "../../../../../store/rtc/CurrentPaymentTransactionStore";
-import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
-import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 const CurrentPaymentTransactionsForm = ({
@@ -14,7 +12,7 @@ const CurrentPaymentTransactionsForm = ({
   const {
     fetchCurrentPaymentTransactions,
   } = useCurrentPaymentTransactionStore();
-  const { fetchCitiesData, loadingCities } = useIntercityMastersStore();
+  const { fetchMavenRoutes, departureStages, arrivalStages } = useIntercityMastersStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("current-payment-report-filters")
   );
@@ -28,45 +26,15 @@ const CurrentPaymentTransactionsForm = ({
       ? savedFilters.paymentStatus
       : null,
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
-    arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
-    destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
+    arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : 0,
+    destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : 0,
   };
-  const [departureCities, setDepartureCities] = useState([]);
-  const [arrivalCities, setArrivalCities] = useState([]);
-  const [DepartureLoading, setDepartureLoading] = useState(false);
-  const [ArrivalLoading, setArrivalLoading] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
 
-  
-  const fetchDepartureCities = async (q) => {
-    try {
-      setDepartureLoading(true);
-      const response = await fetchCitiesData(q);
-      if (response?.response?.result) {
-        setDepartureCities(response.response.result);
-      }
-    } catch (error) {
-      console.error("Error fetching departure cities:", error);
-      setDepartureCities([]);
-    } finally {
-       setDepartureLoading(false);
-    }
-  };
+  useEffect(() => {
+    fetchMavenRoutes();
+  }, [fetchMavenRoutes]);
 
-  const fetchArrivalCities = async (q) => {
-    try {
-      setArrivalLoading(true);
-      const response = await fetchCitiesData(q);
-      if (response?.response?.result) {
-        setArrivalCities(response.response.result);
-      }
-    } catch (error) {
-      console.error("Error fetching arrival cities:", error);
-      setArrivalCities([]);
-    } finally {
-      setArrivalLoading(false);
-    }
-  };
   const onSubmit = (values, { resetForm }) => {
     console.log("values", values);
 
@@ -79,11 +47,11 @@ const CurrentPaymentTransactionsForm = ({
       endDate: values.toDate,
       paymentStatus: values.paymentStatus || "",
       phoneNumber: values.phoneNumber || "",
-      arrivalLocation:values.arrivalLocation || "",
-      destinationLocation:values.destinationLocation || "",
+      arrivalLocation: values.arrivalLocation || "",
+      destinationLocation: values.destinationLocation || "",
       PageIndex,
       pageSize,
-      
+
     });
     SetcurrentPage(0);
   };
@@ -126,7 +94,7 @@ const CurrentPaymentTransactionsForm = ({
               <Field
                 type="datetime-local"
                 name="toDate"
-                className={`mt-1 block w-full px-2 py-1 border
+                className={`mt-1 block w-full px-2 py-1 border 
                      border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                 min={values.fromDate || getCurrentDateStartTime()}
                 onChange={(e) => {
@@ -171,76 +139,57 @@ const CurrentPaymentTransactionsForm = ({
                   const value = e.target.value;
                   // Only allow digits and ensure it starts with 6-9
                   const numericValue = value.replace(/[^0-9]/g, '');
-                  
+
                   // Limit to 10 digits maximum
                   if (numericValue.length > 10) {
                     return; // Don't update if more than 10 digits
                   }
-                  
+
                   // If the value is not empty, check if it starts with 6-9
                   if (numericValue.length > 0 && !/^[6-9]/.test(numericValue)) {
                     return; // Don't update if it doesn't start with 6-9
                   }
-                  
+
                   setFieldValue("phoneNumber", numericValue);
                 }}
               />
             </div>
-          {/* departure location */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Departure Location
-                </label>
-                <SearchableDropdown
-                  key={`departure-${resetTrigger}`}
-                  name="destinationLocation"
-                  value={values.destinationLocation}
-                  onChange={(value) => setFieldValue("destinationLocation", value)}
-                  onSearch={fetchDepartureCities}
-                  options={departureCities}
-                  displayKey="cityName"
-                  valueKey="cityId"
-                  placeholder="Search departure city..."
-                  minSearchLength={2}
-                  debounceMs={300}
-                  className="mt-1"
-                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={DepartureLoading}
-                  noResultsText="No cities found"
-                  loadingText="Searching cities..."
-                  initialDisplayText={values.destinationLocation}
-                />
-              </div>
-              {/* arrival location */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700">
-                  Arrival Location
-                </label>
-                <SearchableDropdown
-                  key={`arrival-${resetTrigger}`}
-                  name="arrivalLocation"
-                  value={values.arrivalLocation}
-                  onChange={(value) => setFieldValue("arrivalLocation", value)}
-                  onSearch={fetchArrivalCities}
-                  options={arrivalCities}
-                  displayKey="cityName"
-                  valueKey="cityId"
-                  placeholder="Search arrival city..."
-                  minSearchLength={2}
-                  debounceMs={300}
-                  className="mt-1"
-                  inputClassName="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                  dropdownClassName="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-                  optionClassName="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                  loading={ArrivalLoading}
-                  noResultsText="No cities found"
-                  loadingText="Searching cities..."
-                  initialDisplayText={values.arrivalLocation}
-                  uniqueId="arrival-location-dropdown"
-                />
-              </div>
+            {/* departure location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Departure Location
+              </label>
+              <Field
+                as="select"
+                name="destinationLocation"
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="0">All</option>
+                {departureStages?.map((item) => (
+                  <option key={item.FromStageID} value={item.FromStageID}>
+                    {item.FromStageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+            {/* arrival location */}
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Arrival Location
+              </label>
+              <Field
+                as="select"
+                name="arrivalLocation"
+                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+              >
+                <option value="0">All</option>
+                {arrivalStages?.map((item) => (
+                  <option key={item.ToStageID} value={item.ToStageID}>
+                    {item.ToStageName}
+                  </option>
+                ))}
+              </Field>
+            </div>
             <div className="flex items-end gap-2 ">
               <button
                 type="submit"
@@ -263,8 +212,8 @@ const CurrentPaymentTransactionsForm = ({
                       toDate: getCurrentDateEndTime(),
                       paymentStatus: "",
                       phoneNumber: "",
-                      arrivalLocation: "",
-                      destinationLocation: "",
+                      arrivalLocation: 0,
+                      destinationLocation: 0,
                     },
                   });
                   fetchCurrentPaymentTransactions({
@@ -272,13 +221,11 @@ const CurrentPaymentTransactionsForm = ({
                     endDate: getCurrentDateEndTime(),
                     paymentStatus: "",
                     phoneNumber: "",
-                    arrivalLocation: "",
-                    destinationLocation: "",
+                    arrivalLocation: 0,
+                    destinationLocation: 0,
                     PageIndex,
                     pageSize,
                   });
-                  setDepartureCities([]);
-                  setArrivalCities([]);
                   setResetTrigger(prev => prev + 1);
                 }}
               >
