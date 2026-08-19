@@ -37,7 +37,7 @@ export const useCurrentIndividualStore = create((set) => ({
         PaymentMode: payload?.paymentMode || "",
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.bookingStatus || 0) || 0,
+        BookingStatus: Number(payload?.bookingStatus || -1) || -1,
         PNRNumber: payload?.PNRNumber || payload?.pnrNumber || "",
         FromStageID: Number(payload?.departureLocation || payload?.fromStageID || 0) || 0,
         ToStageID: Number(payload?.arrivalLocation || payload?.toStageID || 0) || 0,

@@ -38,7 +38,7 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         PaymentMode: payload?.paymentMode || "",
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.paymentStatus || payload?.bookingStatus || 0) || 0,
+        BookingStatus: Number(payload?.paymentStatus || payload?.bookingStatus || -1) || -1,
         PNRNumber: payload?.pnrNumber || payload?.PNRNumber || "",
         FromStageID: Number(payload?.destinationLocation || payload?.fromStageID || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.arrivalLocation || payload?.toStageID || 0) || 0,

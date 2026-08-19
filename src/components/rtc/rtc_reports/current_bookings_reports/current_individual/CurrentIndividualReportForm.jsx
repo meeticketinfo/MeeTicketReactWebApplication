@@ -238,10 +238,13 @@ const CurrentIndividualReportForm = ({
                 name="bookingStatus"
                 className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
               >
-                <option value="">All</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Pending">Pending</option>
-                <option value="Cancelled">Cancelled</option>
+                <option value="-1">All</option>
+                <option value="0">Pending</option>
+                <option value="2">Used</option>
+                <option value="3">Expired</option>
+                <option value="4">Cancelled</option>
+                <option value="1">Confirmed</option>
+                <option value="5">Failed</option>
               </Field>
             </div>
             {/* pnr no */}
