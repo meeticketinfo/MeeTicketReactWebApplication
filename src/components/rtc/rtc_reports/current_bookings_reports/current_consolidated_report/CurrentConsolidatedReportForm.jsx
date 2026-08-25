@@ -4,8 +4,12 @@ import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useCurrentConsolidateStore } from "./CurrentConsolidateStore";
 import {
+  CurrentBookingArrivalField,
   CurrentBookingCityBusField,
+  CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
+  getArrivalStagesForDeparture,
+  getStageIdsFromSelection,
 } from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentConsolidatedReportForm = ({
@@ -23,8 +27,8 @@ const CurrentConsolidatedReportForm = ({
     IntercityBusTypesData,
     IntercitySeatLayoutsData,
     fetchMavenRoutes,
+    mavenRoutes,
     departureStages,
-    arrivalStages,
     intercityStageNames,
   } = useIntercityMastersStore();
 
@@ -52,8 +56,15 @@ const CurrentConsolidatedReportForm = ({
 
   const onSubmit = (values) => {
     const { intercityBus, ...reportValues } = values;
+    const stageIds = getStageIdsFromSelection(
+      mavenRoutes,
+      values.departureLocation,
+      values.arrivalLocation
+    );
     fetchCurrentConsolidateData({
       ...reportValues,
+      departureLocation: stageIds.FromStageBoardingID,
+      arrivalLocation: stageIds.ToStageBoardingID,
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
@@ -67,7 +78,12 @@ const CurrentConsolidatedReportForm = ({
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, setValues }) => (
+        {({ values, setFieldValue, setValues }) => {
+          const mappedArrivalStages = getArrivalStagesForDeparture(
+            mavenRoutes,
+            values.departureLocation
+          );
+          return (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
             {/* purchase date */}
             <div>
@@ -220,42 +236,11 @@ const CurrentConsolidatedReportForm = ({
                 placeholder="Enter Transaction ID"
               />
             </div>
-            {/* departure location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase">
-                Departure Location
-              </label>
-              <Field
-                as="select"
-                name="departureLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {departureStages?.map((item) => (
-                  <option key={item.FromStageID} value={item.FromStageID}>
-                    {item.FromStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            {/* arrival location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700 uppercase">
-                Arrival Location
-              </label>
-              <Field
-                as="select"
-                name="arrivalLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {arrivalStages?.map((item) => (
-                  <option key={item.ToStageID} value={item.ToStageID}>
-                    {item.ToStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
+            <CurrentBookingDepartureField
+              departureStages={departureStages}
+              setFieldValue={setFieldValue}
+            />
+            <CurrentBookingArrivalField arrivalStages={mappedArrivalStages} />
 
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
             {/* submit */}
@@ -312,7 +297,8 @@ const CurrentConsolidatedReportForm = ({
               </button>
             </div>
           </Form>
-        )}
+          );
+        }}
       </Formik>
     </>
   );

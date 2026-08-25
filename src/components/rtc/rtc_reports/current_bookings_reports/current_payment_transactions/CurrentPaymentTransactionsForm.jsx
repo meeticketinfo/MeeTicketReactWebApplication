@@ -5,8 +5,12 @@ import { useCurrentPaymentTransactionStore } from "../../../../../store/rtc/Curr
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
 import {
+  CurrentBookingArrivalField,
   CurrentBookingCityBusField,
+  CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
+  getArrivalStagesForDeparture,
+  getStageIdsFromSelection,
 } from "../shared/CurrentBookingReportFilterFields";
 const CurrentPaymentTransactionsForm = ({
   PageIndex,
@@ -16,7 +20,7 @@ const CurrentPaymentTransactionsForm = ({
   const {
     fetchCurrentPaymentTransactions,
   } = useCurrentPaymentTransactionStore();
-  const { fetchMavenRoutes, departureStages, arrivalStages, intercityStageNames } = useIntercityMastersStore();
+  const { fetchMavenRoutes, mavenRoutes, departureStages, intercityStageNames } = useIntercityMastersStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("current-payment-report-filters")
   );
@@ -42,6 +46,11 @@ const CurrentPaymentTransactionsForm = ({
 
   const onSubmit = (values, { resetForm }) => {
     const { intercityBus, ...reportValues } = values;
+    const stageIds = getStageIdsFromSelection(
+      mavenRoutes,
+      values.destinationLocation,
+      values.arrivalLocation
+    );
 
     localStorage.setItem(
       "current-payment-report-filters",
@@ -52,8 +61,8 @@ const CurrentPaymentTransactionsForm = ({
       endDate: reportValues.toDate,
       paymentStatus: reportValues.paymentStatus || "",
       phoneNumber: reportValues.phoneNumber || "",
-      arrivalLocation: reportValues.arrivalLocation || "",
-      destinationLocation: reportValues.destinationLocation || "",
+      destinationLocation: stageIds.FromStageBoardingID,
+      arrivalLocation: stageIds.ToStageBoardingID,
       PageIndex,
       pageSize,
 
@@ -64,7 +73,12 @@ const CurrentPaymentTransactionsForm = ({
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, resetForm }) => (
+        {({ values, setFieldValue, resetForm }) => {
+          const mappedArrivalStages = getArrivalStagesForDeparture(
+            mavenRoutes,
+            values.destinationLocation
+          );
+          return (
           <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-3 py-3 uppercase">
             <div>
               <label
@@ -163,42 +177,13 @@ const CurrentPaymentTransactionsForm = ({
                 }}
               />
             </div>
-            {/* departure location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Departure Location
-              </label>
-              <Field
-                as="select"
-                name="destinationLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {departureStages?.map((item) => (
-                  <option key={item.FromStageID} value={item.FromStageID}>
-                    {item.FromStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            {/* arrival location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Arrival Location
-              </label>
-              <Field
-                as="select"
-                name="arrivalLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {arrivalStages?.map((item) => (
-                  <option key={item.ToStageID} value={item.ToStageID}>
-                    {item.ToStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
+            <CurrentBookingDepartureField
+              departureStages={departureStages}
+              name="destinationLocation"
+              arrivalFieldName="arrivalLocation"
+              setFieldValue={setFieldValue}
+            />
+            <CurrentBookingArrivalField arrivalStages={mappedArrivalStages} />
             <div className="flex items-end gap-2 ">
               <button
                 type="submit"
@@ -243,7 +228,8 @@ const CurrentPaymentTransactionsForm = ({
               </button>
             </div>
           </Form>
-        )}
+          );
+        }}
       </Formik>
     </>
   );

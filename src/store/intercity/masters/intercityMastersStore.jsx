@@ -89,6 +89,7 @@ export const useIntercityMastersStore = create((set) => ({
     }
   },
   // Mavenconnect Routes
+  mavenRoutes: [],
   departureStages: [],
   arrivalStages: [],
   intercityStageNames: [],
@@ -117,47 +118,68 @@ export const useIntercityMastersStore = create((set) => ({
         routesList = response.data.result;
       }
 
+      const mavenRoutes = routesList
+        .filter((item) => item.FromStageName && item.ToStageName)
+        .map((item) => ({
+          FromStageID: item.FromStageID,
+          FromStageName: item.FromStageName,
+          FromStageBoardingID: item.FromStageBoardingID,
+          ToStageID: item.ToStageID,
+          ToStageName: item.ToStageName,
+          ToStageBoardingID: item.ToStageBoardingID,
+        }));
+
       const departureStagesMap = new Map();
       const arrivalStagesMap = new Map();
       const stageNames = new Set();
 
-      routesList.forEach((item) => {
+      mavenRoutes.forEach((item) => {
         if (item.FromStageName) {
           stageNames.add(item.FromStageName);
         }
         if (item.ToStageName) {
           stageNames.add(item.ToStageName);
         }
-        if (item.FromStageID && !departureStagesMap.has(item.FromStageID)) {
-          departureStagesMap.set(item.FromStageID, {
+        if (!departureStagesMap.has(item.FromStageBoardingID ?? item.FromStageName)) {
+          departureStagesMap.set(item.FromStageBoardingID ?? item.FromStageName, {
             FromStageID: item.FromStageID,
             FromStageName: item.FromStageName,
+            FromStageBoardingID: item.FromStageBoardingID,
           });
         }
-        if (item.ToStageID && !arrivalStagesMap.has(item.ToStageID)) {
-          arrivalStagesMap.set(item.ToStageID, {
+        if (!arrivalStagesMap.has(item.ToStageBoardingID ?? item.ToStageName)) {
+          arrivalStagesMap.set(item.ToStageBoardingID ?? item.ToStageName, {
             ToStageID: item.ToStageID,
             ToStageName: item.ToStageName,
+            ToStageBoardingID: item.ToStageBoardingID,
           });
         }
       });
 
-      const departureStages = Array.from(departureStagesMap.values());
-      const arrivalStages = Array.from(arrivalStagesMap.values());
+      const sortByName = (a, b, key) =>
+        (a[key] || "").localeCompare(b[key] || "");
+      const departureStages = Array.from(departureStagesMap.values()).sort(
+        (a, b) => sortByName(a, b, "FromStageName")
+      );
+      const arrivalStages = Array.from(arrivalStagesMap.values()).sort((a, b) =>
+        sortByName(a, b, "ToStageName")
+      );
       const intercityStageNames = Array.from(stageNames).sort((a, b) =>
         a.localeCompare(b)
       );
 
       set({
+        mavenRoutes,
         departureStages,
         arrivalStages,
         intercityStageNames,
       });
 
-      return { departureStages, arrivalStages, intercityStageNames };
+      return { mavenRoutes, departureStages, arrivalStages, intercityStageNames };
     } catch (error) {
       console.error("Error fetching routes:", error);
       set({
+        mavenRoutes: [],
         departureStages: [],
         arrivalStages: [],
         intercityStageNames: [],

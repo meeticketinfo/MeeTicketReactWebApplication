@@ -40,8 +40,8 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
         BookingStatus: Number(payload?.paymentStatus || payload?.bookingStatus || -1) || -1,
         PNRNumber: payload?.pnrNumber || payload?.PNRNumber || "",
-        FromStageID: Number(payload?.destinationLocation || payload?.fromStageID || payload?.departureLocation || 0) || 0,
-        ToStageID: Number(payload?.arrivalLocation || payload?.toStageID || 0) || 0,
+        FromStageID: Number(payload?.fromStageBoardingID || payload?.destinationLocation || payload?.departureLocation || 0) || 0,
+        ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,
       };
       const response = await apiService.post(
         API_ENDPOINTS.REPORTS.RTC_REPORTS.CURRENT_BOOKINGS_REPORTS.GET_CURRENT_PAYMENT_TRANSACTION_REPORT,

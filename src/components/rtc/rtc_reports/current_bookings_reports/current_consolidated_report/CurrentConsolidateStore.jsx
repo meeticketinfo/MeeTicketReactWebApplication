@@ -39,8 +39,8 @@ export const useCurrentConsolidateStore = create((set) => ({
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
         BookingStatus: Number(payload?.bookingStatus || -1) || -1,
         PNRNumber: payload?.PNRNumber || payload?.pnrNumber || "",
-        FromStageID: Number(payload?.departureLocation || payload?.fromStageID || 0) || 0,
-        ToStageID: Number(payload?.arrivalLocation || payload?.toStageID || 0) || 0,
+        FromStageID: Number(payload?.fromStageBoardingID || payload?.departureLocation || 0) || 0,
+        ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,
       };
 
       const response = await apiService.post(

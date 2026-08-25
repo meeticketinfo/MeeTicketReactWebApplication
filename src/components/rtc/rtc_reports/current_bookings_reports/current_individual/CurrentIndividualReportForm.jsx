@@ -4,8 +4,12 @@ import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useCurrentIndividualStore } from "./CurrentIndividualStore";
 import {
+  CurrentBookingArrivalField,
   CurrentBookingCityBusField,
+  CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
+  getArrivalStagesForDeparture,
+  getStageIdsFromSelection,
 } from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentIndividualReportForm = ({
@@ -27,8 +31,8 @@ const CurrentIndividualReportForm = ({
     IntercitySeatLayoutsData,
     IntercityBusTypesData,
     fetchMavenRoutes,
+    mavenRoutes,
     departureStages,
-    arrivalStages,
     intercityStageNames,
   } = useIntercityMastersStore();
   const [resetTrigger, setResetTrigger] = useState(0);
@@ -75,8 +79,15 @@ const CurrentIndividualReportForm = ({
 
   const onSubmit = (values) => {
     const { intercityBus, ...reportValues } = values;
+    const stageIds = getStageIdsFromSelection(
+      mavenRoutes,
+      values.departureLocation,
+      values.arrivalLocation
+    );
     fetchCurrentIndividualData({
       ...reportValues,
+      departureLocation: stageIds.FromStageBoardingID,
+      arrivalLocation: stageIds.ToStageBoardingID,
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
@@ -90,7 +101,12 @@ const CurrentIndividualReportForm = ({
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setFieldValue, setValues }) => (
+        {({ values, setFieldValue, setValues }) => {
+          const mappedArrivalStages = getArrivalStagesForDeparture(
+            mavenRoutes,
+            values.departureLocation
+          );
+          return (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3 uppercase">
             {/* from date */}
             <div>
@@ -307,42 +323,15 @@ const CurrentIndividualReportForm = ({
               />
             </div>
 
-            {/* departure location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Departure Location
-              </label>
-              <Field
-                as="select"
-                name="departureLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {departureStages?.map((item) => (
-                  <option key={item.FromStageID} value={item.FromStageID}>
-                    {item.FromStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
-            {/* arrival location */}
-            <div>
-              <label className="block text-xs font-medium text-gray-700">
-                Arrival Location
-              </label>
-              <Field
-                as="select"
-                name="arrivalLocation"
-                className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-              >
-                <option value="0">All</option>
-                {arrivalStages?.map((item) => (
-                  <option key={item.ToStageID} value={item.ToStageID}>
-                    {item.ToStageName}
-                  </option>
-                ))}
-              </Field>
-            </div>
+            <CurrentBookingDepartureField
+              departureStages={departureStages}
+              setFieldValue={setFieldValue}
+              labelClassName="block text-xs font-medium text-gray-700"
+            />
+            <CurrentBookingArrivalField
+              arrivalStages={mappedArrivalStages}
+              labelClassName="block text-xs font-medium text-gray-700"
+            />
             {/* Optional fields like Department/Location removed to avoid undefined data sources */}
             {/* submit */}
             <div className="flex items-end gap-2 ">
@@ -406,7 +395,8 @@ const CurrentIndividualReportForm = ({
               </button>
             </div>
           </Form>
-        )}
+          );
+        }}
       </Formik>
     </>
   );
