@@ -529,6 +529,11 @@ const sidebarItems = [
         title: "Payment Transactions",
         icon: TbReportAnalytics,
         path: "/current-payment-transactions",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiDashboard3Fill,
+        path: "/current-refund-report",
       }
     ],
 

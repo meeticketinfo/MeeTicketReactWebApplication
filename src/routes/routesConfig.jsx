@@ -220,6 +220,7 @@ import MainFacilityHoliday from "../pages/admin/holidays/facility_holidays/MainF
 import MainGroupDetails from "../pages/admin/group_details/MainGroupDetails";
 import MainLanguage from "../pages/admin/language_masters/MainLanguage";
 import BusPassUserTransactionsRefundTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassUserTransactionsRefundTracker";
+import CurrentRefundTransactionsReport from "../components/rtc/rtc_reports/current_bookings_reports/current_refund_report/current_refund_inner_report/CurrentRefundTransactionsReport";
 
 export const routes = [
   {
@@ -1117,6 +1118,12 @@ export const routes = [
     path: "/current-payment-transactions",
     element: (
       <ProtectedRoute element={<CurrentPaymentTransactionsReport />} />
+    ),
+  },
+  {
+    path: "/current-refund-report",
+    element: (
+      <ProtectedRoute element={<CurrentRefundTransactionsReport />} />
     ),
   },
 

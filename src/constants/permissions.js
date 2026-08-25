@@ -54,6 +54,7 @@ export const superAdminPermissions = [
   "current-consolidated-report",
   "current-individual-report",
   "current-payment-transactions",
+  "current-refund-report",
   "android-ios-entries",
 ];
 
@@ -78,8 +79,7 @@ export const EsdTech = [
   "current-consolidated-report",
   "current-individual-report",
   "current-payment-transactions",
- 
- 
+  "current-refund-report",
 ];
 
 // department
@@ -225,6 +225,7 @@ export const RtcAdmin = [
   "current-consolidated-report",
   "current-individual-report",
   "current-payment-transactions",
+  "current-refund-report",
   "add-intercity-cities"
  
 ];
