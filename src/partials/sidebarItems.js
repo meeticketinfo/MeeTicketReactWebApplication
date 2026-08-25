@@ -509,7 +509,7 @@ const sidebarItems = [
   },
   //currentBookings
   {
-    title: "Current Bookings Reports",
+    title: "RTC Current Booking Reports",
     icon: FaBus,
     path: "",
     gradientClass:

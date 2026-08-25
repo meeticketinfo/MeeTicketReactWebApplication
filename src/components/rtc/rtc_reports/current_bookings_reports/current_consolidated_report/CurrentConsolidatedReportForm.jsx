@@ -1,11 +1,12 @@
 import { Formik, Form, Field } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
-import DebounceSearchableDropdown from "../../../../sharedcomponents/DebounceSearchableDropdown";
-
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useCurrentConsolidateStore } from "./CurrentConsolidateStore";
-import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
+import {
+  CurrentBookingCityBusField,
+  CurrentBookingIntercityBusField,
+} from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentConsolidatedReportForm = ({
   pageNumber,
@@ -24,6 +25,7 @@ const CurrentConsolidatedReportForm = ({
     fetchMavenRoutes,
     departureStages,
     arrivalStages,
+    intercityStageNames,
   } = useIntercityMastersStore();
 
   useEffect(() => {
@@ -45,12 +47,13 @@ const CurrentConsolidatedReportForm = ({
     typeOfBus: "",
     departureLocation: 0,
     arrivalLocation: 0,
+    intercityBus: "",
   };
 
   const onSubmit = (values) => {
-    console.log("values", values);
+    const { intercityBus, ...reportValues } = values;
     fetchCurrentConsolidateData({
-      ...values,
+      ...reportValues,
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
@@ -125,6 +128,10 @@ const CurrentConsolidatedReportForm = ({
                 }}
               />
             </div>
+            <CurrentBookingCityBusField />
+            <CurrentBookingIntercityBusField
+              intercityStageNames={intercityStageNames}
+            />
             {/* mobile no */}
             <div>
               <label className="block text-xs font-medium text-gray-700 uppercase">
@@ -279,6 +286,7 @@ const CurrentConsolidatedReportForm = ({
                     typeOfBus: "",
                     departureLocation: 0,
                     arrivalLocation: 0,
+                    intercityBus: "",
                   });
                   fetchCurrentConsolidateData({
                     purchaseOrBooking: "Purchase",

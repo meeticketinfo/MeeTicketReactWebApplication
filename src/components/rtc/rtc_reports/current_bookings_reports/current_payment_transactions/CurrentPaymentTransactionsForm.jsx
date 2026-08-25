@@ -4,6 +4,10 @@ import { getCurrentDate, getCurrentDateStartTime, getCurrentDateEndTime } from "
 import { useCurrentPaymentTransactionStore } from "../../../../../store/rtc/CurrentPaymentTransactionStore";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import {
+  CurrentBookingCityBusField,
+  CurrentBookingIntercityBusField,
+} from "../shared/CurrentBookingReportFilterFields";
 const CurrentPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
@@ -12,7 +16,7 @@ const CurrentPaymentTransactionsForm = ({
   const {
     fetchCurrentPaymentTransactions,
   } = useCurrentPaymentTransactionStore();
-  const { fetchMavenRoutes, departureStages, arrivalStages } = useIntercityMastersStore();
+  const { fetchMavenRoutes, departureStages, arrivalStages, intercityStageNames } = useIntercityMastersStore();
   const savedFilters = JSON.parse(
     localStorage.getItem("current-payment-report-filters")
   );
@@ -28,6 +32,7 @@ const CurrentPaymentTransactionsForm = ({
     phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
     arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : 0,
     destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : 0,
+    intercityBus: savedFilters?.intercityBus || "",
   };
   const [resetTrigger, setResetTrigger] = useState(0);
 
@@ -36,19 +41,19 @@ const CurrentPaymentTransactionsForm = ({
   }, [fetchMavenRoutes]);
 
   const onSubmit = (values, { resetForm }) => {
-    console.log("values", values);
+    const { intercityBus, ...reportValues } = values;
 
     localStorage.setItem(
       "current-payment-report-filters",
       JSON.stringify(values)
     );
     fetchCurrentPaymentTransactions({
-      startDate: values.fromDate,
-      endDate: values.toDate,
-      paymentStatus: values.paymentStatus || "",
-      phoneNumber: values.phoneNumber || "",
-      arrivalLocation: values.arrivalLocation || "",
-      destinationLocation: values.destinationLocation || "",
+      startDate: reportValues.fromDate,
+      endDate: reportValues.toDate,
+      paymentStatus: reportValues.paymentStatus || "",
+      phoneNumber: reportValues.phoneNumber || "",
+      arrivalLocation: reportValues.arrivalLocation || "",
+      destinationLocation: reportValues.destinationLocation || "",
       PageIndex,
       pageSize,
 
@@ -103,6 +108,10 @@ const CurrentPaymentTransactionsForm = ({
                 }}
               />
             </div>
+            <CurrentBookingCityBusField />
+            <CurrentBookingIntercityBusField
+              intercityStageNames={intercityStageNames}
+            />
 
             <div>
               <label className="block text-sm font-medium">
@@ -214,6 +223,7 @@ const CurrentPaymentTransactionsForm = ({
                       phoneNumber: "",
                       arrivalLocation: 0,
                       destinationLocation: 0,
+                      intercityBus: "",
                     },
                   });
                   fetchCurrentPaymentTransactions({

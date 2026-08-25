@@ -91,6 +91,7 @@ export const useIntercityMastersStore = create((set) => ({
   // Mavenconnect Routes
   departureStages: [],
   arrivalStages: [],
+  intercityStageNames: [],
   isFetchRoutes: false,
   fetchMavenRoutes: async () => {
     set({ isFetchRoutes: true });
@@ -107,13 +108,26 @@ export const useIntercityMastersStore = create((set) => ({
           typeof response.data.Data === "string"
             ? JSON.parse(response.data.Data)
             : response.data.Data;
-        routesList = parsed?.Table || [];
+        routesList = Array.isArray(parsed)
+          ? parsed
+          : parsed?.Table || parsed?.table || [];
+      } else if (Array.isArray(response?.data)) {
+        routesList = response.data;
+      } else if (Array.isArray(response?.data?.result)) {
+        routesList = response.data.result;
       }
 
       const departureStagesMap = new Map();
       const arrivalStagesMap = new Map();
+      const stageNames = new Set();
 
       routesList.forEach((item) => {
+        if (item.FromStageName) {
+          stageNames.add(item.FromStageName);
+        }
+        if (item.ToStageName) {
+          stageNames.add(item.ToStageName);
+        }
         if (item.FromStageID && !departureStagesMap.has(item.FromStageID)) {
           departureStagesMap.set(item.FromStageID, {
             FromStageID: item.FromStageID,
@@ -130,18 +144,23 @@ export const useIntercityMastersStore = create((set) => ({
 
       const departureStages = Array.from(departureStagesMap.values());
       const arrivalStages = Array.from(arrivalStagesMap.values());
+      const intercityStageNames = Array.from(stageNames).sort((a, b) =>
+        a.localeCompare(b)
+      );
 
       set({
         departureStages,
         arrivalStages,
+        intercityStageNames,
       });
 
-      return { departureStages, arrivalStages };
+      return { departureStages, arrivalStages, intercityStageNames };
     } catch (error) {
       console.error("Error fetching routes:", error);
       set({
         departureStages: [],
         arrivalStages: [],
+        intercityStageNames: [],
       });
     } finally {
       set({ isFetchRoutes: false });

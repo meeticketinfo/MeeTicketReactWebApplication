@@ -3,7 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { getCurrentDate } from "../../../../../utils/TypographyHelper";
 import { useIntercityMastersStore } from "../../../../../store/intercity/masters/intercityMastersStore";
 import { useCurrentIndividualStore } from "./CurrentIndividualStore";
-import SearchableDropdown from "../../../../searchable_dropdown/SearchableDropdown";
+import {
+  CurrentBookingCityBusField,
+  CurrentBookingIntercityBusField,
+} from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentIndividualReportForm = ({
   pageNumber,
@@ -26,6 +29,7 @@ const CurrentIndividualReportForm = ({
     fetchMavenRoutes,
     departureStages,
     arrivalStages,
+    intercityStageNames,
   } = useIntercityMastersStore();
   const [resetTrigger, setResetTrigger] = useState(0);
 
@@ -62,6 +66,7 @@ const CurrentIndividualReportForm = ({
     arrivalLocation: savedFilters?.arrivalLocation
       ? savedFilters.arrivalLocation
       : 0,
+    intercityBus: savedFilters?.intercityBus || "",
     ticketId: savedFilters?.ticketId ? savedFilters.ticketId : "",
     returnTicketId: savedFilters?.returnTicketId
       ? savedFilters.returnTicketId
@@ -69,9 +74,9 @@ const CurrentIndividualReportForm = ({
   };
 
   const onSubmit = (values) => {
-    console.log("values", values);
+    const { intercityBus, ...reportValues } = values;
     fetchCurrentIndividualData({
-      ...values,
+      ...reportValues,
       pageNumber: pageNumber,
       PageSize: pageSize,
     });
@@ -131,6 +136,11 @@ const CurrentIndividualReportForm = ({
                 }}
               />
             </div>
+            <CurrentBookingCityBusField labelClassName="block text-xs font-medium text-gray-700" />
+            <CurrentBookingIntercityBusField
+              intercityStageNames={intercityStageNames}
+              labelClassName="block text-xs font-medium text-gray-700"
+            />
 
             {/* mobile no */}
             <div>
@@ -364,6 +374,7 @@ const CurrentIndividualReportForm = ({
                     bookingStatus: "",
                     departureLocation: 0,
                     arrivalLocation: 0,
+                    intercityBus: "",
                     ticketId: "",
                     returnTicketId: "",
                   });

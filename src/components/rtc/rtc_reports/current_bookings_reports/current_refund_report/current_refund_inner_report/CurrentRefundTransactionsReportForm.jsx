@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -6,6 +7,11 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useCurrentRefundReportStore } from "../../../../../../store/rtc/CurrentRefundReportStore";
+import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
+import {
+  CurrentBookingCityBusField,
+  CurrentBookingIntercityBusField,
+} from "../../shared/CurrentBookingReportFilterFields";
 
 const REFUND_STATUS_OPTIONS = [
   { value: "-1", label: "ALL" },
@@ -21,8 +27,13 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
     isFetchCurrentRefundTransactionsInnerReport,
     fetchCurrentRefundTransactionsInnerReport,
   } = useCurrentRefundReportStore();
+  const { fetchMavenRoutes, intercityStageNames } = useIntercityMastersStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
+
+  useEffect(() => {
+    fetchMavenRoutes();
+  }, [fetchMavenRoutes]);
 
   const getRefundStatusFromParams = () => {
     const status =
@@ -34,6 +45,7 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
+    intercityBus: searchParams.get("intercityBus") || "",
     mobileNumber: searchParams.get("mobileNumber") || "",
     pnrNumber: searchParams.get("pnrNumber") || "",
     paymentMode: searchParams.get("paymentMode") || "",
@@ -41,9 +53,10 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
   };
 
   const onSubmit = (values) => {
+    const { intercityBus, ...reportValues } = values;
     const newSearchParams = new URLSearchParams();
-    Object.keys(values).forEach((key) => {
-      const value = values[key];
+    Object.keys(reportValues).forEach((key) => {
+      const value = reportValues[key];
       if (value !== undefined && value !== null && value !== "") {
         newSearchParams.set(
           key,
@@ -60,11 +73,11 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
     );
 
     fetchCurrentRefundTransactionsInnerReport({
-      fromDate: values.fromDate,
-      toDate: values.toDate,
-      mobileNumber: values.mobileNumber,
-      pnrNumber: values.pnrNumber || "",
-      refundStatus: values.refundStatus ?? "-1",
+      fromDate: reportValues.fromDate,
+      toDate: reportValues.toDate,
+      mobileNumber: reportValues.mobileNumber,
+      pnrNumber: reportValues.pnrNumber || "",
+      refundStatus: reportValues.refundStatus ?? "-1",
     });
     setCurrentPage(0);
   };
@@ -107,6 +120,10 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
               min={values.fromDate}
             />
           </div>
+          <CurrentBookingCityBusField />
+          <CurrentBookingIntercityBusField
+            intercityStageNames={intercityStageNames}
+          />
           <div>
             <label
               htmlFor="mobileNumber"
