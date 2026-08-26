@@ -8,7 +8,31 @@ const isAllStageValue = (value) =>
   value === null ||
   value === "" ||
   value === "0" ||
-  value === 0;
+  value === 0 ||
+  value === "All";
+
+export const filterRecordsByIntercityBus = (records = [], selectedStageName) => {
+  if (!Array.isArray(records) || isAllStageValue(selectedStageName)) {
+    return records;
+  }
+
+  const selected = String(selectedStageName).trim().toUpperCase();
+  if (!selected) return records;
+
+  return records.filter((item) => {
+    const stageValues = [
+      item.departureLocation,
+      item.arrivalLocation,
+      item.DepartureLocation,
+      item.ArrivalLocation,
+      item.FromStageName,
+      item.ToStageName,
+    ];
+    return stageValues.some(
+      (value) => String(value || "").trim().toUpperCase() === selected
+    );
+  });
+};
 
 export const getArrivalStagesForDeparture = (routes = [], fromStageBoardingID) => {
   const arrivalMap = new Map();
@@ -85,18 +109,32 @@ export const CurrentBookingIntercityBusField = ({
   intercityStageNames = [],
   name = "intercityBus",
   labelClassName = "block text-xs font-medium text-gray-700 uppercase",
+  onValueChange,
 }) => (
   <div>
     <label htmlFor={name} className={labelClassName}>
       Intercity Bus
     </label>
-    <Field as="select" id={name} name={name} className={selectClassName}>
-      <option value="">All</option>
-      {intercityStageNames.map((stageName) => (
-        <option key={stageName} value={stageName}>
-          {stageName}
-        </option>
-      ))}
+    <Field name={name}>
+      {({ field, form }) => (
+        <select
+          id={name}
+          {...field}
+          className={selectClassName}
+          onChange={(e) => {
+            const value = e.target.value;
+            form.setFieldValue(name, value);
+            onValueChange?.(value);
+          }}
+        >
+          <option value="">All</option>
+          {intercityStageNames.map((stageName) => (
+            <option key={stageName} value={stageName}>
+              {stageName}
+            </option>
+          ))}
+        </select>
+      )}
     </Field>
   </div>
 );

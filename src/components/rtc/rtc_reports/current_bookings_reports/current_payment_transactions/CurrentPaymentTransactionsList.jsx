@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import CurrentPaymentTransactionsForm from "./CurrentPaymentTransactionsForm";
@@ -6,6 +6,7 @@ import PopupModal from "../../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import { useCurrentPaymentTransactionStore } from "../../../../../store/rtc/CurrentPaymentTransactionStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 
 function CurrentPaymentTransactionsList() {
   const startOfDay = getStartOfCurrentDay();
@@ -33,6 +34,9 @@ function CurrentPaymentTransactionsList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-payment-report-filters")
   );
+  const [intercityBusFilter, setIntercityBusFilter] = useState(
+    savedFilters?.intercityBus || ""
+  );
   useEffect(() => {
     fetchCurrentPaymentTransactions({
       startDate: savedFilters?.fromDate ?? startOfDay,
@@ -48,6 +52,20 @@ function CurrentPaymentTransactionsList() {
       pageSize: PAGE_LIMIT,
     });
   }, [fetchCurrentPaymentTransactions, currentPage, PAGE_LIMIT]);
+
+  const filteredPaymentTransactions = useMemo(
+    () =>
+      filterRecordsByIntercityBus(
+        currentPaymentTransactions || [],
+        intercityBusFilter
+      ),
+    [currentPaymentTransactions, intercityBusFilter]
+  );
+
+  const handleIntercityBusChange = (value) => {
+    setIntercityBusFilter(value || "");
+    setCurrentPage(0);
+  };
 
   const [columnDefs] = useState([
     {
@@ -558,22 +576,23 @@ function CurrentPaymentTransactionsList() {
           PageIndex={1}
           pageSize={PAGE_LIMIT}
           SetcurrentPage={setCurrentPage}
+          onIntercityBusChange={handleIntercityBusChange}
         />
         <AgGridTable
           ExportName="Current Payment Transactions"
-          rowData={currentPaymentTransactions || []}
+          rowData={filteredPaymentTransactions || []}
           columnDefs={columnDefs}
           isFetchLoading={isFetchCurrentPaymentTransactionsLoading}
           isPagination={false}
           tableHeight={
-            currentPaymentTransactions?.length > 10 ? 560 : 330
+            filteredPaymentTransactions?.length > 10 ? 560 : 330
           }
           IsReactPaginate={true}
           setPageLimit={setPAGE_LIMIT}
           pageLimit={PAGE_LIMIT}
           handlePageClick={handlePageClick}
           currentPage={currentPage}
-          totalCount={currentPaymentTransactions?.[0]?.totalCount || 0}
+          totalCount={filteredPaymentTransactions.length}
           showTotalCount={true}
           SetcurrentPage={setCurrentPage}
           showSearch={false}

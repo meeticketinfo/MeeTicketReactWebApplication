@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 
@@ -9,12 +9,16 @@ import {
 } from "../../../../../utils/TypographyHelper";
 import CurrentIndividualReportForm from "./CurrentIndividualReportForm";
 import { useCurrentIndividualStore } from "./CurrentIndividualStore";
+import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 function CurrentIndividualList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-individual-filters")
   );
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [intercityBusFilter, setIntercityBusFilter] = useState(
+    savedFilters?.intercityBus || ""
+  );
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -66,6 +70,16 @@ function CurrentIndividualList() {
     });
   }, [currentPage, PAGE_LIMIT]);
 
+  const filteredIndividualData = useMemo(
+    () => filterRecordsByIntercityBus(CurrentIndividualData, intercityBusFilter),
+    [CurrentIndividualData, intercityBusFilter]
+  );
+
+  const handleIntercityBusChange = (value) => {
+    setIntercityBusFilter(value || "");
+    setCurrentPage(0);
+  };
+
   const isTotalRow = (params) => params.node?.rowPinned === "bottom";
 
   const textFormatter = (params) => {
@@ -103,9 +117,9 @@ function CurrentIndividualList() {
 
 
   const getTotalRow = () => {
-    if (!CurrentIndividualData?.length) return [];
+    if (!filteredIndividualData?.length) return [];
 
-    const totals = CurrentIndividualData.reduce(
+    const totals = filteredIndividualData.reduce(
       (acc, row) => {
 
         acc.basicFare += Number(row.basicFare || 0);
@@ -518,19 +532,23 @@ function CurrentIndividualList() {
         pageNumber={currentPage + 1}
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
+        onIntercityBusChange={handleIntercityBusChange}
       />
       <div>
-        {CurrentIndividualData?.length > 0 && (
+        {filteredIndividualData?.length > 0 && (
           <div className="     flex justify-end gap-10 font-semibold">
             <span className=" bg-gray-100 px-2 border rounded-lg">
-              Grand Total Amount: ₹{CurrentIndividualData[0].grandTotalAmount}
+              Grand Total Amount: ₹{filteredIndividualData.reduce(
+                (sum, row) => sum + Number(row.totalAmount || row.amount || 0),
+                0
+              )}
             </span>
           </div>
         )}
       </div>
       <AgGridTable
         ExportName="Current Individual Report"
-        rowData={CurrentIndividualData}
+        rowData={filteredIndividualData}
         columnDefs={updatedColumnDefs}
         pinnedBottomRowData={getTotalRow()}
         isFetchLoading={isFetchCurrentIndividualData}
@@ -541,8 +559,8 @@ function CurrentIndividualList() {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        totalCount={CurrentIndividualData[0]?.totalRecords}
-        tableHeight={CurrentIndividualData.length > 10 ? 550 : 300}
+        totalCount={filteredIndividualData.length}
+        tableHeight={filteredIndividualData.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
       />

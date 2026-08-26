@@ -16,6 +16,7 @@ const CurrentConsolidatedReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  onIntercityBusChange,
 }) => {
 
   const [resetTrigger, setResetTrigger] = useState(0);
@@ -147,6 +148,7 @@ const CurrentConsolidatedReportForm = ({
             <CurrentBookingCityBusField />
             <CurrentBookingIntercityBusField
               intercityStageNames={intercityStageNames}
+              onValueChange={onIntercityBusChange}
             />
             {/* mobile no */}
             <div>
@@ -273,6 +275,7 @@ const CurrentConsolidatedReportForm = ({
                     arrivalLocation: 0,
                     intercityBus: "",
                   });
+                  onIntercityBusChange?.("");
                   fetchCurrentConsolidateData({
                     purchaseOrBooking: "Purchase",
                     fromDate: getCurrentDate(),

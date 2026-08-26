@@ -16,6 +16,7 @@ const CurrentIndividualReportForm = ({
   pageNumber,
   pageSize,
   SetcurrentPage,
+  onIntercityBusChange,
 }) => {
   const savedFilters = useMemo(() => {
     try {
@@ -156,6 +157,7 @@ const CurrentIndividualReportForm = ({
             <CurrentBookingIntercityBusField
               intercityStageNames={intercityStageNames}
               labelClassName="block text-xs font-medium text-gray-700"
+              onValueChange={onIntercityBusChange}
             />
 
             {/* mobile no */}
@@ -367,6 +369,7 @@ const CurrentIndividualReportForm = ({
                     ticketId: "",
                     returnTicketId: "",
                   });
+                  onIntercityBusChange?.("");
                   fetchCurrentIndividualData({
                     fromDate: getCurrentDate(),
                     toDate: getCurrentDate(),

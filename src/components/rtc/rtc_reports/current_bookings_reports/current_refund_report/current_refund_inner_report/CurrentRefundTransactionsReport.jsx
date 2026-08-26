@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import CurrentRefundTransactionsReportForm from "./CurrentRefundTransactionsReportForm";
@@ -15,6 +15,7 @@ import {
 import { useCurrentRefundReportStore } from "../../../../../../store/rtc/CurrentRefundReportStore";
 import { ToastContainer } from "react-toastify";
 import { useCurrentPaymentTransactionStore } from "../../../../../../store/rtc/CurrentPaymentTransactionStore";
+import { filterRecordsByIntercityBus } from "../../shared/CurrentBookingReportFilterFields";
 
 const CurrentRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
@@ -24,6 +25,9 @@ const CurrentRefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
+  const [intercityBusFilter, setIntercityBusFilter] = useState(
+    searchParams.get("intercityBus") || ""
+  );
 
   const {
     isFetchCurrentRefundTransactionsInnerReport,
@@ -214,6 +218,22 @@ const CurrentRefundTransactionsReport = () => {
     loadRefundTransactionsReport();
   }, [searchParams]);
 
+  const filteredRefundTransactions = useMemo(
+    () =>
+      filterRecordsByIntercityBus(
+        Array.isArray(refundCurrentTransactionsInnerReport)
+          ? refundCurrentTransactionsInnerReport
+          : [],
+        intercityBusFilter
+      ),
+    [refundCurrentTransactionsInnerReport, intercityBusFilter]
+  );
+
+  const handleIntercityBusChange = (value) => {
+    setIntercityBusFilter(value || "");
+    setCurrentPage(0);
+  };
+
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
   };
@@ -312,20 +332,18 @@ const CurrentRefundTransactionsReport = () => {
         </div>
         <div>
           <ToastContainer />
-          <CurrentRefundTransactionsReportForm setCurrentPage={setCurrentPage} />
+          <CurrentRefundTransactionsReportForm
+            setCurrentPage={setCurrentPage}
+            onIntercityBusChange={handleIntercityBusChange}
+          />
           <AgGridTable
             showSearch={false}
             ExportName="CurrentRefundTransactionReport"
-            rowData={
-              Array.isArray(refundCurrentTransactionsInnerReport)
-                ? refundCurrentTransactionsInnerReport
-                : []
-            }
+            rowData={filteredRefundTransactions}
             columnDefs={columnDefs}
             isFetchLoading={isFetchCurrentRefundTransactionsInnerReport}
             tableHeight={
-              Array.isArray(refundCurrentTransactionsInnerReport) &&
-                refundCurrentTransactionsInnerReport?.length > 10
+              filteredRefundTransactions?.length > 10
                 ? 560
                 : 330
             }
@@ -336,11 +354,7 @@ const CurrentRefundTransactionsReport = () => {
             handlePageClick={handlePageClick}
             currentPage={currentPage}
             showTotalCount={true}
-            totalCount={
-              Array.isArray(refundCurrentTransactionsInnerReport)
-                ? refundCurrentTransactionsInnerReport.length
-                : 0
-            }
+            totalCount={filteredRefundTransactions.length}
             SetcurrentPage={setCurrentPage}
           />
         </div>

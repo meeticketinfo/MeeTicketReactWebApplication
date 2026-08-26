@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../tables/AgGridTable";
 import {
@@ -8,12 +8,16 @@ import {
 } from "../../../../../utils/TypographyHelper";
 import CurrentConsolidatedReportForm from "./CurrentConsolidatedReportForm";
 import { useCurrentConsolidateStore } from "./CurrentConsolidateStore";
+import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 function CurrentConsolidatedList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-consolidated-filters")
   );
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [intercityBusFilter, setIntercityBusFilter] = useState(
+    savedFilters?.intercityBus || ""
+  );
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -40,6 +44,16 @@ function CurrentConsolidatedList() {
       PageSize: PAGE_LIMIT,
     });
   }, [currentPage, PAGE_LIMIT]);
+
+  const filteredConsolidateData = useMemo(
+    () => filterRecordsByIntercityBus(CurrentConsolidateData, intercityBusFilter),
+    [CurrentConsolidateData, intercityBusFilter]
+  );
+
+  const handleIntercityBusChange = (value) => {
+    setIntercityBusFilter(value || "");
+    setCurrentPage(0);
+  };
 
   const columnDefs = [
     {
@@ -498,9 +512,9 @@ function CurrentConsolidatedList() {
   ];
 
   const getTotalRow = () => {
-    if (!CurrentConsolidateData?.length) return [];
+    if (!filteredConsolidateData?.length) return [];
 
-    const totals = CurrentConsolidateData.reduce(
+    const totals = filteredConsolidateData.reduce(
       (acc, row) => {
         acc.totalAmount += Number(row.totalAmount || 0);
         acc.settledamount += Number(row.settledamount || 0);
@@ -532,19 +546,23 @@ function CurrentConsolidatedList() {
         pageNumber={currentPage + 1}
         pageSize={PAGE_LIMIT}
         SetcurrentPage={setCurrentPage}
+        onIntercityBusChange={handleIntercityBusChange}
       />
       <div>
-        {CurrentConsolidateData?.length > 0 && (
+        {filteredConsolidateData?.length > 0 && (
           <div className="     flex justify-end gap-10 font-semibold">
             <span className=" bg-gray-100 px-2 border rounded-lg">
-              Grand Total Amount: ₹{CurrentConsolidateData[0].grandTotalAmount}
+              Grand Total Amount: ₹{filteredConsolidateData.reduce(
+                (sum, row) => sum + Number(row.totalAmount || row.amount || 0),
+                0
+              )}
             </span>
           </div>
         )}
       </div>
       <AgGridTable
         ExportName="Current Consolidated Report"
-        rowData={CurrentConsolidateData}
+        rowData={filteredConsolidateData}
         columnDefs={columnDefs}
         pinnedBottomRowData={getTotalRow()}
         isFetchLoading={isFetchCurrentConsolidateData}
@@ -555,8 +573,8 @@ function CurrentConsolidatedList() {
         handlePageClick={handlePageClick}
         currentPage={currentPage}
         showTotalCount={true}
-        totalCount={CurrentConsolidateData[0]?.totalCount}
-        tableHeight={CurrentConsolidateData.length > 10 ? 550 : 300}
+        totalCount={filteredConsolidateData.length}
+        tableHeight={filteredConsolidateData.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
       />

@@ -16,6 +16,7 @@ const CurrentPaymentTransactionsForm = ({
   PageIndex,
   pageSize,
   SetcurrentPage,
+  onIntercityBusChange,
 }) => {
   const {
     fetchCurrentPaymentTransactions,
@@ -125,6 +126,7 @@ const CurrentPaymentTransactionsForm = ({
             <CurrentBookingCityBusField />
             <CurrentBookingIntercityBusField
               intercityStageNames={intercityStageNames}
+              onValueChange={onIntercityBusChange}
             />
 
             <div>
@@ -211,6 +213,7 @@ const CurrentPaymentTransactionsForm = ({
                       intercityBus: "",
                     },
                   });
+                  onIntercityBusChange?.("");
                   fetchCurrentPaymentTransactions({
                     startDate: getCurrentDateStartTime(),
                     endDate: getCurrentDateEndTime(),

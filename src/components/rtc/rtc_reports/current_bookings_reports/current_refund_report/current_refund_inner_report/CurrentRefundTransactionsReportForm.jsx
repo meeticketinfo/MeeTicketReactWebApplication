@@ -21,7 +21,10 @@ const REFUND_STATUS_OPTIONS = [
   { value: "3", label: "Failed" },
 ];
 
-const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
+const CurrentRefundTransactionsReportForm = ({
+  setCurrentPage,
+  onIntercityBusChange,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     isFetchCurrentRefundTransactionsInnerReport,
@@ -123,6 +126,7 @@ const CurrentRefundTransactionsReportForm = ({ setCurrentPage }) => {
           <CurrentBookingCityBusField />
           <CurrentBookingIntercityBusField
             intercityStageNames={intercityStageNames}
+            onValueChange={onIntercityBusChange}
           />
           <div>
             <label
