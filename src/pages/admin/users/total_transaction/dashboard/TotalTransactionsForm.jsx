@@ -14,6 +14,7 @@ import Select from "react-select";
 import { useTransactionsStore } from "../../../../../store/userTransaction/TransactionsStore";
 import { useSearchParams } from "react-router-dom";
 import useAuthStore from "../../../../../store/authStore";
+import ForestDeptDepartmentSync from "../../../../../components/common/ForestDeptDepartmentSync";
 
 const TotalTransactionsForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +27,10 @@ const TotalTransactionsForm = () => {
   const { roleDetails } = useAuthStore();
 
   const role = roleDetails?.name;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
@@ -138,6 +143,11 @@ const TotalTransactionsForm = () => {
       >
         {({ values, setFieldValue, setValues, resetForm }) => (
           <Form>
+            <ForestDeptDepartmentSync
+              role={role}
+              forestDepartmentId={forestDepartmentId}
+              setFieldValue={setFieldValue}
+            />
             <div className="grid grid-cols-1 md:grid-cols-5 gap-2 gap-x-3 py-3">
               <div>
                 <label
@@ -202,7 +212,8 @@ const TotalTransactionsForm = () => {
                 />
               </div>
               {/* department */}
-              {role === "ROLE_SUPERADMIN" && (
+              {(role === "ROLE_SUPERADMIN" ||
+                role === "Role_ForestDeptAdmin") && (
                 <div>
                   <label className="block text-xs font-medium text-gray-700">
                     Department
@@ -221,7 +232,11 @@ const TotalTransactionsForm = () => {
                           label: dept.departmentName,
                         }))
                         .find(
-                          (option) => option.value === values.departmentId
+                          (option) =>
+                            option.value ===
+                            (role === "Role_ForestDeptAdmin"
+                              ? forestDepartmentId
+                              : values.departmentId)
                         ) || null
                     }
                     options={allDepartmentTypes
@@ -242,7 +257,8 @@ const TotalTransactionsForm = () => {
                       setFieldValue("entityId", "");
                       setFieldValue("locationId", "");
                     }}
-                    isClearable
+                    isDisabled={role === "Role_ForestDeptAdmin"}
+                    isClearable={role !== "Role_ForestDeptAdmin"}
                     placeholder="Department"
                     className="mt-[4px] text-sm"
                     classNamePrefix="react-select"

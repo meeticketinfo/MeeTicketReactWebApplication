@@ -68,6 +68,18 @@ const ParkList = ({
   }, []);
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
+  useEffect(() => {
+    if (role !== "Role_ForestDeptAdmin" || !forestDepartmentId) return;
+    setStatusfilters((prev) =>
+      prev.departmentId === forestDepartmentId
+        ? prev
+        : { ...prev, departmentId: forestDepartmentId }
+    );
+  }, [role, forestDepartmentId]);
   useEffect(() => {
     if (role === "ROLE_NODALOFFICER") {
       fetchAllNodalOfficerParks(null, null, {}, userId);
@@ -420,7 +432,11 @@ const ParkList = ({
                 name="departmentId"
                 value={
                   departmentOptions.find(
-                    (option) => option.value === Statusfilters.departmentId
+                    (option) =>
+                      option.value ===
+                      (role === "Role_ForestDeptAdmin"
+                        ? forestDepartmentId
+                        : Statusfilters.departmentId)
                   ) || null
                 }
                 options={departmentOptions}
@@ -430,7 +446,8 @@ const ParkList = ({
                     selectedOption?.value || ""
                   )
                 }
-                isClearable
+                isDisabled={role === "Role_ForestDeptAdmin"}
+                isClearable={role !== "Role_ForestDeptAdmin"}
                 placeholder="Department"
                 className="mt-[4px] text-sm"
                 classNamePrefix="react-select"

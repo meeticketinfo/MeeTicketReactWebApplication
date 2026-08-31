@@ -12,6 +12,7 @@ import Select from "react-select";
 import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesStore";
 import useAuthStore from "../../../store/authStore";
 import { useParkStore } from "../../../store/masters/parksStore";
+import ForestDeptDepartmentSync from "../../../components/common/ForestDeptDepartmentSync";
 function CompletedBookingsReportList() {
   const { roleDetails } = useAuthStore();
 
@@ -36,6 +37,10 @@ function CompletedBookingsReportList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("completed-booking-report-filters")
   );
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
 
   useEffect(() => {
     fetchCompleteBookingsReport({
@@ -62,6 +67,8 @@ function CompletedBookingsReportList() {
     fetchAllEntityTypes();
     fetchAllParks();
     if (role === "ROLE_SUPERADMIN") {
+      fetchAllDepartmentTypes();
+    } else if (role === "Role_ForestDeptAdmin") {
       fetchAllDepartmentTypes();
     }
   }, []);
@@ -264,6 +271,11 @@ function CompletedBookingsReportList() {
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, setFieldValue, resetForm }) => (
           <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
+            <ForestDeptDepartmentSync
+              role={role}
+              forestDepartmentId={forestDepartmentId}
+              setFieldValue={setFieldValue}
+            />
             <div>
               <label className="block text-xs font-medium text-gray-700">
                 Booking/Purchase Date
@@ -387,7 +399,8 @@ function CompletedBookingsReportList() {
               />
             </div>
             {/* department */}
-            {role === "ROLE_SUPERADMIN" && (
+            {(role === "ROLE_SUPERADMIN" ||
+              role === "Role_ForestDeptAdmin") && (
               <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Department
@@ -402,8 +415,13 @@ function CompletedBookingsReportList() {
                         value: dept.departmentId,
                         label: dept.departmentName,
                       }))
-                      .find((option) => option.value === values.departmentId) ||
-                    null // Set the selected value
+                      .find(
+                        (option) =>
+                          option.value ===
+                          (role === "Role_ForestDeptAdmin"
+                            ? forestDepartmentId
+                            : values.departmentId)
+                      ) || null
                   }
                   options={allDepartmentTypes
                     ?.filter((dept) => dept.isActive)
@@ -414,7 +432,8 @@ function CompletedBookingsReportList() {
                   onChange={(selectedOption) =>
                     setFieldValue("departmentId", selectedOption?.value || null)
                   }
-                  isClearable
+                  isDisabled={role === "Role_ForestDeptAdmin"}
+                  isClearable={role !== "Role_ForestDeptAdmin"}
                   placeholder="Department"
                   className="mt-[4px] text-sm"
                   classNamePrefix="react-select"

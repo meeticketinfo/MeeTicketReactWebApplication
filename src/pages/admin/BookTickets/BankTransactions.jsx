@@ -21,6 +21,7 @@ import { formatDate } from "../../../utils/Helper";
 import { IoIosRefresh } from "react-icons/io";
 import Tippy from "@tippyjs/react";
 import { FaRegEye } from "react-icons/fa6";
+import ForestDeptDepartmentSync from "../../../components/common/ForestDeptDepartmentSync";
 export default function BankTransactions() {
   const storedUser = localStorage.getItem("park_Amount");
   const userObject = storedUser ? JSON.parse(storedUser) : "";
@@ -55,9 +56,14 @@ export default function BankTransactions() {
   const { allDepartmentTypes, fetchAllDepartmentTypes } =
     useDepartmentTypesStore();
 
-  const { decodedTokenData } = useAuthStore();
+  const { decodedTokenData, roleDetails } = useAuthStore();
 
   const email = decodedTokenData?.data?.email;
+  const role = roleDetails?.name;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
   const localRefreshMap = new Map();
   useEffect(() => {
     fetchParkBankTransactions({
@@ -650,6 +656,11 @@ export default function BankTransactions() {
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
           {({ values, setFieldValue, setValues }) => (
             <Form className="grid grid-cols-1 md:grid-cols-5 gap-4 p-3">
+              <ForestDeptDepartmentSync
+                role={role}
+                forestDepartmentId={forestDepartmentId}
+                setFieldValue={setFieldValue}
+              />
               <div>
                 <label
                   htmlFor="fromDate"
@@ -707,8 +718,13 @@ export default function BankTransactions() {
                         value: dept.departmentId,
                         label: dept.departmentName,
                       }))
-                      .find((option) => option.value === values.departmentId) ||
-                    null // Set the selected value
+                      .find(
+                        (option) =>
+                          option.value ===
+                          (role === "Role_ForestDeptAdmin"
+                            ? forestDepartmentId
+                            : values.departmentId)
+                      ) || null
                   }
                   options={allDepartmentTypes
                     ?.filter((dept) => dept.isActive)
@@ -719,7 +735,8 @@ export default function BankTransactions() {
                   onChange={(selectedOption) =>
                     setFieldValue("departmentId", selectedOption?.value || "")
                   }
-                  isClearable
+                  isDisabled={role === "Role_ForestDeptAdmin"}
+                  isClearable={role !== "Role_ForestDeptAdmin"}
                   placeholder="Department"
                   className="mt-[4px] text-sm"
                   classNamePrefix="react-select"

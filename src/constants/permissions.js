@@ -252,3 +252,25 @@ export const Amrabad = [
   "amarabad-total-transaction",
   "pos-reports",
 ];
+
+export const ROLE_FOREST_DEPT_ADMIN = "Role_ForestDeptAdmin";
+
+export const ForestDeptAdmin = [
+  "dashboard",
+  // Masters
+  "departments",
+  "entity-types",
+  "nodal-officer",
+  "entities",
+  "super-admin-facilites",
+  // Bookings Reports
+  "completed-bookings",
+  "entity-bookings",
+  "payment-transaction-report",
+  "bank-transactions",
+  "total-transactions-dashboard",
+  "refund-transactions",
+  // Grievance
+  "Grievance-consolidate",
+  "Grievance-Incident",
+];

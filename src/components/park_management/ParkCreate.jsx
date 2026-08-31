@@ -10,6 +10,7 @@ import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { useNodalOfficerStore } from "../../store/masters/nodalOfficerStore";
 import useAuthStore from "../../store/authStore";
+import ForestDeptDepartmentSync from "../common/ForestDeptDepartmentSync";
 
 const ParkCreate = ({
   setIsParkCreateVisible,
@@ -38,6 +39,10 @@ const ParkCreate = ({
     useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
@@ -285,6 +290,12 @@ const ParkCreate = ({
           {/* EntityTypeId DepartmentId */}
           {({ setFieldValue, touched, errors }) => (
             <Form className="">
+              <ForestDeptDepartmentSync
+                role={role}
+                forestDepartmentId={forestDepartmentId}
+                setFieldValue={setFieldValue}
+                fieldName="DepartmentId"
+              />
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
                 {/* Department */}
                 <div>
@@ -294,7 +305,10 @@ const ParkCreate = ({
                   <Field
                     as="select"
                     name="DepartmentId"
-                    disabled={role === "ROLE_NODALOFFICER"}
+                    disabled={
+                      role === "ROLE_NODALOFFICER" ||
+                      role === "Role_ForestDeptAdmin"
+                    }
                     className={`mt-1 block w-full px-2 py-1 border ${
                       errors.DepartmentId && touched.DepartmentId
                         ? "border-red-500"

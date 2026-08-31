@@ -6,6 +6,7 @@ import { useAdminFacilityStore } from "../../store/masters/SuperAdminFacilitiesS
 import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStore";
 import { useEntityTypesStore } from "../../store/masters/entityTypesStore";
 import Select from "react-select";
+import useAuthStore from "../../store/authStore";
 
 function SuperAdminFacilitiesList({
   setIsFacilityCreateVisible,
@@ -29,6 +30,20 @@ function SuperAdminFacilitiesList({
     departmentId: userObject.departmentId,
     locationCategoryId: userObject.locationCategoryId,
   });
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
+  useEffect(() => {
+    if (role !== "Role_ForestDeptAdmin" || !forestDepartmentId) return;
+    setFilters((prev) =>
+      prev.departmentId === forestDepartmentId
+        ? prev
+        : { ...prev, departmentId: forestDepartmentId }
+    );
+  }, [role, forestDepartmentId]);
 
   const [columnDefs] = useState([
     {
@@ -134,7 +149,13 @@ function SuperAdminFacilitiesList({
                   value: dept.departmentId,
                   label: dept.departmentName,
                 }))
-                .find((option) => option.value === filters.departmentId) || null // Set the selected value
+                .find(
+                  (option) =>
+                    option.value ===
+                    (role === "Role_ForestDeptAdmin"
+                      ? forestDepartmentId
+                      : filters.departmentId)
+                ) || null
             }
             options={allDepartmentTypes
               ?.filter((dept) => dept.isActive)
@@ -145,7 +166,8 @@ function SuperAdminFacilitiesList({
             onChange={(selectedOption) =>
               handleFilterChange("departmentId", selectedOption?.value || "")
             }
-            isClearable
+            isDisabled={role === "Role_ForestDeptAdmin"}
+            isClearable={role !== "Role_ForestDeptAdmin"}
             placeholder="Department"
             className="mt-[4px] text-sm"
             classNamePrefix="react-select"

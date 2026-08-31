@@ -22,6 +22,7 @@ import { useDepartmentTypesStore } from "../../../store/masters/departmentTypesS
 import { useFacilityStore } from "../../../store/masters/facilitiesStore";
 import { useServiceStore } from "../../../store/masters/servicesStore";
 import PopupModal from "../../../components/utils/popup_modal/PopupModal";
+import ForestDeptDepartmentSync from "../../../components/common/ForestDeptDepartmentSync";
 
 export default function AdminBookings() {
   const [openModal, setOpenModal] = useState(false);
@@ -62,6 +63,10 @@ export default function AdminBookings() {
   const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
 
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
   console.log("isCounterEnabled", isCounterEnabled);
@@ -70,6 +75,8 @@ export default function AdminBookings() {
     fetchAllBookings();
 
     if (role === "ROLE_SUPERADMIN") {
+      fetchAllDepartmentTypes();
+    } else if (role === "Role_ForestDeptAdmin") {
       fetchAllDepartmentTypes();
     }
     fetchAllEntityTypes();
@@ -420,6 +427,11 @@ export default function AdminBookings() {
               >
                 {({ values, setFieldValue, errors, touched }) => (
                   <Form>
+                    <ForestDeptDepartmentSync
+                      role={role}
+                      forestDepartmentId={forestDepartmentId}
+                      setFieldValue={setFieldValue}
+                    />
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-3">
                       {role !== "ROLE_ADMIN" &&
                         role !== "ROLE_ZOOPARKADMIN" && (
@@ -544,7 +556,8 @@ export default function AdminBookings() {
                         />
                       </div>
                       {/* department */}
-                      {role === "ROLE_SUPERADMIN" && (
+                      {(role === "ROLE_SUPERADMIN" ||
+                        role === "Role_ForestDeptAdmin") && (
                         <div>
                           <label className="block text-xs font-medium text-gray-700">
                             Department
@@ -561,8 +574,11 @@ export default function AdminBookings() {
                                 }))
                                 .find(
                                   (option) =>
-                                    option.value === values.departmentId
-                                ) || null // Set the selected value
+                                    option.value ===
+                                    (role === "Role_ForestDeptAdmin"
+                                      ? forestDepartmentId
+                                      : values.departmentId)
+                                ) || null
                             }
                             options={allDepartmentTypes
                               ?.filter((dept) => dept.isActive)
@@ -576,7 +592,8 @@ export default function AdminBookings() {
                                 selectedOption?.value || ""
                               )
                             }
-                            isClearable
+                            isDisabled={role === "Role_ForestDeptAdmin"}
+                            isClearable={role !== "Role_ForestDeptAdmin"}
                             placeholder="Department"
                             className="mt-[4px] text-sm"
                             classNamePrefix="react-select"

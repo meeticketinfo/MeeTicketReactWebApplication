@@ -5,6 +5,8 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import { useAdminFacilityStore } from "../../store/masters/SuperAdminFacilitiesStore";
+import useAuthStore from "../../store/authStore";
+import ForestDeptDepartmentSync from "../common/ForestDeptDepartmentSync";
 
 function CreateSuperAdminFacilities({
   setIsFacilityCreateVisible,
@@ -15,6 +17,12 @@ function CreateSuperAdminFacilities({
     useDepartmentTypesStore();
   const { saveAdminFacilityDetails, AdminFacilityEditDetails } =
     useAdminFacilityStore();
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
   console.log("Edit", AdminFacilityEditDetails);
   useEffect(() => {
     fetchAllEntityTypes();
@@ -105,8 +113,13 @@ function CreateSuperAdminFacilities({
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
-        {({ errors, touched, isSubmitting }) => (
+        {({ errors, touched, isSubmitting, setFieldValue }) => (
           <Form className="grid grid-cols-1 justify-center">
+            <ForestDeptDepartmentSync
+              role={role}
+              forestDepartmentId={forestDepartmentId}
+              setFieldValue={setFieldValue}
+            />
             <div className="grid grid-cols-1 gap-6 p-6  rounded-lg w-96 mx-auto">
 
               {/* Department */}
@@ -115,7 +128,12 @@ function CreateSuperAdminFacilities({
                 <Field
                   as="select"
                   name="departmentId"
-                  className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
+                  disabled={role === "Role_ForestDeptAdmin"}
+                  className={`mt-1 block w-full px-2 py-1 border  rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm ${
+                    role === "Role_ForestDeptAdmin"
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                 >
                   <option value="">Select Department</option>
                   {allDepartmentTypes
