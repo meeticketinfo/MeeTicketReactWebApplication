@@ -32,6 +32,7 @@ import WalkerpassCategory from "../components/walkerPass/WalkerpassCategory";
 import DashboardViewPoints from "./park_admin/dashboard_components/DashboardViewPoints";
 import { FaListAlt } from "react-icons/fa";
 import { MdConfirmationNumber, MdErrorOutline, MdPending } from "react-icons/md";
+import ForestDeptDepartmentSync from "../components/common/ForestDeptDepartmentSync";
 
 function AdminDashboard() {
   superballs.register();
@@ -65,6 +66,10 @@ function AdminDashboard() {
   const role = roleDetails?.name;
   const userId = decodedTokenData?.data?.UserId;
   const parkId = decodedTokenData?.data?.ParkId;
+  const forestDepartment = allDepartmentTypes?.find(
+    (dept) => dept.isActive && dept.departmentName === "Forest Department"
+  );
+  const forestDepartmentId = forestDepartment?.departmentId;
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isBookingDate, setIsBookingDate] = useState(false);
@@ -346,6 +351,11 @@ function AdminDashboard() {
           <Formik initialValues={EsdInitialValues} onSubmit={overAllOnSubmit}>
             {({ values, setFieldValue }) => (
               <Form>
+                <ForestDeptDepartmentSync
+                  role={role}
+                  forestDepartmentId={forestDepartmentId}
+                  setFieldValue={setFieldValue}
+                />
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
                   <div>
                     <label className="block text-xs font-medium text-gray-700">
@@ -426,7 +436,10 @@ function AdminDashboard() {
                                   }))
                                   .find(
                                     (option) =>
-                                      option.value === values.departmentId,
+                                      option.value ===
+                                      (role === "Role_ForestDeptAdmin"
+                                        ? forestDepartmentId
+                                        : values.departmentId),
                                   ) || null
                               }
                               options={allDepartmentTypes
@@ -442,7 +455,8 @@ function AdminDashboard() {
                                 setFieldValue("entityId", "");
                                 setFieldValue("locationId", "");
                               }}
-                              isClearable
+                              isDisabled={role === "Role_ForestDeptAdmin"}
+                              isClearable={role !== "Role_ForestDeptAdmin"}
                               placeholder="Department"
                               className="mt-[4px] text-sm"
                               classNamePrefix="react-select"

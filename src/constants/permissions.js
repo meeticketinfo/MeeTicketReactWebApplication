@@ -267,7 +267,7 @@ export const ForestDeptAdmin = [
   "completed-bookings",
   "entity-bookings",
   "payment-transaction-report",
-  "bank-transactions",
+  // "bank-transactions",
   "total-transactions-dashboard",
   "refund-transactions",
   // Grievance
