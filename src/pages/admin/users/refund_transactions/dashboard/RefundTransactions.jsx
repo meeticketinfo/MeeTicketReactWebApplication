@@ -5,10 +5,21 @@ import RefundTransactionsChart from "../charts/RefundTransactionsChart";
 import RefundTransactionsForm from "./RefundTransactionsForm";
 import { useSearchParams } from "react-router-dom";
 import { userReports } from "../../../../../store/userTransaction/UserReports";
+import useAuthStore from "../../../../../store/authStore";
+import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
 
 function RefundTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
+  const { allDepartmentTypes } = useDepartmentTypesStore();
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin"
+      ? allDepartmentTypes?.find(
+          (dept) => dept.isActive && dept.departmentName === "Forest Department"
+        )?.departmentId
+      : undefined;
 
   const {
     refundTransactions,
@@ -20,19 +31,31 @@ function RefundTransactions() {
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
+    if (role === "Role_ForestDeptAdmin") {
+      if (
+        forestDepartmentId === null ||
+        forestDepartmentId === undefined ||
+        forestDepartmentId === ""
+      ) {
+        return;
+      }
+    }
     localStorage.removeItem("refundTransactionSearchParams");
     const payload = {
       fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
       toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
       locationId: searchParams.get("locationId") || "",
       locationCategoryId: +searchParams.get("entityId") || "",
-      departmentId: +searchParams.get("departmentId") || "",
+      departmentId:
+        role === "Role_ForestDeptAdmin"
+          ? forestDepartmentId
+          : +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
       modeOfTransaction:searchParams.get("bookingSource") || "",
       paymentMode:searchParams.get("PaymentMode") || "",
     };
     fetchRefundTransactions(payload);
-  }, []);
+  }, [forestDepartmentId]);
 
   // overAll on submit
   const totalCount =

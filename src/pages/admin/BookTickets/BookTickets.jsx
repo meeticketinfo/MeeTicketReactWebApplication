@@ -66,7 +66,8 @@ export default function AdminBookings() {
   const forestDepartment = allDepartmentTypes?.find(
     (dept) => dept.isActive && dept.departmentName === "Forest Department"
   );
-  const forestDepartmentId = forestDepartment?.departmentId;
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   const isCounterEnabled = decodedTokenData?.data?.IsWebCounter;
   console.log("isCounterEnabled", isCounterEnabled);
@@ -90,20 +91,6 @@ export default function AdminBookings() {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetchAllEntityBookingsByFilters(initialValues);
-
-        setCgg(res.data.data.data.isCggEnable);
-      } catch (err) {
-        console.error("Error fetching bookings:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
 
@@ -119,6 +106,35 @@ export default function AdminBookings() {
         ? decodedTokenData?.data?.ParkId
         : "",
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (role === "Role_ForestDeptAdmin") {
+        if (
+          forestDepartmentId === null ||
+          forestDepartmentId === undefined ||
+          forestDepartmentId === ""
+        ) {
+          return;
+        }
+      }
+      try {
+        const res = await fetchAllEntityBookingsByFilters({
+          ...initialValues,
+          departmentId:
+            role === "Role_ForestDeptAdmin"
+              ? forestDepartmentId
+              : initialValues.departmentId,
+        });
+
+        setCgg(res.data.data.data.isCggEnable);
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+      }
+    };
+
+    fetchData();
+  }, [forestDepartmentId]);
 
   const parksToRender =
     role === "ROLE_NODALOFFICER" ? allNodalOfficerParks : allParks;

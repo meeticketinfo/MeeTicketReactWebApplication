@@ -5,10 +5,21 @@ import { useTransactionsStore } from "../../../../../store/userTransaction/Trans
 import TotalTransactionsChart from "../charts/TotalTransactionsChart";
 import TotalTransactionsForm from "./TotalTransactionsForm";
 import { useSearchParams } from "react-router-dom";
+import useAuthStore from "../../../../../store/authStore";
+import { useDepartmentTypesStore } from "../../../../../store/masters/departmentTypesStore";
 
 function TotalTransactions() {
   superballs.register();
   const [searchParams] = useSearchParams();
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
+  const { allDepartmentTypes } = useDepartmentTypesStore();
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin"
+      ? allDepartmentTypes?.find(
+          (dept) => dept.isActive && dept.departmentName === "Forest Department"
+        )?.departmentId
+      : undefined;
 
   const {
     PaymentTransactionSummaryPieChartData,
@@ -19,16 +30,28 @@ function TotalTransactions() {
   const endOfDay = getEndOfCurrentDay();
   
   useEffect(() => {
+    if (role === "Role_ForestDeptAdmin") {
+      if (
+        forestDepartmentId === null ||
+        forestDepartmentId === undefined ||
+        forestDepartmentId === ""
+      ) {
+        return;
+      }
+    }
     const payload = {
       startDate: cleanString(searchParams.get("startDate"), "_", ":") || startOfDay,
       endDate: cleanString(searchParams.get("endDate"), "_", ":") || endOfDay,
       locationId: searchParams.get("locationId") || "",
       categoryId: +searchParams.get("entityId") || "",
-      departmentId: +searchParams.get("departmentId") || "",
+      departmentId:
+        role === "Role_ForestDeptAdmin"
+          ? forestDepartmentId
+          : +searchParams.get("departmentId") || "",
       phoneNumber: searchParams.get("phoneNumber") || "",
     };
     fetchPaymentTransactionSummaryPieChartData(payload);
-  }, []);
+  }, [forestDepartmentId]);
 
   // overAll on submit
   const totalCount =

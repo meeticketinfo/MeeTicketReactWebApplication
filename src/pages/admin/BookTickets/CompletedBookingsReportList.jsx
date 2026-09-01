@@ -40,9 +40,19 @@ function CompletedBookingsReportList() {
   const forestDepartment = allDepartmentTypes?.find(
     (dept) => dept.isActive && dept.departmentName === "Forest Department"
   );
-  const forestDepartmentId = forestDepartment?.departmentId;
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   useEffect(() => {
+    if (role === "Role_ForestDeptAdmin") {
+      if (
+        forestDepartmentId === null ||
+        forestDepartmentId === undefined ||
+        forestDepartmentId === ""
+      ) {
+        return;
+      }
+    }
     fetchCompleteBookingsReport({
       startDate: savedFilters?.fromDate
         ? savedFilters.fromDate
@@ -52,16 +62,19 @@ function CompletedBookingsReportList() {
         ? savedFilters.typeOfBooking
         : "",
       mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId: savedFilters?.departmentId
-        ? savedFilters.departmentId
-        : null,
+      departmentId:
+        role === "Role_ForestDeptAdmin"
+          ? forestDepartmentId
+          : savedFilters?.departmentId
+          ? savedFilters.departmentId
+          : null,
       entityTypeId: savedFilters?.entityTypeId
         ? savedFilters.entityTypeId
         : null,
       parkId: savedFilters?.parkId ? savedFilters.parkId : null,
     });
     console.log("savedFilters", savedFilters);
-  }, [fetchCompleteBookingsReport]);
+  }, [fetchCompleteBookingsReport, forestDepartmentId]);
 
   useEffect(() => {
     fetchAllEntityTypes();

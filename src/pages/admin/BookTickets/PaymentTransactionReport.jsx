@@ -58,7 +58,8 @@ function PaymentTransactionReport() {
   const forestDepartment = allDepartmentTypes?.find(
     (dept) => dept.isActive && dept.departmentName === "Forest Department"
   );
-  const forestDepartmentId = forestDepartment?.departmentId;
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   const initialValues = {
     fromDate: userObject?.startDate || getCurrentDate(),
@@ -81,16 +82,28 @@ function PaymentTransactionReport() {
   }, []);
 
   useEffect(() => {
+    if (role === "Role_ForestDeptAdmin") {
+      if (
+        forestDepartmentId === null ||
+        forestDepartmentId === undefined ||
+        forestDepartmentId === ""
+      ) {
+        return;
+      }
+    }
     fetchPaymentTransactions({
       startDate: userObject?.startDate || getCurrentDate(),
       endDate: userObject?.endDate || getCurrentDate(),
       currentTransactionStatus: userObject?.currentTransactionStatus || null,
       phoneNumber: userObject?.phoneNumber || null,
-      departmentId: userObject?.entityTypeId || null,
+      departmentId:
+        role === "Role_ForestDeptAdmin"
+          ? forestDepartmentId
+          : userObject?.entityTypeId || null,
       entityTypeId: userObject?.departmentId || null,
       parkId: userObject?.parkId || null,
     });
-  }, [fetchPaymentTransactions]);
+  }, [fetchPaymentTransactions, forestDepartmentId]);
 
   const onSubmit = (values, { resetForm }) => {
     fetchPaymentTransactions({

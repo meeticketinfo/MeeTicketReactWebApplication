@@ -30,7 +30,8 @@ const TotalTransactionsForm = () => {
   const forestDepartment = allDepartmentTypes?.find(
     (dept) => dept.isActive && dept.departmentName === "Forest Department"
   );
-  const forestDepartmentId = forestDepartment?.departmentId;
+  const forestDepartmentId =
+    role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
