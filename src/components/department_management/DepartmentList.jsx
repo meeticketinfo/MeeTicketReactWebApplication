@@ -11,6 +11,7 @@ const DepartmentList = ({
   setIsDepartmentTypeCreateVisible,
   isDepartmentTypeEditVisible,
   setIsDepartmentTypeEditVisible,
+  forestDeptAdmin,
 }) => {
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
@@ -59,7 +60,7 @@ const DepartmentList = ({
       flex: 1,
       headerClass: "text-blue-v2",
     },
-    {
+    forestDeptAdmin && ({
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
@@ -80,7 +81,7 @@ const DepartmentList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+    }),
   ];
 
   return (

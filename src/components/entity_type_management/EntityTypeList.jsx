@@ -12,6 +12,7 @@ const EntityTypeList = ({
   isEntityTypeCreateVisible,
   isEntityTypeEditVisible,
   setIsEntityTypeEditVisible,
+  forestDeptAdmin,
 }) => {
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
 
@@ -62,7 +63,7 @@ const EntityTypeList = ({
       flex: 1,
       headerClass: "text-blue-v2",
     },
-    {
+    forestDeptAdmin && ({
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
@@ -83,7 +84,7 @@ const EntityTypeList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+    }),
   ];
 
   return (

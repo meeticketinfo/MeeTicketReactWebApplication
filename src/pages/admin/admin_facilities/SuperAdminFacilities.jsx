@@ -3,11 +3,15 @@ import AdminLayout from '../../../layouts/AdminLayout'
 import SuperAdminFacilitiesList from '../../../components/super_admin_facilites_management/SuperAdminFacilitiesList';
 import CreateSuperAdminFacilities from '../../../components/super_admin_facilites_management/CreateSuperAdminFacilities';
 import BackButton from '../../../components/BackButton';
+import useAuthStore from '../../../store/authStore';
+import { ROLE_FOREST_DEPT_ADMIN } from '../../../constants/permissions';
 
 function SuperAdminFacilities() {
     const [isFacilityCreateVisible, setIsFacilityCreateVisible] = useState(false);
     const [isFacilityEditVisible, setIsFacilityEditVisible] = useState(false);
-  
+    const {roleDetails} = useAuthStore();
+    const role = roleDetails?.name;
+    const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN].includes(role);
     // Function to toggle the visibility of FacilityCreate
     const toggleFacilityCreate = () => {
       setIsFacilityCreateVisible((prev) => !prev);
@@ -25,25 +29,25 @@ function SuperAdminFacilities() {
             </h1>
           </div>
           {/* Right: Actions */}
-          <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-           
+          {forestDeptAdmin && (<div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+
             {!isFacilityCreateVisible ? (
-            <button
-              onClick={toggleFacilityCreate}className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
-            >
-              <span >Add Master Facility</span>
-            </button>
-             ) : (
+              <button
+                onClick={toggleFacilityCreate} className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
+              >
+                <span >Add Master Facility</span>
+              </button>
+            ) : (
               <BackButton
                 label="Back"
                 onClick={() => setIsFacilityCreateVisible(false)}
                 className="bg-blue-600 hover:bg-blue-700"
               />
             )}
-          </div>
+          </div>)}
         </div>
         {/* Cards */}
-          {isFacilityCreateVisible ? <CreateSuperAdminFacilities setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible}/> : <SuperAdminFacilitiesList setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible}  />}
+          {isFacilityCreateVisible ? <CreateSuperAdminFacilities setIsFacilityCreateVisible={setIsFacilityCreateVisible} isFacilityEditVisible={isFacilityEditVisible}/> : <SuperAdminFacilitiesList setIsFacilityCreateVisible={setIsFacilityCreateVisible} setIsFacilityEditVisible={setIsFacilityEditVisible} forestDeptAdmin={forestDeptAdmin} />}
         
       </div>
       </AdminLayout>

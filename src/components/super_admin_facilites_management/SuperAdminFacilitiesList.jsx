@@ -11,6 +11,7 @@ import useAuthStore from "../../store/authStore";
 function SuperAdminFacilitiesList({
   setIsFacilityCreateVisible,
   setIsFacilityEditVisible,
+  forestDeptAdmin,
 }) {
   const {
     AdminFacilitiesDetails,
@@ -72,7 +73,7 @@ function SuperAdminFacilitiesList({
       flex: 1,
       headerClass: "text-blue-v2",
     },
-    {
+    forestDeptAdmin && ({
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
@@ -97,7 +98,7 @@ function SuperAdminFacilitiesList({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+    }),
   ]);
 
   useEffect(() => {

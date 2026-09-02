@@ -9,6 +9,7 @@ const NodalOfficerList = ({
   setIsNodalOfficerCreateVisible,
   isNodalOfficerEditVisible,
   setIsNodalOfficerEditVisible,
+  forestDeptAdmin,
 }) => {
   const {
     allNodalOfficers,
@@ -76,7 +77,7 @@ const NodalOfficerList = ({
       flex: 1,
       headerClass: "text-blue-v2",
     },
-    {
+    forestDeptAdmin && ({
       headerName: "Actions",
       field: "actions",
       cellRenderer: (params) => (
@@ -100,7 +101,7 @@ const NodalOfficerList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+    }),
   ];
   return (
     <>

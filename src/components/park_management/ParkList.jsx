@@ -10,6 +10,7 @@ import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStor
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import { ROLE_FOREST_DEPT_ADMIN } from "../../constants/permissions";
 
 const ParkList = ({
   setIsParkCreateVisible,
@@ -56,12 +57,10 @@ const ParkList = ({
     allNodalOfficerParks,
     isFetchAllNodalOfficerParksLoading,
   } = useParkStore();
-  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
-    useAuthStore();
-  const { allDepartmentTypes, fetchAllDepartmentTypes } =
-    useDepartmentTypesStore();
-
+  const { sidebarMenuItems, roleDetails, logout, decodedTokenData } = useAuthStore();
+  const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
+  const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN].includes(roleDetails?.name);
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();
@@ -219,17 +218,16 @@ const ParkList = ({
       headerClass: "text-blue-v2",
     },
 
-    {
+    forestDeptAdmin && ({
       headerName: "Actions",
       field: "actions",
       maxWidth: "130",
       cellRenderer: (params) => (
         <>
           <div
-            className={`${
-              role === "ROLE_NODALOFFICER" &&
+            className={`${role === "ROLE_NODALOFFICER" &&
               "flex items-center justify-around py-2"
-            }`}
+              }`}
           >
             {/* edit */}
             <button
@@ -260,7 +258,7 @@ const ParkList = ({
       ),
       flex: 1,
       headerClass: "text-blue-v2",
-    },
+    }),
   ];
   //  filtring esd admin location details
   useEffect(() => {

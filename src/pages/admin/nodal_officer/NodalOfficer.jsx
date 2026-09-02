@@ -6,13 +6,16 @@ import AgGridTable from "../../../components/tables/AgGridTable";
 import BackButton from "../../../components/BackButton";
 import { useNodalOfficerStore } from "../../../store/masters/nodalOfficerStore";
 import AgGridTableV2 from "../../../components/tables/AgGridTableV2";
+import { ROLE_FOREST_DEPT_ADMIN } from "../../../constants/permissions";
+import useAuthStore from "../../../store/authStore";
 
 export default function NodalOfficer() {
   // State to toggle the FacilityCreate component
-  const [isNodalOfficerCreateVisible, setIsNodalOfficerCreateVisible] =
-    useState(false);
-  const [isNodalOfficerEditVisible, setIsNodalOfficerEditVisible] =
-    useState(false);
+  const [isNodalOfficerCreateVisible, setIsNodalOfficerCreateVisible] = useState(false);
+  const [isNodalOfficerEditVisible, setIsNodalOfficerEditVisible] = useState(false);
+  const {roleDetails} = useAuthStore();
+  const role = roleDetails?.name;
+  const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN].includes(role);
   const {
     allNodalOfficerParks,
     isFetchAllNodalOfficerParksLoading,
@@ -132,23 +135,25 @@ export default function NodalOfficer() {
             </h1>
           </div>
           {/* Right: Actions */}
-          <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-            {/* Add view button */}
-            {!isNodalOfficerCreateVisible ? (
-              <button
-                onClick={toggleNodalOfficerCreate}
-               className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
-              >
-                <span > Add Nodal Officer </span>
-              </button>
-            ) : (
-              <BackButton
-                label="Back"
-                onClick={() => setIsNodalOfficerCreateVisible(false)}
-                className="bg-blue-600 hover:bg-blue-700"
-              />
-            )}
-          </div>
+          {forestDeptAdmin && (
+            <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+              {/* Add view button */}
+              {!isNodalOfficerCreateVisible ? (
+                <button
+                  onClick={toggleNodalOfficerCreate}
+                  className="btn-sm bg-gray-900 text-gray-100 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-800 dark:hover:bg-white flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-md text-xs sm:text-sm"
+                >
+                  <span > Add Nodal Officer </span>
+                </button>
+              ) : (
+                <BackButton
+                  label="Back"
+                  onClick={() => setIsNodalOfficerCreateVisible(false)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                />
+              )}
+            </div>
+          )}
         </div>
 
         {/* Cards */}
@@ -175,6 +180,7 @@ export default function NodalOfficer() {
             setIsNodalOfficerCreateVisible={setIsNodalOfficerCreateVisible}
             isNodalOfficerEditVisible={isNodalOfficerEditVisible}
             setIsNodalOfficerEditVisible={setIsNodalOfficerEditVisible}
+            forestDeptAdmin={forestDeptAdmin}
           />
         )}
         {/* </div> */}
