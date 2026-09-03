@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AmrabadPosReportForm from "./AmrabadPosReportForm";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import { useAmrabadPosStore } from "./AmrabadPosStore";
@@ -67,6 +67,23 @@ const AmrabadPosReportList = () => {
     });
   }, [currentPage, PAGE_LIMIT]);
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        posTransactionID: "Total",
+        totalAmount: rows.reduce(
+          (sum, row) => sum + (Number(row.totalAmount) || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
+
   const columnDefs = [
     {
       field: "sno",
@@ -74,6 +91,7 @@ const AmrabadPosReportList = () => {
       maxWidth: 70,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -83,7 +101,12 @@ const AmrabadPosReportList = () => {
       headerName: "POS Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
+        return params.value ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "transactionDateTime",
@@ -91,7 +114,7 @@ const AmrabadPosReportList = () => {
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
+        if (isTotalRow(params) || !params.value) return isTotalRow(params) ? "" : "N/A";
         const date = new Date(params.value);
         return date.toLocaleString("en-IN", {
           year: "numeric",
@@ -111,7 +134,10 @@ const AmrabadPosReportList = () => {
 
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
      
      
@@ -121,7 +147,10 @@ const AmrabadPosReportList = () => {
 
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
      {
       field: "paymentMethod",
@@ -129,7 +158,10 @@ const AmrabadPosReportList = () => {
 
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
      {
       field: "totalAmount",
@@ -137,7 +169,12 @@ const AmrabadPosReportList = () => {
 
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
    
    
@@ -147,6 +184,7 @@ const AmrabadPosReportList = () => {
   headerClass: "text-blue-v2",
 
   cellRenderer: (params) => {
+    if (isTotalRow(params)) return "";
     return (
       <span
         className={`px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 shadow`}
@@ -236,6 +274,7 @@ const AmrabadPosReportList = () => {
         tableHeight={AmrabadPosReportData?.length > 10 ? 550 : 300}
         SetcurrentPage={setCurrentPage}
         showSearch={false}
+        getPagePinnedBottomRowData={getPagePinnedBottomRowData}
       />
     </div>
   );

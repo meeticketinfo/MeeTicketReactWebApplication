@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -135,10 +135,30 @@ function PaymentTransactionReport() {
     );
   };
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        transactionId: "Total",
+        confirmedTxnAmount: rows.reduce(
+          (sum, row) => sum + (Number(row.confirmedTxnAmount) || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.node.rowIndex + 1;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -147,7 +167,12 @@ function PaymentTransactionReport() {
       field: "transactionId",
       headerName: "Transaction ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
+        return params.value || "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "departmentName",
@@ -155,69 +180,101 @@ function PaymentTransactionReport() {
       flex: 1,
       minWidth: 100,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "entityTypeName",
       headerName: "Location category",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
       {
       field: "parkName",
       headerName: "Location",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "orderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "phonE_NUMBER",
       headerName: "Mobile No.",
       maxWidth: "110",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "confirmedTxnAmount",
       headerName: "Amount Initiated",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value || "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "createdDate",
       headerName: "Payment Date",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return formatToStandardDate(params.value) || "N/A";
+      },
     },
     {
       field: "currentTransactionStatus",
       headerName: "Payment Status",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "refundStatus",
       headerName: "Refund Status",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "resultStatus",
       headerName: "Confirmed Status",
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     
     {
@@ -226,7 +283,7 @@ function PaymentTransactionReport() {
       maxWidth: "180",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
+        if (isTotalRow(params) || !params.value) return isTotalRow(params) ? "" : "N/A";
         const date = new Date(params.value);
         return date.toLocaleString("en-US", {
           year: "numeric",
@@ -243,13 +300,16 @@ function PaymentTransactionReport() {
       headerName: " Status",
       maxWidth: "100",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <span className="text-blue-v2">
             {params.data.isPaymentTransaction ? "UPI" : "POS"}
           </span>
         </div>
-      ),
+        );
+      },
     },
     {
       field: "Re-generateTicket",
@@ -257,6 +317,7 @@ function PaymentTransactionReport() {
       maxWidth: 140,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         const isDisabled =
           params.data.resultStatus === "TXN_SUCCESS" ||
           params.data.isTicketGenerated;
@@ -290,6 +351,7 @@ function PaymentTransactionReport() {
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         const isDisabled = (params.data.isTicketGenerated)||(params.data.isTimeExpired);
 
         return (
@@ -322,6 +384,7 @@ function PaymentTransactionReport() {
       headerClass: "text-blue-v2",
       flex: 1,
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         const isDisabled = params.data.isTicketGenerated !== true;
 
         return (
@@ -861,6 +924,7 @@ function PaymentTransactionReport() {
             isFetchLoading={isTransactionPaymentReportsLoading}
             rowData={allTransactionPaymentReports || []}
             columnDefs={columnDefs}
+            getPagePinnedBottomRowData={getPagePinnedBottomRowData}
             // onPageChange={handlePageChange}
             // totalRecords={totalEntityBookingRecords}
             enableAdvancedFilter={true}

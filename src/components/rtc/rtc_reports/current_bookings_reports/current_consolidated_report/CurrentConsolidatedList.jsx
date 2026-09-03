@@ -82,6 +82,7 @@ function CurrentConsolidatedList() {
     {
       field: "returnPNRNumber",
       headerName: "RETURN PNR NO",
+      hide: true,
       // flex: 1,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
@@ -135,6 +136,7 @@ function CurrentConsolidatedList() {
     {
       field: "seatLayoutType",
       headerName: "SEAT LAYOUT TYPE",
+      hide: true,
       // flex: 1,
       headerClass: "text-blue-v2  ",
 
@@ -164,6 +166,7 @@ function CurrentConsolidatedList() {
     {
       field: "mid",
       headerName: "MID",
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
@@ -199,6 +202,7 @@ function CurrentConsolidatedList() {
     {
       field: "settled_Date",
       headerName: "SETTLED DATE",
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         // Empty for total row
@@ -228,6 +232,7 @@ function CurrentConsolidatedList() {
     {
       field: "settledamount",
       headerName: "SETTLED AMOUNT",
+      hide: true,
       maxWidth: 150,
       // flex: 1,
       headerClass: "text-blue-v2  ",
@@ -243,6 +248,7 @@ function CurrentConsolidatedList() {
     {
       field: "utr",
       headerName: "UTR",
+      hide: true,
       // minWidth: 130,
       maxWidth: 140,
       // flex: 1,
@@ -280,6 +286,7 @@ function CurrentConsolidatedList() {
     {
       field: "returnJourneyTravelDate",
       headerName: "RETURN JOURNEY TRAVEL DATE",
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         // Empty for total row

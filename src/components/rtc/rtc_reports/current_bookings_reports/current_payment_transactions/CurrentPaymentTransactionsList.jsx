@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import CurrentPaymentTransactionsForm from "./CurrentPaymentTransactionsForm";
@@ -67,12 +67,32 @@ function CurrentPaymentTransactionsList() {
     setCurrentPage(0);
   };
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => [
+    {
+      isTotal: true,
+      orderID: "TOTAL",
+      ticketQuantity: displayedRows.reduce(
+        (sum, row) => sum + Number(row.ticketQuantity || 0),
+        0,
+      ),
+      amount: displayedRows.reduce(
+        (sum, row) => sum + Number(row.amount || row.totalAmount || 0),
+        0,
+      ),
+    },
+  ], []);
+
   const [columnDefs] = useState([
     {
       field: "sno",
       headerName: "S.NO",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+      },
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
@@ -81,28 +101,48 @@ function CurrentPaymentTransactionsList() {
       headerName: "ORDER ID",
       minWidth: 200,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return params.value || "TOTAL";
+        return params.value ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "mobileNumber",
       headerName: "MOBILE NUMBER",
       minWidth: 120,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "ticketQuantity",
       headerName: "TICKET QUANTITY",
       minWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params))
+          return params.value || params.value === 0 ? params.value : "";
+        return params.value || params.value === 0 ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "amount",
       headerName: "AMOUNT",
       maxWidth: 100,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ? `₹${params.value}` : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params))
+          return params.value || params.value === 0 ? `₹${params.value}` : "";
+        return params.value || params.value === 0 ? `₹${params.value}` : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "purchaseDate",
@@ -110,6 +150,7 @@ function CurrentPaymentTransactionsList() {
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
         if (!params?.value) return "N/A";
         const date = new Date(params.value);
         if (isNaN(date.getTime())) return "N/A";
@@ -125,14 +166,20 @@ function CurrentPaymentTransactionsList() {
       headerName: "PAYMENT STATUS",
       maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params?.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params?.value || "N/A";
+      },
     },
     {
       field: "actualPaymentStatus",
       headerName: "ACTUAL PAYMENT STATUS",
       maxWidth: 200,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params?.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params?.value || "N/A";
+      },
     },
     {
       field: "refundDate",
@@ -140,6 +187,7 @@ function CurrentPaymentTransactionsList() {
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
         if (!params?.value) return "N/A";
         const date = new Date(params.value);
         if (isNaN(date.getTime())) return "N/A";
@@ -155,14 +203,20 @@ function CurrentPaymentTransactionsList() {
       headerName: "REFUND ID",
       minWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === 0 ? params.value : "N/A";
+      },
     },
     {
       field: "refundStatus",
       headerName: "REFUND STATUS",
       maxWidth: 150,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === 0 ? params.value : "N/A";
+      },
     },
     // {
     //   field: "VerifyTicket",
@@ -232,6 +286,7 @@ function CurrentPaymentTransactionsList() {
       maxWidth: 130,
       //   hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         // console.log("params",params)
         const isDisabled = !params.data.canBeRefundInitiate;
         return (
@@ -263,6 +318,7 @@ function CurrentPaymentTransactionsList() {
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         const pnr =
           params.data?.BookingID && params.data?.BookingID !== "N/A"
             ? params.data.BookingID
@@ -296,6 +352,7 @@ function CurrentPaymentTransactionsList() {
       maxWidth: 160,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         const returnPnr =
           params.data?.returnPNRNumber &&
             params.data?.returnPNRNumber !== "N/A"
@@ -582,6 +639,7 @@ function CurrentPaymentTransactionsList() {
           ExportName="Current Payment Transactions"
           rowData={filteredPaymentTransactions || []}
           columnDefs={columnDefs}
+          getPagePinnedBottomRowData={getPagePinnedBottomRowData}
           isFetchLoading={isFetchCurrentPaymentTransactionsLoading}
           isPagination={false}
           tableHeight={

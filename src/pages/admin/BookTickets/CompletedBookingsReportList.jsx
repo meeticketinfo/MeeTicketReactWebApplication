@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AgGridTable from "../../../components/tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import {
@@ -118,10 +118,34 @@ function CompletedBookingsReportList() {
     console.log("values", values);
   };
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        paymentTransactionId: "Total",
+        totalTicketsBooked: rows.reduce(
+          (sum, row) => sum + (Number(row.totalTicketsBooked) || 0),
+          0,
+        ),
+        totaL_AMOUNT: rows.reduce(
+          (sum, row) => sum + (Number(row.totaL_AMOUNT) || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.node.rowIndex + 1;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -131,14 +155,22 @@ function CompletedBookingsReportList() {
       headerName: "Transaction ID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
+        return params.value ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "referencE_ID",
       headerName: "Reference ID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     // ------------------
 
@@ -147,35 +179,52 @@ function CompletedBookingsReportList() {
       headerName: "Park Name",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "departmentName",
       headerName: "Department",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "entityTypeName",
       headerName: "Location category",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "totalTicketsBooked",
       headerName: "Total No Of Tickets",
       maxWidth: 170,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "mid",
       headerName: "MID",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     // -------------------
 
@@ -184,15 +233,17 @@ function CompletedBookingsReportList() {
       headerName: "Mobile Number",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        !params.value || params.value.trim() === "" ? "N/A" : params.value,
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return !params.value || params.value.trim() === "" ? "N/A" : params.value;
+      },
     },
     {
       field: "purchaseDate",
       headerName: "Purchase Date",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
+        if (isTotalRow(params) || !params.value) return isTotalRow(params) ? "" : "N/A";
         const date = new Date(params.value);
         const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero
         const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month and pad with leading zero
@@ -212,42 +263,62 @@ function CompletedBookingsReportList() {
       headerName: "Booking Date",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return formatToStandardDate(params.value) || "N/A";
+      },
     },
     {
       field: "bookingSource",
       headerName: "Booking Type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "createD_BY",
       headerName: "Booked By",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "totaL_AMOUNT",
       headerName: "Total Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value || "0";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "paymentType",
       headerName: "Payment Type",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "status",
       headerName: "Payment Status",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
       // valueFormatter: (params) =>
       //   formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
@@ -256,12 +327,17 @@ function CompletedBookingsReportList() {
       headerName: "Actual Paytm Status",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       headerName: "Actions",
       field: "actions",
-      cellRenderer: (params) => (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return (
         <div style={{ display: "flex align-center", gap: "0.5rem" }}>
           <NavLink
             end
@@ -274,7 +350,8 @@ function CompletedBookingsReportList() {
             <span className="text-blue-v2"> Booking Details</span>
           </NavLink>
         </div>
-      ),
+        );
+      },
       flex: 1,
       headerClass: "text-blue-v2",
     },
@@ -645,6 +722,8 @@ function CompletedBookingsReportList() {
         isFetchLoading={isCompleteBookingsReportsLoading}
         rowData={allCompleteBookingsReports || []}
         columnDefs={columnDefs}
+        getPagePinnedBottomRowData={getPagePinnedBottomRowData}
+        showPdfExport={true}
         // onPageChange={handlePageChange}
         // totalRecords={totalEntityBookingRecords}
         // enableAdvancedFilter={true}

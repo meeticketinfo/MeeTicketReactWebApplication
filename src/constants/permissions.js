@@ -262,7 +262,7 @@ export const ForestDeptAdmin = [
   "entity-types",
   "nodal-officer",
   "entities",
-  "super-admin-facilites",
+  // "super-admin-facilites",
   // Bookings Reports
   "completed-bookings",
   "entity-bookings",

@@ -145,9 +145,13 @@ export default function AdminBookings() {
   const getPagePinnedBottomRowData = useCallback((displayedRows) => [
     {
       isTotal: true,
-      transactionId: "TOTAL",
-      totalTicketAmount: displayedRows.reduce(
-        (sum, row) => sum + Number(row.totalTicketAmount || 0),
+      transactionId: "Total",
+      quantity: (displayedRows || []).reduce(
+        (sum, row) => sum + (Number(row.quantity) || 0),
+        0,
+      ),
+      amount: (displayedRows || []).reduce(
+        (sum, row) => sum + (Number(row.amount) || 0),
         0,
       ),
     },
@@ -169,7 +173,7 @@ export default function AdminBookings() {
       headerName: "Transaction ID",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (isTotalRow(params)) return "TOTAL";
+        if (isTotalRow(params)) return "Total";
         return params.value && params.value.trim() !== "" ? params.value : "N/A";
       },
       cellStyle: (params) =>
@@ -267,29 +271,31 @@ export default function AdminBookings() {
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (isTotalRow(params)) return "";
+        if (isTotalRow(params)) return Number(params.value) || 0;
         return params.value ?? "N/A";
       },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "amount",
       headerName: "Amount(Per Ticket)",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (isTotalRow(params)) return "";
-        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
-      },
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "totalTicketAmount",
       headerName: "Total Tickets Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-      cellStyle: (params) =>
-        isTotalRow(params) ? { fontWeight: "bold" } : null,
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
+      },
     },
     {
       field: "modeOfPayment",

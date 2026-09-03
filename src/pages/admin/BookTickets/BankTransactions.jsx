@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { useSummaryReportStore } from "../../../store/metro_reports/summaryReportStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   formatToStandardDate,
   getCurrentDate,
@@ -106,10 +106,36 @@ export default function BankTransactions() {
       })
     );
   };
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    const sumField = (field) =>
+      rows.reduce((sum, row) => sum + (Number(row[field]) || 0), 0);
+    return [
+      {
+        isTotal: true,
+        parkName: "Total",
+        quantity: sumField("quantity"),
+        cashCollectedAmount: sumField("cashCollectedAmount"),
+        upiCollectedAmount: sumField("upiCollectedAmount"),
+        totalAmount: sumField("totalAmount"),
+        verifiedAmount: sumField("verifiedAmount"),
+        pendingVerifiedAmount: sumField("pendingVerifiedAmount"),
+        settledPaymentAMount: sumField("settledPaymentAMount"),
+        pendingSettledAmount: sumField("pendingSettledAmount"),
+      },
+    ];
+  }, []);
+
   const [columnDefs] = useState([
     {
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -118,21 +144,31 @@ export default function BankTransactions() {
       headerName: "Purchase Date",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        `${formatToStandardDate(params.value)} ` || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${formatToStandardDate(params.value)} ` || "N/A";
+      },
     },
     {
       field: "parkName",
       headerName: "Location Name",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
+        return `${params.value} ` || "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "departmentName",
       headerName: "Department",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "entityTypeName",
@@ -140,101 +176,161 @@ export default function BankTransactions() {
       maxWidth: "180",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? params.value : "N/A";
+      },
     },
     {
       field: "bookings",
       headerName: "Bookings",
       maxWidth: "110",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${params.value} ` || "0";
+      },
     },
     {
       field: "quantity",
       headerName: "Quantity",
       maxWidth: "110",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return `${params.value} ` || "0";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "cashCollectedAmount",
       headerName: "Collected Cash Amount",
       headerClass: "text-blue-v2",
       maxWidth: "180",
-      cellRenderer: (params) =>
-        params.value ? (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) {
+          return (
+            <span style={{ fontWeight: "bold" }}>
+              Rs. {Number(params.value) || 0}
+            </span>
+          );
+        }
+        return params.value ? (
           <>
             <span>Rs. </span>
             <span>{params.value}</span>
           </>
         ) : (
           "0"
-        ),
+        );
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "upiCollectedAmount",
       headerName: "Collected UPI Amount",
       headerClass: "text-blue-v2",
       maxWidth: "180",
-      cellRenderer: (params) =>
-        params.value ? (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) {
+          return (
+            <span style={{ fontWeight: "bold" }}>
+              Rs. {Number(params.value) || 0}
+            </span>
+          );
+        }
+        return params.value ? (
           <>
             <span>Rs. </span>
             <span>{params.value}</span>
           </>
         ) : (
           "0"
-        ),
+        );
+      },
     },
     {
       field: "totalAmount",
       headerName: "Settlement Total Amount",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) {
+          return (
+            <span style={{ fontWeight: "bold" }}>
+              Rs. {Number(params.value) || 0}
+            </span>
+          );
+        }
+        return params.value ? (
           <>
             <span>Rs. </span>
             <span>{params.value}</span>
           </>
         ) : (
           "0"
-        ),
+        );
+      },
     },
     {
       field: "verifiedAmount",
       headerName: " Verified Amount",
       headerClass: "text-blue-v2",
       maxWidth: "140",
-      cellRenderer: (params) =>
-        params.value ? (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) {
+          return (
+            <span style={{ fontWeight: "bold" }}>
+              Rs. {Number(params.value) || 0}
+            </span>
+          );
+        }
+        return params.value ? (
           <>
             <span>Rs. </span>
             <span>{params.value}</span>
           </>
         ) : (
           " N/A"
-        ),
+        );
+      },
     },
     {
       field: "pendingVerifiedAmount",
       headerName: "Difference In Verified  Amount",
       Width: "390",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ?? "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "settledPaymentAMount",
       headerName: "Amount Settled by Finance Team",
       Width: "260",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ?? "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "pendingSettledAmount",
       headerName: "Difference In Settled Amount",
       Width: "260",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ?? "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     // remarks
     {
@@ -244,6 +340,7 @@ export default function BankTransactions() {
       hide: email === "esdadmin@gmail.com",
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         return (
           <Tippy
             content={
@@ -285,8 +382,10 @@ export default function BankTransactions() {
       headerName: "UTR Number",
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "utrprocessedtime",
@@ -294,7 +393,9 @@ export default function BankTransactions() {
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value || params.value == "N/A") return "N/A";
+        if (isTotalRow(params) || !params.value || params.value == "N/A") {
+          return isTotalRow(params) ? "" : "N/A";
+        }
         const date = new Date(params.value);
         return date.toLocaleString("en-US", {
           year: "numeric",
@@ -314,8 +415,9 @@ export default function BankTransactions() {
 
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ? (
           <span
             className={`${params.value == "Settled"
                 ? "text-green-900 bg-green-100 px-2 py-0.5 rounded-lg"
@@ -332,7 +434,8 @@ export default function BankTransactions() {
           </span>
         ) : (
           "0"
-        ),
+        );
+      },
     },
 
     {
@@ -340,6 +443,7 @@ export default function BankTransactions() {
       field: "actions",
       hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
 
         if (params.data?.departmentId === 28 || params.data?.parK_ID === "100") {
           return <span className="text-center text-red-500 text-xs font-bold ">HMDA / Zoo Park</span>;
@@ -918,6 +1022,7 @@ export default function BankTransactions() {
           rowData={allParkBankTransactions}
           columnDefs={columnDefs}
           isFetchLoading={isFetchAllParkBankTransactionsLoading}
+          getPagePinnedBottomRowData={getPagePinnedBottomRowData}
         />
       </div>
       {/* VERIFY POPUP */}

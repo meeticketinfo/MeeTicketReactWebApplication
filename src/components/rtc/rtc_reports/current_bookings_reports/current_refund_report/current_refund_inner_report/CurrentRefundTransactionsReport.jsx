@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import CurrentRefundTransactionsReportForm from "./CurrentRefundTransactionsReportForm";
@@ -40,11 +40,35 @@ const CurrentRefundTransactionsReport = () => {
     isFetchCurrentPaymentTransactionRefundLoading,
   } = useCurrentPaymentTransactionStore();
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => [
+    {
+      isTotal: true,
+      pnrNumber: "TOTAL",
+      refundAmount: displayedRows.reduce(
+        (sum, row) => sum + Number(row.refundAmount || 0),
+        0,
+      ),
+      amount: displayedRows.reduce(
+        (sum, row) => sum + Number(row.amount || row.totalAmount || 0),
+        0,
+      ),
+      noOfTickets: displayedRows.reduce(
+        (sum, row) => sum + Number(row.noOfTickets || row.ticketQuantity || 0),
+        0,
+      ),
+    },
+  ], []);
+
   const columnDefs = [
     {
       headerName: "S.NO",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -52,15 +76,22 @@ const CurrentRefundTransactionsReport = () => {
       field: "pnrNumber",
       headerName: "PNR NO",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return params.value || "TOTAL";
+        return params.value || "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "transactionDateandTime",
       headerName: "DATE AND TIME OF TRANSACTION",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
         if (!params.value) return "N/A";
         const date = new Date(params.value);
+        if (isNaN(date.getTime())) return "N/A";
         return date.toLocaleString("en-US", {
           year: "numeric",
           month: "2-digit",
@@ -100,22 +131,32 @@ const CurrentRefundTransactionsReport = () => {
       field: "refundStatus",
       headerName: "REFUND STATUS",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "refundAmount",
       headerName: "REFUND AMOUNT",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) => {
+        if (isTotalRow(params))
+          return formatToCurrency(params.value, "INR", "en-IN") || "";
+        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "refundDate",
       headerName: "REFUND DATE",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
         if (!params.value) return "N/A";
         const date = new Date(params.value);
+        if (isNaN(date.getTime())) return "N/A";
         return date.toLocaleString("en-US", {
           year: "numeric",
           month: "2-digit",
@@ -131,68 +172,95 @@ const CurrentRefundTransactionsReport = () => {
       minWidth: 90,
       headerName: "MOBILE NUMBER",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "departureLocation",
       headerName: "DEPARTURE LOCATION",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "arrivalLocation",
       headerName: "ARRIVAL LOCATION",
       flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "amount",
       headerName: "TOTAL AMOUNT",
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      valueFormatter: (params) => {
+        if (isTotalRow(params))
+          return formatToCurrency(params.value, "INR", "en-IN") || "";
+        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "noOfTickets",
       headerName: "TICKET QUANTITY",
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params))
+          return params.value || params.value === 0 ? params.value : "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "modeofPayment",
       headerName: "PAYMENT MODE",
       maxWidth: "150",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "transactionStatus",
       headerName: "TRANSACTION STATUS",
       maxWidth: "230",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "orderID",
       headerName: "ORDER ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "N/A";
+      },
     },
     {
       field: "bookingID",
       headerName: "BOOKING ID",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || "0";
+      },
     },
   ];
 
@@ -341,6 +409,7 @@ const CurrentRefundTransactionsReport = () => {
             ExportName="CurrentRefundTransactionReport"
             rowData={filteredRefundTransactions}
             columnDefs={columnDefs}
+            getPagePinnedBottomRowData={getPagePinnedBottomRowData}
             isFetchLoading={isFetchCurrentRefundTransactionsInnerReport}
             tableHeight={
               filteredRefundTransactions?.length > 10

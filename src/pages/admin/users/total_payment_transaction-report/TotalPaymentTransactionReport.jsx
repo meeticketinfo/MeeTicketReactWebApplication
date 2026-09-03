@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
@@ -33,10 +33,29 @@ const TotalPaymentTransactionReport = () => {
       : "Total Transactions"
   }
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        createdDate: "Total",
+        amount: rows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0),
+        noOfTickets: rows.reduce(
+          (sum, row) => sum + (Number(row.noOfTickets) || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
+
   const columnDefs = [
     {
       headerName: "S.No",
       valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -49,16 +68,21 @@ const TotalPaymentTransactionReport = () => {
       headerName: "Transaction Date & Time",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
         if (!params.value) return "N/A";
         return formatDateTime(params.value);
       },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "action",
       maxWidth: "180",
       headerName: "Action",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return (
         <Link
           className="bg-blue-v2 text-white py-1.5 px-2.5 leading-none rounded-lg text-sm"
           to={"/total-payment-transaction-order-tracker"}
@@ -75,35 +99,48 @@ const TotalPaymentTransactionReport = () => {
         >
           View Track Order
         </Link>
-      ),
+        );
+      },
     },
     {
       field: "mobileNumber",
       headerName: "Mobile No.",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "departmentName",
       headerName: "Department",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "entityTypeName",
       headerName: "Location Category",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "locationName",
       headerName: "Park Name",
       minWidth: "200",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "amount",
@@ -112,63 +149,94 @@ const TotalPaymentTransactionReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "noOfTickets",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return params.value ?? "N/A";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "bookingSource",
       headerName: "Mode of Transaction",
       maxWidth: "170",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "paymentMode",
       headerName: "Payment Mode",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "transactionStatus",
       headerName: "Transaction Status",
       maxWidth: "220",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return (
         <span title={params.value}>
           {params.value}
         </span>
-      ),
+        );
+      },
     },
     {
       field: "orderId",
       headerName: "Order ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "bookingId",
       headerName: "Booking ID",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "resultMessage",
       hide: searchParams.get("category") == "Success",
       headerName: "Result Message",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
-      cellRenderer: (params) => (
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
+      cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
+        return (
         <span title={params.value}>
           {params.value}
         </span>
-      ),
+        );
+      },
     },
   ];
 
@@ -244,6 +312,7 @@ const TotalPaymentTransactionReport = () => {
               tableHeight={paymentTransactionDetailsByStatusResult.length > 10 ? 550 : 300}
               SetcurrentPage={setCurrentPage}
               showSearch={false}
+              getPagePinnedBottomRowData={getPagePinnedBottomRowData}
             />
           </div>
         </div>

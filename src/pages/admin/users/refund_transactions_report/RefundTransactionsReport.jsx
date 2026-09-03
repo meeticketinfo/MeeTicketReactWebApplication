@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
@@ -32,11 +32,31 @@ const RefundTransactionsReport = () => {
     isInitiateRefund,
   } = userReports();
 
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        createdDate: "Total",
+        amount: rows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0),
+        noOfTickets: rows.reduce(
+          (sum, row) => sum + (Number(row.noOfTickets) || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
+
   const columnDefs = [
     {
       headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        if (isTotalRow(params)) return "";
+        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -47,6 +67,7 @@ const RefundTransactionsReport = () => {
       maxWidth: "180",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
+        if (isTotalRow(params)) return "Total";
         if (!params.value) return "N/A";
         const date = new Date(params.value);
         return date.toLocaleString("en-US", {
@@ -58,6 +79,8 @@ const RefundTransactionsReport = () => {
           hour12: true,
         });
       },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       headerName: "Actions",
@@ -65,6 +88,7 @@ const RefundTransactionsReport = () => {
       maxWidth: "100",
       //   hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
+        if (isTotalRow(params)) return "";
         // console.log("params",params)
         return (
           <div className="flex align-center gap-2">
@@ -95,8 +119,10 @@ const RefundTransactionsReport = () => {
       headerName: "Refund Status",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        params.value || params.value === " " ? params.value : "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value || params.value === " " ? params.value : "N/A";
+      },
     },
     {
       field: "refundeddate",
@@ -104,7 +130,7 @@ const RefundTransactionsReport = () => {
       maxWidth: "180",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
-        if (!params.value) return "N/A";
+        if (isTotalRow(params) || !params.value) return isTotalRow(params) ? "" : "N/A";
         const date = new Date(params.value);
         return date.toLocaleString("en-US", {
           year: "numeric",
@@ -121,7 +147,10 @@ const RefundTransactionsReport = () => {
       minWidth: 100,
       headerName: "Mobile Number of user",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${params.value} ` || "N/A";
+      },
     },
 
     {
@@ -129,21 +158,30 @@ const RefundTransactionsReport = () => {
       headerName: "Department",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${params.value} ` || "0";
+      },
     },
     {
       field: "locationCategory",
       headerName: "Location Category",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${params.value} ` || "0";
+      },
     },
     {
       field: "locationName",
       headerName: "Location name",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return `${params.value} ` || "0";
+      },
     },
     {
       field: "amount",
@@ -152,41 +190,60 @@ const RefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "noOfTickets",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return Number(params.value) || 0;
+        return `${params.value} ` || "0";
+      },
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "modeOfTransaction",
       headerName: "Mode of Transaction",
       maxWidth: "170",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "paymentMode",
       headerName: "Payment mode",
       maxWidth: "130",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "orderId",
       headerName: "Order ID",
       Width: "390",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
     {
       field: "bookingID",
       headerName: "Booking ID",
       Width: "260",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return params.value ?? "N/A";
+      },
     },
   ];
 
@@ -334,6 +391,7 @@ const RefundTransactionsReport = () => {
               showTotalCount={true}
               totalCount={refundTransactionsReport[0]?.totalCount}
               SetcurrentPage={setCurrentPage}
+              getPagePinnedBottomRowData={getPagePinnedBottomRowData}
             />
           </div>
         </div>
