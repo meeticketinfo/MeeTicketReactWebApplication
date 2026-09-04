@@ -13,9 +13,6 @@ import {
   getStageIdsFromSelection,
 } from "../shared/CurrentBookingReportFilterFields";
 const CurrentPaymentTransactionsForm = ({
-  PageIndex,
-  pageSize,
-  SetcurrentPage,
   onIntercityBusChange,
 }) => {
   const {
@@ -64,11 +61,7 @@ const CurrentPaymentTransactionsForm = ({
       phoneNumber: reportValues.phoneNumber || "",
       destinationLocation: stageIds.FromStageBoardingID,
       arrivalLocation: stageIds.ToStageBoardingID,
-      PageIndex,
-      pageSize,
-
     });
-    SetcurrentPage(0);
   };
 
   return (
@@ -221,8 +214,6 @@ const CurrentPaymentTransactionsForm = ({
                     phoneNumber: "",
                     arrivalLocation: 0,
                     destinationLocation: 0,
-                    PageIndex,
-                    pageSize,
                   });
                   setResetTrigger(prev => prev + 1);
                 }}

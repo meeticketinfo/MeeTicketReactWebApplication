@@ -13,9 +13,6 @@ import {
 } from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentConsolidatedReportForm = ({
-  pageNumber,
-  pageSize,
-  SetcurrentPage,
   onIntercityBusChange,
 }) => {
 
@@ -66,14 +63,11 @@ const CurrentConsolidatedReportForm = ({
       ...reportValues,
       departureLocation: stageIds.FromStageBoardingID,
       arrivalLocation: stageIds.ToStageBoardingID,
-      pageNumber: pageNumber,
-      PageSize: pageSize,
     });
     localStorage.setItem(
       "current-consolidated-filters",
       JSON.stringify(values)
     );
-    SetcurrentPage(0);
   };
 
   return (
@@ -289,10 +283,7 @@ const CurrentConsolidatedReportForm = ({
                     typeOfBus: "",
                     departureLocation: 0,
                     arrivalLocation: 0,
-                    pageNumber: pageNumber,
-                    PageSize: pageSize,
                   });
-                  SetcurrentPage(0);
                   setResetTrigger((prev) => prev + 1);
                 }}
               >

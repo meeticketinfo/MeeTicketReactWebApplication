@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../tables/AgGridTable";
 import {
@@ -13,14 +13,9 @@ function CurrentConsolidatedList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-consolidated-filters")
   );
-  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const [currentPage, setCurrentPage] = useState(0);
   const [intercityBusFilter, setIntercityBusFilter] = useState(
     savedFilters?.intercityBus || ""
   );
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
   const {
     fetchCurrentConsolidateData,
     CurrentConsolidateData,
@@ -40,10 +35,8 @@ function CurrentConsolidatedList() {
       typeOfBus: savedFilters?.typeOfBus ?? "",
       departureLocation: savedFilters?.departureLocation ?? "",
       arrivalLocation: savedFilters?.arrivalLocation ?? "",
-      pageNumber: currentPage + 1,
-      PageSize: PAGE_LIMIT,
     });
-  }, [currentPage, PAGE_LIMIT]);
+  }, [fetchCurrentConsolidateData]);
 
   const filteredConsolidateData = useMemo(
     () => filterRecordsByIntercityBus(CurrentConsolidateData, intercityBusFilter),
@@ -52,8 +45,48 @@ function CurrentConsolidatedList() {
 
   const handleIntercityBusChange = (value) => {
     setIntercityBusFilter(value || "");
-    setCurrentPage(0);
   };
+
+  const isTotalRow = (params) =>
+    params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
+
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
+      {
+        isTotal: true,
+        pnrNumber: "TOTAL",
+        totalAmount: rows.reduce(
+          (sum, row) => sum + Number(row.totalAmount || 0),
+          0,
+        ),
+        settledamount: rows.reduce(
+          (sum, row) => sum + Number(row.settledamount || 0),
+          0,
+        ),
+        basicFare: rows.reduce(
+          (sum, row) => sum + Number(row.basicFare || 0),
+          0,
+        ),
+        totalLeviesFee: rows.reduce(
+          (sum, row) => sum + Number(row.totalLeviesFee || 0),
+          0,
+        ),
+        serviceTaxGST: rows.reduce(
+          (sum, row) => sum + Number(row.serviceTaxGST || 0),
+          0,
+        ),
+        flexiFare: rows.reduce(
+          (sum, row) => sum + Number(row.flexiFare || 0),
+          0,
+        ),
+        ticketQuantity: rows.reduce(
+          (sum, row) => sum + Number(row.ticketQuantity || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
 
   const columnDefs = [
     {
@@ -62,11 +95,8 @@ function CurrentConsolidatedList() {
       maxWidth: 70,
       headerClass: "text-blue-v2",
       valueGetter: (params) => {
-        // Empty for total row
-        if (params.node?.rowPinned === "bottom") return "";
-
-        const pageOffset = currentPage * PAGE_LIMIT;
-        return pageOffset + params.node.rowIndex + 1;
+        if (isTotalRow(params)) return "";
+        return params.node.rowIndex + 1;
       },
     },
     {
@@ -518,41 +548,9 @@ function CurrentConsolidatedList() {
     },
   ];
 
-  const getTotalRow = () => {
-    if (!filteredConsolidateData?.length) return [];
-
-    const totals = filteredConsolidateData.reduce(
-      (acc, row) => {
-        acc.totalAmount += Number(row.totalAmount || 0);
-        acc.settledamount += Number(row.settledamount || 0);
-        acc.basicFare += Number(row.basicFare || 0);
-        acc.totalLeviesFee += Number(row.totalLeviesFee || 0);
-        acc.serviceTaxGST += Number(row.serviceTaxGST || 0);
-        acc.flexiFare += Number(row.flexiFare || 0);
-        acc.ticketQuantity += Number(row.ticketQuantity || 0);
-        return acc;
-      },
-      {
-        pnrNumber: "TOTAL",
-        totalAmount: 0,
-        settledamount: 0,
-        basicFare: 0,
-        totalLeviesFee: 0,
-        serviceTaxGST: 0,
-        flexiFare: 0,
-        ticketQuantity: 0,
-      }
-    );
-
-    return [totals];
-  };
-
   return (
     <div>
       <CurrentConsolidatedReportForm
-        pageNumber={currentPage + 1}
-        pageSize={PAGE_LIMIT}
-        SetcurrentPage={setCurrentPage}
         onIntercityBusChange={handleIntercityBusChange}
       />
       <div>
@@ -571,18 +569,10 @@ function CurrentConsolidatedList() {
         ExportName="Current Consolidated Report"
         rowData={filteredConsolidateData}
         columnDefs={columnDefs}
-        pinnedBottomRowData={getTotalRow()}
+        getPagePinnedBottomRowData={getPagePinnedBottomRowData}
         isFetchLoading={isFetchCurrentConsolidateData}
-        isPagination={false}
-        IsReactPaginate={true}
-        setPageLimit={setPAGE_LIMIT}
-        pageLimit={PAGE_LIMIT}
-        handlePageClick={handlePageClick}
-        currentPage={currentPage}
         showTotalCount={true}
-        totalCount={filteredConsolidateData.length}
-        tableHeight={filteredConsolidateData.length > 10 ? 550 : 300}
-        SetcurrentPage={setCurrentPage}
+        totalCount={filteredConsolidateData?.length || 0}
         showSearch={false}
       />
 

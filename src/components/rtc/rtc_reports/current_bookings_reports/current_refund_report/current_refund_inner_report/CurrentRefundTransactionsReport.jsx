@@ -21,8 +21,6 @@ const CurrentRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const [intercityBusFilter, setIntercityBusFilter] = useState(
@@ -67,7 +65,7 @@ const CurrentRefundTransactionsReport = () => {
       headerName: "S.NO",
       valueGetter: (params) => {
         if (isTotalRow(params)) return "";
-        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+        return params.node.rowIndex + 1;
       },
       maxWidth: "80",
       headerClass: "text-blue-v2",
@@ -299,11 +297,6 @@ const CurrentRefundTransactionsReport = () => {
 
   const handleIntercityBusChange = (value) => {
     setIntercityBusFilter(value || "");
-    setCurrentPage(0);
-  };
-
-  const handlePageClick = (selectedItem) => {
-    setCurrentPage(selectedItem.selected);
   };
 
   const handleInitiateRefund = async () => {
@@ -401,7 +394,6 @@ const CurrentRefundTransactionsReport = () => {
         <div>
           <ToastContainer />
           <CurrentRefundTransactionsReportForm
-            setCurrentPage={setCurrentPage}
             onIntercityBusChange={handleIntercityBusChange}
           />
           <AgGridTable
@@ -411,20 +403,8 @@ const CurrentRefundTransactionsReport = () => {
             columnDefs={columnDefs}
             getPagePinnedBottomRowData={getPagePinnedBottomRowData}
             isFetchLoading={isFetchCurrentRefundTransactionsInnerReport}
-            tableHeight={
-              filteredRefundTransactions?.length > 10
-                ? 560
-                : 330
-            }
-            isPagination={false}
-            IsReactPaginate={true}
-            setPageLimit={setPAGE_LIMIT}
-            pageLimit={PAGE_LIMIT}
-            handlePageClick={handlePageClick}
-            currentPage={currentPage}
             showTotalCount={true}
-            totalCount={filteredRefundTransactions.length}
-            SetcurrentPage={setCurrentPage}
+            totalCount={filteredRefundTransactions?.length || 0}
           />
         </div>
       </div>

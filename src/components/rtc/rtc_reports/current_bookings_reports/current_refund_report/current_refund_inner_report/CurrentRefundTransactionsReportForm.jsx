@@ -22,7 +22,6 @@ const REFUND_STATUS_OPTIONS = [
 ];
 
 const CurrentRefundTransactionsReportForm = ({
-  setCurrentPage,
   onIntercityBusChange,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -82,7 +81,6 @@ const CurrentRefundTransactionsReportForm = ({
       pnrNumber: reportValues.pnrNumber || "",
       refundStatus: reportValues.refundStatus ?? "-1",
     });
-    setCurrentPage(0);
   };
 
   return (

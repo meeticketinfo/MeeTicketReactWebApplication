@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 
@@ -14,14 +14,9 @@ function CurrentIndividualList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-individual-filters")
   );
-  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const [currentPage, setCurrentPage] = useState(0);
   const [intercityBusFilter, setIntercityBusFilter] = useState(
     savedFilters?.intercityBus || ""
   );
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
   const {
     fetchCurrentIndividualData,
     CurrentIndividualData,
@@ -65,10 +60,8 @@ function CurrentIndividualList() {
       returnTicketId: savedFilters?.returnTicketId
         ? savedFilters.returnTicketId
         : "",
-      pageNumber: currentPage + 1,
-      PageSize: PAGE_LIMIT,
     });
-  }, [currentPage, PAGE_LIMIT]);
+  }, [fetchCurrentIndividualData]);
 
   const filteredIndividualData = useMemo(
     () => filterRecordsByIntercityBus(CurrentIndividualData, intercityBusFilter),
@@ -77,7 +70,6 @@ function CurrentIndividualList() {
 
   const handleIntercityBusChange = (value) => {
     setIntercityBusFilter(value || "");
-    setCurrentPage(0);
   };
 
   const isTotalRow = (params) => params.node?.rowPinned === "bottom";
@@ -116,44 +108,25 @@ function CurrentIndividualList() {
   };
 
 
-  const getTotalRow = () => {
-    if (!filteredIndividualData?.length) return [];
-
-    const totals = filteredIndividualData.reduce(
-      (acc, row) => {
-
-        acc.basicFare += Number(row.basicFare || 0);
-        acc.passengerFee += Number(row.passengerFee || 0);
-        acc.totalTollFare += Number(row.totalTollFare || 0);
-        acc.totalLeviesFee += Number(row.totalLeviesFee || 0);
-        acc.serviceFee += Number(row.serviceFee || 0);
-        acc.serviceTax_GST += Number(row.serviceTax_GST || 0);
-        acc.flexiFare += Number(row.flexiFare || 0);
-        acc.eachTicketAmount += Number(row.eachTicketAmount || 0);
-        acc.totalAmount += Number(row.totalAmount || 0);
-        acc.ticketQuantity += Number(row.ticketQuantity || 0);
-
-        return acc;
-
-      },
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const rows = displayedRows || [];
+    return [
       {
+        isTotal: true,
         pnrNumber: "TOTAL",
-
-        basicFare: 0,
-        passengerFee: 0,
-        totalTollFare: 0,
-        totalLeviesFee: 0,
-        serviceFee: 0,
-        serviceTax_GST: 0,
-        flexiFare: 0,
-        eachTicketAmount: 0,
-        totalAmount: 0,
-        ticketQuantity: 0,
-      }
-    );
-
-    return [totals];
-  };
+        basicFare: rows.reduce((sum, row) => sum + Number(row.basicFare || 0), 0),
+        passengerFee: rows.reduce((sum, row) => sum + Number(row.passengerFee || 0), 0),
+        totalTollFare: rows.reduce((sum, row) => sum + Number(row.totalTollFare || 0), 0),
+        totalLeviesFee: rows.reduce((sum, row) => sum + Number(row.totalLeviesFee || 0), 0),
+        serviceFee: rows.reduce((sum, row) => sum + Number(row.serviceFee || 0), 0),
+        serviceTax_GST: rows.reduce((sum, row) => sum + Number(row.serviceTax_GST || 0), 0),
+        flexiFare: rows.reduce((sum, row) => sum + Number(row.flexiFare || 0), 0),
+        eachTicketAmount: rows.reduce((sum, row) => sum + Number(row.eachTicketAmount || 0), 0),
+        totalAmount: rows.reduce((sum, row) => sum + Number(row.totalAmount || 0), 0),
+        ticketQuantity: rows.reduce((sum, row) => sum + Number(row.ticketQuantity || 0), 0),
+      },
+    ];
+  }, []);
 
   const columnDefs = [
 
@@ -166,8 +139,7 @@ function CurrentIndividualList() {
 
         if (isTotalRow(params)) return "";
 
-        const pageOffset = currentPage * PAGE_LIMIT;
-        return pageOffset + params.node.rowIndex + 1;
+        return params.node.rowIndex + 1;
       }
     },
 
@@ -529,9 +501,6 @@ function CurrentIndividualList() {
   return (
     <div>
       <CurrentIndividualReportForm
-        pageNumber={currentPage + 1}
-        pageSize={PAGE_LIMIT}
-        SetcurrentPage={setCurrentPage}
         onIntercityBusChange={handleIntercityBusChange}
       />
       <div>
@@ -550,18 +519,10 @@ function CurrentIndividualList() {
         ExportName="Current Individual Report"
         rowData={filteredIndividualData}
         columnDefs={updatedColumnDefs}
-        pinnedBottomRowData={getTotalRow()}
+        getPagePinnedBottomRowData={getPagePinnedBottomRowData}
         isFetchLoading={isFetchCurrentIndividualData}
-        isPagination={false}
-        IsReactPaginate={true}
-        setPageLimit={setPAGE_LIMIT}
-        pageLimit={PAGE_LIMIT}
-        handlePageClick={handlePageClick}
-        currentPage={currentPage}
         showTotalCount={true}
-        totalCount={filteredIndividualData.length}
-        tableHeight={filteredIndividualData.length > 10 ? 550 : 300}
-        SetcurrentPage={setCurrentPage}
+        totalCount={filteredIndividualData?.length || 0}
         showSearch={false}
       />
     </div>

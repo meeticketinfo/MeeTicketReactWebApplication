@@ -36,7 +36,7 @@ const AgGridTable = ({
 }) => {
   const { activePage, setActivePage } = usePaginationStore();
   const { quickFilterText, setQuickFilterText } = useAggridStore();
-
+  console.log("pageLimit", pageLimit,totalCount);
   const gridRef = useRef(null);
   // const [quickFilterText, setQuickFilterText] = useState("");
   const [gridApi, setGridApi] = useState(null); // Store the grid API

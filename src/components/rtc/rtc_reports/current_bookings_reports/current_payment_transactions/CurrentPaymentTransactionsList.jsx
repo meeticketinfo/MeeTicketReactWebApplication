@@ -11,8 +11,6 @@ import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilte
 function CurrentPaymentTransactionsList() {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [verifyData, setVerifyData] = useState("");
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
@@ -48,10 +46,8 @@ function CurrentPaymentTransactionsList() {
       phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
       arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
       destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
-      PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-      pageSize: PAGE_LIMIT,
     });
-  }, [fetchCurrentPaymentTransactions, currentPage, PAGE_LIMIT]);
+  }, [fetchCurrentPaymentTransactions]);
 
   const filteredPaymentTransactions = useMemo(
     () =>
@@ -64,7 +60,6 @@ function CurrentPaymentTransactionsList() {
 
   const handleIntercityBusChange = (value) => {
     setIntercityBusFilter(value || "");
-    setCurrentPage(0);
   };
 
   const isTotalRow = (params) =>
@@ -91,7 +86,7 @@ function CurrentPaymentTransactionsList() {
       headerName: "S.NO",
       valueGetter: (params) => {
         if (isTotalRow(params)) return "";
-        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+        return params.node.rowIndex + 1;
       },
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -380,10 +375,6 @@ function CurrentPaymentTransactionsList() {
       },
     },
   ]);
-  const handlePageClick = (selectedItem) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
   const handleVerifyTicket = async () => {
     try {
       const res = await fetchCurrentVerifyStatus(verifyData);
@@ -443,8 +434,8 @@ function CurrentPaymentTransactionsList() {
       // Delay API call to ensure SweetAlert has closed
       setTimeout(() => {
         fetchCurrentPaymentTransactions({
-          startDate: savedFilters?.fromDate ?? getCurrentDate(),
-          endDate: savedFilters?.toDate ?? getCurrentDate(),
+          startDate: savedFilters?.fromDate ?? startOfDay,
+          endDate: savedFilters?.toDate ?? endOfDay,
           paymentStatus: savedFilters?.paymentStatus
             ? savedFilters.paymentStatus
             : "",
@@ -457,8 +448,6 @@ function CurrentPaymentTransactionsList() {
           destinationLocation: savedFilters?.destinationLocation
             ? savedFilters.destinationLocation
             : "",
-          PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-          pageSize: PAGE_LIMIT,
         });
       }, 2100);
     }
@@ -538,8 +527,6 @@ function CurrentPaymentTransactionsList() {
           phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
           arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
           destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
-          PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-          pageSize: PAGE_LIMIT,
         });
       }, 2100);
     }
@@ -619,8 +606,6 @@ function CurrentPaymentTransactionsList() {
           phoneNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : "",
           arrivalLocation: savedFilters?.arrivalLocation ? savedFilters.arrivalLocation : "",
           destinationLocation: savedFilters?.destinationLocation ? savedFilters.destinationLocation : "",
-          PageIndex: currentPage + 1, // convert zero-indexed to 1-indexed
-          pageSize: PAGE_LIMIT,
         });
       }, 2100);
     }
@@ -630,9 +615,6 @@ function CurrentPaymentTransactionsList() {
     <div>
       <div className="mb-8">
         <CurrentPaymentTransactionsForm
-          PageIndex={1}
-          pageSize={PAGE_LIMIT}
-          SetcurrentPage={setCurrentPage}
           onIntercityBusChange={handleIntercityBusChange}
         />
         <AgGridTable
@@ -641,18 +623,8 @@ function CurrentPaymentTransactionsList() {
           columnDefs={columnDefs}
           getPagePinnedBottomRowData={getPagePinnedBottomRowData}
           isFetchLoading={isFetchCurrentPaymentTransactionsLoading}
-          isPagination={false}
-          tableHeight={
-            filteredPaymentTransactions?.length > 10 ? 560 : 330
-          }
-          IsReactPaginate={true}
-          setPageLimit={setPAGE_LIMIT}
-          pageLimit={PAGE_LIMIT}
-          handlePageClick={handlePageClick}
-          currentPage={currentPage}
-          totalCount={filteredPaymentTransactions.length}
           showTotalCount={true}
-          SetcurrentPage={setCurrentPage}
+          totalCount={filteredPaymentTransactions?.length || 0}
           showSearch={false}
         />
       </div>

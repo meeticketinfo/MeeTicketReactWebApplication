@@ -13,9 +13,6 @@ import {
 } from "../shared/CurrentBookingReportFilterFields";
 
 const CurrentIndividualReportForm = ({
-  pageNumber,
-  pageSize,
-  SetcurrentPage,
   onIntercityBusChange,
 }) => {
   const savedFilters = useMemo(() => {
@@ -89,14 +86,11 @@ const CurrentIndividualReportForm = ({
       ...reportValues,
       departureLocation: stageIds.FromStageBoardingID,
       arrivalLocation: stageIds.ToStageBoardingID,
-      pageNumber: pageNumber,
-      PageSize: pageSize,
     });
     localStorage.setItem(
       "current-individual-filters",
       JSON.stringify(values)
     );
-    SetcurrentPage(0);
   };
 
   return (
@@ -387,10 +381,7 @@ const CurrentIndividualReportForm = ({
                     arrivalLocation: 0,
                     ticketId: "",
                     returnTicketId: "",
-                    pageNumber: pageNumber,
-                    PageSize: pageSize,
                   });
-                  SetcurrentPage(0);
                   setResetTrigger((prev) => prev + 1);
                 }}
               >
