@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Link } from "react-router-dom";
 
@@ -12,6 +12,7 @@ import AgGridTable from "../../../../tables/AgGridTable";
 import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 // import { formatDateTime } from "../../../../../utils/Helper";
 // import { formatToCurrency } from "../../../../../utils/TypographyHelper";
 
@@ -31,6 +32,8 @@ const BusPassTotalReport = () => {
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -61,11 +64,13 @@ const BusPassTotalReport = () => {
     outerFilters.BusPassType, 
     outerFilters.status
   ]);
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -133,6 +138,7 @@ const BusPassTotalReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      isTotal: true,
     },
    
 
@@ -175,7 +181,18 @@ const BusPassTotalReport = () => {
         <span title={params.value ?? "N/A"}>{params.value ?? "N/A"}</span>
       ),
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT, outerFilters.status]
+  );
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      RtcTotalTransactionsData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [RtcTotalTransactionsData, columnDefs]);
 
   const breadcrumbItems = [
     {
@@ -226,8 +243,8 @@ const BusPassTotalReport = () => {
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={RtcTotalTransactionsData}
-            columnDefs={columnDefs}
+            rowData={gridData}
+            columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
             isFetchLoading={isRtcTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}

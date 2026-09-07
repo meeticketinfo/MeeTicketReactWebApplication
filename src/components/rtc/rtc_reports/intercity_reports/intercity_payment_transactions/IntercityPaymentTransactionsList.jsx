@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import IntercityPaymentTransactionsForm from "./IntercityPaymentTransactionsForm";
@@ -6,12 +6,15 @@ import PopupModal from "../../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import { useIntercityPaymentTransactionStore } from "../../../../../store/rtc/IntercityPaymentTransactionStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 
 function IntercityPaymentTransactionsList() {
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [verifyData, setVerifyData] = useState("");
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
@@ -49,12 +52,15 @@ function IntercityPaymentTransactionsList() {
     });
   }, [fetchIntercityPaymentTransactions, currentPage, PAGE_LIMIT]);
 
-  const [columnDefs] = useState([
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.NO",
       valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+        params.data?.isTotal
+          ? "Total"
+          : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
@@ -78,6 +84,7 @@ function IntercityPaymentTransactionsList() {
       minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
+      isTotal: true,
     },
     {
       field: "amount",
@@ -85,6 +92,7 @@ function IntercityPaymentTransactionsList() {
       maxWidth: 100,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ? `₹${params.value}` : "N/A",
+      isTotal: true,
     },
     {
       field: "purchaseDate",
@@ -290,7 +298,19 @@ function IntercityPaymentTransactionsList() {
         );
       },
     },
-  ]);
+  ],
+    [currentPage, PAGE_LIMIT]
+  );
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      intercityPaymentTransactions || [],
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [intercityPaymentTransactions, columnDefs]);
+
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
   };
@@ -549,8 +569,8 @@ function IntercityPaymentTransactionsList() {
         />
         <AgGridTable
           ExportName="Payment Transactions"
-          rowData={intercityPaymentTransactions || []}
-          columnDefs={columnDefs}
+          rowData={gridData}
+          columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
           isFetchLoading={isFetchIntercityPaymentTransactionsLoading}
           isPagination={false}
           tableHeight={

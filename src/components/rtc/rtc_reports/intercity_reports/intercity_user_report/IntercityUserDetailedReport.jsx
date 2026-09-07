@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import IntercityUserDetailedReportForm from "./IntercityUserDetailedReportForm";
 import AgGridTable from "../../../../tables/AgGridTable";
@@ -8,6 +8,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
 import Breadcrumb from "../../../../Breadcrumb";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 import { useIntercityUserStore } from "../../../../../store/intercity/reports/IntercityUserReportStore";
 
 const IntercityUserDetailedReport = () => {
@@ -15,6 +16,8 @@ const IntercityUserDetailedReport = () => {
   const toDate = getEndOfCurrentDay();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   
   // Get filters from localStorage
   const [currentFilters, setCurrentFilters] = useState(() => {
@@ -49,11 +52,13 @@ const IntercityUserDetailedReport = () => {
     allIntercityUserDetailedReports,
     fetchIntercityUserDetailedReports,
   } = useIntercityUserStore();
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.NO",
       valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -145,6 +150,7 @@ const IntercityUserDetailedReport = () => {
       maxWidth: "160",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
+      isTotal: true,
     },
     {
       field: "paymentStatus",
@@ -180,7 +186,18 @@ const IntercityUserDetailedReport = () => {
         <span title={params.value}>{params.value || "N/A"}</span>
       ),
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT]
+  );
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      allIntercityUserDetailedReports,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allIntercityUserDetailedReports, columnDefs]);
   const loadUserReport = (page = 0) => {
     fetchIntercityUserDetailedReports({
       fromDate: currentFilters.fromDate,
@@ -241,8 +258,8 @@ const IntercityUserDetailedReport = () => {
             />
             <AgGridTable
               ExportName="IntercityUserDetailedReport"
-              rowData={allIntercityUserDetailedReports}
-              columnDefs={columnDefs}
+              rowData={gridData}
+              columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
               isFetchLoading={isIntercityUserDetailedReportsLoading}
               IsReactPaginate={true}
               isPagination={false}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import {
@@ -7,6 +7,7 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../utils/Helper";
 import { formatToCurrency, formatToStandardDate } from "../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 import AgGridTable from "../../../../tables/AgGridTable";
 import Breadcrumb from "../../../../Breadcrumb";
 import { useIntercitySettlementStore } from "../../../../../store/rtc/intercitySettlementStore";      
@@ -21,12 +22,17 @@ const IntercitySettlementReport = () => {
   } = useIntercitySettlementStore();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
-  const columnDefs = [
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.NO",
       valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+        params.data?.isTotal
+          ? "Total"
+          : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: 80,
       headerClass: "text-blue-v2",
     },
@@ -115,8 +121,25 @@ const IntercitySettlementReport = () => {
         params.value
           ? formatToCurrency(params.value, "INR", "en-IN")
           : "N/A",
+      isTotal: true,
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT]
+  );
+
+  useEffect(() => {
+    const sourceData = Array.isArray(
+      allIntercitySettlementTransactions?.data?.storedProcedureResults
+    )
+      ? allIntercitySettlementTransactions.data.storedProcedureResults
+      : [];
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      sourceData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allIntercitySettlementTransactions, columnDefs]);
 
   
 
@@ -207,8 +230,8 @@ useEffect(() => {
         <div>
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={allIntercitySettlementTransactions?.data?.storedProcedureResults || []}
-            columnDefs={columnDefs}
+            rowData={gridData}
+            columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
             isFetchLoading={isIntercitySettlementTransactionsLoading}
             isPagination={false}
             tableHeight={allIntercitySettlementTransactions?.data?.storedProcedureResults?.length > 10 ? 560 : 330}

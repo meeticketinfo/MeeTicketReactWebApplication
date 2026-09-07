@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Formik, Form, Field } from "formik";
 import { FaFileCsv } from "react-icons/fa";
 import AdminLayout from "../../../../../layouts/AdminLayout";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 import apiService from "../../../../../services/apiService";
 import { API_ENDPOINTS } from "../../../../../constants/apiEndpoints";
 
@@ -20,6 +21,8 @@ const BusPassSalesStatementReport = () => {
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [filterValues, setFilterValues] = useState({
     fromDate: getTodayDate(),
@@ -131,11 +134,13 @@ const BusPassSalesStatementReport = () => {
     fetchBusPassTypes();
   }, []);
 
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.No",
-      valueGetter: (params) => params.node.rowIndex + 1,
+      valueGetter: (params) =>
+        params.data?.isTotal ? "Total" : params.node.rowIndex + 1,
       maxWidth: 90,
       headerClass: "text-blue-v2",
     },
@@ -160,6 +165,7 @@ const BusPassSalesStatementReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         params.value != null ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
+      isTotal: true,
     },
  
     {
@@ -210,7 +216,9 @@ const BusPassSalesStatementReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-  ];
+  ],
+    []
+  );
 
   const handleFilter = async (values) => {
     console.log("Search submitted with values:", values);
@@ -243,6 +251,15 @@ const BusPassSalesStatementReport = () => {
       row.transactionStatus.toLowerCase().includes(query)
     );
   });
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      filteredRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [tableData, searchText, columnDefs]);
 
   return (
     <AdminLayout>
@@ -367,8 +384,8 @@ const BusPassSalesStatementReport = () => {
           <AgGridTable
             showSearch={false}
             ExportName="BusPassSalesStatementReport"
-            rowData={filteredRows}
-            columnDefs={columnDefs}
+            rowData={gridData}
+            columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
             isFetchLoading={isFetchLoading}
             tableHeight={filteredRows.length > 10 ? 560 : 330}
             isPagination={false}

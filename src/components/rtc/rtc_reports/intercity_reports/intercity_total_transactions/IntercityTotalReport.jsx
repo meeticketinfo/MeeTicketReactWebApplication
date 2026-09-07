@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom"; 
 import IntercityTotalCommonStore from "../../../../../store/rtc_total_transaction_report_store/IntercityTotalTransactionStore";
@@ -8,6 +8,7 @@ import Breadcrumb from "../../../../Breadcrumb";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { formatDateTime } from "../../../../../utils/Helper";
 import { formatToCurrency } from "../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 import { useIntercityTotalTransactionStore } from "./store/IntercityTotalTransactionStore";
 import IntercityTotalTransactionForm from "./outer_report/intercityTotalTransactionForm";
 // import IntercityTotalTransactionForm from "./outer_report/intercityTotalTransactionForm";
@@ -28,6 +29,8 @@ const InetercityTotalReport = () => {
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -78,11 +81,13 @@ const InetercityTotalReport = () => {
     outerFilters.busType,
     outerFilters.status,
   ]);
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.NO",
       valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -154,6 +159,7 @@ const InetercityTotalReport = () => {
       maxWidth: "130",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
+      isTotal: true,
     },
     {
       field: "departureLocation",
@@ -174,6 +180,7 @@ const InetercityTotalReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      isTotal: true,
     },
     {
       field: "paymentMode",
@@ -216,7 +223,18 @@ const InetercityTotalReport = () => {
         </span>
       ),
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT, outerFilters.status]
+  );
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      totalTransactionsReport,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [totalTransactionsReport, columnDefs]);
 
   const breadcrumbItems = [
     {
@@ -275,8 +293,8 @@ const InetercityTotalReport = () => {
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={totalTransactionsReport}
-            columnDefs={columnDefs}
+            rowData={gridData}
+            columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
             isFetchLoading={isTotalTransactionsReportLoading}
             isPagination={false}
             IsReactPaginate={true}

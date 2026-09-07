@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, createSearchParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import BusPassRefundTransactionsReportForm from "./BusPassRefundTransactionsReportForm";
 import AgGridTable from "../../../../../tables/AgGridTable";
 import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../../utils/getTotalRowData";
 import PopupModal from "../../../../../utils/popup_modal/PopupModal";
 import Breadcrumb from "../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
@@ -20,6 +21,8 @@ const BusPassRefundTransactionsReport = () => {
   const toDate = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const amrabadRefundTransactionSearchParams =
@@ -33,12 +36,15 @@ const BusPassRefundTransactionsReport = () => {
     fetchBusPassInitiateRefundOrderId,
     isInitiateRefund,
   } = useRtcRefundStore();
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
       field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+        params.data?.isTotal
+          ? "Total"
+          : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -62,6 +68,7 @@ const BusPassRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      isTotal: true,
     },  {
       field: "orderID",
       headerName: "Order ID",
@@ -162,7 +169,21 @@ const BusPassRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT, fetchBusPassRefundOrderId]
+  );
+
+  useEffect(() => {
+    const sourceData = Array.isArray(refundBusPassTransactionsInnerReport)
+      ? refundBusPassTransactionsInnerReport
+      : [];
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      sourceData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [refundBusPassTransactionsInnerReport, columnDefs]);
 
   const loadRefundTransactionsReport = (page = 0) => {
     try {
@@ -291,12 +312,8 @@ const BusPassRefundTransactionsReport = () => {
             <AgGridTable
               showSearch={false}
               ExportName="UserStatusTransactionReport"
-              rowData={
-                Array.isArray(refundBusPassTransactionsInnerReport)
-                  ? refundBusPassTransactionsInnerReport
-                  : []
-              }
-              columnDefs={columnDefs}
+              rowData={gridData}
+              columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
               isFetchLoading={isFetchBusPassRefundTransactionsInnerReport}
               tableHeight={
                 Array.isArray(refundBusPassTransactionsInnerReport) &&

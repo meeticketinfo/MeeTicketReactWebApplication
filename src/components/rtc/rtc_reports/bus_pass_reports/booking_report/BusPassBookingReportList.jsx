@@ -4,6 +4,7 @@ import {
   formatToCurrency,
   getCurrentDate,
 } from "../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../utils/getTotalRowData";
 import { useBusPassTotalTransactionStore } from "../../../../../store/rtc_total_transaction_report_store/Total_transaction_reports_store/BusPassTotalTransactionStore";
 import AgGridTable from "../../../../tables/AgGridTable";
 import { NavLink } from "react-router-dom";
@@ -29,6 +30,8 @@ const BusPassBookingReportList = () => {
 
   const [openRegenerateTicketModal, setOpenRegenerateTicketModal] =
     useState(false);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const {
     AllBusPassesData,
     fetchAllBusPasses,
@@ -321,7 +324,9 @@ const BusPassBookingReportList = () => {
         field: "S.No",
         headerName: "S.No",
         valueGetter: (params) =>
-          currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+          params.data?.isTotal
+            ? "Total"
+            : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
         minWidth: 80,
         maxWidth: 80,
         headerClass: "text-blue-v2",
@@ -410,6 +415,7 @@ const BusPassBookingReportList = () => {
         // flex: 1,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
+        isTotal: true,
       },
       {
         field: "settled_Date",
@@ -438,6 +444,7 @@ const BusPassBookingReportList = () => {
         headerName: "Settled Amount",
         maxWidth: 150,
         // flex: 1,
+        isTotal: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
       },
@@ -570,6 +577,7 @@ const BusPassBookingReportList = () => {
         // minWidth: 130,
         maxWidth: 140,
         // flex: 1,
+        isTotal: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
           const SPECIAL_PASS_ID = "100";
@@ -585,6 +593,7 @@ const BusPassBookingReportList = () => {
         headerName: "Bus Pass Amount",
         maxWidth: 150,
         // flex: 1,
+        isTotal: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => (params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A"),
       },
@@ -822,6 +831,15 @@ const BusPassBookingReportList = () => {
     [currentPage, PAGE_LIMIT]
   );
 
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      RtcBusPassBookingRecordsData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [RtcBusPassBookingRecordsData, columnDefs]);
+
   const onSubmit = (values, { resetForm }) => {
     fetchRtcBusPassBookingData({
       ...values,
@@ -1026,8 +1044,8 @@ const BusPassBookingReportList = () => {
       </Formik>
       <AgGridTable
         ExportName="UserStatusTransactionReport"
-        rowData={RtcBusPassBookingRecordsData}
-        columnDefs={columnDefs}
+        rowData={gridData}
+        columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
         isFetchLoading={isFetchRtcBusPassBookingData}
         isPagination={false}
         IsReactPaginate={true}

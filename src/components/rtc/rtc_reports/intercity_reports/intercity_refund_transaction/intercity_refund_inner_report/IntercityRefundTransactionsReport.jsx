@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import IntercityRefundTransactionsReportForm from "./IntercityRefundTransactionsReportForm";
 import AgGridTable from "../../../../../tables/AgGridTable";
 import { formatToCurrency } from "../../../../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../../../../utils/getTotalRowData";
 import PopupModal from "../../../../../utils/popup_modal/PopupModal";
 import Breadcrumb from "../../../../../Breadcrumb";
 import AdminLayout from "../../../../../../layouts/AdminLayout";
@@ -21,6 +22,8 @@ const IntercityRefundTransactionsReport = () => {
   const toDate = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
   const amrabadRefundTransactionSearchParams =
@@ -36,11 +39,15 @@ const IntercityRefundTransactionsReport = () => {
 
   const { fetchIntercityPaymentTransactionRefund } =
     useIntercityPaymentTransactionStore();
-    const columnDefs = [
+    const columnDefs = useMemo(
+      () => [
       {
+        field: "sno",
         headerName: "S.NO",
         valueGetter: (params) =>
-          currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+          params.data?.isTotal
+            ? "Total"
+            : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
         maxWidth: "80",
         headerClass: "text-blue-v2",
       },
@@ -106,6 +113,7 @@ const IntercityRefundTransactionsReport = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+        isTotal: true,
       },
       {
         field: "refundDate",
@@ -155,6 +163,7 @@ const IntercityRefundTransactionsReport = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+        isTotal: true,
       },
       {
         field: "noOfTickets",
@@ -163,6 +172,7 @@ const IntercityRefundTransactionsReport = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params.value || params.value === " " ? params.value : "N/A",
+        isTotal: true,
       },
       {
         field: "modeofPayment",
@@ -192,7 +202,21 @@ const IntercityRefundTransactionsReport = () => {
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value || "0",
       },
-    ];
+    ],
+      [currentPage, PAGE_LIMIT]
+    );
+
+  useEffect(() => {
+    const sourceData = Array.isArray(refundIntercityTransactionsInnerReport)
+      ? refundIntercityTransactionsInnerReport
+      : [];
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      sourceData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [refundIntercityTransactionsInnerReport, columnDefs]);
 
   const loadRefundTransactionsReport = (page = 0) => {
     try {
@@ -341,12 +365,8 @@ const IntercityRefundTransactionsReport = () => {
             <AgGridTable
               showSearch={false}
               ExportName="UserStatusTransactionReport"
-              rowData={
-                Array.isArray(refundIntercityTransactionsInnerReport)
-                  ? refundIntercityTransactionsInnerReport
-                  : []
-              }
-              columnDefs={columnDefs}
+              rowData={gridData}
+              columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
               isFetchLoading={isFetchIntercityRefundTransactionsInnerReport}
               tableHeight={
                 Array.isArray(refundIntercityTransactionsInnerReport) &&
