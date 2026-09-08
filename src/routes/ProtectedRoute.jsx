@@ -16,6 +16,7 @@ import {
   BotanicalGardenParkAdminPermissions,
   EsdTech,
   ForestDeptAdmin,
+  ParksAdmin,
 } from "../constants/permissions";
 
 const ProtectedRoute = ({ element }) => {
@@ -62,6 +63,8 @@ const ProtectedRoute = ({ element }) => {
       return BotanicalGardenParkAdminPermissions;
     }else if(role==='Role_ForestDeptAdmin'){
       return ForestDeptAdmin;
+    } else if (role === "Role_ParksAdmin") {
+      return ParksAdmin;
     }
     return [];
   }, [role, email]);

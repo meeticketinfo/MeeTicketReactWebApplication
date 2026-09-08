@@ -25,6 +25,7 @@ import {
   BotanicalGardenParkAdminPermissions,
   EsdTech,
   ForestDeptAdmin,
+  ParksAdmin,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -130,6 +131,8 @@ function Sidebar({ variant = "default" }) {
       return BotanicalGardenParkAdminPermissions;
     }else if(role==='Role_ForestDeptAdmin'){
       return ForestDeptAdmin;
+    } else if (role === "Role_ParksAdmin") {
+      return ParksAdmin;
     }
     return [];
   }, [role, email]);

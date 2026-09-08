@@ -1,5 +1,4 @@
 
-
 // super admin permissions
 export const superAdminPermissions = [
   "dashboard",
@@ -273,4 +272,19 @@ export const ForestDeptAdmin = [
   // Grievance
   "Grievance-consolidate",
   "Grievance-Incident",
+];
+export const ParksAdmin = [
+  "dashboard",
+  // Masters
+  "entities",
+  "super-admin-facilites",
+  // Bookings Reports
+  "completed-bookings",
+  "entity-bookings",
+  "payment-transaction-report",
+  "pos-reports",
+  "bank-transactions",
+  "total-transactions-dashboard",
+  "user-report",
+  "refund-transactions",
 ];
