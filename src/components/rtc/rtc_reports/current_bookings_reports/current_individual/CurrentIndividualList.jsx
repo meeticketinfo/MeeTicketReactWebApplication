@@ -156,6 +156,7 @@ function CurrentIndividualList() {
     {
       field: "returnPNRNumber",
       headerName: "Return PNR No",
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: textFormatter
     },
@@ -229,6 +230,7 @@ function CurrentIndividualList() {
     {
       field: "returnJourneyTicketID",
       headerName: "Return Journey Ticket ID",
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: textFormatter
     },
@@ -257,6 +259,7 @@ function CurrentIndividualList() {
     {
       field: "returnDate",
       headerName: "Return Journey Travel Date",
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: dateFormatter
     },
@@ -439,6 +442,7 @@ function CurrentIndividualList() {
     {
       headerName: "Ticket",
       field: "action",
+      hide: true,
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
         const returnPnr =

@@ -461,6 +461,7 @@ function CurrentConsolidatedList() {
     {
       headerName: "Ticket",
       field: "action",
+      hide: true,
       cellRenderer: (params) => {
         if (params.node?.rowPinned === "bottom") return "";
         const returnPnr =
