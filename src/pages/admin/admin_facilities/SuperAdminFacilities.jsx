@@ -4,14 +4,14 @@ import SuperAdminFacilitiesList from '../../../components/super_admin_facilites_
 import CreateSuperAdminFacilities from '../../../components/super_admin_facilites_management/CreateSuperAdminFacilities';
 import BackButton from '../../../components/BackButton';
 import useAuthStore from '../../../store/authStore';
-import { ROLE_FOREST_DEPT_ADMIN } from '../../../constants/permissions';
+import { ROLE_FOREST_DEPT_ADMIN, ROLE_PARKS_ADMIN } from '../../../constants/permissions';
 
 function SuperAdminFacilities() {
     const [isFacilityCreateVisible, setIsFacilityCreateVisible] = useState(false);
     const [isFacilityEditVisible, setIsFacilityEditVisible] = useState(false);
     const {roleDetails} = useAuthStore();
     const role = roleDetails?.name;
-    const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN].includes(role);
+    const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN,ROLE_PARKS_ADMIN].includes(role);
     // Function to toggle the visibility of FacilityCreate
     const toggleFacilityCreate = () => {
       setIsFacilityCreateVisible((prev) => !prev);

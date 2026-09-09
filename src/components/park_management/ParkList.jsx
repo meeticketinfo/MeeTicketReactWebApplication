@@ -10,7 +10,7 @@ import { useDepartmentTypesStore } from "../../store/masters/departmentTypesStor
 import { Formik, Form, Field } from "formik";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-import { ROLE_FOREST_DEPT_ADMIN } from "../../constants/permissions";
+import { ROLE_FOREST_DEPT_ADMIN, ROLE_PARKS_ADMIN } from "../../constants/permissions";
 
 const ParkList = ({
   setIsParkCreateVisible,
@@ -60,7 +60,7 @@ const ParkList = ({
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } = useAuthStore();
   const { allDepartmentTypes, fetchAllDepartmentTypes } = useDepartmentTypesStore();
   const { allEntityTypes, fetchAllEntityTypes } = useEntityTypesStore();
-  const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN].includes(roleDetails?.name);
+  const forestDeptAdmin = ![ROLE_FOREST_DEPT_ADMIN,ROLE_PARKS_ADMIN].includes(roleDetails?.name);
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllDepartmentTypes();

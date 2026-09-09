@@ -273,6 +273,7 @@ export const ForestDeptAdmin = [
   "Grievance-consolidate",
   "Grievance-Incident",
 ];
+export const ROLE_PARKS_ADMIN = "Role_ParksAdmin";
 export const ParksAdmin = [
   "dashboard",
   // Masters
