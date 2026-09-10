@@ -65,20 +65,26 @@ function CurrentPaymentTransactionsList() {
   const isTotalRow = (params) =>
     params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
 
-  const getPagePinnedBottomRowData = useCallback((displayedRows) => [
-    {
-      isTotal: true,
-      orderID: "TOTAL",
-      ticketQuantity: displayedRows.reduce(
-        (sum, row) => sum + Number(row.ticketQuantity || 0),
-        0,
-      ),
-      amount: displayedRows.reduce(
-        (sum, row) => sum + Number(row.amount || row.totalAmount || 0),
-        0,
-      ),
-    },
-  ], []);
+  const getPagePinnedBottomRowData = useCallback((displayedRows) => {
+    const ticketQuantityTotal = displayedRows.reduce(
+      (sum, row) =>
+        sum + Number(row.TicketQuantity ?? row.ticketQuantity ?? 0),
+      0,
+    );
+
+    return [
+      {
+        isTotal: true,
+        orderID: "TOTAL",
+        TicketQuantity: ticketQuantityTotal,
+        ticketQuantity: ticketQuantityTotal,
+        amount: displayedRows.reduce(
+          (sum, row) => sum + Number(row.amount || row.totalAmount || 0),
+          0,
+        ),
+      },
+    ];
+  }, []);
 
   const [columnDefs] = useState([
     {
@@ -104,7 +110,7 @@ function CurrentPaymentTransactionsList() {
         isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
-      field: "mobileNumber",
+      field: "MobileNumber",
       headerName: "MOBILE NUMBER",
       minWidth: 120,
       headerClass: "text-blue-v2",
@@ -114,7 +120,7 @@ function CurrentPaymentTransactionsList() {
       },
     },
     {
-      field: "ticketQuantity",
+      field: "TicketQuantity",
       headerName: "TICKET QUANTITY",
       minWidth: 150,
       headerClass: "text-blue-v2",
@@ -194,7 +200,7 @@ function CurrentPaymentTransactionsList() {
       },
     },
     {
-      field: "refundId",
+      field: "PGRefundID",
       headerName: "REFUND ID",
       minWidth: 150,
       headerClass: "text-blue-v2",
@@ -204,7 +210,7 @@ function CurrentPaymentTransactionsList() {
       },
     },
     {
-      field: "refundStatus",
+      field: "RefundStatusName",
       headerName: "REFUND STATUS",
       maxWidth: 150,
       headerClass: "text-blue-v2",

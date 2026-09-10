@@ -398,7 +398,7 @@ function CurrentConsolidatedList() {
 
 
     {
-      field: "paymentTransactionId",
+      field: "TransactionID",
       headerName: "PAYMENT TRANSACTION ID",
       // flex: 1,
       headerClass: "text-blue-v2  ",
@@ -408,7 +408,7 @@ function CurrentConsolidatedList() {
       }
     },
     {
-      field: "bookingStatus",
+      field: "BookingStatusName",
       headerName: "BOOKING STATUS",
       // flex: 1,
       headerClass: "text-blue-v2  ",
