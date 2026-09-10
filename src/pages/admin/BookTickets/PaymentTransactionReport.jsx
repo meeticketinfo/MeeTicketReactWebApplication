@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import useAuthStore from "../../../store/authStore";
 import { useParkStore } from "../../../store/masters/parksStore";
 import ForestDeptDepartmentSync from "../../../components/common/ForestDeptDepartmentSync";
+import { ROLE_PARKS_ADMIN } from "../../../constants/permissions";
 
 function PaymentTransactionReport() {
   const userObject = JSON.parse(localStorage.getItem("PaymentTransactions"));
@@ -316,12 +317,12 @@ function PaymentTransactionReport() {
       headerName: "Verify Ticket",
       maxWidth: 140,
       headerClass: "text-blue-v2",
+      hide:[ROLE_PARKS_ADMIN].includes(role),
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";
         const isDisabled =
           params.data.resultStatus === "TXN_SUCCESS" ||
           params.data.isTicketGenerated;
-
         return (
           <div className="flex justify-center mt-1">
             <button
@@ -349,6 +350,7 @@ function PaymentTransactionReport() {
       field: "Re-generateTicket",
       headerName: "Generate Ticket",
       maxWidth: 160,
+      hide:[ROLE_PARKS_ADMIN].includes(role),
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";

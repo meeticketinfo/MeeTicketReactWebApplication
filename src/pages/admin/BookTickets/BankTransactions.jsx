@@ -22,6 +22,7 @@ import { IoIosRefresh } from "react-icons/io";
 import Tippy from "@tippyjs/react";
 import { FaRegEye } from "react-icons/fa6";
 import ForestDeptDepartmentSync from "../../../components/common/ForestDeptDepartmentSync";
+import { ROLE_PARKS_ADMIN } from "../../../constants/permissions";
 export default function BankTransactions() {
   const storedUser = localStorage.getItem("park_Amount");
   const userObject = storedUser ? JSON.parse(storedUser) : "";
@@ -441,7 +442,7 @@ export default function BankTransactions() {
     {
       headerName: "Actions",
       field: "actions",
-      hide: email === "esdadmin@gmail.com",
+      hide: email === "esdadmin@gmail.com" || [ROLE_PARKS_ADMIN].includes(role),
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";
 

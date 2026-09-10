@@ -13,6 +13,8 @@ import { userReports } from "../../../../store/userTransaction/UserReports";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import { ROLE_PARKS_ADMIN } from "../../../../constants/permissions";
+import useAuthStore from "../../../../store/authStore";
 const RefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
@@ -21,6 +23,8 @@ const RefundTransactionsReport = () => {
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
+  const { roleDetails } = useAuthStore();
+  const role = roleDetails?.name;
   const refundTransactionSearchParams =
     localStorage.getItem("refundTransactionSearchParams") || "";
 
@@ -86,7 +90,7 @@ const RefundTransactionsReport = () => {
       headerName: "Actions",
       field: "actions",
       maxWidth: "100",
-      //   hide: email === "esdadmin@gmail.com",
+      hide: [ROLE_PARKS_ADMIN].includes(role),
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";
         // console.log("params",params)
