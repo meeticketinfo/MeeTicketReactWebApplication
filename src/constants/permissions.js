@@ -283,7 +283,7 @@ export const ParksAdmin = [
   "completed-bookings",
   "entity-bookings",
   "payment-transaction-report",
-  "pos-reports",
+  // "pos-reports",
   "bank-transactions",
   "total-transactions-dashboard",
   "user-report",
