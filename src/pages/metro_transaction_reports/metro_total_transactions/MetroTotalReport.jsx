@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { Link } from "react-router-dom";
 import useMetroTotalCommonStore from "../../../store/metro_transaction_reports_store/metro_total/MetroTotalCommonStore";
@@ -9,6 +9,7 @@ import { formatDateTime } from "../../../utils/Helper";
 import { formatToCurrency } from "../../../utils/TypographyHelper";
 import Breadcrumb from "../../../components/Breadcrumb";
 import { ToastContainer } from "react-toastify";
+import { getTotalRowData } from "../../../utils/getTotalRowData";
 
 const MetroTotalReport = () => {
   const {
@@ -24,6 +25,8 @@ const MetroTotalReport = () => {
   } = useMetroTotalTransactionsStore();
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
   const [currentPage, setCurrentPage] = useState(0);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
@@ -42,10 +45,13 @@ const MetroTotalReport = () => {
       pageSize: PAGE_LIMIT,
     });
   }, [PAGE_LIMIT, currentPage]);
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
         const pageOffset = currentPage * PAGE_LIMIT;
         return pageOffset + params.node.rowIndex + 1;
       },
@@ -109,17 +115,22 @@ const MetroTotalReport = () => {
     {
       field: "amount",
       headerName: "Amount",
-      maxWidth: "120",
+      minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      isTotal: true,
     },
     {
       field: "noOfTickets",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
 
     {
@@ -161,7 +172,22 @@ const MetroTotalReport = () => {
         <span title={params.value}>{params.value}</span>
       ),
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT, outerFilters.status]
+  );
+
+  useEffect(() => {
+    const sourceData = Array.isArray(MetroTotalTransactionsData)
+      ? MetroTotalTransactionsData
+      : [];
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      sourceData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [MetroTotalTransactionsData, columnDefs]);
+
   const breadcrumbItems = [
     {
       label: "Total Transactions ",
@@ -211,8 +237,8 @@ const MetroTotalReport = () => {
           />
           <AgGridTable
             ExportName="UserStatusTransactionReport"
-            rowData={MetroTotalTransactionsData}
-            columnDefs={columnDefs}
+            rowData={gridData}
+            columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
             isFetchLoading={isMetroTotalTransactionsLoading}
             isPagination={false}
             IsReactPaginate={true}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSummaryReportStore } from "../../../store/metro_reports/summaryReportStore";
 import { useMetroBookingStore } from "../../../store/metro_reports/metroBookingReportStore";
 import useAuthStore from "../../../store/authStore";
@@ -6,6 +6,7 @@ import AgGridTable from "../../tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import { PiCurrencyInr } from "react-icons/pi";
+import { getTotalRowData } from "../../../utils/getTotalRowData";
 function MetroBookingList() {
   const {
     allMetroBookingDetailsReports,
@@ -26,17 +27,37 @@ function MetroBookingList() {
     toDate: getCurrentDate(),
     mobileNumber: "",
   };
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const pageSize = Number(PAGE_LIMIT) || 20;
+
+  const allReportRows = useMemo(() => {
+    if (Array.isArray(allMetroBookingDetailsReports)) {
+      return allMetroBookingDetailsReports;
+    }
+    return [];
+  }, [allMetroBookingDetailsReports]);
+
   const onSubmit = (values) => {
+    setCurrentPage(0);
     fetchAllMetroBookingDetailsReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber.trim(),
     });
   };
-  const [columnDefs] = useState([
+
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * pageSize + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
 
       headerClass: "text-blue-v2",
@@ -114,7 +135,11 @@ function MetroBookingList() {
       headerName: "No Of Tickets",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "N/A",
+      isTotal: true,
     },
 
     {
@@ -122,13 +147,11 @@ function MetroBookingList() {
       headerName: "Each Ticket Fare",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "N/A",
+      isTotal: true,
       // params.value ? (
       //   <>
       //     <span>Rs. </span>
@@ -144,43 +167,21 @@ function MetroBookingList() {
       headerName: "Total Ticket Fare",
 
       headerClass: "text-blue-v2",
-      // valueFormatter: (params) => params.value || "N/A",
-      cellRenderer: (params) =>
-        (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) ?? "N/A",
-      // params.value ? (
-      //   <>
-      //     <span>Rs. </span>
-      //     <span>{params.value}</span>
-      //   </>
-      // ) : (
-      //   "N/A"
-      // ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? `Rs. ${params.value}`
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "paymentConfirmedTxnAmount",
       headerName: "Actual Fare Paid",
       headerClass: "text-blue-v2",
-      // valueFormatter: (params) => params.value || "N/A",
-      cellRenderer: (params) =>
-        (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) ?? "N/A",
-      // params.value ? (
-      //   <>
-      //     <span>Rs. </span>
-      //     <span>{params.value}</span>
-      //   </>
-      // ) : (
-      //   "N/A"
-      // ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "N/A",
+      isTotal: true,
     },
     // {
     //     field: "actualAmountPaid",
@@ -281,7 +282,27 @@ function MetroBookingList() {
       valueFormatter: (params) => params.value || "N/A",
       cellStyle: { backgroundColor: "rgb(219 234 254 / 1)" },
     },
-  ]);
+  ],
+    [currentPage, pageSize]
+  );
+
+  useEffect(() => {
+    const pagedRows = allReportRows.slice(
+      currentPage * pageSize,
+      currentPage * pageSize + pageSize
+    );
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      pagedRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allReportRows, columnDefs, currentPage, pageSize]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -357,9 +378,19 @@ function MetroBookingList() {
       </Formik>
       <AgGridTable
         ExportName="Consolidated Ticket Details"
-        rowData={allMetroBookingDetailsReports}
-        columnDefs={columnDefs}
+        rowData={gridData}
+        columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
         isFetchLoading={isFetchAllMetroBookingDetailsReportsLoading}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        totalCount={allReportRows.length}
+        showTotalCount={true}
+        SetcurrentPage={setCurrentPage}
+        tableHeight={allReportRows.length > 10 ? 560 : 330}
       />
     </>
   );

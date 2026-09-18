@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useMetroPendingTransactionStore } from "../../../store/metro_reports/metroPendingTransactionReportStore";
 import AgGridTable from "../../tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
+import { getTotalRowData } from "../../../utils/getTotalRowData";
 function MetroPendingTransactionList() {
   const {
     allMetroPendingTransactionDetailsReports,
@@ -23,17 +24,37 @@ function MetroPendingTransactionList() {
     toDate: getCurrentDate(),
     mobileNumber: "",
   };
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const pageSize = Number(PAGE_LIMIT) || 20;
+
+  const allReportRows = useMemo(() => {
+    if (Array.isArray(allMetroPendingTransactionDetailsReports)) {
+      return allMetroPendingTransactionDetailsReports;
+    }
+    return [];
+  }, [allMetroPendingTransactionDetailsReports]);
+
   const onSubmit = (values) => {
+    setCurrentPage(0);
     fetchAllMetroPaymentTransactionDetailsReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
       mobileNumber: values.mobileNumber.trim(),
     });
   };
-  const [columnDefs] = useState([
+
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * pageSize + params.node.rowIndex + 1;
+      },
       maxWidth: "110",
 
       headerClass: "text-blue-v2",
@@ -60,15 +81,11 @@ function MetroPendingTransactionList() {
       headerName: "TXN Amount",
       // maxWidth: "160",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) : (
-          "N/A"
-        ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? `Rs. ${params.value}`
+          : "N/A",
+      isTotal: true,
     },
 
     {
@@ -122,7 +139,11 @@ function MetroPendingTransactionList() {
       headerName: "Actual Amount Paid",
 
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "refundDate",
@@ -155,7 +176,27 @@ function MetroPendingTransactionList() {
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params?.value?.toUpperCase() || "N/A",
       },
-  ]);
+  ],
+    [currentPage, pageSize]
+  );
+
+  useEffect(() => {
+    const pagedRows = allReportRows.slice(
+      currentPage * pageSize,
+      currentPage * pageSize + pageSize
+    );
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      pagedRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allReportRows, columnDefs, currentPage, pageSize]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -221,9 +262,19 @@ function MetroPendingTransactionList() {
       </Formik>
       <AgGridTable
         ExportName="Payment Transactions"
-        rowData={allMetroPendingTransactionDetailsReports}
-        columnDefs={columnDefs}
+        rowData={gridData}
+        columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
         isFetchLoading={isFetchAllMetroPaymentTransactionDetailsReportsLoading}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        totalCount={allReportRows.length}
+        showTotalCount={true}
+        SetcurrentPage={setCurrentPage}
+        tableHeight={allReportRows.length > 10 ? 560 : 330}
       />
     </>
   );

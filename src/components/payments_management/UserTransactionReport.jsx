@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDateEndTime, getCurrentDateStartTime } from "../../utils/TypographyHelper";
@@ -7,6 +7,7 @@ import { userTransaction } from "../../store/user/userTransaction";
 import { Link } from "react-router-dom";
 import { useParkStore } from "../../store/masters/parksStore";
 import Select from "react-select";
+import { getTotalRowData } from "../../utils/getTotalRowData";
 
 const UserTransactionReport = () => {
   const userTransactionReportFilter = JSON.parse(localStorage.getItem("UserTransactionReportFilter"));
@@ -15,11 +16,27 @@ const UserTransactionReport = () => {
     allParks,
     fetchAllParks,
   } = useParkStore();
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
 
-  const [columnDefs] = useState([
+  const allReportRows = useMemo(() => {
+    if (Array.isArray(userTransactionReport)) return userTransactionReport;
+    if (Array.isArray(userTransactionReport?.data)) return userTransactionReport.data;
+    return [];
+  }, [userTransactionReport]);
+  const pageSize = Number(PAGE_LIMIT) || 20;
+
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * pageSize + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -39,27 +56,74 @@ const UserTransactionReport = () => {
       field: "totalAttempts",
       headerName: "Total Attempts",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "" }} to="/user-status-transaction">{params.value}</Link>),
+      isTotal: true,
+      cellRendererSelector: (params) => {
+        if (params.data?.isTotal) return undefined;
+        return {
+          component: () => (
+            <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "" }} to="/user-status-transaction">{params.value}</Link>
+          ),
+        };
+      },
     },
     {
       field: "successCount",
       headerName: "Success Count",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "CONFIRMED" }} to="/user-status-transaction">{params.value}</Link>,
+      isTotal: true,
+      cellRendererSelector: (params) => {
+        if (params.data?.isTotal) return undefined;
+        return {
+          component: () => (
+            <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "CONFIRMED" }} to="/user-status-transaction">{params.value}</Link>
+          ),
+        };
+      },
     },
     {
       field: "pendingCount",
       headerName: "In Process Count",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "INPROCESS" }} to="/user-status-transaction">{params.value}</Link>),
+      isTotal: true,
+      cellRendererSelector: (params) => {
+        if (params.data?.isTotal) return undefined;
+        return {
+          component: () => (
+            <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "INPROCESS" }} to="/user-status-transaction">{params.value}</Link>
+          ),
+        };
+      },
     },
     {
       field: "failureCount",
       headerName: "Failure Count",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (<Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "FAILED" }} to="/user-status-transaction">{params.value}</Link>),
+      isTotal: true,
+      cellRendererSelector: (params) => {
+        if (params.data?.isTotal) return undefined;
+        return {
+          component: () => (
+            <Link className="text-blue-v2" state={{ mobileNumber: params.data.mobileNumber, status: "FAILED" }} to="/user-status-transaction">{params.value}</Link>
+          ),
+        };
+      },
     },
-  ]);
+  ],
+    [currentPage, pageSize]
+  );
+
+  useEffect(() => {
+    const pagedRows = allReportRows.slice(
+      currentPage * pageSize,
+      currentPage * pageSize + pageSize
+    );
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      pagedRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allReportRows, columnDefs, currentPage, pageSize]);
 
   useEffect(() => {
     fetchAllParks();
@@ -74,6 +138,7 @@ const UserTransactionReport = () => {
   };
 
   const onSubmit = (values) => {
+    setCurrentPage(0);
     fetchUserTransactionReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
@@ -81,6 +146,10 @@ const UserTransactionReport = () => {
       parkId: values.parkId,
     });
     localStorage.setItem("UserTransactionReportFilter", JSON.stringify(values));
+  };
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
   };
   return (
     <>
@@ -224,9 +293,20 @@ const UserTransactionReport = () => {
             </Formik>
             <AgGridTable
               ExportName="UserTransactionReport"
-              rowData={userTransactionReport}
-              columnDefs={columnDefs}
+              rowData={gridData}
+              columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
               isFetchLoading={isFetchUserTransactionReport}
+              isPagination={false}
+              tableHeight={allReportRows.length > 10 ? 560 : 330}
+              IsReactPaginate={true}
+              setPageLimit={setPAGE_LIMIT}
+              pageLimit={PAGE_LIMIT}
+              handlePageClick={handlePageClick}
+              currentPage={currentPage}
+              totalCount={allReportRows.length}
+              showTotalCount={true}
+              SetcurrentPage={setCurrentPage}
+              showSearch={false}
             />
           </div>
         </div>

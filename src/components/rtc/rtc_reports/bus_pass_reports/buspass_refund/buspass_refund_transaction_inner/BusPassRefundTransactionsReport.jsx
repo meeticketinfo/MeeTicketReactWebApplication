@@ -61,10 +61,10 @@ const BusPassRefundTransactionsReport = () => {
       headerName: "Type of Bus Pass",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
-    },  {
+    },      {
       field: "amount",
       headerName: "Amount",
-      maxWidth: "100",
+      minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",

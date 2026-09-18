@@ -243,6 +243,11 @@ const sidebarItems = [
         icon: RiBankFill,
         path: "/refund-transactions",
       },
+      {
+        title: "Counter Wise Booking Details",
+        icon: FaUsers,
+        path: "/counter-wise-booking-details",
+      },
     ],
   },
   // facilities

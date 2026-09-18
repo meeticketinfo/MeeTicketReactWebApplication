@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from "formik";
 import AdminLayout from "../../../layouts/AdminLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   formatToStandardDate,
   getCurrentDate,
@@ -17,6 +17,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css"; // Import the default styles
 tailspin.register();
 import { FaRegEye } from "react-icons/fa";
+import { getTotalRowData } from "../../../utils/getTotalRowData";
 const formatDate = (inputDate) => {
   const date = new Date(inputDate);
   return date.toISOString().split("T")[0];
@@ -70,6 +71,7 @@ export default function MetroCumulativeBookings() {
     toDate: getCurrentDate(),
   };
   const onSubmit = (values) => {
+    setCurrentPage(0);
     fetchAllMetroCumulativeBookingDetailsReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
@@ -94,10 +96,29 @@ export default function MetroCumulativeBookings() {
 
     return () => clearInterval(interval); // cleanup
   }, [gridApi]);
-  const [columnDefs] = useState([
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const pageSize = Number(PAGE_LIMIT) || 20;
+
+  const allReportRows = useMemo(() => {
+    if (Array.isArray(allMetroCumulativeBookingDetailsReports)) {
+      return allMetroCumulativeBookingDetailsReports;
+    }
+    return [];
+  }, [allMetroCumulativeBookingDetailsReports]);
+
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * pageSize + params.node.rowIndex + 1;
+      },
 
       maxWidth: "80",
       headerClass: "text-blue-v2",
@@ -115,76 +136,118 @@ export default function MetroCumulativeBookings() {
       maxWidth: "130",
       headerName: "Cancel Tickets",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "noOfConfirmTickets",
       headerName: "Confirm Tickets",
       maxWidth: "140",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "noOfTickets",
       headerName: "Total Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "totalTicketFare",
       headerName: "Ticket Fare",
       maxWidth: "110",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "totalCancelledTicketFare",
       headerName: "Cancelled Ticket Fare",
       maxWidth: "170",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "totalConfirmedTicketFare",
       headerName: "Settlement Ticket Fare",
       maxWidth: "180",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => `${params.value} ` || "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? `${params.value}`
+          : "0",
+      isTotal: true,
     },
     {
       field: "paytM_CONFIRMED_AMOUNT",
       headerName: "Paytm CONFIRMED AMOUNT",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "0",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined ? params.value : "0",
+      isTotal: true,
     },
     {
       field: "verifiedAmount",
       headerName: "Amount Verified by Finance Team",
       Width: "160",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "pendingVerifiedAmount",
       headerName: "Difference In verified  Amount",
       Width: "390",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "settledPaymentAmount",
       headerName: "Amount Settled by Finance Team",
       Width: "260",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "pendingSettledAmount",
       headerName: "Difference In Settled Amount",
       Width: "260",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ?? "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
 
     {
@@ -419,7 +482,26 @@ export default function MetroCumulativeBookings() {
       flex: 1,
       headerClass: "text-blue-v2",
     },
-  ]);
+  ],
+    [currentPage, pageSize, email]
+  );
+
+  useEffect(() => {
+    const pagedRows = allReportRows.slice(
+      currentPage * pageSize,
+      currentPage * pageSize + pageSize
+    );
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      pagedRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allReportRows, columnDefs, currentPage, pageSize]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
 
   const handleInitiatAmount = async () => {
     const AmountPyload = {
@@ -665,6 +747,7 @@ export default function MetroCumulativeBookings() {
                       toDate: getCurrentDate(),
                     });
 
+                    setCurrentPage(0);
                     fetchAllMetroCumulativeBookingDetailsReport({
                       fromDate: getCurrentDate(),
                       toDate: getCurrentDate(),
@@ -679,10 +762,20 @@ export default function MetroCumulativeBookings() {
         </Formik>
         <AgGridTable
           ExportName="Bank Payments"
-          rowData={allMetroCumulativeBookingDetailsReports}
-          columnDefs={columnDefs}
+          rowData={gridData}
+          columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
           gridOptions={gridOptions}
           isFetchLoading={isFetchAllMetroCumulativeBookingDetailsReportsLoading}
+          isPagination={false}
+          IsReactPaginate={true}
+          setPageLimit={setPAGE_LIMIT}
+          pageLimit={PAGE_LIMIT}
+          handlePageClick={handlePageClick}
+          currentPage={currentPage}
+          totalCount={allReportRows.length}
+          showTotalCount={true}
+          SetcurrentPage={setCurrentPage}
+          tableHeight={allReportRows.length > 10 ? 560 : 330}
         />
       </div>
       {/* SETTLE POPUP */}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import AdminLayout from "../../../../layouts/AdminLayout";
@@ -13,12 +13,15 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import MetroRefundTransactionsReportForm from "./MetroRefundTransactionsReportForm";
 import { metroRefundReports } from "../../../../store/metro_refund_reports_store/MetroRefundReportStore";
 import { ToastContainer } from "react-toastify";
+import { getTotalRowData } from "../../../../utils/getTotalRowData";
 const MetroRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
   const fromDate = getStartOfCurrentDay();
   const toDate = getEndOfCurrentDay();
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   
   const refundTransactionSearchParams =
     localStorage.getItem("refundMetroTransactionSearchParams") || "";
@@ -28,11 +31,15 @@ const MetroRefundTransactionsReport = () => {
     metroRefundTransactionsInnerReport,
     fetchMetroRefundTransactionsInnerReport,
   } = metroRefundReports();
-  const columnDefs = [
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
       valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+        params.data?.isTotal
+          ? "Total"
+          : currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -108,17 +115,22 @@ const MetroRefundTransactionsReport = () => {
     {
       field: "amount",
       headerName: "Amount",
-      maxWidth: "100",
+      minWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      isTotal: true,
     },
     {
       field: "noOfTickets",
       headerName: "No of Tickets",
       maxWidth: "120",
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined
+          ? params.value
+          : "N/A",
+      isTotal: true,
     },
   
     {
@@ -142,7 +154,21 @@ const MetroRefundTransactionsReport = () => {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value ?? "N/A",
     },
-  ];
+  ],
+    [currentPage, PAGE_LIMIT]
+  );
+
+  useEffect(() => {
+    const sourceData = Array.isArray(metroRefundTransactionsInnerReport)
+      ? metroRefundTransactionsInnerReport
+      : [];
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      sourceData,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [metroRefundTransactionsInnerReport, columnDefs]);
 
   const loadRefundTransactionsReport = (page = 0) => {
     fetchMetroRefundTransactionsInnerReport({
@@ -213,8 +239,8 @@ const MetroRefundTransactionsReport = () => {
             />
             <AgGridTable
               ExportName="RefundTransactionsReport"
-              rowData={metroRefundTransactionsInnerReport}
-              columnDefs={columnDefs}
+              rowData={gridData}
+              columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
               isFetchLoading={isFetchMetroRefundTransactionsInnerReport}
               tableHeight={
                 metroRefundTransactionsInnerReport?.length > 10 ? 560 : 330

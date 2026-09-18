@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSummaryReportStore } from "../../../store/metro_reports/summaryReportStore";
 import useAuthStore from "../../../store/authStore";
 import AgGridTable from "../../tables/AgGridTable";
 import { Field, Form, Formik } from "formik";
 import { getCurrentDate } from "../../../utils/TypographyHelper";
 import { PiCurrencyInr } from "react-icons/pi";
-import AgGridTablev3 from "../../tables/AgGridTablev3";
+import { getTotalRowData } from "../../../utils/getTotalRowData";
 function SummaryReportList() {
   const { sidebarMenuItems, roleDetails, logout, decodedTokenData } =
     useAuthStore();
@@ -26,16 +26,36 @@ function SummaryReportList() {
     fromDate: getCurrentDate(),
     toDate: getCurrentDate(),
   };
+  const [currentPage, setCurrentPage] = useState(0);
+  const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
+  const pageSize = Number(PAGE_LIMIT) || 20;
+
+  const allReportRows = useMemo(() => {
+    if (Array.isArray(allMetroSummaryReports)) {
+      return allMetroSummaryReports;
+    }
+    return [];
+  }, [allMetroSummaryReports]);
+
   const onSubmit = (values) => {
+    setCurrentPage(0);
     fetchAllMetroSummaryReport({
       fromDate: values.fromDate,
       toDate: values.toDate,
     });
   };
-  const [columnDefs] = useState([
+
+  const columnDefs = useMemo(
+    () => [
     {
+      field: "sno",
       headerName: "S.No",
-      valueGetter: "node.rowIndex + 1",
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * pageSize + params.node.rowIndex + 1;
+      },
       maxWidth: "80",
       headerClass: "text-blue-v2",
     },
@@ -120,42 +140,33 @@ function SummaryReportList() {
       headerName: "Each Ticket Fare",
 
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) : (
-          "N/A"
-        ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? `Rs. ${params.value}`
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "changeDestinationAmount",
       headerName: "Change Destination Ticket Fare",
       Width: "100",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) => (
-        <>
-          <span>Rs. </span>
-          <span>{params.value}</span>
-        </>
-      ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? `Rs. ${params.value}`
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "totalTicketAmount",
       headerName: "Total Ticket Fare",
       maxWidth: "160",
       headerClass: "text-blue-v2",
-      cellRenderer: (params) =>
-        params.value ? (
-          <>
-            <span>Rs. </span>
-            <span>{params.value}</span>
-          </>
-        ) : (
-          "N/A"
-        ),
+      valueFormatter: (params) =>
+        params.value !== null && params.value !== undefined && params.value !== ""
+          ? `Rs. ${params.value}`
+          : "N/A",
+      isTotal: true,
     },
     {
       field: "merchantOrderId",
@@ -177,7 +188,27 @@ function SummaryReportList() {
       headerClass: "text-blue-v2",
       valueFormatter: (params) => params.value || "N/A",
     },
-  ]);
+  ],
+    [currentPage, pageSize]
+  );
+
+  useEffect(() => {
+    const pagedRows = allReportRows.slice(
+      currentPage * pageSize,
+      currentPage * pageSize + pageSize
+    );
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      pagedRows,
+      columnDefs
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allReportRows, columnDefs, currentPage, pageSize]);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
   return (
     <>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -237,10 +268,21 @@ function SummaryReportList() {
           </Form>
         )}
       </Formik>
-      <AgGridTablev3
-        rowData={allMetroSummaryReports}
-        columnDefs={columnDefs}
+      <AgGridTable
+        ExportName="Individual Ticket Details"
+        rowData={gridData}
+        columnDefs={gridColumnDefs.length ? gridColumnDefs : columnDefs}
         isFetchLoading={isFetchAllMetroSummaryReportsLoading}
+        isPagination={false}
+        IsReactPaginate={true}
+        setPageLimit={setPAGE_LIMIT}
+        pageLimit={PAGE_LIMIT}
+        handlePageClick={handlePageClick}
+        currentPage={currentPage}
+        totalCount={allReportRows.length}
+        showTotalCount={true}
+        SetcurrentPage={setCurrentPage}
+        tableHeight={allReportRows.length > 10 ? 560 : 330}
       />
     </>
   );
