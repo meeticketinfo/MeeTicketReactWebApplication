@@ -285,6 +285,10 @@ export const API_ENDPOINTS = {
       GET_NEHRU_USER_WISE_PAYMENT_DETAILS: `${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
       // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
+    COUNTER_WISE_BOOKING_REPORTS: {
+      GET_COUNTERS_LIST: `${API_BASE_URL}ParkReport/APICountersList`,
+      GET_COUNTER_BOOKINGS: `${API_BASE_URL}ParkReport/APIGETCounterBookings`,
+    },
     RTC_BOOKINGS: {
       GET_RTC_BOOKINGS: `Master/GetAllFacilities`,
     },

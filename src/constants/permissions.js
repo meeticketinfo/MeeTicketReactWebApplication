@@ -13,7 +13,6 @@ export const superAdminPermissions = [
   "super-admin-facilites",
   "transaction-report",
   "completed-bookings",
-  "counter-wise-booking-details",
   "payment-transaction-report",
   "booking-details",
   "pending-transaction-details",
@@ -88,7 +87,6 @@ export const Department = [
   "entity-bookings",
 
   "completed-bookings",
-  "counter-wise-booking-details",
   "payment-transaction-report",
   "total-transactions-dashboard",
   "user-report",
@@ -202,7 +200,6 @@ export const NehruZooPark = [
 export const SupportAdmin = [
   "entity-bookings",
   "completed-bookings",
-  "counter-wise-booking-details",
   "payment-transaction-report",
   "transaction-report",
   "booking-details",
@@ -270,7 +267,6 @@ export const ForestDeptAdmin = [
   // "super-admin-facilites",
   // Bookings Reports
   "completed-bookings",
-  "counter-wise-booking-details",
   "entity-bookings",
   // "payment-transaction-report",
   // "bank-transactions",
@@ -288,7 +284,6 @@ export const ParksAdmin = [
   "super-admin-facilites",
   // Bookings Reports
   "completed-bookings",
-  "counter-wise-booking-details",
   "entity-bookings",
   "payment-transaction-report",
   // "pos-reports",

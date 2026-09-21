@@ -20,6 +20,7 @@ function CounterWiseBookingsReportList() {
   const role = roleDetails?.name;
   const {
     fetchCounterWiseBookingsReport,
+    fetchCounterUsersList,
     allCounterWiseBookingsReports,
     setisCounterWiseBooking,
     isCounterWiseBookingsReportsLoading,
@@ -41,36 +42,47 @@ function CounterWiseBookingsReportList() {
     role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   useEffect(() => {
-    if (role === "Role_ForestDeptAdmin") {
-      if (
-        forestDepartmentId === null ||
-        forestDepartmentId === undefined ||
-        forestDepartmentId === ""
-      ) {
+    let isCancelled = false;
+    const loadCounterWiseReport = async () => {
+      await fetchCounterUsersList();
+      if (isCancelled) {
         return;
       }
-    }
-    fetchCounterWiseBookingsReport({
-      startDate: savedFilters?.fromDate
-        ? savedFilters.fromDate
-        : getCurrentDate(),
-      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-      bookingSource: savedFilters?.typeOfBooking
-        ? savedFilters.typeOfBooking
-        : "",
-      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-      departmentId:
-        role === "Role_ForestDeptAdmin"
-          ? forestDepartmentId
-          : savedFilters?.departmentId
-          ? savedFilters.departmentId
+      if (role === "Role_ForestDeptAdmin") {
+        if (
+          forestDepartmentId === null ||
+          forestDepartmentId === undefined ||
+          forestDepartmentId === ""
+        ) {
+          return;
+        }
+      }
+      fetchCounterWiseBookingsReport({
+        startDate: savedFilters?.fromDate
+          ? savedFilters.fromDate
+          : getCurrentDate(),
+        endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+        bookingSource: savedFilters?.typeOfBooking
+          ? savedFilters.typeOfBooking
+          : "",
+        mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+        departmentId:
+          role === "Role_ForestDeptAdmin"
+            ? forestDepartmentId
+            : savedFilters?.departmentId
+            ? savedFilters.departmentId
+            : null,
+        entityTypeId: savedFilters?.entityTypeId
+          ? savedFilters.entityTypeId
           : null,
-      entityTypeId: savedFilters?.entityTypeId
-        ? savedFilters.entityTypeId
-        : null,
-      parkId: savedFilters?.parkId ? savedFilters.parkId : null,
-    });
-  }, [fetchCounterWiseBookingsReport, forestDepartmentId]);
+        parkId: savedFilters?.parkId ? savedFilters.parkId : null,
+      });
+    };
+    loadCounterWiseReport();
+    return () => {
+      isCancelled = true;
+    };
+  }, [fetchCounterUsersList, fetchCounterWiseBookingsReport, forestDepartmentId]);
 
   useEffect(() => {
     fetchAllEntityTypes();
@@ -301,7 +313,7 @@ function CounterWiseBookingsReportList() {
       },
     },
     {
-      field: "CounterName",
+      field: "userName",
       headerName: "Counter Name",
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
@@ -330,6 +342,7 @@ function CounterWiseBookingsReportList() {
     {
       headerName: "Actions",
       field: "actions",
+      hide: true,
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";
         return (

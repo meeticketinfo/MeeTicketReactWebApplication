@@ -673,5 +673,4 @@ const sidebarItems = [
     ],
   },
 ];
-console.log(sidebarItems);
 export default sidebarItems;
