@@ -21,6 +21,7 @@ function CounterWiseBookingsReportList() {
   const {
     fetchCounterWiseBookingsReport,
     fetchCounterUsersList,
+    counterUsersList,
     allCounterWiseBookingsReports,
     setisCounterWiseBooking,
     isCounterWiseBookingsReportsLoading,
@@ -32,6 +33,7 @@ function CounterWiseBookingsReportList() {
   const [isBookingDate, setIsBookingDate] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [selectedCounterId, setSelectedCounterId] = useState(null);
   const savedFilters = JSON.parse(
     localStorage.getItem("counter-wise-booking-report-filters")
   );
@@ -42,51 +44,42 @@ function CounterWiseBookingsReportList() {
     role === "Role_ForestDeptAdmin" ? forestDepartment?.departmentId : undefined;
 
   useEffect(() => {
-    let isCancelled = false;
-    const loadCounterWiseReport = async () => {
-      await fetchCounterUsersList();
-      if (isCancelled) {
+    if (role === "Role_ForestDeptAdmin") {
+      if (
+        forestDepartmentId === null ||
+        forestDepartmentId === undefined ||
+        forestDepartmentId === ""
+      ) {
         return;
       }
-      if (role === "Role_ForestDeptAdmin") {
-        if (
-          forestDepartmentId === null ||
-          forestDepartmentId === undefined ||
-          forestDepartmentId === ""
-        ) {
-          return;
-        }
-      }
-      fetchCounterWiseBookingsReport({
-        startDate: savedFilters?.fromDate
-          ? savedFilters.fromDate
-          : getCurrentDate(),
-        endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
-        bookingSource: savedFilters?.typeOfBooking
-          ? savedFilters.typeOfBooking
-          : "",
-        mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
-        departmentId:
-          role === "Role_ForestDeptAdmin"
-            ? forestDepartmentId
-            : savedFilters?.departmentId
-            ? savedFilters.departmentId
-            : null,
-        entityTypeId: savedFilters?.entityTypeId
-          ? savedFilters.entityTypeId
+    }
+    fetchCounterWiseBookingsReport({
+      startDate: savedFilters?.fromDate
+        ? savedFilters.fromDate
+        : getCurrentDate(),
+      endDate: savedFilters?.toDate ? savedFilters.toDate : getCurrentDate(),
+      bookingSource: savedFilters?.typeOfBooking
+        ? savedFilters.typeOfBooking
+        : "",
+      mobileNumber: savedFilters?.phoneNumber ? savedFilters.phoneNumber : null,
+      departmentId:
+        role === "Role_ForestDeptAdmin"
+          ? forestDepartmentId
+          : savedFilters?.departmentId
+          ? savedFilters.departmentId
           : null,
-        parkId: savedFilters?.parkId ? savedFilters.parkId : null,
-      });
-    };
-    loadCounterWiseReport();
-    return () => {
-      isCancelled = true;
-    };
-  }, [fetchCounterUsersList, fetchCounterWiseBookingsReport, forestDepartmentId]);
+      entityTypeId: savedFilters?.entityTypeId
+        ? savedFilters.entityTypeId
+        : null,
+      parkId: savedFilters?.parkId ? savedFilters.parkId : null,
+      counterUserId: null,
+    });
+  }, [fetchCounterWiseBookingsReport, forestDepartmentId]);
 
   useEffect(() => {
     fetchAllEntityTypes();
     fetchAllParks();
+    fetchCounterUsersList();
     if (role === "ROLE_SUPERADMIN") {
       fetchAllDepartmentTypes();
     } else if (role === "Role_ForestDeptAdmin") {
@@ -121,6 +114,7 @@ function CounterWiseBookingsReportList() {
       bookingSource: values.typeOfBooking,
       mobileNumber: values.phoneNumber ? values.phoneNumber : null,
       parkId: values.parkId ? values.parkId : null,
+      counterUserId: selectedCounterId || null,
     });
   };
 
@@ -657,6 +651,57 @@ function CounterWiseBookingsReportList() {
                 }}
               />
             </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700">
+                Counters
+              </label>
+              <Select
+                name="counterUserId"
+                value={
+                  (Array.isArray(counterUsersList) ? counterUsersList : [])
+                    .map((counter) => ({
+                      value: counter.counterUserId,
+                      label: counter.firstName,
+                    }))
+                    .find((option) => option.value === selectedCounterId) || null
+                }
+                options={(Array.isArray(counterUsersList)
+                  ? counterUsersList
+                  : []
+                ).map((counter) => ({
+                  value: counter.counterUserId,
+                  label: counter.firstName,
+                }))}
+                onChange={(selectedOption) =>
+                  setSelectedCounterId(selectedOption?.value || null)
+                }
+                isClearable
+                placeholder="Counters"
+                className="mt-[4px] text-sm"
+                classNamePrefix="react-select"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    outline: "none",
+                    boxShadow: "none",
+                    borderColor: "#ced4da",
+                    borderRadius: "6px",
+                    height: "30px",
+                    minHeight: "33px",
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                  }),
+                  option: (base, { isFocused }) => ({
+                    ...base,
+                    fontSize: "0.775rem",
+                    backgroundColor: isFocused ? "#F8F8F8" : "white",
+                    color: isFocused ? "#0C3771" : "#6D7072",
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </div>
             <div className="flex items-end gap-2">
               <button
                 type="submit"
@@ -670,6 +715,7 @@ function CounterWiseBookingsReportList() {
                 onClick={() => {
                   localStorage.removeItem("counter-wise-booking-report-filters");
                   setCurrentPage(0);
+                  setSelectedCounterId(null);
                   resetForm({
                     values: {
                       fromDate: getCurrentDate(),
@@ -689,6 +735,7 @@ function CounterWiseBookingsReportList() {
                     bookingSource: "",
                     mobileNumber: null,
                     parkId: null,
+                    counterUserId: null,
                   });
                 }}
               >

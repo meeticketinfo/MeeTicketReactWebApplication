@@ -56,7 +56,7 @@ export const useCounterWiseBookingStore = create((set, get) => ({
         departmentId: payload.departmentId ?? null,
         entityTypeId: payload.entityTypeId ?? null,
         parkId: payload.parkId ?? null,
-        counterUserId: get().allCounterUserIds || "",
+        counterUserId: payload.counterUserId || null,
       };
 
       const response = await apiService.post(
