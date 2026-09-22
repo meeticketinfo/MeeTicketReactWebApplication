@@ -250,10 +250,13 @@ function Sidebar({ variant = "default" }) {
                               // setSidebarExpanded(true);
                             }}
                           >
-                            <div className="flex items-center justify-between item-flex">
-                              <div className="flex items-center">
+                            <div className="flex items-center justify-between item-flex min-w-0">
+                              <div className="flex items-center min-w-0 flex-1 overflow-hidden">
                                 <item.icon className="shrink-0 text-[22px]" />
-                                <span className="menu-text text-sm font-medium ml-4 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                                <span
+                                  className="menu-text text-sm font-medium ml-4 truncate lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200"
+                                  title={item.title}
+                                >
                                   {item.title}
                                 </span>
                               </div>
