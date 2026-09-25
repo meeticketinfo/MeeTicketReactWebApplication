@@ -222,6 +222,10 @@ import MainLanguage from "../pages/admin/language_masters/MainLanguage";
 import BusPassUserTransactionsRefundTracker from "../components/rtc/rtc_reports/bus_pass_reports/buspass_refund/buspass_refund_transaction_inner/BusPassUserTransactionsRefundTracker";
 import CurrentRefundTransactionsReport from "../components/rtc/rtc_reports/current_bookings_reports/current_refund_report/current_refund_inner_report/CurrentRefundTransactionsReport";
 import CounterWiseBooking from "../pages/admin/BookTickets/CounterWiseBookingReport/CounterWiseBooking";
+import CityBusConsolidatedReport from "../components/rtc/rtc_reports/city_bus_reports/city_bus_consolidated_report/CityBusConsolidatedReport";
+import CityBusIndividualReport from "../components/rtc/rtc_reports/city_bus_reports/city_bus_individual_report/CityBusIndividualReport";
+import CityBusPaymentTransactionsReport from "../components/rtc/rtc_reports/city_bus_reports/city_payment_transactions_report/CityBusPaymentTransactionsReport";
+import CityBusRefundTransactionsReport from "../components/rtc/rtc_reports/city_bus_reports/city_bus_refund_report/CityBusRefundTransactionsReport";
 
 export const routes = [
   {
@@ -1128,6 +1132,31 @@ export const routes = [
       <ProtectedRoute element={<CurrentRefundTransactionsReport />} />
     ),
   },
+  // city bus reports
+  {
+    path: "/city-bus-consolidated-report",
+    element: (
+      <ProtectedRoute element={<CityBusConsolidatedReport />} />
+    ),
+  },
+  {
+    path: "/city-bus-individual-report",
+    element: (
+      <ProtectedRoute element={<CityBusIndividualReport />} />
+    ),
+  },
+  {
+    path: "/city-bus-payment-transactions",
+    element: (
+      <ProtectedRoute element={<CityBusPaymentTransactionsReport />} />
+    ),
+  },
+  {
+    path: "/city-bus-refund-report",
+    element: (
+      <ProtectedRoute element={<CityBusRefundTransactionsReport />} />
+    ),
+  },
 
   //intercity admin routes
   {
@@ -1136,6 +1165,10 @@ export const routes = [
   },
   {
     path: "/current-ticket-view-details/:id",
+    element: <ProtectedRoute element={<IntercityTicketView />} />,
+  },
+  {
+    path: "/city-bus-ticket-view-details/:id",
     element: <ProtectedRoute element={<IntercityTicketView />} />,
   },
   {

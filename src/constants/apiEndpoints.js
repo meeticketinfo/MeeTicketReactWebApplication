@@ -383,6 +383,9 @@ export const API_ENDPOINTS = {
         GET_CURRENT_PAYMENT_TRANSACTION_REFUND: `${RTC_INTERCITY_API_BASE_URL}PaymentTransaction/IntiateRefund`,
         GET_ROUTES: `${MAVENCONNECT_API_BASE_URL}api/Common/GetRoutes`,
       },
+      CITY_BUS_REPORTS: {
+        GET_CITY_BUS_CONSOLIDATED_REPORT: `${MAVENCONNECT_API_BASE_URL}api/Report/GetCityBookingReport`,
+      },
     },
     GRIVEANCE_REPORTS: {
       GET_OVERALL_REPORT: `${GRIEVANCE_API_BASE_URL}GrievanceDashboard/GetTicketDetails`,

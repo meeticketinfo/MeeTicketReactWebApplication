@@ -124,7 +124,10 @@ const IntercityTicketView = ({ isScrolled = true }) => {
   } = useIntercityTicketViewStore();
   
   useEffect(() => {
-    if (window.location.pathname.includes("current-ticket-view-details")) {
+    if (window.location.pathname.includes("city-bus-ticket-view-details")) {
+      // From CityBusConsolidatedReport — include BookingType CB
+      fetchCurrentTicketViewData(id, "CB");
+    } else if (window.location.pathname.includes("current-ticket-view-details")) {
       fetchCurrentTicketViewData(id);
     } else {
       fetchIntercityTicketViewData(id);

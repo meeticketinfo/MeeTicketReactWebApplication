@@ -543,6 +543,37 @@ const sidebarItems = [
     ],
 
   },
+  //City Bus Reports
+  {
+    title: "City Bus Reports",
+    icon: FaBus,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Consolidated Report",
+        icon: RiDashboard3Fill,
+        path: "/city-bus-consolidated-report",
+      },
+      {
+        title: "Individual Report",
+        icon: RiDashboard3Fill,
+        path: "/city-bus-individual-report",
+      },
+      {
+        title: "Payment Transactions",
+        icon: TbReportAnalytics,
+        path: "/city-bus-payment-transactions",
+      },
+      {
+        title: "Refund Transactions",
+        icon: RiDashboard3Fill,
+        path: "/city-bus-refund-report",
+      }
+    ],
+
+  },
   // Tourism
   {
     title: "Tourism",
