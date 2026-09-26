@@ -16,7 +16,7 @@ const DatePickerField = ({
 }) => {
   const getDayClassName = (date) => {
     if (isCheckout) {
-      const isSelected = date.toDateString() === endDate.toDateString();
+      const isSelected = endDate && date.toDateString() === endDate.toDateString();
       const isAvailable = filterDate(date);
       const commonClass =
         "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[42px] !h-[52px]";
@@ -33,7 +33,7 @@ const DatePickerField = ({
     } else {
       const today = new Date();
       const isToday = date.toDateString() === today.toDateString();
-      const isSelected = date.toDateString() === startDate.toDateString();
+      const isSelected = startDate && date.toDateString() === startDate.toDateString();
       const isAvailable = isDateAvailable(date);
       const commonClass = "!text-[#304A3A] hover:!bg-[#EDEBE1] !rounded-md !transition-colors !w-[42px] !h-[52px]";
 

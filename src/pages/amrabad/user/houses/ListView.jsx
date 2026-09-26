@@ -8,7 +8,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import { toast } from "react-toastify";
 
 const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, toDate }) => {
-  console.log(userPackage, "userPackage");
 
   // Check if houses array is empty or undefined
   const hasHouses = houses && houses.length > 0;
@@ -301,10 +300,10 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                       </div>
                       <div className="text-right flex-shrink-0">
                         <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#304A3A]">
-                          ₹{house?.tariffPerDay?.toLocaleString()}
+                          ₹{house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.amountPerDay : house?.tariffPerDay?.toLocaleString()}
                         </span>
                         <div className="text-[#5A5961] text-xs sm:text-sm">
-                          / 2 Guests
+                          / {house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.numberOfPersonsAllowed : 2} Guests
                         </div>
                       </div>
                     </div>
@@ -420,7 +419,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                               ) : (
                                 /* Regular Price */
                                 <div className="text-xs font-medium text-gray-600">
-                                  ₹{item?.price?.toLocaleString()}/-
+                                  ₹{house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.amountPerDay : house?.tariffPerDay?.toLocaleString()}/-
                                 </div>
                               )}
                             </div>
@@ -462,7 +461,7 @@ const ListView = ({ houses, isRoomsByPackageIdLoading, userPackage, fromDate, to
                               ) : (
                                 /* Regular Price */
                                 <div className="text-xs font-medium text-gray-500">
-                                  ₹{item?.price?.toLocaleString()}/-
+                                  ₹{house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.amountPerDay : house?.tariffPerDay?.toLocaleString()}/-
                                 </div>
                               )}
                             </div>

@@ -7,8 +7,11 @@ import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
 import { format } from "date-fns";
 
+const MAX_STAY_DAYS = 30;
+
 // Main Booking Form Component
 export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
+  console.log(house, "house");
   const { GetCalendar, isCalendarLoading, fetchCalendar } = useUserBookingStore();
   const { cartItems, fetchCartItems } = useCartStore();
 
@@ -34,6 +37,34 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
+  // Tracks whether user is picking check-out after check-in in the range calendar
+  const [isSelectingCheckout, setIsSelectingCheckout] = useState(false);
+  const [selectedPersons, setSelectedPersons] = useState(
+    () => house?.pricingDetails?.[0]?.numberOfPersonsAllowed ?? ""
+  );
+
+  const pricingDetails = house?.pricingDetails || [];
+
+  // Sync default persons when house/pricingDetails load
+  useEffect(() => {
+    if (pricingDetails.length > 0) {
+      const stillValid = pricingDetails.some(
+        (p) => String(p.numberOfPersonsAllowed) === String(selectedPersons)
+      );
+      if (!selectedPersons || !stillValid) {
+        setSelectedPersons(pricingDetails[0].numberOfPersonsAllowed);
+      }
+    }
+  }, [house?.pricingDetails]);
+
+  const getSelectedPricingDetail = (persons = selectedPersons) => {
+    if (!pricingDetails.length) return null;
+    return (
+      pricingDetails.find(
+        (p) => String(p.numberOfPersonsAllowed) === String(persons)
+      ) || pricingDetails[0]
+    );
+  };
 
   // Clamp houseCount whenever cart or dates change — prevents stale count exceeding max
   useEffect(() => {
@@ -81,16 +112,26 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   // Calculate pricing breakdown
-  const calculatePricing = (checkInDate, checkOutDate, count) => {
+  const calculatePricing = (checkInDate, checkOutDate, count, persons = selectedPersons) => {
     let totalPrice = 0;
     let totalDiscountedPrice = 0;
     const currentDate = new Date(checkInDate);
+    const selectedPricing = getSelectedPricingDetail(persons);
 
     while (currentDate < checkOutDate) {
       const dateString = getLocalDateString(currentDate);
       const dayData = availableDatesMapWithFallback[dateString];
 
-      if (dayData && dayData.price) {
+      // Prefer selected persons pricing from pricingDetails
+      if (selectedPricing?.amountPerDay != null) {
+        const basePrice = selectedPricing.amountPerDay;
+        const discountedPrice =
+          selectedPricing.amountAfterDiscount != null
+            ? selectedPricing.amountAfterDiscount
+            : basePrice;
+        totalPrice += basePrice;
+        totalDiscountedPrice += discountedPrice;
+      } else if (dayData && dayData.price) {
         totalPrice += dayData.price;
 
         // Use discounted price if available, otherwise use regular price
@@ -100,7 +141,6 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           totalDiscountedPrice += dayData.price;
         }
       } else {
-        // Use house tariff if no calendar data
         const dayPrice = house?.tariffPerDay || 6500;
         totalPrice += dayPrice;
         totalDiscountedPrice += dayPrice;
@@ -265,18 +305,29 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       return <div className="text-gray-400">{day}</div>;
     }
 
-    const hasDiscount = dayData.discountPercent && dayData.discountPercent > 0;
+    const selectedPricing = getSelectedPricingDetail();
+    const usePricingDetails = pricingDetails.length > 0 && selectedPricing?.amountPerDay != null;
+
+    const displayPrice = usePricingDetails
+      ? selectedPricing.amountPerDay
+      : dayData.price;
+    const displayDiscountPrice = usePricingDetails
+      ? selectedPricing.amountAfterDiscount
+      : dayData.amountAfterDiscount;
+    const hasDiscount = usePricingDetails
+      ? displayDiscountPrice != null && displayDiscountPrice < displayPrice
+      : dayData.discountPercent && dayData.discountPercent > 0;
 
     return (
       <div className="flex flex-col items-center justify-center h-full w-full text-center gap-1 p-1">
-        {/* Price */}
+        {/* Price — from selected persons pricingDetails when available */}
         {hasDiscount ? (
           <div className="flex flex-col items-center">
-            <span className="text-[10px] text-gray-400 font-medium line-through leading-none">₹{dayData.price}</span>
-            <span className="text-[12px] leading-none font-bold text-green-600">₹{dayData.amountAfterDiscount}</span>
+            <span className="text-[10px] text-gray-400 font-medium line-through leading-none">₹{displayPrice}</span>
+            <span className="text-[12px] leading-none font-bold text-green-600">₹{displayDiscountPrice}</span>
           </div>
         ) : (
-          <span className="text-[12px] leading-none font-medium">₹{dayData.price}</span>
+          <span className="text-[12px] leading-none font-medium">₹{displayPrice}</span>
         )}
 
         {/* Day */}
@@ -288,9 +339,37 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     );
   };
 
+  const getMaxCheckoutDate = (checkInDate) => {
+    const maxDate = new Date(checkInDate);
+    maxDate.setDate(maxDate.getDate() + MAX_STAY_DAYS);
+    maxDate.setHours(23, 59, 59, 999);
+    return maxDate;
+  };
+
+  const clampCheckoutDate = (checkInDate, checkOutDate) => {
+    const maxDate = getMaxCheckoutDate(checkInDate);
+    if (checkOutDate > maxDate) {
+      const clamped = new Date(checkInDate);
+      clamped.setDate(clamped.getDate() + MAX_STAY_DAYS);
+      return clamped;
+    }
+    return checkOutDate;
+  };
+
   const filterDate = (date) => {
     const dateString = getLocalDateString(date);
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
+
+    // While picking check-out: allow a new check-in (date <= start), and check-out only up to +30 days
+    if (isSelectingCheckout && startDate && date > startDate) {
+      if (date > getMaxCheckoutDate(startDate)) {
+        return false;
+      }
+      if (calendarData && calendarData.length > 0) {
+        return isAvailable;
+      }
+      return true;
+    }
 
     if (calendarData && calendarData.length > 0) {
       return isAvailable;
@@ -306,9 +385,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       return false;
     }
 
-    const maxDate = new Date(startDate);
-    maxDate.setDate(maxDate.getDate() + 3); // Changed from +2 to +3 to allow 3 days
-    if (date > maxDate) {
+    if (date > getMaxCheckoutDate(startDate)) {
       return false;
     }
 
@@ -319,10 +396,10 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   };
 
   useEffect(() => {
-    if (calendarData && calendarData.length > 0 && !isCalendarLoading && house) {
+    if (!isCalendarLoading && house && startDate && endDate) {
       calculatePricing(startDate, endDate, houseCount);
     }
-  }, [calendarData, isCalendarLoading, startDate, endDate, houseCount, house]);
+  }, [calendarData, isCalendarLoading, startDate, endDate, houseCount, house, selectedPersons]);
 
   return (
     <div className="w-full max-w-full sm:max-w-md lg:max-w-[400px] ">
@@ -344,9 +421,13 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
             setStartDate(start);
 
             if (end) {
-              setEndDate(end);
-              calculatePricing(start, end, houseCount);
+              const checkout = clampCheckoutDate(start, end);
+              setEndDate(checkout);
+              setIsSelectingCheckout(false);
+              calculatePricing(start, checkout, houseCount);
             } else {
+              // First click = check-in; leave range open so user can pick check-out (2–30 days)
+              setIsSelectingCheckout(true);
               const nextDay = new Date(start);
               nextDay.setDate(nextDay.getDate() + 1);
               setEndDate(nextDay);
@@ -358,7 +439,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           isCalendarLoading={isCalendarLoading}
           isDateAvailable={isDateAvailable}
           startDate={startDate}
-          endDate={endDate}
+          endDate={isSelectingCheckout ? null : endDate}
           isCheckout={false}
         />
 
@@ -386,6 +467,30 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           />
         </div>
 
+        {pricingDetails.length > 0 && (
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-[#304A3A] mb-2">
+              No. of Guests
+            </label>
+            <select
+              value={selectedPersons}
+              onChange={(e) => {
+                const value = e.target.value === "" ? "" : Number(e.target.value);
+                setSelectedPersons(value);
+                calculatePricing(startDate, endDate, houseCount, value);
+              }}
+              className="w-full px-3 py-4 border border-[#C8BFB2] rounded-lg bg-[#FDFAF7] text-[#304A3A] focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"
+            >
+              {pricingDetails.map((detail) => (
+                <option key={detail.id ?? detail.numberOfPersonsAllowed} value={detail.numberOfPersonsAllowed}>
+                  {detail.numberOfPersonsAllowed} {detail.numberOfPersonsAllowed === 1 ? "Guest" : "Guests"}
+                  {/* {detail.amountPerDay != null ? ` — ₹${detail.amountPerDay}` : ""} */}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Number of Houses */}
         <HouseCounter
           houseCount={houseCount}
@@ -408,6 +513,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           subTotal={subTotal}
           discount={discount}
           finalAmount={finalAmount}
+          selectedPersons={selectedPersons}
           isLoading={isCalendarLoading || isUserPackagesLoading}
         />
       </div>

@@ -112,8 +112,8 @@ const PropertyDetails = ({ house, userPackage, isUserPackagesLoading }) => {
 
             {/* Price and Guest Capacity */}
             <div className="mb-2 flex flex-wrap items-center">
-              <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#304A3A]">₹{house?.tariffPerDay}</span>
-              <span className="text-[#4A6360] ml-2 text-base sm:text-lg">/ For 2 Guests</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-[#304A3A]">₹{house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.amountPerDay : house?.tariffPerDay}</span>
+              <span className="text-[#4A6360] ml-2 text-base sm:text-lg">/ For {house?.pricingDetails?.length > 0 ? house?.pricingDetails[0]?.numberOfPersonsAllowed : 2} Guests</span>
             </div>
 
             {/* Check-in/Check-out Times */}

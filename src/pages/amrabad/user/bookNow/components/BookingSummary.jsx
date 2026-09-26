@@ -4,7 +4,7 @@ import { useCartStore } from "../../../../../store/amrabad/user/userCartStore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, isLoading = false, startDate, endDate, userPackage }) => {
+const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, isLoading = false, startDate, endDate, userPackage, selectedPersons }) => {
   const { addToCart, loadingAddToCart, cartItems, fetchCartItems } = useCartStore();
   const navigate = useNavigate();
   const [conflictModal, setConflictModal] = useState(null); // { existingPackageName, existingPackageId }
@@ -28,7 +28,15 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
     return Math.max(1, diffDays);
   })();
 
-  const pricePerNight = house?.tariffPerDay || 0;
+  const selectedPricing =
+    house?.pricingDetails?.find(
+      (p) => String(p.numberOfPersonsAllowed) === String(selectedPersons)
+    ) || house?.pricingDetails?.[0];
+
+  const pricePerNight =
+    house?.pricingDetails?.length > 0
+      ? selectedPricing?.amountPerDay || 0
+      : house?.tariffPerDay || 0;
 
   // Helper function to combine date with time
   const combineDateWithTime = (date, time) => {
@@ -71,6 +79,7 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
         roomCount: houseCount,
         discountAmount: discount,
         amount: finalAmount,
+        noOfPersons: selectedPersons,
       });
       console.log(response, "response");
       if (response.statusCode === 200) {

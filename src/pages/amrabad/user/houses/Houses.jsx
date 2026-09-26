@@ -169,7 +169,7 @@ const Houses = () => {
               Search Cottages
             </button>
           </div>
-          <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
+          {/* <ViewToggle viewMode={viewMode} setViewMode={setViewMode} /> */}
         </div>
 
         {/* Content */}
