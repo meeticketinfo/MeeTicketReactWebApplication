@@ -1,4 +1,4 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import { toast, ToastContainer } from "react-toastify";
 import * as Yup from "yup";
 import { usePackagesStore } from "../../../../store/amrabad/masters/packagesStore";
@@ -9,6 +9,7 @@ import {
   convertImageUrlToBase64,
 } from "../../../../utils/Helper";
 import MultipleDatePicker from "../../../../components/MultipleDatePicker";
+import { FiMinus, FiPlus } from "react-icons/fi";
 
 // Alternative approach: Skip base64 conversion for existing images if CORS fails
 const handleImageConversion = async (imageUrl, imageId) => {
@@ -91,6 +92,30 @@ const HouseCreate = () => {
     latitude: isHouseEditVisible ? selectedSubRowData?.latitude : null,
     longitude: isHouseEditVisible ? selectedSubRowData?.longitude : null,
     overview: isHouseEditVisible ? selectedSubRowData?.overview : "",
+    PricingDetails: (() => {
+      // API returns camelCase `pricingDetails` (same as discountDetails, roomImages, etc.)
+      const pricingFromApi =
+        selectedSubRowData?.pricingDetails ??
+        selectedSubRowData?.PricingDetails;
+
+      if (
+        isHouseEditVisible &&
+        Array.isArray(pricingFromApi) &&
+        pricingFromApi.length > 0
+      ) {
+        return pricingFromApi.map((item) => ({
+          amountPerDay: item.amountPerDay ?? "",
+          numberOfPersonsAllowed: item.numberOfPersonsAllowed ?? "",
+        }));
+      }
+
+      return [
+        {
+          amountPerDay: "",
+          numberOfPersonsAllowed: "",
+        },
+      ];
+    })(),
     specialOffers: isHouseEditVisible ? selectedSubRowData?.specialOffers : "",
     remarks: isHouseEditVisible ? selectedSubRowData?.remarks : "",
     sequence: isHouseEditVisible ? selectedSubRowData?.sequence : 0,
@@ -304,7 +329,52 @@ const HouseCreate = () => {
       .required("Overview is required.")
       .min(10, "Overview must be at least 10 characters.")
       .max(500, "Overview cannot exceed 500 characters."),
-  
+    PricingDetails: Yup.array()
+      .of(
+        Yup.object().shape({
+          amountPerDay: Yup.string()
+            .required("Amount Per Day is required.")
+            .test(
+              "not-only-spaces",
+              "Amount Per Day cannot be empty or just spaces",
+              (value) => value && String(value).trim() !== ""
+            )
+            .test(
+              "is-valid-number",
+              "Amount Per Day must be a valid number",
+              (value) => !isNaN(value)
+            )
+            .test(
+              "is-greater-than-zero",
+              "Amount Per Day must be greater than 0",
+              (value) => Number(value) > 0
+            ),
+          numberOfPersonsAllowed: Yup.string()
+            .required("Number of Persons Allowed is required.")
+            .test(
+              "not-only-spaces",
+              "Number of Persons Allowed cannot be empty or just spaces",
+              (value) => value && String(value).trim() !== ""
+            )
+            .test(
+              "is-valid-number",
+              "Number of Persons Allowed must be a valid number",
+              (value) => !isNaN(value)
+            )
+            .test(
+              "is-greater-than-zero",
+              "Number of Persons Allowed must be greater than 0",
+              (value) => Number(value) > 0
+            )
+            .test(
+              "is-integer",
+              "Number of Persons Allowed must be a whole number",
+              (value) => Number.isInteger(Number(value))
+            ),
+        })
+      )
+      .min(1, "At least one pricing row is required.")
+      .max(100, "Maximum of 100 pricing rows allowed."),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -433,6 +503,7 @@ const HouseCreate = () => {
         <ToastContainer position="top-right" autoClose={3000} />
         <Formik
           initialValues={initialValues}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           validateOnChange={true}
@@ -1108,6 +1179,185 @@ const HouseCreate = () => {
                       component="div"
                       className="text-red-500 text-xs mt-1"
                     />
+                  </div>
+
+                  {/* Pricing Details - Amount Per Day / Persons Allowed */}
+                  <div className="col-span-4">
+                    <FieldArray name="PricingDetails">
+                      {({ push, remove }) => (
+                        <div className="space-y-3">
+                          {values.PricingDetails.map((_, index) => (
+                            <div
+                              key={index}
+                              className="grid grid-cols-1 md:grid-cols-4 gap-5 items-start"
+                            >
+                              {/* Amount Per Day */}
+                              <div className="col-span-1">
+                                <label
+                                  htmlFor={`PricingDetails[${index}].amountPerDay`}
+                                  className="block text-xs font-medium text-gray-700"
+                                >
+                                  Amount Per Day{" "}
+                                  <span className="text-red-500">*</span>
+                                </label>
+                                <Field
+                                  name={`PricingDetails[${index}].amountPerDay`}
+                                >
+                                  {({ field }) => (
+                                    <input
+                                      {...field}
+                                      id={`PricingDetails[${index}].amountPerDay`}
+                                      type="number"
+                                      min={1}
+                                      onInput={(e) => {
+                                        const value = e.target.value;
+                                        if (value.length > 7) {
+                                          e.target.value = value.slice(0, 7);
+                                        }
+                                      }}
+                                      onKeyDown={(e) => {
+                                        if (
+                                          ["-", "e", "E", "+", "."].includes(
+                                            e.key
+                                          ) ||
+                                          (e.key.length === 1 &&
+                                            !/[0-9]/.test(e.key))
+                                        ) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (
+                                          value === "" ||
+                                          Number(value) > 0
+                                        ) {
+                                          field.onChange(e);
+                                        } else {
+                                          setFieldValue(
+                                            `PricingDetails[${index}].amountPerDay`,
+                                            ""
+                                          );
+                                        }
+                                      }}
+                                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                      placeholder="Enter Amount Per Day"
+                                    />
+                                  )}
+                                </Field>
+                                <ErrorMessage
+                                  name={`PricingDetails[${index}].amountPerDay`}
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+
+                              {/* Number of Persons Allowed */}
+                              <div className="col-span-1">
+                                <label
+                                  htmlFor={`PricingDetails[${index}].numberOfPersonsAllowed`}
+                                  className="block text-xs font-medium text-gray-700"
+                                >
+                                  Number of Persons Allowed{" "}
+                                  <span className="text-red-500">*</span>
+                                </label>
+                                <Field
+                                  name={`PricingDetails[${index}].numberOfPersonsAllowed`}
+                                >
+                                  {({ field }) => (
+                                    <input
+                                      {...field}
+                                      id={`PricingDetails[${index}].numberOfPersonsAllowed`}
+                                      type="number"
+                                      min={1}
+                                      onInput={(e) => {
+                                        const value = e.target.value;
+                                        if (value.length > 3) {
+                                          e.target.value = value.slice(0, 3);
+                                        }
+                                      }}
+                                      onKeyDown={(e) => {
+                                        if (
+                                          ["-", "e", "E", "+", "."].includes(
+                                            e.key
+                                          ) ||
+                                          (e.key.length === 1 &&
+                                            !/[0-9]/.test(e.key))
+                                        ) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (
+                                          value === "" ||
+                                          Number(value) > 0
+                                        ) {
+                                          field.onChange(e);
+                                        } else {
+                                          setFieldValue(
+                                            `PricingDetails[${index}].numberOfPersonsAllowed`,
+                                            ""
+                                          );
+                                        }
+                                      }}
+                                      className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                                      placeholder="Enter Number of Persons Allowed"
+                                    />
+                                  )}
+                                </Field>
+                                <ErrorMessage
+                                  name={`PricingDetails[${index}].numberOfPersonsAllowed`}
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+
+                              {/* Add / Remove icons — spacer label keeps buttons level with inputs */}
+                              <div className="col-span-1">
+                                <label className="block text-xs font-medium text-transparent select-none">
+                                  &nbsp;
+                                </label>
+                                <div className="mt-1 flex items-center gap-2 h-[30px]">
+                                  <button
+                                    type="button"
+                                    title="Add row"
+                                    disabled={
+                                      values.PricingDetails.length >= 100
+                                    }
+                                    onClick={() => {
+                                      if (values.PricingDetails.length < 100) {
+                                        push({
+                                          amountPerDay: "",
+                                          numberOfPersonsAllowed: "",
+                                        });
+                                      }
+                                    }}
+                                    className={`flex items-center justify-center w-8 h-8 rounded-md border transition duration-200 ${
+                                      values.PricingDetails.length >= 100
+                                        ? "bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed"
+                                        : "bg-blue-v1 text-white border-blue-v1 hover:bg-white hover:text-blue-v1"
+                                    }`}
+                                  >
+                                    <FiPlus className="text-base" />
+                                  </button>
+                                  {values.PricingDetails.length > 1 && (
+                                    <button
+                                      type="button"
+                                      title="Remove row"
+                                      onClick={() => remove(index)}
+                                      className="flex items-center justify-center w-8 h-8 rounded-md border bg-red-500 text-white border-red-500 hover:bg-white hover:text-red-500 transition duration-200"
+                                    >
+                                      <FiMinus className="text-base" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </FieldArray>
                   </div>
 
                   {/* Special Offers */}

@@ -86,7 +86,7 @@ export const RTC_BUS_PASS_API_BASE_URL = "https://meeticket.telangana.gov.in/rtc
 
 // Amarabad dev
 export const AMRABAD_API_BASE_URL =
-  "https://meeticketdevui.vmaxtechservices.help/amrabad/api/";
+  "https://meeticket.telangana.gov.in/deccanwood/api/";
 
 /// test
 //export const API_BASE_URL =  "https://dt3231zr-7169.inc1.devtunnels.ms/api/"
