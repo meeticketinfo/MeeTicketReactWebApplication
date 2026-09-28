@@ -346,7 +346,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                           {house.roomName ? house.roomName : "N/A"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.roomCount}</td>
-                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.numberOfGuestsAllowed ? house.numberOfGuestsAllowed : "N/A"}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.noOfPersons ? house.noOfPersons : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkIn ? formatDateTime(house.checkIn) : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkOut ? formatDateTime(house.checkOut) : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">
