@@ -1,4 +1,4 @@
-import { FaHome, FaCalendarAlt, FaRupeeSign, FaBox, FaHashtag } from "react-icons/fa";
+import { FaHome, FaCalendarAlt, FaRupeeSign, FaBox, FaHashtag, FaUsers } from "react-icons/fa";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { PiHouseLine } from "react-icons/pi";
 import { BsCurrencyRupee } from "react-icons/bs";
@@ -56,6 +56,20 @@ const HouseDetails = ({ houses }) => {
                   <span className="font-bold text-sm">
                     {house?.amountAfterDiscount?.toLocaleString() ?? "N/A"}
                   </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Guests */}
+            <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+              <FaUsers className="w-4 h-4 text-[#304A3A]" />
+              <div>
+                <span className="text-xs text-gray-500">Guests</span>
+                <div className="font-medium text-gray-900 text-sm">
+                  {house?.noOfPersons ??
+                    house?.numberOfGuestsAllowed ??
+                    house?.guests ??
+                    "N/A"}
                 </div>
               </div>
             </div>

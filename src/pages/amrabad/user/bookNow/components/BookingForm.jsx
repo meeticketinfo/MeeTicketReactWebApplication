@@ -5,7 +5,6 @@ import DatePickerField from "./DatePickerField";
 import HouseCounter from "./HouseCounter";
 import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
-import { format } from "date-fns";
 
 const MAX_STAY_DAYS = 30;
 
@@ -37,8 +36,6 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const [subTotal, setSubTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
-  // Tracks whether user is picking check-out after check-in in the range calendar
-  const [isSelectingCheckout, setIsSelectingCheckout] = useState(false);
   const [selectedPersons, setSelectedPersons] = useState(
     () => house?.pricingDetails?.[0]?.numberOfPersonsAllowed ?? ""
   );
@@ -269,13 +266,14 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
   const handleCheckInDateChange = (date) => {
     setStartDate(date);
 
+    let nextEndDate = endDate;
     if (date >= endDate) {
-      const nextDay = new Date(date);
-      nextDay.setDate(nextDay.getDate() + 1);
-      setEndDate(nextDay);
+      nextEndDate = new Date(date);
+      nextEndDate.setDate(nextEndDate.getDate() + 1);
+      setEndDate(nextEndDate);
     }
 
-    calculatePricing(date, endDate, houseCount);
+    calculatePricing(date, nextEndDate, houseCount);
   };
 
   const handleCheckOutDateChange = (date) => {
@@ -346,131 +344,9 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     return maxDate;
   };
 
-  const clampCheckoutDate = (checkInDate, checkOutDate) => {
-    const maxDate = getMaxCheckoutDate(checkInDate);
-    if (checkOutDate > maxDate) {
-      const clamped = new Date(checkInDate);
-      clamped.setDate(clamped.getDate() + MAX_STAY_DAYS);
-      return clamped;
-    }
-    return checkOutDate;
-  };
-
-  const toDayTime = (date) => {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d.getTime();
-  };
-
-  // After both dates are set, update only check-in or only check-out
-  const applyIntelligentRangeClick = (clickedDate) => {
-    const clicked = new Date(clickedDate);
-    clicked.setHours(0, 0, 0, 0);
-    const currentStart = new Date(startDate);
-    currentStart.setHours(0, 0, 0, 0);
-    const currentEnd = new Date(endDate);
-    currentEnd.setHours(0, 0, 0, 0);
-
-    const clickedTime = clicked.getTime();
-    const startTime = currentStart.getTime();
-    const endTime = currentEnd.getTime();
-
-    if (clickedTime === startTime || clickedTime === endTime) {
-      return;
-    }
-
-    const updateCheckIn = (newStart) => {
-      let newEnd = currentEnd;
-      if (toDayTime(newEnd) <= toDayTime(newStart)) {
-        newEnd = new Date(newStart);
-        newEnd.setDate(newEnd.getDate() + 1);
-      } else {
-        newEnd = clampCheckoutDate(newStart, newEnd);
-      }
-      setStartDate(newStart);
-      setEndDate(newEnd);
-      setIsSelectingCheckout(false);
-      calculatePricing(newStart, newEnd, houseCount);
-    };
-
-    const updateCheckOut = (newEnd) => {
-      if (toDayTime(newEnd) <= startTime) return;
-      if (toDayTime(newEnd) > toDayTime(getMaxCheckoutDate(currentStart))) return;
-      setEndDate(newEnd);
-      setIsSelectingCheckout(false);
-      calculatePricing(currentStart, newEnd, houseCount);
-    };
-
-    // Before current Check-in → update Check-in only (e.g. 26–30, click 25 → 25–30)
-    if (clickedTime < startTime) {
-      updateCheckIn(clicked);
-      return;
-    }
-
-    // After current Check-out → update Check-out only
-    if (clickedTime > endTime) {
-      updateCheckOut(clicked);
-      return;
-    }
-
-    // Between Check-in and Check-out:
-    // closer to Check-in → update Check-in; closer to Check-out → update Check-out
-    // (e.g. 25–30, click 29 → Check-out = 29)
-    const midTime = startTime + (endTime - startTime) / 2;
-    if (clickedTime <= midTime) {
-      updateCheckIn(clicked);
-    } else {
-      updateCheckOut(clicked);
-    }
-  };
-
-  const handleRangeChange = (dates) => {
-    const [start, end] = dates;
-    if (!start) return;
-
-    const hasCompleteRange =
-      startDate &&
-      endDate &&
-      !isSelectingCheckout &&
-      toDayTime(startDate) < toDayTime(endDate);
-
-    // Full range already selected + single click → modify check-in or check-out only
-    if (hasCompleteRange && !end) {
-      applyIntelligentRangeClick(start);
-      return;
-    }
-
-    // First click = Check-in; second click = Check-out
-    setStartDate(start);
-
-    if (end) {
-      const checkout = clampCheckoutDate(start, end);
-      setEndDate(checkout);
-      setIsSelectingCheckout(false);
-      calculatePricing(start, checkout, houseCount);
-    } else {
-      setIsSelectingCheckout(true);
-      const nextDay = new Date(start);
-      nextDay.setDate(nextDay.getDate() + 1);
-      setEndDate(nextDay);
-      calculatePricing(start, nextDay, houseCount);
-    }
-  };
-
   const filterDate = (date) => {
     const dateString = getLocalDateString(date);
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
-
-    // While picking check-out: allow a new check-in (date <= start), and check-out only up to +30 days
-    if (isSelectingCheckout && startDate && date > startDate) {
-      if (date > getMaxCheckoutDate(startDate)) {
-        return false;
-      }
-      if (calendarData && calendarData.length > 0) {
-        return isAvailable;
-      }
-      return true;
-    }
 
     if (calendarData && calendarData.length > 0) {
       return isAvailable;
@@ -511,42 +387,33 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
         {/* Check-in Date */}
         <DatePickerField
-          inline={true}
-          label=""
+          label="Check-in Date"
           selected={startDate}
-          onChange={handleRangeChange}
+          onChange={handleCheckInDateChange}
           filterDate={filterDate}
           renderDayContents={renderDayContents}
           isCalendarLoading={isCalendarLoading}
           isDateAvailable={isDateAvailable}
           startDate={startDate}
-          endDate={isSelectingCheckout ? null : endDate}
+          endDate={endDate}
+          selectsStart
           isCheckout={false}
         />
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-[#304A3A] mb-2">
-            Check-in Date
-          </label>
-
-          <input
-            readOnly
-            value={startDate ? format(startDate, "dd-MM-yyyy") : ""}
-            className="w-full px-3 py-4 border border-[#C8BFB2] rounded-lg bg-[#FDFAF7] text-[#304A3A]"
-          />
-        </div>
-
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-[#304A3A] mb-2">
-            Check-out Date
-          </label>
-
-          <input
-            readOnly
-            value={endDate ? format(endDate, "dd-MM-yyyy") : ""}
-            className="w-full px-3 py-4 border border-[#C8BFB2] rounded-lg bg-[#FDFAF7] text-[#304A3A]"
-          />
-        </div>
+        {/* Check-out Date */}
+        <DatePickerField
+          label="Check-out Date"
+          selected={endDate}
+          onChange={handleCheckOutDateChange}
+          filterDate={filterCheckoutDate}
+          renderDayContents={renderDayContents}
+          isCalendarLoading={isCalendarLoading}
+          isDateAvailable={isDateAvailable}
+          startDate={startDate}
+          endDate={endDate}
+          selectsEnd
+          isCheckout
+        />
 
         {pricingDetails.length > 0 && (
           <div className="mb-5">
