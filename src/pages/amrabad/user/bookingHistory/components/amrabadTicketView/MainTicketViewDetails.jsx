@@ -306,7 +306,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         S.No
                       </th>
-                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
                         Package Name
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap">
@@ -314,6 +314,9 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap" >
                         Cottage Count
+                      </th>
+                      <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold whitespace-nowrap" >
+                        Guests
                       </th>
                       <th className="px-2 sm:px-3 py-2 text-left text-xs sm:text-sm font-semibold">
                         Check-in Date
@@ -343,6 +346,7 @@ const TicketViewDetails = ({ isScrolled = false }) => {
                           {house.roomName ? house.roomName : "N/A"}
                         </td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.roomCount}</td>
+                        <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.numberOfGuestsAllowed ? house.numberOfGuestsAllowed : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkIn ? formatDateTime(house.checkIn) : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">{house.checkOut ? formatDateTime(house.checkOut) : "N/A"}</td>
                         <td className="px-2 sm:px-3 py-2 sm:py-3 text-xs sm:text-xs">

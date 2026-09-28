@@ -151,6 +151,7 @@ const CheckoutDetails = () => {
                         <tr>
                           <th className="p-2 text-left font-semibold min-w-[260px]">Cottage Name</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Cottage Count</th>
+                          <th className="p-2 text-center font-semibold whitespace-nowrap">Guests</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Check-in</th>
                           <th className="p-2 text-center font-semibold whitespace-nowrap">Check-out</th>
                           <th className="p-2 text-center font-semibold">Amount</th>
@@ -188,6 +189,7 @@ const CheckoutDetails = () => {
                                 </div>
                               </td>
                               <td className="p-2 text-center">{item?.roomCount || 0}</td>
+                              <td className="p-2 text-center">{item?.noOfPersons ?? "-"}</td>
                               <td className="p-2 text-center">
                                 {item?.roomFromDate ? formatDateTime(item.roomFromDate) : '-'}
                               </td>

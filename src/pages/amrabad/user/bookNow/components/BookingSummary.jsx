@@ -38,14 +38,15 @@ const BookingSummary = ({ houseCount, house, discount, finalAmount, subTotal, is
       ? selectedPricing?.amountPerDay || 0
       : house?.tariffPerDay || 0;
 
-  // Helper function to combine date with time
+  // Helper function to combine date with time (local date — avoid UTC shift from toISOString)
   const combineDateWithTime = (date, time) => {
     if (!date || !time) return date;
 
-    // Get the date string in YYYY-MM-DD format
-    const dateString = date instanceof Date ?
-      date.toISOString().split('T')[0] :
-      new Date(date).toISOString().split('T')[0];
+    const d = date instanceof Date ? date : new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const dateString = `${year}-${month}-${day}`;
 
     // Combine date and time in local format (YYYY-MM-DDTHH:MM:SS)
     const combinedDateTime = `${dateString}T${time}`;

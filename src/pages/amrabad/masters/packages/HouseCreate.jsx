@@ -350,25 +350,25 @@ const HouseCreate = () => {
               (value) => Number(value) > 0
             ),
           numberOfPersonsAllowed: Yup.string()
-            .required("Number of Persons Allowed is required.")
+            .required("Number of Guests Allowed is required.")
             .test(
               "not-only-spaces",
-              "Number of Persons Allowed cannot be empty or just spaces",
+              "Number of Guests Allowed cannot be empty or just spaces",
               (value) => value && String(value).trim() !== ""
             )
             .test(
               "is-valid-number",
-              "Number of Persons Allowed must be a valid number",
+              "Number of Guests Allowed must be a valid number",
               (value) => !isNaN(value)
             )
             .test(
               "is-greater-than-zero",
-              "Number of Persons Allowed must be greater than 0",
+              "Number of Guests Allowed must be greater than 0",
               (value) => Number(value) > 0
             )
             .test(
               "is-integer",
-              "Number of Persons Allowed must be a whole number",
+              "Number of Guests Allowed must be a whole number",
               (value) => Number.isInteger(Number(value))
             ),
         })
@@ -1258,7 +1258,7 @@ const HouseCreate = () => {
                                   htmlFor={`PricingDetails[${index}].numberOfPersonsAllowed`}
                                   className="block text-xs font-medium text-gray-700"
                                 >
-                                  Number of Persons Allowed{" "}
+                                  Number of Guests Allowed{" "}
                                   <span className="text-red-500">*</span>
                                 </label>
                                 <Field
@@ -1302,7 +1302,7 @@ const HouseCreate = () => {
                                         }
                                       }}
                                       className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-                                      placeholder="Enter Number of Persons Allowed"
+                                      placeholder="Enter Number of Guests Allowed"
                                     />
                                   )}
                                 </Field>

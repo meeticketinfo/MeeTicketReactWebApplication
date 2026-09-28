@@ -356,6 +356,107 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     return checkOutDate;
   };
 
+  const toDayTime = (date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+
+  // After both dates are set, update only check-in or only check-out
+  const applyIntelligentRangeClick = (clickedDate) => {
+    const clicked = new Date(clickedDate);
+    clicked.setHours(0, 0, 0, 0);
+    const currentStart = new Date(startDate);
+    currentStart.setHours(0, 0, 0, 0);
+    const currentEnd = new Date(endDate);
+    currentEnd.setHours(0, 0, 0, 0);
+
+    const clickedTime = clicked.getTime();
+    const startTime = currentStart.getTime();
+    const endTime = currentEnd.getTime();
+
+    if (clickedTime === startTime || clickedTime === endTime) {
+      return;
+    }
+
+    const updateCheckIn = (newStart) => {
+      let newEnd = currentEnd;
+      if (toDayTime(newEnd) <= toDayTime(newStart)) {
+        newEnd = new Date(newStart);
+        newEnd.setDate(newEnd.getDate() + 1);
+      } else {
+        newEnd = clampCheckoutDate(newStart, newEnd);
+      }
+      setStartDate(newStart);
+      setEndDate(newEnd);
+      setIsSelectingCheckout(false);
+      calculatePricing(newStart, newEnd, houseCount);
+    };
+
+    const updateCheckOut = (newEnd) => {
+      if (toDayTime(newEnd) <= startTime) return;
+      if (toDayTime(newEnd) > toDayTime(getMaxCheckoutDate(currentStart))) return;
+      setEndDate(newEnd);
+      setIsSelectingCheckout(false);
+      calculatePricing(currentStart, newEnd, houseCount);
+    };
+
+    // Before current Check-in → update Check-in only (e.g. 26–30, click 25 → 25–30)
+    if (clickedTime < startTime) {
+      updateCheckIn(clicked);
+      return;
+    }
+
+    // After current Check-out → update Check-out only
+    if (clickedTime > endTime) {
+      updateCheckOut(clicked);
+      return;
+    }
+
+    // Between Check-in and Check-out:
+    // closer to Check-in → update Check-in; closer to Check-out → update Check-out
+    // (e.g. 25–30, click 29 → Check-out = 29)
+    const midTime = startTime + (endTime - startTime) / 2;
+    if (clickedTime <= midTime) {
+      updateCheckIn(clicked);
+    } else {
+      updateCheckOut(clicked);
+    }
+  };
+
+  const handleRangeChange = (dates) => {
+    const [start, end] = dates;
+    if (!start) return;
+
+    const hasCompleteRange =
+      startDate &&
+      endDate &&
+      !isSelectingCheckout &&
+      toDayTime(startDate) < toDayTime(endDate);
+
+    // Full range already selected + single click → modify check-in or check-out only
+    if (hasCompleteRange && !end) {
+      applyIntelligentRangeClick(start);
+      return;
+    }
+
+    // First click = Check-in; second click = Check-out
+    setStartDate(start);
+
+    if (end) {
+      const checkout = clampCheckoutDate(start, end);
+      setEndDate(checkout);
+      setIsSelectingCheckout(false);
+      calculatePricing(start, checkout, houseCount);
+    } else {
+      setIsSelectingCheckout(true);
+      const nextDay = new Date(start);
+      nextDay.setDate(nextDay.getDate() + 1);
+      setEndDate(nextDay);
+      calculatePricing(start, nextDay, houseCount);
+    }
+  };
+
   const filterDate = (date) => {
     const dateString = getLocalDateString(date);
     const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
@@ -413,27 +514,7 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           inline={true}
           label=""
           selected={startDate}
-          onChange={(dates) => {
-            const [start, end] = dates;
-
-            if (!start) return;
-
-            setStartDate(start);
-
-            if (end) {
-              const checkout = clampCheckoutDate(start, end);
-              setEndDate(checkout);
-              setIsSelectingCheckout(false);
-              calculatePricing(start, checkout, houseCount);
-            } else {
-              // First click = check-in; leave range open so user can pick check-out (2–30 days)
-              setIsSelectingCheckout(true);
-              const nextDay = new Date(start);
-              nextDay.setDate(nextDay.getDate() + 1);
-              setEndDate(nextDay);
-              calculatePricing(start, nextDay, houseCount);
-            }
-          }}
+          onChange={handleRangeChange}
           filterDate={filterDate}
           renderDayContents={renderDayContents}
           isCalendarLoading={isCalendarLoading}
