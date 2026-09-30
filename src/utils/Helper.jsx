@@ -345,3 +345,43 @@ export const formatCount = (value) => {
   // Crores
   return formatWithUnit(value, 10000000, "Cr");
 };
+
+export const formatDateOnly = (dateStr) => {
+  if (!dateStr) return "";
+  return String(dateStr).split("T")[0];
+};
+
+export const naToEmpty = (value) =>
+  value === "N/A" || value === "NA" || value == null ? "" : value;
+
+export const formatDisplayDate = (value) => {
+  if (!value || value === "N/A" || value === "NA") return "N/A";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+export const formatDisplayDateTime = (value) => {
+  if (!value || value === "N/A" || value === "NA") return "N/A";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  return `${day}-${month}-${year} ${formattedTime}`;
+};
+
+export const displayValue = (value) => {
+  if (value === 0) return "0";
+  if (!value || value === "N/A" || value === "NA") return "N/A";
+  return value;
+};

@@ -26,6 +26,7 @@ import {
   EsdTech,
   ForestDeptAdmin,
   ParksAdmin,
+  CityBusAdmin,
 } from "../constants/permissions";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
@@ -106,9 +107,9 @@ function Sidebar({ variant = "default" }) {
     ) {
       return SupportAdmin;
     } else if (role === "ROLE_SUPERADMIN") {
-      return superAdminPermissions;
+      return [...superAdminPermissions, ...CityBusAdmin];
     } else if (role === "ROLE_ESD_TECH") {
-      return EsdTech;
+      return [...EsdTech, ...CityBusAdmin];
     } else if (role === "ROLE_ADMIN") {
       return parkId === "100"
         ? CustomParkAdminPermissions
@@ -122,7 +123,7 @@ function Sidebar({ variant = "default" }) {
     } else if (role === "Role_TourismAdmin") {
       return Toursim;
     } else if (role === "Role_RTCADMIN") {
-      return RtcAdmin;
+      return [...RtcAdmin, ...CityBusAdmin];
     } else if (role === "Role_AmrabadAdmin") {
       return Amrabad;
     } else if (role === "Role_DeptAdmin") {

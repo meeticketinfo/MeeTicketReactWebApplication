@@ -34,12 +34,17 @@ export const useIntercityTicketViewStore = create((set) => ({
   },
 
   // Current ticket view (MavenConnect GetBookingsByBookingID)
-  fetchCurrentTicketViewData: async (bookingId = "") => {
+  fetchCurrentTicketViewData: async (bookingId = "", bookingType = "") => {
     set({ isFetchIntercityTicketViewData: true });
     try {
+      const queryParams = { BookingID: bookingId };
+      if (bookingType) {
+        queryParams.BookingType = bookingType;
+      }
+
       const response = await apiService.get(
         API_ENDPOINTS.REPORTS.RTC_REPORTS.CURRENT_BOOKINGS_REPORTS.GET_CURRENT_TICKET_VIEW,
-        { BookingID: bookingId },
+        queryParams,
         {
           token: "AmxsG7zkJB",
           Accept: "application/json",

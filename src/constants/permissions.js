@@ -292,3 +292,11 @@ export const ParksAdmin = [
   "user-report",
   "refund-transactions",
 ];
+export const CityBusAdmin = [
+  // "dashboard",
+  "city-bus-consolidated-report",
+  "city-bus-individual-report",
+  "city-bus-payment-transactions",
+  "city-bus-refund-report",
+ 
+];
