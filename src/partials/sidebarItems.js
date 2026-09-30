@@ -623,12 +623,17 @@ const sidebarItems = [
   },
   // amrabad
   {
-    title: "Reports",
+    title: "Resort Packages",
     icon: HiOutlineDocumentReport,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
+      {
+        title: "Packages",
+        icon: TbReportSearch,
+        path: "/packages",
+      },
       {
         title: "Booking Reports",
         icon: TbReportSearch,
