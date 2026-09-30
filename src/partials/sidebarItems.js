@@ -561,16 +561,16 @@ const sidebarItems = [
         icon: RiDashboard3Fill,
         path: "/city-bus-individual-report",
       },
-      {
-        title: "Payment Transactions",
-        icon: TbReportAnalytics,
-        path: "/city-bus-payment-transactions",
-      },
-      {
-        title: "Refund Transactions",
-        icon: RiDashboard3Fill,
-        path: "/city-bus-refund-report",
-      }
+      // {
+      //   title: "Payment Transactions",
+      //   icon: TbReportAnalytics,
+      //   path: "/city-bus-payment-transactions",
+      // },
+      // {
+      //   title: "Refund Transactions",
+      //   icon: RiDashboard3Fill,
+      //   path: "/city-bus-refund-report",
+      // }
     ],
 
   },
