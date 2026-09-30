@@ -137,6 +137,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "SNo",
         headerName: "S.No",
+        minWidth: 70,
         maxWidth: 70,
         headerClass: "text-blue-v2",
         valueGetter: (params) => {
@@ -147,6 +148,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "PNRNumber",
         headerName: "PNR NUMBER",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -154,32 +156,35 @@ const CityBusConsolidatedList = () => {
         field: "ReturnPNRNo",
         headerName: "RETURN PNR NO",
         hide: true,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "DepartureLocation",
         headerName: "DEPARTURE LOCATION",
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "ArrivalLocation",
         headerName: "ARRIVAL LOCATION",
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "MobileNumber",
         headerName: "MOBILE NUMBER",
-        maxWidth: 140,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "BusType",
         headerName: "BUS TYPE",
-        maxWidth: 170,
+        minWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -187,6 +192,7 @@ const CityBusConsolidatedList = () => {
         field: "SeatLayoutType",
         headerName: "SEAT LAYOUT TYPE",
         hide: true,
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params.value ? String(params.value).toUpperCase() : "N/A",
@@ -194,14 +200,14 @@ const CityBusConsolidatedList = () => {
       {
         field: "PassengerType",
         headerName: "PASSENGER TYPE",
-        maxWidth: 160,
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "TravelType",
         headerName: "TRAVEL TYPE",
-        maxWidth: 150,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
           if (!params.value || String(params.value).trim() === "") return "N/A";
@@ -212,20 +218,21 @@ const CityBusConsolidatedList = () => {
         field: "MID",
         headerName: "MID",
         hide: true,
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "PurchaseDate",
         headerName: "PURCHASE DATE",
-        maxWidth: 180,
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDateTime(params.value),
       },
       {
         field: "TravelDate",
         headerName: "TRAVEL DATE",
-        maxWidth: 150,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDate(params.value),
       },
@@ -233,13 +240,14 @@ const CityBusConsolidatedList = () => {
         field: "ReturnJourneyTravelDate",
         headerName: "RETURN JOURNEY TRAVEL DATE",
         hide: true,
+        minWidth: 200,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDate(params.value),
       },
       {
         field: "AdultCount",
         headerName: "ADULT COUNT",
-        maxWidth: 120,
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "0",
         isTotal: true,
@@ -247,7 +255,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "ChildCount",
         headerName: "CHILD COUNT",
-        maxWidth: 120,
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "0",
         isTotal: true,
@@ -255,7 +263,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "TicketQuantity",
         headerName: "TICKET QUANTITY",
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value || "0",
         isTotal: true,
@@ -263,7 +271,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "BasicFare",
         headerName: "BASIC FARE",
-        maxWidth: 100,
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -271,7 +279,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "TotalLevies",
         headerName: "TOTAL LEVIES",
-        maxWidth: 130,
+        minWidth: 130,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -280,7 +288,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalTollFare",
         headerName: "TOTAL TOLL FARE",
         hide: true,
-        maxWidth: 140,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -289,7 +297,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalGreenCess",
         headerName: "TOTAL GREEN CESS",
         hide: true,
-        maxWidth: 140,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -298,7 +306,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalPassengerFee",
         headerName: "TOTAL PASSENGER FEE",
         hide: true,
-        maxWidth: 160,
+        minWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -307,7 +315,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalSafetyFee",
         headerName: "TOTAL SAFETY FEE",
         hide: true,
-        maxWidth: 140,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -315,7 +323,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "TotalGSTAmount",
         headerName: "TOTAL GST AMOUNT",
-        maxWidth: 150,
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -324,7 +332,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalOtherCharges",
         headerName: "TOTAL OTHER CHARGES",
         hide: true,
-        maxWidth: 160,
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -333,7 +341,7 @@ const CityBusConsolidatedList = () => {
         field: "TotalRoundOffAmount",
         headerName: "TOTAL ROUND OFF",
         hide: true,
-        maxWidth: 140,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -341,7 +349,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "TotalCharges",
         headerName: "TOTAL CHARGES",
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -349,8 +357,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "TotalAmount",
         headerName: "TOTAL AMOUNT",
-        minWidth: 130,
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params.value != null ? `₹ ${params.value}` : "N/A",
@@ -359,13 +366,14 @@ const CityBusConsolidatedList = () => {
       {
         field: "OrderID",
         headerName: "ORDER ID",
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "PaymentMode",
         headerName: "PAYMENT MODE",
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -373,25 +381,28 @@ const CityBusConsolidatedList = () => {
         field: "PGPaymentID",
         headerName: "PG PAYMENT ID",
         hide: true,
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "TransactionID",
         headerName: "PAYMENT TRANSACTION ID",
+        minWidth: 200,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "PaymentDateTime",
         headerName: "PAYMENT DATE TIME",
-        maxWidth: 180,
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDateTime(params.value),
       },
       {
         field: "BookingStatusName",
         headerName: "BOOKING STATUS",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params?.value ? String(params.value).toUpperCase() : "N/A",
@@ -399,6 +410,7 @@ const CityBusConsolidatedList = () => {
       {
         field: "PaymentStatusName",
         headerName: "PAYMENT STATUS",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params?.value ? String(params.value).toUpperCase() : "N/A",
@@ -406,6 +418,7 @@ const CityBusConsolidatedList = () => {
       {
         headerName: "Ticket",
         field: "action",
+        minWidth: 180,
         cellRenderer: (params) => {
           if (params.node?.rowPinned === "bottom" || params.data?.isTotal) {
             return "";
@@ -419,7 +432,7 @@ const CityBusConsolidatedList = () => {
               : null;
 
           return (
-            <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               {pnr ? (
                 <NavLink
                   end
@@ -662,7 +675,7 @@ const CityBusConsolidatedList = () => {
         isFetchLoading={isFetchCityBusConsolidateData}
         showTotalCount={true}
         totalCount={filteredConsolidateData?.length || 0}
-        showSearch={false}
+        showSearch={true}
         tableHeight={gridData.length > 10 ? 550 : 300}
       />
     </div>
