@@ -19,8 +19,6 @@ import {
   CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
   filterRecordsByIntercityBus,
-  getArrivalStagesForDeparture,
-  getStageIdsFromSelection,
 } from "../../current_bookings_reports/shared/CurrentBookingReportFilterFields";
 
 const FILTERS_STORAGE_KEY = "city-bus-individual-filters";
@@ -55,6 +53,9 @@ const CityBusIndividualList = () => {
     fetchCityBusIndividualData,
     CityBusIndividualData,
     isFetchCityBusIndividualData,
+    fetchCityStops,
+    cityDepartureStages,
+    cityArrivalStages,
   } = useCityBusReportsStore();
 
   const {
@@ -63,8 +64,6 @@ const CityBusIndividualList = () => {
     IntercitySeatLayoutsData,
     IntercityBusTypesData,
     fetchMavenRoutes,
-    mavenRoutes,
-    departureStages,
     intercityStageNames,
   } = useIntercityMastersStore();
 
@@ -77,10 +76,12 @@ const CityBusIndividualList = () => {
     fetchIntercityBusTypesData();
     fetchIntercitySeatLayoutsData();
     fetchMavenRoutes();
+    fetchCityStops();
   }, [
     fetchIntercityBusTypesData,
     fetchIntercitySeatLayoutsData,
     fetchMavenRoutes,
+    fetchCityStops,
   ]);
 
   useEffect(() => {
@@ -111,11 +112,6 @@ const CityBusIndividualList = () => {
 
   const handleSearch = (values) => {
     const { intercityBus, ...reportValues } = values;
-    const stageIds = getStageIdsFromSelection(
-      mavenRoutes,
-      values.departureLocation,
-      values.arrivalLocation
-    );
     setIntercityBusFilter(intercityBus || "");
     fetchCityBusIndividualData({
       ...reportValues,
@@ -125,8 +121,8 @@ const CityBusIndividualList = () => {
       pnrNumber: naToEmpty(reportValues.pnrNumber) || "",
       orderId: naToEmpty(reportValues.orderId) || "",
       transactionId: naToEmpty(reportValues.transactionId) || "",
-      departureLocation: stageIds.FromStageBoardingID,
-      arrivalLocation: stageIds.ToStageBoardingID,
+      departureLocation: Number(values.departureLocation) || 0,
+      arrivalLocation: Number(values.arrivalLocation) || 0,
     });
     localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(values));
   };
@@ -164,6 +160,7 @@ const CityBusIndividualList = () => {
       {
         field: "sno",
         headerName: "S.NO",
+        minWidth: 70,
         maxWidth: 70,
         headerClass: "text-blue-v2",
         valueGetter: (params) => {
@@ -174,6 +171,7 @@ const CityBusIndividualList = () => {
       {
         field: "pnrNumber",
         headerName: "PNR NUMBER",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -181,38 +179,43 @@ const CityBusIndividualList = () => {
         field: "returnPNRNumber",
         headerName: "RETURN PNR NO",
         hide: true,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "departureLocation",
         headerName: "DEPARTURE LOCATION",
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "arrivalLocation",
         headerName: "ARRIVAL LOCATION",
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "phoneNumber",
         headerName: "MOBILE NUMBER",
-        maxWidth: 150,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "busType",
         headerName: "BUS TYPE",
-        maxWidth: 170,
+        minWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "seatLayoutType",
         headerName: "SEAT LAYOUT TYPE",
+        hide: true,
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
           const value = naToEmpty(params.value);
@@ -222,6 +225,8 @@ const CityBusIndividualList = () => {
       {
         field: "isReturnType",
         headerName: "TRAVEL TYPE",
+        hide: true,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
           const value = naToEmpty(params.value);
@@ -232,7 +237,7 @@ const CityBusIndividualList = () => {
       {
         field: "gender",
         headerName: "GENDER",
-        maxWidth: 120,
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => {
           const value = naToEmpty(params.value);
@@ -242,12 +247,14 @@ const CityBusIndividualList = () => {
       {
         field: "concessionType",
         headerName: "CONCESSION TYPE",
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "ticketID",
         headerName: "TICKET ID",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -255,24 +262,28 @@ const CityBusIndividualList = () => {
         field: "returnJourneyTicketID",
         headerName: "RETURN JOURNEY TICKET ID",
         hide: true,
+        minWidth: 200,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "mid",
         headerName: "MID",
+        minWidth: 120,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "purchaseDate",
         headerName: "PURCHASE DATE",
+        minWidth: 180,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDateTime(params.value),
       },
       {
         field: "travelDate",
         headerName: "TRAVEL DATE",
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDate(params.value),
       },
@@ -280,13 +291,14 @@ const CityBusIndividualList = () => {
         field: "returnDate",
         headerName: "RETURN JOURNEY TRAVEL DATE",
         hide: true,
+        minWidth: 200,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => formatDisplayDate(params.value),
       },
       {
         field: "ticketQuantity",
         headerName: "TICKET QUANTITY",
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value || "0",
         isTotal: true,
@@ -294,20 +306,21 @@ const CityBusIndividualList = () => {
       {
         field: "orderId",
         headerName: "ORDER ID",
+        minWidth: 160,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "modeOfPayment",
         headerName: "PAYMENT MODE",
-        maxWidth: 130,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "basicFare",
         headerName: "BASIC FARE",
-        maxWidth: 150,
+        minWidth: 130,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -315,6 +328,8 @@ const CityBusIndividualList = () => {
       {
         field: "passengerFee",
         headerName: "PASSENGER FEE",
+        hide: true,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -322,24 +337,30 @@ const CityBusIndividualList = () => {
       {
         field: "waterBottle",
         headerName: "WATER BOTTLE",
+        hide: true,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "safetyCess",
         headerName: "SAFETY CESS",
+        minWidth: 130,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "srt",
         headerName: "SRT",
+        minWidth: 100,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(naToEmpty(params.value)),
       },
       {
         field: "totalTollFare",
         headerName: "TOTAL TOLL FARE",
+        hide: true,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -347,6 +368,8 @@ const CityBusIndividualList = () => {
       {
         field: "totalLeviesFee",
         headerName: "TOTAL LEVIES FEE",
+        hide: true,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -354,6 +377,8 @@ const CityBusIndividualList = () => {
       {
         field: "serviceFee",
         headerName: "SERVICE FEE",
+        hide: true,
+        minWidth: 130,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -361,7 +386,8 @@ const CityBusIndividualList = () => {
       {
         field: "serviceTax_GST",
         headerName: "SERVICE TAX",
-        maxWidth: 150,
+        hide: true,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -369,7 +395,8 @@ const CityBusIndividualList = () => {
       {
         field: "flexiFare",
         headerName: "FLEXI FARE",
-        maxWidth: 150,
+        hide: true,
+        minWidth: 130,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -377,7 +404,7 @@ const CityBusIndividualList = () => {
       {
         field: "eachTicketAmount",
         headerName: "EACH TICKET AMOUNT",
-        maxWidth: 170,
+        minWidth: 170,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => `₹ ${params.value ?? "N/A"}`,
         isTotal: true,
@@ -385,7 +412,7 @@ const CityBusIndividualList = () => {
       {
         field: "totalAmount",
         headerName: "TOTAL AMOUNT",
-        maxWidth: 150,
+        minWidth: 140,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params.value != null ? `₹ ${params.value}` : "N/A",
@@ -394,13 +421,14 @@ const CityBusIndividualList = () => {
       {
         field: "paymentGatewayTransactionId",
         headerName: "PAYMENT TRANSACTION ID",
+        minWidth: 200,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
       {
         field: "bookingStatus",
         headerName: "BOOKING STATUS",
-        maxWidth: 150,
+        minWidth: 150,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>
           params?.value ? String(params.value).toUpperCase() : "N/A",
@@ -408,6 +436,7 @@ const CityBusIndividualList = () => {
       {
         headerName: "TICKET",
         field: "action",
+        minWidth: 180,
         cellRenderer: (params) => {
           if (params.node?.rowPinned === "bottom" || params.data?.isTotal) {
             return "";
@@ -420,7 +449,7 @@ const CityBusIndividualList = () => {
               : null;
 
           return (
-            <div style={{ display: "flex align-center", gap: "0.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               {pnr ? (
                 <NavLink
                   end
@@ -478,10 +507,6 @@ const CityBusIndividualList = () => {
         enableReinitialize
       >
         {({ values, setFieldValue, setValues }) => {
-          const mappedArrivalStages = getArrivalStagesForDeparture(
-            mavenRoutes,
-            values.departureLocation
-          );
           return (
             <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3 uppercase">
               <div>
@@ -520,11 +545,11 @@ const CityBusIndividualList = () => {
                 />
               </div>
               <CurrentBookingCityBusField labelClassName="block text-xs font-medium text-gray-700" />
-              <CurrentBookingIntercityBusField
+              {/* <CurrentBookingIntercityBusField
                 intercityStageNames={intercityStageNames}
                 labelClassName="block text-xs font-medium text-gray-700"
                 onValueChange={(value) => setIntercityBusFilter(value || "")}
-              />
+              /> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Mobile No
@@ -540,7 +565,7 @@ const CityBusIndividualList = () => {
                   }}
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Type of Bus
                 </label>
@@ -558,8 +583,8 @@ const CityBusIndividualList = () => {
                     )
                   )}
                 </Field>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Seat Layout type
                 </label>
@@ -580,7 +605,7 @@ const CityBusIndividualList = () => {
                     )
                   )}
                 </Field>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Payment Mode
@@ -647,7 +672,7 @@ const CityBusIndividualList = () => {
                   placeholder="Enter PNR"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Ticket Id
                 </label>
@@ -657,8 +682,8 @@ const CityBusIndividualList = () => {
                   className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   placeholder="Enter Ticket Id"
                 />
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Return PNR No
                 </label>
@@ -679,14 +704,14 @@ const CityBusIndividualList = () => {
                   className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   placeholder="Enter Return Ticket Id"
                 />
-              </div>
+              </div> */}
               <CurrentBookingDepartureField
-                departureStages={departureStages}
+                departureStages={cityDepartureStages}
                 setFieldValue={setFieldValue}
                 labelClassName="block text-xs font-medium text-gray-700"
               />
               <CurrentBookingArrivalField
-                arrivalStages={mappedArrivalStages}
+                arrivalStages={cityArrivalStages}
                 labelClassName="block text-xs font-medium text-gray-700"
               />
               <div className="flex items-end gap-2">
@@ -730,7 +755,7 @@ const CityBusIndividualList = () => {
         isFetchLoading={isFetchCityBusIndividualData}
         showTotalCount={true}
         totalCount={filteredIndividualData?.length || 0}
-        showSearch={false}
+        showSearch={true}
         tableHeight={gridData.length > 10 ? 550 : 300}
       />
     </div>
