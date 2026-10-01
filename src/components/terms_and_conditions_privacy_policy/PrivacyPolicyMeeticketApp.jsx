@@ -45,27 +45,36 @@ export const PrivacyPolicyMeeticketApp = () => {
           <p className="text-gray-500 mb-3 text-sm">
             We may share your data:
           </p>
-          <ul className="list-disc list-inside text-gray-500 mb-3 text-sm browser-default pl-3">
-            <li>With government agencies for legal compliance</li>
-            <li>With authorized service providers supporting app functionality</li>
-            <li>As required under law, for investigation or enforcement purposes</li>
-          </ul>
+          <h2 className="text-base font-semibold text-gray-800 my-3">6. Account Deletion</h2>
           <p className="text-gray-500 mb-3 text-sm">
-            We <b>do not sell or rent</b> your data to any third party for marketing.
+            To delete your MeeTicket Account:
           </p>
-          <h2 className="text-base font-semibold text-gray-800 my-3">6. Security Measures</h2>
+          <ul className="list-disc list-inside text-gray-500 mb-3 text-sm browser-default pl-3">
+            <li>Open the MeeTicket app.</li>
+            <li>Go to Profile.</li>
+            <li>MeeTicket App = Login = Profile</li>
+            <li>Select Delete Account.</li>
+            <li>Review the Profile deletion information.</li>
+            <li>Tap Confirm to Delete Account.</li>
+            <li>Once your Account is deleted, it cannot be restored.</li>
+          </ul>
+          <h2 className="text-base font-semibold text-gray-800 my-3">7. Data Deletion</h2>
+          <p className="text-gray-500 mb-3 text-sm">
+            Once the Account is deleted, your account and associated data will be permanently removed from our systems.
+          </p>
+          <h2 className="text-base font-semibold text-gray-800 my-3">8. Security Measures</h2>
           <p className="text-gray-500 mb-3 text-sm">
             We use industry-standard practices including encryption, secure servers, and access controls. However, due to the nature of the internet, absolute security cannot be guaranteed.
           </p>
-          <h2 className="text-base font-semibold text-gray-800 my-3">7. Publicly Shared Information</h2>
+          <h2 className="text-base font-semibold text-gray-800 my-3">9. Publicly Shared Information</h2>
           <p className="text-gray-500 mb-3 text-sm">
             Any data shared by you in public sections of the app is at your own risk and not covered under this privacy policy.
           </p>
-          <h2 className="text-base font-semibold text-gray-800 my-3">8. Policy Updates</h2>
+          <h2 className="text-base font-semibold text-gray-800 my-3">10. Policy Updates</h2>
           <p className="text-gray-500 mb-3 text-sm">
             This Privacy Policy may be revised periodically. Continued use of the app implies acceptance of any updates.
           </p>
-          <h2 className="text-base font-semibold text-gray-800 my-3">9. Grievance Redressal</h2>
+          <h2 className="text-base font-semibold text-gray-800 my-3">11. Grievance Redressal</h2>
           <p className="text-gray-500 mb-3 text-sm">
             For any concerns, complaints, or requests regarding your Personal Information:
           </p>
