@@ -1,24 +1,25 @@
-import React from 'react'
-import AdminLayout from '../../../../../layouts/AdminLayout'
-import { ToastContainer } from 'react-toastify'
+import React from "react";
+import AdminLayout from "../../../../../layouts/AdminLayout";
+import CityBusPaymentTransactionsList from "./CityBusPaymentTransactionsList";
+import { ToastContainer } from "react-toastify";
 
 const CityBusPaymentTransactionsReport = () => {
   return (
     <AdminLayout>
-      <ToastContainer/>
+      <ToastContainer />
       <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto ">
         <div className="sm:flex sm:justify-between sm:items-center mb-2">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl md:text-2xl text-gray-600 dark:text-gray-100 font-bold uppercase">
-              City Bus Payment Transactions Report
+              City Bus Payment Transactions
             </h1>
           </div>
           <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2"></div>
         </div>
-        {/* <CityBusPaymentTransactionsList/> */}
+        <CityBusPaymentTransactionsList />
       </div>
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default CityBusPaymentTransactionsReport
+export default CityBusPaymentTransactionsReport;
