@@ -19,8 +19,6 @@ import {
   CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
   filterRecordsByIntercityBus,
-  getArrivalStagesForDeparture,
-  getStageIdsFromSelection,
 } from "../../current_bookings_reports/shared/CurrentBookingReportFilterFields";
 
 const FILTERS_STORAGE_KEY = "city-bus-payment-report-filters";
@@ -44,6 +42,9 @@ function CityBusPaymentTransactionsList() {
     isFetchCityBusPaymentTransactionsData,
     CityBusPaymentTransactionsData,
     fetchCityBusPaymentTransactionsData,
+    fetchCityStops,
+    cityDepartureStages,
+    cityArrivalStages,
   } = useCityBusReportsStore();
 
   const {
@@ -54,8 +55,7 @@ function CityBusPaymentTransactionsList() {
     isFetchCurrentRegenerateTicketLoading,
   } = useCurrentPaymentTransactionStore();
 
-  const { fetchMavenRoutes, mavenRoutes, departureStages, intercityStageNames } =
-    useIntercityMastersStore();
+  const { fetchMavenRoutes, intercityStageNames } = useIntercityMastersStore();
 
   const buildFetchPayload = (filters = savedFilters) => ({
     startDate: filters?.fromDate ?? startOfDay,
@@ -70,7 +70,8 @@ function CityBusPaymentTransactionsList() {
 
   useEffect(() => {
     fetchMavenRoutes();
-  }, [fetchMavenRoutes]);
+    fetchCityStops();
+  }, [fetchMavenRoutes, fetchCityStops]);
 
   useEffect(() => {
     fetchCityBusPaymentTransactionsData(buildFetchPayload());
@@ -111,11 +112,6 @@ function CityBusPaymentTransactionsList() {
 
   const onSubmit = (values) => {
     const { intercityBus, ...reportValues } = values;
-    const stageIds = getStageIdsFromSelection(
-      mavenRoutes,
-      values.destinationLocation,
-      values.arrivalLocation
-    );
 
     localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(values));
     handleIntercityBusChange(intercityBus);
@@ -124,8 +120,8 @@ function CityBusPaymentTransactionsList() {
       endDate: reportValues.toDate,
       paymentStatus: reportValues.paymentStatus || "",
       phoneNumber: reportValues.phoneNumber || "",
-      destinationLocation: stageIds.FromStageBoardingID,
-      arrivalLocation: stageIds.ToStageBoardingID,
+      destinationLocation: Number(values.destinationLocation) || 0,
+      arrivalLocation: Number(values.arrivalLocation) || 0,
     });
   };
 
@@ -561,10 +557,6 @@ function CityBusPaymentTransactionsList() {
       <div className="mb-8">
         <Formik initialValues={initialValues} onSubmit={onSubmit}>
           {({ values, setFieldValue, resetForm }) => {
-            const mappedArrivalStages = getArrivalStagesForDeparture(
-              mavenRoutes,
-              values.destinationLocation
-            );
             return (
               <Form className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-5 gap-3 py-3 uppercase">
                 <div>
@@ -608,10 +600,10 @@ function CityBusPaymentTransactionsList() {
                   />
                 </div>
                 <CurrentBookingCityBusField />
-                <CurrentBookingIntercityBusField
+                {/* <CurrentBookingIntercityBusField
                   intercityStageNames={intercityStageNames}
                   onValueChange={handleIntercityBusChange}
-                />
+                /> */}
                 <div>
                   <label className="block text-sm font-medium">
                     Payment Status
@@ -659,13 +651,13 @@ function CityBusPaymentTransactionsList() {
                   />
                 </div>
                 <CurrentBookingDepartureField
-                  departureStages={departureStages}
+                  departureStages={cityDepartureStages}
                   name="destinationLocation"
                   arrivalFieldName="arrivalLocation"
                   setFieldValue={setFieldValue}
                 />
                 <CurrentBookingArrivalField
-                  arrivalStages={mappedArrivalStages}
+                  arrivalStages={cityArrivalStages}
                 />
                 <div className="flex items-end gap-2 ">
                   <button

@@ -7,6 +7,8 @@ import { formatDateOnly, naToEmpty } from "../../utils/Helper";
 const CITY_BUS_CONSOLIDATED_REPORT = API_ENDPOINTS.REPORTS.RTC_REPORTS.CITY_BUS_REPORTS.GET_CITY_BUS_CONSOLIDATED_REPORT;
 const CITY_BUS_REFUND_TRANSACTION_REPORT =
   API_ENDPOINTS.REPORTS.RTC_REPORTS.CITY_BUS_REPORTS.GET_CITY_BUS_REFUND_TRANSACTION_REPORT;
+const CITY_STOPS =
+  API_ENDPOINTS.REPORTS.RTC_REPORTS.CITY_BUS_REPORTS.GET_CITY_STOPS;
 
 const REFUND_STATUS_LABELS = {
   "-1": "ALL",
@@ -319,12 +321,21 @@ const mapCityBusPaymentTransactionItem = (item, idx, summary = {}, totalCount = 
     MobileNumber:
       item.MobileNumber ||
       item.MobileNo ||
+      item.mobileNo ||
       item.mobileNumber ||
       item.phoneNumber ||
       "",
     phoneNumber:
       item.MobileNumber ||
       item.MobileNo ||
+      item.mobileNo ||
+      item.mobileNumber ||
+      item.phoneNumber ||
+      "",
+    mobileNumber:
+      item.MobileNumber ||
+      item.MobileNo ||
+      item.mobileNo ||
       item.mobileNumber ||
       item.phoneNumber ||
       "",
@@ -381,6 +392,70 @@ const fetchCityBookingReport = async (
 };
 
 export const useCityBusReportsStore = create((set) => ({
+  // ----------------- City Stops (Departure / Arrival) -----------------
+  cityDepartureStages: [],
+  cityArrivalStages: [],
+  isFetchCityStops: false,
+  fetchCityStops: async () => {
+    set({ isFetchCityStops: true });
+    try {
+      const response = await apiService.get(
+        CITY_STOPS,
+        {},
+        { token: "AmxsG7zkJB", Accept: "application/json" }
+      );
+
+      let stopsList = [];
+      if (response?.data?.Data != null) {
+        const parsed =
+          typeof response.data.Data === "string"
+            ? JSON.parse(response.data.Data)
+            : response.data.Data;
+        stopsList = Array.isArray(parsed)
+          ? parsed
+          : parsed?.Table || parsed?.table || [];
+      } else if (Array.isArray(response?.data)) {
+        stopsList = response.data;
+      } else if (Array.isArray(response?.data?.result)) {
+        stopsList = response.data.result;
+      }
+
+      const uniqueStops = new Map();
+      stopsList.forEach((item) => {
+        const stopId = item.StopID ?? item.stopID;
+        const stopName = item.StopName ?? item.stopName;
+        if (stopId == null || !stopName) return;
+        if (!uniqueStops.has(stopId)) {
+          uniqueStops.set(stopId, { StopID: stopId, StopName: stopName });
+        }
+      });
+
+      const sortedStops = Array.from(uniqueStops.values()).sort((a, b) =>
+        (a.StopName || "").localeCompare(b.StopName || "")
+      );
+
+      // Shape matches CurrentBookingDepartureField / CurrentBookingArrivalField
+      const cityDepartureStages = sortedStops.map((stop) => ({
+        FromStageID: stop.StopID,
+        FromStageName: stop.StopName,
+        FromStageBoardingID: stop.StopID,
+      }));
+      const cityArrivalStages = sortedStops.map((stop) => ({
+        ToStageID: stop.StopID,
+        ToStageName: stop.StopName,
+        ToStageBoardingID: stop.StopID,
+      }));
+
+      set({ cityDepartureStages, cityArrivalStages });
+      return { cityDepartureStages, cityArrivalStages };
+    } catch (error) {
+      console.error("Error fetching city stops:", error);
+      set({ cityDepartureStages: [], cityArrivalStages: [] });
+    } finally {
+      set({ isFetchCityStops: false });
+    }
+  },
+
   // ----------------- Consolidated Report -----------------
   CityBusConsolidateData: [],
   isFetchCityBusConsolidateData: false,

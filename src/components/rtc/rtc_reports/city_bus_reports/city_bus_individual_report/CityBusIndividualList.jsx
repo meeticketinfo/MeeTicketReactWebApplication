@@ -19,8 +19,6 @@ import {
   CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
   filterRecordsByIntercityBus,
-  getArrivalStagesForDeparture,
-  getStageIdsFromSelection,
 } from "../../current_bookings_reports/shared/CurrentBookingReportFilterFields";
 
 const FILTERS_STORAGE_KEY = "city-bus-individual-filters";
@@ -55,6 +53,9 @@ const CityBusIndividualList = () => {
     fetchCityBusIndividualData,
     CityBusIndividualData,
     isFetchCityBusIndividualData,
+    fetchCityStops,
+    cityDepartureStages,
+    cityArrivalStages,
   } = useCityBusReportsStore();
 
   const {
@@ -63,8 +64,6 @@ const CityBusIndividualList = () => {
     IntercitySeatLayoutsData,
     IntercityBusTypesData,
     fetchMavenRoutes,
-    mavenRoutes,
-    departureStages,
     intercityStageNames,
   } = useIntercityMastersStore();
 
@@ -77,10 +76,12 @@ const CityBusIndividualList = () => {
     fetchIntercityBusTypesData();
     fetchIntercitySeatLayoutsData();
     fetchMavenRoutes();
+    fetchCityStops();
   }, [
     fetchIntercityBusTypesData,
     fetchIntercitySeatLayoutsData,
     fetchMavenRoutes,
+    fetchCityStops,
   ]);
 
   useEffect(() => {
@@ -111,11 +112,6 @@ const CityBusIndividualList = () => {
 
   const handleSearch = (values) => {
     const { intercityBus, ...reportValues } = values;
-    const stageIds = getStageIdsFromSelection(
-      mavenRoutes,
-      values.departureLocation,
-      values.arrivalLocation
-    );
     setIntercityBusFilter(intercityBus || "");
     fetchCityBusIndividualData({
       ...reportValues,
@@ -125,8 +121,8 @@ const CityBusIndividualList = () => {
       pnrNumber: naToEmpty(reportValues.pnrNumber) || "",
       orderId: naToEmpty(reportValues.orderId) || "",
       transactionId: naToEmpty(reportValues.transactionId) || "",
-      departureLocation: stageIds.FromStageBoardingID,
-      arrivalLocation: stageIds.ToStageBoardingID,
+      departureLocation: Number(values.departureLocation) || 0,
+      arrivalLocation: Number(values.arrivalLocation) || 0,
     });
     localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(values));
   };
@@ -511,10 +507,6 @@ const CityBusIndividualList = () => {
         enableReinitialize
       >
         {({ values, setFieldValue, setValues }) => {
-          const mappedArrivalStages = getArrivalStagesForDeparture(
-            mavenRoutes,
-            values.departureLocation
-          );
           return (
             <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3 uppercase">
               <div>
@@ -553,11 +545,11 @@ const CityBusIndividualList = () => {
                 />
               </div>
               <CurrentBookingCityBusField labelClassName="block text-xs font-medium text-gray-700" />
-              <CurrentBookingIntercityBusField
+              {/* <CurrentBookingIntercityBusField
                 intercityStageNames={intercityStageNames}
                 labelClassName="block text-xs font-medium text-gray-700"
                 onValueChange={(value) => setIntercityBusFilter(value || "")}
-              />
+              /> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Mobile No
@@ -573,7 +565,7 @@ const CityBusIndividualList = () => {
                   }}
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Type of Bus
                 </label>
@@ -591,8 +583,8 @@ const CityBusIndividualList = () => {
                     )
                   )}
                 </Field>
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Seat Layout type
                 </label>
@@ -613,7 +605,7 @@ const CityBusIndividualList = () => {
                     )
                   )}
                 </Field>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Payment Mode
@@ -680,7 +672,7 @@ const CityBusIndividualList = () => {
                   placeholder="Enter PNR"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Ticket Id
                 </label>
@@ -690,8 +682,8 @@ const CityBusIndividualList = () => {
                   className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   placeholder="Enter Ticket Id"
                 />
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700">
                   Return PNR No
                 </label>
@@ -712,14 +704,14 @@ const CityBusIndividualList = () => {
                   className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                   placeholder="Enter Return Ticket Id"
                 />
-              </div>
+              </div> */}
               <CurrentBookingDepartureField
-                departureStages={departureStages}
+                departureStages={cityDepartureStages}
                 setFieldValue={setFieldValue}
                 labelClassName="block text-xs font-medium text-gray-700"
               />
               <CurrentBookingArrivalField
-                arrivalStages={mappedArrivalStages}
+                arrivalStages={cityArrivalStages}
                 labelClassName="block text-xs font-medium text-gray-700"
               />
               <div className="flex items-end gap-2">

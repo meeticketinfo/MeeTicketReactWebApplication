@@ -386,6 +386,7 @@ export const API_ENDPOINTS = {
       CITY_BUS_REPORTS: {
         GET_CITY_BUS_CONSOLIDATED_REPORT: `${MAVENCONNECT_API_BASE_URL}api/Report/GetCityBookingReport`,
         GET_CITY_BUS_REFUND_TRANSACTION_REPORT: `${MAVENCONNECT_API_BASE_URL}api/Report/GetCityRefundTransactionReport`,
+        GET_CITY_STOPS: `${MAVENCONNECT_API_BASE_URL}api/Common/GetCityStops`,
       },
     },
     GRIVEANCE_REPORTS: {

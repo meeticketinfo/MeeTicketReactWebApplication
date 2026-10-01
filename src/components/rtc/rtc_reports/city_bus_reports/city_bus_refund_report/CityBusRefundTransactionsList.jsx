@@ -394,10 +394,10 @@ function CityBusRefundTransactionsList() {
               />
             </div>
             <CurrentBookingCityBusField />
-            <CurrentBookingIntercityBusField
+            {/* <CurrentBookingIntercityBusField
               intercityStageNames={intercityStageNames}
               onValueChange={handleIntercityBusChange}
-            />
+            /> */}
             <div>
               <label
                 htmlFor="mobileNumber"

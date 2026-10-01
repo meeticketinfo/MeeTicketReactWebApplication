@@ -17,8 +17,6 @@ import {
   CurrentBookingDepartureField,
   CurrentBookingIntercityBusField,
   filterRecordsByIntercityBus,
-  getArrivalStagesForDeparture,
-  getStageIdsFromSelection,
 } from "../../current_bookings_reports/shared/CurrentBookingReportFilterFields";
 
 const FILTERS_STORAGE_KEY = "city-bus-consolidated-filters";
@@ -47,6 +45,9 @@ const CityBusConsolidatedList = () => {
     fetchCityBusConsolidateData,
     CityBusConsolidateData,
     isFetchCityBusConsolidateData,
+    fetchCityStops,
+    cityDepartureStages,
+    cityArrivalStages,
   } = useCityBusReportsStore();
 
   const {
@@ -54,8 +55,6 @@ const CityBusConsolidatedList = () => {
     fetchIntercitySeatLayoutsData,
     IntercityBusTypesData,
     fetchMavenRoutes,
-    mavenRoutes,
-    departureStages,
     intercityStageNames,
   } = useIntercityMastersStore();
 
@@ -68,7 +67,13 @@ const CityBusConsolidatedList = () => {
     fetchIntercityBusTypesData();
     fetchIntercitySeatLayoutsData();
     fetchMavenRoutes();
-  }, [fetchIntercityBusTypesData, fetchIntercitySeatLayoutsData, fetchMavenRoutes]);
+    fetchCityStops();
+  }, [
+    fetchIntercityBusTypesData,
+    fetchIntercitySeatLayoutsData,
+    fetchMavenRoutes,
+    fetchCityStops,
+  ]);
 
   useEffect(() => {
     fetchCityBusConsolidateData({
@@ -94,16 +99,11 @@ const CityBusConsolidatedList = () => {
 
   const handleSearch = (values) => {
     const { intercityBus, ...reportValues } = values;
-    const stageIds = getStageIdsFromSelection(
-      mavenRoutes,
-      values.departureLocation,
-      values.arrivalLocation
-    );
     setIntercityBusFilter(intercityBus || "");
     fetchCityBusConsolidateData({
       ...reportValues,
-      departureLocation: stageIds.FromStageBoardingID,
-      arrivalLocation: stageIds.ToStageBoardingID,
+      departureLocation: Number(values.departureLocation) || 0,
+      arrivalLocation: Number(values.arrivalLocation) || 0,
     });
     localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(values));
   };
@@ -185,6 +185,7 @@ const CityBusConsolidatedList = () => {
         field: "BusType",
         headerName: "BUS TYPE",
         minWidth: 170,
+        hide: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -486,10 +487,6 @@ const CityBusConsolidatedList = () => {
     <div>
       <Formik initialValues={initialValues} onSubmit={handleSearch} enableReinitialize>
         {({ values, setFieldValue, setValues }) => {
-          const mappedArrivalStages = getArrivalStagesForDeparture(
-            mavenRoutes,
-            values.departureLocation
-          );
           return (
             <Form className="grid grid-cols-1 md:grid-cols-5 gap-3 py-3">
               <div>
@@ -543,10 +540,10 @@ const CityBusConsolidatedList = () => {
                 />
               </div>
               <CurrentBookingCityBusField />
-              <CurrentBookingIntercityBusField
+              {/* <CurrentBookingIntercityBusField
                 intercityStageNames={intercityStageNames}
                 onValueChange={(value) => setIntercityBusFilter(value || "")}
-              />
+              /> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Mobile No
@@ -573,7 +570,7 @@ const CityBusConsolidatedList = () => {
                   placeholder="Enter PNR"
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Type of Bus
                 </label>
@@ -591,7 +588,7 @@ const CityBusConsolidatedList = () => {
                     )
                   )}
                 </Field>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Payment Mode
@@ -630,10 +627,10 @@ const CityBusConsolidatedList = () => {
                 />
               </div>
               <CurrentBookingDepartureField
-                departureStages={departureStages}
+                departureStages={cityDepartureStages}
                 setFieldValue={setFieldValue}
               />
-              <CurrentBookingArrivalField arrivalStages={mappedArrivalStages} />
+              <CurrentBookingArrivalField arrivalStages={cityArrivalStages} />
               <div className="flex items-end gap-2">
                 <button
                   type="submit"
