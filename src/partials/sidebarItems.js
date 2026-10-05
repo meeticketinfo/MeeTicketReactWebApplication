@@ -654,26 +654,26 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/amrabad-payment-transactions",
       },
-      {
-        title: "Availability Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-availability-report",
-      },
-      {
-        title: "User Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-user-report",
-      },
-      {
-        title: "Refund Transaction Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-refund-transaction-report",
-      },
-      {
-        title: "Total Transactions",
-        icon: RiDashboard3Fill,
-        path: "/amarabad-total-transaction",
-      },
+      // {
+      //   title: "Availability Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-availability-report",
+      // },
+      // {
+      //   title: "User Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-user-report",
+      // },
+      // {
+      //   title: "Refund Transaction Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-refund-transaction-report",
+      // },
+      // {
+      //   title: "Total Transactions",
+      //   icon: RiDashboard3Fill,
+      //   path: "/amarabad-total-transaction",
+      // },
 
     ],
   },
