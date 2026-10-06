@@ -431,7 +431,7 @@ const PackageDetail = () => {
       >
         <div className="p-6">
           <div className="space-y-4 text-gray-700">
-            <p>
+            <p className="whitespace-pre-line">
               {GetPackageDetail?.cancellationPolicy}
             </p>
           </div>
@@ -450,7 +450,7 @@ const PackageDetail = () => {
       >
         <div className="p-6">
           <div className="space-y-4 text-gray-700">
-            <p>
+            <p className="whitespace-pre-line">
               {GetPackageDetail?.termsConditions}
             </p>
           </div>
@@ -468,7 +468,7 @@ const PackageDetail = () => {
         defaultBodyPadding={true}
       >
         <div className="p-6">
-          <p>
+          <p className="whitespace-pre-line">
             {GetPackageDetail?.privacyPolicy}
           </p>
         </div>
