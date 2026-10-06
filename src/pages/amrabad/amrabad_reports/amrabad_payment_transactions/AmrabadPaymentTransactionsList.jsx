@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../components/tables/AgGridTable";
 import {
@@ -12,9 +12,12 @@ import AmrabadPaymentTransactionsForm from "./AmrabadPaymentTransactionsForm";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import { AiOutlineEye } from "react-icons/ai";
+import { getTotalRowData } from "../../../../utils/getTotalRowData";
 function AmrabadPaymentTransactionsList() {
   const [currentPage, setCurrentPage] = useState(0);
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   const [openVerifyModal, setOpenVerifyModal] = useState(false);
   const [verifyData, setVerifyData] = useState("");
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
@@ -53,228 +56,251 @@ function AmrabadPaymentTransactionsList() {
     });
   }, [fetchAmrabadPaymentTransactions,currentPage, PAGE_LIMIT]);
 
-  const [columnDefs] = useState([
-    {
-      field: "sno",
-      headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
-      maxWidth: 80,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "userName",
-      headerName: "User Name",
-      minWidth: 100,
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "mobileNumber",
-      headerName: "Mobile Number",
-      // flex: 1,
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => (params.value ? params.value : "N/A"),
-    },
-    {
-      field: "transaactionID",
-      headerName: "Transaction ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "packageName",
-      headerName: "Package Name",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-
-    {
-      field: "houseName",
-      headerName: "House Name",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "purchaseDate",
-      headerName: "Purchase Date",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "amountPaid",
-      headerName: "Amount Paid",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value ? formatToCurrency(params.value, "INR", "en-IN") : "N/A",
-    },
-    {
-      field: "bookingType",
-      headerName: "Mode of Booking ",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "paymentMode",
-      headerName: "Paymode Mode",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "currentTransactionStatus",
-      headerName: "Payment Status",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "actual_PaytmStatus",
-      headerName: "Actual Paytm Status",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "refundStatus",
-      headerName: "Refund Status",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "refundId",
-      headerName: "Refund ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "refund_Intiate_Date",
-      headerName: "Refund Initiated Date",
-      headerClass: "text-blue-v2",
-      valueFormatter: (params) => params.value || "N/A",
-    },
-    {
-      field: "VerifyTicket",
-      headerName: "Verify Ticket",
-      maxWidth: 140,
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
-        // || params.data.isTicketGe nerated;
-
-        return (
-          <div className="flex justify-center mt-1">
-            <button
-              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-v2 text-white hover:bg-blue-v1"
-              }`}
-              onClick={() => {
-                if (!isDisabled) {
-                  setVerifyData(params.data.transaactionID);
-                  setOpenVerifyModal(true);
-                }
-              }}
-              disabled={isDisabled}
-            >
-              Verify Status
-            </button>
-          </div>
-        );
+  const columnDefs = useMemo(
+    () => [
+      {
+        field: "sno",
+        headerName: "S.No",
+        valueGetter: (params) => {
+          if (params.data?.isTotal) return "Total";
+          return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+        },
+        maxWidth: 80,
+        headerClass: "text-blue-v2",
       },
-    },
-    {
-      field: "VerifyTicket",
-      headerName: "Generate Ticket",
-      maxWidth: 160,
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const isDisabled = params.data.isTicketGenerated;
-        // || params.data.isTicketGenerated;
-
-      
-        return (
-          <div className="flex justify-center mt-1">
-            <button
-              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-v2 text-white hover:bg-blue-v1"
-              }`}
-              onClick={() => {
-                if (!isDisabled) {
-                  setRegenerateTicketOrderId(params.data.transaactionID);
-                  setOpenRegenerateTicketModal(true);
-                }
-              }}
-              disabled={isDisabled}
-            >
-              Generate Ticket 
-            </button>
-          </div>
-        );
+      {
+        field: "userName",
+        headerName: "User Name",
+        minWidth: 100,
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => (params.value ? params.value : "N/A"),
       },
-    },
-    {
-      headerName: "Initiate Refund",
-      field: "InitiateRefund",
-      maxWidth: 130,
-      //   hide: email === "esdadmin@gmail.com",
-      cellRenderer: (params) => {
-        // console.log("params",params)
-        const isDisabled = params.data.canInitiateRefund;
-        return (
-          <div className="flex justify-center mt-1">
-            <>
+      {
+        field: "mobileNumber",
+        headerName: "Mobile Number",
+        // flex: 1,
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => (params.value ? params.value : "N/A"),
+      },
+      {
+        field: "transaactionID",
+        headerName: "Transaction ID",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "packageName",
+        headerName: "Package Name",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+
+      {
+        field: "houseName",
+        headerName: "House Name",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "purchaseDate",
+        headerName: "Purchase Date",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "amountPaid",
+        headerName: "Amount Paid",
+        headerClass: "text-blue-v2",
+        isTotal: true,
+        valueFormatter: (params) =>
+          params.value != null && params.value !== ""
+            ? formatToCurrency(params.value, "INR", "en-IN")
+            : "N/A",
+      },
+      {
+        field: "bookingType",
+        headerName: "Mode of Booking ",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "paymentMode",
+        headerName: "Paymode Mode",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "currentTransactionStatus",
+        headerName: "Payment Status",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "actual_PaytmStatus",
+        headerName: "Actual Paytm Status",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "refundStatus",
+        headerName: "Refund Status",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "refundId",
+        headerName: "Refund ID",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "refund_Intiate_Date",
+        headerName: "Refund Initiated Date",
+        headerClass: "text-blue-v2",
+        valueFormatter: (params) => params.value || "N/A",
+      },
+      {
+        field: "VerifyTicket",
+        headerName: "Verify Ticket",
+        maxWidth: 140,
+        headerClass: "text-blue-v2",
+        cellRenderer: (params) => {
+          const isDisabled = params.data.actual_PaytmStatus === "TXN_SUCCESS";
+          // || params.data.isTicketGe nerated;
+
+          return (
+            <div className="flex justify-center mt-1">
               <button
-              className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
-                isDisabled
-                  ? "bg-blue-v2 text-white hover:bg-blue-v1"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-                // disabled={params.data.refundStatus != "Not Refunded"}
+                className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                  isDisabled
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-v2 text-white hover:bg-blue-v1"
+                }`}
                 onClick={() => {
-                  setRefundOrderId(params.data.transaactionID);
-                  setInitiatRefundModal(true);
+                  if (!isDisabled) {
+                    setVerifyData(params.data.transaactionID);
+                    setOpenVerifyModal(true);
+                  }
                 }}
+                disabled={isDisabled}
               >
-                Initiate
+                Verify Status
               </button>
-            </>
-          </div>
-        );
+            </div>
+          );
+        },
       },
-      flex: 1,
-      headerClass: "text-blue-v2",
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      maxWidth: 160,
-      headerClass: "text-blue-v2",
-      cellRenderer: (params) => {
-        const PaytmStatus = params?.data?.actual_PaytmStatus;
-        const canView = PaytmStatus && PaytmStatus === "TXN_SUCCESS" && params?.data?.amountPaid > 0;
-        return (
-          <div className="flex justify-center mt-1">
-            {canView ? (
-              <NavLink
-                end
-                to={`/amrabad-admin/ticket-view-details/${params?.data?.transaactionID}`}
-                className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="View ticket"
+      {
+        field: "VerifyTicket",
+        headerName: "Generate Ticket",
+        maxWidth: 160,
+        headerClass: "text-blue-v2",
+        cellRenderer: (params) => {
+          const isDisabled = params.data.isTicketGenerated;
+          // || params.data.isTicketGenerated;
+
+          return (
+            <div className="flex justify-center mt-1">
+              <button
+                className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                  isDisabled
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-blue-v2 text-white hover:bg-blue-v1"
+                }`}
+                onClick={() => {
+                  if (!isDisabled) {
+                    setRegenerateTicketOrderId(params.data.transaactionID);
+                    setOpenRegenerateTicketModal(true);
+                  }
+                }}
+                disabled={isDisabled}
               >
-                <span className="text-white text-base"><AiOutlineEye /></span>
-                <span className="text-white">View ticket</span>
-              </NavLink>
-            ) : (
-              <span className="text-gray-400">Not available</span>
-            )}
-          </div>
-        );
+                Generate Ticket
+              </button>
+            </div>
+          );
+        },
       },
-    }
-  ]);
+      {
+        headerName: "Initiate Refund",
+        field: "InitiateRefund",
+        maxWidth: 130,
+        //   hide: email === "esdadmin@gmail.com",
+        cellRenderer: (params) => {
+          // console.log("params",params)
+          const isDisabled = params.data.canInitiateRefund;
+          return (
+            <div className="flex justify-center mt-1">
+              <>
+                <button
+                  className={`px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 ${
+                    isDisabled
+                      ? "bg-blue-v2 text-white hover:bg-blue-v1"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                  // disabled={params.data.refundStatus != "Not Refunded"}
+                  onClick={() => {
+                    setRefundOrderId(params.data.transaactionID);
+                    setInitiatRefundModal(true);
+                  }}
+                >
+                  Initiate
+                </button>
+              </>
+            </div>
+          );
+        },
+        flex: 1,
+        headerClass: "text-blue-v2",
+      },
+      {
+        field: "actions",
+        headerName: "Actions",
+        maxWidth: 160,
+        headerClass: "text-blue-v2",
+        cellRenderer: (params) => {
+          const PaytmStatus = params?.data?.actual_PaytmStatus;
+          const canView =
+            PaytmStatus &&
+            PaytmStatus === "TXN_SUCCESS" &&
+            params?.data?.amountPaid > 0;
+          return (
+            <div className="flex justify-center mt-1">
+              {canView ? (
+                <NavLink
+                  end
+                  to={`/amrabad-admin/ticket-view-details/${params?.data?.transaactionID}`}
+                  className="bg-blue-v2 text-white hover:bg-blue-v1 px-4 py-2 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View ticket"
+                >
+                  <span className="text-white text-base">
+                    <AiOutlineEye />
+                  </span>
+                  <span className="text-white">View ticket</span>
+                </NavLink>
+              ) : (
+                <span className="text-gray-400">Not available</span>
+              )}
+            </div>
+          );
+        },
+      },
+    ],
+    [currentPage, PAGE_LIMIT],
+  );
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      allAmrabadTransactionPaymentReports?.data || [],
+      columnDefs,
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allAmrabadTransactionPaymentReports, columnDefs]);
+
   const handlePageClick = (selectedItem) => {
     setCurrentPage(selectedItem.selected);
   };
@@ -511,8 +537,8 @@ function AmrabadPaymentTransactionsList() {
         />
         <AgGridTable
           ExportName="Payment Transactions"
-          rowData={allAmrabadTransactionPaymentReports?.data || []}
-          columnDefs={columnDefs}
+          rowData={gridData}
+          columnDefs={gridColumnDefs}
           isFetchLoading={isAmrabadTransactionPaymentReportsLoading}
           isPagination={false}
           tableHeight={
