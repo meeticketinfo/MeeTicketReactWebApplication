@@ -150,8 +150,8 @@ export default function AdminBookings() {
         (sum, row) => sum + (Number(row.quantity) || 0),
         0,
       ),
-      amount: (displayedRows || []).reduce(
-        (sum, row) => sum + (Number(row.amount) || 0),
+      totalTicketAmount: (displayedRows || []).reduce(
+        (sum, row) => sum + (Number(row.totalTicketAmount) || 0),
         0,
       ),
     },
@@ -282,20 +282,20 @@ export default function AdminBookings() {
       headerName: "Amount(Per Ticket)",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) =>
-        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
-      cellStyle: (params) =>
-        isTotalRow(params) ? { fontWeight: "bold" } : null,
+      valueFormatter: (params) => {
+        if (isTotalRow(params)) return "";
+        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
+      },
     },
     {
       field: "totalTicketAmount",
       headerName: "Total Tickets Amount",
       // flex: 1,
       headerClass: "text-blue-v2",
-      valueFormatter: (params) => {
-        if (isTotalRow(params)) return "";
-        return formatToCurrency(params.value, "INR", "en-IN") || "00:00";
-      },
+      valueFormatter: (params) =>
+        formatToCurrency(params.value, "INR", "en-IN") || "00:00",
+      cellStyle: (params) =>
+        isTotalRow(params) ? { fontWeight: "bold" } : null,
     },
     {
       field: "modeOfPayment",
