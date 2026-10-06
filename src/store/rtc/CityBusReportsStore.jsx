@@ -27,6 +27,7 @@ const getRefundStatusLabel = (status) => {
 const buildCityRefundReportBody = (payload = {}) => {
   const refundStatus = payload?.refundStatus ?? payload?.RefundStatus ?? -1;
   const paymentMode = payload?.paymentMode ?? payload?.PaymentMode ?? "";
+  const paymentStatusRaw = payload?.paymentStatus ?? payload?.PaymentStatus;
   const mobileNo =
     payload?.mobileNumber ||
     payload?.mobileNo ||
@@ -41,6 +42,17 @@ const buildCityRefundReportBody = (payload = {}) => {
     PaymentMode: paymentMode || "ALL",
     RefundStatus: Number(refundStatus),
   };
+
+  if (
+    paymentStatusRaw !== undefined &&
+    paymentStatusRaw !== null &&
+    paymentStatusRaw !== ""
+  ) {
+    const paymentStatus = Number(paymentStatusRaw);
+    if (!Number.isNaN(paymentStatus)) {
+      params.PaymentStatus = paymentStatus;
+    }
+  }
 
   if (mobileNo) {
     params.MobileNo = mobileNo;
@@ -134,7 +146,8 @@ const buildCityBookingReportParams = (payload = {}, reportType) => {
   };
 
   const paymentMode = payload?.paymentMode || "";
-  const bookingStatusRaw = payload?.bookingStatus ?? payload?.paymentStatus;
+  const bookingStatusRaw = payload?.bookingStatus;
+  const paymentStatusRaw = payload?.paymentStatus ?? payload?.PaymentStatus;
   const fromStageID =
     Number(
       payload?.fromStageBoardingID ||
@@ -163,6 +176,16 @@ const buildCityBookingReportParams = (payload = {}, reportType) => {
     const bookingStatus = Number(bookingStatusRaw);
     if (!Number.isNaN(bookingStatus)) {
       params.BookingStatus = bookingStatus;
+    }
+  }
+  if (
+    paymentStatusRaw !== undefined &&
+    paymentStatusRaw !== null &&
+    paymentStatusRaw !== ""
+  ) {
+    const paymentStatus = Number(paymentStatusRaw);
+    if (!Number.isNaN(paymentStatus)) {
+      params.PaymentStatus = paymentStatus;
     }
   }
   if (fromStageID) params.FromStageID = fromStageID;

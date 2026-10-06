@@ -614,11 +614,12 @@ function CityBusPaymentTransactionsList() {
                     className={` block w-full px-2 py-1 border border-gray-300
              rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm`}
                   >
-                    <option value="">Select Payment Status</option>
-                    <option value="INITIATE">Initiate</option>
-                    <option value="INPROCESS">In Process</option>
-                    <option value="CONFIRMED">Confirmed</option>
-                    <option value="FAILED">Failed</option>
+                    <option value="">All</option>
+                    <option value="0">Pending</option>
+                    <option value="1">Paid</option>
+                    <option value="2">Failed</option>
+                    <option value="3">Refunded</option>
+                    <option value="4">Partially Refunded</option>
                   </Field>
                 </div>
                 <div>

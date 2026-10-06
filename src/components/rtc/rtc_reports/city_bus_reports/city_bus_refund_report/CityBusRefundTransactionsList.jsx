@@ -28,6 +28,14 @@ const REFUND_STATUS_OPTIONS = [
   { value: "3", label: "Failed" },
 ];
 
+const PAYMENT_STATUS_OPTIONS = [
+  { value: "0", label: "Pending" },
+  { value: "1", label: "Paid" },
+  { value: "2", label: "Failed" },
+  { value: "3", label: "Refunded" },
+  { value: "4", label: "Partially Refunded" },
+];
+
 const FILTERS_STORAGE_KEY = "city-bus-refund-inner-transaction-search-params";
 
 function CityBusRefundTransactionsList() {
@@ -71,6 +79,7 @@ function CityBusRefundTransactionsList() {
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || toDate,
     mobileNumber: searchParams.get("mobileNumber") || "",
     pnrNumber: searchParams.get("pnrNumber") || "",
+    paymentStatus: searchParams.get("paymentStatus") || "",
     paymentMode: searchParams.get("paymentMode") || "",
     refundStatus: getRefundStatusFromParams(),
   });
@@ -104,6 +113,7 @@ function CityBusRefundTransactionsList() {
     intercityBus: searchParams.get("intercityBus") || "",
     mobileNumber: searchParams.get("mobileNumber") || "",
     pnrNumber: searchParams.get("pnrNumber") || "",
+    paymentStatus: searchParams.get("paymentStatus") || "",
     paymentMode: searchParams.get("paymentMode") || "",
     refundStatus: getRefundStatusFromParams(),
   };
@@ -250,7 +260,7 @@ function CityBusRefundTransactionsList() {
       },
       {
         field: "transactionStatus",
-        headerName: "TRANSACTION STATUS",
+        headerName: "PAYMENT STATUS",
         maxWidth: 230,
         headerClass: "text-blue-v2",
         valueFormatter: (params) =>

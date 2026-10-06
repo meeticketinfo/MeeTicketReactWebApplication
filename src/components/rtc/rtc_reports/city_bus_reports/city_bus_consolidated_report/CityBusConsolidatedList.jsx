@@ -28,6 +28,7 @@ const defaultFilterValues = () => ({
   mobileNumber: "",
   bookingDate: "",
   PNRNumber: "",
+  paymentStatus: "",
   paymentMode: "",
   orderId: "",
   transactionId: "",
@@ -36,6 +37,14 @@ const defaultFilterValues = () => ({
   arrivalLocation: 0,
   intercityBus: "",
 });
+
+const PAYMENT_STATUS_OPTIONS = [
+  { value: "0", label: "Pending" },
+  { value: "1", label: "Paid" },
+  { value: "2", label: "Failed" },
+  { value: "3", label: "Refunded" },
+  { value: "4", label: "Partially Refunded" },
+];
 
 const CityBusConsolidatedList = () => {
   const savedFilters = JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY));
@@ -83,6 +92,7 @@ const CityBusConsolidatedList = () => {
       mobileNumber: savedFilters?.mobileNumber ?? "",
       bookingDate: savedFilters?.bookingDate ?? "",
       PNRNumber: savedFilters?.PNRNumber ?? "",
+      paymentStatus: savedFilters?.paymentStatus ?? "",
       paymentMode: savedFilters?.paymentMode ?? "",
       orderId: savedFilters?.orderId ?? "",
       transactionId: savedFilters?.transactionId ?? "",
@@ -120,6 +130,7 @@ const CityBusConsolidatedList = () => {
       mobileNumber: "",
       bookingDate: "",
       PNRNumber: "",
+      paymentStatus: "",
       paymentMode: "",
       orderId: "",
       transactionId: "",
@@ -589,6 +600,23 @@ const CityBusConsolidatedList = () => {
                   )}
                 </Field>
               </div> */}
+              <div>
+                <label className="block text-xs font-medium text-gray-700 uppercase">
+                  Payment Status
+                </label>
+                <Field
+                  as="select"
+                  name="paymentStatus"
+                  className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+                >
+                  <option value="">All</option>
+                  {PAYMENT_STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Field>
+              </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Payment Mode
