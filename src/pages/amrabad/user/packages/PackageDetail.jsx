@@ -317,6 +317,21 @@ const PackageDetail = () => {
             </div>
           )}
 
+          {packageInfo?.termsConditions?.trim() && (
+            <div className="w-full mb-8">
+              <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                <h2 className="text-[16px] font-medium text-[#234235]">
+                  Terms & Conditions
+                </h2>
+              </div>
+              <div className="mt-4 mb-4">
+                <p className="text-[#3b4b5a] text-base whitespace-pre-line">
+                  {packageInfo.termsConditions}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Swiper Slider - place this just above the Policy Links section */}
           <div className="w-full mx-auto mb-6 relative">
             <Swiper
