@@ -654,12 +654,17 @@ const sidebarItems = [
   },
   // amrabad
   {
-    title: "Reports",
+    title: "Resort Packages",
     icon: HiOutlineDocumentReport,
     path: "",
     gradientClass:
       "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
     subItems: [
+      {
+        title: "Packages",
+        icon: TbReportSearch,
+        path: "/packages",
+      },
       {
         title: "Booking Reports",
         icon: TbReportSearch,
@@ -680,26 +685,26 @@ const sidebarItems = [
         icon: TbReportAnalytics,
         path: "/amrabad-payment-transactions",
       },
-      {
-        title: "Availability Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-availability-report",
-      },
-      {
-        title: "User Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-user-report",
-      },
-      {
-        title: "Refund Transaction Report",
-        icon: MdEventAvailable,
-        path: "/amrabad-refund-transaction-report",
-      },
-      {
-        title: "Total Transactions",
-        icon: RiDashboard3Fill,
-        path: "/amarabad-total-transaction",
-      },
+      // {
+      //   title: "Availability Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-availability-report",
+      // },
+      // {
+      //   title: "User Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-user-report",
+      // },
+      // {
+      //   title: "Refund Transaction Report",
+      //   icon: MdEventAvailable,
+      //   path: "/amrabad-refund-transaction-report",
+      // },
+      // {
+      //   title: "Total Transactions",
+      //   icon: RiDashboard3Fill,
+      //   path: "/amarabad-total-transaction",
+      // },
 
     ],
   },

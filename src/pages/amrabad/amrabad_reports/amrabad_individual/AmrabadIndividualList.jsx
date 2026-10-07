@@ -12,6 +12,7 @@ import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/C
 import AmrabadIndividualForm from "./AmrabadIndividualForm";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
 import { useAmrabadHouseWiseReportStore } from "./store/amarabadHouseWiseReportStore";
+import { getTotalRowData } from "../../../../utils/getTotalRowData";
 
 export default function AdminBookings() {
   const { fetchAmrabadIndividualReports, allAmrabadIndividualReports ,isAmrabadIndividualReportsLoading} =
@@ -26,6 +27,8 @@ export default function AdminBookings() {
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
   useEffect(() => {
     fetchAllAmrabadHouseWiseReports({
       startDate: savedFilters?.fromDate ?? getCurrentDate(),
@@ -56,9 +59,8 @@ export default function AdminBookings() {
       field: "sno",
       headerName: "S.No",
       valueGetter: (params) => {
-        // Calculate serial number based on current page and row position
-        const serialNumber = currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
-        return serialNumber;
+        if (params.data?.isTotal) return "Total";
+        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
       },
       minWidth: 80,
       maxWidth: 80,
@@ -116,6 +118,7 @@ export default function AdminBookings() {
       maxWidth: 120,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
 
@@ -157,6 +160,7 @@ export default function AdminBookings() {
       maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
@@ -166,6 +170,7 @@ export default function AdminBookings() {
       maxWidth: 160,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
@@ -174,6 +179,7 @@ export default function AdminBookings() {
       headerName: "Amount Paid (House Wise)",
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
@@ -184,6 +190,7 @@ export default function AdminBookings() {
       maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
@@ -234,6 +241,16 @@ export default function AdminBookings() {
       width: 200,
     },
   ], [currentPage, PAGE_LIMIT]);
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      allAmrabadHouseWiseReports || [],
+      columnDefs,
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allAmrabadHouseWiseReports, columnDefs]);
+
   const handlePageClick = useCallback((selectedItem) => {
     setCurrentPage(selectedItem.selected);
   }, []);
@@ -252,9 +269,13 @@ export default function AdminBookings() {
         <AgGridTable
           key={`ag-grid-${currentPage}-${PAGE_LIMIT}`}
           ExportName="House Wise Details"
-          rowData={allAmrabadHouseWiseReports || []}
-          getRowId={(params) => `${currentPage}-${params.data?.orderId || params.node.rowIndex}`}
-          columnDefs={columnDefs}
+          rowData={gridData}
+          getRowId={(params) =>
+            params.data?.isTotal
+              ? `total-${currentPage}`
+              : `${currentPage}-${params.data?.orderId || params.node.rowIndex}`
+          }
+          columnDefs={gridColumnDefs}
           suppressRowClickSelection={true}
           suppressCellFocus={true}
           suppressAnimationFrame={false}

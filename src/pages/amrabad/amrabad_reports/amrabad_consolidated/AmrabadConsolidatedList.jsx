@@ -11,6 +11,7 @@ import Select from "react-select";
 import { useAmrabadConsolidatedStore } from "../../../../store/amrabad/reports/ConsolidatedStore";
 import AmrabadConsolidatedForm from "./AmrabadConsolidatedForm";
 import { useAmrabadBookingStore } from "./store/amarabadBookingstore";
+import { getTotalRowData } from "../../../../utils/getTotalRowData";
 function AmrabadConsolidatedList() {
   const {
     fetchAmrabadConsolidatedReports,
@@ -27,6 +28,8 @@ function AmrabadConsolidatedList() {
   const [currentPage, setCurrentPage] = useState(0);
 
   const [PAGE_LIMIT, setPAGE_LIMIT] = useState(20);
+  const [gridData, setGridData] = useState([]);
+  const [gridColumnDefs, setGridColumnDefs] = useState([]);
 
   const getSavedFilters = () => {
     try {
@@ -65,8 +68,10 @@ function AmrabadConsolidatedList() {
     {
       field: "sno",
       headerName: "S.No",
-      valueGetter: (params) =>
-        currentPage * PAGE_LIMIT + params.node.rowIndex + 1,
+      valueGetter: (params) => {
+        if (params.data?.isTotal) return "Total";
+        return currentPage * PAGE_LIMIT + params.node.rowIndex + 1;
+      },
       minWidth: 80,
       maxWidth: 80,
       headerClass: "text-blue-v2",
@@ -90,6 +95,13 @@ function AmrabadConsolidatedList() {
     {
       field: "orderID",
       headerName: "Order ID",
+      // flex: 1,
+      headerClass: "text-blue-v2",
+      valueFormatter: (params) => (params.value ? params.value : "N/A"),
+    },
+    {
+      field: "bookingId",
+      headerName: "Booking ID",
       // flex: 1,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
@@ -140,6 +152,7 @@ function AmrabadConsolidatedList() {
       headerName: "No.of Houses Booked",
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       // valueFormatter: (params) => formatToStandardDate(params.value) || "N/A",
       valueFormatter: (params) => (params.value ? params.value : "N/A"),
     },
@@ -150,6 +163,7 @@ function AmrabadConsolidatedList() {
       maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
@@ -159,6 +173,7 @@ function AmrabadConsolidatedList() {
       maxWidth: 160,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) =>
         formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
@@ -177,6 +192,7 @@ function AmrabadConsolidatedList() {
       maxWidth: 130,
       // flex: 1,
       headerClass: "text-blue-v2",
+      isTotal: true,
       valueFormatter: (params) => formatToCurrency(params.value, "INR", "en-IN") || "00:00",
     },
     {
@@ -248,7 +264,17 @@ function AmrabadConsolidatedList() {
       flex: 1,
       headerClass: "text-blue-v2",
     },
-  ], [currentPage, PAGE_LIMIT]);
+  ], [currentPage, PAGE_LIMIT, setisAmrabadCompleteBookings]);
+
+  useEffect(() => {
+    const { rowData, columnDefs: nextColumnDefs } = getTotalRowData(
+      allAmrabadBookings || [],
+      columnDefs,
+    );
+    setGridData(rowData);
+    setGridColumnDefs(nextColumnDefs);
+  }, [allAmrabadBookings, columnDefs]);
+
   return (
     <>
       <AmrabadConsolidatedForm
@@ -261,8 +287,8 @@ function AmrabadConsolidatedList() {
         <AgGridTable
           key={`amrabad-consolidated-${currentPage}-${PAGE_LIMIT}`}
           ExportName="Booking Report"
-          rowData={allAmrabadBookings || []}
-          columnDefs={columnDefs}
+          rowData={gridData}
+          columnDefs={gridColumnDefs}
           isFetchLoading={isFetchAllAmrabadBookingsLoading}
           isPagination={false}
           // tableHeight={(allAmrabadBookings?.data?.length || 0) > 10 ? 560 : 330}

@@ -55,6 +55,18 @@ export const superAdminPermissions = [
   "current-payment-transactions",
   "current-refund-report",
   "android-ios-entries",
+  // amrabad permissions
+  "packages",
+  // "amrabad-packages",
+  "amrabad-booking-reports",
+  "amrabad-house-wise-reports",
+  "amrabad-payment-transactions",
+  "amrabad-availability-report",
+  "amrabad-user-report",
+  "amrabad-refund-transaction-report",
+  "amarabad-total-transaction",
+  "pos-reports",
+  "amrabad-view-transaction-track-order",
 ];
 
 // ESD TECH
