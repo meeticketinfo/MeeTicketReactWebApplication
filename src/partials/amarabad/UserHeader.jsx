@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../images/user/logo.png";
 import TelanganaRising from "../../images/user/telangana-rising-logo.png";
 import DeccanTrailsLogo from "../../images/user/DeccanTrailsLogo.png"
+import ForestLogo from "../../images/forestLogo.png";
 import { amrabadAuthStore } from "../../store/amarabad/user/amrabadAuthStore";
 import { FaHistory, FaShoppingCart, FaUser } from "react-icons/fa";
 
@@ -83,7 +84,7 @@ export const UserHeader = ({ isScrolled = false }) => {
             </a>
           </div>
           <div className="flex items-center space-x-4">
-            <a
+            {/* <a
             //  href="https://www.facebook.com/amrabadtigerreserve/" 
              target='_blank' rel="noreferrer" className="text-white">
               <svg width="10" height="17" viewBox="0 0 10 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -96,7 +97,7 @@ export const UserHeader = ({ isScrolled = false }) => {
                   </clipPath>
                 </defs>
               </svg>
-            </a>
+            </a> */}
             <a 
             // href="https://x.com/AmrabadTiger"
             target='_blank' rel="noreferrer" className="text-white">
@@ -112,12 +113,11 @@ export const UserHeader = ({ isScrolled = false }) => {
       <nav className={`bg-gradient-to-r from-[#304A3A] to-[#7A8F7C] sticky top-0 z-50 transition-all duration-300 font-poppins text-base ${isScrolled ? 'py-2' : 'py-1'
         } px-2 md:px-4 shadow-[0_4px_20px_rgba(0,0,0,0.15),0_2px_8px_rgba(48,74,58,0.2)]`}>
         <div className="container mx-auto flex justify-between items-center relative">
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center">
             <img
-              src={DeccanTrailsLogo}
-              alt=""
-              aria-hidden="true"
-              className={`transition-all duration-300 opacity-0 pointer-events-none ${isScrolled ? 'w-[50px] md:w-[60px]' : 'w-[60px] md:w-[85px]'}`}
+              src={ForestLogo}
+              alt="Telangana Forest Development Corporation Ltd"
+              className={`transition-all duration-300 object-contain ${isScrolled ? 'w-[40px] md:w-[50px]' : 'w-[48px] md:w-[65px]'}`}
             />
           </div>
           <Link to="/amrabad-resort" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center flex-shrink-0 pointer-events-auto z-10">

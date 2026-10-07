@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import UserLayout from "../../../../layouts/UserLayout";
 import { Link, useParams } from "react-router-dom";
 import PopupModal from "../../../../components/utils/popup_modal/PopupModal";
@@ -7,23 +7,61 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import { useUserBookingStore } from "../../../../store/amrabad/user/userBookingStore";
 import PackageDetailShimmer from "../../shimmer/PackageDetailShimmer";
+import { getFormattedDate } from "../../../../utils/Helper";
+
+const formatRupee = (amount) =>
+  `₹${Number(amount).toLocaleString("en-IN")}`;
 
 const PackageDetail = () => {
   const { packageId } = useParams();
   const { openModalId, setOpenModalId, closeModal } = useModalStore();
-  const { fetchPackageDetail, isPackageDetailLoading, GetPackageDetail } = useUserBookingStore();
-
-  const OverviewConfig = {
-
-    182: "Tented accommodation with concrete bathrooms",
-    180: "Cottages",
-    179: "Tented accommodation with concrete bath & dressing",
-
-  }
+  const {
+    fetchPackageDetail,
+    isPackageDetailLoading,
+    GetPackageDetail,
+    fetchUserPackages,
+    GetUserPackages,
+    fetchRoomsByPackageId,
+    GetRoomsByPackageId,
+  } = useUserBookingStore();
 
   useEffect(() => {
     fetchPackageDetail(packageId);
+    fetchUserPackages();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    fetchRoomsByPackageId(
+      packageId,
+      getFormattedDate(today),
+      getFormattedDate(tomorrow)
+    );
   }, [packageId]);
+
+  const packageInfo = useMemo(
+    () =>
+      GetUserPackages?.find(
+        (pkg) => String(pkg.packageId) === String(packageId)
+      ) || null,
+    [GetUserPackages, packageId]
+  );
+
+  const priceRange = useMemo(() => {
+    const amounts = (GetRoomsByPackageId || [])
+      .flatMap((room) => room?.pricingDetails || [])
+      .map((detail) => detail?.amountPerDay)
+      .filter((amount) => amount != null && !Number.isNaN(Number(amount)))
+      .map(Number);
+
+    if (!amounts.length) return null;
+    return {
+      min: Math.min(...amounts),
+      max: Math.max(...amounts),
+    };
+  }, [GetRoomsByPackageId]);
 
   // Show shimmer while loading
   if (isPackageDetailLoading) {
@@ -128,12 +166,14 @@ const PackageDetail = () => {
           </section> */}
 
           {/* Discounts & Schedule */}
+          {priceRange && (
+            <p className="mb-4 text-[#304A3A] text-base md:text-lg">
+              Experience a stay in the wild with room rates ranging from{" "}
+              <span className="text-black text-base md:text-xl font-bold">{formatRupee(priceRange.min)}</span> to{" "}
+              <span className="text-black text-base md:text-xl font-bold">{formatRupee(priceRange.max)}</span> per night.
+            </p>
+          )}
           <section className="mb-8">
-            {/* <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-lg font-semibold text-[#304A3A]">
-                Discount & Schedule Details
-              </h2>
-            </div> */}
             <div className="bg-[#FDFAF7] p-3 md:p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)]">
 
               {/* Discounts */}
@@ -247,37 +287,50 @@ const PackageDetail = () => {
 
 
           {/* over View Details */}
-          {OverviewConfig[packageId] && <section className="mb-8">
-
-            <>
+          {packageInfo?.description && (
+            <section className="mb-8">
               <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
                 <h2 className="text-lg font-semibold text-[#304A3A]">
                   Over View
                 </h2>
               </div>
-              <div className="overflow-x-auto w-full md:max-w-[50%]   border-gray-200 rounded-lg">
-                <h1 className="font-normal">{OverviewConfig[packageId]}</h1>
+              <div className="overflow-x-auto w-full md:max-w-[50%] border-gray-200 rounded-lg">
+                <p className="font-normal text-[#3b4b5a] whitespace-pre-line">
+                  {packageInfo.description}
+                </p>
               </div>
-            </>
+            </section>
+          )}
 
-
-          </section>}
-
-          <div className="w-full">
-            {/* Overview Header */}
-             <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
-              <h2 className="text-[16px] font-medium text-[#234235]">
-                Over View
-              </h2>
+          {packageInfo?.guidelines && (
+            <div className="w-full mb-8">
+              <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                <h2 className="text-[16px] font-medium text-[#234235]">
+                  Guidelines
+                </h2>
+              </div>
+              <div className="mt-4 mb-4">
+                <p className="text-[#3b4b5a] text-base whitespace-pre-line">
+                  {packageInfo.guidelines}
+                </p>
+              </div>
             </div>
+          )}
 
-            {/* Content */}
-            <div className="mt-4 mb-4">
-              <p className="text-[#3b4b5a] text-base">
-                Cottages
-              </p>
+          {packageInfo?.termsConditions?.trim() && (
+            <div className="w-full mb-8">
+              <div className="bg-gradient-to-r from-[#7A8F7C] to-transparent p-3 md:p-4 pl-6 md:pl-10 rounded-tl-[50px] mb-5 w-full md:max-w-[50%]">
+                <h2 className="text-[16px] font-medium text-[#234235]">
+                  Terms & Conditions
+                </h2>
+              </div>
+              <div className="mt-4 mb-4">
+                <p className="text-[#3b4b5a] text-base whitespace-pre-line">
+                  {packageInfo.termsConditions}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Swiper Slider - place this just above the Policy Links section */}
           <div className="w-full mx-auto mb-6 relative">
@@ -378,7 +431,7 @@ const PackageDetail = () => {
       >
         <div className="p-6">
           <div className="space-y-4 text-gray-700">
-            <p>
+            <p className="whitespace-pre-line">
               {GetPackageDetail?.cancellationPolicy}
             </p>
           </div>
@@ -397,7 +450,7 @@ const PackageDetail = () => {
       >
         <div className="p-6">
           <div className="space-y-4 text-gray-700">
-            <p>
+            <p className="whitespace-pre-line">
               {GetPackageDetail?.termsConditions}
             </p>
           </div>
@@ -415,7 +468,7 @@ const PackageDetail = () => {
         defaultBodyPadding={true}
       >
         <div className="p-6">
-          <p>
+          <p className="whitespace-pre-line">
             {GetPackageDetail?.privacyPolicy}
           </p>
         </div>
