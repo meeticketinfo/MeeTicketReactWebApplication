@@ -255,6 +255,7 @@ function CityBusRefundTransactionsList() {
         field: "modeofPayment",
         headerName: "PAYMENT MODE",
         maxWidth: 150,
+        hide: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => params.value ?? "N/A",
       },
@@ -442,7 +443,7 @@ function CityBusRefundTransactionsList() {
                 placeholder="Enter PNR"
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-xs font-medium text-gray-700">
                 Payment Mode
               </label>
@@ -456,7 +457,7 @@ function CityBusRefundTransactionsList() {
                 <option value="UPI">UPI</option>
                 <option value="Cash">Cash</option>
               </Field>
-            </div>
+            </div> */}
             <div>
               <label
                 htmlFor="refundStatus"

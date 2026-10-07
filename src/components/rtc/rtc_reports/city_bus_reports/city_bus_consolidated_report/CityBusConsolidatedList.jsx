@@ -386,6 +386,7 @@ const CityBusConsolidatedList = () => {
         field: "PaymentMode",
         headerName: "PAYMENT MODE",
         minWidth: 140,
+        hide: true,
         headerClass: "text-blue-v2",
         valueFormatter: (params) => displayValue(params.value),
       },
@@ -617,7 +618,7 @@ const CityBusConsolidatedList = () => {
                   ))}
                 </Field>
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Payment Mode
                 </label>
@@ -631,7 +632,7 @@ const CityBusConsolidatedList = () => {
                   <option value="UPI">UPI</option>
                   <option value="Cash">Cash</option>
                 </Field>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 uppercase">
                   Order ID
