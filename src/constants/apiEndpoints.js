@@ -67,10 +67,10 @@ export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassap
 export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
 // MAVENCONNECT_API_STAGE_BASE_URL
-export const MAVENCONNECT_API_BASE_URL = "https://meeticketapi.mavenconnect.biz/";
+// export const MAVENCONNECT_API_BASE_URL = "https://meeticketapi.mavenconnect.biz/";
 
 // MAVENCONNECT_API_PROD_BASE_URL
-// export const MAVENCONNECT_API_BASE_URL = "https://meeticketcbapi.mavenconnect.biz/";
+export const MAVENCONNECT_API_BASE_URL = "https://meeticketcbapi.mavenconnect.biz/";
 
 export const MAVENCONNECT_HEADERS_TOKEN = "AmxsG7zkJB";
 
@@ -158,6 +158,7 @@ export const API_ENDPOINTS = {
       ADD_POS_BOOKINGS: `Transaction/AddBookingDetailsForPOS`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
+      GET_WIRELESS_POS_BOOKINGS_BOOKING_ID: `Transaction/GetWirelessPOSBookingDetailsByBookingId`,
       GET_ALL_FACILITY_SERVICES: `${API_BASE_URL}Transaction/GetAllParkDetails`,
     },
     USER: {
@@ -277,8 +278,11 @@ export const API_ENDPOINTS = {
     BOOKING_REPORTS: {
       GET_COMPLETE_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedBookings`,
       GET_TRANSACTION_PAYMENT: `${API_BASE_URL}ParkReport/GetUserWisePaymentDetailsWithStatus`,
+      POST_PARK_POS_TYPE: `${API_BASE_URL}PaymentTransaction/ParkPosType`,
       POST_GENERATE_POS_QR: `${API_BASE_URL}PaymentTransaction/GeneratePOSQr`,
       POST_CHECK_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckPOSTransactionStatus`,
+      POST_GENERATE_WIRELESS_POS_QR: `${API_BASE_URL}PaymentTransaction/GenerateWirelessPaytmPOSQr`,
+      POST_CHECK_WIRELESS_POS_TXS_STATUS: `${API_BASE_URL}PaymentTransaction/CheckWirelessPOSTransactionStatus`,
       GET_RE_GENERATE_TICKET: `${API_BASE_URL}Transaction/GenerateTicketFromFailedTransaction`,
       POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
       GET_COMPLETED_ZOO_COUNTER_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,

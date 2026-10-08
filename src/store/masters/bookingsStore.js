@@ -4,9 +4,43 @@ import { API_ENDPOINTS } from "../../constants/apiEndpoints";
 import { persist } from "zustand/middleware";
 import { handleApiError } from "../../utils/apiErrorHandler";
 
+const normalizeParkPosType = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase();
+
+const isWirelessParkPos = (parkPosType) => {
+  const normalized = normalizeParkPosType(parkPosType);
+  // Handles wirelessPos, Wirelesspos, WirelessPos, wirelesspos, etc.
+  return normalized === "wirelesspos" || normalized.includes("wireless");
+};
+
+const extractParkPosTypeFromResponse = (response) => {
+  const raw =
+    response?.data?.data?.data ??
+    response?.data?.data ??
+    response?.data ??
+    response;
+
+  if (typeof raw === "string") {
+    return raw;
+  }
+
+  // If API wraps the type in an object, try common keys
+  if (raw && typeof raw === "object") {
+    const nested =
+      raw.parkPosType ?? raw.posType ?? raw.type ?? raw.result ?? raw.message;
+    if (typeof nested === "string") {
+      return nested;
+    }
+  }
+
+  return String(raw ?? "");
+};
+
 export const useBookingsStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       allBookings: [],
       isFetchAllBookingsLoading: false,
       error: null,
@@ -49,6 +83,8 @@ export const useBookingsStore = create(
       isGenerate_deep_linkLoading: false,
       //
       CheckPosTsxStatusData: [],
+      parkPosType: null,
+      isParkPosTypeLoading: false,
       // regenerate ticket
       isReGenerateTicketLoading: false,
       //  cgg
@@ -160,11 +196,35 @@ export const useBookingsStore = create(
         }
       },
 
+      fetchParkPosType: async () => {
+        set({ isParkPosTypeLoading: true });
+        try {
+          const response = await apiService.post(
+            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_PARK_POS_TYPE
+          );
+          const parkPosType = extractParkPosTypeFromResponse(response);
+          set({
+            parkPosType,
+            isParkPosTypeLoading: false,
+          });
+          return { success: true, data: parkPosType };
+        } catch (error) {
+          set({
+            error: error.message,
+            isParkPosTypeLoading: false,
+          });
+          return { success: false };
+        }
+      },
+
       fetchCurrentBookingDetailsByBookingId: async (bookingId) => {
         set({ isFetchCurrentBookingDetailsLoading: true });
         try {
+          const bookingDetailsEndpoint = isWirelessParkPos(get().parkPosType)
+            ? API_ENDPOINTS.MASTERS.BOOKING.GET_WIRELESS_POS_BOOKINGS_BOOKING_ID
+            : API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS_BOOKING_ID;
           const response = await apiService.get(
-            `${API_ENDPOINTS.MASTERS.BOOKING.GET_BOOKINGS_BOOKING_ID}/${bookingId}`
+            `${bookingDetailsEndpoint}/${bookingId}`
           );
           // Ensure correct setting of the bookingDetails state
           set({
@@ -411,8 +471,11 @@ export const useBookingsStore = create(
       Generate_deep_link: async (payload) => {
         set({ isGenerate_deep_linkLoading: true });
         try {
-          const url =
-            API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_GENERATE_POS_QR;
+          // Call ParkPosType first, then use QR or Wireless POS generate API
+          await get().fetchParkPosType();
+          const url = isWirelessParkPos(get().parkPosType)
+            ? API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_GENERATE_WIRELESS_POS_QR
+            : API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_GENERATE_POS_QR;
           const method = "post";
           const response = await apiService[method](url, payload);
           set({
@@ -431,7 +494,11 @@ export const useBookingsStore = create(
       CheckPosTsxStatus: async (OrderId) => {
         set({ isCheckPosTsxStatusLoading: true });
         try {
-          const url = `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${OrderId}`;
+          const checkStatusEndpoint = isWirelessParkPos(get().parkPosType)
+            ? API_ENDPOINTS.REPORTS.BOOKING_REPORTS
+                .POST_CHECK_WIRELESS_POS_TXS_STATUS
+            : API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS;
+          const url = `${checkStatusEndpoint}/${OrderId}`;
           const method = "post";
           const response = await apiService[method](url);
           set({
@@ -491,9 +558,16 @@ export const useBookingsStore = create(
         console.log("isUpi", isUpi);
         set({ isVerifyTicketLoading: true });
         try {
+          if (!isUpi && !get().parkPosType) {
+            await get().fetchParkPosType();
+          }
+          const posCheckStatusEndpoint = isWirelessParkPos(get().parkPosType)
+            ? API_ENDPOINTS.REPORTS.BOOKING_REPORTS
+                .POST_CHECK_WIRELESS_POS_TXS_STATUS
+            : API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS;
           const url = isUpi
             ? `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_VERIFY_TICKET}/${VerifyDetails}`
-            : `${API_ENDPOINTS.REPORTS.BOOKING_REPORTS.POST_CHECK_POS_TXS_STATUS}/${VerifyDetails}`;
+            : `${posCheckStatusEndpoint}/${VerifyDetails}`;
           const method = "post";
           const response = await apiService[method](url);
           set({
