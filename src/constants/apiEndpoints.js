@@ -67,10 +67,10 @@ export const RTC_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcbuspassap
 export const RTC_INTERCITY_API_BASE_URL = "https://meeticket.telangana.gov.in/rtcintercity/v1/";
 
 // MAVENCONNECT_API_STAGE_BASE_URL
-export const MAVENCONNECT_API_BASE_URL = "https://meeticketapi.mavenconnect.biz/";
+// export const MAVENCONNECT_API_BASE_URL = "https://meeticketapi.mavenconnect.biz/";
 
 // MAVENCONNECT_API_PROD_BASE_URL
-// export const MAVENCONNECT_API_BASE_URL = "https://meeticketcbapi.mavenconnect.biz/";
+export const MAVENCONNECT_API_BASE_URL = "https://meeticketcbapi.mavenconnect.biz/";
 
 export const MAVENCONNECT_HEADERS_TOKEN = "AmxsG7zkJB";
 
