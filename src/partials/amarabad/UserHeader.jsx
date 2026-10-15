@@ -98,9 +98,13 @@ export const UserHeader = ({ isScrolled = false }) => {
                 </defs>
               </svg>
             </a> */}
-            <a 
-            // href="https://x.com/AmrabadTiger"
-            target='_blank' rel="noreferrer" className="text-white">
+            <a
+              href="https://x.com/deccanwoodsfdc"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="X (Twitter)"
+              className="text-white cursor-pointer"
+            >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.51724 7.01469L15.4786 0H14.0844L8.57101 6.39155L4.09953 0H0L6.11262 8.89552L0 15.2447H1.39419L7.05532 8.6142L11.9005 15.2447H16L9.51724 7.01469ZM7.53978 8.05072L7.00658 7.36939L1.38203 1.21428H3.09953L7.53645 6.983L8.06965 7.66433L14.0844 14.0055H12.3669L7.53978 8.05072Z" fill="white"/>
               </svg>
