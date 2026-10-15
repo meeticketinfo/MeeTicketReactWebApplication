@@ -10,6 +10,7 @@
 // };
 
 export const launchPaytmPOS = (deeplinkUrl) => {
+  if (!deeplinkUrl) return; // avoid navigating to /undefined
   window.location.href = deeplinkUrl; // More reliable than using iframe
 };
 [];

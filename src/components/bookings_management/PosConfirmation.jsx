@@ -22,6 +22,14 @@ function formatBookingDate(date) {
 
   return `${year}-${month}-${day}T${hours}:00:00.000`;
 }
+
+// Wired POS: TXN_SUCCESS / TXN_FAILURE; Wireless POS: SUCCESS / FAIL
+const isPosTxnSuccess = (resultStatus) =>
+  resultStatus === "TXN_SUCCESS" || resultStatus === "SUCCESS";
+
+const isPosTxnFailure = (resultStatus) =>
+  resultStatus === "TXN_FAILURE" || resultStatus === "FAIL";
+
 const PosConfirmation = () => {
   const isOnline = useOnlineStatus();
   console.log("isOnline", isOnline);
@@ -71,7 +79,7 @@ const PosConfirmation = () => {
   }
 
   useEffect(() => {
-    if (counter > 0 && CheckPosTsxStatusData.resultStatus !== "TXN_SUCCESS") {
+    if (counter > 0 && !isPosTxnSuccess(CheckPosTsxStatusData.resultStatus)) {
       const timer = setTimeout(() => {
         setCounter((prev) => prev - 1);
         CheckPosTsxStatus(Generate_deep_link_data?.orderId);
@@ -89,7 +97,7 @@ const PosConfirmation = () => {
   useEffect(() => {
     if (
       Timercounter > 0 &&
-      CheckPosTsxStatusData.resultStatus !== "TXN_SUCCESS"
+      !isPosTxnSuccess(CheckPosTsxStatusData.resultStatus)
     ) {
       const timer = setTimeout(() => {
         setTimercounter((prev) => prev - 1);
@@ -107,7 +115,7 @@ const PosConfirmation = () => {
   // console.log("Generate_deep_link_data", Generate_deep_link_data);
   useEffect(() => {
     async function handleSaveBookingDetails() {
-      if (CheckPosTsxStatusData.resultStatus === "TXN_SUCCESS") {
+      if (isPosTxnSuccess(CheckPosTsxStatusData.resultStatus)) {
         setIsLoading(true);
         try {
           const currentDate = new Date();
@@ -131,17 +139,14 @@ const PosConfirmation = () => {
           } else {
             toast.error("Unexpected response from the server.");
             setIsPosTransactionFailed(true);
+            launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
           }
         } catch (xhr) {
-          setIsPosTransactionFailed(true);
-           
-          launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
-        } finally {
-          //   setSubmitting(false);
+          setIsLoading(false);
           setIsPosTransactionFailed(true);
           launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
         }
-      } else if (CheckPosTsxStatusData.resultStatus === "TXN_FAILURE") {
+      } else if (isPosTxnFailure(CheckPosTsxStatusData.resultStatus)) {
         setIsPosTransactionFailed(true);
         launchPaytmPOS(Generate_deep_link_data.homeScreenDeeplink);
       }

@@ -180,9 +180,15 @@ export const FacilityServices = () => {
         };
 
         const res = await Generate_deep_link(redefinedPayload);
+        const posQrResponse = res?.data?.data;
 
-        if (res?.data?.data?.status === 200) {
-          launchPaytmPOS(res.data.data.deeplink);
+        if (posQrResponse?.status === 200) {
+          // Wired POS returns `deeplink` for device launch.
+          // Wireless returns only `homeScreenDeeplink` (used later on cancel/timeout);
+          // the generate API already pushes the QR to the POS device.
+          if (posQrResponse?.deeplink) {
+            launchPaytmPOS(posQrResponse.deeplink);
+          }
           navigate(`/confirm-pos`);
         } else {
           console.error(
