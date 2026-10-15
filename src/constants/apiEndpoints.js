@@ -156,6 +156,7 @@ export const API_ENDPOINTS = {
       CGG_TOGGLE: `Master/UpdateZooPArkCggEnable`,
       ADD_CASH_BOOKINGS: `Transaction/AddBookingDetailswithCash`,
       ADD_POS_BOOKINGS: `Transaction/AddBookingDetailsForPOS`,
+      ADD_WIRELESS_POS_BOOKINGS: `Transaction/AddBookingDetailsForWirelessPOS`,
       // ADD_BOOKINGS: `Transaction/AddBookingDetailsWithLimit`,
       GET_BOOKINGS_BOOKING_ID: `Transaction/GetBookingDetailsByBookingId`,
       GET_WIRELESS_POS_BOOKINGS_BOOKING_ID: `Transaction/GetWirelessPOSBookingDetailsByBookingId`,

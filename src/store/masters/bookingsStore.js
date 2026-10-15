@@ -267,16 +267,19 @@ export const useBookingsStore = create(
       savePosBookingDetails: async (bookingDetailsPayload) => {
         set({ isSaveBookingDetailsLoading: true });
         try {
-          const url = API_ENDPOINTS.MASTERS.BOOKING.ADD_POS_BOOKINGS;
+          // Use ParkPosType: wirelessPos → AddBookingDetailsForWirelessPOS,
+          // otherwise existing AddBookingDetailsForPOS
+          if (!get().parkPosType) {
+            await get().fetchParkPosType();
+          }
+          const url = isWirelessParkPos(get().parkPosType)
+            ? API_ENDPOINTS.MASTERS.BOOKING.ADD_WIRELESS_POS_BOOKINGS
+            : API_ENDPOINTS.MASTERS.BOOKING.ADD_POS_BOOKINGS;
           const method = "post";
 
           const response = await apiService[method](url, bookingDetailsPayload);
 
-          // set({
-          //   facilityCreateResponse: { response },
-          //   FacilityDetails: response.data,
-          //   isSaveBookingDetailsLoading: false,
-          // });
+          set({ isSaveBookingDetailsLoading: false });
           return { success: true, data: response };
         } catch ({ error, xhr }) {
           // handleApiError(xhr);
