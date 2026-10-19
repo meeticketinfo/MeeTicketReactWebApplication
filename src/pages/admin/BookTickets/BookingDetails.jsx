@@ -8,6 +8,7 @@ import QRCodeDisplay from "./QrCodeDisplay";
 import { formatToCurrency, toTitleCase } from "../../../utils/TypographyHelper";
 import { PaymentQR } from "./PaymentQR";
 import Logo from "../../../images/MeeTicketLogo.svg";
+import NzpLogo from "../../../images/NzpHydLogo.jpg";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 import useAuthStore from "../../../store/authStore";
 
@@ -16,77 +17,90 @@ const normalizeText = (value) => String(value || "").trim();
 const isTestZooPark = (parkName) =>
   normalizeText(parkName).toLowerCase() === "test zoo park";
 
-const formatBookingDate = (value) => {
+const NZP_TICKET_TERMS = [
+  "Tickets once issued will not be cancelled or refunded or transferred to another date.",
+  "Safari waiting time is a minimum of 30 minutes.",
+  "Visitors must enter the safari before 4:00 PM. The last safari vehicle departs at 4:30 PM.",
+  "E-ticket is valid up to 4:00 PM for the selected date.",
+  "Zoo Park will be closed by 5:30 PM.",
+  "BOV Non-Exclusive and BOV Exclusive bookings will be closed by 4:00 PM. Kindly avail the booking before the closing time.",
+  "Battery Operated Vehicle (BOV) rides are subject to availability; exclusive BOV waiting time is a minimum of 1 hour.",
+];
+
+const formatBookingDateTime = (value) => {
   if (!value) return "N/A";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
-    return String(value).split("T")[0];
+    return String(value).replace("T", " ").slice(0, 16);
   }
   const dd = String(date.getDate()).padStart(2, "0");
   const mm = String(date.getMonth() + 1).padStart(2, "0");
   const yyyy = date.getFullYear();
-  return `${dd}/${mm}/${yyyy}`;
+  const hh = String(date.getHours()).padStart(2, "0");
+  const min = String(date.getMinutes()).padStart(2, "0");
+  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
 };
 
-const buildBookingTypeRows = (bookingDetails = []) => {
-  const rows = [];
+const isAdultVariant = (bookingType = "") => {
+  const type = normalizeText(bookingType).toLowerCase();
+  return /\badult\b/.test(type) && !/\bchild\b/.test(type);
+};
+
+const isChildVariant = (bookingType = "") => {
+  const type = normalizeText(bookingType).toLowerCase();
+  return /\bchild\b/.test(type) || /\bchildren\b/.test(type);
+};
+
+/** Pivot Adult / Children quantities per ticket type (sub facility) */
+const buildAdultChildSummaryRows = (bookingDetails = []) => {
+  const groups = new Map();
 
   bookingDetails.forEach((item, index) => {
     const qty = Number(item?.quantity) || 0;
     if (qty <= 0) return;
 
-    rows.push({
-      key: `${item?.facilityId || ""}-${item?.serviceId || ""}-${
-        item?.serviceVariantId || index
-      }`,
-      facilityName: normalizeText(item?.facilityName) || "N/A",
-      serviceName: normalizeText(item?.serviceName) || "N/A",
-      bookingType: normalizeText(item?.serviceVariantName) || "N/A",
-      quantity: qty,
-      totalAmount:
-        Number(item?.totalAmount) ||
-        (Number(item?.amount) || 0) * qty,
-    });
-  });
+    const variant = item?.serviceVariantName;
+    const baseType =
+      normalizeText(item?.serviceName) ||
+      normalizeText(item?.facilityName) ||
+      "N/A";
+    // Adult/Child share one ticket-type row; other variants keep their own row
+    const ticketType =
+      isAdultVariant(variant) || isChildVariant(variant)
+        ? baseType
+        : normalizeText(variant) || baseType;
+    const key = ticketType.toLowerCase();
 
-  return rows;
-};
-
-const getBookingTypeSortOrder = (bookingType = "") => {
-  const type = normalizeText(bookingType).toLowerCase();
-  if (/\badult\b/.test(type) && !/\bchild\b/.test(type)) return 0;
-  if (/\bchild\b/.test(type) || /\bchildren\b/.test(type)) return 1;
-  return 2; // other types after Adult/Child
-};
-
-/** Group rows by Sub Facility (serviceName) for rowSpan table layout */
-const groupBookingRowsBySubFacility = (rows = []) => {
-  const groups = [];
-  const indexByService = new Map();
-
-  rows.forEach((row) => {
-    const groupKey = row.serviceName.toLowerCase();
-    if (!indexByService.has(groupKey)) {
-      indexByService.set(groupKey, groups.length);
-      groups.push({
-        serviceName: row.serviceName,
-        items: [row],
+    if (!groups.has(key)) {
+      groups.set(key, {
+        key: `${key}-${item?.serviceId || index}`,
+        ticketType,
+        adultCount: 0,
+        childCount: 0,
       });
+    }
+
+    const row = groups.get(key);
+    if (isAdultVariant(variant)) {
+      row.adultCount += qty;
+    } else if (isChildVariant(variant)) {
+      row.childCount += qty;
     } else {
-      groups[indexByService.get(groupKey)].items.push(row);
+      row.adultCount += qty;
     }
   });
 
-  // Adult first, then Child, then other booking types
-  groups.forEach((group) => {
-    group.items.sort(
-      (a, b) =>
-        getBookingTypeSortOrder(a.bookingType) -
-        getBookingTypeSortOrder(b.bookingType)
-    );
-  });
+  return Array.from(groups.values());
+};
 
-  return groups;
+const normalizePaymentType = (value) => {
+  const raw = normalizeText(value);
+  if (!raw) return "N/A";
+  const lower = raw.toLowerCase();
+  if (lower.includes("upi")) return "UPI";
+  if (lower.includes("pos") || lower.includes("card")) return "POS";
+  if (lower.includes("cash")) return "Cash";
+  return raw.toUpperCase();
 };
 
 export default function BookingDetails() {
@@ -137,14 +151,9 @@ export default function BookingDetails() {
 
   const useNewTicketPrint = isTestZooPark(parkName);
 
-  const bookingTypeRows = useMemo(
-    () => buildBookingTypeRows(bookingDetails || []),
+  const adultChildSummaryRows = useMemo(
+    () => buildAdultChildSummaryRows(bookingDetails || []),
     [bookingDetails]
-  );
-
-  const bookingTypeGroups = useMemo(
-    () => groupBookingRowsBySubFacility(bookingTypeRows),
-    [bookingTypeRows]
   );
 
   const parkLocation =
@@ -158,15 +167,30 @@ export default function BookingDetails() {
     bookingDetailsResponse?.counterName ||
     bookingDetailsResponse?.CounterId ||
     bookingDetailsResponse?.CounterName ||
+    bookingDetailsResponse?.createdBy ||
+    bookingDetailsResponse?.createD_BY ||
+    bookingDetailsResponse?.bookedBy ||
     bookingDetailsResponse?.deskName ||
     decodedTokenData?.data?.UserName ||
     decodedTokenData?.data?.CounterName ||
     "N/A";
 
+  // Booking ID – current API fields
   const bookingId =
     bookingDetailsResponse?.referenceId ||
     bookingDetailsResponse?.bookingId ||
     bookingDetailsResponse?.id ||
+    "N/A";
+
+  // Order ID / Trans ID – separate field; not in API yet, will come later
+  const orderOrTransId =
+    bookingDetailsResponse?.orderId ||
+    bookingDetailsResponse?.OrderId ||
+    bookingDetailsResponse?.transactionId ||
+    bookingDetailsResponse?.TransactionId ||
+    bookingDetailsResponse?.posOrderId ||
+    bookingDetailsResponse?.transId ||
+    bookingDetailsResponse?.TransId ||
     "N/A";
 
   const transactionStatus =
@@ -177,11 +201,25 @@ export default function BookingDetails() {
     bookingDetailsResponse?.status ||
     "SUCCESS";
 
+  const paymentType = normalizePaymentType(
+    bookingDetailsResponse?.paymentType ||
+      bookingDetailsResponse?.PaymentType ||
+      bookingDetailsResponse?.paymentMode ||
+      bookingDetailsResponse?.PaymentMode ||
+      bookingDetailsResponse?.payMode
+  );
+
   const totalAmount =
     bookingDetailsResponse?.totalAmount ??
     bookingDetailsResponse?.amount ??
     bookingDetailsResponse?.TotalAmount ??
-    bookingTypeRows.reduce((sum, row) => sum + (row.totalAmount || 0), 0);
+    (bookingDetails || []).reduce(
+      (sum, item) =>
+        sum +
+        (Number(item?.totalAmount) ||
+          (Number(item?.amount) || 0) * (Number(item?.quantity) || 0)),
+      0
+    );
 
   // Existing (legacy) consolidated layout data
   const consolidatedData = [];
@@ -290,7 +328,7 @@ export default function BookingDetails() {
         print-color-adjust: exact;
       }
       body {
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
         color: #000;
@@ -306,106 +344,146 @@ export default function BookingDetails() {
       .nzp-ticket {
         width: 100%;
         color: #000;
-        font-size: 11px;
-        line-height: 1.35;
+        font-family: Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 11.5px;
+        line-height: 1.45;
+        letter-spacing: 0.15px;
       }
-      .nzp-logo-wrap {
-        text-align: center;
+      .nzp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3px;
         margin-bottom: 4px;
       }
-      .nzp-logo-wrap img {
-        width: 28mm !important;
-        height: auto !important;
-        margin: 0 auto;
+      .nzp-header .nzp-header-logo-left {
+        flex: 0 0 28mm;
+        width: 28mm;
+        height: 18mm;
+        object-fit: contain;
+        object-position: left center;
         display: block;
       }
-      .nzp-ticket .ticket-title {
-        margin: 2px 0 8px;
-        font-size: 18px;
-        font-weight: 700;
+      .nzp-header .nzp-header-logo-right {
+        flex: 0 0 16mm;
+        width: 16mm;
+        height: 16mm;
+        object-fit: contain;
+        object-position: right center;
+        display: block;
+      }
+      .nzp-header .nzp-header-mid {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        color: #15803d;
-        text-transform: uppercase;
+        min-width: 0;
+        padding: 0 2px;
       }
       .nzp-ticket h1.park-name {
-        margin: 6px 0 0;
-        font-size: 13px;
-        font-weight: 700;
+        margin: 0;
+        font-size: 9.5px;
+        font-weight: 800;
         text-align: center;
         text-transform: uppercase;
+        letter-spacing: 0.2px;
+        line-height: 1.15;
+        color: #000;
       }
       .nzp-ticket .park-location {
-        margin: 2px 0 6px;
+        margin: 1px 0 0;
         text-align: center;
-        font-size: 11px;
+        font-size: 7.5px;
+        font-weight: 600;
+        color: #222;
+        line-height: 1.15;
+      }
+      .nzp-ticket .ticket-title {
+        margin: 4px 0 6px;
+        font-size: 17px;
+        font-weight: 800;
+        text-align: center;
+        color: #0f7a2f;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
       }
       .nzp-ticket .divider {
         border: none;
-        border-top: 1px solid #000;
+        border-top: 1.5px solid #000;
         margin: 6px 0;
       }
       .nzp-ticket .info-row {
         display: flex;
         align-items: baseline;
         gap: 4px;
-        margin: 2px 0;
+        margin: 3px 0;
         font-size: 11px;
         flex-wrap: nowrap;
+        white-space: nowrap;
       }
       .nzp-ticket .info-label {
         flex: 0 0 auto;
-        min-width: 95px;
-        font-weight: 600;
+        min-width: 0;
+        font-weight: 800;
         white-space: nowrap;
+        color: #000;
       }
       .nzp-ticket .info-value {
         flex: 1 1 auto;
         white-space: nowrap;
-        overflow: visible;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: #111;
       }
-      .nzp-ticket .booking-id-value {
-        white-space: nowrap !important;
-        font-size: 9px;
-        letter-spacing: -0.2px;
+      .nzp-ticket .info-id-value {
+        font-size: 9.5px;
+        letter-spacing: -0.1px;
       }
       .nzp-ticket .section-title {
         margin: 8px 0 4px;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 800;
         text-align: left;
+        text-transform: uppercase;
+        color: #000;
       }
       .nzp-summary-table {
         width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
-        font-size: 10px;
+        font-size: 10.5px;
       }
       .nzp-summary-table th,
       .nzp-summary-table td {
-        border: 1px solid #000;
-        padding: 3px 4px;
+        border: 1.5px solid #000;
+        padding: 4px 3px;
         vertical-align: middle;
         word-break: break-word;
       }
       .nzp-summary-table th {
-        font-weight: 700;
+        font-weight: 800;
         text-align: center;
-        background: #fff;
+        background: #f3f4f6;
       }
       .nzp-summary-table td.label {
         text-align: left;
+        font-weight: 700;
       }
       .nzp-summary-table td.count {
         text-align: center;
+        font-weight: 700;
       }
       .nzp-qr-wrap {
         text-align: center;
-        margin: 4px 0 8px;
+        margin: 4px 0 6px;
       }
       .nzp-qr-wrap img {
-        width: 42mm !important;
-        height: 42mm !important;
-        max-width: 42mm !important;
+        width: 40mm !important;
+        height: 40mm !important;
+        max-width: 40mm !important;
         object-fit: contain;
         margin: 0 auto;
         display: block;
@@ -414,6 +492,33 @@ export default function BookingDetails() {
         text-align: center;
         font-size: 10px;
         padding: 6px 0;
+      }
+      .nzp-terms {
+        margin-top: 8px;
+        padding-top: 4px;
+        border-top: 1px dashed #000;
+        font-size: 9.5px;
+        line-height: 1.4;
+        color: #000;
+      }
+      .nzp-terms-title {
+        font-weight: 800;
+        font-size: 11px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+      .nzp-terms ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .nzp-terms li {
+        margin: 0 0 3px;
+        font-weight: 600;
+      }
+      .nzp-terms .nzp-term-dot {
+        font-weight: 800;
+        margin-right: 2px;
       }
     </style>
   `;
@@ -477,97 +582,137 @@ export default function BookingDetails() {
           .nzp-ticket {
             width: 100%;
             color: #000;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
-            line-height: 1.35;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+            line-height: 1.45;
+            letter-spacing: 0.15px;
           }
-          .nzp-logo-wrap {
-            text-align: center;
-            margin-bottom: 4px;
+          .nzp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 6px;
           }
-          .nzp-logo-wrap img {
-            width: 100px;
-            height: auto;
-            margin: 0 auto;
+          .nzp-header .nzp-header-logo-left {
+            flex: 0 0 120px;
+            width: 120px;
+            height: 72px;
+            object-fit: contain;
+            object-position: left center;
             display: block;
           }
-          .nzp-ticket .ticket-title {
-            margin: 2px 0 8px;
-            font-size: 22px;
-            font-weight: 700;
+          .nzp-header .nzp-header-logo-right {
+            flex: 0 0 68px;
+            width: 68px;
+            height: 68px;
+            object-fit: contain;
+            object-position: right center;
+            display: block;
+          }
+          .nzp-header .nzp-header-mid {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            color: #15803d;
-            text-transform: uppercase;
+            min-width: 0;
+            padding: 0 4px;
           }
           .nzp-ticket h1.park-name {
-            margin: 8px 0 0;
-            font-size: 14px;
-            font-weight: 700;
+            margin: 0;
+            font-size: 12px;
+            font-weight: 800;
             text-align: center;
             text-transform: uppercase;
+            letter-spacing: 0.25px;
+            line-height: 1.15;
+            color: #000;
           }
           .nzp-ticket .park-location {
-            margin: 2px 0 6px;
+            margin: 2px 0 0;
             text-align: center;
-            font-size: 12px;
+            font-size: 9px;
+            font-weight: 600;
+            color: #222;
+            line-height: 1.15;
+          }
+          .nzp-ticket .ticket-title {
+            margin: 6px 0 8px;
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            color: #0f7a2f;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
           }
           .nzp-ticket .divider {
             border: none;
-            border-top: 1px solid #000;
-            margin: 6px 0;
+            border-top: 2px solid #000;
+            margin: 8px 0;
           }
           .nzp-ticket .info-row {
             display: flex;
             align-items: baseline;
             gap: 4px;
-            margin: 2px 0;
-            font-size: 12px;
+            margin: 4px 0;
+            font-size: 13px;
             flex-wrap: nowrap;
+            white-space: nowrap;
           }
           .nzp-ticket .info-label {
             flex: 0 0 auto;
-            min-width: 110px;
-            font-weight: 600;
+            min-width: 0;
+            font-weight: 800;
             white-space: nowrap;
+            color: #000;
           }
           .nzp-ticket .info-value {
             flex: 1 1 auto;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            color: #111;
           }
-          .nzp-ticket .booking-id-value {
-            white-space: nowrap !important;
+          .nzp-ticket .info-id-value {
             font-size: 11px;
-            letter-spacing: -0.2px;
+            letter-spacing: -0.1px;
           }
           .nzp-ticket .section-title {
-            margin: 8px 0 4px;
-            font-size: 13px;
-            font-weight: 700;
+            margin: 12px 0 6px;
+            font-size: 14px;
+            font-weight: 800;
             text-align: left;
+            text-transform: uppercase;
+            color: #000;
           }
           .nzp-summary-table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            font-size: 11px;
+            font-size: 12px;
           }
           .nzp-summary-table th,
           .nzp-summary-table td {
-            border: 1px solid #000;
-            padding: 4px;
+            border: 1.5px solid #000;
+            padding: 6px 4px;
             vertical-align: middle;
             word-break: break-word;
           }
           .nzp-summary-table th {
-            font-weight: 700;
+            font-weight: 800;
             text-align: center;
-            background: #fff;
+            background: #f3f4f6;
           }
           .nzp-summary-table td.label {
             text-align: left;
+            font-weight: 700;
           }
           .nzp-summary-table td.count {
             text-align: center;
+            font-weight: 700;
           }
           .nzp-qr-wrap {
             text-align: center;
@@ -575,9 +720,36 @@ export default function BookingDetails() {
           }
           .nzp-empty {
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             padding: 8px 0;
-            color: #4b5563;
+            color: #374151;
+          }
+          .nzp-terms {
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px dashed #000;
+            font-size: 11px;
+            line-height: 1.45;
+            color: #000;
+          }
+          .nzp-terms-title {
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+          }
+          .nzp-terms ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+          .nzp-terms li {
+            margin: 0 0 4px;
+            font-weight: 600;
+          }
+          .nzp-terms .nzp-term-dot {
+            font-weight: 800;
+            margin-right: 2px;
           }
         `}</style>
       )}
@@ -626,13 +798,28 @@ export default function BookingDetails() {
               <div
                 aria-label="card"
                 className="p-3 rounded-md bg-white border border-gray-300 printable-card"
-                style={{ width: 380 }}
+                style={{ width: 440 }}
               >
                 <div className="nzp-ticket">
-                  <div className="nzp-logo-wrap">
-                    <img src={Logo} alt="Mee Ticket" />
+                  <div className="nzp-header">
+                    <img
+                      className="nzp-header-logo-left"
+                      src={NzpLogo}
+                      alt="NZP Hyd"
+                    />
+                    <div className="nzp-header-mid">
+                      <h1 className="park-name">
+                        {String(parkName).toUpperCase()}
+                      </h1>
+                      <div className="park-location">{parkLocation}</div>
+                    </div>
+                    <img
+                      className="nzp-header-logo-right"
+                      src={Logo}
+                      alt="Mee Ticket"
+                    />
                   </div>
-                  <div className="ticket-title">Ticket</div>
+                  <div className="ticket-title">QR Ticket</div>
                   <div className="nzp-qr-wrap">
                     <div
                       style={{
@@ -649,22 +836,20 @@ export default function BookingDetails() {
                       />
                     </div>
                   </div>
-
-                  <h1 className="park-name">
-                    {String(parkName).toUpperCase()}
-                  </h1>
-                  <div className="park-location">{parkLocation}</div>
                   <hr className="divider" />
-{/* 
-                  <div className="info-row">
-                    <span className="info-label">Counter Id</span>
-                    <span className="info-value">: {counterId || "N/A"}</span>
-                  </div> */}
+
                   <div className="info-row">
                     <span className="info-label">Booking Date</span>
                     <span className="info-value">
-                      : {formatBookingDate(bookingDetailsResponse?.bookingDate)}
+                      :{" "}
+                      {formatBookingDateTime(
+                        bookingDetailsResponse?.bookingDate
+                      )}
                     </span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Counter ID</span>
+                    <span className="info-value">: {counterId || "N/A"}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Amount ₹</span>
@@ -677,8 +862,14 @@ export default function BookingDetails() {
                   </div>
                   <div className="info-row">
                     <span className="info-label">Booking ID</span>
-                    <span className="info-value booking-id-value">
+                    <span className="info-value info-id-value">
                       : {bookingId || "N/A"}
+                    </span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Order ID / Trans ID</span>
+                    <span className="info-value info-id-value">
+                      : {orderOrTransId || "N/A"}
                     </span>
                   </div>
                   <div className="info-row">
@@ -687,47 +878,50 @@ export default function BookingDetails() {
                       : {String(transactionStatus || "N/A").toUpperCase()}
                     </span>
                   </div>
+                  <div className="info-row">
+                    <span className="info-label">Payment Type</span>
+                    <span className="info-value">: {paymentType}</span>
+                  </div>
 
                   <div className="section-title">Ticket Summary</div>
-                  {bookingTypeGroups.length > 0 ? (
+                  {adultChildSummaryRows.length > 0 ? (
                     <table className="nzp-summary-table">
                       <thead>
                         <tr>
-                          <th style={{ width: "34%" }}>Sub Facility</th>
-                          <th style={{ width: "40%" }}>Booking Type</th>
-                          <th style={{ width: "26%" }}>Qty</th>
+                          <th style={{ width: "40%" }}>Ticket Type</th>
+                          <th style={{ width: "30%" }}>No. of Adult</th>
+                          <th style={{ width: "30%" }}>No. of Children</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {bookingTypeGroups.map((group) =>
-                          group.items.map((row, itemIndex) => (
-                            <tr key={row.key}>
-                              {itemIndex === 0 && (
-                                <td
-                                  className="label"
-                                  rowSpan={group.items.length}
-                                  style={{
-                                    verticalAlign: "middle",
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  {toTitleCase(group.serviceName) ||
-                                    group.serviceName}
-                                </td>
-                              )}
-                              <td className="label">
-                                {toTitleCase(row.bookingType) ||
-                                  row.bookingType}
-                              </td>
-                              <td className="count">{row.quantity}</td>
-                            </tr>
-                          ))
-                        )}
+                        {adultChildSummaryRows.map((row) => (
+                          <tr key={row.key}>
+                            <td className="label">
+                              {toTitleCase(row.ticketType) || row.ticketType}
+                            </td>
+                            <td className="count">{row.adultCount}</td>
+                            <td className="count">{row.childCount}</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   ) : (
                     <div className="nzp-empty">No booking types available.</div>
                   )}
+
+                  <div className="nzp-terms">
+                    <div className="nzp-terms-title">Terms & Conditions</div>
+                    <ul>
+                      {NZP_TICKET_TERMS.map((term) => (
+                        <li key={term}>
+                          <span aria-hidden="true" className="nzp-term-dot">
+                            •{" "}
+                          </span>
+                          {term}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             ) : (
