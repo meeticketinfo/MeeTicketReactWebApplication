@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -7,11 +6,6 @@ import {
   getStartOfCurrentDay,
 } from "../../../../../../utils/Helper";
 import { useCurrentRefundReportStore } from "../../../../../../store/rtc/CurrentRefundReportStore";
-import { useIntercityMastersStore } from "../../../../../../store/intercity/masters/intercityMastersStore";
-import {
-  CurrentBookingCityBusField,
-  CurrentBookingIntercityBusField,
-} from "../../shared/CurrentBookingReportFilterFields";
 
 const REFUND_STATUS_OPTIONS = [
   { value: "-1", label: "ALL" },
@@ -21,21 +15,22 @@ const REFUND_STATUS_OPTIONS = [
   { value: "3", label: "Failed" },
 ];
 
-const CurrentRefundTransactionsReportForm = ({
-  onIntercityBusChange,
-}) => {
+const TRANSACTION_STATUS_OPTIONS = [
+  { value: "", label: "All" },
+  { value: "INITIATE", label: "Initiate" },
+  { value: "INPROCESS", label: "In Process" },
+  { value: "CONFIRMED", label: "Confirmed" },
+  { value: "FAILED", label: "Failed" },
+];
+
+const CurrentRefundTransactionsReportForm = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     isFetchCurrentRefundTransactionsInnerReport,
     fetchCurrentRefundTransactionsInnerReport,
   } = useCurrentRefundReportStore();
-  const { fetchMavenRoutes, intercityStageNames } = useIntercityMastersStore();
   const startOfDay = getStartOfCurrentDay();
   const endOfDay = getEndOfCurrentDay();
-
-  useEffect(() => {
-    fetchMavenRoutes();
-  }, [fetchMavenRoutes]);
 
   const getRefundStatusFromParams = () => {
     const status =
@@ -47,18 +42,16 @@ const CurrentRefundTransactionsReportForm = ({
   const initialValues = {
     fromDate: cleanString(searchParams.get("fromDate"), "_", ":") || startOfDay,
     toDate: cleanString(searchParams.get("toDate"), "_", ":") || endOfDay,
-    intercityBus: searchParams.get("intercityBus") || "",
     mobileNumber: searchParams.get("mobileNumber") || "",
     pnrNumber: searchParams.get("pnrNumber") || "",
-    paymentMode: searchParams.get("paymentMode") || "",
     refundStatus: getRefundStatusFromParams(),
+    transactionStatus: searchParams.get("transactionStatus") || "",
   };
 
   const onSubmit = (values) => {
-    const { intercityBus, ...reportValues } = values;
     const newSearchParams = new URLSearchParams();
-    Object.keys(reportValues).forEach((key) => {
-      const value = reportValues[key];
+    Object.keys(values).forEach((key) => {
+      const value = values[key];
       if (value !== undefined && value !== null && value !== "") {
         newSearchParams.set(
           key,
@@ -75,11 +68,12 @@ const CurrentRefundTransactionsReportForm = ({
     );
 
     fetchCurrentRefundTransactionsInnerReport({
-      fromDate: reportValues.fromDate,
-      toDate: reportValues.toDate,
-      mobileNumber: reportValues.mobileNumber,
-      pnrNumber: reportValues.pnrNumber || "",
-      refundStatus: reportValues.refundStatus ?? "-1",
+      fromDate: values.fromDate,
+      toDate: values.toDate,
+      mobileNumber: values.mobileNumber,
+      pnrNumber: values.pnrNumber || "",
+      refundStatus: values.refundStatus ?? "-1",
+      transactionStatus: values.transactionStatus || "",
     });
   };
 
@@ -121,11 +115,6 @@ const CurrentRefundTransactionsReportForm = ({
               min={values.fromDate}
             />
           </div>
-          <CurrentBookingCityBusField />
-          <CurrentBookingIntercityBusField
-            intercityStageNames={intercityStageNames}
-            onValueChange={onIntercityBusChange}
-          />
           <div>
             <label
               htmlFor="mobileNumber"
@@ -161,21 +150,6 @@ const CurrentRefundTransactionsReportForm = ({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700">
-              Payment Mode
-            </label>
-            <Field
-              as="select"
-              name="paymentMode"
-              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
-            >
-              <option value="">All</option>
-              <option value="Credit Card">Credit Card</option>
-              <option value="UPI">UPI</option>
-              <option value="Cash">Cash</option>
-            </Field>
-          </div>
-          <div>
             <label
               htmlFor="refundStatus"
               className="block text-xs font-medium text-gray-700"
@@ -189,6 +163,25 @@ const CurrentRefundTransactionsReportForm = ({
             >
               {REFUND_STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Field>
+          </div>
+          <div>
+            <label
+              htmlFor="transactionStatus"
+              className="block text-xs font-medium text-gray-700"
+            >
+              Transaction Status
+            </label>
+            <Field
+              as="select"
+              name="transactionStatus"
+              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
+            >
+              {TRANSACTION_STATUS_OPTIONS.map((option) => (
+                <option key={option.value || "all"} value={option.value}>
                   {option.label}
                 </option>
               ))}

@@ -24,6 +24,8 @@ const getRefundStatusLabel = (status) => {
 
 const buildPostBody = (payload = {}) => {
   const refundStatus = payload?.refundStatus ?? payload?.RefundStatus ?? -1;
+  const transactionStatus =
+    payload?.transactionStatus ?? payload?.TransactionStatus ?? "";
 
   return {
     FromDate: formatDateOnly(payload?.fromDate),
@@ -32,6 +34,8 @@ const buildPostBody = (payload = {}) => {
     PNRNumber: payload?.pnrNumber || "",
     PaymentMode: "ALL",
     RefundStatus: Number(refundStatus),
+    TransactionStatus: transactionStatus || "",
+    PaymentStatus: transactionStatus || "",
   };
 };
 
@@ -128,6 +132,23 @@ export const useCurrentRefundReportStore = create((set) => ({
         reportData = response.data.result.map((item, idx) =>
           mapInnerReportItem(item, idx, {}, response.data.result)
         );
+      }
+
+      const transactionStatus =
+        queryParams?.transactionStatus || queryParams?.TransactionStatus || "";
+      if (transactionStatus) {
+        const selected = String(transactionStatus).trim().toUpperCase();
+        reportData = reportData.filter((item) => {
+          const status = String(
+            item.transactionStatus ||
+              item.PaymentStatusName ||
+              item.PaymentStatus ||
+              ""
+          )
+            .trim()
+            .toUpperCase();
+          return status === selected;
+        });
       }
 
       set({ refundCurrentTransactionsInnerReport: reportData });

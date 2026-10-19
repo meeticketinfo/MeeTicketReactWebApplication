@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import CurrentRefundTransactionsReportForm from "./CurrentRefundTransactionsReportForm";
@@ -15,7 +15,6 @@ import {
 import { useCurrentRefundReportStore } from "../../../../../../store/rtc/CurrentRefundReportStore";
 import { ToastContainer } from "react-toastify";
 import { useCurrentPaymentTransactionStore } from "../../../../../../store/rtc/CurrentPaymentTransactionStore";
-import { filterRecordsByIntercityBus } from "../../shared/CurrentBookingReportFilterFields";
 
 const CurrentRefundTransactionsReport = () => {
   const [searchParams] = useSearchParams();
@@ -23,9 +22,6 @@ const CurrentRefundTransactionsReport = () => {
   const toDate = getEndOfCurrentDay();
   const [InitiatRefundModal, setInitiatRefundModal] = useState(false);
   const [RefundOrderId, setRefundOrderId] = useState("");
-  const [intercityBusFilter, setIntercityBusFilter] = useState(
-    searchParams.get("intercityBus") || ""
-  );
 
   const {
     isFetchCurrentRefundTransactionsInnerReport,
@@ -277,6 +273,7 @@ const CurrentRefundTransactionsReport = () => {
       mobileNumber: searchParams.get("mobileNumber") || "",
       pnrNumber: searchParams.get("pnrNumber") || "",
       refundStatus: getRefundStatusFromParams(),
+      transactionStatus: searchParams.get("transactionStatus") || "",
     });
   };
 
@@ -284,20 +281,11 @@ const CurrentRefundTransactionsReport = () => {
     loadRefundTransactionsReport();
   }, [searchParams]);
 
-  const filteredRefundTransactions = useMemo(
-    () =>
-      filterRecordsByIntercityBus(
-        Array.isArray(refundCurrentTransactionsInnerReport)
-          ? refundCurrentTransactionsInnerReport
-          : [],
-        intercityBusFilter
-      ),
-    [refundCurrentTransactionsInnerReport, intercityBusFilter]
-  );
-
-  const handleIntercityBusChange = (value) => {
-    setIntercityBusFilter(value || "");
-  };
+  const filteredRefundTransactions = Array.isArray(
+    refundCurrentTransactionsInnerReport
+  )
+    ? refundCurrentTransactionsInnerReport
+    : [];
 
   const handleInitiateRefund = async () => {
     try {
@@ -393,11 +381,9 @@ const CurrentRefundTransactionsReport = () => {
         </div>
         <div>
           <ToastContainer />
-          <CurrentRefundTransactionsReportForm
-            onIntercityBusChange={handleIntercityBusChange}
-          />
+          <CurrentRefundTransactionsReportForm />
           <AgGridTable
-            showSearch={false}
+            showSearch={true}
             ExportName="CurrentRefundTransactionReport"
             rowData={filteredRefundTransactions}
             columnDefs={columnDefs}

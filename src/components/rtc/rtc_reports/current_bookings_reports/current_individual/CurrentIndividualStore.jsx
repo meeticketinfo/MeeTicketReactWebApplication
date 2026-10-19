@@ -26,18 +26,29 @@ export const useCurrentIndividualStore = create((set) => ({
         return String(dateStr).split("T")[0];
       };
 
+      const parseStatus = (value, fallback = -1) => {
+        if (value === undefined || value === null || value === "") return fallback;
+        const num = Number(value);
+        return Number.isNaN(num) ? fallback : num;
+      };
+
+      const busTypeRaw = payload?.serviceTypeID || payload?.busType || "";
+      const busTypeAsNumber = Number(busTypeRaw);
+      const serviceTypeID =
+        busTypeRaw !== "" && !Number.isNaN(busTypeAsNumber) ? busTypeAsNumber : 0;
+
       const postBody = {
         ReportType: payload?.reportType || "INDIVIDUAL",
         DateType: dateType,
         FromDate: formatDateOnly(payload?.fromDate),
         ToDate: formatDateOnly(payload?.toDate),
         MobileNo: payload?.mobileNumber || payload?.mobileNo || "",
-        ServiceTypeID: Number(payload?.serviceTypeID || payload?.busType || 0) || 0,
+        ServiceTypeID: serviceTypeID,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
-        PaymentMode: payload?.paymentMode || "",
+        PaymentMode: "",
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.bookingStatus || -1) || -1,
+        BookingStatus: parseStatus(payload?.bookingStatus, -1),
         PNRNumber: payload?.PNRNumber || payload?.pnrNumber || "",
         FromStageID: Number(payload?.fromStageBoardingID || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,
@@ -192,6 +203,17 @@ export const useCurrentIndividualStore = create((set) => ({
       } else if (response?.data?.result) {
         reportData = Array.isArray(response.data.result) ? response.data.result : [];
       }
+
+      if (busTypeRaw && Number.isNaN(Number(busTypeRaw))) {
+        const selected = String(busTypeRaw).trim().toUpperCase();
+        reportData = reportData.filter(
+          (item) =>
+            String(item.busType || item.BusType || item.BusTypeName || "")
+              .trim()
+              .toUpperCase() === selected
+        );
+      }
+
       set({
         CurrentIndividualData: reportData,
       });

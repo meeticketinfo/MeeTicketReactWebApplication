@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../tables/AgGridTable";
 import {
@@ -8,13 +8,9 @@ import {
 } from "../../../../../utils/TypographyHelper";
 import CurrentConsolidatedReportForm from "./CurrentConsolidatedReportForm";
 import { useCurrentConsolidateStore } from "./CurrentConsolidateStore";
-import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 function CurrentConsolidatedList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-consolidated-filters")
-  );
-  const [intercityBusFilter, setIntercityBusFilter] = useState(
-    savedFilters?.intercityBus || ""
   );
   const {
     fetchCurrentConsolidateData,
@@ -29,23 +25,16 @@ function CurrentConsolidatedList() {
       mobileNumber: savedFilters?.mobileNumber ?? "",
       bookingDate: savedFilters?.bookingDate ?? "",
       PNRNumber: savedFilters?.PNRNumber ?? "",
-      paymentMode: savedFilters?.paymentMode ?? "",
       orderId: savedFilters?.orderId ?? "",
       transactionId: savedFilters?.transactionId ?? "",
-      typeOfBus: savedFilters?.typeOfBus ?? "",
+      busType: savedFilters?.busType ?? "",
+      bookingStatus: savedFilters?.bookingStatus ?? "-1",
       departureLocation: savedFilters?.departureLocation ?? "",
       arrivalLocation: savedFilters?.arrivalLocation ?? "",
     });
   }, [fetchCurrentConsolidateData]);
 
-  const filteredConsolidateData = useMemo(
-    () => filterRecordsByIntercityBus(CurrentConsolidateData, intercityBusFilter),
-    [CurrentConsolidateData, intercityBusFilter]
-  );
-
-  const handleIntercityBusChange = (value) => {
-    setIntercityBusFilter(value || "");
-  };
+  const filteredConsolidateData = CurrentConsolidateData || [];
 
   const isTotalRow = (params) =>
     params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
@@ -551,9 +540,7 @@ function CurrentConsolidatedList() {
 
   return (
     <div>
-      <CurrentConsolidatedReportForm
-        onIntercityBusChange={handleIntercityBusChange}
-      />
+      <CurrentConsolidatedReportForm />
       <div>
         {filteredConsolidateData?.length > 0 && (
           <div className="     flex justify-end gap-10 font-semibold">
@@ -574,7 +561,7 @@ function CurrentConsolidatedList() {
         isFetchLoading={isFetchCurrentConsolidateData}
         showTotalCount={true}
         totalCount={filteredConsolidateData?.length || 0}
-        showSearch={false}
+        showSearch={true}
       />
 
       {/* {CurrentConsolidateData?.length > 0 && (
