@@ -20,33 +20,22 @@ const BOOKING_STATUS_OPTIONS = [
   { value: "5", label: "Failed" },
 ];
 
-const getBusTypeOptionValue = (item = {}) =>
-  item.id ??
-  item.busTypesId ??
-  item.BusTypesId ??
-  item.busTypeId ??
-  item.BusTypeID ??
-  item.serviceTypeID ??
-  item.ServiceTypeID ??
-  item.busTypesName ??
-  "";
-
 const CurrentConsolidatedReportForm = () => {
   const [resetTrigger, setResetTrigger] = useState(0);
 
   const { fetchCurrentConsolidateData } = useCurrentConsolidateStore();
   const {
-    fetchIntercityBusTypesData,
-    IntercityBusTypesData,
+    fetchCurrentBusTypes,
+    currentBusTypesData,
     fetchMavenRoutes,
     mavenRoutes,
     departureStages,
   } = useIntercityMastersStore();
 
   useEffect(() => {
-    fetchIntercityBusTypesData();
+    fetchCurrentBusTypes();
     fetchMavenRoutes();
-  }, [fetchIntercityBusTypesData, fetchMavenRoutes]);
+  }, [fetchCurrentBusTypes, fetchMavenRoutes]);
 
   const initialValues = {
     purchaseOrBooking: "Purchase",
@@ -183,16 +172,14 @@ const CurrentConsolidatedReportForm = () => {
                   className="mt-1 block w-full px-2 py-1 border uppercase border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 >
                   <option value="">All</option>
-                  {IntercityBusTypesData?.filter((item) => item.isActive).map(
-                    (item) => {
-                      const value = getBusTypeOptionValue(item);
-                      return (
-                        <option key={value || item.busTypesName} value={value}>
-                          {item.busTypesName}
-                        </option>
-                      );
-                    }
-                  )}
+                  {currentBusTypesData?.map((item) => (
+                    <option
+                      key={item.serviceCategory}
+                      value={item.serviceCategory}
+                    >
+                      {item.serviceCategory}
+                    </option>
+                  ))}
                 </Field>
               </div>
               <div>

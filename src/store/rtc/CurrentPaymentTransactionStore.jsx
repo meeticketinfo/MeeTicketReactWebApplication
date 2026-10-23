@@ -27,6 +27,17 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         return String(dateStr).split("T")[0];
       };
 
+      // Payment Status dropdown → PaymentMode (All/empty = "")
+      const paymentMode = String(
+        payload?.paymentStatus || payload?.paymentMode || ""
+      ).trim();
+
+      const parseStatus = (value, fallback = -1) => {
+        if (value === undefined || value === null || value === "") return fallback;
+        const num = Number(value);
+        return Number.isNaN(num) ? fallback : num;
+      };
+
       const postBody = {
         ReportType: payload?.reportType || "TRANSACTION",
         DateType: dateType,
@@ -35,10 +46,10 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         MobileNo: payload?.phoneNumber || payload?.mobileNumber || payload?.MobileNo || "",
         ServiceTypeID: Number(payload?.serviceTypeID || 0) || 0,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
-        PaymentMode: payload?.paymentMode || "",
+        PaymentMode: paymentMode,
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.paymentStatus || payload?.bookingStatus || -1) || -1,
+        BookingStatus: parseStatus(payload?.bookingStatus, -1),
         PNRNumber: payload?.pnrNumber || payload?.PNRNumber || "",
         FromStageID: Number(payload?.fromStageBoardingID || payload?.destinationLocation || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,

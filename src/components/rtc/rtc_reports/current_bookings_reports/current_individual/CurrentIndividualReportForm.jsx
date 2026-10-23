@@ -10,17 +10,6 @@ import {
   getStageIdsFromSelection,
 } from "../shared/CurrentBookingReportFilterFields";
 
-const getBusTypeOptionValue = (item = {}) =>
-  item.id ??
-  item.busTypesId ??
-  item.BusTypesId ??
-  item.busTypeId ??
-  item.BusTypeID ??
-  item.serviceTypeID ??
-  item.ServiceTypeID ??
-  item.busTypesName ??
-  "";
-
 const CurrentIndividualReportForm = () => {
   const savedFilters = useMemo(() => {
     try {
@@ -31,8 +20,8 @@ const CurrentIndividualReportForm = () => {
   }, []);
   const { fetchCurrentIndividualData } = useCurrentIndividualStore();
   const {
-    fetchIntercityBusTypesData,
-    IntercityBusTypesData,
+    fetchCurrentBusTypes,
+    currentBusTypesData,
     fetchMavenRoutes,
     mavenRoutes,
     departureStages,
@@ -40,9 +29,9 @@ const CurrentIndividualReportForm = () => {
   const [resetTrigger, setResetTrigger] = useState(0);
 
   useEffect(() => {
-    fetchIntercityBusTypesData();
+    fetchCurrentBusTypes();
     fetchMavenRoutes();
-  }, [fetchIntercityBusTypesData, fetchMavenRoutes]);
+  }, [fetchCurrentBusTypes, fetchMavenRoutes]);
 
   const initialValues = {
     fromDate: savedFilters?.fromDate ? savedFilters.fromDate : getCurrentDate(),
@@ -172,16 +161,14 @@ const CurrentIndividualReportForm = () => {
                   className="mt-1 block w-full px-2 py-1 uppercase border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white text-sm"
                 >
                   <option value="">All</option>
-                  {IntercityBusTypesData?.filter((item) => item.isActive).map(
-                    (item) => {
-                      const value = getBusTypeOptionValue(item);
-                      return (
-                        <option key={value || item.busTypesName} value={value}>
-                          {item.busTypesName}
-                        </option>
-                      );
-                    }
-                  )}
+                  {currentBusTypesData?.map((item) => (
+                    <option
+                      key={item.serviceCategory}
+                      value={item.serviceCategory}
+                    >
+                      {item.serviceCategory}
+                    </option>
+                  ))}
                 </Field>
               </div>
               <div>

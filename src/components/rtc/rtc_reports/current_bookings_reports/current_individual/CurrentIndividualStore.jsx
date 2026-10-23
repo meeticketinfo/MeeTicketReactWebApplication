@@ -32,10 +32,14 @@ export const useCurrentIndividualStore = create((set) => ({
         return Number.isNaN(num) ? fallback : num;
       };
 
-      const busTypeRaw = payload?.serviceTypeID || payload?.busType || "";
-      const busTypeAsNumber = Number(busTypeRaw);
-      const serviceTypeID =
-        busTypeRaw !== "" && !Number.isNaN(busTypeAsNumber) ? busTypeAsNumber : 0;
+      // Bus Type dropdown value → serviceCategory (All = "")
+      const serviceCategory = String(
+        payload?.serviceCategory ||
+          payload?.ServiceCategory ||
+          payload?.busType ||
+          payload?.typeOfBus ||
+          ""
+      ).trim();
 
       const postBody = {
         ReportType: payload?.reportType || "INDIVIDUAL",
@@ -43,7 +47,8 @@ export const useCurrentIndividualStore = create((set) => ({
         FromDate: formatDateOnly(payload?.fromDate),
         ToDate: formatDateOnly(payload?.toDate),
         MobileNo: payload?.mobileNumber || payload?.mobileNo || "",
-        ServiceTypeID: serviceTypeID,
+        // ServiceTypeID: 0,
+        ServiceCategory: serviceCategory,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
         PaymentMode: "",
         OrderID: payload?.orderId || payload?.OrderID || "",
@@ -202,16 +207,6 @@ export const useCurrentIndividualStore = create((set) => ({
         reportData = response.data;
       } else if (response?.data?.result) {
         reportData = Array.isArray(response.data.result) ? response.data.result : [];
-      }
-
-      if (busTypeRaw && Number.isNaN(Number(busTypeRaw))) {
-        const selected = String(busTypeRaw).trim().toUpperCase();
-        reportData = reportData.filter(
-          (item) =>
-            String(item.busType || item.BusType || item.BusTypeName || "")
-              .trim()
-              .toUpperCase() === selected
-        );
       }
 
       set({
