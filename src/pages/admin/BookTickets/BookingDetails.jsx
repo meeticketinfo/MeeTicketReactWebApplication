@@ -162,7 +162,7 @@ export default function BookingDetails() {
     bookingDetailsResponse?.address ||
     "Hyderabad - Telangana";
 
-  const BookedByCounterName = bookingDetailsResponse?.BookedByCounterName|| "N/A";
+  const BookedByCounterName = bookingDetailsResponse?.bookedByCounterName|| "N/A";
 
   // Booking ID – current API fields
   const bookingId =
@@ -172,16 +172,14 @@ export default function BookingDetails() {
     "N/A";
 
   // Order ID / Trans ID – separate field; not in API yet, will come later
-  const orderOrTransId = bookingDetailsResponse?.OrderId || "N/A";
+  const orderOrTransId = bookingDetailsResponse?.orderId || "N/A";
 
   const transactionStatus =
     bookingDetailsResponse?.transactionStatus ||
     bookingDetailsResponse?.TransactionStatus ||
     "SUCCESS";
 
-  const paymentType = normalizePaymentType(
-    bookingDetailsResponse?.PaymentType || "N/A"
-  );
+  const paymentType = bookingDetailsResponse?.paymentType || "N/A";
 
   const totalAmount =
     bookingDetailsResponse?.totalAmount ??
