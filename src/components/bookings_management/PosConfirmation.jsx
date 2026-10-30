@@ -65,6 +65,11 @@ const PosConfirmation = () => {
     CheckPosTsxStatus,
     Generate_deep_link_data,
     CheckPosTsxStatusData,
+    setPosIndividualNAvigate,
+    setPosPaymentTransactionNAvigate,
+    setisCompletedZooCounterBookings,
+    setPaymentTransactionNAvigate,
+    setisCompleteBookings,
   } = useBookingsStore();
 
   const { roleDetails } = useAuthStore();
@@ -135,7 +140,14 @@ const PosConfirmation = () => {
             }, 1000);
             const newBookingId = result?.data?.data?.data;
 
-            navigate(`/entity-bookings/view-details/${newBookingId}`);
+            setPosIndividualNAvigate(false);
+            setPosPaymentTransactionNAvigate(false);
+            setisCompletedZooCounterBookings(false);
+            setPaymentTransactionNAvigate(false);
+            setisCompleteBookings(false);
+            navigate(`/entity-bookings/view-details/${newBookingId}`, {
+              state: { fromBookingFlow: true },
+            });
           } else {
             toast.error("Unexpected response from the server.");
             setIsPosTransactionFailed(true);

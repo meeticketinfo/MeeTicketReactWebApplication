@@ -67,6 +67,7 @@ import StudentPass from "../components/rtc/rtc_reports/student_pass/StudentPass"
 import PendingPassesReport from "../components/rtc/rtc_reports/pending_passes/PendingPassesReport";
 import DashBoardDetailed from "../pages/DashBoardDetailed/DashBoardDetailed";
 import PosConfirmation from "../components/bookings_management/PosConfirmation";
+import BookingSummaryPreview from "../components/bookings_management/BookingSummaryPreview";
 import DayWiseBookings from "../pages/admin/BookTickets/DayWiseBookings";
 import ApplicationDayWiseBookings from "../pages/admin/BookTickets/ApplicationDayWiseBookings";
 import UserTransactionReport from "../components/payments_management/UserTransactionReport";
@@ -348,6 +349,10 @@ export const routes = [
   { path: "/facility-holidays", element: <ProtectedRoute element={<MainFacilityHoliday />} /> },
   { path: "/entity-bookings", element: <BookTickets /> },
   { path: "/book-tickets", element: <CustomBookTickets /> },
+  {
+    path: "/entity-bookings/booking-summary",
+    element: <ProtectedRoute element={<BookingSummaryPreview />} />,
+  },
   {
     path: "/facility-bookings",
     element: <ProtectedRoute element={<FacilityBookings />} />,

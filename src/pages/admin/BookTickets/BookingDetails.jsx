@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { useBookingsStore } from "../../../store/masters/bookingsStore";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { handleApiError } from "../../../utils/apiErrorHandler";
 import QRCodeDisplay from "./QrCodeDisplay";
@@ -10,6 +10,8 @@ import { PaymentQR } from "./PaymentQR";
 import Logo from "../../../images/MeeTicketLogo.svg";
 import TransactionProcessingLoader from "../../../components/bookings_management/TransactionProcessingLoader";
 import useAuthStore from "../../../store/authStore";
+import { clearTestZooParkBookingDraft } from "../../../components/bookings_management/testZooParkBookingDraft";
+import { useQuantitiesStore } from "../../../store/quantitiesStore";
 
 const normalizeText = (value) => String(value || "").trim();
 
@@ -91,6 +93,8 @@ const groupBookingRowsBySubFacility = (rows = []) => {
 
 export default function BookingDetails() {
   const { id } = useParams();
+  const location = useLocation();
+  const fromBookingFlow = Boolean(location.state?.fromBookingFlow);
   const [bookingDetails, setBookingDetails] = useState(null);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
 
@@ -105,10 +109,28 @@ export default function BookingDetails() {
     PaymentTransactionNAvigate,
     PosIndividualNAvigate,
     setPaymentStatus,
+    setPosIndividualNAvigate,
+    setPosPaymentTransactionNAvigate,
+    setisCompletedZooCounterBookings,
+    setPaymentTransactionNAvigate,
+    setisCompleteBookings,
+    setIsBookingFormVisible,
   } = useBookingsStore();
+  const { setQuantities } = useQuantitiesStore();
 
   const { roleDetails, decodedTokenData } = useAuthStore();
   const role = roleDetails?.name;
+
+  // After a fresh booking, ignore leftover report-nav flags so Back returns
+  // to Book Tickets instead of Individual Booking Details.
+  useEffect(() => {
+    if (!fromBookingFlow) return;
+    setPosIndividualNAvigate(false);
+    setPosPaymentTransactionNAvigate(false);
+    setisCompletedZooCounterBookings(false);
+    setPaymentTransactionNAvigate(false);
+    setisCompleteBookings(false);
+  }, [fromBookingFlow]);
 
   useEffect(() => {
     fetchQRsForBooking(id);
@@ -455,20 +477,24 @@ export default function BookingDetails() {
     });
   };
 
-  const backLink =
-    PosIndividualNAvigate
+  // Clean Book Tickets page (no Individual Booking Details title / Back).
+  const bookTicketsPath = "/book-tickets";
+  const reportOrBookTicketsPath =
+    role === "ROLE_ZOOPARKADMIN" ? "/book-tickets" : "/entity-bookings";
+
+  const backLink = fromBookingFlow
+    ? bookTicketsPath
+    : PosIndividualNAvigate
       ? "/pos-individual-booking-reports"
       : PosPaymentTransactionNAvigate
-      ? "/pos-payment-transactions-reports"
-      : isCompletedZooCounterBookings
-      ? "/pos-consolidated-booking-reports"
-      : PaymentTransactionNAvigate
-      ? "/payment-transaction-report"
-      : isCompleteBookings
-      ? "/completed-bookings"
-      : role === "ROLE_ZOOPARKADMIN"
-      ? "/book-tickets"
-      : "/entity-bookings";
+        ? "/pos-payment-transactions-reports"
+        : isCompletedZooCounterBookings
+          ? "/pos-consolidated-booking-reports"
+          : PaymentTransactionNAvigate
+            ? "/payment-transaction-report"
+            : isCompleteBookings
+              ? "/completed-bookings"
+              : reportOrBookTicketsPath;
 
   return (
     <AdminLayout>
@@ -601,6 +627,16 @@ export default function BookingDetails() {
                   setPaymentStatus({});
                   setCheckPosTsxStatusData([]);
                   sessionStorage.removeItem("bookingPayload");
+                  if (fromBookingFlow || backLink === bookTicketsPath) {
+                    setPosIndividualNAvigate(false);
+                    setPosPaymentTransactionNAvigate(false);
+                    setisCompletedZooCounterBookings(false);
+                    setPaymentTransactionNAvigate(false);
+                    setisCompleteBookings(false);
+                    setIsBookingFormVisible(false);
+                    setQuantities({});
+                    clearTestZooParkBookingDraft();
+                  }
                 }}
                 className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"
               >
