@@ -6,7 +6,7 @@ import HouseCounter from "./HouseCounter";
 import BookingSummary from "./BookingSummary";
 import ContinueButton from "./ContinueButton";
 
-const MAX_STAY_DAYS = 30;
+const BOOKING_WINDOW_DAYS = 365; // 12 months
 
 // Main Booking Form Component
 export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPackagesLoading, fromDate, toDate }) => {
@@ -75,19 +75,22 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
 
   const calendarData = GetCalendar || [];
 
+  const getLocalDateString = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const availableDatesMapWithFallback = calendarData.reduce((acc, item) => {
     let normalizedDate;
-    if (typeof item.date === 'string') {
-      if (item.date.includes('T')) {
-        normalizedDate = item.date.split('T')[0];
-      } else {
-        normalizedDate = item.date;
-      }
+    if (typeof item.date === "string" && /^\d{4}-\d{2}-\d{2}/.test(item.date)) {
+      // Use YYYY-MM-DD prefix to avoid timezone shift from ISO timestamps
+      normalizedDate = item.date.slice(0, 10);
     } else if (item.date instanceof Date) {
       normalizedDate = getLocalDateString(item.date);
     } else {
-      const date = new Date(item.date);
-      normalizedDate = getLocalDateString(date);
+      normalizedDate = getLocalDateString(new Date(item.date));
     }
 
     acc[normalizedDate] = {
@@ -96,17 +99,38 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
       amountAfterDiscount: item.amountAfterDiscount,
       discountPercent: item.discountPercent,
       isBlockedOut: item.isBlockedOut,
-      roomLimit: item.roomLimit
+      roomLimit: item.roomLimit,
     };
     return acc;
   }, {});
 
-  const getLocalDateString = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const getToday = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
   };
+
+  /** Max selectable date = last date from 365days calendar API (fallback: today + 365) */
+  const getBookingMaxDate = () => {
+    let maxDate = null;
+    Object.keys(availableDatesMapWithFallback).forEach((dateKey) => {
+      const d = new Date(`${dateKey}T00:00:00`);
+      if (!Number.isNaN(d.getTime()) && (!maxDate || d > maxDate)) {
+        maxDate = d;
+      }
+    });
+
+    if (!maxDate) {
+      maxDate = getToday();
+      maxDate.setDate(maxDate.getDate() + BOOKING_WINDOW_DAYS);
+    }
+
+    maxDate.setHours(23, 59, 59, 999);
+    return maxDate;
+  };
+
+  const bookingMinDate = getToday();
+  const bookingMaxDate = getBookingMaxDate();
 
   // Calculate pricing breakdown
   const calculatePricing = (checkInDate, checkOutDate, count, persons = selectedPersons) => {
@@ -337,40 +361,69 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
     );
   };
 
-  const getMaxCheckoutDate = (checkInDate) => {
-    const maxDate = new Date(checkInDate);
-    maxDate.setDate(maxDate.getDate() + MAX_STAY_DAYS);
-    maxDate.setHours(23, 59, 59, 999);
-    return maxDate;
-  };
-
   const filterDate = (date) => {
+    if (date < bookingMinDate || date > bookingMaxDate) {
+      return false;
+    }
+
     const dateString = getLocalDateString(date);
-    const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
+    const isAvailable =
+      availableDatesMapWithFallback[dateString] &&
+      availableDatesMapWithFallback[dateString].housesLeft > 0;
 
     if (calendarData && calendarData.length > 0) {
       return isAvailable;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date >= today;
+    return true;
   };
 
+  // Checkout can be any day after check-in, within calendar window,
+  // as long as every night from check-in up to (checkout - 1) is available.
   const filterCheckoutDate = (date) => {
-    if (date <= startDate) {
+    if (!startDate || date <= startDate) {
       return false;
     }
 
-    if (date > getMaxCheckoutDate(startDate)) {
+    // Allow checkout on the day after the last calendar night
+    const latestCheckout = new Date(bookingMaxDate);
+    latestCheckout.setDate(latestCheckout.getDate() + 1);
+    latestCheckout.setHours(23, 59, 59, 999);
+    if (date > latestCheckout) {
       return false;
     }
 
-    const dateString = getLocalDateString(date);
-    const isAvailable = availableDatesMapWithFallback[dateString] && availableDatesMapWithFallback[dateString].housesLeft > 0;
+    const cursor = new Date(startDate);
+    cursor.setHours(0, 0, 0, 0);
+    const checkout = new Date(date);
+    checkout.setHours(0, 0, 0, 0);
 
-    return isAvailable;
+    while (cursor < checkout) {
+      const dateString = getLocalDateString(cursor);
+      const dayData = availableDatesMapWithFallback[dateString];
+      if (!dayData || !(dayData.housesLeft > 0)) {
+        return false;
+      }
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    return true;
   };
+
+  const checkoutMinDate = (() => {
+    if (!startDate) return bookingMinDate;
+    const nextDay = new Date(startDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    nextDay.setHours(0, 0, 0, 0);
+    return nextDay;
+  })();
+
+  const checkoutMaxDate = (() => {
+    const latestCheckout = new Date(bookingMaxDate);
+    latestCheckout.setDate(latestCheckout.getDate() + 1);
+    latestCheckout.setHours(23, 59, 59, 999);
+    return latestCheckout;
+  })();
 
   useEffect(() => {
     if (!isCalendarLoading && house && startDate && endDate) {
@@ -396,6 +449,8 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           isDateAvailable={isDateAvailable}
           startDate={startDate}
           endDate={endDate}
+          minDate={bookingMinDate}
+          maxDate={bookingMaxDate}
           selectsStart
           isCheckout={false}
         />
@@ -411,6 +466,8 @@ export const BookingForm = ({ packageId, houseId, house, userPackage, isUserPack
           isDateAvailable={isDateAvailable}
           startDate={startDate}
           endDate={endDate}
+          minDate={checkoutMinDate}
+          maxDate={checkoutMaxDate}
           selectsEnd
           isCheckout
         />

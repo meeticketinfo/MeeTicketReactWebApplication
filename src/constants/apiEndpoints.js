@@ -539,7 +539,7 @@ export const API_ENDPOINTS = {
       GET_ROOMS_BY_PACKAGE_ID: `${AMRABAD_API_BASE_URL}WebBooking/GetAllPackageRoomsByPackageId`,
       GET_PACKAGE_DETAIL: `${AMRABAD_API_BASE_URL}MobileApplication/GetPackageDetails`,
       GET_CART_ITEMS: `${AMRABAD_API_BASE_URL}WebBooking/GetAllCartDetails`,
-      GET_CALENDAR: `${AMRABAD_API_BASE_URL}WebBooking/GetCalendar/30days`,
+      GET_CALENDAR: `${AMRABAD_API_BASE_URL}WebBooking/GetCalendar/365days`,
       GET_USER_BOOKING_HISTORY: `${AMRABAD_API_BASE_URL}WebBooking/GetBookingHistory`,
       ADD_TO_CART: `${AMRABAD_API_BASE_URL}WebBooking/AddToCart`,
       REMOVE_FROM_CART: `${AMRABAD_API_BASE_URL}WebBooking/DeleteCartItem`,
