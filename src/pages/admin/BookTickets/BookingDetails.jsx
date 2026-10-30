@@ -162,18 +162,7 @@ export default function BookingDetails() {
     bookingDetailsResponse?.address ||
     "Hyderabad - Telangana";
 
-  const counterId =
-    bookingDetailsResponse?.counterId ||
-    bookingDetailsResponse?.counterName ||
-    bookingDetailsResponse?.CounterId ||
-    bookingDetailsResponse?.CounterName ||
-    bookingDetailsResponse?.createdBy ||
-    bookingDetailsResponse?.createD_BY ||
-    bookingDetailsResponse?.bookedBy ||
-    bookingDetailsResponse?.deskName ||
-    decodedTokenData?.data?.UserName ||
-    decodedTokenData?.data?.CounterName ||
-    "N/A";
+  const BookedByCounterName = bookingDetailsResponse?.BookedByCounterName|| "N/A";
 
   // Booking ID – current API fields
   const bookingId =
@@ -183,30 +172,15 @@ export default function BookingDetails() {
     "N/A";
 
   // Order ID / Trans ID – separate field; not in API yet, will come later
-  const orderOrTransId =
-    bookingDetailsResponse?.orderId ||
-    bookingDetailsResponse?.OrderId ||
-    bookingDetailsResponse?.transactionId ||
-    bookingDetailsResponse?.TransactionId ||
-    bookingDetailsResponse?.posOrderId ||
-    bookingDetailsResponse?.transId ||
-    bookingDetailsResponse?.TransId ||
-    "N/A";
+  const orderOrTransId = bookingDetailsResponse?.OrderId || "N/A";
 
   const transactionStatus =
     bookingDetailsResponse?.transactionStatus ||
     bookingDetailsResponse?.TransactionStatus ||
-    bookingDetailsResponse?.paymentStatus ||
-    bookingDetailsResponse?.PaymentStatus ||
-    bookingDetailsResponse?.status ||
     "SUCCESS";
 
   const paymentType = normalizePaymentType(
-    bookingDetailsResponse?.paymentType ||
-      bookingDetailsResponse?.PaymentType ||
-      bookingDetailsResponse?.paymentMode ||
-      bookingDetailsResponse?.PaymentMode ||
-      bookingDetailsResponse?.payMode
+    bookingDetailsResponse?.PaymentType || "N/A"
   );
 
   const totalAmount =
@@ -848,8 +822,8 @@ export default function BookingDetails() {
                     </span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Counter ID</span>
-                    <span className="info-value">: {counterId || "N/A"}</span>
+                    <span className="info-label">Counter</span>
+                    <span className="info-value">: {BookedByCounterName || "N/A"}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Amount ₹</span>
