@@ -174,10 +174,10 @@ const CurrentConsolidatedReportForm = () => {
                   <option value="">All</option>
                   {currentBusTypesData?.map((item) => (
                     <option
-                      key={item.serviceCategory}
-                      value={item.serviceCategory}
+                      key={item.serviceTypeID || item.serviceName}
+                      value={item.serviceTypeID}
                     >
-                      {item.serviceCategory}
+                      {item.serviceName || item.serviceCategory}
                     </option>
                   ))}
                 </Field>

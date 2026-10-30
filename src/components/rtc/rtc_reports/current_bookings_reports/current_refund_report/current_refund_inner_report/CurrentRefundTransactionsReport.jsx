@@ -228,7 +228,7 @@ const CurrentRefundTransactionsReport = () => {
       },
     },
     {
-      field: "transactionStatus",
+      field: "TransactionStatus",
       headerName: "TRANSACTION STATUS",
       maxWidth: "230",
       headerClass: "text-blue-v2",

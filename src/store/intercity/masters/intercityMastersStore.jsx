@@ -120,14 +120,36 @@ export const useIntercityMastersStore = create((set) => ({
           (item) =>
             item.IsActive !== false &&
             item.isActive !== false &&
-            (item.ServiceCategory || item.serviceCategory)
+            (item.ServiceTypeID != null ||
+              item.serviceTypeID != null ||
+              item.ServiceName ||
+              item.serviceName ||
+              item.ServiceCategory ||
+              item.serviceCategory)
         )
         .map((item) => ({
-          serviceCategory: item.ServiceCategory || item.serviceCategory || "",
+          serviceTypeID: Number(
+            item.ServiceTypeID ?? item.serviceTypeID ?? 0
+          ),
+          serviceCode: item.ServiceCode || item.serviceCode || "",
+          serviceName:
+            item.ServiceName ||
+            item.serviceName ||
+            item.ServiceCategory ||
+            item.serviceCategory ||
+            "",
+          // Keep legacy key so older UI still works if needed
+          serviceCategory:
+            item.ServiceName ||
+            item.serviceName ||
+            item.ServiceCategory ||
+            item.serviceCategory ||
+            "",
           isActive: item.IsActive ?? item.isActive ?? true,
         }))
+        .filter((item) => item.serviceTypeID > 0 || item.serviceName)
         .sort((a, b) =>
-          (a.serviceCategory || "").localeCompare(b.serviceCategory || "")
+          (a.serviceName || "").localeCompare(b.serviceName || "")
         );
 
       set({ currentBusTypesData });

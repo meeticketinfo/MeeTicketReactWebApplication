@@ -27,16 +27,18 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         return String(dateStr).split("T")[0];
       };
 
-      // Payment Status dropdown → PaymentMode (All/empty = "")
-      const paymentMode = String(
-        payload?.paymentStatus || payload?.paymentMode || ""
-      ).trim();
-
       const parseStatus = (value, fallback = -1) => {
         if (value === undefined || value === null || value === "") return fallback;
         const num = Number(value);
         return Number.isNaN(num) ? fallback : num;
       };
+
+      // Payment Status dropdown → PaymentStatus
+      // 0 Pending, 1 Paid, 2 Failed, 3 Refunded, 4 Partially Refunded (All = -1)
+      const paymentStatus = parseStatus(
+        payload?.paymentStatus ?? payload?.PaymentStatus,
+        -1
+      );
 
       const postBody = {
         ReportType: payload?.reportType || "TRANSACTION",
@@ -46,7 +48,8 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         MobileNo: payload?.phoneNumber || payload?.mobileNumber || payload?.MobileNo || "",
         ServiceTypeID: Number(payload?.serviceTypeID || 0) || 0,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
-        PaymentMode: paymentMode,
+        PaymentMode: "",
+        PaymentStatus: paymentStatus,
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
         BookingStatus: parseStatus(payload?.bookingStatus, -1),

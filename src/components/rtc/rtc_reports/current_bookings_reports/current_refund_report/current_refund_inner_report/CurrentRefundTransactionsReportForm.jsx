@@ -16,11 +16,13 @@ const REFUND_STATUS_OPTIONS = [
 ];
 
 const TRANSACTION_STATUS_OPTIONS = [
-  { value: "", label: "All" },
-  { value: "INITIATE", label: "Initiate" },
-  { value: "INPROCESS", label: "In Process" },
-  { value: "CONFIRMED", label: "Confirmed" },
-  { value: "FAILED", label: "Failed" },
+  { value: "-1", label: "All" },
+  { value: "0", label: "PENDING" },
+  { value: "1", label: "CONFIRMED" },
+  { value: "2", label: "USED" },
+  { value: "3", label: "EXPIRED" },
+  { value: "4", label: "CANCELLED" },
+  { value: "5", label: "FAILED" },
 ];
 
 const CurrentRefundTransactionsReportForm = () => {

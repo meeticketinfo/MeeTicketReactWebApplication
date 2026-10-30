@@ -32,14 +32,14 @@ export const useCurrentConsolidateStore = create((set) => ({
         return Number.isNaN(num) ? fallback : num;
       };
 
-      // Bus Type dropdown value → serviceCategory (All = "")
-      const serviceCategory = String(
-        payload?.serviceCategory ||
-          payload?.ServiceCategory ||
-          payload?.busType ||
-          payload?.typeOfBus ||
-          ""
-      ).trim();
+      // Bus Type dropdown value → ServiceTypeID (All / empty = 0)
+      const serviceTypeID =
+        Number(
+          payload?.serviceTypeID ??
+            payload?.ServiceTypeID ??
+            payload?.busType ??
+            0
+        ) || 0;
 
       const postBody = {
         ReportType: payload?.reportType || "CONSOLIDATED",
@@ -47,8 +47,7 @@ export const useCurrentConsolidateStore = create((set) => ({
         FromDate: formatDateOnly(payload?.fromDate),
         ToDate: formatDateOnly(payload?.toDate),
         MobileNo: payload?.mobileNumber || payload?.mobileNo || "",
-        // ServiceTypeID: 0,
-        ServiceCategory: serviceCategory,
+        ServiceTypeID: serviceTypeID,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
         PaymentMode: "",
         OrderID: payload?.orderId || payload?.OrderID || "",

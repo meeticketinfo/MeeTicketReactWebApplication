@@ -16,16 +16,34 @@ const REFUND_STATUS_LABELS = {
   3: "Failed",
 };
 
+const TRANSACTION_STATUS_LABELS = {
+  0: "PENDING",
+  1: "CONFIRMED",
+  2: "USED",
+  3: "EXPIRED",
+  4: "CANCELLED",
+  5: "FAILED",
+};
+
 const getRefundStatusLabel = (status) => {
   if (status === null || status === undefined || status === "") return "N/A";
   const key = Number(status);
   return REFUND_STATUS_LABELS[key] ?? String(status);
 };
 
+const parseStatus = (value, fallback = -1) => {
+  if (value === undefined || value === null || value === "") return fallback;
+  const num = Number(value);
+  return Number.isNaN(num) ? fallback : num;
+};
+
 const buildPostBody = (payload = {}) => {
   const refundStatus = payload?.refundStatus ?? payload?.RefundStatus ?? -1;
-  const transactionStatus =
-    payload?.transactionStatus ?? payload?.TransactionStatus ?? "";
+  // Transaction Status: 0 PENDING … 5 FAILED (All / empty = -1)
+  const transactionStatus = parseStatus(
+    payload?.transactionStatus ?? payload?.TransactionStatus,
+    -1
+  );
 
   return {
     FromDate: formatDateOnly(payload?.fromDate),
@@ -34,8 +52,8 @@ const buildPostBody = (payload = {}) => {
     PNRNumber: payload?.pnrNumber || "",
     PaymentMode: "ALL",
     RefundStatus: Number(refundStatus),
-    TransactionStatus: transactionStatus || "",
-    PaymentStatus: transactionStatus || "",
+    TransactionStatus: transactionStatus,
+    PaymentStatus: -1,
   };
 };
 
@@ -135,19 +153,36 @@ export const useCurrentRefundReportStore = create((set) => ({
       }
 
       const transactionStatus =
-        queryParams?.transactionStatus || queryParams?.TransactionStatus || "";
-      if (transactionStatus) {
-        const selected = String(transactionStatus).trim().toUpperCase();
+        queryParams?.transactionStatus ?? queryParams?.TransactionStatus ?? "";
+      if (
+        transactionStatus !== "" &&
+        transactionStatus !== null &&
+        transactionStatus !== undefined &&
+        String(transactionStatus) !== "-1"
+      ) {
+        const selectedNum = Number(transactionStatus);
+        const selectedLabel = (
+          TRANSACTION_STATUS_LABELS[selectedNum] || String(transactionStatus)
+        ).toUpperCase();
         reportData = reportData.filter((item) => {
+          const raw =
+            item.BookingStatus ??
+            item.TransactionStatus ??
+            item.PaymentStatus ??
+            item.transactionStatus ??
+            "";
+          const rawNum = Number(raw);
+          if (!Number.isNaN(rawNum) && rawNum === selectedNum) return true;
           const status = String(
             item.transactionStatus ||
               item.PaymentStatusName ||
-              item.PaymentStatus ||
+              item.BookingStatusName ||
+              raw ||
               ""
           )
             .trim()
             .toUpperCase();
-          return status === selected;
+          return status === selectedLabel || status === String(selectedNum);
         });
       }
 
