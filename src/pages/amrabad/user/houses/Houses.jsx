@@ -41,10 +41,10 @@ const Houses = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Get max date (3 days from fromDate)
+  // Get max date (365 days / 12 months from fromDate)
   const getMaxDateString = (dateString) => {
     const date = new Date(dateString);
-    date.setDate(date.getDate() + 3);
+    date.setDate(date.getDate() + 365);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -139,6 +139,7 @@ const Houses = () => {
                 <input
                   type="date"
                   min={getCurrentDateString()}
+                  max={getMaxDateString(getCurrentDateString())}
                   value={fromDate}
                   onChange={(e) => {
                     setFromDate(e.target.value);
@@ -154,7 +155,7 @@ const Houses = () => {
                 <input
                   type="date"
                   min={fromDate ? getNextDayString(fromDate) : getCurrentDateString()}
-                  max={fromDate ? getMaxDateString(fromDate) : ""}
+                  max={fromDate ? getMaxDateString(fromDate) : getMaxDateString(getCurrentDateString())}
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
                   className="px-3 py-2 border-none shadow-md rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#304A3A] focus:border-transparent"

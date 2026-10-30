@@ -12,6 +12,8 @@ const DatePickerField = ({
   isDateAvailable,
   startDate,
   endDate,
+  minDate,
+  maxDate,
   isCheckout = false,
   inline = false,
   selectsStart = false,
@@ -109,6 +111,8 @@ const DatePickerField = ({
             filterDate={filterDate}
             renderDayContents={renderDayContents}
             placeholderText={placeholderText}
+            minDate={minDate}
+            maxDate={maxDate}
             showDisabledMonthNavigation
             calendarStartDay={0}
             formatWeekDay={(name) => name.slice(0, 3).toUpperCase()}
