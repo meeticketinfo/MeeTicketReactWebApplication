@@ -88,6 +88,80 @@ export const useIntercityMastersStore = create((set) => ({
       });
     }
   },
+  // Current booking bus types (GetAllBusTypes)
+  currentBusTypesData: [],
+  isFetchCurrentBusTypes: false,
+  fetchCurrentBusTypes: async () => {
+    set({ isFetchCurrentBusTypes: true });
+    try {
+      const response = await apiService.get(
+        API_ENDPOINTS.REPORTS.RTC_REPORTS.CURRENT_BOOKINGS_REPORTS.GET_ALL_BUS_TYPES,
+        {},
+        { token: "AmxsG7zkJB", Accept: "application/json" }
+      );
+
+      let busTypesList = [];
+      if (response?.data?.Data != null) {
+        const parsed =
+          typeof response.data.Data === "string"
+            ? JSON.parse(response.data.Data)
+            : response.data.Data;
+        busTypesList = Array.isArray(parsed)
+          ? parsed
+          : parsed?.Table || parsed?.table || [];
+      } else if (Array.isArray(response?.data)) {
+        busTypesList = response.data;
+      } else if (Array.isArray(response?.data?.result)) {
+        busTypesList = response.data.result;
+      }
+
+      const currentBusTypesData = busTypesList
+        .filter(
+          (item) =>
+            item.IsActive !== false &&
+            item.isActive !== false &&
+            (item.ServiceTypeID != null ||
+              item.serviceTypeID != null ||
+              item.ServiceName ||
+              item.serviceName ||
+              item.ServiceCategory ||
+              item.serviceCategory)
+        )
+        .map((item) => ({
+          serviceTypeID: Number(
+            item.ServiceTypeID ?? item.serviceTypeID ?? 0
+          ),
+          serviceCode: item.ServiceCode || item.serviceCode || "",
+          serviceName:
+            item.ServiceName ||
+            item.serviceName ||
+            item.ServiceCategory ||
+            item.serviceCategory ||
+            "",
+          // Keep legacy key so older UI still works if needed
+          serviceCategory:
+            item.ServiceName ||
+            item.serviceName ||
+            item.ServiceCategory ||
+            item.serviceCategory ||
+            "",
+          isActive: item.IsActive ?? item.isActive ?? true,
+        }))
+        .filter((item) => item.serviceTypeID > 0 || item.serviceName)
+        .sort((a, b) =>
+          (a.serviceName || "").localeCompare(b.serviceName || "")
+        );
+
+      set({ currentBusTypesData });
+      return { response: currentBusTypesData };
+    } catch (error) {
+      console.error("Error fetching current bus types:", error);
+      set({ currentBusTypesData: [] });
+    } finally {
+      set({ isFetchCurrentBusTypes: false });
+    }
+  },
+
   // Mavenconnect Routes
   mavenRoutes: [],
   departureStages: [],

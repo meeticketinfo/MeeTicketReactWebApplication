@@ -27,6 +27,19 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         return String(dateStr).split("T")[0];
       };
 
+      const parseStatus = (value, fallback = -1) => {
+        if (value === undefined || value === null || value === "") return fallback;
+        const num = Number(value);
+        return Number.isNaN(num) ? fallback : num;
+      };
+
+      // Payment Status dropdown → PaymentStatus
+      // 0 Pending, 1 Paid, 2 Failed, 3 Refunded, 4 Partially Refunded (All = -1)
+      const paymentStatus = parseStatus(
+        payload?.paymentStatus ?? payload?.PaymentStatus,
+        -1
+      );
+
       const postBody = {
         ReportType: payload?.reportType || "TRANSACTION",
         DateType: dateType,
@@ -35,10 +48,11 @@ export const useCurrentPaymentTransactionStore = create((set) => ({
         MobileNo: payload?.phoneNumber || payload?.mobileNumber || payload?.MobileNo || "",
         ServiceTypeID: Number(payload?.serviceTypeID || 0) || 0,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
-        PaymentMode: payload?.paymentMode || "",
+        PaymentMode: "",
+        PaymentStatus: paymentStatus,
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.paymentStatus || payload?.bookingStatus || -1) || -1,
+        BookingStatus: parseStatus(payload?.bookingStatus, -1),
         PNRNumber: payload?.pnrNumber || payload?.PNRNumber || "",
         FromStageID: Number(payload?.fromStageBoardingID || payload?.destinationLocation || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,

@@ -26,18 +26,33 @@ export const useCurrentConsolidateStore = create((set) => ({
         return String(dateStr).split("T")[0];
       };
 
+      const parseStatus = (value, fallback = -1) => {
+        if (value === undefined || value === null || value === "") return fallback;
+        const num = Number(value);
+        return Number.isNaN(num) ? fallback : num;
+      };
+
+      // Bus Type dropdown value → ServiceTypeID (All / empty = 0)
+      const serviceTypeID =
+        Number(
+          payload?.serviceTypeID ??
+            payload?.ServiceTypeID ??
+            payload?.busType ??
+            0
+        ) || 0;
+
       const postBody = {
         ReportType: payload?.reportType || "CONSOLIDATED",
         DateType: dateType,
         FromDate: formatDateOnly(payload?.fromDate),
         ToDate: formatDateOnly(payload?.toDate),
         MobileNo: payload?.mobileNumber || payload?.mobileNo || "",
-        ServiceTypeID: Number(payload?.serviceTypeID || payload?.typeOfBus || 0) || 0,
+        ServiceTypeID: serviceTypeID,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
-        PaymentMode: payload?.paymentMode || "",
+        PaymentMode: "",
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
-        BookingStatus: Number(payload?.bookingStatus || -1) || -1,
+        BookingStatus: parseStatus(payload?.bookingStatus, -1),
         PNRNumber: payload?.PNRNumber || payload?.pnrNumber || "",
         FromStageID: Number(payload?.fromStageBoardingID || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,
@@ -192,6 +207,7 @@ export const useCurrentConsolidateStore = create((set) => ({
       } else if (response?.data?.result) {
         reportData = Array.isArray(response.data.result) ? response.data.result : [];
       }
+
       set({
         CurrentConsolidateData: reportData,
       });

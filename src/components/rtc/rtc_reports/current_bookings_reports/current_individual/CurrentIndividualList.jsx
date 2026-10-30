@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import { NavLink } from "react-router-dom";
 
@@ -9,13 +9,9 @@ import {
 } from "../../../../../utils/TypographyHelper";
 import CurrentIndividualReportForm from "./CurrentIndividualReportForm";
 import { useCurrentIndividualStore } from "./CurrentIndividualStore";
-import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 function CurrentIndividualList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-individual-filters")
-  );
-  const [intercityBusFilter, setIntercityBusFilter] = useState(
-    savedFilters?.intercityBus || ""
   );
   const {
     fetchCurrentIndividualData,
@@ -32,24 +28,17 @@ function CurrentIndividualList() {
       returnPnrNumber: savedFilters?.returnPnrNumber
         ? savedFilters.returnPnrNumber
         : "",
-      pnrOrReturnPnr: savedFilters?.pnrOrReturnPnr
-        ? savedFilters.pnrNumber
-        : "",
-      typeOfBooking: savedFilters?.typeOfBooking
-        ? savedFilters.typeOfBooking
-        : "",
-      paymentMode: savedFilters?.paymentMode ? savedFilters.paymentMode : "",
       orderId: savedFilters?.orderId ? savedFilters.orderId : "",
       transactionId: savedFilters?.transactionId
         ? savedFilters.transactionId
         : "",
-      seatLayoutType: savedFilters?.seatLayoutType
-        ? savedFilters.seatLayoutType
-        : "",
       busType: savedFilters?.busType ? savedFilters.busType : "",
-      bookingStatus: savedFilters?.bookingStatus
-        ? savedFilters.bookingStatus
-        : "",
+      bookingStatus:
+        savedFilters?.bookingStatus !== undefined &&
+        savedFilters?.bookingStatus !== null &&
+        savedFilters?.bookingStatus !== ""
+          ? savedFilters.bookingStatus
+          : "-1",
       departureLocation: savedFilters?.departureLocation
         ? savedFilters.departureLocation
         : "",
@@ -63,14 +52,7 @@ function CurrentIndividualList() {
     });
   }, [fetchCurrentIndividualData]);
 
-  const filteredIndividualData = useMemo(
-    () => filterRecordsByIntercityBus(CurrentIndividualData, intercityBusFilter),
-    [CurrentIndividualData, intercityBusFilter]
-  );
-
-  const handleIntercityBusChange = (value) => {
-    setIntercityBusFilter(value || "");
-  };
+  const filteredIndividualData = CurrentIndividualData || [];
 
   const isTotalRow = (params) => params.node?.rowPinned === "bottom";
 
@@ -193,6 +175,7 @@ function CurrentIndividualList() {
 
     {
       field: "seatLayoutType",
+      hide: true,
       headerName: "Seat Layout Type",
       headerClass: "text-blue-v2",
       valueFormatter: CustomtextFormatter
@@ -504,9 +487,7 @@ function CurrentIndividualList() {
 
   return (
     <div>
-      <CurrentIndividualReportForm
-        onIntercityBusChange={handleIntercityBusChange}
-      />
+      <CurrentIndividualReportForm />
       <div>
         {filteredIndividualData?.length > 0 && (
           <div className="     flex justify-end gap-10 font-semibold">
@@ -527,7 +508,7 @@ function CurrentIndividualList() {
         isFetchLoading={isFetchCurrentIndividualData}
         showTotalCount={true}
         totalCount={filteredIndividualData?.length || 0}
-        showSearch={false}
+        showSearch={true}
       />
     </div>
   );

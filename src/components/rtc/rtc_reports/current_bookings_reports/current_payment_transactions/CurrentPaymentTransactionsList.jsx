@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import AgGridTable from "../../../../../components/tables/AgGridTable";
 import CurrentPaymentTransactionsForm from "./CurrentPaymentTransactionsForm";
@@ -6,7 +6,6 @@ import PopupModal from "../../../../../components/utils/popup_modal/PopupModal";
 import Swal from "sweetalert2";
 import { useCurrentPaymentTransactionStore } from "../../../../../store/rtc/CurrentPaymentTransactionStore";
 import { getEndOfCurrentDay, getStartOfCurrentDay } from "../../../../../utils/Helper";
-import { filterRecordsByIntercityBus } from "../shared/CurrentBookingReportFilterFields";
 
 function CurrentPaymentTransactionsList() {
   const startOfDay = getStartOfCurrentDay();
@@ -32,9 +31,6 @@ function CurrentPaymentTransactionsList() {
   const savedFilters = JSON.parse(
     localStorage.getItem("current-payment-report-filters")
   );
-  const [intercityBusFilter, setIntercityBusFilter] = useState(
-    savedFilters?.intercityBus || ""
-  );
   useEffect(() => {
     fetchCurrentPaymentTransactions({
       startDate: savedFilters?.fromDate ?? startOfDay,
@@ -49,18 +45,7 @@ function CurrentPaymentTransactionsList() {
     });
   }, [fetchCurrentPaymentTransactions]);
 
-  const filteredPaymentTransactions = useMemo(
-    () =>
-      filterRecordsByIntercityBus(
-        currentPaymentTransactions || [],
-        intercityBusFilter
-      ),
-    [currentPaymentTransactions, intercityBusFilter]
-  );
-
-  const handleIntercityBusChange = (value) => {
-    setIntercityBusFilter(value || "");
-  };
+  const filteredPaymentTransactions = currentPaymentTransactions || [];
 
   const isTotalRow = (params) =>
     params?.node?.rowPinned === "bottom" || params?.data?.isTotal;
@@ -620,9 +605,7 @@ function CurrentPaymentTransactionsList() {
   return (
     <div>
       <div className="mb-8">
-        <CurrentPaymentTransactionsForm
-          onIntercityBusChange={handleIntercityBusChange}
-        />
+        <CurrentPaymentTransactionsForm />
         <AgGridTable
           ExportName="Current Payment Transactions"
           rowData={filteredPaymentTransactions || []}
@@ -631,7 +614,7 @@ function CurrentPaymentTransactionsList() {
           isFetchLoading={isFetchCurrentPaymentTransactionsLoading}
           showTotalCount={true}
           totalCount={filteredPaymentTransactions?.length || 0}
-          showSearch={false}
+          showSearch={true}
         />
       </div>
 
