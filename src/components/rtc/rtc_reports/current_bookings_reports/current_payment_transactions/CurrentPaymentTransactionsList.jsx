@@ -171,6 +171,7 @@ function CurrentPaymentTransactionsList() {
       field: "refundDate",
       headerName: "REFUND DATE",
       minWidth: 150,
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (isTotalRow(params)) return "";
@@ -188,6 +189,7 @@ function CurrentPaymentTransactionsList() {
       field: "PGRefundID",
       headerName: "REFUND ID",
       minWidth: 150,
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (isTotalRow(params)) return "";
@@ -198,6 +200,7 @@ function CurrentPaymentTransactionsList() {
       field: "RefundStatusName",
       headerName: "REFUND STATUS",
       maxWidth: 150,
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: (params) => {
         if (isTotalRow(params)) return "";
@@ -270,6 +273,7 @@ function CurrentPaymentTransactionsList() {
       headerName: "INITIATE REFUND",
       field: "InitiateRefund",
       maxWidth: 130,
+      hide: true,
       //   hide: email === "esdadmin@gmail.com",
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";
@@ -336,6 +340,7 @@ function CurrentPaymentTransactionsList() {
       field: "actions",
       headerName: "TICKET",
       maxWidth: 160,
+      hide: true,
       headerClass: "text-blue-v2",
       cellRenderer: (params) => {
         if (isTotalRow(params)) return "";

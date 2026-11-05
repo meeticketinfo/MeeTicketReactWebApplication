@@ -56,6 +56,7 @@ export const useCurrentConsolidateStore = create((set) => ({
         PNRNumber: payload?.PNRNumber || payload?.pnrNumber || "",
         FromStageID: Number(payload?.fromStageBoardingID || payload?.departureLocation || 0) || 0,
         ToStageID: Number(payload?.toStageBoardingID || payload?.arrivalLocation || 0) || 0,
+        PaymentStatus: -1,
       };
 
       const response = await apiService.post(

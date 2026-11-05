@@ -136,6 +136,27 @@ function CurrentIndividualList() {
     },
 
     {
+      field: "TransactionID",
+      headerName: "Payment Transaction ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: textFormatter
+    },
+    {
+      field: "orderId",
+      headerName: "Order ID",
+      headerClass: "text-blue-v2",
+      valueFormatter: textFormatter
+    },
+
+    {
+      field: "BookingStatusName",
+      headerName: "Booking Status",
+      maxWidth: 150,
+      headerClass: "text-blue-v2",
+      valueFormatter: CustomtextFormatter
+    },
+
+    {
       field: "returnPNRNumber",
       headerName: "Return PNR No",
       hide: true,
@@ -255,17 +276,13 @@ function CurrentIndividualList() {
       valueFormatter: ticketQtyFormatter
     },
 
-    {
-      field: "orderId",
-      headerName: "Order ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: textFormatter
-    },
+    
 
     {
       field: "modeOfPayment",
       headerName: "Payment Mode",
       maxWidth: 130,
+      hide: true,
       headerClass: "text-blue-v2",
       valueFormatter: textFormatter
     },
@@ -366,21 +383,6 @@ function CurrentIndividualList() {
       maxWidth: 150,
       headerClass: "text-blue-v2",
       valueFormatter: currencyFormatter
-    },
-
-    {
-      field: "paymentGatewayTransactionId",
-      headerName: "Payment Transaction ID",
-      headerClass: "text-blue-v2",
-      valueFormatter: textFormatter
-    },
-
-    {
-      field: "bookingStatus",
-      headerName: "Booking Status",
-      maxWidth: 150,
-      headerClass: "text-blue-v2",
-      valueFormatter: CustomtextFormatter
     },
 
     {
