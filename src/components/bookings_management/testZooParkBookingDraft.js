@@ -27,6 +27,173 @@ export const calculateSelectedItemsTotal = (selectedItems = []) =>
     0
   );
 
+const toMoney = (value) => Number(Number(value || 0).toFixed(2));
+
+/** Round amount up to the next whole rupee. */
+const ceilMoney = (value) => Math.ceil(Number(value || 0));
+
+/** Resolve Entry facility/service/variant for institutional discount scope. */
+export const isEntryBookingItem = (
+  item,
+  { allServiceVariants = [], allServices = [], allFacilities = [] } = {}
+) => {
+  const variant = (allServiceVariants || []).find(
+    (v) => v.id === item?.serviceVarientId
+  );
+  if (variant) {
+    const serviceName = normalizeText(variant.serviceName);
+    const facilityName = normalizeText(variant.facilityName);
+    if (serviceName === "entry" || facilityName === "entry") return true;
+  }
+
+  const service = (allServices || []).find((s) => s.id === item?.serviceId);
+  if (service) {
+    const name = normalizeText(service.displayName || service.name);
+    if (name === "entry") return true;
+  }
+
+  const facility = (allFacilities || []).find((f) => f.id === item?.facilityId);
+  if (facility) {
+    const name = normalizeText(facility.displayName || facility.name);
+    if (name === "entry") return true;
+  }
+
+  return false;
+};
+
+/**
+ * Government → fixed 25%.
+ * Private + Discount Yes → user percent (1–100).
+ * Otherwise → no institutional Entry discount.
+ */
+export const resolveInstitutionalDiscountPercent = ({
+  isInstitutional,
+  institutionalType,
+  institutionalDiscount,
+  institutionalDiscountPercent,
+} = {}) => {
+  if (!isInstitutional) return null;
+
+  if (institutionalType === "government") return 25;
+
+  if (
+    institutionalType === "private" &&
+    String(institutionalDiscount || "").toLowerCase() === "yes"
+  ) {
+    const pct = Number(institutionalDiscountPercent);
+    if (!Number.isNaN(pct) && pct > 0 && pct <= 100) return pct;
+    return null;
+  }
+
+  return null;
+};
+
+/**
+ * Entry-only institutional concession.
+ * Other facilities stay full price; grandTotal = entryNet + otherGross.
+ */
+export const calculateInstitutionalEntryConcession = ({
+  selectedItems = [],
+  allServiceVariants = [],
+  allServices = [],
+  allFacilities = [],
+  isInstitutional,
+  institutionalType,
+  institutionalDiscount,
+  institutionalDiscountPercent,
+} = {}) => {
+  const lookups = { allServiceVariants, allServices, allFacilities };
+  const rawTotal = calculateSelectedItemsTotal(selectedItems);
+  const percent = resolveInstitutionalDiscountPercent({
+    isInstitutional,
+    institutionalType,
+    institutionalDiscount,
+    institutionalDiscountPercent,
+  });
+
+  if (percent == null) {
+    return {
+      applicable: false,
+      percent: 0,
+      entryGross: 0,
+      discountAmount: 0,
+      entryNet: 0,
+      otherGross: rawTotal,
+      grandTotal: ceilMoney(rawTotal),
+      institutionLabel: "",
+    };
+  }
+
+  let entryGross = 0;
+  let otherGross = 0;
+  (selectedItems || []).forEach((item) => {
+    const line =
+      (Number(item.quantity) || 0) * (Number(item.unitAmount) || 0);
+    if (isEntryBookingItem(item, lookups)) entryGross += line;
+    else otherGross += line;
+  });
+  entryGross = toMoney(entryGross);
+  otherGross = toMoney(otherGross);
+
+  if (entryGross <= 0) {
+    return {
+      applicable: false,
+      percent,
+      entryGross: 0,
+      discountAmount: 0,
+      entryNet: 0,
+      otherGross,
+      grandTotal: ceilMoney(otherGross),
+      institutionLabel: "",
+    };
+  }
+
+  const discountAmount = toMoney((entryGross * percent) / 100);
+  // Ceiling Entry-after-discount and final payable totals
+  const entryNet = ceilMoney(entryGross - discountAmount);
+  const institutionLabel =
+    institutionalType === "government"
+      ? "Government Institutions"
+      : "Private Institutions";
+
+  return {
+    applicable: true,
+    percent,
+    entryGross,
+    discountAmount,
+    entryNet,
+    otherGross,
+    grandTotal: ceilMoney(entryNet + otherGross),
+    institutionLabel,
+  };
+};
+
+/** Adjust Entry line unitAmounts so Entry lines sum to entryNet (for API payload). */
+export const applyInstitutionalEntryDiscountToSelectedItems = (
+  selectedItems = [],
+  concession,
+  lookups = {}
+) => {
+  if (!concession?.applicable || !(concession.entryGross > 0)) {
+    return selectedItems || [];
+  }
+
+  return (selectedItems || []).map((item) => {
+    if (!isEntryBookingItem(item, lookups)) return item;
+    const qty = Number(item.quantity) || 0;
+    const unit = Number(item.unitAmount) || 0;
+    const lineGross = qty * unit;
+    const lineNet =
+      lineGross -
+      (lineGross / concession.entryGross) * concession.discountAmount;
+    return {
+      ...item,
+      originalUnitAmount: unit,
+      unitAmount: qty > 0 ? toMoney(lineNet / qty) : unit,
+    };
+  });
+};
+
 /**
  * Group selected variants into summary table rows:
  * - Adult/Child pairs under the same service → one row with adult & child counts

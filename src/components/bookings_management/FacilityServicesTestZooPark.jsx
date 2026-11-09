@@ -22,10 +22,12 @@ import { useHolidayStore } from "../../store/masters/holidayStore";
 import Select, { components as selectComponents } from "react-select";
 import { COUNTRY_DIAL_CODES } from "./countryDialCodes";
 import {
+  calculateInstitutionalEntryConcession,
   clearTestZooParkBookingDraft,
   loadTestZooParkBookingDraft,
   saveTestZooParkBookingDraft,
 } from "./testZooParkBookingDraft";
+import InstitutionalConcessionBanner from "./InstitutionalConcessionBanner";
 
 const SPECIAL_PARK_ID = "a8f9123b-0e6f-41e3-9328-6e72eca950e0";
 
@@ -488,6 +490,13 @@ export const FacilityServicesTestZooPark = () => {
       ? restoredDraft.entryOnly
       : false
   );
+  // Institutional is not allowed with Foreigner National
+  const [isInstitutional, setIsInstitutional] = useState(() => {
+    if (restoredDraft?.visitorType === "foreigner") return false;
+    return typeof restoredDraft?.isInstitutional === "boolean"
+      ? restoredDraft.isInstitutional
+      : false;
+  });
   const [isCountryMenuOpen, setIsCountryMenuOpen] = useState(false);
   const focusMobileAfterCountrySelectRef = useRef(false);
   // Formik initial values in state so Reset can clear without draft re-init.
@@ -503,6 +512,21 @@ export const FacilityServicesTestZooPark = () => {
   const [initialCountryName, setInitialCountryName] = useState(
     () => restoredDraft?.countryName || "India"
   );
+  const [initialInstitutionalType, setInitialInstitutionalType] = useState(
+    () => restoredDraft?.institutionalType || ""
+  );
+  const [initialInstitutionName, setInitialInstitutionName] = useState(
+    () => restoredDraft?.institutionName || ""
+  );
+  const [initialInchargeName, setInitialInchargeName] = useState(
+    () => restoredDraft?.inchargeName || ""
+  );
+  const [initialInstitutionalDiscount, setInitialInstitutionalDiscount] =
+    useState(() => restoredDraft?.institutionalDiscount || "");
+  const [
+    initialInstitutionalDiscountPercent,
+    setInitialInstitutionalDiscountPercent,
+  ] = useState(() => restoredDraft?.institutionalDiscountPercent || "");
 
   const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
   // disableing button for recurriing holidays
@@ -625,8 +649,47 @@ export const FacilityServicesTestZooPark = () => {
                 "Mobile number must contain only digits",
                 (value) => !value || /^[0-9]+$/.test(value)
               ),
+        institutionalType: isInstitutional
+          ? Yup.string().required("Please select institutional type")
+          : Yup.string(),
+        institutionName: isInstitutional
+          ? Yup.string().trim().required("Please enter institution name")
+          : Yup.string(),
+        inchargeName: isInstitutional
+          ? Yup.string().trim().required("Please enter incharge name")
+          : Yup.string(),
+        institutionalDiscount: Yup.string().when("institutionalType", {
+          is: (type) => isInstitutional && type === "private",
+          then: (schema) =>
+            schema.required("Please select discount Yes or No"),
+          otherwise: (schema) => schema,
+        }),
+        institutionalDiscountPercent: Yup.string().when(
+          ["institutionalType", "institutionalDiscount"],
+          {
+            is: (type, discount) =>
+              isInstitutional && type === "private" && discount === "yes",
+            then: (schema) =>
+              schema
+                .required("Please enter discount percent")
+                .test(
+                  "discount-percent-range",
+                  "Discount percent must be between 1 and 100",
+                  (value) => {
+                    const num = Number(value);
+                    return (
+                      value !== "" &&
+                      !Number.isNaN(num) &&
+                      num >= 1 &&
+                      num <= 100
+                    );
+                  }
+                ),
+            otherwise: (schema) => schema,
+          }
+        ),
       }),
-    [visitorType, skipMobileValidation]
+    [visitorType, skipMobileValidation, isInstitutional]
   );
 
   const handleGoToBookingSummary = async (values, { setSubmitting }) => {
@@ -657,6 +720,25 @@ export const FacilityServicesTestZooPark = () => {
         ? "/book-tickets"
         : "/entity-bookings";
 
+      const institutionalConcession = calculateInstitutionalEntryConcession({
+        selectedItems: values.selectedItems,
+        allServiceVariants,
+        allServices,
+        allFacilities,
+        isInstitutional,
+        institutionalType: isInstitutional ? values.institutionalType : "",
+        institutionalDiscount:
+          isInstitutional && values.institutionalType === "private"
+            ? values.institutionalDiscount
+            : "",
+        institutionalDiscountPercent:
+          isInstitutional &&
+          values.institutionalType === "private" &&
+          values.institutionalDiscount === "yes"
+            ? values.institutionalDiscountPercent
+            : "",
+      });
+
       const bookingDraft = {
         selectedItems: values.selectedItems,
         quantities: { ...quantities },
@@ -666,6 +748,24 @@ export const FacilityServicesTestZooPark = () => {
         visitorType,
         showChild,
         entryOnly,
+        isInstitutional,
+        institutionalType: isInstitutional ? values.institutionalType : "",
+        institutionName: isInstitutional ? values.institutionName : "",
+        inchargeName: isInstitutional ? values.inchargeName : "",
+        // Reuse existing mobileNumber field as Incharge Cell No
+        inchargeCellNo: isInstitutional ? values.mobileNumber : "",
+        institutionalDiscount:
+          isInstitutional && values.institutionalType === "private"
+            ? values.institutionalDiscount
+            : "",
+        institutionalDiscountPercent:
+          isInstitutional &&
+          values.institutionalType === "private" &&
+          values.institutionalDiscount === "yes"
+            ? values.institutionalDiscountPercent
+            : "",
+        // Snapshot so preview uses the same Entry discount (no double apply)
+        institutionalConcession,
         returnPath,
         bookingDateDisplay: new Date().toISOString(),
         referenceId: null,
@@ -712,6 +812,12 @@ export const FacilityServicesTestZooPark = () => {
                 mobileNumber: initialMobileNumber,
                 countryCode: initialCountryCode,
                 countryName: initialCountryName,
+                institutionalType: initialInstitutionalType,
+                institutionName: initialInstitutionName,
+                inchargeName: initialInchargeName,
+                institutionalDiscount: initialInstitutionalDiscount,
+                institutionalDiscountPercent:
+                  initialInstitutionalDiscountPercent,
               }}
               enableReinitialize
               validationSchema={validationSchema}
@@ -761,6 +867,30 @@ export const FacilityServicesTestZooPark = () => {
                               setVisitorType(nextVisitorType);
                               setFieldError("countryCode", undefined);
                               setFieldError("mobileNumber", undefined);
+
+                              // Foreigner National and Institutional are mutually exclusive
+                              if (isForeigner && isInstitutional) {
+                                setIsInstitutional(false);
+                                setFieldValue("institutionalType", "");
+                                setFieldValue("institutionName", "");
+                                setFieldValue("inchargeName", "");
+                                setFieldValue("institutionalDiscount", "");
+                                setFieldValue(
+                                  "institutionalDiscountPercent",
+                                  ""
+                                );
+                                setFieldError("institutionalType", undefined);
+                                setFieldError("institutionName", undefined);
+                                setFieldError("inchargeName", undefined);
+                                setFieldError(
+                                  "institutionalDiscount",
+                                  undefined
+                                );
+                                setFieldError(
+                                  "institutionalDiscountPercent",
+                                  undefined
+                                );
+                              }
 
                               if (isForeigner) {
                                 setFieldValue("countryCode", "");
@@ -824,7 +954,54 @@ export const FacilityServicesTestZooPark = () => {
                             }}
                           />
                         </label>
-                        
+                        <label
+                          className={`flex items-center gap-2 text-sm font-medium text-blue-v1 whitespace-nowrap ${
+                            visitorType === "foreigner"
+                              ? "cursor-not-allowed opacity-60"
+                              : "cursor-pointer"
+                          }`}
+                          title={
+                            visitorType === "foreigner"
+                              ? "Institutional booking is not allowed for Foreigner National"
+                              : undefined
+                          }
+                        >
+                          <span>Institutional</span>
+                          <input
+                            type="checkbox"
+                            data-enterflow="filter"
+                            className="h-4 w-4 accent-blue-600 cursor-pointer shrink-0 outline-none focus:ring-2 focus:ring-blue-v1 rounded disabled:cursor-not-allowed"
+                            checked={isInstitutional}
+                            disabled={visitorType === "foreigner"}
+                            onKeyDown={handleEnterflowKeyDown}
+                            onChange={(e) => {
+                              if (visitorType === "foreigner") return;
+                              const checked = e.target.checked;
+                              setIsInstitutional(checked);
+                              if (!checked) {
+                                setFieldValue("institutionalType", "");
+                                setFieldValue("institutionName", "");
+                                setFieldValue("inchargeName", "");
+                                setFieldValue("institutionalDiscount", "");
+                                setFieldValue(
+                                  "institutionalDiscountPercent",
+                                  ""
+                                );
+                                setFieldError("institutionalType", undefined);
+                                setFieldError("institutionName", undefined);
+                                setFieldError("inchargeName", undefined);
+                                setFieldError(
+                                  "institutionalDiscount",
+                                  undefined
+                                );
+                                setFieldError(
+                                  "institutionalDiscountPercent",
+                                  undefined
+                                );
+                              }
+                            }}
+                          />
+                        </label>
                       </div>
 
                       {/* Mobile number — same line on desktop */}
@@ -839,7 +1016,9 @@ export const FacilityServicesTestZooPark = () => {
                           htmlFor="mobileNumber"
                           className="block text-xs font-medium text-blue-v1 mb-1 leading-none"
                         >
-                          Mobile number{" "}
+                          {isInstitutional
+                            ? "Incharge Cell No"
+                            : "Mobile number"}{" "}
                           {!skipMobileValidation && (
                             <span className="text-red-500">*</span>
                           )}
@@ -1040,6 +1219,182 @@ export const FacilityServicesTestZooPark = () => {
                         />
                       </div>
                     </div>
+
+                    {isInstitutional && (
+                      <div className="mt-3 space-y-3 border-t border-blue-v1/20 pt-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-medium text-blue-v1 mb-1 leading-none">
+                              Institutional Type{" "}
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <Field
+                              as="select"
+                              name="institutionalType"
+                              className="h-9 w-full rounded-md border border-blue-v1 px-2 text-sm text-blue-v2 bg-white outline-none focus:ring-2 focus:ring-blue-v1/40"
+                              onChange={(e) => {
+                                const nextType = e.target.value;
+                                setFieldValue("institutionalType", nextType);
+                                setFieldTouched(
+                                  "institutionalType",
+                                  true,
+                                  false
+                                );
+                                if (nextType !== "private") {
+                                  setFieldValue("institutionalDiscount", "");
+                                  setFieldValue(
+                                    "institutionalDiscountPercent",
+                                    ""
+                                  );
+                                  setFieldError(
+                                    "institutionalDiscount",
+                                    undefined
+                                  );
+                                  setFieldError(
+                                    "institutionalDiscountPercent",
+                                    undefined
+                                  );
+                                }
+                              }}
+                            >
+                              <option value="">Select type</option>
+                              <option value="government">Government/Orphanage</option>
+                              <option value="private">Private</option>
+                            </Field>
+                            <ErrorMessage
+                              name="institutionalType"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-blue-v1 mb-1 leading-none">
+                              Institution Name{" "}
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="institutionName"
+                              className="h-9 w-full rounded-md border border-blue-v1 px-3 text-sm text-blue-v2 bg-white outline-none focus:ring-2 focus:ring-blue-v1/40"
+                              placeholder="Enter institution name"
+                            />
+                            <ErrorMessage
+                              name="institutionName"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-blue-v1 mb-1 leading-none">
+                              Incharge Name{" "}
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="inchargeName"
+                              className="h-9 w-full rounded-md border border-blue-v1 px-3 text-sm text-blue-v2 bg-white outline-none focus:ring-2 focus:ring-blue-v1/40"
+                              placeholder="Enter incharge name"
+                            />
+                            <ErrorMessage
+                              name="inchargeName"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
+                            />
+                          </div>
+                        </div>
+
+                        {values.institutionalType === "private" && (
+                          <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-8">
+                            <div>
+                              <label className="block text-xs font-medium text-blue-v1 mb-1.5 leading-none">
+                                Discount <span className="text-red-500">*</span>
+                              </label>
+                              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 h-9">
+                                <label className="flex items-center gap-2 text-sm font-medium text-blue-v1 cursor-pointer">
+                                  <Field
+                                    type="radio"
+                                    name="institutionalDiscount"
+                                    value="yes"
+                                    className="h-4 w-4 accent-blue-600 cursor-pointer"
+                                    onChange={() => {
+                                      setFieldValue(
+                                        "institutionalDiscount",
+                                        "yes"
+                                      );
+                                    }}
+                                  />
+                                  <span>Yes</span>
+                                </label>
+                                <label className="flex items-center gap-2 text-sm font-medium text-blue-v1 cursor-pointer">
+                                  <Field
+                                    type="radio"
+                                    name="institutionalDiscount"
+                                    value="no"
+                                    className="h-4 w-4 accent-blue-600 cursor-pointer"
+                                    onChange={() => {
+                                      setFieldValue(
+                                        "institutionalDiscount",
+                                        "no"
+                                      );
+                                      setFieldValue(
+                                        "institutionalDiscountPercent",
+                                        ""
+                                      );
+                                      setFieldError(
+                                        "institutionalDiscountPercent",
+                                        undefined
+                                      );
+                                    }}
+                                  />
+                                  <span>No</span>
+                                </label>
+                              </div>
+                              <ErrorMessage
+                                name="institutionalDiscount"
+                                component="div"
+                                className="text-red-500 text-xs mt-1"
+                              />
+                            </div>
+
+                            {values.institutionalDiscount === "yes" && (
+                              <div className="w-full sm:w-48">
+                                <label className="block text-xs font-medium text-blue-v1 mb-1 leading-none">
+                                  Discount Percent{" "}
+                                  <span className="text-red-500">*</span>
+                                </label>
+                                <Field
+                                  type="text"
+                                  name="institutionalDiscountPercent"
+                                  inputMode="decimal"
+                                  className="h-9 w-full rounded-md border border-blue-v1 px-3 text-sm text-blue-v2 bg-white outline-none focus:ring-2 focus:ring-blue-v1/40"
+                                  placeholder="Enter percent"
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(
+                                      /[^0-9.]/g,
+                                      ""
+                                    );
+                                    setFieldValue(
+                                      "institutionalDiscountPercent",
+                                      value
+                                    );
+                                    setFieldTouched(
+                                      "institutionalDiscountPercent",
+                                      true,
+                                      false
+                                    );
+                                  }}
+                                />
+                                <ErrorMessage
+                                  name="institutionalDiscountPercent"
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {allFacilities
                     ?.filter((facility) =>
@@ -1432,6 +1787,27 @@ export const FacilityServicesTestZooPark = () => {
                       );
                     })}
 
+                  {(() => {
+                    const institutionalConcession =
+                      calculateInstitutionalEntryConcession({
+                        selectedItems: values.selectedItems,
+                        allServiceVariants,
+                        allServices,
+                        allFacilities,
+                        isInstitutional,
+                        institutionalType: values.institutionalType,
+                        institutionalDiscount: values.institutionalDiscount,
+                        institutionalDiscountPercent:
+                          values.institutionalDiscountPercent,
+                      });
+                    return (
+                      <InstitutionalConcessionBanner
+                        concession={institutionalConcession}
+                        className="mb-2"
+                      />
+                    );
+                  })()}
+
                   <div className="relative flex justify-center items-center p-2">
                     <button
                       type="button"
@@ -1540,16 +1916,27 @@ export const FacilityServicesTestZooPark = () => {
                           setVisitorType("citizen");
                           setShowChild(true);
                           setEntryOnly(false);
+                          setIsInstitutional(false);
                           setInitialSelectedItems([]);
                           setInitialMobileNumber("");
                           setInitialCountryCode("+91");
                           setInitialCountryName("India");
+                          setInitialInstitutionalType("");
+                          setInitialInstitutionName("");
+                          setInitialInchargeName("");
+                          setInitialInstitutionalDiscount("");
+                          setInitialInstitutionalDiscountPercent("");
                           resetForm({
                             values: {
                               selectedItems: [],
                               mobileNumber: "",
                               countryCode: "+91",
                               countryName: "India",
+                              institutionalType: "",
+                              institutionName: "",
+                              inchargeName: "",
+                              institutionalDiscount: "",
+                              institutionalDiscountPercent: "",
                             },
                           });
                           clearTestZooParkBookingDraft();

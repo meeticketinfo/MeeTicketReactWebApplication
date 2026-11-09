@@ -21,7 +21,9 @@ import { launchPaytmPOS } from "../../utils/Helper";
 import upiIcon from "../../images/upi.svg";
 import HandCash from "../../images/cash.svg";
 import {
+  applyInstitutionalEntryDiscountToSelectedItems,
   buildBookingSummaryRows,
+  calculateInstitutionalEntryConcession,
   calculateSelectedItemsTotal,
   clearTestZooParkBookingDraft,
   formatBookingDateTimePayload,
@@ -30,6 +32,7 @@ import {
   loadTestZooParkBookingDraft,
   saveTestZooParkBookingDraft,
 } from "./testZooParkBookingDraft";
+import InstitutionalConcessionBanner from "./InstitutionalConcessionBanner";
 
 const focusConfirmBooking = () => {
   window.setTimeout(() => {
@@ -72,7 +75,12 @@ export const BookingSummaryPreview = () => {
     setisCompleteBookings(false);
   };
 
-  const { LocationDetails, FetchLocationDetails } = useFacilityStore();
+  const {
+    LocationDetails,
+    FetchLocationDetails,
+    allFacilities,
+    fetchAllFacilities,
+  } = useFacilityStore();
   const { allServices, fetchAllServices } = useServiceStore();
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
@@ -86,6 +94,7 @@ export const BookingSummaryPreview = () => {
   useEffect(() => {
     fetchAllServices();
     fetchAllServiceVariants();
+    fetchAllFacilities();
     const parkId = decodedTokenData?.data?.ParkId;
     if (parkId) {
       FetchLocationDetails(parkId);
@@ -99,19 +108,58 @@ export const BookingSummaryPreview = () => {
     }
   }, []);
 
-  const summaryRows = useMemo(
-    () =>
-      buildBookingSummaryRows(draft?.selectedItems || [], {
-        allServiceVariants,
-        allServices,
-      }),
-    [draft?.selectedItems, allServiceVariants, allServices]
-  );
+  const institutionalConcession = useMemo(() => {
+    if (draft?.institutionalConcession?.applicable) {
+      return draft.institutionalConcession;
+    }
+    return calculateInstitutionalEntryConcession({
+      selectedItems: draft?.selectedItems || [],
+      allServiceVariants,
+      allServices,
+      allFacilities,
+      isInstitutional: draft?.isInstitutional,
+      institutionalType: draft?.institutionalType,
+      institutionalDiscount: draft?.institutionalDiscount,
+      institutionalDiscountPercent: draft?.institutionalDiscountPercent,
+    });
+  }, [
+    draft,
+    allServiceVariants,
+    allServices,
+    allFacilities,
+  ]);
 
-  const totalAmount = useMemo(
-    () => calculateSelectedItemsTotal(draft?.selectedItems || []),
-    [draft?.selectedItems]
-  );
+  const summaryRows = useMemo(() => {
+    const rows = buildBookingSummaryRows(draft?.selectedItems || [], {
+      allServiceVariants,
+      allServices,
+    });
+
+    // Entry ticket type → show amount after institutional discount
+    if (!institutionalConcession?.applicable) return rows;
+    return rows.map((row) => {
+      const ticketType = String(row.ticketType || "")
+        .trim()
+        .toLowerCase();
+      if (ticketType !== "entry") return row;
+      return {
+        ...row,
+        totalAmount: institutionalConcession.entryNet,
+      };
+    });
+  }, [
+    draft?.selectedItems,
+    allServiceVariants,
+    allServices,
+    institutionalConcession,
+  ]);
+
+  const totalAmount = useMemo(() => {
+    if (institutionalConcession?.applicable) {
+      return institutionalConcession.grandTotal;
+    }
+    return calculateSelectedItemsTotal(draft?.selectedItems || []);
+  }, [draft?.selectedItems, institutionalConcession]);
 
   const bookingDateDisplay = formatDisplayBookingDate(
     draft?.bookingDateDisplay || new Date()
@@ -125,6 +173,20 @@ export const BookingSummaryPreview = () => {
     draft?.countryCode,
     draft?.mobileNumber
   );
+
+  const institutionalTypeLabel =
+    draft?.institutionalType === "government"
+      ? "Government"
+      : draft?.institutionalType === "private"
+        ? "Private"
+        : "";
+
+  const institutionalDiscountLabel =
+    draft?.institutionalDiscount === "yes"
+      ? "Yes"
+      : draft?.institutionalDiscount === "no"
+        ? "No"
+        : "";
 
   const validationSchema = Yup.object({
     paymentMethod: Yup.string().required("Please select a payment method"),
@@ -159,9 +221,68 @@ export const BookingSummaryPreview = () => {
       draft.countryCode,
       draft.mobileNumber
     );
-    const selectedItems = draft.selectedItems;
-    const amount = calculateSelectedItemsTotal(selectedItems);
+    const lookups = {
+      allServiceVariants,
+      allServices,
+      allFacilities,
+    };
+    const concession =
+      draft?.institutionalConcession?.applicable
+        ? draft.institutionalConcession
+        : calculateInstitutionalEntryConcession({
+            selectedItems: draft.selectedItems,
+            ...lookups,
+            isInstitutional: draft?.isInstitutional,
+            institutionalType: draft?.institutionalType,
+            institutionalDiscount: draft?.institutionalDiscount,
+            institutionalDiscountPercent: draft?.institutionalDiscountPercent,
+          });
 
+    const selectedItems = applyInstitutionalEntryDiscountToSelectedItems(
+      draft.selectedItems,
+      concession,
+      lookups
+    );
+    const amount = concession?.applicable
+      ? concession.grandTotal
+      : calculateSelectedItemsTotal(selectedItems);
+
+    // Only for AddBookingDetails / AddBookingDetailsForWireless / AddBookingDetailswithCash
+    const institutionalPayload = draft?.isInstitutional
+      ? {
+          VisitorType: "Institutional",
+          InstitutionalType:
+            draft.institutionalType === "government"
+              ? "Government"
+              : draft.institutionalType === "private"
+                ? "Private"
+                : "",
+          InstitutionName: draft.institutionName || "",
+          InchargeName: draft.inchargeName || "",
+          DiscountPercent:
+            draft.institutionalType === "government"
+              ? 25
+              : Number(draft.institutionalDiscountPercent) || 0,
+        }
+      : {};
+
+    // Base booking DTO without institutional fields (safe for ParkTransaction / QR APIs)
+    const baseBookingPaylod = {
+      mobileNumber: bookingMobileNumber,
+      totalAmount: amount,
+      userId: decodedTokenData?.data?.UserId,
+      parkId: decodedTokenData?.data?.ParkId,
+      transactionId: "",
+      bookingDetailsReqDTOs: selectedItems,
+    };
+
+    // Stored for later AddBookingDetails / AddBookingDetailsForWireless calls
+    const bookingPaylodWithInstitutional = {
+      ...baseBookingPaylod,
+      ...institutionalPayload,
+    };
+
+    // Outer payment payload — never includes institutional fields
     const bookingDetailsPayload = {
       amount,
       mobileNumber: bookingMobileNumber,
@@ -175,16 +296,7 @@ export const BookingSummaryPreview = () => {
 
     if (values.paymentMethod === "pos") {
       try {
-        const bookingPaylod = {
-          mobileNumber: bookingMobileNumber,
-          totalAmount: amount,
-          userId: decodedTokenData?.data?.UserId,
-          parkId: decodedTokenData?.data?.ParkId,
-          transactionId: "",
-          bookingDetailsReqDTOs: selectedItems,
-        };
-
-        sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+        sessionStorage.setItem("bookingPayload",JSON.stringify(bookingPaylodWithInstitutional));
 
         const PosBookingPayload = {
           amount,
@@ -195,9 +307,10 @@ export const BookingSummaryPreview = () => {
           bookingDate: formatBookingDateTimePayload(currentDate),
         };
 
+        // GenerateWirelessPaytmPOSQr — no institutional params (outer or bookingReqDTOs)
         const redefinedPayload = {
           ...PosBookingPayload,
-          bookingReqDTOs: bookingPaylod,
+          bookingReqDTOs: baseBookingPaylod,
         };
 
         const res = await Generate_deep_link(redefinedPayload);
@@ -227,6 +340,7 @@ export const BookingSummaryPreview = () => {
     }
 
     if (values.paymentMethod === "cash") {
+      // AddBookingDetailswithCash — include institutional params only here
       const bookingDetailsCashPayload = {
         mobileNumber: bookingMobileNumber,
         totalAmount: amount,
@@ -234,6 +348,7 @@ export const BookingSummaryPreview = () => {
         parkId: decodedTokenData?.data?.ParkId,
         bookingDate: formatBookingDateTimePayload(currentDate),
         bookingDetailsReqDTOs: selectedItems,
+        ...institutionalPayload,
       };
 
       try {
@@ -259,21 +374,17 @@ export const BookingSummaryPreview = () => {
       return;
     }
 
-    // UPI
-    const bookingPaylod = {
-      mobileNumber: bookingMobileNumber,
-      totalAmount: amount,
-      userId: decodedTokenData?.data?.UserId,
-      parkId: decodedTokenData?.data?.ParkId,
-      transactionId: "",
-      bookingDetailsReqDTOs: selectedItems,
-    };
-    sessionStorage.setItem("bookingPayload", JSON.stringify(bookingPaylod));
+    // UPI — store institutional payload for later AddBookingDetails only
+    sessionStorage.setItem(
+      "bookingPayload",
+      JSON.stringify(bookingPaylodWithInstitutional)
+    );
 
     try {
+      // ParkTransaction — no institutional params (outer or bookingReqDTOs)
       const redefinedPayload = {
         ...bookingDetailsPayload,
-        bookingReqDTOs: bookingPaylod,
+        bookingReqDTOs: baseBookingPaylod,
       };
       const result = await saveFirstBookingDetails(redefinedPayload);
 
@@ -331,7 +442,9 @@ export const BookingSummaryPreview = () => {
                 </div>
                 <div className="flex gap-2">
                   <span className="font-semibold text-blue-v1 min-w-[120px]">
-                    Mobile Number
+                    {draft?.isInstitutional
+                      ? "Incharge Cell No"
+                      : "Mobile Number"}
                   </span>
                   <span className="text-gray-800">
                     : {displayMobile || "—"}
@@ -343,6 +456,58 @@ export const BookingSummaryPreview = () => {
                   </span>
                   <span className="text-gray-800">: {visitorTypeLabel}</span>
                 </div>
+                {draft?.isInstitutional && (
+                  <>
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-blue-v1 min-w-[120px]">
+                        Institutional
+                      </span>
+                      <span className="text-gray-800">
+                        : {institutionalTypeLabel || "Yes"}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-blue-v1 min-w-[120px]">
+                        Institution Name
+                      </span>
+                      <span className="text-gray-800">
+                        : {draft?.institutionName || "—"}
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <span className="font-semibold text-blue-v1 min-w-[120px]">
+                        Incharge Name
+                      </span>
+                      <span className="text-gray-800">
+                        : {draft?.inchargeName || "—"}
+                      </span>
+                    </div>
+                    {draft?.institutionalType === "private" && (
+                      <>
+                        <div className="flex gap-2">
+                          <span className="font-semibold text-blue-v1 min-w-[120px]">
+                            Discount
+                          </span>
+                          <span className="text-gray-800">
+                            : {institutionalDiscountLabel || "—"}
+                          </span>
+                        </div>
+                        {draft?.institutionalDiscount === "yes" && (
+                          <div className="flex gap-2">
+                            <span className="font-semibold text-blue-v1 min-w-[120px]">
+                              Discount Percent
+                            </span>
+                            <span className="text-gray-800">
+                              : {draft?.institutionalDiscountPercent
+                                ? `${draft.institutionalDiscountPercent}%`
+                                : "—"}
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 
@@ -413,6 +578,11 @@ export const BookingSummaryPreview = () => {
                 </table>
               </div>
             </div>
+
+            <InstitutionalConcessionBanner
+              concession={institutionalConcession}
+              className="mb-4"
+            />
 
             <Formik
               initialValues={{ paymentMethod: "" }}

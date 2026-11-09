@@ -209,6 +209,7 @@ import HelpFaqs from "../pages/amrabad/user/information/HelpFaqs";
 import DepartmentAdmin from "../pages/admin/DepartmentAdmin/DepartmentAdmin";
 import AmrabadContactUs from "../pages/amrabad/user/information/AmrabadContactUs";
 import MainBannerCreation from "../pages/admin/banner/MainBannerCreation";
+import InstitutionalDiscount from "../pages/admin/nzp_services/InstitutionalDiscount";
 import WalkersPassReport from "../pages/admin/walkers_pass_report/WalkersPassReport";
 import WalkersPassSummaryreport from "../pages/admin/walkers_pass_summary_report/WalkersPassSummaryreport";
 import PaymentGatewayReport from "../components/rtc/rtc_reports/bus_pass_reports/payment_gateway_report/paymentGatewayReport";
@@ -1010,6 +1011,10 @@ export const routes = [
   {
     path: "/banner",
     element: <ProtectedRoute element={<MainBannerCreation />} />,
+  },
+  {
+    path: "/institutional-discount",
+    element: <ProtectedRoute element={<InstitutionalDiscount />} />,
   },
   {
     path: "/android-ios-entries",
