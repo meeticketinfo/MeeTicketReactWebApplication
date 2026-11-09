@@ -67,6 +67,10 @@ export const superAdminPermissions = [
   "amarabad-total-transaction",
   "pos-reports",
   "amrabad-view-transaction-track-order",
+  // NZP Reports
+  "nzp-day-wise-booking-report",
+  "nzp-ticket-bookings-transaction-report",
+  "nzp-desk-wise-booking-report",
 ];
 
 // ESD TECH
@@ -167,6 +171,10 @@ export const BotanicalGardenParkAdminPermissions = [
   "walkers-pass-report",
   "walkers-pass-summary-report",
   "book-tickets",
+  // NZP Reports
+  "nzp-day-wise-booking-report",
+  "nzp-ticket-bookings-transaction-report",
+  "nzp-desk-wise-booking-report",
 ];
 
 
@@ -206,6 +214,10 @@ export const NehruZooPark = [
   "book-tickets",
   // "Grievance-consolidate",
   "Grievance-Incident",
+  // NZP Reports
+  "nzp-day-wise-booking-report",
+  "nzp-ticket-bookings-transaction-report",
+  "nzp-desk-wise-booking-report",
 ];
 
 // support admin
