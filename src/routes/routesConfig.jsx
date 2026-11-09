@@ -228,6 +228,9 @@ import CityBusConsolidatedReport from "../components/rtc/rtc_reports/city_bus_re
 import CityBusIndividualReport from "../components/rtc/rtc_reports/city_bus_reports/city_bus_individual_report/CityBusIndividualReport";
 import CityBusPaymentTransactionsReport from "../components/rtc/rtc_reports/city_bus_reports/city_payment_transactions_report/CityBusPaymentTransactionsReport";
 import CityBusRefundTransactionsReport from "../components/rtc/rtc_reports/city_bus_reports/city_bus_refund_report/CityBusRefundTransactionsReport";
+import DayWiseBookingReport from "../components/nzp_reports/day_wise_booking_report/DayWiseBookingReport";
+import TicketBookingsTransactionReport from "../components/nzp_reports/ticket_bookings_transaction_report/TicketBookingsTransactionReport";
+import DeskWiseBookingReport from "../components/nzp_reports/desk_wise_booking_report/DeskWiseBookingReport";
 
 export const routes = [
   {
@@ -1166,6 +1169,19 @@ export const routes = [
     element: (
       <ProtectedRoute element={<CityBusRefundTransactionsReport />} />
     ),
+  },
+  // NZP Reports
+  {
+    path: "/nzp-day-wise-booking-report",
+    element: <ProtectedRoute element={<DayWiseBookingReport />} />,
+  },
+  {
+    path: "/nzp-ticket-bookings-transaction-report",
+    element: <ProtectedRoute element={<TicketBookingsTransactionReport />} />,
+  },
+  {
+    path: "/nzp-desk-wise-booking-report",
+    element: <ProtectedRoute element={<DeskWiseBookingReport />} />,
   },
 
   //intercity admin routes

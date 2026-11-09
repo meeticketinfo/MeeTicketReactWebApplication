@@ -574,6 +574,31 @@ const sidebarItems = [
     ],
 
   },
+  // NZP Reports
+  {
+    title: "NZP Reports",
+    icon: HiOutlineDocumentReport,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Day Wise Booking Report",
+        icon: RiDashboard3Fill,
+        path: "/nzp-day-wise-booking-report",
+      },
+      {
+        title: "Ticket Bookings Transaction Report",
+        icon: TbReportAnalytics,
+        path: "/nzp-ticket-bookings-transaction-report",
+      },
+      {
+        title: "Desk Wise Booking Report",
+        icon: RiDashboard3Fill,
+        path: "/nzp-desk-wise-booking-report",
+      },
+    ],
+  },
   // Tourism
   {
     title: "Tourism",

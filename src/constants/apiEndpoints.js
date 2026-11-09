@@ -288,6 +288,7 @@ export const API_ENDPOINTS = {
       POST_VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
       GET_COMPLETED_ZOO_COUNTER_BOOKINGS: `${API_BASE_URL}ParkReport/GetCompletedZooCounterBookings`,
       GET_NEHRU_USER_WISE_PAYMENT_DETAILS: `${API_BASE_URL}ParkReport/GetNehruUserWisePaymentDetails`,
+      GET_PARK_BOOKING_REPORTS: `${API_BASE_URL}v2/Transaction/GetParkBookingReports`,
       // VERIFY_TICKET: `${API_BASE_URL}PaymentTransaction/ToCheckOrderStatusCall`,
     },
     COUNTER_WISE_BOOKING_REPORTS: {

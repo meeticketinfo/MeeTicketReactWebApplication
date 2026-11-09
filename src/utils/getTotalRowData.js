@@ -25,10 +25,50 @@ const formatTotalValue = (sum) =>
 
 const isTotalRow = (params) => Boolean(params?.data?.isTotal);
 
+const collectTotalColumns = (columnDefs = []) => {
+  const totalColumns = [];
+
+  const walk = (cols = []) => {
+    cols.forEach((col) => {
+      if (!col) return;
+      if (Array.isArray(col.children) && col.children.length > 0) {
+        walk(col.children);
+        return;
+      }
+      if (col.isTotal === true && col.field) {
+        totalColumns.push(col);
+      }
+    });
+  };
+
+  walk(columnDefs);
+  return totalColumns;
+};
+
+const findFirstVisibleField = (columnDefs = []) => {
+  for (const col of columnDefs) {
+    if (!col || col.hide) continue;
+    if (Array.isArray(col.children) && col.children.length > 0) {
+      const nested = findFirstVisibleField(col.children);
+      if (nested) return nested;
+      continue;
+    }
+    if (col.field) return col.field;
+  }
+  return null;
+};
+
 const applyTotalRowDisplay = (columnDefs = []) =>
   columnDefs.map((col) => {
     if (!col) {
       return col;
+    }
+
+    if (Array.isArray(col.children) && col.children.length > 0) {
+      return {
+        ...col,
+        children: applyTotalRowDisplay(col.children),
+      };
     }
 
     const originalValueFormatter = col.valueFormatter;
@@ -81,6 +121,7 @@ const applyTotalRowDisplay = (columnDefs = []) =>
 
 /**
  * Builds grid rows with a total row for columns marked `isTotal: true`.
+ * Supports nested column groups (`children`).
  * Returns row data plus columnDefs that blank non-total cells (no "N/A" or buttons).
  */
 export const getTotalRowData = (tableData = [], columnDefs = []) => {
@@ -91,7 +132,7 @@ export const getTotalRowData = (tableData = [], columnDefs = []) => {
     };
   }
 
-  const totalColumns = columnDefs.filter((col) => col?.isTotal === true);
+  const totalColumns = collectTotalColumns(columnDefs);
 
   if (totalColumns.length === 0) {
     return { rowData: tableData, columnDefs };
@@ -102,11 +143,11 @@ export const getTotalRowData = (tableData = [], columnDefs = []) => {
     return { rowData: tableData, columnDefs };
   }
 
-  const firstVisibleCol = columnDefs.find((col) => col?.field && !col.hide);
+  const firstVisibleField = findFirstVisibleField(columnDefs);
   const totalRow = { isTotal: true };
 
-  if (firstVisibleCol?.field) {
-    totalRow[firstVisibleCol.field] = "Total";
+  if (firstVisibleField) {
+    totalRow[firstVisibleField] = "Total";
   }
 
   totalColumns.forEach((col) => {
