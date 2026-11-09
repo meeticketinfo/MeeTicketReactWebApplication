@@ -50,6 +50,7 @@ export const useCurrentIndividualStore = create((set) => ({
         ServiceTypeID: serviceTypeID,
         PassengerTypeID: Number(payload?.passengerTypeID || 0) || 0,
         PaymentMode: "",
+        PaymentStatus: -1,
         OrderID: payload?.orderId || payload?.OrderID || "",
         TransactionID: payload?.transactionId || payload?.TransactionID || "",
         BookingStatus: parseStatus(payload?.bookingStatus, -1),

@@ -639,6 +639,21 @@ const sidebarItems = [
   },
 
   {
+    title: "NZP Services",
+    icon: FaCalendarCheck,
+    path: "",
+    gradientClass:
+      "bg-blue-v2 from-violet-500/[0.12] dark:from-violet-500/[0.24] to-violet-500/[0.04]",
+    subItems: [
+      {
+        title: "Institutional Discount",
+        icon: TbReportSearch,
+        path: "/institutional-discount",
+      },
+    ],
+  },
+
+  {
     title: "Masters",
     icon: FaCalendarCheck,
     path: "",

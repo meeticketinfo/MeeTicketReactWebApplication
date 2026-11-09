@@ -99,6 +99,36 @@ function CurrentConsolidatedList() {
       }
     },
     {
+      field: "TransactionID",
+      headerName: "PAYMENT TRANSACTION ID",
+      // flex: 1,
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
+    },
+    {
+      field: "orderId",
+      headerName: "ORDER ID",
+      // flex: 1,
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params.node.rowPinned === "bottom") return "";
+        return params.value || "N/A";
+      }
+    },
+    {
+      field: "BookingStatusName",
+      headerName: "BOOKING STATUS",
+      // flex: 1,
+      headerClass: "text-blue-v2  ",
+      valueFormatter: (params) => {
+        if (params?.node?.rowPinned === "bottom") return "";
+        return params?.value ? String(params.value).toUpperCase() : "N/A";
+      }
+    },
+    {
       field: "returnPNRNumber",
       headerName: "RETURN PNR NO",
       hide: true,
@@ -331,20 +361,12 @@ function CurrentConsolidatedList() {
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => params.value || "0",
     },
-    {
-      field: "orderId",
-      headerName: "ORDER ID",
-      // flex: 1,
-      headerClass: "text-blue-v2  ",
-      valueFormatter: (params) => {
-        if (params.node.rowPinned === "bottom") return "";
-        return params.value || "N/A";
-      }
-    },
+    
     {
       field: "paymentMode",
       headerName: "PAYMENT MODE",
       // flex: 1,
+      hide: true,
       maxWidth: 130,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
@@ -386,27 +408,7 @@ function CurrentConsolidatedList() {
     },
 
 
-    {
-      field: "TransactionID",
-      headerName: "PAYMENT TRANSACTION ID",
-      // flex: 1,
-      headerClass: "text-blue-v2  ",
-      valueFormatter: (params) => {
-        if (params.node.rowPinned === "bottom") return "";
-        return params.value || "N/A";
-      }
-    },
-    {
-      field: "BookingStatusName",
-      headerName: "BOOKING STATUS",
-      // flex: 1,
-      headerClass: "text-blue-v2  ",
-
-      valueFormatter: (params) => {
-        if (params?.node?.rowPinned === "bottom") return "";
-        return params?.value ? String(params.value).toUpperCase() : "N/A";
-      }
-    },
+    
 
     {
       headerName: "Ticket",
@@ -490,6 +492,7 @@ function CurrentConsolidatedList() {
       field: "refundDate",
       headerName: "REFUND DATE",
       // flex: 1,
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
@@ -500,6 +503,7 @@ function CurrentConsolidatedList() {
       field: "refundId",
       headerName: "REFUND ID",
       // flex: 1,
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
@@ -510,6 +514,7 @@ function CurrentConsolidatedList() {
       field: "refundStatus",
       headerName: "REFUND STATUS",
       // flex: 1,
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
@@ -520,6 +525,7 @@ function CurrentConsolidatedList() {
       field: "paytmSettledUTR",
       headerName: "PAYTM SETTLED UTR",
       // flex: 1,
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
@@ -530,6 +536,7 @@ function CurrentConsolidatedList() {
       field: "utrProcessedTime",
       headerName: "UTR PROCESSED TIME",
       // flex: 1,
+      hide: true,
       headerClass: "text-blue-v2  ",
       valueFormatter: (params) => {
         if (params.node.rowPinned === "bottom") return "";
