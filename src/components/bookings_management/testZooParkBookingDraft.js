@@ -62,7 +62,7 @@ export const isEntryBookingItem = (
 };
 
 /**
- * Government → fixed 25%.
+ * Government → park discount from GetParkDiscount API.
  * Private + Discount Yes → user percent (1–100).
  * Otherwise → no institutional Entry discount.
  */
@@ -71,10 +71,15 @@ export const resolveInstitutionalDiscountPercent = ({
   institutionalType,
   institutionalDiscount,
   institutionalDiscountPercent,
+  parkDiscountPercent,
 } = {}) => {
   if (!isInstitutional) return null;
 
-  if (institutionalType === "government") return 25;
+  if (institutionalType === "government") {
+    const pct = Number(parkDiscountPercent);
+    if (!Number.isNaN(pct) && pct > 0 && pct <= 100) return pct;
+    return null;
+  }
 
   if (
     institutionalType === "private" &&
@@ -101,6 +106,7 @@ export const calculateInstitutionalEntryConcession = ({
   institutionalType,
   institutionalDiscount,
   institutionalDiscountPercent,
+  parkDiscountPercent,
 } = {}) => {
   const lookups = { allServiceVariants, allServices, allFacilities };
   const rawTotal = calculateSelectedItemsTotal(selectedItems);
@@ -109,6 +115,7 @@ export const calculateInstitutionalEntryConcession = ({
     institutionalType,
     institutionalDiscount,
     institutionalDiscountPercent,
+    parkDiscountPercent,
   });
 
   if (percent == null) {

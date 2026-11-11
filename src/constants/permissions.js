@@ -41,7 +41,7 @@ export const superAdminPermissions = [
   "bus-pass-sales-statement-report",
   "bus-pass-settlement-summary-report",
   "monthly-reports",
-  // "institutional-discount",
+  "institutional-discount",
   "banner",
   "pos-reports",
   "intercity-settlement-summary-report",
@@ -137,13 +137,13 @@ export const parkAdminPermissions = [
   "pos-reports",
   // "add-language",
   // "group-details",
-  // "institutional-discount",
+  "institutional-discount",
 ];
 
 // custom park admin permissions
 export const CustomParkAdminPermissions = [
   "dashboard",
-  // "institutional-discount",
+  "institutional-discount",
   "gate-keepers",
   "bookings",
   "facility-services",

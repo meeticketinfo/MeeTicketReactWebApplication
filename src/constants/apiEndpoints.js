@@ -116,6 +116,8 @@ export const API_ENDPOINTS = {
       DELETE_PARK: `${API_BASE_URL}Master/DeletePark`,
       GET_PARK_DETAILS: `${API_BASE_URL}Master/`,
       GET_NODAL_OFFICER_ENTITIES: `${API_BASE_URL}NodalOfficer/GetAllParksOfNodalOfficer`,
+      SAVE_PARK_DISCOUNT: `v2/Master/SaveParkDiscount`,
+      GET_PARK_DISCOUNT: `v2/Master/GetParkDiscount`,
     },
     INTERCITY: {
       ADD_INTERCITY_CITIES: `${RTC_INTERCITY_API_BASE_URL}MasterDetails/CreateRTCCity`,

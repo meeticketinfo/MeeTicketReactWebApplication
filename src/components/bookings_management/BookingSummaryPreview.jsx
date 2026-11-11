@@ -33,6 +33,7 @@ import {
   saveTestZooParkBookingDraft,
 } from "./testZooParkBookingDraft";
 import InstitutionalConcessionBanner from "./InstitutionalConcessionBanner";
+import { useParkStore } from "../../store/masters/parksStore";
 
 const focusConfirmBooking = () => {
   window.setTimeout(() => {
@@ -84,12 +85,16 @@ export const BookingSummaryPreview = () => {
   const { allServices, fetchAllServices } = useServiceStore();
   const { allServiceVariants, fetchAllServiceVariants } =
     useServiceVariantStore();
+  const { fetchParkDiscount, parkDiscountPercent } = useParkStore();
 
   const [upi, setUpi] = useState(false);
   const [pos, setPos] = useState(false);
   const [draft] = useState(
     () => location.state?.bookingDraft || loadTestZooParkBookingDraft()
   );
+
+  const governmentDiscountPercent =
+    parkDiscountPercent ?? draft?.parkDiscountPercent ?? null;
 
   useEffect(() => {
     fetchAllServices();
@@ -99,6 +104,7 @@ export const BookingSummaryPreview = () => {
     if (parkId) {
       FetchLocationDetails(parkId);
     }
+    fetchParkDiscount().catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -121,12 +127,14 @@ export const BookingSummaryPreview = () => {
       institutionalType: draft?.institutionalType,
       institutionalDiscount: draft?.institutionalDiscount,
       institutionalDiscountPercent: draft?.institutionalDiscountPercent,
+      parkDiscountPercent: governmentDiscountPercent,
     });
   }, [
     draft,
     allServiceVariants,
     allServices,
     allFacilities,
+    governmentDiscountPercent,
   ]);
 
   const summaryRows = useMemo(() => {
@@ -236,6 +244,7 @@ export const BookingSummaryPreview = () => {
             institutionalType: draft?.institutionalType,
             institutionalDiscount: draft?.institutionalDiscount,
             institutionalDiscountPercent: draft?.institutionalDiscountPercent,
+            parkDiscountPercent: governmentDiscountPercent,
           });
 
     const selectedItems = applyInstitutionalEntryDiscountToSelectedItems(
@@ -261,7 +270,7 @@ export const BookingSummaryPreview = () => {
           InchargeName: draft.inchargeName || "",
           DiscountPercent:
             draft.institutionalType === "government"
-              ? 25
+              ? Number(governmentDiscountPercent) || 0
               : Number(draft.institutionalDiscountPercent) || 0,
         }
       : {};

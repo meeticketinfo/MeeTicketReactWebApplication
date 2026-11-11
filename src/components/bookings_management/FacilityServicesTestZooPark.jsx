@@ -28,6 +28,7 @@ import {
   saveTestZooParkBookingDraft,
 } from "./testZooParkBookingDraft";
 import InstitutionalConcessionBanner from "./InstitutionalConcessionBanner";
+import { useParkStore } from "../../store/masters/parksStore";
 
 const SPECIAL_PARK_ID = "a8f9123b-0e6f-41e3-9328-6e72eca950e0";
 
@@ -529,6 +530,7 @@ export const FacilityServicesTestZooPark = () => {
   ] = useState(() => restoredDraft?.institutionalDiscountPercent || "");
 
   const { fetchAllRecurringHolidays, allRecurringHolidays } = useHolidayStore();
+  const { fetchParkDiscount, parkDiscountPercent } = useParkStore();
   // disableing button for recurriing holidays
 
   const currentDay = new Date()
@@ -610,6 +612,7 @@ export const FacilityServicesTestZooPark = () => {
     fetchAllServices();
     fetchAllServiceVariants();
     FetchLocationDetails(decodedTokenData?.data?.ParkId);
+    fetchParkDiscount().catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -737,6 +740,7 @@ export const FacilityServicesTestZooPark = () => {
           values.institutionalDiscount === "yes"
             ? values.institutionalDiscountPercent
             : "",
+        parkDiscountPercent,
       });
 
       const bookingDraft = {
@@ -764,6 +768,7 @@ export const FacilityServicesTestZooPark = () => {
           values.institutionalDiscount === "yes"
             ? values.institutionalDiscountPercent
             : "",
+        parkDiscountPercent,
         // Snapshot so preview uses the same Entry discount (no double apply)
         institutionalConcession,
         returnPath,
@@ -1799,6 +1804,7 @@ export const FacilityServicesTestZooPark = () => {
                         institutionalDiscount: values.institutionalDiscount,
                         institutionalDiscountPercent:
                           values.institutionalDiscountPercent,
+                        parkDiscountPercent,
                       });
                     return (
                       <InstitutionalConcessionBanner

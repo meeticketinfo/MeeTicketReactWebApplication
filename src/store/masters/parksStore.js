@@ -21,6 +21,9 @@ export const useParkStore = create((set) => ({
   allParkBankTransactions: [],
   isFetchAllParkBankTransactionsLoading: false,
   isSaveParkDetailsLoading: false,
+  isSaveParkDiscountLoading: false,
+  isFetchParkDiscountLoading: false,
+  parkDiscountPercent: null,
   isFetchParkDetailsLoading: false,
   isFetchAllParksLoading: false,
   fetchParkDetailsError: null,
@@ -111,6 +114,71 @@ export const useParkStore = create((set) => ({
         nodalOfficerParksError: error.message,
         isFetchAllNodalOfficerParksLoading: false,
       });
+    }
+  },
+
+  // Fetch institutional / park discount percent (Government)
+  fetchParkDiscount: async () => {
+    set({ isFetchParkDiscountLoading: true });
+    try {
+      const response = await apiService.get(
+        API_ENDPOINTS.MASTERS.PARK.GET_PARK_DISCOUNT
+      );
+      const payload = response?.data?.data ?? response?.data ?? {};
+      const nested = payload?.data ?? payload;
+      const raw =
+        nested?.discountPercent ??
+        nested?.DiscountPercent ??
+        payload?.discountPercent ??
+        payload?.DiscountPercent;
+      const parkDiscountPercent =
+        raw === null || raw === undefined || raw === ""
+          ? null
+          : Number(raw);
+
+      set({
+        parkDiscountPercent: Number.isFinite(parkDiscountPercent)
+          ? parkDiscountPercent
+          : null,
+        isFetchParkDiscountLoading: false,
+      });
+      return {
+        success: true,
+        data: response,
+        parkDiscountPercent: Number.isFinite(parkDiscountPercent)
+          ? parkDiscountPercent
+          : null,
+      };
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || error.message,
+        isFetchParkDiscountLoading: false,
+      });
+      throw error;
+    }
+  },
+
+  // Save institutional / park discount percent
+  saveParkDiscount: async (discountPercent) => {
+    set({ isSaveParkDiscountLoading: true });
+    try {
+      const response = await apiService.post(
+        API_ENDPOINTS.MASTERS.PARK.SAVE_PARK_DISCOUNT,
+        { discountPercent: Number(discountPercent) }
+      );
+      const savedPercent =
+        response?.data?.data?.discountPercent ?? Number(discountPercent);
+      set({
+        parkDiscountPercent: Number(savedPercent),
+        isSaveParkDiscountLoading: false,
+      });
+      return { success: true, data: response };
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || error.message,
+        isSaveParkDiscountLoading: false,
+      });
+      throw error;
     }
   },
 
