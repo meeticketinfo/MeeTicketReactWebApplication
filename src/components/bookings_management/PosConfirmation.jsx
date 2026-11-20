@@ -33,8 +33,8 @@ const isPosTxnFailure = (resultStatus) =>
 const PosConfirmation = () => {
   const isOnline = useOnlineStatus();
   console.log("isOnline", isOnline);
-  const [counter, setCounter] = useState(120);
-  const [Timercounter, setTimercounter] = useState(120);
+  const [counter, setCounter] = useState(240);
+  const [Timercounter, setTimercounter] = useState(240);
   const [isPosTransactionFailed, setIsPosTransactionFailed] = useState(false);
   const [Loader, setLoader] = useState(false);
   const [IsLoading, setIsLoading] = useState(false);

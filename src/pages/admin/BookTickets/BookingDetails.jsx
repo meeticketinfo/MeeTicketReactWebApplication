@@ -13,11 +13,9 @@ import TransactionProcessingLoader from "../../../components/bookings_management
 import useAuthStore from "../../../store/authStore";
 import { clearTestZooParkBookingDraft } from "../../../components/bookings_management/testZooParkBookingDraft";
 import { useQuantitiesStore } from "../../../store/quantitiesStore";
+import { TEST_ZOO_PARK_ID } from "../../../constants/appConfig";
 
 const normalizeText = (value) => String(value || "").trim();
-
-const isTestZooPark = (parkName) =>
-  normalizeText(parkName).toLowerCase() === "test zoo park";
 
 const NZP_TICKET_TERMS = [
   "Tickets once issued will not be cancelled or refunded or transferred to another date.",
@@ -111,7 +109,7 @@ export default function BookingDetails() {
   const fromBookingFlow = Boolean(location.state?.fromBookingFlow);
   const [bookingDetails, setBookingDetails] = useState(null);
   const [bookingDetailsResponse, setBookingDetailsResponse] = useState(null);
-
+  console.log("bookingDetailsResponse", bookingDetailsResponse);
   const {
     fetchCurrentBookingDetailsByBookingId,
     isFetchCurrentBookingDetailsLoading,
@@ -171,7 +169,14 @@ export default function BookingDetails() {
     decodedTokenData?.data?.ParkName ||
     "";
 
-  const useNewTicketPrint = isTestZooPark(parkName);
+  // Prefer booking response Park ID; fall back to token ParkId (not booking/service/facility IDs)
+  const parkId =
+    bookingDetailsResponse?.parkId ||
+    bookingDetailsResponse?.ParkId ||
+    decodedTokenData?.data?.ParkId ||
+    "";
+
+  const useNewTicketPrint = parkId === TEST_ZOO_PARK_ID;
 
   const adultChildSummaryRows = useMemo(
     () => buildAdultChildSummaryRows(bookingDetails || []),
@@ -214,6 +219,30 @@ export default function BookingDetails() {
           (Number(item?.amount) || 0) * (Number(item?.quantity) || 0)),
       0
     );
+
+  // Institutional booking fields from GetBookingDetailsByBookingId
+  const visitorTypeRaw =
+    bookingDetailsResponse?.visitorType ||
+    bookingDetailsResponse?.VisitorType ||
+    "";
+  // Only for TEST_ZOO_PARK_ID (480a194e-33bd-40b1-a84b-f6ca9b3f6c79)
+  const isInstitutionalBooking =
+    useNewTicketPrint && String(visitorTypeRaw).toLowerCase() === "institutional"
+  const inchargeName = useNewTicketPrint
+    ? bookingDetailsResponse?.extra_Details?.InchargeName ||
+      bookingDetailsResponse?.inchargeName ||
+      ""
+    : "";
+  const institutionName = useNewTicketPrint
+    ? bookingDetailsResponse?.extra_Details?.InstitutionName ||
+      bookingDetailsResponse?.extra_Details?.institutionName ||
+      ""
+    : "";
+  const institutionalType = useNewTicketPrint
+    ? bookingDetailsResponse?.extra_Details?.InstitutionalType ||
+      bookingDetailsResponse?.extra_Details?.institutionalType ||
+      ""
+    : "";
 
   // Existing (legacy) consolidated layout data
   const consolidatedData = [];
@@ -802,7 +831,7 @@ export default function BookingDetails() {
 
           <div className="flex justify-center">
             {useNewTicketPrint ? (
-              /* ========== NEW print layout: TEST ZOO PARK only ========== */
+              /* ========== NEW print layout: TEST_ZOO_PARK_ID only ========== */
               <div
                 aria-label="card"
                 className="p-3 rounded-md bg-white border border-gray-300 printable-card"
@@ -890,6 +919,28 @@ export default function BookingDetails() {
                     <span className="info-label">Payment Type</span>
                     <span className="info-value">: {paymentType}</span>
                   </div>
+                  {isInstitutionalBooking && (
+                    <>
+                      <div className="info-row">
+                        <span className="info-label">Institutional Type</span>
+                        <span className="info-value">
+                          : {institutionalType || "N/A"}
+                        </span>
+                      </div>
+                      <div className="info-row">
+                        <span className="info-label">Institution Name</span>
+                        <span className="info-value">
+                          : {institutionName || "N/A"}
+                        </span>
+                      </div>
+                      <div className="info-row">
+                        <span className="info-label">Incharge Name</span>
+                        <span className="info-value">
+                          : {inchargeName || "N/A"}
+                        </span>
+                      </div>
+                    </>
+                  )}
 
                   <div className="section-title">Ticket Summary</div>
                   {adultChildSummaryRows.length > 0 ? (
