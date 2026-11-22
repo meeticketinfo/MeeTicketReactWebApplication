@@ -138,6 +138,9 @@ export const parkAdminPermissions = [
   // "add-language",
   // "group-details",
   "institutional-discount",
+  "nzp-day-wise-booking-report",
+  "nzp-ticket-bookings-transaction-report",
+  "nzp-desk-wise-booking-report",
 ];
 
 // custom park admin permissions
@@ -160,6 +163,9 @@ export const CustomParkAdminPermissions = [
   "application-day-wise-bookings",
   "day-wise-bookings",
   "pos-reports",
+  "nzp-day-wise-booking-report",
+  "nzp-ticket-bookings-transaction-report",
+  "nzp-desk-wise-booking-report",
 ];
 
 // botanical garden park admin permissions
