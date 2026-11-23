@@ -29,16 +29,21 @@ const NZP_TICKET_TERMS = [
 
 const formatBookingDateTime = (value) => {
   if (!value) return "N/A";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return String(value).replace("T", " ").slice(0, 16);
+  const raw = String(value).trim();
+  // Already date-only or "DD-MM-YYYY HH:mm" / ISO with time → keep date part only
+  const dateOnlyMatch = raw.match(/^(\d{2}-\d{2}-\d{4})/);
+  if (dateOnlyMatch) return dateOnlyMatch[1];
+  const isoDateMatch = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (isoDateMatch) {
+    const [yyyy, mm, dd] = isoDateMatch[1].split("-");
+    return `${dd}-${mm}-${yyyy}`;
   }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return raw;
   const dd = String(date.getDate()).padStart(2, "0");
   const mm = String(date.getMonth() + 1).padStart(2, "0");
   const yyyy = date.getFullYear();
-  const hh = String(date.getHours()).padStart(2, "0");
-  const min = String(date.getMinutes()).padStart(2, "0");
-  return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+  return `${dd}-${mm}-${yyyy}`;
 };
 
 const isAdultVariant = (bookingType = "") => {
@@ -1053,7 +1058,10 @@ export default function BookingDetails() {
                           fontWeight: 800,
                         }}
                       >
-                        : {bookingDetailsResponse?.bookingDate || "N/A"}
+                        :{" "}
+                        {formatBookingDateTime(
+                          bookingDetailsResponse?.bookingDate
+                        )}
                       </span>
                     </div>
                     <div style={{ fontSize: 20, whiteSpace: "nowrap" }}>

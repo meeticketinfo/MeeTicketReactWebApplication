@@ -39,6 +39,12 @@ const formatDateTime = (value) => {
   });
 };
 
+const toNum = (value) => {
+  if (value === null || value === undefined || value === "") return 0;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : 0;
+};
+
 const numericCol = (field, headerName, minWidth = 110) => ({
   field,
   headerName,
@@ -61,6 +67,40 @@ const textCol = (field, headerName, minWidth = 130) => ({
       ? "-"
       : displayValue(params.value),
 });
+
+/** Services that use Adult / Child / Amount (Rs.) column shape */
+const ADULT_CHILD_SERVICE_PREFIXES = [
+  "entry",
+  "bovNonExclusive",
+  "safariNonAcBus",
+  "safariAcBus",
+  "toyTrain",
+  "aquarium",
+  "nocturnalAnimalHouse",
+  "reptileHouse",
+];
+
+const adultChildServiceGroup = (headerName, prefix) => ({
+  headerName,
+  headerClass: "text-blue-v2 text-center",
+  marryChildren: true,
+  children: [
+    numericCol(`${prefix}AdultUnit`, "Adult", 90),
+    numericCol(`${prefix}ChildUnit`, "Child", 90),
+    numericCol(`${prefix}AmountRs`, "Amount (Rs.)", 120),
+  ],
+});
+
+const enrichAdultChildAmountRows = (rows = []) =>
+  (rows || []).map((row) => {
+    if (!row || row.isTotal) return row;
+    const enriched = { ...row };
+    ADULT_CHILD_SERVICE_PREFIXES.forEach((prefix) => {
+      enriched[`${prefix}AmountRs`] =
+        toNum(row[`${prefix}AdultAmount`]) + toNum(row[`${prefix}ChildAmount`]);
+    });
+    return enriched;
+  });
 
 const TicketBookingsTransactionList = () => {
   const savedFilters = JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY));
@@ -126,7 +166,32 @@ const TicketBookingsTransactionList = () => {
         },
       },
       textCol("createdBy", "Created By", 120),
-      textCol("visitorType", "Visitor Type", 140),
+      {
+        field: "visitorType",
+        headerName: "Visitor Type",
+        minWidth: 140,
+        headerClass: "text-blue-v2",
+        valueGetter: (params) => {
+          if (params.data?.isTotal) return "";
+          const bookingSource = String(
+            params.data?.bookingSource ?? ""
+          ).trim();
+          if (bookingSource === "MeeTicketApp") {
+            return "MeeTicketApp";
+          }
+          const value = params.data?.visitorType;
+          if (value === null || value === undefined || value === "") {
+            return "-";
+          }
+          return value;
+        },
+        valueFormatter: (params) =>
+          params.value === null ||
+            params.value === undefined ||
+            params.value === ""
+            ? "-"
+            : displayValue(params.value),
+      },
       {
         field: "purchaseDate",
         headerName: "Purchase Date",
@@ -139,7 +204,16 @@ const TicketBookingsTransactionList = () => {
         headerName: "Booking Date",
         minWidth: 130,
         headerClass: "text-blue-v2",
-        valueFormatter: (params) => formatDateOnly(params.value),
+        valueGetter: (params) => {
+          if (params.data?.isTotal) return "";
+          return formatDateOnly(params.data?.bookingDate);
+        },
+        valueFormatter: (params) =>
+          params.value === null ||
+          params.value === undefined ||
+          params.value === ""
+            ? "-"
+            : params.value,
       },
       textCol("bookingId", "Booking ID", 200),
       textCol("institutionName", "Institution Name", 150),
@@ -168,28 +242,8 @@ const TicketBookingsTransactionList = () => {
           textCol("paymentMode", "Payment Mode", 130),
         ],
       },
-      {
-        headerName: "Entry",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("entryAdultUnit", "Adult Units", 110),
-          numericCol("entryAdultAmount", "Adult Amount", 120),
-          numericCol("entryChildUnit", "Child Units", 110),
-          numericCol("entryChildAmount", "Child Amount", 120),
-        ],
-      },
-      {
-        headerName: "BOV Non Exclusive",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("bovNonExclusiveAdultUnit", "Adult Units", 110),
-          numericCol("bovNonExclusiveAdultAmount", "Adult Amount", 120),
-          numericCol("bovNonExclusiveChildUnit", "Child Units", 110),
-          numericCol("bovNonExclusiveChildAmount", "Child Amount", 120),
-        ],
-      },
+      adultChildServiceGroup("Entry", "entry"),
+      adultChildServiceGroup("BOV Non Exclusive", "bovNonExclusive"),
       {
         headerName: "BOV Exclusive",
         headerClass: "text-blue-v2 text-center",
@@ -201,69 +255,12 @@ const TicketBookingsTransactionList = () => {
           numericCol("bovExclusive11SeaterAmount", "11 Seater Amount", 140),
         ],
       },
-      {
-        headerName: "Safari",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol(
-            "safariNonAcBusAdultUnit",
-            "Non AC Bus Adult Units",
-            160
-          ),
-          numericCol(
-            "safariNonAcBusAdultAmount",
-            "Non AC Bus Adult Amount",
-            170
-          ),
-          numericCol("safariAcBusAdultUnit", "AC Bus Adult Units", 150),
-          numericCol("safariAcBusAdultAmount", "AC Bus Adult Amount", 160),
-        ],
-      },
-      {
-        headerName: "Toy Train",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("toyTrainAdultUnit", "Adult Units", 110),
-          numericCol("toyTrainAdultAmount", "Adult Amount", 120),
-          numericCol("toyTrainChildUnit", "Child Units", 110),
-          numericCol("toyTrainChildAmount", "Child Amount", 120),
-        ],
-      },
-      {
-        headerName: "Aquarium",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("aquariumAdultUnit", "Adult Units", 110),
-          numericCol("aquariumAdultAmount", "Adult Amount", 120),
-          numericCol("aquariumChildUnit", "Child Units", 110),
-          numericCol("aquariumChildAmount", "Child Amount", 120),
-        ],
-      },
-      {
-        headerName: "Nocturnal Animal House",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("nocturnalAnimalHouseAdultUnit", "Adult Units", 110),
-          numericCol("nocturnalAnimalHouseAdultAmount", "Adult Amount", 120),
-          numericCol("nocturnalAnimalHouseChildUnit", "Child Units", 110),
-          numericCol("nocturnalAnimalHouseChildAmount", "Child Amount", 120),
-        ],
-      },
-      {
-        headerName: "Reptile House",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("reptileHouseAdultUnit", "Adult Units", 110),
-          numericCol("reptileHouseAdultAmount", "Adult Amount", 120),
-          numericCol("reptileHouseChildUnit", "Child Units", 110),
-          numericCol("reptileHouseChildAmount", "Child Amount", 120),
-        ],
-      },
+      adultChildServiceGroup("Safari – Non AC", "safariNonAcBus"),
+      adultChildServiceGroup("Safari – AC", "safariAcBus"),
+      adultChildServiceGroup("Toy Train", "toyTrain"),
+      adultChildServiceGroup("Aquarium", "aquarium"),
+      adultChildServiceGroup("Nocturnal Animal House", "nocturnalAnimalHouse"),
+      adultChildServiceGroup("Reptile House", "reptileHouse"),
       {
         headerName: "Cloak Room / Luggage",
         headerClass: "text-blue-v2 text-center",
@@ -318,17 +315,22 @@ const TicketBookingsTransactionList = () => {
 
   useEffect(() => {
     if (!hasSearched) return;
+    const enrichedRows = enrichAdultChildAmountRows(
+      ticketBookingsTransactionData || []
+    );
     const { columnDefs: nextColumnDefs } = getTotalRowData(
-      ticketBookingsTransactionData || [],
+      enrichedRows,
       columnDefs
     );
-    setGridData(ticketBookingsTransactionData || []);
+    setGridData(enrichedRows);
     setGridColumnDefs(nextColumnDefs);
   }, [ticketBookingsTransactionData, columnDefs, hasSearched]);
 
   const getPagePinnedBottomRowData = useCallback(
     (displayedRows = []) => {
-      const pageRows = (displayedRows || []).filter((row) => !row?.isTotal);
+      const pageRows = enrichAdultChildAmountRows(
+        (displayedRows || []).filter((row) => !row?.isTotal)
+      );
       if (pageRows.length === 0) return [];
 
       const { rowData } = getTotalRowData(pageRows, columnDefs);
