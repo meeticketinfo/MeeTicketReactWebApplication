@@ -196,6 +196,11 @@ export default function BookingDetails() {
 
   const BookedByCounterName = bookingDetailsResponse?.bookedByCounterName|| "N/A";
 
+  const mobileNumber =
+    bookingDetailsResponse?.mobileNumber ||
+    bookingDetailsResponse?.MobileNumber ||
+    "N/A";
+
   // Booking ID – current API fields
   const bookingId =
     bookingDetailsResponse?.referenceId ||
@@ -892,6 +897,10 @@ export default function BookingDetails() {
                   <div className="info-row">
                     <span className="info-label">Counter</span>
                     <span className="info-value">: {BookedByCounterName || "N/A"}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Mobile Number</span>
+                    <span className="info-value">: {mobileNumber}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">Amount ₹</span>

@@ -28,6 +28,10 @@ const HoverPopup = ({ isHovered, data }) => {
                 <h2>Cash Payment:</h2>
                 <span className="font-bold text-gray-700">₹{data.cashCount}</span>
               </div>
+              <div className="flex gap-1 text-sm font-medium">
+                <h2>MeeTicket App:</h2>
+                <span className="font-bold text-gray-700">₹{data.meeTicketAppAmount}</span>
+              </div>
             </div>
           </motion.div>
         )}
