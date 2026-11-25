@@ -46,6 +46,35 @@ const textCol = (field, headerName, minWidth = 130) => ({
       : displayValue(params.value),
 });
 
+const toNum = (value) => {
+  if (value === null || value === undefined || value === "") return 0;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : 0;
+};
+
+const enrichDayWiseRows = (rows = []) =>
+  (rows || []).map((row) => {
+    if (!row || row.isTotal) return row;
+    const enriched = { ...row };
+    const safariACAdultAmount = toNum(row.safariACAdultAmount);
+    const safariACChildAmount = toNum(row.safariACChildAmount);
+    enriched.safariACAmountRs =
+      safariACAdultAmount + safariACChildAmount ||
+      toNum(row.safariACAmount);
+    enriched.stillCameraUnit = toNum(row.stillCameraUnit);
+    enriched.stillVideoCameraUnit = toNum(
+      row.stillVideoCameraUnit ?? row.videoCameraUnit
+    );
+    enriched.movieCameraShootingChild = toNum(
+      row.movieCameraShootingChild ?? row.movieCameraUnit
+    );
+    enriched.cameraServicesAmountRs =
+      toNum(row.stillCameraAmount) +
+      toNum(row.stillVideoCameraAmount ?? row.videoCameraAmount) +
+      toNum(row.movieCameraShootingAmount ?? row.movieCameraAmount);
+    return enriched;
+  });
+
 const DayWiseBookingList = () => {
   const savedFilters = JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY));
   const {
@@ -137,6 +166,17 @@ const DayWiseBookingList = () => {
         ],
       },
       {
+        headerName: "Camera Services",
+        headerClass: "text-blue-v2 text-center",
+        marryChildren: true,
+        children: [
+          numericCol("stillCameraUnit", "Still Camera", 130),
+          numericCol("stillVideoCameraUnit", "Video Camera", 130),
+          numericCol("movieCameraShootingChild", "Commercial Camera", 150),
+          numericCol("cameraServicesAmountRs", "Amount", 110),
+        ],
+      },
+      {
         headerName: "Battery Operated Vehicle – Non Exclusive",
         headerClass: "text-blue-v2 text-center",
         marryChildren: true,
@@ -172,7 +212,8 @@ const DayWiseBookingList = () => {
         marryChildren: true,
         children: [
           numericCol("safariACAdult", "Adult", 90),
-          numericCol("safariACAmount", "Amount", 110),
+          numericCol("safariACChild", "Child", 90),
+          numericCol("safariACAmountRs", "Amount", 110),
         ],
       },
       {
@@ -215,55 +256,26 @@ const DayWiseBookingList = () => {
           numericCol("reptileAmount", "Amount", 110),
         ],
       },
-      {
-        headerName: "Luggage Details",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("luggageBagUnit", "Luggage Bag Units", 140),
-          numericCol("luggageBagAmount", "Luggage Bag Amount", 150),
-          numericCol("bigBagUnit", "Big Bag Units", 120),
-          numericCol("bigBagAmount", "Big Bag Amount", 130),
-          numericCol("smallBagUnit", "Small Bag Units", 130),
-          numericCol("smallBagAmount", "Small Bag Amount", 140),
-        ],
-      },
-      {
-        headerName: "Camera Details",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("stillCameraUnit", "Still Camera Units", 140),
-          numericCol("stillCameraAmount", "Still Camera Amount", 150),
-          numericCol("videoCameraUnit", "Video Camera Units", 140),
-          numericCol("videoCameraAmount", "Video Camera Amount", 150),
-          numericCol("movieCameraUnit", "Movie Camera Units", 140),
-          numericCol("movieCameraAmount", "Movie Camera Amount", 150),
-          numericCol("cameraLensTripodUnit", "Camera Lens/Tripod Units", 180),
-          numericCol(
-            "cameraLensTripodAmount",
-            "Camera Lens/Tripod Amount",
-            180
-          ),
-        ],
-      },
     ],
     []
   );
 
   useEffect(() => {
     if (!hasSearched) return;
+    const enrichedRows = enrichDayWiseRows(dayWiseBookingData || []);
     const { columnDefs: nextColumnDefs } = getTotalRowData(
-      dayWiseBookingData || [],
+      enrichedRows,
       columnDefs
     );
-    setGridData(dayWiseBookingData || []);
+    setGridData(enrichedRows);
     setGridColumnDefs(nextColumnDefs);
   }, [dayWiseBookingData, columnDefs, hasSearched]);
 
   const getPagePinnedBottomRowData = useCallback(
     (displayedRows = []) => {
-      const pageRows = (displayedRows || []).filter((row) => !row?.isTotal);
+      const pageRows = enrichDayWiseRows(
+        (displayedRows || []).filter((row) => !row?.isTotal)
+      );
       if (pageRows.length === 0) return [];
 
       const { rowData } = getTotalRowData(pageRows, columnDefs);

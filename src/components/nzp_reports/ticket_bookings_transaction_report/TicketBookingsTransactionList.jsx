@@ -99,6 +99,13 @@ const enrichAdultChildAmountRows = (rows = []) =>
       enriched[`${prefix}AmountRs`] =
         toNum(row[`${prefix}AdultAmount`]) + toNum(row[`${prefix}ChildAmount`]);
     });
+    enriched.cameraServicesAmountRs =
+      toNum(row.stillCameraAmount) +
+      toNum(row.stillVideoCameraAmount) +
+      toNum(row.movieCameraShootingAmount);
+    enriched.bovExclusiveAmountRs =
+      toNum(row.bovExclusive14SeaterAmount) +
+      toNum(row.bovExclusive11SeaterAmount);
     return enriched;
   });
 
@@ -243,16 +250,26 @@ const TicketBookingsTransactionList = () => {
         ],
       },
       adultChildServiceGroup("Entry", "entry"),
+      {
+        headerName: "Camera Services",
+        headerClass: "text-blue-v2 text-center",
+        marryChildren: true,
+        children: [
+          numericCol("stillCameraUnit", "Still Camera", 130),
+          numericCol("stillVideoCameraUnit", "Video Camera", 130),
+          numericCol("movieCameraShootingChild", "Commercial Camera", 150),
+          numericCol("cameraServicesAmountRs", "Amount (Rs.)", 120),
+        ],
+      },
       adultChildServiceGroup("BOV Non Exclusive", "bovNonExclusive"),
       {
         headerName: "BOV Exclusive",
         headerClass: "text-blue-v2 text-center",
         marryChildren: true,
         children: [
-          numericCol("bovExclusive14SeaterUnit", "14 Seater Units", 130),
-          numericCol("bovExclusive14SeaterAmount", "14 Seater Amount", 140),
-          numericCol("bovExclusive11SeaterUnit", "11 Seater Units", 130),
-          numericCol("bovExclusive11SeaterAmount", "11 Seater Amount", 140),
+          numericCol("bovExclusive14SeaterUnit", "14 Seater", 110),
+          numericCol("bovExclusive11SeaterUnit", "11 Seater", 110),
+          numericCol("bovExclusiveAmountRs", "Amount (Rs.)", 120),
         ],
       },
       adultChildServiceGroup("Safari – Non AC", "safariNonAcBus"),
@@ -261,54 +278,6 @@ const TicketBookingsTransactionList = () => {
       adultChildServiceGroup("Aquarium", "aquarium"),
       adultChildServiceGroup("Nocturnal Animal House", "nocturnalAnimalHouse"),
       adultChildServiceGroup("Reptile House", "reptileHouse"),
-      {
-        headerName: "Cloak Room / Luggage",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("cloakRoomLuggageBagUnit", "Luggage Bag Units", 140),
-          numericCol("cloakRoomLuggageBagAmount", "Luggage Bag Amount", 150),
-          numericCol("cloakRoomBuyBigBagUnit", "Big Bag Units", 120),
-          numericCol("cloakRoomBuyBigBagAmount", "Big Bag Amount", 130),
-          numericCol("cloakRoomBuySmallBagUnit", "Small Bag Units", 130),
-          numericCol("cloakRoomBuySmallBagAmount", "Small Bag Amount", 140),
-        ],
-      },
-      {
-        headerName: "Camera Details",
-        headerClass: "text-blue-v2 text-center",
-        marryChildren: true,
-        children: [
-          numericCol("stillCameraUnit", "Still Camera Units", 140),
-          numericCol("stillCameraAmount", "Still Camera Amount", 150),
-          numericCol("stillVideoCameraUnit", "Still Video Camera Units", 170),
-          numericCol(
-            "stillVideoCameraAmount",
-            "Still Video Camera Amount",
-            180
-          ),
-          numericCol(
-            "movieCameraShootingChild",
-            "Movie Camera Shooting Units",
-            180
-          ),
-          numericCol(
-            "movieCameraShootingAmount",
-            "Movie Camera Shooting Amount",
-            190
-          ),
-          numericCol(
-            "cameraWithLensTripodSetupUnit",
-            "Camera with Lens/Tripod Setup Units",
-            220
-          ),
-          numericCol(
-            "cameraWithLensTripodSetupAmount",
-            "Camera with Lens/Tripod Setup Amount",
-            230
-          ),
-        ],
-      },
     ],
     []
   );

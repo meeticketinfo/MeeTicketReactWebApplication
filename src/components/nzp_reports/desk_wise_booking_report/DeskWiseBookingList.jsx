@@ -36,6 +36,48 @@ const textCol = (field, headerName, minWidth = 130) => ({
       : displayValue(params.value),
 });
 
+const toNum = (value) => {
+  if (value === null || value === undefined || value === "") return 0;
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : 0;
+};
+
+/** Map API paytm fields into Paytm vs POS using createdBy (numeric = MeeTicket App / Paytm). */
+const enrichDeskWiseSuccessRows = (rows = []) =>
+  (rows || []).map((row) => {
+    if (!row || row.isTotal) return row;
+
+    const createdBy = String(row.createdBy ?? "").trim();
+    const isPaytmBooking = /^\d+$/.test(createdBy);
+
+    // Keep original API paytm values so totals stay correct if enrichment runs again
+    const apiPaytmTxn =
+      row._apiPaytmNoOfTransactions !== undefined
+        ? toNum(row._apiPaytmNoOfTransactions)
+        : toNum(row.paytmNoOfTransactions);
+    const apiPaytmAmt =
+      row._apiPaytmAmountRs !== undefined
+        ? toNum(row._apiPaytmAmountRs)
+        : toNum(row.paytmAmountRs);
+
+    const paytmNoOfTransactions = isPaytmBooking ? apiPaytmTxn : 0;
+    const paytmAmountRs = isPaytmBooking ? apiPaytmAmt : 0;
+    const posNoOfTransactions = isPaytmBooking ? 0 : apiPaytmTxn;
+    const posAmountRs = isPaytmBooking ? 0 : apiPaytmAmt;
+
+    return {
+      ...row,
+      _apiPaytmNoOfTransactions: apiPaytmTxn,
+      _apiPaytmAmountRs: apiPaytmAmt,
+      paytmNoOfTransactions,
+      paytmAmountRs,
+      posNoOfTransactions,
+      posAmountRs,
+      totalNoOfTransactions: paytmNoOfTransactions + posNoOfTransactions,
+      totalAmountRs: paytmAmountRs + posAmountRs,
+    };
+  });
+
 const DeskWiseBookingList = () => {
   const savedFilters = JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY));
   const {
@@ -122,12 +164,12 @@ const DeskWiseBookingList = () => {
         ],
       },
       {
-        headerName: "Cash",
+        headerName: "POS",
         headerClass: "text-blue-v2 text-center",
         marryChildren: true,
         children: [
-          numericCol("cashNoOfTransactions", "Cash No. of Transactions", 180),
-          numericCol("cashAmountRs", "Cash Amount (₹)", 140),
+          numericCol("posNoOfTransactions", "No. of Transactions", 160),
+          numericCol("posAmountRs", "Amount (₹)", 130),
         ],
       },
     ],
@@ -136,16 +178,18 @@ const DeskWiseBookingList = () => {
 
   useEffect(() => {
     if (!hasSearched) return;
+    const enrichedRows = enrichDeskWiseSuccessRows(deskWiseBookingData || []);
     const { columnDefs: nextColumnDefs } = getTotalRowData(
-      deskWiseBookingData || [],
+      enrichedRows,
       columnDefs
     );
-    setGridData(deskWiseBookingData || []);
+    setGridData(enrichedRows);
     setGridColumnDefs(nextColumnDefs);
   }, [deskWiseBookingData, columnDefs, hasSearched]);
 
   const getPagePinnedBottomRowData = useCallback(
     (displayedRows = []) => {
+      // Sum each displayed numeric column as-is (rows are already enriched)
       const pageRows = (displayedRows || []).filter((row) => !row?.isTotal);
       if (pageRows.length === 0) return [];
 
