@@ -17,7 +17,9 @@ import {
   EsdTech,
   ForestDeptAdmin,
   ParksAdmin,
+  nzpReportPermissions,
 } from "../constants/permissions";
+import { TEST_ZOO_PARK_ID } from "../constants/appConfig";
 
 const ProtectedRoute = ({ element }) => {
   const { isAuthenticated, roleDetails, decodedTokenData } = useAuthStore();
@@ -42,9 +44,11 @@ const ProtectedRoute = ({ element }) => {
     } else if (role === "ROLE_ESD_TECH") {
       return EsdTech;
     } else if (role === "ROLE_ADMIN") {
-      return parkId === "100"
-        ? CustomParkAdminPermissions
-        : parkAdminPermissions;
+      const basePermissions =
+        parkId === "100" ? CustomParkAdminPermissions : parkAdminPermissions;
+      return [TEST_ZOO_PARK_ID].includes(parkId)
+        ? [...basePermissions, ...nzpReportPermissions]
+        : basePermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
@@ -67,7 +71,7 @@ const ProtectedRoute = ({ element }) => {
       return ParksAdmin;
     }
     return [];
-  }, [role, email]);
+  }, [role, email, parkId]);
 
   // If user is authenticated and trying to access the login page, redirect to dashboard
   if (isAuthenticated && location.pathname === "/") {

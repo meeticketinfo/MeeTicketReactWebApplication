@@ -27,7 +27,9 @@ import {
   ForestDeptAdmin,
   ParksAdmin,
   CityBusAdmin,
+  nzpReportPermissions,
 } from "../constants/permissions";
+import { TEST_ZOO_PARK_ID } from "../constants/appConfig";
 import useCaptchaStore from "../store/useCaptchaStore";
 import { useAggridStore } from "../store/agGridStore";
 import usePaginationStore from "../store/paginationStore";
@@ -99,6 +101,7 @@ function Sidebar({ variant = "default" }) {
   const role = roleDetails?.name;
 
   const parkId = decodedTokenData?.data.ParkId;
+  console.log("parkId", parkId);
   const rolePermissions = useMemo(() => {
     if (
       (role === "ROLE_SUPERADMIN" && email === "supportuser1@meeticket.com") ||
@@ -111,9 +114,11 @@ function Sidebar({ variant = "default" }) {
     } else if (role === "ROLE_ESD_TECH") {
       return [...EsdTech, ...CityBusAdmin];
     } else if (role === "ROLE_ADMIN") {
-      return parkId === "100"
-        ? CustomParkAdminPermissions
-        : parkAdminPermissions;
+      const basePermissions =
+        parkId === "100" ? CustomParkAdminPermissions : parkAdminPermissions;
+      return [TEST_ZOO_PARK_ID].includes(parkId)
+        ? [...basePermissions, ...nzpReportPermissions]
+        : basePermissions;
     } else if (role === "ROLE_NODALOFFICER") {
       return nodalOfficerPermissions;
     } else if (role === "ROLE_METROADMIN") {
@@ -136,7 +141,7 @@ function Sidebar({ variant = "default" }) {
       return ParksAdmin;
     }
     return [];
-  }, [role, email]);
+  }, [role, email, parkId]);
 
   const filteredSidebarItems = useMemo(() => {
     return sidebarItems

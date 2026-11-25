@@ -137,16 +137,20 @@ export const parkAdminPermissions = [
   "pos-reports",
   // "add-language",
   // "group-details",
-  "institutional-discount",
+  
+];
+
+// NZP Reports — ROLE_ADMIN only when parkId matches TEST_ZOO_PARK_ID
+export const nzpReportPermissions = [
   "nzp-day-wise-booking-report",
   "nzp-ticket-bookings-transaction-report",
   "nzp-desk-wise-booking-report",
+  "institutional-discount",
 ];
 
 // custom park admin permissions
 export const CustomParkAdminPermissions = [
   "dashboard",
-  "institutional-discount",
   "gate-keepers",
   "bookings",
   "facility-services",
@@ -163,9 +167,6 @@ export const CustomParkAdminPermissions = [
   "application-day-wise-bookings",
   "day-wise-bookings",
   "pos-reports",
-  "nzp-day-wise-booking-report",
-  "nzp-ticket-bookings-transaction-report",
-  "nzp-desk-wise-booking-report",
 ];
 
 // botanical garden park admin permissions
